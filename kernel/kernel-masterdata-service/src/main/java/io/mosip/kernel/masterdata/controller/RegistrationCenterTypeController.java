@@ -66,7 +66,7 @@ public class RegistrationCenterTypeController {
 			@Valid @RequestBody RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
 		return new ResponseEntity<>(
 				registrationCenterTypeService.updateRegistrationCenterType(registrationCenterTypeDto),
-				HttpStatus.CREATED);
+				HttpStatus.OK);
 
 	}
 

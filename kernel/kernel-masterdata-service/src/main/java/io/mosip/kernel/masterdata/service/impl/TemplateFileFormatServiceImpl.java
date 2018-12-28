@@ -40,7 +40,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorMessage() + " "
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();

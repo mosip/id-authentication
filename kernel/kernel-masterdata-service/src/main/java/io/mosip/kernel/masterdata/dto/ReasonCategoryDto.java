@@ -29,7 +29,7 @@ public class ReasonCategoryDto {
 	@Size(min = 1, max = 3)
 	private String langCode;
 
-	@NotBlank
+	
 	private Boolean isActive;
 
 	private List<ReasonListDto> reasonList = new ArrayList<>();

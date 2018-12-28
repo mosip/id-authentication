@@ -12,6 +12,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  * This interface is JPA repository class which interacts with database and does the CRUD function. It is 
  * extended from {@link BaseRepository}
  * @author Srinivasan
+ * @author Tapaswini
  *
  */
 @Repository
@@ -29,7 +30,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	List<Location> findByCode(String locationCode);
 	
 	/**
-	 * @author M1043226
+	 *
 	 * @param hierarchyName - hierarchy name
 	 * @return List
 	 */

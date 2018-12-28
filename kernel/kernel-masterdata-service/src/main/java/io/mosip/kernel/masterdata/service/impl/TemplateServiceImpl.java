@@ -49,9 +49,10 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplate() {
 		try {
 			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(Template.class);
-		} catch (DataAccessException exception) {
+		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -73,9 +74,10 @@ public class TemplateServiceImpl implements TemplateService {
 	public TemplateResponseDto getAllTemplateByLanguageCode(String languageCode) {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
-		} catch (DataAccessException exception) {
+		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -100,9 +102,10 @@ public class TemplateServiceImpl implements TemplateService {
 		try {
 			templateList = templateRepository.findAllByLangCodeAndTemplateTypeCodeAndIsDeletedFalseOrIsDeletedIsNull(
 					languageCode, templateTypeCode);
-		} catch (DataAccessException exception) {
+		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -131,7 +134,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + "  "
+					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -159,7 +162,7 @@ public class TemplateServiceImpl implements TemplateService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ": "
+					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		return idResponseDto;
@@ -183,7 +186,7 @@ public class TemplateServiceImpl implements TemplateService {
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage() + ": "
+					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

@@ -51,7 +51,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
 			applicationList = applicationRepository.findAllByIsDeletedFalseOrIsDeletedNull(Application.class);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -82,7 +82,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -116,7 +116,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		try {
 			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					languageCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));

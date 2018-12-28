@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
@@ -37,16 +36,30 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	 * @return rows modified
 	 */
 	@Modifying
-	@Query("UPDATE Gender g SET g.isDeleted =true , g.deletedDateTime = ?2 WHERE g.code =?1 and (g.isDeleted is null or g.isDeleted =false)")
-	int deleteGenderType(String code, LocalDateTime deletedDateTime);
+	@Query("UPDATE Gender g SET g.updatedBy=?3 , g.isDeleted =true , g.deletedDateTime = ?2 WHERE g.code =?1 and (g.isDeleted is null or g.isDeleted =false)")
+	int deleteGenderType(String code, LocalDateTime deletedDateTime,String updatedBy);
+
+	
 
 	/**
-	 * Get Gender Type by code provided.
+	 * Update gender type by code and langcode
 	 * 
 	 * @param code
-	 *            the gender type code.
-	 * @return list of {@link DocumentCategory}.
+	 *            code to be updated
+	 * @param langCode
+	 *            lang code to be updated
+	 * @param genderName
+	 *            genderName to be updated
+	 * @param isActive
+	 *            mapping is active or not
+	 * @param updatedDateTime
+	 *            upated timestamp
+	 * @param updatedBy
+	 *            updating user
+	 * @return no of updated rows           
 	 */
-	@Query("FROM Gender WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
-	Gender findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
+	@Modifying
+	@Query("UPDATE Gender g SET g.genderName=?3, g.isActive=?4 ,g.updatedDateTime=?5, g.updatedBy=?6 WHERE g.code =?1 and g.langCode=?2 and (g.isDeleted is null or g.isDeleted =false)")
+	int updateGenderType(String code, String langCode, String genderName, Boolean isActive,
+			LocalDateTime updatedDateTime, String updatedBy);
 }

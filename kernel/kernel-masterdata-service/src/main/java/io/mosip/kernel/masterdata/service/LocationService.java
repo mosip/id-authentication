@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
  * Interface class from which various implementation can be performed
  * 
  * @author Srinivasan
+ * @author Tapaswini
  *
  */
 public interface LocationService {
@@ -42,7 +43,7 @@ public interface LocationService {
 	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
 
 	/**
-	 * @author M1043226
+	 * 
 	 * 
 	 * @param hierarchyName
 	 *            - hierarchyName

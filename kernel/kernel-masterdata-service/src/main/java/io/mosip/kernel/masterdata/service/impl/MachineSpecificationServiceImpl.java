@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -64,7 +63,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
-					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage() + "  "
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
@@ -99,7 +98,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorCode(),
-					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage() + " "
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
@@ -138,7 +137,7 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorCode(),
-					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage() + " "
+					MachineSpecificationErrorCode.MACHINE_SPECIFICATION_DELETE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

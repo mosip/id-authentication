@@ -29,6 +29,7 @@ import io.swagger.annotations.Api;
  * {@link LocationService} is called wherein the business logics are handled.
  * 
  * @author Srinivasan
+ * @author Tapaswini
  * @since 1.0.0
  *
  */
@@ -82,7 +83,7 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @author M1043226
+	 * 
 	 * @param hierarchyName
 	 *            hierarchy Name
 	 * @return list of location hierarchies

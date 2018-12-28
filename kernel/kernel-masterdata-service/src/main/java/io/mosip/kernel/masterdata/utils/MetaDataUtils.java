@@ -75,6 +75,7 @@ public class MetaDataUtils {
 	 * @return entity having isDeleted value as true and deleted times
 	 */
 	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
+		entity.setUpdatedBy(contextUser);
 		entity.setIsDeleted(true);
 		entity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return entity;
@@ -139,6 +140,14 @@ public class MetaDataUtils {
 	private static <D extends BaseEntity> void setUpdatedDateTime(String contextUser, D entity) {
 		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setUpdatedBy(contextUser);
+	}
+	
+	public static String getContextUser() {
+		return contextUser;
+	}
+	
+	public static LocalDateTime getCurrentDateTime() {
+		return LocalDateTime.now(ZoneId.of("UTC"));
 	}
 
 }

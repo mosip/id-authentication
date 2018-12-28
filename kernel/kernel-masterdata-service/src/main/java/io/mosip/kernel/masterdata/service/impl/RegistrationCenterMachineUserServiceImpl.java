@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -27,21 +26,31 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
+ * @see RegistrationCenterMachineUserService
  *
  */
 @Service
 public class RegistrationCenterMachineUserServiceImpl implements RegistrationCenterMachineUserService {
 
+	/**
+	 * Instance of {@link RegistrationCenterMachineUserRepository}
+	 */
 	@Autowired
 	RegistrationCenterMachineUserRepository  registrationCenterMachineUserRepository;
 	
+	/**
+	 * Instance of {@link RegistrationCenterUserMachineHistoryRepository}
+	 */
 	@Autowired
 	RegistrationCenterUserMachineHistoryRepository registrationCenterUserMachineHistoryRepository;
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserService#createRegistrationCentersMachineUserMapping(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
 	@Transactional
 	public RegistrationCenterMachineUserID createRegistrationCentersMachineUserMapping(
-			@Valid RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
+			RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
         
 		RegistrationCenterUserMachine registrationCenterUserMachine=MetaDataUtils.setCreateMetaData(registrationCenterUserMachineMappingDto.getRequest(), RegistrationCenterUserMachine.class);
 		RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory=MetaDataUtils.setCreateMetaData(registrationCenterUserMachineMappingDto.getRequest(), RegistrationCenterUserMachineHistory.class);
@@ -49,7 +58,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		registrationCenterUserMachineHistory.setCreatedDateTime(registrationCenterUserMachine.getCreatedDateTime());
 		
 		try {
-			registrationCenterMachineUserRepository.create(registrationCenterUserMachine);
+			registrationCenterMachineUserRepository.create(registrationCenterUserMachine);	
 			registrationCenterUserMachineHistoryRepository.create(registrationCenterUserMachineHistory);
 		}catch(DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_INSERT_EXCEPTION.getErrorCode(),

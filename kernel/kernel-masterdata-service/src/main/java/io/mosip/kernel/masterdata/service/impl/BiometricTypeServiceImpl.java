@@ -51,7 +51,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		biometricTypeDtoList = new ArrayList<>();
 		try {
 			biometricTypesList = biometricTypeRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(BiometricType.class);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -82,7 +82,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		biometricTypeDtoList = new ArrayList<>();
 		try {
 			biometricTypesList = biometricTypeRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -115,7 +115,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		try {
 			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
