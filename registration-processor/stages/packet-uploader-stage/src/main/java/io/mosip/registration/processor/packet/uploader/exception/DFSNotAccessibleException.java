@@ -1,7 +1,7 @@
-package io.mosip.registration.processor.packet.uploader.job.exception;
+package io.mosip.registration.processor.packet.uploader.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.uploader.job.exceptions.util.PacketUploaderJobErrorCodes;
+import io.mosip.registration.processor.packet.uploader.exceptions.util.PacketUploaderJobErrorCodes;
 
 public class DFSNotAccessibleException extends BaseUncheckedException {
 

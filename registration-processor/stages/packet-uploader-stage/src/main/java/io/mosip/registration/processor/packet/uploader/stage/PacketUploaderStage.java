@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.uploader.job.stage;
+package io.mosip.registration.processor.packet.uploader.stage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +23,7 @@ import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotF
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.job.exception.DFSNotAccessibleException;
+import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -164,7 +164,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 * @param dto the dto
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void uploadpacket(InternalRegistrationStatusDto dto) throws IOException{
+	public void uploadpacket(InternalRegistrationStatusDto dto) throws IOException{
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 		} catch (UnableToAccessPathException e) {
@@ -187,7 +187,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 * @param entry            the entry
 	 * @param decryptedData the decrypted data
 	 */
-	private void sendToDFS(InternalRegistrationStatusDto entry,InputStream decryptedData) {
+	public void sendToDFS(InternalRegistrationStatusDto entry,InputStream decryptedData) {
 		
 		registrationId=entry.getRegistrationId();
 		try {

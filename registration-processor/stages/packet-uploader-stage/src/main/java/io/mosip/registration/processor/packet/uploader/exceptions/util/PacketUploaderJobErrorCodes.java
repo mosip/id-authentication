@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.uploader.job.exceptions.util;
+package io.mosip.registration.processor.packet.uploader.exceptions.util;
 
 public class PacketUploaderJobErrorCodes {
 	private static final String IIS_EPP_EPV_PREFIX = "IIS_";
