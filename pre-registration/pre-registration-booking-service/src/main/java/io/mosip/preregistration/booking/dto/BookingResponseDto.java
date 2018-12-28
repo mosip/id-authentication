@@ -2,7 +2,6 @@ package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

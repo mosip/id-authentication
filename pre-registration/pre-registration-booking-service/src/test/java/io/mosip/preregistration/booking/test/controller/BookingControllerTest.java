@@ -76,7 +76,7 @@ public class BookingControllerTest {
 		File file = new File(dataSyncUri.getPath());
 		jsonObject = parser.parse(new FileReader(file));
 
-		bookingRequestDTO.setPre_registration_id("23587986034785");
+		bookingRequestDTO.setPreRegistrationId("23587986034785");
 		bookingRequestDTO.setNewBookingDetails(new BookingRegistrationDTO());
 		bookingRequestDTO.setOldBookingDetails(new BookingRegistrationDTO());
 //		bookingRequestDTOA.setSlotFromTime("09:00");
@@ -100,12 +100,12 @@ public class BookingControllerTest {
 		File file1 = new File(cancelUri.getPath());
 		jsonObject1 = parser.parse(new FileReader(file1));
 		
-		cancelbookingDto.setPre_registration_id("12345");
-		cancelbookingDto.setRegistration_center_id("2");
+		cancelbookingDto.setPreRegistrationId("12345");
+		cancelbookingDto.setRegistrationCenterId("2");
 		cancelbookingDto.setSlotFromTime("09:00");
 		cancelbookingDto.setSlotToTime("09:20");
 		String restime="2018-12-04T07:22:57.086+0000";
-		cancelbookingDto.setReg_date(restime);
+		cancelbookingDto.setRegDate(restime);
 		
 		dto.setRequest(cancelbookingDto);
 	}
