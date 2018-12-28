@@ -32,6 +32,7 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.DFSNotAccessibleException;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException;
+import io.mosip.registration.processor.virus.scanner.job.exceptions.util.StatusMessage;
 
 @Service
 public class VirusScannerStage extends MosipVerticleManager {
@@ -130,7 +131,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			fileManager.copy(entry.getRegistrationId(), DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY);
 			entry.setRetryCount(entry.getRetryCount() + 1);
 			entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
-			entry.setStatusComment("packet is in status PACKET_FOR_VIRUS_SCAN_RETRY");
+			entry.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
 			entry.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(entry);
 			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY,
@@ -184,6 +185,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
 						"File is successfully scanned. " + "It has been sent to DFS.");
 			}
+			entry.setStatusComment(StatusMessage.PACKET_UPLOADED_TO_FILESYSTEM);
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			registrationStatusService.updateRegistrationStatus(entry);
 			isTransactionSuccessful = true;
