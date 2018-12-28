@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,8 @@ import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.DocumentGetAllDTO;
 import io.mosip.preregistration.booking.dto.HolidayDto;
+import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
+import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.dto.PreRegResponseDto;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
@@ -592,8 +595,8 @@ public class BookingService {
 
 					entity.setBookingPK(bookingPK);
 					entity.setRegistrationCenterId(registrationDTO.getRegistrationCenterId());
-					entity.setStatus_code(StatusCodes.BOOKED.toString().trim());
-					entity.setLang_code("12L");
+					entity.setStatusCode(StatusCodes.BOOKED.toString().trim());
+					entity.setLangCode("12L");
 					entity.setCrBy("987654321");
 					entity.setCrDate(Timestamp.valueOf(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime())));
 					entity.setRegDate(LocalDate.parse(registrationDTO.getRegDate()));
@@ -642,7 +645,7 @@ public class BookingService {
 		BookingResponseDto<BookingRegistrationDTO> responseDto = new BookingResponseDto<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
-			entity = registrationBookingRepository.findByPreIdAndStatusCode(preRegID, StatusCodes.BOOKED.toString());
+			entity = registrationBookingRepository.findPreIdAndStatusCode(preRegID, StatusCodes.BOOKED.toString());
 			if (entity != null) {
 				bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 				bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
@@ -727,10 +730,10 @@ public class BookingService {
 						/* update entity in bookingTable */
 
 						RegistrationBookingEntity bookingEntity = registrationBookingRepository
-								.findByPreIdAndStatusCode(cancelBookingDTO.getPreRegistrationId(),
+								.findPreIdAndStatusCode(cancelBookingDTO.getPreRegistrationId(),
 										StatusCodes.BOOKED.toString());
 
-						bookingEntity.setStatus_code(StatusCodes.CANCELED.toString().trim());
+						bookingEntity.setStatusCode(StatusCodes.CANCELED.toString().trim());
 						bookingEntity.setUpdDate(new Timestamp(System.currentTimeMillis()));
 						RegistrationBookingEntity registrationBookingEntity = registrationBookingRepository
 								.save(bookingEntity);
@@ -797,5 +800,29 @@ public class BookingService {
 		return flag;
 
 	}
-
+	
+	public ResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getPreIdsByRegCenterId(RequestDto<PreRegIdsByRegCenterIdDTO> requestDTO) {
+		ResponseDTO<PreRegIdsByRegCenterIdResponseDTO> responseDto = new ResponseDTO<>();
+		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO() ;
+		List<PreRegIdsByRegCenterIdResponseDTO> preRegIdsByRegCenterIdResponseDTOList = new ArrayList<>();
+		try {
+			String regCenterId = requestDTO.getRequest().getRegistration_center_id();
+			List<RegistrationBookingEntity> bookingEntities = registrationBookingRepository.findByRegistrationCenterIdAndStatusCode(regCenterId.trim(), StatusCodes.BOOKED.getCode());
+			List<String> preRegIdList = requestDTO.getRequest().getPre_registration_ids();
+			List<String> entityPreRegIdList = new LinkedList<>();
+			for(RegistrationBookingEntity bookingEntity : bookingEntities) {
+				entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
+			}
+			preRegIdList.retainAll(entityPreRegIdList);
+			preRegIdsByRegCenterIdResponseDTO.setRegistration_center_id(regCenterId);
+			preRegIdsByRegCenterIdResponseDTO.setPre_registration_ids(preRegIdList);
+			preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
+			responseDto.setResTime(resTime);
+			responseDto.setStatus("true");
+			responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseDto;
+	}
 }

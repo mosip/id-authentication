@@ -220,8 +220,8 @@ public class BookingServiceTest {
 
 		bookingEntity.setBookingPK(bookingPK);
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
-		bookingEntity.setStatus_code(StatusCodes.BOOKED.toString().trim());
-		bookingEntity.setLang_code("12L");
+		bookingEntity.setStatusCode(StatusCodes.BOOKED.toString().trim());
+		bookingEntity.setLangCode("12L");
 		bookingEntity.setCrBy("987654321");
 		bookingEntity.setCrDate(Timestamp.valueOf(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime())));
 		bookingEntity.setRegDate(LocalDate.parse(oldBooking.getRegDate()));
@@ -742,14 +742,14 @@ public class BookingServiceTest {
 
 	@Test
 	public void getAppointmentDetailsTest() {
-		Mockito.when(registrationBookingRepository.findByPreIdAndStatusCode("23587986034785",StatusCodes.BOOKED.toString())).thenReturn(bookingEntity);
+		Mockito.when(registrationBookingRepository.findPreIdAndStatusCode("23587986034785",StatusCodes.BOOKED.toString())).thenReturn(bookingEntity);
 		BookingResponseDto<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
 		assertEquals("1",responseDto.getResponse().getRegistrationCenterId());
 	}
 
 	@Test(expected = BookingDataNotFoundException.class)
 	public void getAppointmentDetailsTestFailure() {
-		Mockito.when(registrationBookingRepository.findByPreIdAndStatusCode("23587986034785",StatusCodes.BOOKED.toString())).thenReturn(null);
+		Mockito.when(registrationBookingRepository.findPreIdAndStatusCode("23587986034785",StatusCodes.BOOKED.toString())).thenReturn(null);
 		service.getAppointmentDetails("23587986034785");
 	}
 
@@ -757,7 +757,7 @@ public class BookingServiceTest {
 	public void getAppointmentDetailsTableFailure() {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 				ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), null);
-		Mockito.when(registrationBookingRepository.findByPreIdAndStatusCode("23587986034785",StatusCodes.BOOKED.toString())).thenThrow(exception);
+		Mockito.when(registrationBookingRepository.findPreIdAndStatusCode("23587986034785",StatusCodes.BOOKED.toString())).thenThrow(exception);
 		service.getAppointmentDetails("23587986034785");
 	}
 

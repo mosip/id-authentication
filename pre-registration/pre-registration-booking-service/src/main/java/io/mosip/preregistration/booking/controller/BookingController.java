@@ -22,7 +22,10 @@ import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
+import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
+import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.dto.RequestDto;
+import io.mosip.preregistration.booking.dto.ResponseDTO;
 import io.mosip.preregistration.booking.dto.BookingResponseDto;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.swagger.annotations.Api;
@@ -116,6 +119,21 @@ public class BookingController {
 	public ResponseEntity<BookingResponseDto<CancelBookingResponseDTO>> cancelBook(
 			@RequestBody RequestDto<CancelBookingDTO> requestDTO) {
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.cancelAppointment(requestDTO));
+	}
+	
+	/**
+	 * @param bookingDTO
+	 * @return response entity
+	 * @throws ParseException
+	 * @throws java.text.ParseException
+	 */
+	@PostMapping(path = "/bookedPreIdsByRegId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Reterive all pre-registration ids by registration center id")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Reterived all pre-registration ids successfully"),
+			@ApiResponse(code = 400, message = "Unable to reterive pre-registration ids") })
+	public ResponseEntity<ResponseDTO<PreRegIdsByRegCenterIdResponseDTO>> getPreIdsByRegCenterId(
+			@RequestBody RequestDto<PreRegIdsByRegCenterIdDTO> requestDTO) {
+		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getPreIdsByRegCenterId(requestDTO));
 	}
 
 }
