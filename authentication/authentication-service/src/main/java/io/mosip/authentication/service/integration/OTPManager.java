@@ -94,6 +94,7 @@ public class OTPManager {
 
 				}
 			} else {
+				//FIXME Could not validate OTP -OTP - Request could not be processed. Please try again
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 			}
 
