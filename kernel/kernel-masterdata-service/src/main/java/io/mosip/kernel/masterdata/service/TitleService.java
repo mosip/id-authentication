@@ -58,7 +58,7 @@ public interface TitleService {
 	 * @param titles
 	 *            input from user
 	 * @return composite primary key of updated row of data
-	 * @throws DataNotFoundException
+	 * @throws RequestException
 	 *             when data not found
 	 * @throws MasterDataServiceException
 	 *             when data not updated successfully
@@ -71,7 +71,7 @@ public interface TitleService {
 	 * @param code
 	 *            input from user
 	 * @return composite key of deleted row of data
-	 * @throws DataNotFoundException
+	 * @throws RequestException
 	 *             when data not found
 	 * @throws MasterDataServiceException
 	 *             when data not deleted successfully

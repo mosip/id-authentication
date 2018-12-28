@@ -98,10 +98,6 @@ public final class DateUtils {
 	 */
 	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-	/**
-	 * LocalDateTime pattern based on ISO 8601 without offset
-	 */
-	private static final String LOCALDATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
 	private DateUtils() {
 
@@ -864,7 +860,7 @@ public final class DateUtils {
 	 * @return a date String
 	 */
 	public static String getDefaultUTCCurrentDateTimeString() {
-		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(DateUtils.LOCALDATETIME_PATTERN));
+		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(DateUtils.UTC_DATETIME_PATTERN));
 	}
 
 	/**
@@ -887,7 +883,7 @@ public final class DateUtils {
 	 * @see java.time.LocalDateTime
 	 */
 	public static LocalDateTime parseDefaultUTCToLocalDateTime(String utcDateTime) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.LOCALDATETIME_PATTERN);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.UTC_DATETIME_PATTERN);
 		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		try {
 			return simpleDateFormat.parse(utcDateTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -916,7 +912,7 @@ public final class DateUtils {
 	 * @see io.mosip.kernel.core.exception.ParseException
 	 */
 	public static Date parseDefaultUTCToDate(String utcDateTime) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.LOCALDATETIME_PATTERN);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.UTC_DATETIME_PATTERN);
 		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 		try {
 			return simpleDateFormat.parse(utcDateTime);

@@ -32,6 +32,16 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	 *            the language code
 	 * @return All the {@link Template}
 	 */
+	@Query("FROM Template WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
+	
+	/**
+	 * To fetch all the {@link Template} based on language code
+	 * 
+	 * @param langCode
+	 *            the language code
+	 * @return All the {@link Template}
+	 */
 	@Query("FROM Template WHERE langCode =?1 AND (isDeleted is null OR isDeleted = false)")
 	List<Template> findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String langCode);
 

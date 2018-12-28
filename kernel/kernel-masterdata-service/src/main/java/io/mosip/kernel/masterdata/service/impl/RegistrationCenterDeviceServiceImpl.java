@@ -17,8 +17,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDeviceHistoryPk;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterDeviceID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceService;
@@ -95,9 +95,9 @@ public class RegistrationCenterDeviceServiceImpl implements RegistrationCenterDe
 		try {
 			registrationCenterDeviceID = new RegistrationCenterDeviceID(regCenterId, deviceId);
 			Optional<RegistrationCenterDevice> registrationCenterDevice = registrationCenterDeviceRepository
-					.findById(registrationCenterDeviceID);
-			if (!registrationCenterDevice.isPresent()|| registrationCenterDevice.get().getIsDeleted()) {
-				throw new DataNotFoundException(
+					.findAllNondeletedMappings(registrationCenterDeviceID);
+			if (!registrationCenterDevice.isPresent()) {
+				throw new RequestException(
 						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
 						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
 			} else {

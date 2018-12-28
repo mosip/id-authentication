@@ -16,8 +16,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineService;
@@ -92,9 +92,9 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		try {
 			registrationCenterMachineID = new RegistrationCenterMachineID(regCenterId, machineId);
 			Optional<RegistrationCenterMachine> registrationCenterMachine = registrationCenterMachineRepository
-					.findById(registrationCenterMachineID);
-			if (!registrationCenterMachine.isPresent()|| registrationCenterMachine.get().getIsDeleted()) {
-				throw new DataNotFoundException(
+					.findAllNondeletedMappings(registrationCenterMachineID);
+			if (!registrationCenterMachine.isPresent()) {
+				throw new RequestException(
 						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
 						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND
 								.getErrorMessage());
