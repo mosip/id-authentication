@@ -2449,7 +2449,7 @@ public class MasterdataIntegrationTest {
 		when(machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/machinespecifications")
-				.contentType(MediaType.APPLICATION_JSON).content(content)).andExpect(status().isNotFound());
+				.contentType(MediaType.APPLICATION_JSON).content(content)).andExpect(status().isBadRequest());
 
 	}
 
@@ -2486,7 +2486,7 @@ public class MasterdataIntegrationTest {
 		when(machineSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 
 		mockMvc.perform(delete("/v1.0/machinespecifications/1000").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -2669,7 +2669,7 @@ public class MasterdataIntegrationTest {
 
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/machines").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -2705,7 +2705,7 @@ public class MasterdataIntegrationTest {
 		when(machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 
 		mockMvc.perform(delete("/v1.0/machines/1000").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
