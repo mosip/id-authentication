@@ -24,8 +24,6 @@ import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * Document type controller with api to get list of valid document types based
@@ -74,11 +72,6 @@ public class DocumentTypeController {
 	 */
 	@PostMapping("/v1.0/documenttypes")
 	@ApiOperation(value = "Service to create document type", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When document type successfully created", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
-			@ApiResponse(code = 404, message = "When No document type found"),
-			@ApiResponse(code = 500, message = "While creating document type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentType(
 			@Valid @RequestBody RequestDto<DocumentTypeDto> types) {
 		return new ResponseEntity<>(documentTypeService.createDocumentType(types), HttpStatus.CREATED);
@@ -93,11 +86,6 @@ public class DocumentTypeController {
 	 */
 	@PutMapping("/v1.0/documenttypes")
 	@ApiOperation(value = "Service to update document type", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When document type successfully updated", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
-			@ApiResponse(code = 404, message = "When No document type found"),
-			@ApiResponse(code = 500, message = "While updating document type any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentType(
 			@ApiParam("Document Type DTO to update") @Valid @RequestBody RequestDto<DocumentTypeDto> types) {
 		return new ResponseEntity<>(documentTypeService.updateDocumentType(types), HttpStatus.OK);
@@ -112,11 +100,6 @@ public class DocumentTypeController {
 	 */
 	@DeleteMapping("/v1.0/documenttypes/{code}")
 	@ApiOperation(value = "Service to delete document type", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When document type successfully deleted", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When path is invalid"),
-			@ApiResponse(code = 404, message = "When No document type found"),
-			@ApiResponse(code = 500, message = "While deleting document type any error occured") })
 	public ResponseEntity<CodeResponseDto> deleteDocumentType(@PathVariable("code") String code) {
 		return new ResponseEntity<>(documentTypeService.deleteDocumentType(code), HttpStatus.OK);
 	}
