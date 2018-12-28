@@ -77,6 +77,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineM
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
@@ -121,6 +122,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistory
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
@@ -359,6 +361,9 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private MachineHistoryRepository machineHistoryRepository;
+
+	@MockBean
+	private DeviceHistoryRepository deviceHistoryRepository;
 
 	public static LocalDateTime localDateTimeUTCFormat = LocalDateTime.now();
 
@@ -711,6 +716,7 @@ public class MasterdataIntegrationTest {
 
 	List<Device> deviceList;
 	List<Object[]> objectList;
+	DeviceHistory deviceHistory;
 
 	private void deviceSetup() {
 
@@ -743,6 +749,8 @@ public class MasterdataIntegrationTest {
 		Object objects[] = { "1001", "Laptop", "129.0.0.0", "123", "129.0.0.0", "1212", "ENG", true, validDateTime,
 				"LaptopCode" };
 		objectList.add(objects);
+
+		deviceHistory = new DeviceHistory();
 
 	}
 
@@ -2806,6 +2814,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.create(Mockito.any())).thenReturn(device);
+		Mockito.when(deviceHistoryRepository.create(Mockito.any())).thenReturn(deviceHistory);
 		mockMvc.perform(
 				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
@@ -2833,7 +2842,8 @@ public class MasterdataIntegrationTest {
 		requestDto.setVer("1.0.0");
 		requestDto.setRequest(deviceDto);
 		String content = mapper.writeValueAsString(requestDto);
-		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(device);
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(device);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
@@ -3383,7 +3393,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateDeviceSpecificationNotFoundExceptionTest() throws Exception {
+	public void updateDeviceSpecificationRequestExceptionTest() throws Exception {
 		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
@@ -3392,7 +3402,7 @@ public class MasterdataIntegrationTest {
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3423,10 +3433,10 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void deleteDeviceSpecificationNotFoundExceptionTest() throws Exception {
+	public void deleteDeviceSpecificationRequestExceptionTest() throws Exception {
 		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3470,7 +3480,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateTemplateNotFoundExceptionTest() throws Exception {
+	public void updateTemplateNotRequestExceptionTest() throws Exception {
 		RequestDto<TemplateDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
@@ -3478,7 +3488,7 @@ public class MasterdataIntegrationTest {
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3505,10 +3515,10 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void deleteTemplateNotFoundExceptionTest() throws Exception {
+	public void deleteTemplateRequestExceptionTest() throws Exception {
 		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
