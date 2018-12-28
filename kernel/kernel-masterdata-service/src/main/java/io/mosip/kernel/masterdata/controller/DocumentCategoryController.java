@@ -23,8 +23,6 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller class to fetch or create document categories.
@@ -90,11 +88,6 @@ public class DocumentCategoryController {
 	 */
 	@PostMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 201, message = "When document category successfully created", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
-			@ApiResponse(code = 404, message = "When No document category found"),
-			@ApiResponse(code = 500, message = "While creating document category any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
@@ -109,11 +102,6 @@ public class DocumentCategoryController {
 	 */
 	@PutMapping("/v1.0/documentcategories")
 	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When document category successfully updated", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
-			@ApiResponse(code = 404, message = "When No document category found"),
-			@ApiResponse(code = 500, message = "While updating document category any error occured") })
 	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(
 			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
@@ -130,11 +118,6 @@ public class DocumentCategoryController {
 	 */
 	@DeleteMapping("/v1.0/documentcategories/{code}")
 	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
-	@ApiResponses({
-			@ApiResponse(code = 200, message = "When document category successfully deleted", response = CodeResponseDto.class),
-			@ApiResponse(code = 400, message = "When path is invalid"),
-			@ApiResponse(code = 404, message = "When No document category found"),
-			@ApiResponse(code = 500, message = "While deleting document category any error occured") })
 	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
 		return new ResponseEntity<>(documentCategoryService.deleteDocumentCategory(code), HttpStatus.OK);
 	}
