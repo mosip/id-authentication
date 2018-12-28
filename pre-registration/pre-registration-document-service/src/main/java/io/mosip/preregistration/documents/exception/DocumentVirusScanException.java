@@ -29,6 +29,7 @@ public class DocumentVirusScanException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentVirusScanException(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_010.toString(), message);
@@ -36,7 +37,9 @@ public class DocumentVirusScanException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentVirusScanException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_010.toString(), message, cause);
@@ -45,8 +48,11 @@ public class DocumentVirusScanException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentVirusScanException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
@@ -54,7 +60,9 @@ public class DocumentVirusScanException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentVirusScanException(String errorCode, String message) {
 		super(errorCode, message);

@@ -18,32 +18,32 @@ public class OperationNotAllowedException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param errorMessage
+	 * @param errorMessage pass the error message
 	 */
 	public OperationNotAllowedException(String errorMessage) {
 		super("", errorMessage);
 	}
 
 	/**
-	 * @param errorCode
-	 * @param errorMessage
+	 * @param errorCode pass the error code
+	 * @param errorMessage pass the error message
 	 */
 	public OperationNotAllowedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
 	/**
-	 * @param errorMessage
-	 * @param rootCause
+	 * @param errorMessage pass the error message
+	 * @param rootCause pass the cause
 	 */
 	public OperationNotAllowedException(String errorMessage, Throwable rootCause) {
 		super("", errorMessage, rootCause);
 	}
 
 	/**
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param rootCause
+	 * @param errorCode pass the error code
+	 * @param errorMessage pass the error message
+	 * @param rootCause pass the cause
 	 */
 	public OperationNotAllowedException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);

@@ -8,7 +8,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 
 /**
- * This class defines the DTOMappigException that occurs when the DTO Mapping fails
+ * This class defines the DTOMappigException that occurs when the DTO Mapping
+ * fails
  * 
  * @author Kishan Rathore
  * @since 1.0.0
@@ -28,6 +29,7 @@ public class DTOMappigException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DTOMappigException(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_010.toString(), message);
@@ -35,7 +37,9 @@ public class DTOMappigException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DTOMappigException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_010.toString(), message, cause);
@@ -44,8 +48,11 @@ public class DTOMappigException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DTOMappigException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
@@ -53,7 +60,9 @@ public class DTOMappigException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DTOMappigException(String errorCode, String message) {
 		super(errorCode, message);

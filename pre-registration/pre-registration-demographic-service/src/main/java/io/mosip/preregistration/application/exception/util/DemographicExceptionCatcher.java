@@ -39,7 +39,7 @@ public class DemographicExceptionCatcher {
 	/**
 	 * Method to handle the respective exceptions
 	 * 
-	 * @param ex
+	 * @param ex pass the exception
 	 */
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {

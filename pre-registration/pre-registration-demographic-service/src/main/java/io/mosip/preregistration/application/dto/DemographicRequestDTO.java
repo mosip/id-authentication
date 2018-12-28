@@ -17,7 +17,6 @@ import lombok.Setter;
  * @author Rajath KR
  * @since 1.0.0
  *
- * @param <T>
  */
 @Getter
 @Setter
