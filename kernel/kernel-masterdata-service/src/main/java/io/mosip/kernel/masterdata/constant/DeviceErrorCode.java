@@ -11,8 +11,8 @@ package io.mosip.kernel.masterdata.constant;
 public enum DeviceErrorCode {
 	DEVICE_FETCH_EXCEPTION("KER-MSD-009", "Error occured while fetching Devices"), DEVICE_NOT_FOUND_EXCEPTION(
 			"KER-MSD-010", "Device not Found"), DEVICE_INSERT_EXCEPTION("111",
-					"Error occurred while inserting Device details"), DEVICE_UPDATE_EXCEPTION("UPD-xxx",
-							"Error while updating"), DEVICE_DELETE_EXCEPTION("DEL-xxx", "Error while deleting");
+					"Error occurred while inserting Device details"), DEVICE_UPDATE_EXCEPTION("KER-MSD-083",
+							"Error while updating"), DEVICE_DELETE_EXCEPTION("KER-MSD-084", "Error while deleting");
 
 	private final String errorCode;
 	private final String errorMessage;

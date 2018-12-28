@@ -128,7 +128,7 @@ public class DeviceController {
 			@ApiResponse(code = 500, message = "While updating device any error occured") })
 	public ResponseEntity<IdResponseDto> updateDevice(@Valid @RequestBody RequestDto<DeviceDto> deviceRequestDto) {
 
-		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto), HttpStatus.CREATED);
+		return new ResponseEntity<>(deviceService.updateDevice(deviceRequestDto), HttpStatus.OK);
 	}
 
 	/**
