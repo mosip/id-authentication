@@ -63,7 +63,6 @@ public class IdRepoServiceImpl implements IdRepoService {
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
 			response.put("uin", uin);
-
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, ID_REPO_SERVICE, e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
