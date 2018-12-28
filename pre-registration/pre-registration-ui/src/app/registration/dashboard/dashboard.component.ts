@@ -132,7 +132,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.router.navigate([`pre-registration/${this.loginId}/demographic`]);
+    this.router.navigate(['pre-registration', this.loginId, 'demographic', 1]);
     this.isNewApplication = true;
     //   const data = {
     //     case: 'APPLICANTS'
