@@ -19,7 +19,7 @@ public class BookingRequestDTO implements Serializable{
 	/**
 	 * pre-Registration Id
 	 */
-	private String pre_registration_id;
+	private String preRegistrationId;
 	/**
 	 * Old Booking Details
 	 */
