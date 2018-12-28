@@ -46,6 +46,8 @@ import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterLocation;
+import io.mosip.registration.entity.mastersync.MasterReasonCategory;
+import io.mosip.registration.entity.mastersync.MasterReasonList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.impl.MasterSyncServiceImpl;
@@ -2006,6 +2008,31 @@ public class MasterSyncServiceTest {
         Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
 		
         masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01");
+		
+
+	}
+	
+	@Test
+	public void findAllReasons() {
+
+		List<MasterReasonCategory> allReason = new ArrayList<>();
+		MasterReasonCategory reasons = new MasterReasonCategory();
+		reasons.setCode("DEMO");
+		reasons.setName("InvalidData");
+		reasons.setLangCode("FRE");
+		allReason.add(reasons);
+		
+		List<MasterReasonList> allReasonList = new ArrayList<>();
+		MasterReasonList reasonList = new MasterReasonList();
+		reasonList.setCode("DEMO");
+		reasonList.setName("InvalidData");
+		reasonList.setLangCode("FRE");
+		allReasonList.add(reasonList);
+		
+        Mockito.when(masterSyncDao.getAllReasonCatogery()).thenReturn(allReason);
+        Mockito.when(masterSyncDao.getReasonList(Mockito.anyString(), Mockito.anyList())).thenReturn(allReasonList);
+		
+        masterSyncServiceImpl.getAllReasonsList("ENG");
 		
 
 	}

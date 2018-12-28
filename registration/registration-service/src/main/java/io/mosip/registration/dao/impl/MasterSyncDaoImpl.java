@@ -363,8 +363,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				masterSyncReasonListRepository.saveAll(masterReasonListDtoEntity);
 			}
 			if (null != regCenter) {
-				MetaDataUtils.setCreateMetaData(regCenter,
-						MasterRegistrationCenter.class);
+				MetaDataUtils.setCreateMetaData(regCenter, MasterRegistrationCenter.class);
 			}
 			if (null != masterTemplateFileDto) {
 				List<MasterTemplateFileFormat> masterTemplateFileDtoEntity = MetaDataUtils
@@ -393,7 +392,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			}
 
 		} catch (RuntimeException runtimeException) {
-			
+
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 			sucessResponse = RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO;
 			throw new RegBaseUncheckedException(RegistrationConstants.MASTER_SYNC_EXCEPTION + sucessResponse,
@@ -404,7 +403,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 				"Leaving Insert Master Sync Data..");
 
 		return sucessResponse;
-		
+
 	}
 
 	/*
@@ -429,6 +428,27 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Override
 	public List<MasterLocation> findLocationByParentLocCode(String parentLocCode) {
 		return masterSyncLocationRepository.findMasterLocationByParentLocCode(parentLocCode);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.MasterSyncDao#getAllReasonCatogery()
+	 */
+	@Override
+	public List<MasterReasonCategory> getAllReasonCatogery() {
+		return masterSyncReasonCategoryRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.MasterSyncDao#getReasonList(java.util.List)
+	 */
+	@Override
+	public List<MasterReasonList> getReasonList(String langCode, List<String> reasonCat) {
+		return masterSyncReasonListRepository.findByLangCodeAndReasonCategoryCodeIn(langCode, reasonCat);
+
 	}
 
 }

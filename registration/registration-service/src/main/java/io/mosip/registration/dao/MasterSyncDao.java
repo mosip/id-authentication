@@ -5,7 +5,8 @@ import java.util.List;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterLocation;
-import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.entity.mastersync.MasterReasonCategory;
+import io.mosip.registration.entity.mastersync.MasterReasonList;
 
 /**
  * The Interface MasterSyncDao.
@@ -47,5 +48,20 @@ public interface MasterSyncDao {
 	 * @return the list
 	 */
 	List<MasterLocation> findLocationByParentLocCode(String parentLocCode);
+
+	/**
+	 * Gets the all reason catogery.
+	 *
+	 * @return the all reason catogery
+	 */
+	List<MasterReasonCategory> getAllReasonCatogery();
+
+	/**
+	 * Gets the reason list.
+	 *
+	 * @param reasonCat the reason cat
+	 * @return the reason list
+	 */
+	List<MasterReasonList> getReasonList(String langCode, List<String> reasonCat);
 
 }
