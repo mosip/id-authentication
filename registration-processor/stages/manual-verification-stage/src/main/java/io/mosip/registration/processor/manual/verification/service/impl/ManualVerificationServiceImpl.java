@@ -38,11 +38,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-<<<<<<< Updated upstream
-	
-=======
 
->>>>>>> Stashed changes
 /**
  * The Class ManualVerificationServiceImpl.
  */
