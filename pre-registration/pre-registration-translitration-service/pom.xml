@@ -92,6 +92,11 @@
 		    <artifactId>icu4j</artifactId>
 		    <version>63.1</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-jsonvalidator</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
   </dependencies>
   <build>
 		<plugins>

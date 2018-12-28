@@ -1,6 +1,6 @@
 /* 
- * Copyright
  * 
+ * Copyright
  */
 package io.mosip.preregistration.documents.repository;
 

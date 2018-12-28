@@ -14,8 +14,8 @@ public class FailedToTranslitrateException extends BaseUncheckedException {
 		super();
 	}
 	
-	public FailedToTranslitrateException(String message) {
-		super(ErrorCodes.PRG_TRL_001.toString(),message);
+	public FailedToTranslitrateException(String errorCode,String message) {
+		super(errorCode,message);
 	}
 
 }
