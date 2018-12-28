@@ -45,7 +45,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 			Map<String, Object> authRequest = (Map<String, Object>) decodeToMap((String) requestBody.get(AUTH_REQUEST));
 			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
 			if(null != authRequest.get(REQUEST)) {
-				authRequest.replace(REQUEST, keyManager.requestData(authRequest, env, decryptor, mapper));				
+				authRequest.replace(REQUEST, keyManager.requestData(authRequest, mapper));				
 			}
 			requestBody.replace(AUTH_REQUEST, authRequest);
 			return requestBody;
