@@ -230,6 +230,27 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), ex);
 						object.setInternalError(Boolean.TRUE);
 						description = "Internal error occured while processing registration  id : " + registrationId;
+					} finally {
+
+						String eventId = "";
+						String eventName = "";
+						String eventType = "";
+
+						if (isTransactionSuccessful) {
+							description = "Packet uploaded to file system";
+							eventId = EventId.RPR_402.toString();
+							eventName = EventName.UPDATE.toString();
+							eventType = EventType.BUSINESS.toString();
+						} else {
+
+							description = "Packet uploading to file system is unsuccessful";
+							eventId = EventId.RPR_405.toString();
+							eventName = EventName.EXCEPTION.toString();
+							eventType = EventType.SYSTEM.toString();
+						}
+						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+								registrationId);
+
 					}
 				});
 			}
@@ -238,28 +259,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
 			object.setInternalError(Boolean.TRUE);
-			description = "Registration status table is not accessible for packet " + registrationId;
-
-		} finally {
-
-			String eventId = "";
-			String eventName = "";
-			String eventType = "";
-
-			if (isTransactionSuccessful) {
-				description = "Packet uploaded to file system";
-				eventId = EventId.RPR_402.toString();
-				eventName = EventName.UPDATE.toString();
-				eventType = EventType.BUSINESS.toString();
-			} else {
-
-				description = "Packet uploading to file system is unsuccessful";
-				eventId = EventId.RPR_405.toString();
-				eventName = EventName.EXCEPTION.toString();
-				eventType = EventType.SYSTEM.toString();
-			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+			description = "Registration status table is not accessible for packet ";
 
 		}
 
