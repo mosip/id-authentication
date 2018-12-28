@@ -32,8 +32,11 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterLocation;
+import io.mosip.registration.entity.mastersync.MasterReasonCategory;
+import io.mosip.registration.entity.mastersync.MasterReasonList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
@@ -152,8 +155,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
-		} 
-		
+		}
+
 		return responseDTO;
 	}
 
@@ -269,5 +272,40 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		}
 
 		return locationDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.MasterSyncService#getAllReasons(java.lang.
+	 * String)
+	 */
+	@Override
+	public List<MasterReasonListDto> getAllReasonsList(String langCode) {
+
+		List<MasterReasonListDto> reasonListResponse = new ArrayList<>();
+		List<String> resonCantCode = new ArrayList<>();
+		// Fetting Reason Category
+		List<MasterReasonCategory> masterReasonCatogery = masterSyncDao.getAllReasonCatogery();
+		if (masterReasonCatogery != null && !masterReasonCatogery.isEmpty()) {
+
+			masterReasonCatogery.forEach(reason -> {
+				resonCantCode.add(reason.getCode());
+			});
+
+		}
+		// Fetching reason list based on lang_Code and rsncat_code
+		List<MasterReasonList> masterReasonList = masterSyncDao.getReasonList(langCode, resonCantCode);
+		masterReasonList.forEach(reasonList -> {
+			MasterReasonListDto reasonListDto = new MasterReasonListDto();
+			reasonListDto.setCode(reasonList.getCode());
+			reasonListDto.setName(reasonList.getName());
+			reasonListDto.setRsnCatCode(reasonList.getRsnCatCode());
+			reasonListDto.setLangCode(reasonList.getLangCode());
+			reasonListResponse.add(reasonListDto);
+		});
+
+		return reasonListResponse;
+
 	}
 }

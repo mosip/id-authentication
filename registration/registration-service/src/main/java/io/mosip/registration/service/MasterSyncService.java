@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
+import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 
 /**
  * Interface to sync master data from server to client
@@ -38,5 +39,13 @@ public interface MasterSyncService {
 	 * @return the list
 	 */
 	List<LocationDto> findProvianceByHierarchyCode(String code);
+	
+	/**
+	 * Gets the all reasons.
+	 *
+	 * @param langCode the lang code
+	 * @return the all reasons
+	 */
+	List<MasterReasonListDto> getAllReasonsList(String langCode);
 
 }

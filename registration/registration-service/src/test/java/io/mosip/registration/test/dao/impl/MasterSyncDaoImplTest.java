@@ -1,6 +1,5 @@
 package io.mosip.registration.test.dao.impl;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
@@ -46,6 +45,7 @@ import io.mosip.registration.dto.mastersync.MachineDto;
 import io.mosip.registration.dto.mastersync.MachineSpecificationDto;
 import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.dto.mastersync.MasterReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
@@ -1447,5 +1447,41 @@ public class MasterSyncDaoImplTest {
 
 		assertTrue(locations != null);
 	}
+	
+	@Test
+	public void findAllReason() throws RegBaseCheckedException {
+
+		List<MasterReasonCategory> allReason = new ArrayList<>();
+		MasterReasonCategory reasons = new MasterReasonCategory();
+		reasons.setCode("DEMO");
+		reasons.setName("InvalidData");
+		reasons.setLangCode("FRE");
+		allReason.add(reasons);
+
+		Mockito.when(masterSyncReasonCategoryRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(allReason);
+		
+		masterSyncDaoImpl.getAllReasonCatogery();
+
+		assertTrue(allReason != null);
+	}
+	
+	@Test
+	public void findAllReasonList() throws RegBaseCheckedException {
+
+		List<String> reasonCat=new ArrayList<>();
+		List<MasterReasonList> allReason = new ArrayList<>();
+		MasterReasonList reasons = new MasterReasonList();
+		reasons.setCode("DEMO");
+		reasons.setName("InvalidData");
+		reasons.setLangCode("FRE");
+		allReason.add(reasons);
+
+		Mockito.when(masterSyncReasonListRepository.findByLangCodeAndReasonCategoryCodeIn(Mockito.anyString(), Mockito.anyList())).thenReturn(allReason);
+		
+		masterSyncDaoImpl.getReasonList("FRE",reasonCat);
+
+		assertTrue(allReason != null);
+	}
+
 
 }
