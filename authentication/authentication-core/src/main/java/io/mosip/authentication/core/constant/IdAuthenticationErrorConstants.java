@@ -104,7 +104,11 @@ public enum IdAuthenticationErrorConstants {
 	FGRMIN_MISMATCH("IDA-BIA-001", "Biometric data – fgerMin did not match", "A0143"),
 	FGRIMG_MISMATCH("IDA-BIA-002", "Biometric data – fgerImg did not match", "A0144"),
 	INVALID_SIGNATURE("IDA-TSA-001", "Digital signature verification failed"),
-	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature");
+	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature"),
+	
+	// OTP Generation
+	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first.");
+	;
 
 	private final String errorCode;
 	private final String errorMessage;
