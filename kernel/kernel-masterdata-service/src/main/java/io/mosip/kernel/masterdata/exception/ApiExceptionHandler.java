@@ -1,15 +1,14 @@
 package io.mosip.kernel.masterdata.exception;
 
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ErrorResponse;
@@ -27,7 +26,7 @@ import io.mosip.kernel.masterdata.constant.RequestErrorCode;
  * @since 1.0.0
  */
 @RestControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler {
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> controlDataServiceException(final MasterDataServiceException e) {
@@ -54,21 +53,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return getErrorResponseEntity(ex, HttpStatus.BAD_REQUEST);
-	}
-
-	private ResponseEntity<Object> getErrorResponseEntity(MethodArgumentNotValidException ex, HttpStatus httpStatus) {
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse<ServiceError>> methodArgumentNotValidException(
+			final MethodArgumentNotValidException e) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
-		errorResponse.setStatus(httpStatus.value());
-		ex.getBindingResult().getFieldErrors().stream().forEach(e -> {
+		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+		fieldErrors.forEach(x -> {
 			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
-					e.getField() + ": " + e.getDefaultMessage());
+					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
+			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		});
-		return new ResponseEntity<>(errorResponse, httpStatus);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	private ResponseEntity<ErrorResponse<ServiceError>> getErrorResponseEntity(BaseUncheckedException e,
