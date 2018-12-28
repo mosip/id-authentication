@@ -24,28 +24,28 @@ public class Location implements Serializable {
 	private static final long serialVersionUID = 1862979882831303893L;
 	@EmbeddedId
 	private GenericId locationId;
-	@Column(name = "name", length = 128, nullable = false)
+	@Column(name = "name")
 	private String name;
-	@Column(name = "heirarchy_level", nullable = false)
+	@Column(name = "heirarchy_level")
 	private int heirarchyLevel;
-	@Column(name = "heirarchy_level_name", length = 64, nullable = false)
+	@Column(name = "heirarchy_level_name")
 	private String heirarchyLevelName;
-	@Column(name = "parent_loc_code", length = 32, nullable = true)
+	@Column(name = "parent_loc_code")
 	private String parentLocationCode;
-	@Column(name = "lang_code", length = 3, nullable = false)
+	@Column(name = "lang_code")
 	private String languageCode;
-	@Column(name = "cr_by", length = 24, nullable = false)
+	@Column(name = "cr_by")
 	private String createdBy;
-	@Column(name = "cr_dtimesz", nullable = false)
+	@Column(name = "cr_dtimesz")
 	private Timestamp createdDate;
-	@Column(name = "upd_by", length = 24, nullable = true)
+	@Column(name = "upd_by")
 	private String updatedBy;
 	@Column(name = "upd_dtimesz")
 	private Timestamp updatedTimesZone;
-	@Column(name = "is_deleted", nullable = true)
+	@Column(name = "is_deleted")
 	@Type(type = "true_false")
 	private Boolean isDeleted;
-	@Column(name = "del_dtimesz", nullable = true)
+	@Column(name = "del_dtimesz")
 	private Timestamp deletedTimesZone;
 
 	/**

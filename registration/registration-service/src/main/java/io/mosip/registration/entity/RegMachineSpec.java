@@ -14,21 +14,21 @@ import javax.persistence.Table;
 @Table(name = "machine_spec", schema = "reg")
 public class RegMachineSpec extends RegistrationCommonFields {
 	@Id
-	@Column(name = "id", length = 36, nullable = false)
+	@Column(name = "id")
 	private String id;
-	@Column(name = "name", length = 64, nullable = false)
+	@Column(name = "name")
 	private String name;
-	@Column(name = "brand", length = 32, nullable = false)
+	@Column(name = "brand")
 	private String brand;
-	@Column(name = "model", length = 16, nullable = false)
+	@Column(name = "model")
 	private String model;
-	@Column(name = "mtyp_code", length = 36, nullable = false)
+	@Column(name = "mtyp_code")
 	private String mtypeCode;
-	@Column(name = "min_driver_ver", length = 16, nullable = false)
+	@Column(name = "min_driver_ver")
 	private String minDriverVersion;
-	@Column(name = "descr", length = 256)
+	@Column(name = "descr")
 	private String description;
-	@Column(name = "lang_code", length = 3, nullable = false)
+	@Column(name = "lang_code")
 	private String languageCode;
 
 	public String getId() {
