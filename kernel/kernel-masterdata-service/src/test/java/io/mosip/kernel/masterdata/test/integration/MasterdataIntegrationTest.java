@@ -2825,6 +2825,35 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	public void updateDeviceSuccessTest() throws Exception {
+		RequestDto<DeviceDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceDto);
+		String content = mapper.writeValueAsString(requestDto);
+
+		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateDeviceExceptionTest() throws Exception {
+		RequestDto<DeviceDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.create");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(deviceDto);
+		String content = mapper.writeValueAsString(requestDto);
+
+		Mockito.when(deviceRepository.update(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot update", null));
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
+	}
+
 	// -----------------------------------------MachineHistory---------------------------------------------
 	@Test
 	public void getMachineHistroyIdLangEffDTimeSuccessTest() throws Exception {
