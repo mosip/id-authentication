@@ -52,9 +52,11 @@ public interface DocumentTypeRepository extends BaseRepository<DocumentType, Cod
 	 *            the Date and time of deletion.
 	 * @param code
 	 *            the document type code.
+	 * @param updatedBy
+	 *            the updatedby user name.
 	 * @return the Integer.
 	 */
 	@Modifying
-	@Query("UPDATE DocumentType d SET d.isDeleted =true , d.deletedDateTime = ?1 WHERE d.code =?2 and (d.isDeleted is null or d.isDeleted =false)")
-	int deleteDocumentType(LocalDateTime deletedDateTime, String code);
+	@Query("UPDATE DocumentType d SET d.updatedBy=?3,d.isDeleted =true , d.deletedDateTime = ?1 WHERE d.code =?2 and (d.isDeleted is null or d.isDeleted =false)")
+	int deleteDocumentType(LocalDateTime deletedDateTime, String code, String updatedBy);
 }

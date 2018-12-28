@@ -4,15 +4,20 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterHistoryID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,13 +34,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "registration_center_h", schema = "master")
+@IdClass(RegistrationCenterHistoryID.class)
 public class RegistrationCenterHistory extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@AttributeOverrides({
+			@AttributeOverride(name = "id", column = @Column(name = "id", nullable = false,length = 36)),
+			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes", nullable = false))})
+	
 	private String id;
+	
+	private LocalDateTime effectivetimes;
 
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
@@ -103,7 +114,5 @@ public class RegistrationCenterHistory extends BaseEntity implements Serializabl
 			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
 			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
 	private Location location;
-
-	@Column(name = "eff_dtimes", nullable = false)
-	private LocalDateTime effectivetimes;
+	
 }
