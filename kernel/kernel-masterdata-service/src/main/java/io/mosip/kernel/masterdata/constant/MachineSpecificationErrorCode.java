@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum MachineSpecificationErrorCode {
 
 	
-	MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION("KER-APP-000","Machine Specification not Found"),
+	MACHINE_SPECIFICATION_NOT_FOUND_EXCEPTION("KER-MSD-117","Machine Specification not Found"),
 	MACHINE_SPECIFICATION_INSERT_EXCEPTION("KER-MSD-062",
 			"Error occurred while inserting Machine Specification details"),
 	MACHINE_SPECIFICATION_UPDATE_EXCEPTION("KER-MSD-085",
@@ -11,7 +11,7 @@ public enum MachineSpecificationErrorCode {
 	
 	MACHINE_SPECIFICATION_DELETE_EXCEPTION("KER-MSD-086","Error occurred while deleteding Machine Specification details"),
 	
-	MACHINE_DELETE_EXCEPTION("KER-APP-XX3","Error occurred while deleting Machine Specification Beacuse Machine Dependency is there");
+	MACHINE_DELETE_EXCEPTION("KER-MSD-XX3","Error occurred while deleting Machine Specification Beacuse Machine Dependency is there");
 
 	private final String errorCode;
 	private final String errorMessage;
