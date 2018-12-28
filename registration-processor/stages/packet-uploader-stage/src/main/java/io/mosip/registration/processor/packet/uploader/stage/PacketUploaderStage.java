@@ -208,7 +208,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
 			description =  "FileSytem is not accessible for packet " +registrationId ;
 		} catch (IOException e) {
-			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() + UNABLE_TO_DELETE, e);
+			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() +" "+ UNABLE_TO_DELETE, e);
 			description =  "Virus scan path is not accessible for packet " +registrationId ;
 		}
 		catch (TablenotAccessibleException e) {

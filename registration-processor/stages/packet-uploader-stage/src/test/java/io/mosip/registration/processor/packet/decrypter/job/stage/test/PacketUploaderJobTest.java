@@ -5,6 +5,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
+import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -58,7 +60,12 @@ public class PacketUploaderJobTest {
 	@InjectMocks
 	PacketUploaderStage packetUploaderStage = new PacketUploaderStage() {
 		@Override
-		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+			return null;
+		}
+
+		@Override
+		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
 		}
 	};
 	
@@ -126,12 +133,12 @@ public class PacketUploaderJobTest {
 	 * Test deploy verticle.
 	 *
 	 * @throws Exception the exception
-	 *//*
+	 */
 	@Test
 	public void testDeployVerticle() {
 		packetUploaderStage.deployVerticle();
 	}
-*/
+
 	@Test
 	public void UploadingSuccessIfFileNotPresentTest() throws Exception {
 
@@ -201,14 +208,51 @@ public class PacketUploaderJobTest {
 		Mockito.doNothing().when(packetArchiver).archivePacket("1001");
 		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService).updateRegistrationStatus(entry);
 		packetUploaderStage.process(dto);
+	}
+	
+	@Test
+	public void IOExceptionTest() throws Exception {
 
-		/*Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+
+		Mockito.doNothing().when(packetArchiver).archivePacket(any());
+	
+		Mockito.doThrow(IOException.class).when(adapter).unpackPacket(any(String.class));
+
+	
+		packetUploaderStage.process(dto);
+
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.containsExactly(
-						Tuple.tuple(Level.ERROR, "The Registration Status table is not accessible - {}"));*/
+						Tuple.tuple(Level.ERROR, "1001 unable to delete after sending to DFS. - {}"));
 
 	}
 	
-	
-	
-	
+	/*@Test
+	public void PacketNotFoundExceptionTest() throws Exception {
+
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.doThrow(PacketNotFoundException.class).when(packetArchiver).archivePacket(any(String.class));
+		packetUploaderStage.process(dto);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(
+						Tuple.tuple(Level.ERROR, "1001 unable to delete after sending to DFS. - {}"));
+
+	}*/
+
+	@Test
+	public void testDfsNotAccessible() throws Exception {
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.doNothing().when(packetArchiver).archivePacket(any());
+		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
+		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
+		packetUploaderStage.process(dto);
+		Assertions.assertThat(listAppender.list)
+        .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+		.containsExactly(Tuple.tuple( Level.ERROR, "The DFS Path set by the System is not accessible - {}")); 
+	}
+
 }
