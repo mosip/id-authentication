@@ -1,32 +1,26 @@
 package io.mosip.registration.processor.manual.verification.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Matchers.anyString;
 
 import java.io.ByteArrayInputStream;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
@@ -146,7 +140,7 @@ public class ManualVerificationServiceTest {
 		String fileName = PacketFiles.APPLICANTPHOTO.name();
 		byte[] file = "Str".getBytes();
 		InputStream fileInStream = new ByteArrayInputStream(file);
-		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(fileInStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(fileInStream);
 
 		file = manualAdjudicationService.getApplicantFile(regId, fileName);
 		fileName = PacketFiles.PROOFOFADDRESS.name();
