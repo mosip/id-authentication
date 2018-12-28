@@ -1,6 +1,7 @@
 package io.mosip.pregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
 
 /**
  * RecordNotFoundForDateRange Exception
@@ -12,11 +13,20 @@ public class RecordNotFoundForDateRange extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	public RecordNotFoundForDateRange() {
-		super();
+	public RecordNotFoundForDateRange(String msg) {
+		super(ErrorCodes.PRG_DATA_SYNC_001.toString(), msg);
 	}
-	
-	public RecordNotFoundForDateRange(String errorCodes) {
-		super(errorCodes, errorCodes);
+
+	public RecordNotFoundForDateRange(String msg, Throwable cause) {
+		super(ErrorCodes.PRG_DATA_SYNC_001.toString(), msg, cause);
 	}
+
+	public RecordNotFoundForDateRange(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage, null);
+	}
+
+	public RecordNotFoundForDateRange(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
+
 }

@@ -32,7 +32,7 @@ import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.RequestDto;
-import io.mosip.preregistration.booking.dto.ResponseDto;
+import io.mosip.preregistration.booking.dto.BookingResponseDto;
 import io.mosip.preregistration.booking.service.BookingService;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -56,7 +56,7 @@ public class BookingControllerTest {
 	BookingRegistrationDTO newBooking= new BookingRegistrationDTO();
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	@SuppressWarnings("rawtypes")
-	ResponseDto responseDto = new ResponseDto();
+	BookingResponseDto responseDto = new BookingResponseDto();
 	private Object jsonObject = null;
 	
 	private Object jsonObject1 = null;
@@ -112,7 +112,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void getAvailability() throws Exception {
-		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
+		BookingResponseDto<AvailabilityDto> response = new BookingResponseDto<>();
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/availability")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -122,7 +122,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void saveAvailability() throws Exception {
-		ResponseDto<String> response = new ResponseDto<>();
+		BookingResponseDto<String> response = new BookingResponseDto<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/masterSync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")

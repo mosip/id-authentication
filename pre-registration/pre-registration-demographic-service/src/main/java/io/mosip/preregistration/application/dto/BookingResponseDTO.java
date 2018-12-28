@@ -1,19 +1,31 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
-import io.mosip.preregistration.core.exceptions.dto.ExceptionJSONInfo;
+import io.mosip.preregistration.core.exception.dto.ExceptionJSONInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This DTO class is used to accept the response during Rest call to Booking
+ * service
+ * 
+ * @author Jagadishwari S
+ * @since 1.0.0
+ * @param <T>
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class BookingResponseDTO<T> implements Serializable{
+public class BookingResponseDTO<T> implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
@@ -21,10 +33,19 @@ public class BookingResponseDTO<T> implements Serializable{
 	/** The error details. */
 	private ExceptionJSONInfo err;
 
+	/**
+	 * Response status
+	 */
 	private Boolean status;
 
-	private Timestamp resTime;
+	/**
+	 * Response Date Time
+	 */
+	private Date resTime;
 
+	/**
+	 * Repsonse object
+	 */
 	private T response;
 
 }
