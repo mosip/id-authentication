@@ -68,21 +68,8 @@ public class KeyPolicySyncJob extends BaseJob {
 		SessionContext sessionContext = SessionContext.getInstance();
 		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
 
-		
-		try {
-			// Run the Parent JOB always first
-			this.responseDTO = policySyncService.fetchPolicy(centerId);
-			
-		}
-		catch(Exception exception) {
-			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
-			LinkedList<ErrorResponseDTO> list=new  LinkedList<>();
-			list.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(list);
-
-		}
+		// Run the Parent JOB always first
+		this.responseDTO = policySyncService.fetchPolicy(centerId);
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
@@ -109,7 +96,7 @@ public class KeyPolicySyncJob extends BaseJob {
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 		SessionContext sessionContext = SessionContext.getInstance();
 		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
-		
+
 		this.responseDTO = policySyncService.fetchPolicy(centerId);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 

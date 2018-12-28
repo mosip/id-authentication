@@ -73,8 +73,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
 	 * getPreRegistrationIds(java.lang.String)
 	 */
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#getPreRegistrationIds(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
+	 * getPreRegistrationIds(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -97,13 +100,15 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			HashMap<String, Object> responseMap = (HashMap<String, Object>) map.get("response");
 			ArrayList<String> preRegIds = (ArrayList<String>) responseMap.get("preRegistrationIds");
-			
-			
+
 			/** Get Packets Using pre registration ID's */
 			for (String preRegistrationId : preRegIds) {
-				
-				/** TODO null has to be replaced with last updated time stamp details from api call */
-				getPreRegistration(responseDTO, preRegistrationId, syncJobId,null);
+
+				/**
+				 * TODO null has to be replaced with last updated time stamp details from api
+				 * call
+				 */
+				getPreRegistration(responseDTO, preRegistrationId, syncJobId, null);
 				if (responseDTO.getErrorResponseDTOs() != null) {
 					break;
 				}
@@ -143,7 +148,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/** Get Pre Registration Packet */
-		getPreRegistration(responseDTO, preRegistrationId, RegistrationConstants.JOB_TRIGGER_POINT_USER,null);
+		getPreRegistration(responseDTO, preRegistrationId, RegistrationConstants.JOB_TRIGGER_POINT_USER, null);
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -153,23 +158,36 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	@SuppressWarnings("unchecked")
-	private void getPreRegistration(ResponseDTO responseDTO, String preRegistrationId, String syncJobId, Timestamp lastUpdatedTimeStamp) {
+	private void getPreRegistration(ResponseDTO responseDTO, String preRegistrationId, String syncJobId,
+			Timestamp lastUpdatedTimeStamp) {
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching Pre-Registration started");
 
-		/** Check in Database whether required record already exists or not */
-		PreRegistrationList preRegistration = preRegistrationDAO.get(preRegistrationId);
-		
+		PreRegistrationList preRegistration = null;
+		try {
+			/** Check in Database whether required record already exists or not */
+			preRegistration = preRegistrationDAO.get(preRegistrationId);
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage());
+
+			/** set Error response */
+			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+			return;
+		}
+		/** Has Network Connectivity */
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
-		
+
 		boolean isUpdated = false;
 
-		if(preRegistration!=null) {
+		if (preRegistration != null && preRegistration.getLastUpdatedPreRegTimeStamp() != null) {
+
 			isUpdated = (preRegistration.getLastUpdatedPreRegTimeStamp().equals(lastUpdatedTimeStamp));
 		}
-		
 
 		byte[] decryptedPacket = null;
 
@@ -193,7 +211,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				if (packet != null && !packet.isEmpty()) {
 
 					decryptedPacket = (byte[]) packet.get(RegistrationConstants.PRE_REG_FILE_CONTENT);
-					
+
 					/** Get PreRegistrationDTO by taking packet Information */
 					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService
 							.encryptAndSavePreRegPacket(preRegistrationId, decryptedPacket);
@@ -205,19 +223,20 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 					// save in Pre-Reg List
 					PreRegistrationList preRegistrationList = preparePreRegistration(syncTransaction,
-							preRegistrationDTO,lastUpdatedTimeStamp);
+							preRegistrationDTO, lastUpdatedTimeStamp);
 					String fileName = (String) packet.get(RegistrationConstants.PRE_REG_FILE_NAME);
 					String appointmentDate = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+
+					/** TODO Check the Date format */
 					preRegistrationList.setAppointmentDate(DateUtils.parseUTCToDate(appointmentDate,
 							RegistrationConstants.PRE_REG_APPOINMENT_DATE_FORMAT));
-					if(preRegistration == null) {
-						preRegistrationDAO.save(preRegistrationList);
 
+					if (preRegistration == null) {
+						preRegistrationDAO.save(preRegistrationList);
 					} else {
-						preRegistrationList.setCrBy(preRegistration.getCrBy());
-						preRegistration.setCrDtime(preRegistration.getCrDtime());
+						preRegistrationList.setId(preRegistration.getId());
 						preRegistrationList.setUpdBy(getUserIdFromSession());
-						preRegistrationList.setCrDtime(new Timestamp(System.currentTimeMillis()));
+						preRegistrationList.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 						preRegistrationDAO.update(preRegistrationList);
 					}
 					/** set success response */
@@ -238,7 +257,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage());
 
-				
 				/** set Error response */
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
@@ -249,7 +267,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		if (!isJob) {
 			try {
 				if (preRegistration != null) {
-					
+
 					/**
 					 * if the packet is already available,read encrypted packet from disk and
 					 * decrypt
@@ -275,6 +293,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
 				return;
 			}
+
 		}
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -296,11 +315,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_SUCCESS_MESSAGE, attributes);
 			}
 		} catch (RegBaseCheckedException exception) {
-			LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
-			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
-		} catch (RuntimeException exception) {
 			LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -358,10 +372,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
 
-		/** TODO shouldn't be hard-coded  */
+		/** TODO shouldn't be hard-coded */
 		// return formatDate(cal);
 		return "2018-12-15 11:52:2";
 	}
+
 	private PreRegistrationList preparePreRegistration(SyncTransaction syncTransaction,
 			PreRegistrationDTO preRegistrationDTO, Timestamp lastUpdatedTimeStamp) {
 
@@ -387,25 +402,26 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
-
 	public ResponseDTO fetchAndDeleteRecords() {
-		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+
+		LOGGER.debug(
+				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching the records started");
-		
-		//Set the Date 15 days before the current date
+
+		// Set the Date 15 days before the current date
 		Calendar startCal = Calendar.getInstance();
 		startCal.add(Calendar.DATE, -preRegPacketDeletionDaysLimit);
 		Date startDate = Date.from(startCal.toInstant());
-		
-		//fetch the records that needs to be deleted
+
+		// fetch the records that needs to be deleted
 		List<PreRegistrationList> preRegList = preRegistrationDAO.fetchRecordsToBeDeleted(startDate);
 
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+		LOGGER.debug(
+				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching the records ended");
-		
+
 		return deletePreRegRecords(preRegList);
 	}
 
@@ -413,7 +429,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Deletion of records started");
-		
+
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (!preRegList.isEmpty()) {
 			int packetDeleteCount = 0;
@@ -428,20 +444,21 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				responseDTO = updateDeletedRecords(preRegList);
 			}
 		}
-		
+
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Deletion of records Ended");
-		
+
 		return responseDTO;
 	}
 
 	private ResponseDTO updateDeletedRecords(List<PreRegistrationList> preRegList) {
-		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+
+		LOGGER.debug(
+				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Updation of deleted records started");
-		
+
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 			preRegList.forEach(preRegRecord -> {
@@ -454,11 +471,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					runtimeException.getMessage());
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_DELETE_FAILURE, null);
 		}
-		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+
+		LOGGER.debug(
+				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Updation of deleted records ended");
-		
+
 		return responseDTO;
 	}
 

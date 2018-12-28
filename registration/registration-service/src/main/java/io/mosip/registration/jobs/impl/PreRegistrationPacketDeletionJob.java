@@ -21,6 +21,7 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 /**
  * Delete the Pre-Registration Packets Based on the appointment date
+ * 
  * @author M1046564
  *
  */
@@ -40,16 +41,16 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 	 */
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
-		
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED_CHILD_JOB - PRE_REGISTRATION_PACKET_DELETION_JOB", APPLICATION_NAME,
-				APPLICATION_ID, "Pre-Registration Packet Deletion job started");
-		
+
+		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED_CHILD_JOB - PRE_REGISTRATION_PACKET_DELETION_JOB",
+				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job started");
+
 		this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
-		
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_CHILD_JOB_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB", APPLICATION_NAME,
-				APPLICATION_ID, "Pre-Registration Packet Deletion job ended");
-		
+
+		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_CHILD_JOB_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB",
+				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job ended");
+
 		return responseDTO;
 	}
 
@@ -61,8 +62,8 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 	 */
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED - PRE_REGISTRATION_PACKET_DELETION_JOB", APPLICATION_NAME,
-				APPLICATION_ID, "Pre-Registration Packet Deletion job started");
+		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED - PRE_REGISTRATION_PACKET_DELETION_JOB",
+				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job started");
 		this.responseDTO = new ResponseDTO();
 
 		try {
@@ -82,22 +83,9 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 		if (preRegistrationDataSyncService == null) {
 			preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
 		}
-		
-		
-		try {
-			// Run the Parent JOB always first
-			this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
-			
-		}
-		catch(Exception exception) {
-			LOGGER.error("PRE_REGISTRATION_PACKET_DELETION_JOB", RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
-			LinkedList<ErrorResponseDTO> list=new  LinkedList<>();
-			list.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(list);
 
-		}
+		// Run the Parent JOB always first
+		this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
@@ -106,8 +94,8 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB", APPLICATION_NAME,
-				APPLICATION_ID, "Pre-Registration Packet Deletion job ended");
+		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB",
+				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job ended");
 
 	}
 

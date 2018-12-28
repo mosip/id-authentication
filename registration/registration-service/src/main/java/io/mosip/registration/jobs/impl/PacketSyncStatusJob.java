@@ -69,19 +69,11 @@ public class PacketSyncStatusJob extends BaseJob {
 		
 		this.triggerPoint  = (context!=null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
 		
-		try {
+		
 			// Run the Parent JOB always first
 			this.responseDTO = packetStatusService.packetSyncStatus();
 
-		} catch(Exception exception) {
-			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
-			LinkedList<ErrorResponseDTO> list=new  LinkedList<>();
-			list.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(list);
-
-		}
+		
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context!=null) {
 			executeChildJob(jobId, jobMap);
