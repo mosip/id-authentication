@@ -1,10 +1,10 @@
 
-**Design -- Update UIN**
-==============
+**Design -- Lost UIN**
+======================
 
 **Background**
 
-On login successful, the user can select the "Update UIN" option in the
+On login successful, the user can select the "Lost UIN" option in the
 screen if any individual requested for the same. The key requirement and
 respective technical design is covered below.
 
@@ -16,35 +16,17 @@ The **target users** are
 
 The key **requirements** are
 
--   As part of the update UIN, the individual can provide the UIN number
-    to update corresponding the details.
-
--   The details should be configurable from the admin configuration,
-    while edit section based on this the editable columns should be
-    displayed.
-
--   While selecting, the user can choose the relevant option to update
-    as part of the UIN.
-
--   The individual can choose the below option to Update for UIN.
-
-    -   Name
-    -   Age/DOB
-    -   Gender
-    -   Address
-    -   Contact Details \[Email/Mobile Number\...\]
-    -   Biometric-Exception \[Finger Print/Iris/Face ...\]
-    -   Biometric-Iris
-    -   Biometric-Fingerprint
-
--   Based on the selection the required fields should only be editable.
-
--   The capture of bio-metric should be a configurable form the admin
-    configuration. Based on the configuration the capture should be done
-    for the individual.
-
--   We need to provide the information to the registration processor,
-    regarding this update.
+-   The Registration Officer navigates to the Lost UIN page.
+-   User enters demographic data of the individual who has lost his/her UIN.
+-   User uploads supporting documents.
+-   User marks biometric exceptions if any,
+-   User captures all fingerprints and irises.
+-   User captures face photograph, and exception photograph if applicable.
+-   User views a preview of details captured.
+-   User performs operator authentication by providing credentials in the configured mode.
+-   User requests Supervisor to provide credentials to authenticate if biometric exceptions were marked.
+-   User views acknowledgement of Lost UIN request with a Registration ID assigned to it.
+-   An SMS and email confirmation is sent to the individual.
 
 The key **non-functional requirements** are
 
@@ -54,7 +36,7 @@ The key **non-functional requirements** are
 
 **Solution**
 
-1.  Get the required configuration to display for the Update UIN screen
+1.  Get the required configuration to display for the Lost UIN screen
     from the Global Configuration Parameter table.
 
 2.  Create the controller for the **RegistrtaionEditController** to
@@ -70,7 +52,7 @@ The key **non-functional requirements** are
 
 5.  The same procedure for this follows the registration procedure only
     the specific fields which are editable should be captured along the
-    packet data and mention the 'applicationType' as 'UpdateUIN'.
+    packet data and mention the 'applicationType' as 'Lost UIN'.
 
 6.  The **RegsitrationValidator** should validate the fields against
     the selection.
@@ -83,17 +65,14 @@ The key **non-functional requirements** are
 
 Note:
 
-    Write a Controller **RegistrtaionEditController** class for UpdateUIN which  
+    Write a classes as per the attached diagram for Lost UIN which  
     would associate all the controller classes created for  
     New Registration to reuse the functionality. 
 
     As part of the packet Meta we need to provide which packet it is and the 
     UIN number also we need to provide. 
 
-**Class Diagram :**
+**Class and Sequence Diagram:**
 
-![Update UIN Class Diagram](_images/update_uin_class_diagram.png)
+![Lost UIN Class Diagram](_images/registration-lost-uin.png)
 
-**Sequence Diagram :**
-
-![Update UIN Sequence Diagram](_images/update_uin_seq_diagram.png)
