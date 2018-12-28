@@ -25,7 +25,7 @@ public class PreRegResponseDto<T> implements Serializable {
 	private static final long serialVersionUID = 6705845720255847210L;
 	
 	/** The error details. */
-	private List<ExceptionJSONInfo> err;
+	private List<ExceptionJSONInfoDTO> err;
 	
 	private Boolean status;
 	

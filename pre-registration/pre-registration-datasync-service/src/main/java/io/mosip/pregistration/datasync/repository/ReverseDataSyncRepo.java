@@ -11,5 +11,6 @@ import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
  *
  */
 public interface ReverseDataSyncRepo extends BaseRepository<PreRegistrationProcessedEntity, String>{
+
 	
 }

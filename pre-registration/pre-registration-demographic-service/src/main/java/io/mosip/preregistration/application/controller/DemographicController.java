@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.preregistration.application.dto.CreatePreRegistrationDTO;
+import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
@@ -28,11 +32,17 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Registration controller
+ * This class provides different API's to perform operations on
+ * pre-registration.
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  */
+
 @RestController
 @RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Pre-Registration")
@@ -40,12 +50,13 @@ import io.swagger.annotations.ApiResponses;
 public class DemographicController {
 
 	/**
-	 * Field for {@link #ViewRegistrationService}
+	 * Autowired reference for {@link #DemographicService}
 	 */
 	@Autowired
 	private DemographicService preRegistrationService;
 
 	/**
+	 * Post API to create a pre-registation application.
 	 * 
 	 * @param list
 	 *            of application forms
@@ -56,21 +67,33 @@ public class DemographicController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Created"),
 			@ApiResponse(code = 400, message = "Unable to create the demographic data") })
-	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> register(
-			@RequestBody(required = true) DemographicRequestDTO<CreatePreRegistrationDTO> jsonObject) {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(preRegistrationService.addPreRegistration(jsonObject));
+	public ResponseEntity<ResponseDTO<CreateDemographicDTO>> register(
+			@RequestBody(required = true) DemographicRequestDTO<CreateDemographicDTO> jsonObject) {
+		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
+	/**
+	 * Get API to fetch all the Pre-registration data for a pre-id
+	 * 
+	 * @param preRegId
+	 * @return the application data for a pre-id
+	 */
 	@GetMapping(path = "/applicationData", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the demographic data") })
-	public ResponseEntity<ResponseDTO<CreatePreRegistrationDTO>> getApplication(
+	public ResponseEntity<ResponseDTO<CreateDemographicDTO>> getApplication(
 			@RequestParam(value = "preRegId", required = true) String preRegId) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegId));
 	}
 
+	/**
+	 * Put API to update the status of the application
+	 * 
+	 * @param preRegId
+	 * @param status
+	 * @return the updation status of application for a pre-id
+	 */
 	@PutMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Update Pre-Registartion status")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Status successfully updated"),
@@ -97,7 +120,7 @@ public class DemographicController {
 	}
 
 	/**
-	 * Post api to fetch the status of a application
+	 * Post API to fetch the status of a application
 	 * 
 	 * @return status of application
 	 */
@@ -111,9 +134,11 @@ public class DemographicController {
 	}
 
 	/**
-	 * Delete api to delete the Individual applicant and documents associated with
-	 * it
+	 * Delete API to delete the Individual applicant and documents associated with
+	 * the PreId
 	 * 
+	 * @param preId
+	 * @return the deletion status of application for a pre-id
 	 */
 	@DeleteMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard individual")
@@ -125,9 +150,11 @@ public class DemographicController {
 	}
 
 	/**
+	 * Get API to fetch all the pre-ids within from-date and to-date range
+	 * 
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * @return the pre-ids for date range
 	 */
 	@GetMapping(path = "/applicationDataByDateTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion data By Date And Time")
@@ -135,6 +162,7 @@ public class DemographicController {
 			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
 	public ResponseEntity<ResponseDTO<String>> getApplicationByDate(@RequestParam(value = "fromDate") String fromDate,
 			@RequestParam(value = "toDate") String toDate) {
+		System.out.println("Inside controller");
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(preRegistrationService.getPreRegistrationByDate(fromDate, toDate));
 	}

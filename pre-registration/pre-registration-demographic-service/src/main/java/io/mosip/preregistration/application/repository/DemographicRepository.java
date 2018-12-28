@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.repository;
 
 import java.sql.Timestamp;
@@ -5,7 +9,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,30 +16,49 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 
 /**
- * Registration Repository
+ * This repository interface is used to define the JPA methods for Demoraphic service.
  * 
- * @author M1037462
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
+ * 
  */
 @Repository("registrationRepository")
 @Transactional
 public interface DemographicRepository extends BaseRepository<DemographicEntity, String> {
 
-	public static final String record = "SELECT prereg_id FROM prereg.applicant_demographic WHERE group_id= :groupId";
-	public static final String countRec = "SELECT DISTINCT group_id  FROM prereg.applicant_demographic where cr_appuser_id=:userId";
+	/**
+	 * @param userId
+	 * @return list of preregistration data for the created date
+	 */
+	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
 
-	@Query("SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId")
-	public List<DemographicEntity> findByuserId(@Param("userId") String userId);
-
-	@Query(value = countRec, nativeQuery = true)
+	/**
+	 * @param userId
+	 * @return list of group ids for a user id
+	 */
 	public List<String> noOfGroupIds(@Param("userId") String userId);
 
-	@Query("SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
+	/**
+	 * @param preRegId
+	 * @return preregistration date for a pre-id
+	 */
 	public DemographicEntity findBypreRegistrationId(@Param("preRegId") String preRegId);
 
+	/**
+	 * @param preId
+	 * @return the number of rows deleted for a pre-id
+	 */
 	public int deleteByPreRegistrationId(String preId);
-	
-	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start,Timestamp end);
 
+	/**
+	 * @param start
+	 * @param end
+	 * @return list of preregistration data between start and end date
+	 */
+	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
 
 }

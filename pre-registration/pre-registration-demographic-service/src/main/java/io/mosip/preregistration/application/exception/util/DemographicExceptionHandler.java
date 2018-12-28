@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.exception.util;
 
 import java.sql.Timestamp;
@@ -18,19 +22,28 @@ import io.mosip.preregistration.application.exception.RecordFailedToDeleteExcept
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
- * Exception Handler
+ * Exception Handler for demographic service
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
  */
 @RestControllerAdvice
 public class DemographicExceptionHandler {
 	protected String falseStatus = "false";
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for TablenotAccessibleException
+	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDTO<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_APP_002.toString(),
@@ -42,6 +55,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for JsonValidationException
+	 */
 	@ExceptionHandler(JsonValidationException.class)
 	public ResponseEntity<ResponseDTO<?>> jsonValidationException(final JsonValidationException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_APP_007.toString(),
@@ -53,6 +71,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for RecordNotFoundException
+	 */
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<ResponseDTO<?>> recException(final RecordNotFoundException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
@@ -63,6 +86,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for SystemIllegalArgumentException
+	 */
 	@ExceptionHandler(SystemIllegalArgumentException.class)
 	public ResponseEntity<ResponseDTO<?>> illegalArgumentException(final SystemIllegalArgumentException e,
 			WebRequest request) {
@@ -74,6 +102,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for DocumentFailedToDeleteException
+	 */
 	@ExceptionHandler(DocumentFailedToDeleteException.class)
 	public ResponseEntity<ResponseDTO<?>> documentFailedToDeleteException(final DocumentFailedToDeleteException e,
 			WebRequest request) {
@@ -85,6 +118,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for RecordFailedToDeleteException
+	 */
 	@ExceptionHandler(RecordFailedToDeleteException.class)
 	public ResponseEntity<ResponseDTO<?>> recordFailedToDeleteException(final RecordFailedToDeleteException e,
 			WebRequest request) {
@@ -96,6 +134,11 @@ public class DemographicExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for OperationNotAllowedException
+	 */
 	@ExceptionHandler(OperationNotAllowedException.class)
 	public ResponseEntity<ResponseDTO<?>> operationNotAllowedException(final OperationNotAllowedException e,
 			WebRequest request) {
@@ -106,11 +149,15 @@ public class DemographicExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
-	
+
+	/**
+	 * @param e
+	 * @param request
+	 * @return response for InvalidRequestParameterException
+	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<ResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
-				e.getErrorText());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		ResponseDTO<?> errorRes = new ResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(falseStatus);
