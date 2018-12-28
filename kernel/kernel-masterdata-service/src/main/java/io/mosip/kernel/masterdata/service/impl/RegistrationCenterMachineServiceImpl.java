@@ -92,8 +92,8 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		try {
 			registrationCenterMachineID = new RegistrationCenterMachineID(regCenterId, machineId);
 			Optional<RegistrationCenterMachine> registrationCenterMachine = registrationCenterMachineRepository
-					.findById(registrationCenterMachineID);
-			if (!registrationCenterMachine.isPresent()|| registrationCenterMachine.get().getIsDeleted()) {
+					.findAllNondeletedMappings(registrationCenterMachineID);
+			if (!registrationCenterMachine.isPresent()) {
 				throw new DataNotFoundException(
 						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
 						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND
