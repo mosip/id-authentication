@@ -1,5 +1,6 @@
 package io.mosip.registration.test.jobs;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -108,5 +109,11 @@ public class JobTriggerTest {
 				.thenThrow(RegBaseUncheckedException.class);
 		jobTriggerListener.triggerFired(trigger, jobExecutionContext);
 
+	}
+	
+	@Test
+	public void getNameTest() {
+		
+		Assert.assertSame(JobTriggerListener.class.getName(), jobTriggerListener.getName());
 	}
 }
