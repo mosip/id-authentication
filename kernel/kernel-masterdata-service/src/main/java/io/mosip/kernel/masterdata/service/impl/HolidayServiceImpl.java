@@ -175,7 +175,7 @@ public class HolidayServiceImpl implements HolidayService {
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					HolidayErrorCode.HOLIDAY_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return idDto;
 	}
@@ -199,7 +199,7 @@ public class HolidayServiceImpl implements HolidayService {
 
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
+					HolidayErrorCode.HOLIDAY_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return idDto;
 	}
