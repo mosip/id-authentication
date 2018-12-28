@@ -17,10 +17,12 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 
 /**
  * This controller class is to handle the preview screen of the Biometric
@@ -87,6 +89,8 @@ public class BiometricPreviewController extends BaseController {
 	private Text leftIrisThreshold;
 	@FXML
 	private Text rightIrisThreshold;
+	@FXML
+	private ScrollPane bioScrollPane;
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -102,6 +106,7 @@ public class BiometricPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
+		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();

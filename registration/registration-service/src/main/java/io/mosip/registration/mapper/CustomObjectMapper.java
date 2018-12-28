@@ -3,7 +3,6 @@ package io.mosip.registration.mapper;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
@@ -37,9 +36,6 @@ public class CustomObjectMapper extends ConfigurableMapper {
 	 */
 	@Override
 	public void configure(MapperFactory mapperFactory) {
-
-		String createdBy = SessionContext.getInstance().getUserContext().getUserId();
-		boolean isActive = true;
 
 		ConverterFactory converterFactory = mapperFactory.getConverterFactory();
 		converterFactory.registerConverter(new PassThroughConverter(LocalDateTime.class));

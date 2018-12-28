@@ -340,7 +340,7 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setCategory("PoI");
+		documentDetailsDTO.setCategory("Passport");
 		documentDetailsDTO.setFormat("jpg");
 		documentDetailsDTO.setValue("ProofOfIdentity.jpg");
 		documentDetailsDTO.setOwner("Self");
@@ -349,12 +349,30 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setCategory("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
 		identity.setProofOfAddress(documentDetailsResidenceDTO);
+
+		documentDetailsDTO = new DocumentDetailsDTO();
+		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
+		documentDetailsDTO.setCategory("Passport");
+		documentDetailsDTO.setFormat("jpg");
+		documentDetailsDTO.setValue("ProofOfRelationship.jpg");
+		documentDetailsDTO.setOwner("Self");
+		
+		identity.setProofOfRelationship(documentDetailsDTO);
+
+		documentDetailsResidenceDTO = new DocumentDetailsDTO();
+		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
+		documentDetailsResidenceDTO.setCategory("Passport");
+		documentDetailsResidenceDTO.setFormat("jpg");
+		documentDetailsResidenceDTO.setValue("DateOfBirthProof.jpg");
+		documentDetailsResidenceDTO.setOwner("hof");
+		
+		identity.setDateOfBirthProof(documentDetailsResidenceDTO);
 	}
 
 	private static RegistrationMetaDataDTO getRegistrationMetaDataDTO() {

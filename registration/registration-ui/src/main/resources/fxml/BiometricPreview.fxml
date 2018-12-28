@@ -8,8 +8,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
-
-<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1200.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricPreviewController">
+<AnchorPane fx:id="newRegistrationRoot" maxHeight="800" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricPreviewController"> 
+<children>
+<ScrollPane fx:id="bioScrollPane" vbarPolicy="ALWAYS" prefWidth="934.0"  >
 	<content>
 		<AnchorPane id="anchor-pane-registration" fx:id="anchor_pane_registration" minHeight="0.0" minWidth="0.0" prefHeight="1200.0" prefWidth="917.0">
 			<children>
@@ -139,3 +140,5 @@
 		</AnchorPane>
 	</content>
 </ScrollPane>
+</children>
+</AnchorPane>

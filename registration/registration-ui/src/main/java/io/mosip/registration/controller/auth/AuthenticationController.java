@@ -199,10 +199,10 @@ public class AuthenticationController extends BaseController {
 
 	public void validatePwd() {
 		String status = validatePwd(username.getText(), password.getText());
-		if (RegistrationConstants.PASSWORD_VALIDATION_SUCCESS.equals(status)) {
+		if (RegistrationConstants.SUCCESS.equals(status)) {
 			userNameField = username.getText();
 			loadNextScreen();
-		} else if (RegistrationConstants.PASSWORD_VALIDATION_FAILURE.equals(status)) {
+		} else if (RegistrationConstants.FAILURE.equals(status)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.INCORRECT_PWORD);
 		}
 	}

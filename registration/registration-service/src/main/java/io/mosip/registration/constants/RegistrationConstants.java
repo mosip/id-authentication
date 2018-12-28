@@ -2,11 +2,8 @@ package io.mosip.registration.constants;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.RandomStringUtils;
-
-import io.mosip.registration.context.ApplicationContext;
 
 /**
  * Class contains the constants used in Registration application
@@ -66,8 +63,8 @@ public class RegistrationConstants {
 	public static final String FINGER_PRINT_SINGLE = "single";
 	public static final String FINGER_PRINT_MULTIPLE = "multiple";
 	public static final String OTP_VALIDATION_SUCCESS = "success";
-	public static final String PASSWORD_VALIDATION_SUCCESS = "Success";
-	public static final String PASSWORD_VALIDATION_FAILURE = "Fail";
+	public static final String SUCCESS = "Success";
+	public static final String FAILURE = "Fail";
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
@@ -104,6 +101,21 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_PANE1_DATA = "demoGraphicPane1Content";
 	public static final String REGISTRATION_PANE2_DATA = "demoGraphicPane2Content";
 	public static final String REGISTRATION_ISEDIT = "isEditPage";
+	public static final String IS_CONSOLIDATED = "isConsolidated";
+	public static final String CONSOLIDATED_VALIDATION = "Y";
+	public static final String INDIVIDUAL_VALIDATION = "N";
+	public static final String VALIDATION_SPLITTER="\\s,";
+	public static final String ON_TYPE="_ontype";
+	public static final String POR_DOCUMENTS="porDocuments";
+	public static final String POR_BOX="porBox";
+	public static final String VALIDATION_LOGGER="VALIDATIONS";
+	public static final String REG_LGN_001="REG_LGN_001";
+	public static final String REG_DDC_002_1="REG_DDC_002_1";
+	public static final String REG_DDC_002_2="REG_DDC_002_2";
+	public static final String REG_DDC_003_1="REG_DDC_003_1";
+	public static final String REG_DDC_003_2="REG_DDC_003_2";
+	public static final String REG_DDC_004_1="REG_DDC_004_1";
+	public static final String REG_DDC_004_2="REG_DDC_004_2";
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
@@ -658,7 +670,6 @@ public class RegistrationConstants {
 
 	// Scan
 	public static final String USER_REG_SCAN_EXP = USER_REG_SCAN_EXP_CODE + "DOC-001";
-	public static final String IS_CONSOLIDATED = "isConsolidated";
 
 	// To be moved to Logger Constants
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";

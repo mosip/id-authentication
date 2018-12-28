@@ -39,7 +39,7 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 	 * @see io.mosip.registration.dao.PreRegistrationDAO#getPreRegistration(java.lang.String)
 	 */
 	@Override
-	public PreRegistrationList getPreRegistration(String preRegId) {
+	public PreRegistrationList get(String preRegId) {
 		
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Fetching Pre-Registration");
@@ -53,7 +53,7 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 	 * @see io.mosip.registration.dao.PreRegistrationDAO#savePreRegistration(io.mosip.registration.entity.PreRegistration)
 	 */
 	@Override
-	public PreRegistrationList savePreRegistration(PreRegistrationList preRegistration) {
+	public PreRegistrationList save(PreRegistrationList preRegistration) {
 		
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving Pre-Registration");
@@ -70,24 +70,12 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 		return preRegistrationRepository.findByAppointmentDateBeforeAndIsDeleted(startDate, false);
 	}
 	
-	public PreRegistrationList updateDeletedRecord(PreRegistrationList preReg){
+	public PreRegistrationList update(PreRegistrationList preReg){
 		
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_UPDATE - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Update the deleted records");
 		
 		return preRegistrationRepository.update(preReg);
-	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.PreRegistrationDataSyncDAO#updatePreRegistration(io.mosip.registration.entity.PreRegistrationList)
-	 */
-	@Override
-	public PreRegistrationList updatePreRegistration(PreRegistrationList preRegistration) {
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Updating Pre-Registration");
-
-		return preRegistrationRepository.update(preRegistration);
-
 	}
 
 }

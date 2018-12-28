@@ -118,7 +118,7 @@ public class BaseController {
 		
 		if (!borderPane.getId().equals("loginScreen")) {
 			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-			borderPane.setLayoutX((primScreenBounds.getWidth() - fXComponents.getStage().getWidth() + 350) / 2);
+			borderPane.setLayoutX((fXComponents.getStage().getWidth()-900)/2);
 		}
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
@@ -189,19 +189,16 @@ public class BaseController {
 		alert.showAndWait();
 	}
 	
-	
 	/**
 	 * 
-	 * /* Alert creation with specified title, header, and context
+	 * /* Alert creation with specified context
 	 * 
 	 * @param alertType
 	 *            type of alert
-	 * @param header
-	 *            alert header
 	 * @param context
 	 *            alert context
 	 */
-	protected void generateValidationAlert(String context, String isConsolidated) {
+	protected void generateAlert(String context, String isConsolidated, StringBuilder validationMessage) {
 		if (isConsolidated.equals("N")) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setHeaderText(null);

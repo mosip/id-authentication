@@ -70,20 +70,8 @@ public class MasterSyncJob extends BaseJob {
 
 		this.triggerPoint = (context != null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
 
-		
-		try {
-			// Run the Parent JOB always first
-			this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
-			
-		} catch(Exception exception) {
-			LOGGER.error(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, exception.getMessage());
-			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
-			LinkedList<ErrorResponseDTO> list=new  LinkedList<>();
-			list.add(errorResponseDTO);
-			responseDTO.setErrorResponseDTOs(list);
-
-		}
+		// Run the Parent JOB always first
+		this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {

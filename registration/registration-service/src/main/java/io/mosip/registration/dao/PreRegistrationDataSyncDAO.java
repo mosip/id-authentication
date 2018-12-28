@@ -17,7 +17,7 @@ public interface PreRegistrationDataSyncDAO {
 	 * @param preRegId is a id 
 	 * @return pre registartion entity
 	 */
-	public PreRegistrationList getPreRegistration(String preRegId);
+	public PreRegistrationList get(String preRegId);
 	
 	
 	/**
@@ -25,14 +25,8 @@ public interface PreRegistrationDataSyncDAO {
 	 * @param preRegistration is a entity
 	 * @return saved pre registartion
 	 */
-	public PreRegistrationList savePreRegistration(PreRegistrationList preRegistration);
-	
-	/**
-	 * To update new Pre registration
-	 * @param preRegistration is a entity
-	 * @return updated pre registartion
-	 */
-	public PreRegistrationList updatePreRegistration(PreRegistrationList preRegistration);
+	public PreRegistrationList save(PreRegistrationList preRegistration);
+
 
 	
 	/**
@@ -47,5 +41,5 @@ public interface PreRegistrationDataSyncDAO {
 	 * @param preReg
 	 * @return
 	 */
-	public PreRegistrationList updateDeletedRecord(PreRegistrationList preReg);
+	public PreRegistrationList update(PreRegistrationList preReg);
 }

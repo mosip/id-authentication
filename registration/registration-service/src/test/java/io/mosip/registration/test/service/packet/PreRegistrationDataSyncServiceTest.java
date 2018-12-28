@@ -101,11 +101,11 @@ public class PreRegistrationDataSyncServiceTest {
 				.thenReturn(preRegistrationResponseDTO);
 		Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
-		Mockito.when(preRegistrationDAO.getPreRegistration(Mockito.anyString())).thenReturn(null);
+		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(null);
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegData);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
-		Mockito.when(preRegistrationDAO.savePreRegistration(preRegistrationList)).thenReturn(preRegistrationList);
+		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
 
 		mockEncryptedPacket();
 
@@ -161,7 +161,7 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegistrationList.setPacketPath("");
 		preRegList.add(preRegistrationList);
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
-		Mockito.when(preRegistrationDAO.updateDeletedRecord(Mockito.anyObject())).thenReturn(preRegistrationList);
+		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
 		assertEquals(null,preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords().getErrorResponseDTOs());
 	}
 

@@ -15,16 +15,16 @@ public class HolidayID implements Serializable {
 
 	private static final long serialVersionUID = -1631873932622755759L;
 
-	@Column(name = "location_code", nullable = false, length = 36)
+	@Column(name = "location_code")
 	private String locationCode;
 
-	@Column(name = "holiday_date", nullable = false)
+	@Column(name = "holiday_date")
 	private LocalDate holidayDate;
 
 	@Column(name = "holiday_name")
 	private String holidayName;
 
-	@Column(name = "lang_code", nullable = false, length = 3)
+	@Column(name = "lang_code")
 	private String languageCode;
 
 	/**

@@ -17,11 +17,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 /**
  * This controller class is to handle the preview screen of the Demographic
@@ -44,6 +46,9 @@ public class DemographicPreviewController extends BaseController {
 
 	@FXML
 	private TitledPane demographicPreview;
+	
+	@FXML
+	private ScrollPane demoRevScrollPane;
 
 	private boolean isInPane1;
 
@@ -58,6 +63,7 @@ public class DemographicPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the REGISTRATION_PREVIEW_CONTROLLER");
+		demoRevScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
 		isInPane1 = true;
 		demographicPreview.setDisable(true);
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
