@@ -10,7 +10,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum DocumentTypeErrorCode {
 	
 	DOCUMENT_TYPE_FETCH_EXCEPTION("KER-MSD-015","Error occured while fetching Document Types"),
-	DOCUMENT_TYPE_INSERT_EXCEPTION("KER-MSD-444","Exception during inserting data into db"),
+	DOCUMENT_TYPE_INSERT_EXCEPTION("KER-MSD-052","Error occured while inserting Document Type details"),
 	DOCUMENT_TYPE_NOT_FOUND_EXCEPTION("KER-MSD-118","Document Type not found"),
 	DOCUMENT_TYPE_UPDATE_EXCEPTION("KER-MSD-091","Error occur while updating Document Type details"),
 	DOCUMENT_TYPE_DELETE_DEPENDENCY_EXCEPTION("KER-MSD-124","Cannot delete dependency found"),
