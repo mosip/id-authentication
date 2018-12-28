@@ -91,6 +91,13 @@ public class MatchTest {
 		System.err.println(authType.getLangType());
 		System.err.println(authType.getDisplayName());
 		System.err.println(authType.getAssociatedMatchTypes());
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("dinesh");
+		nameList.add(identityInfoDTO);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -107,8 +114,11 @@ public class MatchTest {
 
 			@Override
 			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
-				// TODO Auto-generated method stub
-				return null;
+				return any -> {
+					Map<String, List<IdentityInfoDTO>> valuemap = new HashMap<String, List<IdentityInfoDTO>>();
+					valuemap.put("name", nameList);
+					return valuemap;
+				};
 			}
 
 			@Override
@@ -131,8 +141,7 @@ public class MatchTest {
 
 			@Override
 			public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
-				// TODO Auto-generated method stub
-				return null;
+				return getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 			}
 		};
 
@@ -142,6 +151,13 @@ public class MatchTest {
 
 	@Test
 	public void TestMatchtype() {
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("dinesh");
+		nameList.add(identityInfoDTO);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -158,8 +174,11 @@ public class MatchTest {
 
 			@Override
 			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
-				// TODO Auto-generated method stub
-				return null;
+				return any -> {
+					Map<String, List<IdentityInfoDTO>> valuemap = new HashMap<String, List<IdentityInfoDTO>>();
+					valuemap.put("name", nameList);
+					return valuemap;
+				};
 			}
 
 			@Override
@@ -182,17 +201,10 @@ public class MatchTest {
 
 			@Override
 			public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};
-		IdentityDTO identity = new IdentityDTO();
-		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
-		identityInfoDTO.setValue("dinesh");
-		nameList.add(identityInfoDTO);
-		identity.setName(nameList);
+
 		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(identity);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL);
