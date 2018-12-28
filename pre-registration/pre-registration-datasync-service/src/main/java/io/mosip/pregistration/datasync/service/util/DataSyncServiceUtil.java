@@ -314,8 +314,8 @@ public class DataSyncServiceUtil {
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
 		try {
 			preRegArchiveDTO.setPre_registration_id(preRegistrationDTO.getPreRegistrationId());
-			preRegArchiveDTO.setRegistration_center_id(bookingRegistrationDTO.getRegistration_center_id());
-			preRegArchiveDTO.setAppointment_date(bookingRegistrationDTO.getReg_date());
+			preRegArchiveDTO.setRegistration_center_id(bookingRegistrationDTO.getRegistrationCenterId());
+			preRegArchiveDTO.setAppointment_date(bookingRegistrationDTO.getRegDate());
 			preRegArchiveDTO.setTime_slot_from(bookingRegistrationDTO.getSlotFromTime());
 			preRegArchiveDTO.setTime_slot_to(bookingRegistrationDTO.getSlotToTime());
 

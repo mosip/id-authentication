@@ -577,7 +577,7 @@ public class BookingService {
 
 		String preRegStatusCode = callGetStatusRestService(bookingRequestDTO.getPreRegistrationId());
 		if (preRegStatusCode != null
-				&& preRegStatusCode.trim().equalsIgnoreCase(StatusCodes.PENDINGAPPOINTMENT.toString().trim())) {
+				&& preRegStatusCode.trim().equalsIgnoreCase(StatusCodes.PENDINGAPPOINTMENT.getCode())) {
 			AvailibityEntity availableEntity = bookingAvailabilityRepository
 					.findByFromTimeAndToTimeAndRegDateAndRegcntrId(LocalTime.parse(registrationDTO.getSlotFromTime()),
 							LocalTime.parse(registrationDTO.getSlotToTime()),
@@ -586,7 +586,7 @@ public class BookingService {
 			if (availableEntity != null && availableEntity.getAvailableKiosks() > 0) {
 
 				boolean slotExistsFlag = registrationBookingRepository.existsByPreIdandStatusCode(
-						bookingRequestDTO.getPreRegistrationId(), StatusCodes.BOOKED.toString());
+						bookingRequestDTO.getPreRegistrationId(), StatusCodes.BOOKED.getCode());
 
 				if (!slotExistsFlag) {
 					bookingPK.setPreregistrationId(bookingRequestDTO.getPreRegistrationId());
@@ -595,7 +595,7 @@ public class BookingService {
 
 					entity.setBookingPK(bookingPK);
 					entity.setRegistrationCenterId(registrationDTO.getRegistrationCenterId());
-					entity.setStatusCode(StatusCodes.BOOKED.toString().trim());
+					entity.setStatusCode(StatusCodes.BOOKED.getCode());
 					entity.setLangCode("12L");
 					entity.setCrBy("987654321");
 					entity.setCrDate(Timestamp.valueOf(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime())));
@@ -608,14 +608,14 @@ public class BookingService {
 					if (registrationBookingEntity != null) {
 						/* Pre registration status code update */
 						callUpdateStatusRestService(bookingRequestDTO.getPreRegistrationId(),
-								StatusCodes.BOOKED.toString().trim());
+								StatusCodes.BOOKED.getCode());
 
 						/* No. of Availability. update */
 						availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
 						bookingAvailabilityRepository.update(availableEntity);
 
 						bookingStatusDTO.setPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
-						bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.toString());
+						bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
 						bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
 
 					} else {
@@ -645,7 +645,7 @@ public class BookingService {
 		BookingResponseDto<BookingRegistrationDTO> responseDto = new BookingResponseDto<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
-			entity = registrationBookingRepository.findPreIdAndStatusCode(preRegID, StatusCodes.BOOKED.toString());
+			entity = registrationBookingRepository.findPreIdAndStatusCode(preRegID, StatusCodes.BOOKED.getCode());
 			if (entity != null) {
 				bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 				bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
@@ -715,9 +715,9 @@ public class BookingService {
 		CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
 		if (mandatoryParameterCheckforCancel(cancelBookingDTO)) {
 			String getstatus = callGetStatusRestService(cancelBookingDTO.getPreRegistrationId());
-			if (getstatus != null && getstatus.trim().equalsIgnoreCase(StatusCodes.BOOKED.toString().trim())) {
+			if (getstatus != null && getstatus.trim().equalsIgnoreCase(StatusCodes.BOOKED.getCode())) {
 				boolean bookingDetailsExistsFlag = registrationBookingRepository.existsByPreIdandStatusCode(
-						cancelBookingDTO.getPreRegistrationId(), StatusCodes.BOOKED.toString());
+						cancelBookingDTO.getPreRegistrationId(), StatusCodes.BOOKED.getCode());
 				if (bookingDetailsExistsFlag) {
 					AvailibityEntity availableEntity = bookingAvailabilityRepository
 							.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
@@ -731,16 +731,16 @@ public class BookingService {
 
 						RegistrationBookingEntity bookingEntity = registrationBookingRepository
 								.findPreIdAndStatusCode(cancelBookingDTO.getPreRegistrationId(),
-										StatusCodes.BOOKED.toString());
+										StatusCodes.BOOKED.getCode());
 
-						bookingEntity.setStatusCode(StatusCodes.CANCELED.toString().trim());
+						bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 						bookingEntity.setUpdDate(new Timestamp(System.currentTimeMillis()));
 						RegistrationBookingEntity registrationBookingEntity = registrationBookingRepository
 								.save(bookingEntity);
 						if (registrationBookingEntity != null) {
 							/* Update the status to Canceled in demographic Table */
 							callUpdateStatusRestService(cancelBookingDTO.getPreRegistrationId(),
-									StatusCodes.PENDINGAPPOINTMENT.toString().trim());
+									StatusCodes.PENDINGAPPOINTMENT.getCode());
 
 							/* No. of Availability. update */
 							availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
@@ -763,7 +763,7 @@ public class BookingService {
 							ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 				}
 
-			} else if (getstatus != null && getstatus.trim().equalsIgnoreCase(StatusCodes.CANCELED.toString().trim())) {
+			} else if (getstatus != null && getstatus.trim().equalsIgnoreCase(StatusCodes.CANCELED.getCode())) {
 
 				throw new AppointmentAlreadyCanceledException(ErrorCodes.PRG_BOOK_RCI_017.toString(),
 						ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_CANCELED.toString());

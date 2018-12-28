@@ -21,28 +21,24 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookingRegistrationDTO implements Serializable {
-
-	/** The Constant serialVersionUID. */
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = -7286592087727520299L;
 	/**
 	 * registration Center Id
 	 */
-	private String registration_center_id;
-
+	private String registrationCenterId;
 	/**
-	 * booked Date
+	 * booked Date Time
 	 */
-	private String reg_date;
-
+	private String regDate;
 	/**
-	 * booked From Time
+	 * booked Time Slot
 	 */
 	@JsonProperty("time_slot_from")
 	private String slotFromTime;
-
-	/**
-	 * booked To Time
-	 */
+	
 	@JsonProperty("time_slot_to")
 	private String slotToTime;
 }
