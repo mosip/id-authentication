@@ -77,7 +77,7 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorCode(),
 					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_CREATE_EXCEPTION.getErrorMessage()
-							+ " " + ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(e));
 		}
 
 		return responseRrgistrationCenterMachineDto;
@@ -88,26 +88,33 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	 */
 	@Override
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId) {
-		RegistrationCenterMachineID registrationCenterMachineID=null;
+		RegistrationCenterMachineID registrationCenterMachineID = null;
 		try {
-		registrationCenterMachineID= new RegistrationCenterMachineID(regCenterId, machineId);
-		Optional<RegistrationCenterMachine> registrationCenterMachine=registrationCenterMachineRepository.findById(registrationCenterMachineID);
-		if(!registrationCenterMachine.isPresent()) {
-			throw new DataNotFoundException(RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorMessage());
-		}else {
-			RegistrationCenterMachine centerMachine=registrationCenterMachine.get();
-			centerMachine=MetaDataUtils.setDeleteMetaData(centerMachine);
-			RegistrationCenterMachineHistory history=MapperUtils.map(centerMachine, RegistrationCenterMachineHistory.class);
-			history.setRegistrationCenterMachineHistoryPk(MapperUtils.map(registrationCenterMachineID, RegistrationCenterMachineHistoryID.class));
-			history.getRegistrationCenterMachineHistoryPk().setEffectivetimes(centerMachine.getDeletedDateTime());
-			MapperUtils.setBaseFieldValue(centerMachine, history);
-			registrationCenterMachineHistoryRepository.create(history);
-			registrationCenterMachineRepository.update(centerMachine);
-		}
-		}catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorCode(),
-					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorMessage());
+			registrationCenterMachineID = new RegistrationCenterMachineID(regCenterId, machineId);
+			Optional<RegistrationCenterMachine> registrationCenterMachine = registrationCenterMachineRepository
+					.findById(registrationCenterMachineID);
+			if (!registrationCenterMachine.isPresent()|| registrationCenterMachine.get().getIsDeleted()) {
+				throw new DataNotFoundException(
+						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND.getErrorCode(),
+						RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DATA_NOT_FOUND
+								.getErrorMessage());
+			} else {
+				RegistrationCenterMachine centerMachine = registrationCenterMachine.get();
+				centerMachine = MetaDataUtils.setDeleteMetaData(centerMachine);
+				RegistrationCenterMachineHistory history = MapperUtils.map(centerMachine,
+						RegistrationCenterMachineHistory.class);
+				history.setRegistrationCenterMachineHistoryPk(
+						MapperUtils.map(registrationCenterMachineID, RegistrationCenterMachineHistoryID.class));
+				history.getRegistrationCenterMachineHistoryPk().setEffectivetimes(centerMachine.getDeletedDateTime());
+				MapperUtils.setBaseFieldValue(centerMachine, history);
+				registrationCenterMachineHistoryRepository.create(history);
+				registrationCenterMachineRepository.update(centerMachine);
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorCode(),
+					RegistrationCenterMachineErrorCode.REGISTRATION_CENTER_MACHINE_DELETE_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		return registrationCenterMachineID;
 	}

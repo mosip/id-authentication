@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,8 @@ public class TitleServiceImpl implements TitleService {
 			titles = titleRepository.findAll(Title.class);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
+					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		if (titles != null && !titles.isEmpty()) {
 			titleDto = MapperUtils.mapAll(titles, TitleDto.class);
@@ -80,7 +83,7 @@ public class TitleServiceImpl implements TitleService {
 			title = titleRepository.getThroughLanguageCode(languageCode);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
+					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		if (title.isEmpty()) {
 			throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
@@ -145,7 +148,7 @@ public class TitleServiceImpl implements TitleService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage());
+					TitleErrorCode.TITLE_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		return titleId;
 	}
@@ -158,6 +161,7 @@ public class TitleServiceImpl implements TitleService {
 	 * java.lang.String)
 	 */
 	@Override
+	@Transactional
 	public CodeResponseDto deleteTitle(String code) {
 		try {
 
@@ -173,7 +177,7 @@ public class TitleServiceImpl implements TitleService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage());
+					TitleErrorCode.TITLE_DELETE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(e));
 		}
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(code);

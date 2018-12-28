@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
@@ -32,6 +33,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * implemented from {@link LocationService}}
  * 
  * @author Srinivasan
+ * @author Tapaswini
  * @since 1.0.0
  *
  */
@@ -59,9 +61,9 @@ public class LocationServiceImpl implements LocationService {
 		try {
 
 			locations = locationRepository.findDistinctLocationHierarchyByIsDeletedFalse(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() 
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!locations.isEmpty()) {
@@ -115,10 +117,10 @@ public class LocationServiceImpl implements LocationService {
 			}
 		}
 
-		catch (DataAccessException e) {
+		catch (DataAccessException | DataAccessLayerException e) {
 
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 
 		}
@@ -157,7 +159,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method fetches child hierachy details of the location based on location
+	 * This method fetches child hierarchy details of the location based on location
 	 * code
 	 * 
 	 * @param locCode
@@ -179,7 +181,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	/**
-	 * This method fetches parent hierachy details of the location based on parent
+	 * This method fetches parent hierarchy details of the location based on parent
 	 * Location code
 	 * 
 	 * @param locCode
@@ -207,6 +209,7 @@ public class LocationServiceImpl implements LocationService {
 	 * parameter sent {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto) {
 
 		Location location = null;
@@ -218,7 +221,7 @@ public class LocationServiceImpl implements LocationService {
 			locationResultantEntity = locationRepository.create(location);
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() 
 							+ ExceptionUtils.parseException(ex));
 		}
 
@@ -227,6 +230,7 @@ public class LocationServiceImpl implements LocationService {
 	}
 
 	@Override
+	@Transactional
 	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto) {
 		LocationDto locationDto = locationRequestDto.getRequest();
 		PostLocationCodeResponseDto postLocationCodeResponseDto = new PostLocationCodeResponseDto();
@@ -246,13 +250,14 @@ public class LocationServiceImpl implements LocationService {
 
 		} catch (DataAccessException | DataAccessLayerException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(ex));
 		}
 
 		return postLocationCodeResponseDto;
 	}
 
 	@Override
+	@Transactional
 	public CodeResponseDto deleteLocationDetials(String locationCode) {
 		List<Location> locations = null;
         CodeResponseDto codeResponseDto=new CodeResponseDto();
@@ -270,7 +275,7 @@ public class LocationServiceImpl implements LocationService {
 
 		} catch (DataAccessException | DataAccessLayerException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage());
+					LocationErrorCode.LOCATION_UPDATE_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(ex));
 		}
          codeResponseDto.setCode(locationCode);
 		return codeResponseDto;
@@ -287,9 +292,9 @@ public class LocationServiceImpl implements LocationService {
 		try {
 			locationlist = locationRepository.findAllByHierarchyNameIgnoreCase(hierarchyName);
 
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage() + " "
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

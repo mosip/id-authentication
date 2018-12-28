@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
@@ -16,10 +15,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
@@ -30,7 +27,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * This class have methods to fetch and save Device Details
  * 
  * @author Megha Tanga
- * @author Neha Sinha
  * @since 1.0.0
  *
  */
@@ -42,9 +38,6 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	DeviceRepository deviceRepository;
-
-	@Autowired
-	DeviceHistoryRepository deviceHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -60,9 +53,9 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		try {
 			deviceList = deviceRepository.findByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() +  ExceptionUtils.parseException(e));
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
 			deviceDtoList = MapperUtils.mapAll(deviceList, DeviceDto.class);
@@ -89,9 +82,9 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceLangCodeResponseDto deviceLangCodeResponseDto = new DeviceLangCodeResponseDto();
 		try {
 			objectList = deviceRepository.findByLangCodeAndDtypeCode(langCode, dtypeCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + "  " + ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (objectList != null && !objectList.isEmpty()) {
 			deviceLangCodeDtypeDtoList = MapperUtils.mapDeviceDto(objectList);
@@ -111,7 +104,6 @@ public class DeviceServiceImpl implements DeviceService {
 	 * masterdata.dto.RequestDto)
 	 */
 	@Override
-	@Transactional
 	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceDto) {
 		Device device = null;
 
@@ -120,7 +112,7 @@ public class DeviceServiceImpl implements DeviceService {
 			device = deviceRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() +  ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(device, idResponseDto);
@@ -129,69 +121,72 @@ public class DeviceServiceImpl implements DeviceService {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceService#updateDevice(io.mosip.kernel.masterdata.dto.RequestDto)
-	 */
 	@Override
-	@Transactional
 	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto) {
-		Device oldDevice = null;
+		Device oldDevice = deviceRepository.findById(Device.class, deviceRequestDto.getRequest().getId());
 		Device entity = null;
-		Device updatedDevice = null;
-		try {
-			oldDevice = deviceRepository
-					.findByIdAndIsDeletedFalseOrIsDeletedIsNull(deviceRequestDto.getRequest().getId());
-
-			if (oldDevice != null) {
-				entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
-				updatedDevice = deviceRepository.update(entity);
-				DeviceHistory deviceHistory = new DeviceHistory();
-				MapperUtils.map(updatedDevice, deviceHistory);
-				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
-			} else {
-				throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_UPDATE_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
-		}
 		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(entity.getId());
-		return idResponseDto;
-	}
-
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DeviceService#deleteDevice(java.lang.String)
-	 */
-	@Override
-	@Transactional
-	public IdResponseDto deleteDevice(String id) {
-		Device foundDevice = null;
-		Device entity = null;
-		Device deletedDevice = null;
-		try {
-			foundDevice = deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(id);
-			if (foundDevice != null) {
-				entity = MetaDataUtils.setDeleteMetaData(foundDevice);
-				deletedDevice = deviceRepository.update(entity);
-				DeviceHistory deviceHistory = new DeviceHistory();
-				MapperUtils.map(deletedDevice, deviceHistory);
-				MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
+		if (oldDevice == null) {
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+		} else {
 
 				deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
 				deviceHistoryRepository.create(deviceHistory);
 			} else {
 				throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+			entity = MetaDataUtils.setUpdateMetaData(deviceRequestDto.getRequest(), oldDevice, false);
+			try {
+				deviceRepository.update(entity);
+			} catch (DataAccessLayerException | DataAccessException e) {
+				throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+						DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_DELETE_EXCEPTION.getErrorMessage());
 		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(entity.getId());
+		MapperUtils.map(entity, idResponseDto);
 		return idResponseDto;
 	}
 

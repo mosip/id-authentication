@@ -58,7 +58,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		registrationCenterUserMachineHistory.setCreatedDateTime(registrationCenterUserMachine.getCreatedDateTime());
 		
 		try {
-			registrationCenterMachineUserRepository.create(registrationCenterUserMachine);
+			registrationCenterMachineUserRepository.create(registrationCenterUserMachine);	
 			registrationCenterUserMachineHistoryRepository.create(registrationCenterUserMachineHistory);
 		}catch(DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_INSERT_EXCEPTION.getErrorCode(),

@@ -65,9 +65,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 			documentCategoryList = documentCategoryRepository
 					.findAllByIsDeletedFalseOrIsDeletedIsNull(DocumentCategory.class);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage()+ExceptionUtils.parseException(e));
 		}
 
 		if (!(documentCategoryList.isEmpty())) {
@@ -97,9 +97,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 			documentCategoryList = documentCategoryRepository
 					.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage()+ExceptionUtils.parseException(e));
 		}
 
 		if (!(documentCategoryList.isEmpty())) {
@@ -131,9 +131,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage()+ExceptionUtils.parseException(e));
 		}
 
 		if (documentCategory != null) {

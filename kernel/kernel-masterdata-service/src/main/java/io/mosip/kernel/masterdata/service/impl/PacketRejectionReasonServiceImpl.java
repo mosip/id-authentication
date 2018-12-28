@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
@@ -63,10 +64,10 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
@@ -95,10 +96,10 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByCodeAndLangCode(categoryCode, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
@@ -118,6 +119,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * Method creates Reason Category data based on the request sent. {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto) {
 		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
 				ReasonCategory.class);
@@ -133,7 +135,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 
@@ -150,6 +152,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
 		ReasonList reasonList = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
 
@@ -163,7 +166,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

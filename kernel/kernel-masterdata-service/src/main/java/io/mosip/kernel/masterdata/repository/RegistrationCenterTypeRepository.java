@@ -35,4 +35,11 @@ public interface RegistrationCenterTypeRepository
 	int deleteRegistrationCenterType(LocalDateTime deletedDateTime, String code);
 
 	List<RegistrationCenterType> findByCode(String code);
+
+	@Query("FROM RegistrationCenterType WHERE code =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<RegistrationCenterType> findByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
+
+	@Query("FROM RegistrationCenterType WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
+	RegistrationCenterType findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
+
 }

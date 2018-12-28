@@ -9,11 +9,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kernel-qrcode-generator</artifactId>
+	<artifactId>kernel-qrcodegenerator-zxing</artifactId>
 
 	<packaging>jar</packaging>
 
-	<name>kernel-qrcode-generator</name>
+	<name>kernel-qrcodegenerator-zxing</name>
 
 	<dependencies>
 		<dependency>
@@ -36,6 +36,11 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
 </project>
