@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
@@ -28,21 +29,22 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @IdClass(AvailabilityPK.class)
+@NamedQuery(name = "AvailibityEntity.findDate", query = "SELECT DISTINCT regDate FROM AvailibityEntity where regcntrId=:regcntrId and regDate>=:fromDate and regDate<=:toDate order by regDate ASC")
 public class AvailibityEntity implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	@Id	
+
+	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "regcntrId", column = @Column(name = "regcntr_id")),
-		@AttributeOverride(name = "regDate", column = @Column(name = "availability_date")),
-		@AttributeOverride(name = "fromTime", column = @Column(name = "slot_from_time"))})
-	
+			@AttributeOverride(name = "regDate", column = @Column(name = "availability_date")),
+			@AttributeOverride(name = "fromTime", column = @Column(name = "slot_from_time")) })
+
 	private String regcntrId;
 	private LocalDate regDate;
 	private LocalTime fromTime;
-	
+
 	@Column(name = "slot_to_time")
 	private LocalTime toTime;
 

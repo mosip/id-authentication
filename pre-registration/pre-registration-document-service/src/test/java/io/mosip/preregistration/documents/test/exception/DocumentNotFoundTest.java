@@ -22,6 +22,16 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 
+/**
+ * Test class to test the DocumentNotFound Exception
+ * 
+ * @author Rajath KR
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Kishan Rathore
+ * @since 1.0.0
+ * 
+ */
 @RunWith(SpringRunner.class)
 public class DocumentNotFoundTest {
 

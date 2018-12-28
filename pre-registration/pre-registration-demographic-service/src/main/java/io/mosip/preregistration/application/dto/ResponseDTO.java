@@ -31,17 +31,17 @@ public class ResponseDTO<T> implements Serializable {
 	private ExceptionJSONInfoDTO err;
 
 	/**
-	 * Repsonse Status
+	 * Response Status
 	 */
 	private String status;
 
 	/**
-	 * Repsonse Date Time
+	 * Response Date Time
 	 */
 	private Date resTime;
 
 	/**
-	 * List of Repsonse
+	 * List of Response
 	 */
 	private List<T> response;
 

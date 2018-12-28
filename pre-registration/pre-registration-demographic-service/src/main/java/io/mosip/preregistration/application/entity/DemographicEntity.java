@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Registration entity
+ * This entity class defines the database table details for PreRegistration.
  * 
  * @author Rajath KR
  * @author Sanober Noor

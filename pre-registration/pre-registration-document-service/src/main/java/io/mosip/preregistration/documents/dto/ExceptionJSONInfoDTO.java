@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.documents.dto;
 
 import java.io.Serializable;
@@ -9,12 +13,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Exception json Info
+ * This DTO class defines the errorcodes and errormessages during exception
+ * handling.
  * 
- * @author M1037717
- *
+ * @author Rajath KR
+ * @since 1.0.0
  */
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,19 +26,17 @@ import lombok.ToString;
 @AllArgsConstructor
 public class ExceptionJSONInfoDTO implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3999014525078508265L;
 
+	/**
+	 * Error Code
+	 */
 	private String errorCode;
-	private String message;
 
 	/**
-	 * @param errorcode
-	 * @param message
-	 * 
+	 * Error Message
 	 */
-	
+	private String message;
 
 }

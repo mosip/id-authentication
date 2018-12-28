@@ -4,8 +4,6 @@
  */
 package io.mosip.preregistration.application.exception.util;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
 import org.json.simple.parser.ParseException;
 import org.springframework.web.client.RestClientException;
 
@@ -30,7 +28,7 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
- * This class is used to handle all the exceptions that occur while creating the
+ * This class is used to catch the exceptions that occur while creating the
  * pre-registration
  * 
  * @author Ravi C Balaji

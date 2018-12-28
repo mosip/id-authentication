@@ -22,6 +22,13 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 
+/**
+ * Test class to test the DocumentNotValid Exception
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ * 
+ */
 @RunWith(SpringRunner.class)
 public class DocumentNotValidExceptionTest {
 

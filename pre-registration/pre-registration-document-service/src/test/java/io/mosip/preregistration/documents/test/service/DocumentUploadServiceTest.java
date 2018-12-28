@@ -35,11 +35,8 @@ import io.mosip.preregistration.documents.dto.DocumentCopyDTO;
 import io.mosip.preregistration.documents.dto.DocumentDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.documents.dto.DocumentGetAllDTO;
-import io.mosip.preregistration.documents.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.documents.dto.ResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
-import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
-import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
@@ -103,7 +100,7 @@ public class DocumentUploadServiceTest {
 				+ "		\"doc_typ_code\": \"address\",\r\n" + "		\"doc_file_format\": \"pdf\",\r\n"
 				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "		\"upd_by\": \"9217148168\",\r\n"
 				+ "		\"upload_DateTime\": \"2018-12-22T08:28:23.057Z\"\r\n" + "	}\r\n" + "}";
-		
+
 		errJson = "{\r\n" + "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
 				+ "	\"reqTime\": \"2018-12-22T08:28:23.057Z\",\r\n" + "	\"request\": {\r\n"
 				+ "		\"prereg_id\": \"48690172097498\",\r\n" + "		\"doc_cat_code\": \"\",\r\n"
@@ -122,8 +119,9 @@ public class DocumentUploadServiceTest {
 
 		URI uriSaveCheck = new URI(classLoader.getResource("sample.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
 		File fileSaveCheck = new File(uriSaveCheck.getPath());
-		
-		URI uriFileSize = new URI(classLoader.getResource("SampleSizeTest.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
+
+		URI uriFileSize = new URI(
+				classLoader.getResource("SampleSizeTest.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
 		File SampleSizeTestFile = new File(uriFileSize.getPath());
 
 		mockMultipartFileSizeCheck = new MockMultipartFile("file", "SampleSizeTest.pdf", "mixed/multipart",
@@ -166,8 +164,8 @@ public class DocumentUploadServiceTest {
 		ResponseDTO<DocResponseDTO> responseDto = documentUploadService.uploadDoucment(mockMultipartFile, docJson);
 		assertEquals(responseDto.getResponse().get(0).getResMsg(), responseUpload.getResponse().get(0).getResMsg());
 	}
-	
-	@Test(expected=MandatoryFieldNotFoundException.class)
+
+	@Test(expected = MandatoryFieldNotFoundException.class)
 	public void mandatoryFeildNotPresentTesst() throws IOException {
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		ResponseDTO<DocResponseDTO> responseDto = documentUploadService.uploadDoucment(mockMultipartFile, errJson);
@@ -181,13 +179,11 @@ public class DocumentUploadServiceTest {
 	 * documentDto); }
 	 */
 
-
-	 @Test(expected = DocumentSizeExceedException.class) 
-	 public void uploadDocumentSizeFailurTest() throws IOException {
-	 Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(true);
-	 documentUploadService.uploadDoucment(mockMultipartFileSizeCheck,docJson); 
-	 }
-	 
+	@Test(expected = DocumentSizeExceedException.class)
+	public void uploadDocumentSizeFailurTest() throws IOException {
+		Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(true);
+		documentUploadService.uploadDoucment(mockMultipartFileSizeCheck, docJson);
+	}
 
 	@Test(expected = DocumentNotValidException.class)
 	public void uploadDocumentExtnFailurTest() throws IOException {
@@ -210,7 +206,7 @@ public class DocumentUploadServiceTest {
 		copyDcoResDto.setSourceDocumnetId("1");
 		copyDcoResDto.setDestPreRegId("48690172097499");
 		copyDcoResDto.setDestDocumnetId("2");
-		System.out.println("DocumentCopyDTO "+copyDcoResDto);
+		System.out.println("DocumentCopyDTO " + copyDcoResDto);
 		docCopyList.add(copyDcoResDto);
 
 		responseCopy.setStatus("true");
@@ -218,16 +214,17 @@ public class DocumentUploadServiceTest {
 		responseCopy.setResponse(docCopyList);
 		responseCopy.setResTime(new Timestamp(System.currentTimeMillis()));
 
-		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(),Mockito.anyString())).thenReturn(entity);
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
 		InputStream sourceFile;
-			sourceFile = new FileInputStream(file);
-			Mockito.doReturn(sourceFile).when(ceph).getFile(Mockito.anyString(), Mockito.anyString());
-			Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-			ResponseDTO<DocumentCopyDTO> responseDto = documentUploadService.copyDoucment("POA", "48690172097498",
-					"48690172097499");
-			assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
-					responseCopy.getResponse().get(0).getDestDocumnetId());
+		sourceFile = new FileInputStream(file);
+		Mockito.doReturn(sourceFile).when(ceph).getFile(Mockito.anyString(), Mockito.anyString());
+		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		ResponseDTO<DocumentCopyDTO> responseDto = documentUploadService.copyDoucment("POA", "48690172097498",
+				"48690172097499");
+		assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
+				responseCopy.getResponse().get(0).getDestDocumnetId());
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
@@ -242,14 +239,14 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
 		documentUploadService.copyDoucment("POA", "48690172097498", "48690172097499");
 	}
-	
+
 	@Test(expected = DocumentFailedToCopyException.class)
 	public void documentCopyFailureTest3() {
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.copyDoucment("POA", "48690172097498", "48690172097499");
 	}
-	
+
 	@Test
 	public void getAllDocumentForPreIdSuccessTest() throws Exception {
 		List<DocumentGetAllDTO> documentGetAllDtos = new ArrayList<>();
@@ -262,7 +259,7 @@ public class DocumentUploadServiceTest {
 		allDocDto.setDoc_id(Integer.toString(entity.getDocumentId()));
 		allDocDto.setDoc_typ_code(entity.getDocTypeCode());
 		allDocDto.setPrereg_id(entity.getPreregId());
-		System.out.println("DocumentGetAllDTO "+allDocDto);
+		System.out.println("DocumentGetAllDTO " + allDocDto);
 		documentGetAllDtos.add(allDocDto);
 
 		ResponseDTO<DocumentGetAllDTO> responseDto = new ResponseDTO<>();
@@ -278,7 +275,7 @@ public class DocumentUploadServiceTest {
 	}
 
 	@Test
-	public void getAllDocumentForPreIdTest() throws Exception{
+	public void getAllDocumentForPreIdTest() throws Exception {
 		List<DocumentGetAllDTO> docCopyList = new ArrayList<>();
 		DocumentGetAllDTO getAllDto = new DocumentGetAllDTO();
 		getAllDto.setPrereg_id("48690172097498");
@@ -314,10 +311,10 @@ public class DocumentUploadServiceTest {
 		assertEquals(responseDto.getResponse().get(0).getResMsg(), responsedelete.getResponse().get(0).getResMsg());
 	}
 
-	@Test(expected=DocumentNotFoundException.class)
+	@Test(expected = DocumentNotFoundException.class)
 	public void deleteDocumentFailureTest() {
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyInt())).thenReturn(null);
-        documentUploadService.deleteDocument(documentId);
+		documentUploadService.deleteDocument(documentId);
 
 	}
 
@@ -338,17 +335,17 @@ public class DocumentUploadServiceTest {
 		assertEquals(responseDto.getResponse().get(0).getDocumnet_Id(),
 				delResponseDto.getResponse().get(0).getDocumnet_Id());
 	}
-	
+
 	@Test(expected = DocumentFailedToDeleteException.class)
 	public void deleteFailureTest() {
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyInt())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.deleteDocument("1");
 	}
 
-	@Test(expected=DocumentNotFoundException.class)
+	@Test(expected = DocumentNotFoundException.class)
 	public void deleteAllByPreIdFailureTest() {
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyInt())).thenReturn(null);
-	    documentUploadService.deleteAllByPreId(preId);
+		documentUploadService.deleteAllByPreId(preId);
 
 	}
 

@@ -1,4 +1,7 @@
-
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.documents.service;
 
 import java.io.IOException;
@@ -51,49 +54,105 @@ import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 
 /**
- * Document service
+ * This class provides the service implementation for Document
  * 
- * @author M1043008
+ * @author Rajath KR
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Kishan Rathore
+ * @since 1.0.0
+ */
+/**
+ * @author M1046129
+ *
+ */
+/**
+ * @author M1046129
+ *
+ */
+/**
+ * @author M1046129
  *
  */
 @Component
 public class DocumentUploadService {
 
+	/**
+	 * Autowired reference for {@link #DocumentRepository}
+	 */
 	@Autowired
 	@Qualifier("documentRepository")
 	private DocumentRepository documentRepository;
 
+	/**
+	 * Reference for ${max.file.size} from property file
+	 */
 	@Value("${max.file.size}")
 	private int maxFileSize;
 
+	/**
+	 * Reference for ${file.extension} from property file
+	 */
 	@Value("${file.extension}")
 	private String fileExtension;
 
+	/**
+	 * Reference for ${id} from property file
+	 */
 	@Value("${id}")
 	private String id;
 
+	/**
+	 * Reference for ${ver} from property file
+	 */
 	@Value("${ver}")
 	private String ver;
 
+	/**
+	 * Autowired reference for {@link #FilesystemCephAdapterImpl}
+	 */
 	@Autowired
 	private FilesystemCephAdapterImpl ceph;
 
+	/* Logger */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * Autowired reference for {@link #VirusScanner}
+	 */
 	@Autowired
 	private VirusScanner<Boolean, String> virusScan;
 
+	/**
+	 * Autowired reference for {@link #DocumentServiceUtil}
+	 */
 	@Autowired
 	private DocumentServiceUtil serviceUtil;
 
+	/**
+	 * Request map to store the id and version and this is to be passed to request
+	 * validator method.
+	 */
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
+	/**
+	 * This method acts as a post constructor to initialize the required request
+	 * parameters.
+	 */
 	@PostConstruct
 	public void setup() {
 		requiredRequestMap.put("id", id);
 		requiredRequestMap.put("ver", ver);
 	}
 
+	/**
+	 * This method is used to upload the document by accepting the JsonString &
+	 * MultipartFile
+	 * 
+	 * @param file
+	 * @param documentJsonString
+	 * @return ResponseDTO
+	 */
 	public ResponseDTO<DocResponseDTO> uploadDoucment(MultipartFile file, String documentJsonString) {
 		Map<String, String> requestParamMap = new HashMap<>();
 		Boolean scanFile = true;
@@ -120,6 +179,12 @@ public class DocumentUploadService {
 		return null;
 	}
 
+	/**
+	 * This method checks the size of uploaded file
+	 * 
+	 * @param uploadedFileSize
+	 * @return true if file size is within the limit, else false
+	 */
 	public DocumentSizeExceedException fileSizeCheck(long uploadedFileSize) {
 		long maxAllowedSize = getMaxFileSize();
 		if (uploadedFileSize > maxAllowedSize) {
@@ -137,6 +202,14 @@ public class DocumentUploadService {
 		return null;
 	}
 
+	/**
+	 * This method is used to store the uploaded document into table
+	 * 
+	 * @param document
+	 * @param file
+	 * @return ResponseDTO
+	 * @throws IOException
+	 */
 	private ResponseDTO<DocResponseDTO> createDoc(DocumentDTO document, MultipartFile file) throws IOException {
 		ResponseDTO<DocResponseDTO> responseDto = new ResponseDTO<>();
 		DocResponseDTO docResponseDto;
@@ -155,6 +228,7 @@ public class DocumentUploadService {
 
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + Integer.toString(documentEntity.getDocumentId());
+				System.out.println("Key   " + key);
 				ceph.storeFile(documentEntity.getPreregId(), key, file.getInputStream());
 				docResponseDto = new DocResponseDTO();
 				docResponseDto.setPreRegsitrationId(documentEntity.getPreregId());
@@ -180,12 +254,14 @@ public class DocumentUploadService {
 		return responseDto;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * This method is used to copy the document from source preId to destination
+	 * preId
 	 * 
-	 * @see
-	 * com.mosip.practice.fileUploader.serviceImpl.DocumentUploadService#uploadFile(
-	 * org.springframework.web.multipart.MultipartFile)
+	 * @param catCode
+	 * @param sourcePreId
+	 * @param destinationPreId
+	 * @return ResponseDTO
 	 */
 	public ResponseDTO<DocumentCopyDTO> copyDoucment(String catCode, String sourcePreId, String destinationPreId) {
 		ResponseDTO<DocumentCopyDTO> responseDto = new ResponseDTO<>();
@@ -231,6 +307,7 @@ public class DocumentUploadService {
 				}
 			}
 		} catch (DataAccessLayerException e) {
+			// new DocumentExceptionCatcher().handle(DocumentFailedToCopyException.class);
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString(), e.getCause());
 		} catch (Exception ex) {
@@ -240,6 +317,12 @@ public class DocumentUploadService {
 		return responseDto;
 	}
 
+	/**
+	 * This method is used to get all the documents for a preId
+	 * 
+	 * @param preId
+	 * @return ResponseDTO
+	 */
 	public ResponseDTO<DocumentGetAllDTO> getAllDocumentForPreId(String preId) {
 		ResponseDTO<DocumentGetAllDTO> responseDto = new ResponseDTO<>();
 		List<DocumentGetAllDTO> allDocRes = new ArrayList<>();
@@ -272,6 +355,12 @@ public class DocumentUploadService {
 		return responseDto;
 	}
 
+	/**
+	 * This method is used to check whether the key is null
+	 * 
+	 * @param key
+	 * @return true if key is null, else false
+	 */
 	public boolean isNull(Object key) {
 		if (key instanceof String) {
 			if (key.equals(""))
@@ -287,6 +376,12 @@ public class DocumentUploadService {
 
 	}
 
+	/**
+	 * This method is used to delete the document for document Id
+	 * 
+	 * @param documentId
+	 * @return ResponseDTO
+	 */
 	public ResponseDTO<DocumentDeleteDTO> deleteDocument(String documentId) {
 		Integer docId = Integer.parseInt(documentId.trim());
 		List<DocumentDeleteDTO> deleteDocList = new ArrayList<>();
@@ -296,11 +391,11 @@ public class DocumentUploadService {
 		try {
 			DocumentEntity documentEntity = documentRepository.findBydocumentId(docId);
 			if (documentEntity == null) {
-//				documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-//						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
-//				delResponseDto.setStatus("false");
-//				delResponseDto.setErr(documentErr);
-//				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				// documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				// ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
+				// delResponseDto.setStatus("false");
+				// delResponseDto.setErr(documentErr);
+				// delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
 				int deleteCount = documentRepository.deleteAllBydocumentId(docId);
@@ -328,6 +423,12 @@ public class DocumentUploadService {
 		return delResponseDto;
 	}
 
+	/**
+	 * This method is used to delete all the documents for a preId
+	 * 
+	 * @param preregId
+	 * @return ResponseDTO
+	 */
 	public ResponseDTO<DocumentDeleteDTO> deleteAllByPreId(String preregId) {
 		List<DocumentDeleteDTO> deleteAllList = new ArrayList<>();
 		ResponseDTO<DocumentDeleteDTO> delResponseDto = new ResponseDTO<>();
@@ -335,11 +436,12 @@ public class DocumentUploadService {
 		try {
 			List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
 			if (documentEntityList == null || documentEntityList.isEmpty()) {
-//				ExceptionJSONInfoDTO documentErr = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-//						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
-//				delResponseDto.setStatus("false");
-//				delResponseDto.setErr(documentErr);
-//				delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				// ExceptionJSONInfoDTO documentErr = new
+				// ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
+				// ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
+				// delResponseDto.setStatus("false");
+				// delResponseDto.setErr(documentErr);
+				// delResponseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			} else {
 				int documentEntities = documentRepository.deleteAllBypreregId(preregId);
