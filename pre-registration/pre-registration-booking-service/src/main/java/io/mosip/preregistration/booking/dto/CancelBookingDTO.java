@@ -17,15 +17,15 @@ public class CancelBookingDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private String pre_registration_id;
+	private String preRegistrationId;
 	/**
 	 * registration Center Id
 	 */
-	private String registration_center_id;
+	private String registrationCenterId;
 	/**
 	 * booked Date Time
 	 */
-	private String reg_date;
+	private String regDate;
 	/**
 	 * booked Time Slot
 	 */

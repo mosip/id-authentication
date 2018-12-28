@@ -27,7 +27,7 @@ import lombok.Setter;
  * @author Rajath KR
  * @author Kishan Rathore
  * @author Sanober Noor
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @since 1.0.0
  *

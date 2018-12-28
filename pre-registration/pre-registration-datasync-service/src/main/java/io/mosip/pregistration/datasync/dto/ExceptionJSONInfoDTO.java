@@ -9,8 +9,6 @@ import lombok.Setter;
  * @author M1046129 - Jagadishwari
  *
  */
-@Getter
-@Setter
 public class ExceptionJSONInfoDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -24,5 +22,15 @@ public class ExceptionJSONInfoDTO implements Serializable {
 		errorCode = errorcode;
 		this.message = message;
 	}
+	
+	public String getErrorcode() {
+		return errorCode;
+	}
+
+
+	public String getMessage() {
+		return message;
+	}
+
 
 }

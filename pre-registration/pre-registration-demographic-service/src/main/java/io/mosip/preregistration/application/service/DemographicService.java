@@ -58,7 +58,7 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
@@ -148,7 +148,7 @@ public class DemographicService {
 	 * io.mosip.registration.service.RegistrationService#addPreRegistration(java.
 	 * lang.Object, java.lang.String)
 	 * 
-	 * @param demographicRequest
+	 * @param demographicRequest pass demographic request
 	 * 
 	 * @return responseDTO
 	 */
@@ -219,8 +219,10 @@ public class DemographicService {
 	/**
 	 * This Method is used to fetch status of particular preId
 	 * 
-	 * @param preId
-	 * @return ResponseDto<StatusDto>
+	 * @param preRegId
+	 * 				pass preRegId of the user
+	 * @return response
+	 * 				status of the preRegId
 	 * 
 	 * 
 	 */
@@ -256,7 +258,9 @@ public class DemographicService {
 	 * associated with it
 	 * 
 	 * @param preregId
-	 * @return ResponseDto<DeleteDto>
+	 * 				pass the preregId of individual
+	 * @return response
+	 * 				
 	 */
 	public ResponseDTO<DeletePreRegistartionDTO> deleteIndividual(String preregId) {
 		ResponseDTO<DeletePreRegistartionDTO> response = new ResponseDTO<>();
@@ -297,8 +301,10 @@ public class DemographicService {
 	/**
 	 * This Method is used to retrieve the demographic
 	 * 
-	 * @param preregId
-	 * @return ResponseDto<CreatePreRegistrationDTO>
+	 * @param preRegId
+	 * 				pass the preregId of individual
+	 * @return response 
+	 *				DemographicData of preRegId
 	 */
 	public ResponseDTO<CreateDemographicDTO> getDemographicData(String preRegId) {
 		List<CreateDemographicDTO> createDtos = new ArrayList<>();
@@ -324,10 +330,12 @@ public class DemographicService {
 	/**
 	 * This Method is used to update status of particular preId
 	 * 
-	 * @param preId
-	 * @param preId
-	 * @return UpdateResponseDTO<String>
-	 * 
+	 * @param preRegId 
+	 * 				pass the preregId of individual
+	 * @param status
+	 * 				pass the status of individual
+	 * @return response 
+	 * 				
 	 * 
 	 */
 	public UpdateResponseDTO<String> updatePreRegistrationStatus(String preRegId, String status) {
@@ -354,8 +362,11 @@ public class DemographicService {
 	 * This Method is used to retrieve demographic data by date
 	 * 
 	 * @param fromDate
+	 * 				pass fromDate
 	 * @param toDate
-	 * @return UpdateResponseDTO<String>
+	 * 				pass toDate
+	 * @return response
+	 * 				List of preRegIds 
 	 * 
 	 * 
 	 */

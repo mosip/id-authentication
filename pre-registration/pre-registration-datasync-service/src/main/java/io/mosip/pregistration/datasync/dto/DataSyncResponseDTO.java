@@ -1,8 +1,6 @@
 package io.mosip.pregistration.datasync.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +15,11 @@ public class DataSyncResponseDTO<T> implements Serializable{
 	private static final long serialVersionUID = 3384945682672832638L;
 
 	/** The error details. */
-	private List<ExceptionJSONInfoDTO> err;
+	private ExceptionJSONInfoDTO err;
 
 	private String status;
 
-	private Date resTime;
+	private String resTime;
 
 	private T response;
 

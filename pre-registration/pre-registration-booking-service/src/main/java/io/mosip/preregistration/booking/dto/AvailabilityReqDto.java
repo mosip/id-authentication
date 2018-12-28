@@ -10,6 +10,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class AvailabilityReqDto {
- private String registration_center_id;
+ private String registrationCenterId;
 
 }

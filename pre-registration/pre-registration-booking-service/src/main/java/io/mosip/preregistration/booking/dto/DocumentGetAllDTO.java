@@ -29,36 +29,36 @@ public class DocumentGetAllDTO implements Serializable {
 	/**
 	 * PreRegistration Id
 	 */
-	private String prereg_id;
+	private String preregId;
 	
 	/**
 	 * Document Name
 	 */
-	private String doc_name;
+	private String docName;
 	
 	/**
 	 * Document Id
 	 */
-	private String doc_id;
+	private String docId;
 	
 	/**
 	 * Document category
 	 */
-	private String doc_cat_code;
+	private String docCatCode;
 
 	/**
 	 * Document Type
 	 */
-	private String doc_typ_code;
+	private String docTypCode;
 
 	/**
 	 * Document File Format
 	 */
-	private String doc_file_format;
+	private String docFileFormat;
 	
 	/**
 	 * File content
 	 */
-	private byte[] MultipartFile;
+	private byte[] multipartFile;
 
 }

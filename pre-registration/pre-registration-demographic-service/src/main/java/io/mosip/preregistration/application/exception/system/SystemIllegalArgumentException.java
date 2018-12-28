@@ -18,24 +18,24 @@ public class SystemIllegalArgumentException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param msg
+	 * @param msg pass the error message
 	 */
 	public SystemIllegalArgumentException(String msg) {
 		super("", msg);
 	}
 
 	/**
-	 * @param errCode
-	 * @param msg
+	 * @param errCode  pass the error code
+	 * @param msg  pass the error message
 	 */
 	public SystemIllegalArgumentException(String errCode, String msg) {
 		super(errCode, msg);
 	}
 
 	/**
-	 * @param errCode
-	 * @param msg
-	 * @param cause
+	 * @param errCode  pass the error Code
+	 * @param msg  pass the error message
+	 * @param cause  pass the error cause
 	 */
 	public SystemIllegalArgumentException(String errCode, String msg, Throwable cause) {
 		super(errCode, msg, cause);

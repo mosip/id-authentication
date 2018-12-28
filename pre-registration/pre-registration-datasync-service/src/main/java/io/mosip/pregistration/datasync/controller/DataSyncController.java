@@ -1,9 +1,6 @@
 package io.mosip.pregistration.datasync.controller;
 
-import java.text.ParseException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.pregistration.datasync.dto.DataSyncDTO;
+import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
+import io.mosip.pregistration.datasync.dto.MainRequestDTO;
 import io.mosip.pregistration.datasync.dto.PreRegArchiveDTO;
 import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
@@ -45,22 +43,16 @@ public class DataSyncController {
 	private DataSyncService dataSyncService;
 
 	/**
-	 * @param preIds
+	 * @param DataSyncDTO
 	 * @return responseDto
-	 * @throws ParseException
-	 * @throws Exception
 	 */
-
-	@PostMapping(path = "/datasync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/reteriveAllPreRegIds", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
 	@ApiOperation(value = "Fetch all PreRegistrationIds")
 	public ResponseEntity<DataSyncResponseDTO<PreRegistrationIdsDTO>> retrieveAllPreRegids(
-			@RequestBody(required = true) DataSyncDTO dataSyncDto) throws ParseException {
-
-		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = dataSyncService
-				.retrieveAllPreRegid(dataSyncDto.getDataSyncRequestDto());
-		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+			@RequestBody(required = true) MainRequestDTO<DataSyncRequestDTO> dataSyncDto) {
+		return ResponseEntity.status(HttpStatus.OK).body(dataSyncService.retrieveAllPreRegIds(dataSyncDto));
 	}
 
 	/**
@@ -68,30 +60,13 @@ public class DataSyncController {
 	 * @return zip file to download
 	 * @throws Exception
 	 */
-	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/datasync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Retrieve Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Data Sync records fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
-	public ResponseEntity<byte[]> retrievePreRegistrations(@RequestParam(value = "preId") String preId)
-			throws Exception {
-
-		byte[] bytes = null;
-		String filename = "";
-		DataSyncResponseDTO responseDto = dataSyncService.getPreRegistration(preId);
-		PreRegArchiveDTO archiveDTO = (PreRegArchiveDTO) responseDto.getResponse();
-		if (archiveDTO != null) {
-
-			bytes = archiveDTO.getZipBytes();
-			filename = archiveDTO.getFileName();
-		}
-
-		System.out.println("filename in controller: " + filename);
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("Content-Type", "application/octet-stream");
-		responseHeaders.add("Content-Disposition", "attachment; filename=\"" + filename + ".zip\"");
-
-		return new ResponseEntity<byte[]>(bytes, responseHeaders, HttpStatus.OK);
+	public ResponseEntity<DataSyncResponseDTO<PreRegArchiveDTO>> retrievePreRegistrations(
+			@RequestParam(value = "preId") String preId) {
+		return ResponseEntity.status(HttpStatus.OK).body(dataSyncService.getPreRegistration(preId));
 	}
 
 	/**
@@ -106,8 +81,7 @@ public class DataSyncController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),
 			@ApiResponse(code = 400, message = "Unable to save the records") })
 	public ResponseEntity<DataSyncResponseDTO<String>> storeConsumedPreRegistrationsIds(
-			@RequestBody(required = true) ReverseDataSyncDTO consumedData)
-			throws JsonParseException, JsonMappingException, IOException {
+			@RequestBody(required = true) ReverseDataSyncDTO consumedData) {
 		DataSyncResponseDTO<String> responseDto = dataSyncService.storeConsumedPreRegistrations(consumedData);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 

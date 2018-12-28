@@ -8,7 +8,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 
 /**
- * This class defines the DocumentFailedToUploadException that occurs when document upload fails
+ * This class defines the DocumentFailedToUploadException that occurs when
+ * document upload fails
  * 
  * @author Kishan Rathore
  * @since 1.0.0
@@ -28,6 +29,7 @@ public class DocumentFailedToUploadException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentFailedToUploadException(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_009.toString(), message);
@@ -35,7 +37,9 @@ public class DocumentFailedToUploadException extends BaseUncheckedException {
 
 	/**
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentFailedToUploadException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_009.toString(), message, cause);
@@ -43,8 +47,11 @@ public class DocumentFailedToUploadException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 * @param cause
+	 *            pass Error cause
 	 */
 	public DocumentFailedToUploadException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
@@ -52,7 +59,9 @@ public class DocumentFailedToUploadException extends BaseUncheckedException {
 
 	/**
 	 * @param errorCode
+	 *            pass Error code
 	 * @param message
+	 *            pass Error Message
 	 */
 	public DocumentFailedToUploadException(String errorCode, String message) {
 		super(errorCode, message);

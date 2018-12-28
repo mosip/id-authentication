@@ -19,11 +19,11 @@ public class BookingRegistrationDTO implements Serializable{
 	/**
 	 * registration Center Id
 	 */
-	private String registration_center_id;
+	private String registrationCenterId;
 	/**
 	 * booked Date Time
 	 */
-	private String reg_date;
+	private String regDate;
 	/**
 	 * booked Time Slot
 	 */
