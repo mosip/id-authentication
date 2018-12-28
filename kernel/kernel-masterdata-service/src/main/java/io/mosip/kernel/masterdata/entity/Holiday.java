@@ -10,8 +10,6 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.HolidayID;
@@ -32,9 +30,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "loc_holiday", schema = "master")
-@NamedQueries({
-	@NamedQuery(name="Holiday.updateHoliday",query="UPDATE Holiday h SET h.isActive = :isActive ,h.updatedBy = :updatedBy , h.updatedDateTime = :updatedDateTime, h.holidayDesc = :holidayDesc,h.holidayId.holidayDate=:newHolidayDate,h.holidayId.holidayName = :newHolidayName , h.holidayId.langCode = :langCode  WHERE h.holidayId.locationCode = :locationCode and h.holidayId.holidayName = :holidayName and h.holidayId.holidayDate = :holidayDate and h.holidayId.langCode = :langCode and (h.isDeleted is null or h.isDeleted = false)")
-})
 public class Holiday extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1329042436883315822L;

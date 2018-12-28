@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -25,6 +26,7 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	 *            the document category code.
 	 * @return list of valid document.
 	 */
+	@Query("FROM ValidDocument WHERE docCategoryCode=?1 AND (isDeleted is null OR isDeleted = false)")
 	List<ValidDocument> findByDocCategoryCode(String code);
 
 	/**
@@ -34,5 +36,6 @@ public interface ValidDocumentRepository extends BaseRepository<ValidDocument, V
 	 *            the document type code.
 	 * @return list of valid document.
 	 */
+	@Query("FROM ValidDocument WHERE docTypeCode=?1 AND (isDeleted is null OR isDeleted = false)")
 	List<ValidDocument> findByDocTypeCode(String code);
 }

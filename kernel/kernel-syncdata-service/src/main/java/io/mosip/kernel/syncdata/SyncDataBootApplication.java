@@ -37,7 +37,7 @@ public class SyncDataBootApplication {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(15);
 		executor.setMaxPoolSize(30);
-		executor.setThreadNamePrefix("SYNCHANDLER-Async-Thread-");
+		executor.setThreadNamePrefix("SYNCDATA-Async-Thread-");
 		executor.initialize();
 		return executor;
 	}

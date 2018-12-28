@@ -10,9 +10,12 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 
 /**
+ * Repository class for RegistrationCenter to trigger queries.
+ * 
  * @author Dharmesh Khandelwal
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
+ * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
@@ -51,6 +54,17 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE id= ?1 and  languageCode =?2 and (isDeleted is null or isDeleted =false)")
 	RegistrationCenter findByIdAndLanguageCode(String id, String languageCode);
 
+	/**
+	 * This method triggers query to find registration center holiday location code
+	 * based on id and language code.
+	 * 
+	 * @param id
+	 *            the id against which the holiday location code needs to be found.
+	 * @param languageCode
+	 *            the language code against which the holiday location code needs to
+	 *            be found.
+	 * @return the holiday location code fetched.
+	 */
 	String findRegistrationCenterHolidayLocationCodeByIdAndLanguageCode(String id, String languageCode);
 
 	/**
@@ -90,5 +104,14 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 */
 	List<RegistrationCenter> findAllByIsDeletedFalseOrIsDeletedIsNull();
 
+	/**
+	 * This method triggers query to find registration centers based on center type
+	 * code.
+	 * 
+	 * @param code
+	 *            the code against which registration centers need to be found.
+	 * @return the list of registration centers.
+	 */
+	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByCenterTypeCode(String code);
 }
