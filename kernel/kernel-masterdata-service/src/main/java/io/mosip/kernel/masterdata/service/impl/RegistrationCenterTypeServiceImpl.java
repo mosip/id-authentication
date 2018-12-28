@@ -19,8 +19,8 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
@@ -96,7 +96,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 				MetaDataUtils.setUpdateMetaData(registrationCenterType, registrationCenterTypeEntity, false);
 				registrationCenterTypeRepository.update(registrationCenterTypeEntity);
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -127,10 +127,10 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
 								.getErrorMessage());
 			}
-			int deletedRegistrationCenterTypes = registrationCenterTypeRepository
-					.deleteRegistrationCenterType(LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode);
+			int deletedRegistrationCenterTypes = registrationCenterTypeRepository.deleteRegistrationCenterType(
+					LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode, MetaDataUtils.getContextUser());
 			if (deletedRegistrationCenterTypes < 1) {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}

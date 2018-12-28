@@ -635,7 +635,7 @@ public class MasterdataIntegrationTest {
 		registrationCenterDevice.setIsActive(true);
 		registrationCenterDevice.setCreatedBy("admin");
 		registrationCenterDevice.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-        registrationCenterDevice.setIsDeleted(false);
+		registrationCenterDevice.setIsDeleted(false);
 		registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
 		RegistrationCenterDeviceHistoryPk rcIdH = new RegistrationCenterDeviceHistoryPk();
 		rcIdH.setDeviceId(rcId.getDeviceId());
@@ -1182,7 +1182,7 @@ public class MasterdataIntegrationTest {
 				.thenReturn(registrationCenterMachineDevice);
 		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any()))
 				.thenReturn(registrationCenterMachineDeviceHistory);
-		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/registrationcentermachinedevice/1/1000/1000")).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -1275,7 +1275,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -1297,7 +1297,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteNotFoundLanguagesTest() throws Exception {
 		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(null);
-		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isNotFound());
+		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -2028,7 +2028,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateTitleNotFoundExceptionTest() throws Exception {
+	public void updateTitleBadRequestTest() throws Exception {
 		RequestDto<TitleDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.title.update");
 		requestDto.setVer("1.0");
@@ -2042,7 +2042,7 @@ public class MasterdataIntegrationTest {
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(titleRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -2074,10 +2074,10 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void deleteTitleNotFoundExceptionTest() throws Exception {
+	public void deleteTitleBadRequestTest() throws Exception {
 		when(titleRepository.getThroughLanguageCode(Mockito.any())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/title/ABC").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -2166,14 +2166,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteGenderTypeTest() throws Exception {
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(1);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(1);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteGenderTypeNotFoundExceptionTest() throws Exception {
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any())).thenReturn(0);
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 
@@ -2182,7 +2182,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteGenderTypeDatabaseConnectionExceptionTest() throws Exception {
 
-		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(),Mockito.any()))
+		when(genderTypeRepository.deleteGenderType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/gendertypes/GEN01").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -3046,7 +3046,7 @@ public class MasterdataIntegrationTest {
 		when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3075,7 +3075,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentTypeTest() throws Exception {
 
 		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
-		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any())).thenReturn(2);
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(2);
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
@@ -3084,10 +3084,10 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteDocumentTypeNotFoundExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocTypeCode(Mockito.anyString())).thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
 
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3095,7 +3095,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentTypeDatabaseConnectionExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any()))
+		when(documentTypeRepository.deleteDocumentType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/documenttypes/DT001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -3205,7 +3205,7 @@ public class MasterdataIntegrationTest {
 		when(documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any(),
 				Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3234,7 +3234,8 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentCategoryTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(2);
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(2);
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -3243,10 +3244,11 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentCategoryNotFoundExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
 
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3254,7 +3256,7 @@ public class MasterdataIntegrationTest {
 	public void deleteDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
 		when(validDocumentRepository.findByDocCategoryCode(Mockito.anyString()))
 				.thenReturn(new ArrayList<ValidDocument>());
-		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any()))
+		when(documentCategoryRepository.deleteDocumentCategory(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(delete("/v1.0/documentcategories/DC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
@@ -3657,7 +3659,7 @@ public class MasterdataIntegrationTest {
 		when(registrationCenterTypeRepository.update(Mockito.any())).thenReturn(registrationCenterType);
 		mockMvc.perform(
 				put("/v1.0/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3695,7 +3697,8 @@ public class MasterdataIntegrationTest {
 		ArrayList<RegistrationCenterType> list = new ArrayList<>();
 		list.add(registrationCenterType);
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(list);
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any())).thenReturn(1);
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(1);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -3703,16 +3706,17 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteRegistrationCenterTypeNotFoundExceptionTest() throws Exception {
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<>());
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any())).thenReturn(0);
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
 	@Test
 	public void deleteRegistrationCenterTypeDataAccessExceptionTest() throws Exception {
 		when(registrationCenterTypeRepository.findByCode(Mockito.any())).thenReturn(new ArrayList<>());
-		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any()))
+		when(registrationCenterTypeRepository.deleteRegistrationCenterType(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
