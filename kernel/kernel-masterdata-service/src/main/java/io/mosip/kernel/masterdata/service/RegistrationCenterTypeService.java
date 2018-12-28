@@ -24,16 +24,22 @@ public interface RegistrationCenterTypeService {
 			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto);
 
 	/**
+	 * Method to update registration center type.
+	 * 
 	 * @param registrationCenterTypeDto
-	 * @return
+	 *            the request dto {@link RegistrationCenterTypeDto}.
+	 * @return the response {@link CodeAndLanguageCodeID}.
 	 */
 	public CodeAndLanguageCodeID updateRegistrationCenterType(
 			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto);
 
 	/**
+	 * Method to delete registration center type.
+	 * 
 	 * @param registrationCenterTypeCode
-	 * @return
+	 *            the code of the registration center type which needs to be
+	 *            deleted.
+	 * @return the response {@link CodeResponseDto}.
 	 */
 	public CodeResponseDto deleteRegistrationCenterType(String registrationCenterTypeCode);
-
 }

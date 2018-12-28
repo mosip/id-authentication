@@ -55,8 +55,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterTypeService#
-	 * addRegistrationCenterType(io.mosip.kernel.masterdata.dto.
-	 * RegistrationCenterTypeRequestDto)
+	 * createRegistrationCenterType(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
 	public CodeAndLanguageCodeID createRegistrationCenterType(
@@ -66,16 +65,22 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 		RegistrationCenterType registrationCenterType;
 		try {
 			registrationCenterType = registrationCenterTypeRepository.create(entity);
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+							+ ExceptionUtils.parseException(exception));
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeID = new CodeAndLanguageCodeID();
 		MapperUtils.map(registrationCenterType, codeAndLanguageCodeID);
 		return codeAndLanguageCodeID;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterTypeService#
+	 * updateRegistrationCenterType(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID updateRegistrationCenterType(
 			RequestDto<RegistrationCenterTypeDto> registrationCenterTypeDto) {
@@ -95,39 +100,45 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorCode(),
-					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
 		}
 		return registrationCenterTypeId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterTypeService#
+	 * deleteRegistrationCenterType(java.lang.String)
+	 */
 	@Override
 	public CodeResponseDto deleteRegistrationCenterType(String registrationCenterTypeCode) {
 		try {
-			List<RegistrationCenter> mappedRegistrationCenterTypes = registrationCenterRepository
+			List<RegistrationCenter> mappedRegistrationCenters = registrationCenterRepository
 					.findByCenterTypeCode(registrationCenterTypeCode);
-			if (!mappedRegistrationCenterTypes.isEmpty()) {
+			if (!mappedRegistrationCenters.isEmpty()) {
 				throw new MasterDataServiceException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
 								.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_DEPENDENCY_EXCEPTION
 								.getErrorMessage());
 			}
-			int updatedRegistrationCenterTypes = registrationCenterTypeRepository
-					.deleteRegistrationCenterType(LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode);
-			if (updatedRegistrationCenterTypes < 1) {
+			int deletedRegistrationCenterTypes = registrationCenterTypeRepository.deleteRegistrationCenterType(
+					LocalDateTime.now(ZoneId.of("UTC")), registrationCenterTypeCode, MetaDataUtils.getContextUser());
+			if (deletedRegistrationCenterTypes < 1) {
 				throw new DataNotFoundException(
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
-		} catch (DataAccessLayerException | DataAccessException e) {
+		} catch (DataAccessLayerException | DataAccessException exception) {
 			throw new MasterDataServiceException(
 					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION.getErrorCode(),
-					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
 		}
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(registrationCenterTypeCode);

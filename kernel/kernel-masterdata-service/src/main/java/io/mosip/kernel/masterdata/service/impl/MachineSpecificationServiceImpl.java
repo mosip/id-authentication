@@ -126,8 +126,8 @@ public class MachineSpecificationServiceImpl implements MachineSpecificationServ
 					delMachineSpecification = machineSpecificationRepository.update(renMachineSpecification);
 				} else {
 					throw new MasterDataServiceException(
-							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
-							MachineSpecificationErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage());
+							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),
+							MachineSpecificationErrorCode.MACHINE_DELETE_DEPENDENCY_EXCEPTION.getErrorMessage());
 				}
 			} else {
 				throw new DataNotFoundException(

@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
@@ -65,9 +66,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 			documentCategoryList = documentCategoryRepository
 					.findAllByIsDeletedFalseOrIsDeletedIsNull(DocumentCategory.class);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage()+ExceptionUtils.parseException(e));
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.parseException(e));
 		}
 
 		if (!(documentCategoryList.isEmpty())) {
@@ -97,9 +99,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 			documentCategoryList = documentCategoryRepository
 					.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage()+ExceptionUtils.parseException(e));
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.parseException(e));
 		}
 
 		if (!(documentCategoryList.isEmpty())) {
@@ -131,9 +134,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		try {
 			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					langCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(), e.getMessage()+ExceptionUtils.parseException(e));
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage() + ExceptionUtils.parseException(e));
 		}
 
 		if (documentCategory != null) {
@@ -197,7 +201,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 				MetaDataUtils.setUpdateMetaData(categoryDto, documentCategory, false);
 				documentCategoryRepository.update(documentCategory);
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -205,7 +209,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorCode(),
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_UPDATE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		return documentCategoryId;
 	}
@@ -229,10 +234,10 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			}
 
 			int updatedRows = documentCategoryRepository.deleteDocumentCategory(LocalDateTime.now(ZoneId.of("UTC")),
-					code);
+					code, MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
 
-				throw new DataNotFoundException(
+				throw new RequestException(
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
@@ -240,7 +245,8 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorCode(),
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorMessage());
+					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_DELETE_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(e));
 		}
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(code);
