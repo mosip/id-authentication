@@ -10,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.*")
-public class PreRegistrationTransliteration {
+public class TransliterationApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(PreRegistrationTransliteration.class, args);
+		SpringApplication.run(TransliterationApplication.class, args);
 	}
 }

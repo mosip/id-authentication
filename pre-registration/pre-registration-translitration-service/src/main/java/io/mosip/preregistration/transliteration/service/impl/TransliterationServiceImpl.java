@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.transliteration.dto.CreateTransliterationRequest;
+import io.mosip.preregistration.transliteration.dto.TransliterationApplicationDTO;
 import io.mosip.preregistration.transliteration.dto.ResponseDTO;
-import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.RequestDTO;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.exception.util.TransliterationExceptionCatcher;
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
+import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
 import io.mosip.preregistration.transliteration.util.PreRegistrationTransliterator;
 
 @Service
@@ -69,17 +70,17 @@ public class TransliterationServiceImpl {
 
 	protected String trueStatus = "true";
 
-	public ResponseDTO<CreateTransliterationRequest> translitratorService(
-			TransliterationRequestDTO<CreateTransliterationRequest> requestDTO) {
+	public ResponseDTO<TransliterationApplicationDTO> translitratorService(
+			RequestDTO<TransliterationApplicationDTO> requestDTO) {
 
-		ResponseDTO<CreateTransliterationRequest> response = new ResponseDTO<>();
+		ResponseDTO<TransliterationApplicationDTO> response = new ResponseDTO<>();
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO),
 					requiredRequestMap)) {
 
-				CreateTransliterationRequest requestFields = requestDTO.getRequest();
+				TransliterationApplicationDTO requestFields = requestDTO.getRequest();
 
-				CreateTransliterationRequest responseFields = new CreateTransliterationRequest();
+				TransliterationApplicationDTO responseFields = new TransliterationApplicationDTO();
 
 				String toFieldName = null;
 
@@ -103,7 +104,7 @@ public class TransliterationServiceImpl {
 
 				} else {
 
-					throw new MandatoryFieldRequiredException(ErrorMessage.MANDATORY_FIELDS_NOT_FILLED.toString());
+					throw new MandatoryFieldRequiredException(ErrorMessage.INCORRECT_MANDATORY_FIELDS.toString());
 				}
 
 			}
@@ -116,7 +117,7 @@ public class TransliterationServiceImpl {
 
 	}
 
-	protected boolean isEntryFieldsNull(CreateTransliterationRequest requestFields) {
+	protected boolean isEntryFieldsNull(TransliterationApplicationDTO requestFields) {
 
 		if (!requestFields.getFromFieldLang().equals("") && !requestFields.getFromFieldValue().equals("")
 				&& !requestFields.getFromFieldName().equals("") && !requestFields.getToFieldLang().equals("")

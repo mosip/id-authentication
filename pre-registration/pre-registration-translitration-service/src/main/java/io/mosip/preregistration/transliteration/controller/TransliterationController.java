@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.preregistration.transliteration.dto.CreateTransliterationRequest;
+import io.mosip.preregistration.transliteration.dto.TransliterationApplicationDTO;
 import io.mosip.preregistration.transliteration.dto.ResponseDTO;
-import io.mosip.preregistration.transliteration.dto.TransliterationRequestDTO;
+import io.mosip.preregistration.transliteration.dto.RequestDTO;
 import io.mosip.preregistration.transliteration.service.impl.TransliterationServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,18 +23,18 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Pre-Registration")
 @CrossOrigin("*")
-public class PreRegistrationTransliterationController {
+public class TransliterationController {
 
 	@Autowired
 	private TransliterationServiceImpl transliterationServiceImpl;
 
-	@PostMapping(path = "/translitrate", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/translitrate", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Pre-Registartion-Translitration data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Given key is translitrated successfully"),
 			@ApiResponse(code = 400, message = "Unable to get the translitration") })
-	public ResponseEntity<ResponseDTO<CreateTransliterationRequest>> translitrator(
-			@RequestBody(required = true) TransliterationRequestDTO<CreateTransliterationRequest> reuestDTO) {
-		return ResponseEntity.status(HttpStatus.OK).body(transliterationServiceImpl.translitratorService(reuestDTO));
+	public ResponseEntity<ResponseDTO<TransliterationApplicationDTO>> translitrator(
+			@RequestBody(required = true) RequestDTO<TransliterationApplicationDTO> requestDTO) {
+		return ResponseEntity.status(HttpStatus.OK).body(transliterationServiceImpl.translitratorService(requestDTO));
 
 	}
 

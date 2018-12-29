@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class CreateTransliterationRequest implements Serializable{
+public class TransliterationApplicationDTO implements Serializable{
 	
 	/**
 	 * 

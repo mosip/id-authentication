@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TransliterationRequestDTO<T> {
+public class RequestDTO<T> {
 	
 	String id;
 	String ver;

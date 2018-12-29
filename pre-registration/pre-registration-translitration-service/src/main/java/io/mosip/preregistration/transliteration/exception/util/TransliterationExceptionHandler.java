@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.preregistration.transliteration.dto.ExceptionJSONInfoDTO;
@@ -12,6 +13,7 @@ import io.mosip.preregistration.transliteration.dto.ResponseDTO;
 import io.mosip.preregistration.transliteration.exception.FailedToTransliterateException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 
+@RestControllerAdvice
 public class TransliterationExceptionHandler {
 	
 	protected String falseStatus = "false";

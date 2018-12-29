@@ -2,7 +2,7 @@ package io.mosip.preregistration.transliteration.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
-public class IllegalPraramException extends BaseUncheckedException{
+public class IllegalParamException extends BaseUncheckedException{
 
 	/**
 	 * 
@@ -12,7 +12,7 @@ public class IllegalPraramException extends BaseUncheckedException{
 	/**
 	 * @param msg
 	 */
-	public IllegalPraramException(String msg) {
+	public IllegalParamException(String msg) {
 		super("", msg);
 	}
 
@@ -20,7 +20,7 @@ public class IllegalPraramException extends BaseUncheckedException{
 	 * @param errCode
 	 * @param msg
 	 */
-	public IllegalPraramException(String errCode, String msg) {
+	public IllegalParamException(String errCode, String msg) {
 		super(errCode, msg);
 	}
 
@@ -29,7 +29,7 @@ public class IllegalPraramException extends BaseUncheckedException{
 	 * @param msg
 	 * @param cause
 	 */
-	public IllegalPraramException(String errCode, String msg, Throwable cause) {
+	public IllegalParamException(String errCode, String msg, Throwable cause) {
 		super(errCode, msg, cause);
 	}
 
