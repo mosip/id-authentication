@@ -82,16 +82,6 @@ public class BaseController {
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
-	
-	protected StringBuilder validationMessage;
-
-	public StringBuilder getValidationMessage() {
-		return validationMessage;
-	}
-
-	public void setValidationMessage() {
-		this.validationMessage = new StringBuilder();
-	}
 
 	/**
 	 * Instance of {@link MosipLogger}

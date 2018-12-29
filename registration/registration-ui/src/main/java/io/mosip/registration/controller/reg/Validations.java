@@ -39,7 +39,7 @@ public class Validations extends BaseController {
 	/**
 	 * Instance of {@link Logger}
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(ApplicationContext.class);
+	private static final Logger LOGGER = AppConfig.getLogger(Validations.class);
 	private boolean isChild;
 	private ResourceBundle validationBundle;
 	private ResourceBundle messageBundle;
