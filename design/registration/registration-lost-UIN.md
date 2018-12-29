@@ -1,6 +1,6 @@
 
-**Design -- Lost UIN**
-======================
+**Design - Lost UIN**
+====================
 
 **Background**
 
@@ -39,40 +39,34 @@ The key **non-functional requirements** are
 1.  Get the required configuration to display for the Lost UIN screen
     from the Global Configuration Parameter table.
 
-2.  Create the controller for the **RegistrtaionEditController** to
-    display the list of the required editable section on the screen.
-    \[Provide submit method to capture the details and maintains in the
-    Registration DTO\].
+2.  Create the controller for the **RegistrtaionController** to
+    display the list of the required demographic fields on the screen.
 
-3.  Display the Registration Screen based on the selection of the
-    editable fields.
+3.  Once demographic fields are captured then render the Biometric screen using the respective Controller.
 
-4.  After enter all the fields from the screen, we will call the Packet
-    Handler service to do the rest of the process.
+4.  Once Biometric captured then display the Photo capturing screen to capture the Applicant photo and exceptional photo.
 
-5.  The same procedure for this follows the registration procedure only
-    the specific fields which are editable should be captured along the
-    packet data and mention the 'applicationType' as 'Lost UIN'.
+5.  Display the Preview page once all the detail are captured. 
+    Then capture the authentication from the user to approve the packet.
+    
+6.  After enter all the fields from the screen, we will call the Packet
+    Handler service to do the rest of the packet creation process.
 
-6.  The **RegsitrationValidator** should validate the fields against
-    the selection.
-
-7.  The **RegistrtaionController** also should displays based on the
-    editable sections.
-
-8.  Finally the desired data will be persisted as part of the
+7.  Finally the desired data will be persisted as part of the
     Registration and Registration Transaction tables.
 
 Note:
 
-    Write a classes as per the attached diagram for Lost UIN which  
-    would associate all the controller classes created for  
-    New Registration to reuse the functionality. 
+	Write a class and the respective sequence as per the provided diagram. 
+    The entire flow is same as New Registration process, so the same technical 
+    process will be followed.  	
+    While creating the packet, specify the 'applicationType' as 'LostUIN'. This would 
+    help the Registration processor to handle the packet differently. 
 
-    As part of the packet Meta we need to provide which packet it is and the 
-    UIN number also we need to provide. 
 
-**Class and Sequence Diagram:**
+**Class Diagram:**
+![Lost UIN Class Diagram](_images/registration-lost-uin-class-dig.png)
 
-![Lost UIN Class Diagram](_images/registration-lost-uin.png)
 
+**Sequence Diagram:**
+![Lost UIN Class Diagram](_images/registration-lost-uin-seq-dig.png)
