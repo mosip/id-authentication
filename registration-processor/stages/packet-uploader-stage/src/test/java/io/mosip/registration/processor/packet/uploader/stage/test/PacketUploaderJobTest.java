@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.decrypter.job.stage.test;
+package io.mosip.registration.processor.packet.uploader.stage.test;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -29,6 +29,9 @@ import ch.qos.logback.core.read.ListAppender;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -37,6 +40,7 @@ import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchi
 import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -71,7 +75,7 @@ public class PacketUploaderJobTest {
 	
 	/** The audit log request builder. */
 	@Mock
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
 	/** The registration status service. */
 	@Mock
@@ -104,8 +108,8 @@ public class PacketUploaderJobTest {
 
 	/** The entry. */
 	InternalRegistrationStatusDto entry = new InternalRegistrationStatusDto();
-	
-	
+	@Mock
+	File filech=new File("");
 	/**
 	 * Setup.
 	 *
@@ -126,7 +130,11 @@ public class PacketUploaderJobTest {
 		listAppender = new ListAppender<>();
 		doNothing().when(fileManager).deletePacket(any(), any());
 		doNothing().when(fileManager).deleteFolder(any(), any());
-		//FileInputStream fileInputStream = Mockito.mock(FileInputStream.class);
+		
+		AuditResponseDto auditResponseDto = new AuditResponseDto();
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
+				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
+				EventType.BUSINESS.toString(), "1234testcase");
 	}
 
 	/**
@@ -228,19 +236,20 @@ public class PacketUploaderJobTest {
 						Tuple.tuple(Level.ERROR, "1001 unable to delete after sending to DFS. - {}"));
 
 	}
-	
-	/*@Test
+	@Test
 	public void PacketNotFoundExceptionTest() throws Exception {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
-		Mockito.doThrow(PacketNotFoundException.class).when(packetArchiver).archivePacket(any(String.class));
+		Mockito.when(filech.exists()).thenReturn(Boolean.FALSE);
+		PacketNotFoundException packetNotFoundException=new PacketNotFoundException("RPR-PUS","1001 unable to delete after sending to DFS.");
+		Mockito.doThrow(packetNotFoundException).when(packetArchiver).archivePacket(anyString());
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.containsExactly(
-						Tuple.tuple(Level.ERROR, "1001 unable to delete after sending to DFS. - {}"));
+						Tuple.tuple(Level.ERROR, "RPR-PUS - RPR-PUS --> 1001 unable to delete after sending to DFS."));
 
-	}*/
+	}
 
 	@Test
 	public void testDfsNotAccessible() throws Exception {
@@ -253,6 +262,18 @@ public class PacketUploaderJobTest {
 		Assertions.assertThat(listAppender.list)
         .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 		.containsExactly(Tuple.tuple( Level.ERROR, "The DFS Path set by the System is not accessible - {}")); 
+	}
+	
+	
+	@Test
+	public void testIoExceptionUploadPacket() throws PacketNotFoundException, IOException{
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(anyString());
+		packetUploaderStage.process(dto);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(
+						Tuple.tuple(Level.ERROR, "The DFS Path set by the System is not accessible - null"));
 	}
 
 }

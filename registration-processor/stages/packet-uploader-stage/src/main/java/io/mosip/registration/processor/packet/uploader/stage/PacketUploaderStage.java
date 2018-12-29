@@ -90,8 +90,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
 
 	/** The Constant REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE. */
-	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
-			+ "is not accessible";
+	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "+ "is not accessible";
 
 	/** The description. */
 	private String description = "";
@@ -123,12 +122,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 			this.isTransactionSuccessful = false;
 			this.description = "Registration status table is not accessible for packet "+ this.registrationId;
 
-		} catch (IOException e) {
-
-			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
-			this.isTransactionSuccessful = false;
-			this.description = "File System is not accessible for packet " + this.registrationId;
-
 		} finally {
 
 			String eventId = "";
@@ -153,20 +146,22 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 	/**
 	 * Uploadpacket.
-	 *
 	 * @param dto the dto
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void uploadpacket(InternalRegistrationStatusDto dto) throws IOException{
+	private void uploadpacket(InternalRegistrationStatusDto dto){
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
+			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator	+ dto.getRegistrationId()+".zip";
+			File file = new File(filepath);	
+			InputStream decryptedData = new FileInputStream(file);
+			sendToDFS(dto,decryptedData);
 		} catch (PacketNotFoundException ex) {
 			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
+		} catch (IOException e) {
+			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
+
 		}
-		String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator	+ dto.getRegistrationId()+".zip";
-		File file = new File(filepath);	
-		InputStream decryptedData = new FileInputStream(file);
-		sendToDFS(dto,decryptedData);
 	}
 
 
