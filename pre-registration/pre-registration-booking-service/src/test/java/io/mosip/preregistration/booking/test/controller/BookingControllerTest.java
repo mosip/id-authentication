@@ -26,13 +26,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
-import io.mosip.preregistration.booking.dto.BookingDTO;
+import io.mosip.preregistration.booking.dto.MainListRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
-import io.mosip.preregistration.booking.dto.RequestDto;
-import io.mosip.preregistration.booking.dto.BookingResponseDto;
+import io.mosip.preregistration.booking.dto.MainRequestDTO;
+import io.mosip.preregistration.booking.dto.MainResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -49,20 +49,20 @@ public class BookingControllerTest {
 
 	private AvailabilityDto availabilityDto;
 
-	BookingDTO bookingDTO = new BookingDTO();
+	MainListRequestDTO bookingDTO = new MainListRequestDTO();
 	List<BookingRequestDTO> bookingList=new ArrayList<>();
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 	BookingRegistrationDTO oldBooking= new BookingRegistrationDTO();
 	BookingRegistrationDTO newBooking= new BookingRegistrationDTO();
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	@SuppressWarnings("rawtypes")
-	BookingResponseDto responseDto = new BookingResponseDto();
+	MainResponseDTO responseDto = new MainResponseDTO();
 	private Object jsonObject = null;
 	
 	private Object jsonObject1 = null;
 	CancelBookingResponseDTO cancelBookingResponseDTO=new CancelBookingResponseDTO();
 	CancelBookingDTO cancelbookingDto=new CancelBookingDTO();
-	RequestDto<CancelBookingDTO> dto=new RequestDto<>();
+	MainRequestDTO<CancelBookingDTO> dto=new MainRequestDTO<>();
 
 	@SuppressWarnings({ "deprecation" })
 	@Before
@@ -112,7 +112,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void getAvailability() throws Exception {
-		BookingResponseDto<AvailabilityDto> response = new BookingResponseDto<>();
+		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/availability")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -122,7 +122,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void saveAvailability() throws Exception {
-		BookingResponseDto<String> response = new BookingResponseDto<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/masterSync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -137,7 +137,7 @@ public class BookingControllerTest {
 	public void successBookingTest() throws Exception {
 
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(service.getCurrentResponseTime());
 		List<String> respList = new ArrayList<>();
 		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
@@ -172,7 +172,7 @@ public class BookingControllerTest {
 		
 		responseDto.setErr(null);
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(service.getCurrentResponseTime());
 		cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);

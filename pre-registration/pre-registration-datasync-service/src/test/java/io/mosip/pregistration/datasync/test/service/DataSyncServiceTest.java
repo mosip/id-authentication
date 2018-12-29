@@ -38,35 +38,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.pregistration.datasync.dto.DataSyncDTO;
-import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
-import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
-import io.mosip.pregistration.datasync.dto.ExceptionJSONInfoDTO;
-import io.mosip.pregistration.datasync.dto.MainRequestDTO;
-import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
-import io.mosip.pregistration.datasync.dto.ResponseDTO;
-import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
-import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
-import io.mosip.pregistration.datasync.entity.InterfaceDataSyncTablePK;
-import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
-import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
-import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
-import io.mosip.pregistration.datasync.errorcodes.ErrorMessages;
-import io.mosip.pregistration.datasync.exception.RecordNotFoundForDateRange;
-import io.mosip.pregistration.datasync.exception.ReverseDataFailedToStoreException;
-import io.mosip.pregistration.datasync.repository.DataSyncRepository;
-import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
-import io.mosip.pregistration.datasync.service.DataSyncService;
+import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
+import io.mosip.preregistration.datasync.dto.ExceptionJSONInfoDTO;
+import io.mosip.preregistration.datasync.dto.MainRequestDTO;
+import io.mosip.preregistration.datasync.dto.MainResponseDTO;
+import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
+import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
+import io.mosip.preregistration.datasync.entity.InterfaceDataSyncEntity;
+import io.mosip.preregistration.datasync.entity.InterfaceDataSyncTablePK;
+import io.mosip.preregistration.datasync.entity.ProcessedPreRegEntity;
+import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
+import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
+import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
+import io.mosip.preregistration.datasync.repository.InterfaceDataSyncRepo;
+import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
+import io.mosip.preregistration.datasync.service.DataSyncService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DataSyncServiceTest {
 
 	@Mock
-	private DataSyncRepository dataSyncRepository;
+	private InterfaceDataSyncRepo interfaceDataSyncRepo;
 
 	@Mock
-	private ReverseDataSyncRepo reverseDataSyncRepo;
+	private ProcessedDataSyncRepo processedDataSyncRepo;
 
 	@Autowired
 	private DataSyncService dataSyncService;
@@ -83,8 +79,8 @@ public class DataSyncServiceTest {
 	String preid = "";
 	List<ExceptionJSONInfoDTO> errlist = new ArrayList<>();
 	ExceptionJSONInfoDTO exceptionJSONInfo = new ExceptionJSONInfoDTO("", "");
-	DataSyncResponseDTO<PreRegistrationIdsDTO> dataSyncResponseDTO = new DataSyncResponseDTO<>();
-	DataSyncResponseDTO<String> storeResponseDTO = new DataSyncResponseDTO<>();
+	MainResponseDTO<PreRegistrationIdsDTO> dataSyncResponseDTO = new MainResponseDTO<>();
+	MainResponseDTO<String> storeResponseDTO = new MainResponseDTO<>();
 	String resTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date());
 	DataSyncDTO requestDto = new DataSyncDTO();
 	PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
@@ -228,40 +224,40 @@ public class DataSyncServiceTest {
 	@Test
 	public void storeConsumePreIdsSuccessTest() {
 
-		DataSyncResponseDTO<String> expRes = new DataSyncResponseDTO<>();
+		MainResponseDTO<String> expRes = new MainResponseDTO<>();
 		expRes.setErr(null);
 		expRes.setResponse(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
-		ReverseDataSyncEntity reverseDataSyncEntity = new ReverseDataSyncEntity();
-		PreRegistrationProcessedEntity processedEntity = new PreRegistrationProcessedEntity();
+		InterfaceDataSyncEntity interfaceDataSyncEntity = new InterfaceDataSyncEntity();
+		ProcessedPreRegEntity processedEntity = new ProcessedPreRegEntity();
 		storeResponseDTO.setResponse(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		storeResponseDTO.setStatus("true");
 		storeResponseDTO.setResTime(resTime);
 		storeResponseDTO.setErr(null);
 
-		reverseDataSyncEntity.setLangCode("AR");
-		reverseDataSyncEntity.setCrBy("5766477466");
+		interfaceDataSyncEntity.setLangCode("AR");
+		interfaceDataSyncEntity.setCrBy("5766477466");
 		processedEntity.setLangCode("AR");
 		processedEntity.setCrBy("5766477466");
 		processedEntity.setStatusCode("");
-		List<ReverseDataSyncEntity> savedList = new ArrayList<>();
-		savedList.add(reverseDataSyncEntity);
+		List<InterfaceDataSyncEntity> savedList = new ArrayList<>();
+		savedList.add(interfaceDataSyncEntity);
 
-		Mockito.when(dataSyncRepository.saveAll(ArgumentMatchers.any())).thenReturn(savedList);
-		Mockito.when(reverseDataSyncRepo.existsById(preid)).thenReturn(Mockito.anyBoolean());
-		Mockito.when(reverseDataSyncRepo.save(processedEntity)).thenReturn(processedEntity);
-		DataSyncResponseDTO<String> actRes = dataSyncService.storeConsumedPreRegistrations(reverseDto);
+		Mockito.when(interfaceDataSyncRepo.saveAll(ArgumentMatchers.any())).thenReturn(savedList);
+		Mockito.when(processedDataSyncRepo.existsById(preid)).thenReturn(Mockito.anyBoolean());
+		Mockito.when(processedDataSyncRepo.save(processedEntity)).thenReturn(processedEntity);
+		MainResponseDTO<String> actRes = dataSyncService.storeConsumedPreRegistrations(reverseDto);
 		assertEquals(actRes.getResponse().toString(), expRes.getResponse().toString());
 
 	}
 
 	@Test(expected = ReverseDataFailedToStoreException.class)
 	public void reverseDataSyncFailureTest() {
-		ReverseDataSyncEntity reverseDataSyncEntity = new ReverseDataSyncEntity();
-		List<ReverseDataSyncEntity> savedList = new ArrayList<>();
-		reverseDataSyncEntity.setLangCode("AR");
-		reverseDataSyncEntity.setCrBy("5766477466");
+		InterfaceDataSyncEntity interfaceDataSyncEntity = new InterfaceDataSyncEntity();
+		List<InterfaceDataSyncEntity> savedList = new ArrayList<>();
+		interfaceDataSyncEntity.setLangCode("AR");
+		interfaceDataSyncEntity.setCrBy("5766477466");
 
-		DataSyncResponseDTO<String> expRes = new DataSyncResponseDTO<>();
+		MainResponseDTO<String> expRes = new MainResponseDTO<>();
 		expRes.setErr(null);
 		expRes.setStatus("false");
 
@@ -269,9 +265,9 @@ public class DataSyncServiceTest {
 		ipprlst_PK.setPreregId("23587986034785");
 		ipprlst_PK.setReceivedDtimes(new Timestamp(System.currentTimeMillis()));
 
-		reverseDataSyncEntity.setIpprlst_PK(ipprlst_PK);
+		interfaceDataSyncEntity.setIpprlst_PK(ipprlst_PK);
 
-		savedList.add(reverseDataSyncEntity);
+		savedList.add(interfaceDataSyncEntity);
 		ReverseDataFailedToStoreException exception = new ReverseDataFailedToStoreException(
 				ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(),
 				ErrorMessages.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
@@ -283,10 +279,10 @@ public class DataSyncServiceTest {
 		reverseDto.setReqTime(new Date());
 		reverseDto.setRequest(request);
 
-		Mockito.when(dataSyncRepository.saveAll(null)).thenThrow(exception);
-		Mockito.when(reverseDataSyncRepo.existsById(ArgumentMatchers.any())).thenReturn(true);
-		Mockito.when(reverseDataSyncRepo.save(ArgumentMatchers.any())).thenReturn(true);
-		DataSyncResponseDTO<String> actRes = dataSyncService.storeConsumedPreRegistrations(reverseDto);
+		Mockito.when(interfaceDataSyncRepo.saveAll(null)).thenThrow(exception);
+		Mockito.when(processedDataSyncRepo.existsById(ArgumentMatchers.any())).thenReturn(true);
+		Mockito.when(processedDataSyncRepo.save(ArgumentMatchers.any())).thenReturn(true);
+		MainResponseDTO<String> actRes = dataSyncService.storeConsumedPreRegistrations(reverseDto);
 		System.out.println("size 1: " + actRes.getStatus());
 		System.out.println("size 2: " + expRes.getStatus());
 		assertEquals(actRes.getStatus(), expRes.getStatus());
@@ -300,14 +296,14 @@ public class DataSyncServiceTest {
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		List<String> responseList = new ArrayList<String>();
-		ResponseDTO responseDTO = new ResponseDTO<>();
+		MainResponseDTO responseDTO = new MainResponseDTO<>();
 		responseList.add("23587986034785");
 		responseDTO.setStatus("true");
 		responseDTO.setErr(null);
 		responseDTO.setResponse(responseList);
-		ResponseEntity<ResponseDTO> resp = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO> resp = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(), ArgumentMatchers.<Class<ResponseDTO>>any())).thenReturn(resp);
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<MainResponseDTO>>any())).thenReturn(resp);
 
 		PreRegistrationIdsDTO preRegResponse = new PreRegistrationIdsDTO();
 		Map<String,String> listOfPreIds = new HashMap<>();
@@ -321,7 +317,7 @@ public class DataSyncServiceTest {
 		mainReq.setVer("1.0");
 		mainReq.setReqTime(new Date());
 		mainReq.setRequest(dataSyncRequestDTO);
-		DataSyncResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegIds(mainReq);
+		MainResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegIds(mainReq);
 		assertEquals(actualRes.getResponse().getPreRegistrationIds().get(0),
 				dataSyncResponseDTO.getResponse().getPreRegistrationIds().get(0));
 	}
@@ -336,14 +332,14 @@ public class DataSyncServiceTest {
 		dataSyncRequestDTO.setToDate("");
 
 		List<String> responseList = new ArrayList<String>();
-		ResponseDTO responseDTO = new ResponseDTO<>();
+		MainResponseDTO responseDTO = new MainResponseDTO<>();
 		responseList.add("23587986034785");
 		responseDTO.setStatus("true");
 		responseDTO.setErr(null);
 		responseDTO.setResponse(responseList);
-		ResponseEntity<ResponseDTO> resp = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO> resp = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(), ArgumentMatchers.<Class<ResponseDTO>>any())).thenReturn(resp);
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<MainResponseDTO>>any())).thenReturn(resp);
 
 		PreRegistrationIdsDTO preRegResponse = new PreRegistrationIdsDTO();
 		Map<String,String> listOfPreIds = new HashMap<>();
@@ -358,7 +354,7 @@ public class DataSyncServiceTest {
 		mainReq.setReqTime(new Date());
 		mainReq.setRequest(dataSyncRequestDTO);
 		
-		DataSyncResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegIds(mainReq);
+		MainResponseDTO<PreRegistrationIdsDTO> actualRes = dataSyncService.retrieveAllPreRegIds(mainReq);
 		assertEquals(actualRes.getResponse().getPreRegistrationIds().get(0),
 				dataSyncResponseDTO.getResponse().getPreRegistrationIds().get(0));
 	}

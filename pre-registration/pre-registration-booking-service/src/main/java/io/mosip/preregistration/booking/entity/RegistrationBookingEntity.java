@@ -1,8 +1,8 @@
 package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Column;
@@ -22,8 +22,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "reg_appointment", schema = "prereg")
-@NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode", query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.status_code = ?2")
-@NamedQuery(name="RegistrationBookingEntity.findPreIdAndStatusCode",query="SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1 and r.status_code=?2")
+@NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode", query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.statusCode = ?2")
+@NamedQuery(name="RegistrationBookingEntity.findPreIdAndStatusCode",query="SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1 and r.statusCode=?2")
 public class RegistrationBookingEntity implements Serializable {
 
 	private static final long serialVersionUID = 7886669943207769620L;
@@ -57,18 +57,18 @@ public class RegistrationBookingEntity implements Serializable {
 	private String crBy;
 
 	@Column(name = "cr_dtimes")
-	private Timestamp crDate;
+	private LocalDateTime crDate;
 
 	@Column(name = "upd_by")
 	private String upBy;
 
 	@Column(name = "upd_dtimes")
-	private Timestamp updDate;
+	private LocalDateTime updDate;
 
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
 	@Column(name = "del_dtimes")
-	private Timestamp delTime;
+	private LocalDateTime delTime;
 
 }

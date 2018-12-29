@@ -69,42 +69,30 @@
   <div class="file-uploaad__header">Upload Documents</div>
   <div class="file-upload__body">
     <div>Allowed file type Pdf, Word and Max 5MB</div>
-    <div class="file-upload__document-type" *ngFor="let document of LOD; let i = index">
+    <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
       <mat-form-field>
-        <mat-select placeholder="{{ document.document_name }}">
+        <mat-select
+          placeholder="{{ document.document_name }}"
+          (selectionChange)="selectChange($event, i)"
+          (openedChange)="openedChange($event, i)"
+        >
           <mat-option *ngFor="let ValidDocument of document.valid_docs" value="{{ ValidDocument.value }}">
             {{ ValidDocument.name }}
           </mat-option>
-          <!-- <mat-option value="DL">Driving license</mat-option>
-          <mat-option value="PC">PAN Card</mat-option> -->
         </mat-select>
       </mat-form-field>
-      <div class="file-upload__document-name" *ngIf="users[0].files[0][i]">{{ users[0].files[0][i].doc_name }}</div>
+      <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;" />
+      <input
+        class="browseInput"
+        value="{{ i != documentIndex ? 'Select Document Type' : 'Browse' }}"
+        type="button"
+        onclick="document.getElementById('file').click();"
+        [disabled]="browseDisabled"
+      />
+      <div class="file-upload__body__document-name" *ngIf="users[0].files[0][i]">
+        <span>{{ users[0].files[0][i].doc_name }}</span>
+        <span> <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, i)">close</mat-icon> </span>
+      </div>
     </div>
-    <!-- <div class="file-upload__document-type">
-      <mat-form-field>
-        <mat-select placeholder="POI">
-          <mat-option value="Pass">passport</mat-option>
-          <mat-option value="DL">Driving license</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="file-upload__document-type">
-      <mat-form-field>
-        <mat-select placeholder="POB">
-          <mat-option value="Pass">passport</mat-option>
-          <mat-option value="BC">Birth Certificate</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="file-upload__document-type">
-      <mat-form-field>
-        <mat-select placeholder="Select Supporting Documents">
-          <mat-option value="MC">Marrige Certificate</mat-option>
-          <mat-option value="BC">Birth Certificate</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <!-- <input type="file" class="file-upload__document-type__input"> --
-    </div> -->
   </div>
 </div>
