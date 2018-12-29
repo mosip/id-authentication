@@ -30,18 +30,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.pregistration.datasync.code.StatusCodes;
-import io.mosip.pregistration.datasync.controller.DataSyncController;
-import io.mosip.pregistration.datasync.dto.DataSyncDTO;
-import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
-import io.mosip.pregistration.datasync.dto.DataSyncResponseDTO;
-import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
-import io.mosip.pregistration.datasync.dto.PreRegArchiveDTO;
-import io.mosip.pregistration.datasync.dto.PreRegistrationIdsDTO;
-import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
-import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
-import io.mosip.pregistration.datasync.errorcodes.ErrorMessages;
-import io.mosip.pregistration.datasync.service.DataSyncService;
+import io.mosip.preregistration.core.exception.dto.ExceptionJSONInfo;
+import io.mosip.preregistration.datasync.controller.DataSyncController;
+import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
+import io.mosip.preregistration.datasync.dto.MainRequestDTO;
+import io.mosip.preregistration.datasync.dto.MainResponseDTO;
+import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
+import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
+import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
+import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
+import io.mosip.preregistration.datasync.service.DataSyncService;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
@@ -64,11 +62,11 @@ public class DataSyncControllerTest {
 	ExceptionJSONInfo exceptionJSONInfo = null;
 	String status = "";
 	@SuppressWarnings("rawtypes")
-	DataSyncResponseDTO responseDto = new DataSyncResponseDTO<>();
+	MainResponseDTO responseDto = new MainResponseDTO<>();
 	Timestamp resTime = null;
 	String filename = "";
 	byte[] bytes = null;
-	ReverseDataSyncDTO reverseDataSyncDTO = new ReverseDataSyncDTO();
+	MainRequestDTO<ReverseDataSyncRequestDTO> reverseDataSyncDTO = new MainRequestDTO<>();
 	private Object jsonObject = null;
 	private Object jsonObjectRev = null;
 
@@ -86,7 +84,7 @@ public class DataSyncControllerTest {
 		pre_registration_ids.add("75391783729406");
 		pre_registration_ids.add("75391783729407");
 		pre_registration_ids.add("75391783729408");
-		requestDTO.setPre_registration_ids(pre_registration_ids);
+		requestDTO.setPreRegistrationIds(pre_registration_ids);
 		reverseDataSyncDTO.setRequest(requestDTO);
 
 		preId = "29107415046379";
@@ -120,32 +118,24 @@ public class DataSyncControllerTest {
 		errlist.add(exceptionJSONInfo);
 		responseDto.setResponse(responseList);
 
-		Mockito.when(dataSyncService.getPreRegistration(preId)).thenReturn(responseDto);
+		Mockito.when(dataSyncService.getPreRegistrationData(preId)).thenReturn(responseDto);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/data-sync/datasync")
 				.contentType(MediaType.APPLICATION_JSON).param("preId", "29107415046379");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Test
-	public void retrieveAllpregIdSuccessTest() throws Exception {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date date1 = dateFormat.parse("01/01/2011");
-		Date date2 = dateFormat.parse("01/01/2013");
-		long time1 = date1.getTime();
-		long time2 = date2.getTime();
-		Timestamp from = new Timestamp(time1);
-		Timestamp to = new Timestamp(time2);
-
-		DataSyncDTO dataSyncDTO = new DataSyncDTO();
+	public void retrieveAllpregIdSuccessTest(){
+		MainRequestDTO<DataSyncRequestDTO> dataSyncDTO = new MainRequestDTO<>();
 		DataSyncRequestDTO dataSyncRequestDTO = new DataSyncRequestDTO();
 		dataSyncRequestDTO.setRegClientId("59276903416082");
-		dataSyncRequestDTO.setFromDate("01/01/2011");
-		dataSyncRequestDTO.setToDate("01/01/2013");
-		dataSyncRequestDTO.setUserId("Officer");
+		dataSyncRequestDTO.setFromDate("01/01/2011 00:00:00");
+		dataSyncRequestDTO.setToDate("01/01/2013 00:00:00");
+		dataSyncRequestDTO.setUserId("User1");
 		dataSyncDTO.setId("mosip.pre-registration.datasync");
-		dataSyncDTO.setDataSyncRequestDto(dataSyncRequestDTO);
+		dataSyncDTO.setRequest(dataSyncRequestDTO);
 		dataSyncDTO.setReqTime(new Timestamp(System.currentTimeMillis()));
 		dataSyncDTO.setVer("1.0");
 
@@ -155,9 +145,7 @@ public class DataSyncControllerTest {
 
 		preRegistrationIdsDTO.setPreRegistrationIds(list);
 		preRegistrationIdsDTO.getTransactionId();
-//		@SuppressWarnings("rawtypes")
-//		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO();
-		
+
 		responseDto.setErr(null);
 		responseDto.setStatus("true");
 		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
@@ -172,10 +160,9 @@ public class DataSyncControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
-	public void reverseDatasyncSuccessTest() throws Exception {
-		DataSyncResponseDTO<String> responseDto = new DataSyncResponseDTO<>();	
+	public void reverseDatasyncSuccessTest(){
+		MainResponseDTO<String> responseDto = new MainResponseDTO<>();	
 		List responseList = new ArrayList<>();
 		responseList.add(ErrorMessages.PRE_REGISTRATION_IDS_STORED_SUCESSFULLY.toString());
 		responseDto.setErr(null);

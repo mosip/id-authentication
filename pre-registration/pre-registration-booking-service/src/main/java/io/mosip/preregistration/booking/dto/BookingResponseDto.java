@@ -28,7 +28,7 @@ public class BookingResponseDto<T> implements Serializable {
 	
 	private Boolean status;
 	
-	private Timestamp resTime;
+	private String resTime;
 	
 	private T response;
 	
