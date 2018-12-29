@@ -14,8 +14,8 @@ import lombok.Data;
 @Data
 public class Documents {
 
-	/** The doc cat. */
-	private String docCat;
+	/** The doc type. */
+	private String docType;
 	
 	/** The doc value. */
 	private String docValue; 

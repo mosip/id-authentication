@@ -41,13 +41,17 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
  */
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
-	
+
+	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
 	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
 
+	/** The Constant ID_REPO. */
 	private static final String ID_REPO = "IdRepo";
 
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
 
+	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoExceptionHandler.class);
 
 	/** The mapper. */
@@ -65,20 +69,26 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER, "handleAllExceptions - \n"
-				+ ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler#handleExceptionInternal(java.lang.Exception, java.lang.Object, org.springframework.http.HttpHeaders, org.springframework.http.HttpStatus, org.springframework.web.context.request.WebRequest)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.web.servlet.mvc.method.annotation.
+	 * ResponseEntityExceptionHandler#handleExceptionInternal(java.lang.Exception,
+	 * java.lang.Object, org.springframework.http.HttpHeaders,
+	 * org.springframework.http.HttpStatus,
+	 * org.springframework.web.context.request.WebRequest)
 	 */
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER, "handleExceptionInternal - \n"
-				+ ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleExceptionInternal - \n" + ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
@@ -98,15 +108,17 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle id app exception.
 	 *
-	 * @param ex the ex
-	 * @param request the request
+	 * @param ex
+	 *            the ex
+	 * @param request
+	 *            the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
-		
-		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER, "handleIdAppException - \n"
-				+ ExceptionUtils.getStackTrace(ex));
+
+		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
 		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.BAD_REQUEST);
 	}
@@ -114,11 +126,12 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex            the exception occurred
+	 * @param ex
+	 *            the exception occurred
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex) {
-		
+
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = ex;
@@ -151,7 +164,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		response.setTimestamp(DateUtils.getDefaultUTCCurrentDateTimeString());
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
+				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response", "uin")));
 
 		return response;
 	}
