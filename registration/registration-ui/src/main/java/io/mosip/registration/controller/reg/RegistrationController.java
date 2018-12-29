@@ -331,7 +331,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private Label emailIdLabel;
 	@FXML
-	private Label cnieLabel;			 
+	private Label cnieLabel;
 
 	FXUtils fxUtils;
 
@@ -340,7 +340,7 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
+			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight() - 5);
 
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
@@ -378,7 +378,8 @@ public class RegistrationController extends BaseController {
 						}
 					});
 			fxUtils = FXUtils.getInstance();
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.INDIVIDUAL_VALIDATION);
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
+					RegistrationConstants.INDIVIDUAL_VALIDATION);
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			isChild = true;
@@ -398,41 +399,7 @@ public class RegistrationController extends BaseController {
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
-			if (getRegistrationDtoContent().getSelectionListDTO() != null) {
-
-				ObservableList<Node> nodes = demoGraphicPane1.getChildren();
-
-				for (Node node : nodes) {
-					node.setDisable(true);
-				}
-				paneLabel.setText("/ UIN Update");
-				fetchBtn.setVisible(false);
-				headerImage.setVisible(false);
-				nextBtn.setDisable(false);
-				preRegistrationLabel.setText("UIN");
-
-				preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
-				preRegistrationId.setDisable(false);
-				childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
-
-				fullName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
-				fullNameLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
-fullNameLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isName());
-				dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
-
-				gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
-				genderLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());						
-
-				addressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
-
-				mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-				mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-				emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-				cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-																			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-
-			}
+			uinUpdate();
 
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -441,10 +408,51 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 		}
 	}
 
-		public void init(SelectionListDTO selectionListDTO) {
+	private void uinUpdate() {
+		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+
+			ObservableList<Node> nodes = demoGraphicPane1.getChildren();
+
+			for (Node node : nodes) {
+				node.setDisable(true);
+			}
+			paneLabel.setText("/ UIN Update");
+			fetchBtn.setVisible(false);
+			headerImage.setVisible(false);
+			nextBtn.setDisable(false);
+			preRegistrationLabel.setText("UIN");
+
+			preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
+			
+			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
+
+			fullName.setDisable(false);
+			fullNameLocalLanguage.setDisable(false);
+			fullNameLabel.setDisable(false);
+			
+			dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
+
+			gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+			genderLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+
+			addressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
+
+			mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			
+			emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			
+			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+		}
+	}
+
+	public void init(SelectionListDTO selectionListDTO) {
 		createRegistrationDTOObject();
 		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
 	}
+
 	/**
 	 * Loading the virtual keyboard
 	 */
@@ -717,7 +725,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
-			DemographicInfoDTO demographicInfoDTO ;
+			DemographicInfoDTO demographicInfoDTO;
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
@@ -764,169 +772,148 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 
 		String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
 		String localLanguageCode = AppConfig.getApplicationProperty("local_language");
-		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
-		
-		return Builder.build(DemographicInfoDTO.class)
-				.with(demographicDTO -> demographicDTO.setIdentity(Builder.build(Identity.class)
-						.with(identity -> identity.setFullName((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class).with(name -> name.setLabel("First Name"))
-								.with(name -> name.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(fullName.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(fullNameLocalLanguage.getText()))
-												.get()))
-										.get()))
+		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+				.getIdentity();
+
+		return Builder.build(DemographicInfoDTO.class).with(demographicDTO -> demographicDTO.setIdentity(Builder
+				.build(Identity.class)
+				.with(identity -> identity.setFullName((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(name -> name.setLabel("First Name"))
+						.with(name -> name.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(fullName.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 								.get()))
-						.with(identity -> identity.setDateOfBirth(Builder.build(SimplePropertiesDTO.class)
-								.with(value -> value.setLabel("Date Of Birth"))
-								.with(value -> value.setValue(DateUtils.formatDate(Date.from(
-										(ageDatePicker.getValue() == null ? autoAgeDatePicker : ageDatePicker)
-												.getValue().atStartOfDay().atZone(ZoneId.systemDefault())
-												.toInstant()),
+						.get()))
+				.with(identity -> identity.setDateOfBirth(
+						Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Date Of Birth"))
+								.with(value -> value.setValue(DateUtils.formatDate(
+										Date.from((ageDatePicker.getValue() == null ? autoAgeDatePicker : ageDatePicker)
+												.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
 										"yyyy/MM/dd")))
 								.get()))
 
-						.with(identity -> identity.setAge(ageField.getText()))
-						.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(genderValue -> genderValue.setLabel("Gender"))
-								.with(genderValue -> genderValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(gender.getValue())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(gender.getValue())).get()))
-										.get()))
+				.with(identity -> identity.setAge(ageField.getText()))
+				.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(genderValue -> genderValue.setLabel("Gender"))
+						.with(genderValue -> genderValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(gender.getValue())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(gender.getValue())).get()))
 								.get()))
-						.with(identity -> identity.setAddressLine1((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(addressValue -> addressValue.setLabel("Address Line 1"))
-								.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(addressLine1.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-
-												.with(value -> value
-														.setValue(addressLine1LocalLanguage.getText()))
-												.get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setAddressLine2((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(addressValue -> addressValue.setLabel("Address Line 2"))
-								.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(addressLine2.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-
-												.with(value -> value
-														.setValue(addressLine2LocalLanguage.getText()))
-												.get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setAddressLine3((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(addressValue -> addressValue.setLabel("Address Line 3"))
-								.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(addressLine3.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-
-												.with(value -> value
-														.setValue(addressLine3LocalLanguage.getText()))
-												.get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setRegion((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(regionValue -> regionValue.setLabel("Region"))
-								.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(region.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(region.getText())).get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setProvince((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(provinceValue -> provinceValue.setLabel("Province"))
-								.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(province.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(province.getText())).get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setCity((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class).with(cityValue -> cityValue.setLabel("City"))
-								.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(city.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(city.getText())).get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setPostalCode(postalCode.getText()))
-
-						.with(identity -> identity.setPhone(Builder.build(SimplePropertiesDTO.class)
-								.with(value -> value.setLabel("Land Line"))
-								.with(value -> value.setValue(mobileNo.getText())).get()))
-						.with(identity -> identity.setEmail(Builder.build(SimplePropertiesDTO.class)
-								.with(value -> value.setLabel("Business Email"))
-								.with(value -> value.setValue(emailId.getText())).get()))
-						.with(identity -> identity.setCnieNumber(cniOrPinNumber.getText()))
-						.with(identity -> identity.setLocalAdministrativeAuthority((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(localAdminAuthValue -> localAdminAuthValue
-										.setLabel("Local Administrative Authority"))
-								.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder
-										.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(localAdminAuthority.getText()))
-												.get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(localAdminAuthority.getText()))
-												.get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO) Builder
-								.build(ArrayPropertiesDTO.class)
-								.with(parentValue -> parentValue.setLabel("Parent/Guardian"))
-								.with(parentValue -> parentValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue(parentName.getText())).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(parentName.getText())).get()))
-										.get()))
-								.get()))
-						.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.getText()))
-						.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
-						.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
-						.with(identity -> identity
-								.setProofOfRelationship(demographicIdentity.getProofOfRelationship()))
-						.with(identity -> identity
-								.setDateOfBirthProof(demographicIdentity.getDateOfBirthProof()))
 						.get()))
+				.with(identity -> identity.setAddressLine1((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(addressValue -> addressValue.setLabel("Address Line 1"))
+						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(addressLine1.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+
+										.with(value -> value.setValue(addressLine1LocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setAddressLine2((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(addressValue -> addressValue.setLabel("Address Line 2"))
+						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(addressLine2.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+
+										.with(value -> value.setValue(addressLine2LocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setAddressLine3((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(addressValue -> addressValue.setLabel("Address Line 3"))
+						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(addressLine3.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+
+										.with(value -> value.setValue(addressLine3LocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setRegion((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(regionValue -> regionValue.setLabel("Region"))
+						.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(region.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(region.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setProvince((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(provinceValue -> provinceValue.setLabel("Province"))
+						.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(province.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(province.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setCity((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(cityValue -> cityValue.setLabel("City"))
+						.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(city.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(city.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setPostalCode(postalCode.getText()))
+
+				.with(identity -> identity
+						.setPhone(Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Land Line"))
+								.with(value -> value.setValue(mobileNo.getText())).get()))
+				.with(identity -> identity.setEmail(
+						Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Business Email"))
+								.with(value -> value.setValue(emailId.getText())).get()))
+				.with(identity -> identity.setCnieNumber(cniOrPinNumber.getText()))
+				.with(identity -> identity.setLocalAdministrativeAuthority((ArrayPropertiesDTO) Builder
+						.build(ArrayPropertiesDTO.class)
+						.with(localAdminAuthValue -> localAdminAuthValue.setLabel("Local Administrative Authority"))
+						.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO) Builder
+						.build(ArrayPropertiesDTO.class).with(parentValue -> parentValue.setLabel("Parent/Guardian"))
+						.with(parentValue -> parentValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(parentName.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(parentName.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.getText()))
+				.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
+				.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
+				.with(identity -> identity.setProofOfRelationship(demographicIdentity.getProofOfRelationship()))
+				.with(identity -> identity.setDateOfBirthProof(demographicIdentity.getDateOfBirthProof())).get()))
 				.get();
 	}
 
@@ -971,8 +958,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1220,7 +1206,8 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype", RegistrationConstants.INDIVIDUAL_VALIDATION)) {
+				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype",
+						RegistrationConstants.INDIVIDUAL_VALIDATION)) {
 					ageField.setText(oldValue);
 				}
 				int age = 0;
@@ -1419,7 +1406,8 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	}
 
 	public void clickMe() {
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.CONSOLIDATED_VALIDATION);
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
+				RegistrationConstants.CONSOLIDATED_VALIDATION);
 		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
@@ -1440,7 +1428,8 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 		displayValidationMessage(validation.getValidationMessage().toString());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED, RegistrationConstants.INDIVIDUAL_VALIDATION);
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
+				RegistrationConstants.INDIVIDUAL_VALIDATION);
 	}
 
 	/**
@@ -1548,8 +1537,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	}
 
 	/**
-	 * @param demoGraphicTitlePane
-	 *            the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1582,8 +1570,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1648,8 +1635,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1658,8 +1644,7 @@ emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCon
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
