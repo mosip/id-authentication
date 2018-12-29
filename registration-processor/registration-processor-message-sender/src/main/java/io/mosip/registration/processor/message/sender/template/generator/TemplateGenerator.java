@@ -19,6 +19,7 @@ import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
@@ -38,27 +39,29 @@ public class TemplateGenerator {
 
 	private static Logger log = LoggerFactory.getLogger(TemplateGenerator.class);
 	private static final String TEMPLATES = "templates";
-	
+
 	private String resourceLoader = "classpath";
 	private String templatePath = ".";
 	private boolean cache = Boolean.TRUE;
 	private String defaultEncoding = StandardCharsets.UTF_8.name();
-	
+
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	public String templateGenerator(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException {
 		String artifact = null;
+
 		try {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(TEMPLATES);
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
-			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER,
-					pathSegments, "", "", TemplateResponseDto.class);
+			TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER, pathSegments,
+					"", "", TemplateResponseDto.class);
 
-			InputStream is = new ByteArrayInputStream(template.getTemplates().iterator().next().getFileText().getBytes());
+			InputStream is = new ByteArrayInputStream(
+					template.getTemplates().iterator().next().getFileText().getBytes());
 
 			InputStream out = getTemplateManager().merge(is, attributes);
 
@@ -69,15 +72,16 @@ public class TemplateGenerator {
 
 		} catch (ApisResourceAccessException e) {
 			throw new TemplateNotFoundException(PlatformErrorMessages.RPR_TEM_NOT_FOUND.getCode());
-		} catch (TemplateResourceNotFoundException | TemplateParsingException e) {
+		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		} catch (Exception e) {
-			log.error("Template was not generated due to some internal error");
+			log.error("Template was not generated due to some internal error", e);
+			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		}
 
 		return artifact;
 	}
-	
+
 	public TemplateManager getTemplateManager() {
 		final Properties properties = new Properties();
 		properties.put(RuntimeConstants.INPUT_ENCODING, defaultEncoding);
