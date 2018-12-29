@@ -243,7 +243,7 @@ public class BookingServiceTest {
 		responseDto.setResponse(resp);
 		responseDto.setErr(null);
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(service.getCurrentResponseTime());
 
 		requestMap.put("id", bookingDTO.getId());
 		requestMap.put("ver", bookingDTO.getVer());

@@ -137,7 +137,7 @@ public class BookingControllerTest {
 	public void successBookingTest() throws Exception {
 
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(service.getCurrentResponseTime());
 		List<String> respList = new ArrayList<>();
 		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
@@ -172,7 +172,7 @@ public class BookingControllerTest {
 		
 		responseDto.setErr(null);
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(service.getCurrentResponseTime());
 		cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);
