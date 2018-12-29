@@ -68,7 +68,6 @@ mat-select:focus {
   vertical-align: middle;
 }
 .cross {
-  color: red;
   font-weight: 800;
   cursor: pointer;
   position: absolute;
@@ -92,14 +91,28 @@ mat-select:focus {
   font-size: 12px;
 }
 
-.file-upload__document-type {
+.file-upload__body__document-type {
 }
 
-.file-upload__document-type__input {
+.file-upload__body__document-browse {
 }
-.file-upload__document-name {
+
+.file-upload__body__document-name {
   background: #e0e0e0;
   width: fit-content;
   padding: 0.6em;
   font-size: 0.7em;
+  position: relative;
+}
+
+.file-upload__body__document-name span:nth-child(2) {
+  padding-left: 15px;
+}
+
+.file-upload__body__document-name .cross {
+  position: absolute;
+  top: 0px;
+  font-size: 1.5em;
+  right: 0px;
+  text-align: right;
 }

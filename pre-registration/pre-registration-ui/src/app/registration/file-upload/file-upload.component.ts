@@ -16,7 +16,7 @@ export class FileUploadComponent implements OnInit {
   userFiles: FileModel = new FileModel();
   formData = new FormData();
   user: UserModel = new UserModel();
-  users: UserModel[];
+  users: UserModel[] = [];
 
   documentType;
   loginId;
@@ -109,26 +109,8 @@ export class FileUploadComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  setStep(applicant, step) {
-    this.step = step;
-    this.applicantPreRegId = applicant.preRegId;
-    this.user = applicant;
-    this.users[this.step].files.push(['']);
-  }
-
-  nextStep(applicantIndex) {
-    this.step++;
-    if (applicantIndex === this.users.length - 1) {
-      this.router.navigate(['../pick-center'], { relativeTo: this.route });
-    }
-  }
-
-  prevStep() {
-    this.step--;
-  }
-
   ngOnInit() {
-    this.users = this.registration.getUsers();
+    this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
     console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
@@ -159,12 +141,14 @@ export class FileUploadComponent implements OnInit {
   handleFileDrop(fileList) {}
 
   selectChange(event, index: number) {
+    console.log('select change');
     this.documentType = event.source.placeholder;
     this.browseDisabled = false;
     this.documentIndex = index;
   }
 
   openedChange(event, index: number) {
+    console.log('open change');
     this.browseDisabled = false;
     this.documentIndex = index;
   }
@@ -194,6 +178,7 @@ export class FileUploadComponent implements OnInit {
     this.formData.append('file', event.target.files.item(0));
     this.dataStroage.sendFile(this.formData).subscribe(response => {
       // this.setApplicantsArray(this.fileResponse, event.target.files);
+      console.log('response', response);
       this.updateUsers(response, event);
     });
     this.formData = new FormData();
@@ -207,18 +192,16 @@ export class FileUploadComponent implements OnInit {
     this.userFiles.doc_name = event.target.files[0].name;
     this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
     this.userFiles.multipartFile = event.target.files[0];
-    this.userFiles.prereg_id = this.applicantPreRegId;
+    this.userFiles.prereg_id = this.users[0].preRegId;
     console.log('step:', this.step);
 
     console.log('users befor update', this.users);
     this.users.forEach(element => {
-      if (element.preRegId === this.applicantPreRegId) {
-        if (element.files[0].length) {
-          this.users[this.step].files[0][this.documentIndex] = this.userFiles;
-          // element.files[0][this.documentIndex] = this.userFiles;
-        } else {
-          this.users[this.step].files[0].push(this.userFiles);
-        }
+      if (element.files[0].length) {
+        this.users[this.step].files[0][this.documentIndex] = this.userFiles;
+        // element.files[0][this.documentIndex] = this.userFiles;
+      } else {
+        this.users[this.step].files[0].push(this.userFiles);
       }
     });
     this.userFiles = new FileModel();
