@@ -38,7 +38,7 @@ public class ResponseDTO<T> implements Serializable {
 	/**
 	 * Response Date Time
 	 */
-	private Date resTime;
+	private String resTime;
 
 	/**
 	 * List of Response

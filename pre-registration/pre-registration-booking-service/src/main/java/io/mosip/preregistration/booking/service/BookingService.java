@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,7 +131,6 @@ public class BookingService {
 	@Value("${preRegResourceUrl}")
 	private String preRegResourceUrl;
 
-	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
 	@PostConstruct
@@ -262,7 +262,7 @@ public class BookingService {
 			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
 					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setResTime(getCurrentResponseTime());
 		response.setStatus(true);
 		response.setResponse("MASTER_DATA_SYNCED_SUCCESSFULLY");
 		return response;
@@ -313,7 +313,7 @@ public class BookingService {
 				availability.setCenterDetails(dateTimeList);
 				availability.setRegCenterId(regID);
 
-				response.setResTime(new Timestamp(System.currentTimeMillis()));
+				response.setResTime(getCurrentResponseTime());
 				response.setStatus(true);
 				response.setResponse(availability);
 
@@ -449,7 +449,7 @@ public class BookingService {
 
 				}
 				responseDTO.setStatus(true);
-				responseDTO.setResTime(resTime);
+				responseDTO.setResTime(getCurrentResponseTime());
 				responseDTO.setErr(null);
 				responseDTO.setResponse(respList);
 			}
@@ -654,7 +654,7 @@ public class BookingService {
 				responseDto.setResponse(bookingRegistrationDTO);
 				responseDto.setStatus(true);
 				responseDto.setErr(null);
-				responseDto.setResTime(resTime);
+				responseDto.setResTime(getCurrentResponseTime());
 			} else {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
@@ -688,7 +688,7 @@ public class BookingService {
 					dto.setResponse(cancelBookingResponseDTO);
 					dto.setErr(null);
 					dto.setStatus(true);
-					dto.setResTime(new Timestamp(System.currentTimeMillis()));
+					dto.setResTime(getCurrentResponseTime());
 				}
 			}
 		} catch (DataAccessLayerException e) {
@@ -817,12 +817,16 @@ public class BookingService {
 			preRegIdsByRegCenterIdResponseDTO.setRegistration_center_id(regCenterId);
 			preRegIdsByRegCenterIdResponseDTO.setPre_registration_ids(preRegIdList);
 			preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
-			responseDto.setResTime(resTime);
+			responseDto.setResTime(getCurrentResponseTime());
 			responseDto.setStatus("true");
 			responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return responseDto;
+	}
+	
+	public String getCurrentResponseTime(){
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 }

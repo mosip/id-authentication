@@ -1,6 +1,6 @@
 package io.mosip.preregistration.booking.exception.util;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import io.mosip.preregistration.booking.dto.ExceptionJSONInfoDTO;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.dto.BookingResponseDto;
+import io.mosip.preregistration.booking.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
@@ -49,7 +50,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> errorRes = new BookingResponseDto<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
@@ -61,7 +62,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> errorRes = new BookingResponseDto<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -73,7 +74,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> errorRes = new BookingResponseDto<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
@@ -85,7 +86,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> errorRes = new BookingResponseDto<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
 
@@ -96,7 +97,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> errorRes = new BookingResponseDto<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -110,7 +111,7 @@ public class BookingExceptionHandler {
 
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 
 	}
@@ -125,7 +126,7 @@ public class BookingExceptionHandler {
 
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 
 	}
@@ -138,7 +139,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -151,7 +152,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -164,7 +165,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -177,7 +178,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -190,7 +191,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -201,7 +202,7 @@ public class BookingExceptionHandler {
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		responseDto.setStatus(false);
 		responseDto.setErr(err);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 
@@ -214,7 +215,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 
@@ -227,7 +228,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto<?> responseDto = new BookingResponseDto<>();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 	
@@ -243,7 +244,7 @@ public class BookingExceptionHandler {
 
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -257,7 +258,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto responseDto = new BookingResponseDto();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -271,7 +272,7 @@ public class BookingExceptionHandler {
 		BookingResponseDto responseDto = new BookingResponseDto();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 	
@@ -285,8 +286,12 @@ public class BookingExceptionHandler {
 		BookingResponseDto responseDto = new BookingResponseDto();
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+	
+	public String getCurrentResponseTime(){
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()),"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 }
