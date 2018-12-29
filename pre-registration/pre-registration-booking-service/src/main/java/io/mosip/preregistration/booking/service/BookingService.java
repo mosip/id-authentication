@@ -143,6 +143,7 @@ public class BookingService {
 			} else {
 				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.toString(),
 						ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
+
 			}
 		} catch (DataAccessLayerException e) {
 			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
@@ -156,7 +157,6 @@ public class BookingService {
 		response.setResponse(availability);
 		return response;
 	}
-
 	/**
 	 * @param bookingDTO
 	 * @return response with status code
@@ -211,7 +211,7 @@ public class BookingService {
 								}
 							}
 						} else {
-							BookingStatusDTO noDocumentDTO = new BookingStatusDTO();
+							BookingStatusDTO noDocumentDTO= new BookingStatusDTO();
 							noDocumentDTO.setPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
 							noDocumentDTO.setBookingStatus("Failed");
 							noDocumentDTO.setBookingMessage("BOOKING_FAILED_DUE_TO_NO_DOCUMENT");
