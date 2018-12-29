@@ -73,15 +73,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
 	 * getPreRegistrationIds(java.lang.String)
 	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
-	 * getPreRegistrationIds(java.lang.String)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ResponseDTO getPreRegistrationIds(String syncJobId) {
+	synchronized public ResponseDTO getPreRegistrationIds(String syncJobId) {
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -166,19 +160,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching Pre-Registration started");
 
 		PreRegistrationList preRegistration = null;
-		try {
-			/** Check in Database whether required record already exists or not */
-			preRegistration = preRegistrationDAO.get(preRegistrationId);
+		/** Check in Database whether required record already exists or not */
+		preRegistration = preRegistrationDAO.get(preRegistrationId);
 
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage());
-
-			/** set Error response */
-			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
-			return;
-		}
 		/** Has Network Connectivity */
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 
