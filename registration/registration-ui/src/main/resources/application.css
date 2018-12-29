@@ -213,37 +213,33 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0 0 1 0;
 }
-#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane,#fingerPrintScanAnchorPane{
+.imageAnchorPaneStyle{
 	-fx-background-color:#ffffff;
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
 }
-#onHoldPane, #rejectionPane,#authenticationRoot,#fingerPrintScanRoot{
+.rootPaneStyle{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
+.labelAnchorPanebgColor{
 	-fx-background-color:#808080;
 }
-#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane,#fingerPrintCapturePane,#fingerPrintScanRootSubPane{
-	-fx-background-color:#ffffff;
-}
-#pendingApprovalAnchorPane,#pendingActionAnchorPane,#approvalReportAnchorPane,#approveRegistrationRoot,#reRegisterAnchorPane{
+.anchorPanebgColor{
 	-fx-background-color:#ffffff;
 	-fx-alignment: center ;
-	-fx-padding: 0 0 0 0;
 }
-#onHoldComboBox, #rejectionComboBox, #deviceCmbBox{
+.comboboxStyle{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-
-#exitButton, #rejectionExit, #authExit,#authenticationExit,#fingerPrintScanExit{
-	 -fx-border-color: transparent;
-     -fx-padding: 4 0 4 0;
-     -fx-text-fill: black;
+.exitButtonStyle{
+	-fx-border-color: transparent;
+    -fx-padding: 4 0 4 0;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
 }
 #table,#pendingActionTable{
 	-fx-text-fill: black;
@@ -259,12 +255,13 @@
   -fx-border-color: #dcdcdc;
   -fx-font-weight: bold;
 }
-#pendingApprovalTitledPane,#pendingActionTitledPane,#approvalReportTitledPane,#reRegisterTitledPane{
-	 -fx-background-color:#ffffff; 
+.titledPaneStyle{
+	-fx-background-color:#ffffff; 
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-padding: 0 0 0.5em 0;
 }
+
 #table .scroll-bar:vertical > .increment-button,
 #table .scroll-bar:vertical > .decrement-button {
     -fx-background-color: null;

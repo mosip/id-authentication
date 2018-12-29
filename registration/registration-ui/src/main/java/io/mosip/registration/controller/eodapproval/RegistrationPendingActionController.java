@@ -140,7 +140,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	/**
 	 * Method to reload table
 	 */
-	public void reloadTableView() {
+	private void reloadTableView() {
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		approvalmapList = new ArrayList<>(5);
 
@@ -223,7 +223,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * {@code populateTable} method is used for populating registration data
 	 * 
 	 */
-	public void populateTable() {
+	private void populateTable() {
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = registrationApprovalService
 				.getEnrollmentByStatus(RegistrationClientStatusCode.ON_HOLD.getCode());
@@ -356,7 +356,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * @see io.mosip.registration.controller.BaseController#getFingerPrintStatus()
 	 */
 	@Override
-	public void getFingerPrintStatus() {
+	public void updateAuthenticationStatus() {
 		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status has been started");
 

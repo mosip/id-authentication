@@ -229,7 +229,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 
 	@Override
-	public void getFingerPrintStatus() {
+	public void updateAuthenticationStatus() {
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);

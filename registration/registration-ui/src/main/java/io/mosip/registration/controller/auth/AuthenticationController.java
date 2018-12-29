@@ -282,7 +282,7 @@ public class AuthenticationController extends BaseController {
 			} else {
 				if (isEODAuthentication) {
 
-					baseController.getFingerPrintStatus();
+					baseController.updateAuthenticationStatus();
 				} else {
 					submitRegistration();
 				}

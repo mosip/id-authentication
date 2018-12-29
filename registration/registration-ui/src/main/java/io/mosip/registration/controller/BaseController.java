@@ -298,7 +298,7 @@ public class BaseController {
 	 * @param PrimaryStage the primary stage
 	 * @return the finger print status
 	 */
-	public void getFingerPrintStatus() {
+	public void updateAuthenticationStatus() {
 
 	}
 

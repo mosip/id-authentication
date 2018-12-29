@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="fingerPrintScanRoot" prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController">
+<AnchorPane fx:id="fingerPrintScanRoot" prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController" styleClass="rootPaneStyle">
    <children>
-      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" layoutY="53.0" prefHeight="300.0" prefWidth="480.0">
+      <AnchorPane fx:id="authenticateRootSubPane" layoutX="3.0" layoutY="53.0" prefHeight="300.0" prefWidth="480.0" styleClass="anchorPanebgColor">
          <children>
             <AnchorPane fx:id="fingerprintBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
                <children>
@@ -47,14 +47,14 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="authenticateRootPane" layoutY="-1.0" prefHeight="54.0" prefWidth="483.0">
+      <AnchorPane fx:id="authenticateRootPane" layoutY="-1.0" prefHeight="54.0" prefWidth="483.0" styleClass="labelAnchorPanebgColor">
          <children>
             <Label layoutX="131.0" layoutY="14.0" text="Supervisor Authentication">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="X" />
+            <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="X" styleClass="exitButtonStyle"/>
          </children>
       </AnchorPane>
    </children>

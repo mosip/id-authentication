@@ -14,11 +14,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.reg.PacketHandlerController;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.TitledPane;
@@ -52,7 +49,7 @@ public class EODController extends BaseController implements Initializable {
 	private AnchorPane reRegisterAnchorPane;
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(EODController.class);
 
 	/*
 	 * (non-Javadoc)
@@ -71,11 +68,8 @@ public class EODController extends BaseController implements Initializable {
 			Parent reRegisterRoot = BaseController
 					.load(getClass().getResource(RegistrationConstants.REREGISTRATION_PAGE));
 
-			ObservableList<Node> approvalNodes = pendingApprovalAnchorPane.getChildren();
-			approvalNodes.add(pendingApprovalRoot);
-
-			ObservableList<Node> reregisterNodes = reRegisterAnchorPane.getChildren();
-			reregisterNodes.add(reRegisterRoot);
+			pendingApprovalAnchorPane.getChildren().add(pendingApprovalRoot);
+			reRegisterAnchorPane.getChildren().add(reRegisterRoot);
 
 		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_EOD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());

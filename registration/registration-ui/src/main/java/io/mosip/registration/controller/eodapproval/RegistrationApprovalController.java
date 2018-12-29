@@ -152,7 +152,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Method to reload table.
 	 */
-	public void reloadTableView() {
+	private void reloadTableView() {
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 
 		approvalmapList = new ArrayList<>(5);
@@ -230,14 +230,13 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Opening the Acknowledgement Form");
 		viewAckController.viewAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 				fXComponents.getStage());
-
 	}
 
 	/**
 	 * {@code populateTable} method is used for populating registration data.
 	 * 
 	 */
-	public void populateTable() {
+	private void populateTable() {
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
 
@@ -373,7 +372,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * @see io.mosip.registration.controller.BaseController#getFingerPrintStatus()
 	 */
 	@Override
-	public void getFingerPrintStatus() {
+	public void updateAuthenticationStatus() {
 		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status started");
 
