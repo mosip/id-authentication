@@ -189,7 +189,7 @@ public class BaseController {
 	 *            alert context
 	 */
 	protected void generateAlert(String context, String isConsolidated, StringBuilder validationMessage) {
-		if (isConsolidated.equals("N")) {
+		if (isConsolidated.equals(RegistrationConstants.INDIVIDUAL_VALIDATION)) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setHeaderText(null);
 			alert.setContentText(context);
