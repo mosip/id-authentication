@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BookingDTO implements Serializable {
+public class MainListRequestDTO<T> implements Serializable {
 
 	/**
 	 * 
@@ -24,17 +25,21 @@ public class BookingDTO implements Serializable {
 	/**
 	 * id
 	 */
+	@ApiModelProperty(value = "request id", position = 1)
 	private String id;
 	/**
 	 * version
 	 */
+	@ApiModelProperty(value = "request version", position = 2)
 	private String ver;
 	/**
 	 * reqTime
 	 */
+	@ApiModelProperty(value = "request time", position = 3)
 	private Date reqTime;
 	/**
 	 * To accept preregid, regcenterid, timeslot and booked date time
 	 */
-	private List<BookingRequestDTO> request;
+	@ApiModelProperty(value = "list of request", position = 4)
+	private List<T> request;
 }
