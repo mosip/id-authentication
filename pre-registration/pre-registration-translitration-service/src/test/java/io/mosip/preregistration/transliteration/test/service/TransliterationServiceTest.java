@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,16 +27,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.preregistration.transliteration.dto.TransliterationApplicationDTO;
-import io.mosip.preregistration.transliteration.dto.RequestDTO;
-import io.mosip.preregistration.transliteration.dto.ResponseDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
+import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
-import io.mosip.preregistration.transliteration.service.impl.TransliterationServiceImpl;
+import io.mosip.preregistration.transliteration.service.TransliterationService;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
 import io.mosip.preregistration.transliteration.util.PreRegistrationTransliterator;
 
@@ -53,7 +55,7 @@ public class TransliterationServiceTest {
 	private PreRegistrationTransliterator transliterator;
 	
 	@Autowired
-	private TransliterationServiceImpl transliterationServiceImpl;
+	private TransliterationService transliterationServiceImpl;
 	
 	@MockBean
 	private JsonValidatorImpl jsonValidatorImpl;
@@ -65,13 +67,13 @@ public class TransliterationServiceTest {
 	private JSONObject jsonObject;
 	private JSONObject jsonTestObject;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	private RequestDTO< TransliterationApplicationDTO> requestDto=null;
-	private TransliterationApplicationDTO transliterationRequest=null;
+	private MainRequestDTO< TransliterationDTO> requestDto=null;
+	private TransliterationDTO transliterationRequest=null;
 	boolean requestValidatorFlag = false;
 	Map<String, String> requestMap = new HashMap<>();
 	Map<String, String> requiredRequestMap = new HashMap<>();
-	Timestamp times = null;
-	ResponseDTO<TransliterationApplicationDTO> responseDTO = null;
+	String times = null;
+	MainResponseDTO<TransliterationDTO> responseDTO = null;
 	
 	@Value("${ver}")
 	String versionUrl;
@@ -83,16 +85,14 @@ public class TransliterationServiceTest {
 	
 	@Before
 	public void setUp()  {
-		
-		
-		
+		String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 		idEntity=new LanguageIdEntity();
-		times = new Timestamp(System.currentTimeMillis());
+		times = DateUtils.formatDate(new Date(), dateTimeFormat);
 		idEntity.setFromLang("English");
 		idEntity.setLanguageId("Latin-Arabic");
 		idEntity.setToLang("Arabic");
 		
-		transliterationRequest=new TransliterationApplicationDTO();
+		transliterationRequest=new TransliterationDTO();
 		transliterationRequest.setFromFieldLang("English");
 		transliterationRequest.setFromFieldName("Name1");
 		transliterationRequest.setFromFieldValue("Kishan");
@@ -100,8 +100,8 @@ public class TransliterationServiceTest {
 		transliterationRequest.setToFieldName("Name2");
 		transliterationRequest.setToFieldValue("");
 		
-		responseDTO = new ResponseDTO<TransliterationApplicationDTO>();
-		responseDTO.setStatus("true");
+		responseDTO = new MainResponseDTO<TransliterationDTO>();
+		responseDTO.setStatus(true);
 		responseDTO.setResTime(times);
 		responseDTO.setErr(null);
 	}
@@ -109,21 +109,21 @@ public class TransliterationServiceTest {
 	@Test
 	public void successTest() {
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenReturn(idEntity);
-		TransliterationApplicationDTO transliterationRequest2=new TransliterationApplicationDTO();
+		TransliterationDTO transliterationRequest2=new TransliterationDTO();
 		transliterationRequest2.setFromFieldLang("English");
 		transliterationRequest2.setFromFieldName("Name1");
 		transliterationRequest2.setFromFieldValue("Kishan");
 		transliterationRequest2.setToFieldLang("Arabic");
 		transliterationRequest2.setToFieldName("Name2");
 		transliterationRequest2.setToFieldValue("كِسهَن");
-		requestDto=new RequestDTO<TransliterationApplicationDTO>();
+		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setId("mosip.pre-registration.transliteration.transliterate");
 		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
 		requestDto.setVer("1.0");
 		requestDto.setRequest(transliterationRequest);
 		responseDTO.setResponse(transliterationRequest2);
 		
-		ResponseDTO<TransliterationApplicationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
+		MainResponseDTO<TransliterationDTO> result=transliterationServiceImpl.translitratorService(requestDto);
 		assertEquals(result.getResponse().getToFieldValue(), responseDTO.getResponse().getToFieldValue());
 		
 	}
@@ -131,17 +131,17 @@ public class TransliterationServiceTest {
 	@Test(expected = IllegalParamException.class)
 	public void failureTest() throws Exception{
 		
-		IllegalParamException exception = new IllegalParamException(ErrorCodes.PRG_TRL_002.toString(),
+		IllegalParamException exception = new IllegalParamException(ErrorCodes.PRG_TRL_APP_002.getCode(),
 				ErrorMessage.INCORRECT_MANDATORY_FIELDS.toString(), null);
 		Mockito.when(idRepository.findByFromLangAndToLang(Mockito.any(), Mockito.any())).thenThrow(exception);
-		TransliterationApplicationDTO transliterationRequest2=new TransliterationApplicationDTO();
+		TransliterationDTO transliterationRequest2=new TransliterationDTO();
 		transliterationRequest2.setFromFieldLang("Hindi");
 		transliterationRequest2.setFromFieldName("Name1");
 		transliterationRequest2.setFromFieldValue("Kishan");
 		transliterationRequest2.setToFieldLang("Arabic");
 		transliterationRequest2.setToFieldName("Name2");
 		transliterationRequest2.setToFieldValue("كِسهَن");
-		requestDto=new RequestDTO<TransliterationApplicationDTO>();
+		requestDto=new MainRequestDTO<TransliterationDTO>();
 		requestDto.setRequest(transliterationRequest);
 		transliterationServiceImpl.translitratorService(requestDto);
 	}

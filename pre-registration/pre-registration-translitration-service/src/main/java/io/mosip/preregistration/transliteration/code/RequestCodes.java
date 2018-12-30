@@ -11,14 +11,30 @@ package io.mosip.preregistration.transliteration.code;
 public enum RequestCodes {
 
 	/* id */
-	id,
+	ID("id"), 
 
 	/* version */
-	ver,
+	VER("ver"), 
 
 	/* request date time */
-	reqTime,
+	REQ_TIME("reqTime"), 
 
 	/* request object */
-	request;
+	REQUEST("request");
+	
+	/**
+	 * @param code
+	 */
+	private RequestCodes(String code) {
+		this.code = code;
+	}
+
+	private final String code;
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 }

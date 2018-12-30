@@ -3,6 +3,7 @@ package io.mosip.preregistration.transliteration.test.controller;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +20,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.preregistration.transliteration.dto.TransliterationApplicationDTO;
-import io.mosip.preregistration.transliteration.dto.ResponseDTO;
-import io.mosip.preregistration.transliteration.dto.RequestDTO;
-import io.mosip.preregistration.transliteration.service.impl.TransliterationServiceImpl;
+import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
+import io.mosip.preregistration.transliteration.service.TransliterationService;
+import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 
 /**
  * 
@@ -46,19 +49,19 @@ public class TransliterationControllerTest {
 	 * Creating Mock Bean for transliteration Service
 	 */
 	@MockBean
-	private TransliterationServiceImpl serviceImpl;
+	private TransliterationService serviceImpl;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private Object jsonObject = null;
 	
-	private RequestDTO<TransliterationApplicationDTO> requestDto;
+	private MainRequestDTO<TransliterationDTO> requestDto;
 	
 	@Before
 	public void setup() {
-		requestDto=new RequestDTO<>();
+		requestDto=new MainRequestDTO<>();
 		requestDto.setId("mosip.pre-registration.translitration.translitrate");
-		requestDto.setReqTime(new Timestamp(System.currentTimeMillis()));
+		requestDto.setReqTime(new Date());
 		requestDto.getRequest().setFromFieldLang("English");
 		requestDto.getRequest().setFromFieldName("Name1");
 		requestDto.getRequest().setFromFieldValue("Kishan");
@@ -69,21 +72,33 @@ public class TransliterationControllerTest {
 	
 	@Test
 	public void successTest() throws Exception {
-		
-		ResponseDTO<TransliterationApplicationDTO> response=new ResponseDTO<>();
-		
-		TransliterationApplicationDTO dto=new TransliterationApplicationDTO();
+		MainResponseDTO<TransliterationDTO> response=new MainResponseDTO<>();
+		TransliterationDTO dto=new TransliterationDTO();
 		dto.setToFieldValue("كِسهَن");
 		response.setResponse(dto);
-		
 		Mockito.when(serviceImpl.translitratorService(Mockito.any())).thenReturn(response);
 		logger.info("Resonse " + response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/translitrate")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(requestDto.toString());
 		logger.info("Resonse " + response);
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());
-		
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());	
 	}
-
+	
+	/**
+	 * @throws Exception on error
+	 */
+	@Test(expected=MandatoryFieldRequiredException.class)
+	public void failureSave() throws Exception {
+		logger.info("----------Unsuccessful-------");
+		MainResponseDTO<TransliterationDTO> response=new MainResponseDTO<>();
+		TransliterationDTO dto=new TransliterationDTO();
+		dto.setToFieldValue("كِسهَن");
+		response.setResponse(dto);
+		Mockito.when(serviceImpl.translitratorService(Mockito.any())).thenThrow(MandatoryFieldRequiredException.class);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/translitrate")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(requestDto.toString());
+		mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
+	}
 }

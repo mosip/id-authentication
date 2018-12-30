@@ -1,6 +1,6 @@
 package io.mosip.preregistration.transliteration.exception.util;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,37 +8,37 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.transliteration.dto.ExceptionJSONInfoDTO;
-import io.mosip.preregistration.transliteration.dto.ResponseDTO;
+import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
 import io.mosip.preregistration.transliteration.exception.FailedToTransliterateException;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 
 @RestControllerAdvice
 public class TransliterationExceptionHandler {
 	
-	protected String falseStatus = "false";
+	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	protected boolean falseStatus = false;
 	
 	@ExceptionHandler(MandatoryFieldRequiredException.class)
-	public ResponseEntity<ResponseDTO<?>> mandatoryFieldrequired(final MandatoryFieldRequiredException e,WebRequest request){
+	public ResponseEntity<MainResponseDTO<?>> mandatoryFieldrequired(final MandatoryFieldRequiredException e,WebRequest request){
 		
 		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		ResponseDTO<?> errorRes=new ResponseDTO<>();
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
 		errorRes.setStatus(falseStatus);
 		
-		return new ResponseEntity<>(errorRes,HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes,HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(FailedToTransliterateException.class)
-	public ResponseEntity<ResponseDTO<?>> translitrationFailed(final FailedToTransliterateException e,WebRequest request){
-		
+	public ResponseEntity<MainResponseDTO<?>> translitrationFailed(final FailedToTransliterateException e,WebRequest request){
 		ExceptionJSONInfoDTO errorDetails=new ExceptionJSONInfoDTO(e.getErrorCode(),e.getErrorText());
-		ResponseDTO<?> errorRes=new ResponseDTO<>();
+		MainResponseDTO<?> errorRes=new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
 		errorRes.setStatus(falseStatus);
-		
 		return new ResponseEntity<>(errorRes,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
