@@ -53,7 +53,7 @@ The key **non-functional requirements** are
 The overall batch job technical process and individual job detail has been provided below.
 
 -   Spring + Quartz job has been used to configure and execute the batch jobs.  
--   The required job(s) configuration has been externalized and configurable at DB table level along with the frequency detail. 
+-   The required job(s) configuration has been externalize and configurable at DB table level along with the frequency detail. 
 -   JobConfigurationServiceImpl - this is the main job class which pulls the configured jobs from table and schedule the same. 
     The scheduler will execute the each individual job which has to extend the BaseJOB class. 
 -   Once the job execution completed it invokes the SyncJobManager class to update the respective status into the table.
