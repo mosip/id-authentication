@@ -122,6 +122,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
@@ -184,9 +185,6 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private DeviceRepository deviceRepository;
-
-	@MockBean
-	private DeviceHistoryRepository myDeviceHistoryRepository;
 
 	@MockBean
 	private DocumentTypeRepository documentTypeRepository;
@@ -382,7 +380,8 @@ public class MasterdataIntegrationTest {
 
 	public static LocalDateTime localDateTimeUTCFormat = LocalDateTime.now();
 
-	public static final DateTimeFormatter UTC_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	public static final DateTimeFormatter UTC_DATE_TIME_FORMAT = DateTimeFormatter
+			.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	public static final String UTC_DATE_TIME_FORMAT_DATE_STRING = "2018-12-02T02:50:12.208Z";
 
@@ -2889,10 +2888,10 @@ public class MasterdataIntegrationTest {
 
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
 		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new DataNotFoundException("", "cannot update", null));
+				.thenThrow(new DataNotFoundException("", ""));
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -2900,7 +2899,7 @@ public class MasterdataIntegrationTest {
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(device);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
-		Mockito.when(myDeviceHistoryRepository.create(Mockito.any())).thenReturn(null);
+		Mockito.when(deviceHistoryRepository.create(Mockito.any())).thenReturn(null);
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/123").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
@@ -2909,9 +2908,9 @@ public class MasterdataIntegrationTest {
 	public void deleteDeviceExceptionTest() throws Exception {
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
 		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new DataNotFoundException("", "cannot update", null));
+				.thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/1").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	// -----------------------------------------MachineHistory---------------------------------------------
@@ -2920,9 +2919,8 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
-		mockMvc.perform(
-				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+				"2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -2930,9 +2928,8 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-		mockMvc.perform(
-				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
-				.andExpect(status().isNotFound());
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+				"2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -2941,9 +2938,8 @@ public class MasterdataIntegrationTest {
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 								.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(
-				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+				"2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -3608,9 +3604,9 @@ public class MasterdataIntegrationTest {
 				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		Mockito.when(templateFileFormatRepository.update(Mockito.any()))
-				.thenThrow(new DataNotFoundException("", "cannot update", null));
+				.thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
-				.content(content)).andExpect(status().isNotFound());
+				.content(content)).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3618,7 +3614,7 @@ public class MasterdataIntegrationTest {
 		List<Template> templates = new ArrayList<>();
 		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templates);
-		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.anyString(),
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.anyString(), Mockito.any(),
 				Mockito.anyString())).thenReturn(1);
 		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
 		mockMvc.perform(
@@ -3631,11 +3627,11 @@ public class MasterdataIntegrationTest {
 		List<Template> templates = new ArrayList<>();
 		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
 				.thenReturn(templates);
-		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.anyString(),
-				Mockito.anyString())).thenReturn(-1);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.anyString(), Mockito.any(),
+				Mockito.anyString())).thenThrow(new RequestException("", ""));
 		mockMvc.perform(
 				MockMvcRequestBuilders.delete("/v1.0/templatefileformats/1").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	/*------------------------------------Holiday Update/delete -------------------------------------*/
