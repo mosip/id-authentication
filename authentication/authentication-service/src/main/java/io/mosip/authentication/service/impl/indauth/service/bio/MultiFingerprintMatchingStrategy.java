@@ -11,6 +11,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 /**
+ * MatchingStrategy definition for multi-fingerprints matching.
+ * 
  * @author Prem.Kumar4
  *
  */
