@@ -1,7 +1,7 @@
 Technical Design for the Registration Packet Status Reader
 
-**[Functional Background]{.underline}**
-=======================================
+**Functional Background**
+=========================
 
 Registration client application will save the each individual
 registration details as form as packet in the local disk and same thing
@@ -62,15 +62,9 @@ The key **non-functional requirements** are
         along with the request to authenticate the request by the
         server.
 
--   Database:
 
-    -   After getting the status, update each record WRT status.
-
-    -   All connection should be closed once db process completed.
-
-**[Technical Approach]{.underline}**
-====================================
-
+**Technical Approach**
+=======================
 The key solution considerations are -
 
 -   Create ***RegistrationPacketStatusService*** and create DTO and DAO
@@ -94,35 +88,6 @@ The key solution considerations are -
 
 Create the proper alert success/error to intimate the user.
 
-> Apply the below common criteria
-
--   Audit
-
--   Log
-
--   Java Documentation
-
--   Junit
-
-    **Classes**:
-
-    **Controller**:
-
-    RegPacketStatusController
-
-    **Service**:
-
-    RegPacketStatusService
-
-    **DTO**:
-
-    RegPacketStatusDTO
-
-    **DAO**:
-
-    RegPacketStatusDAO/Impl
-
-    **[DB scripts:]{.underline}**
 
 List of Status provided by the Registration-Processor:
 
@@ -143,23 +108,7 @@ Sequence Diagram:
 
 <https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-packetstatusreader-sequenceDiagram.png>
 
-Response:
-
-Service class provide the list of success / failure detail to the
-invoking client program.
-
-Client class \[Controller\] parse the ResponseDTO and frame the
-following message to be displayed to the UI if manual request triggered
-by the user.
-
-UI Display:
-
-  **Enrollment ID**   **Status from Server**   **Additional Comments**
-  ------------------- ------------------------ -------------------------
-                                               
-                                               
-                                               
-
+                                 
 **Request and Response \[RegistrationStatus REST Service\]:**
 
 Provided the request and response of the 'registrationstatus' service.
