@@ -53,7 +53,9 @@ public enum IdRepoErrorConstants {
 	UIN_GENERATION_FAILED("KER-IDR-015", "Generation of UIN failed"),
 
 	/** The response construction error. */
-	RESPONSE_CONSTRUCTION_ERROR("KER-IDR-016", "Generation of UIN failed");
+	RESPONSE_CONSTRUCTION_ERROR("KER-IDR-016", "Generation of UIN failed"), 
+	
+	FILE_STORAGE_FAILED("KER-IDR-017", "Failed to store files in DFS");
 
 	/** The error code. */
 	private final String errorCode;

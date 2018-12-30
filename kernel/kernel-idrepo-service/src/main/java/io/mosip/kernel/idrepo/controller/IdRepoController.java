@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
@@ -49,7 +48,7 @@ public class IdRepoController {
 
 	/** The id repo service. */
 	@Autowired
-	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin, MultipartFile> idRepoService;
+	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
 
 	/** The validator. */
 	@Autowired

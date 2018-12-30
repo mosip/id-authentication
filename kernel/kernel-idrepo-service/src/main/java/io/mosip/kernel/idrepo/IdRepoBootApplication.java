@@ -4,12 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 
 /**
  * The Class IdRepoApplication.
@@ -17,8 +15,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
  * @author Manoj SP
  */
 @SpringBootApplication
-@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class, EncryptorImpl.class,
-		DecryptorImpl.class, KeyGenerator.class })
+@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class, ConnectionUtil.class })
 public class IdRepoBootApplication {
 
 	/**

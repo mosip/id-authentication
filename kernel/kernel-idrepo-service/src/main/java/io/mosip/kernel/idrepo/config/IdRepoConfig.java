@@ -35,7 +35,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -180,19 +179,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return resolver;
 	}
 	
-	/**
-	 * Multipart resolver.
-	 *
-	 * @return the commons multipart resolver
-	 */
-	@Bean
-	public CommonsMultipartResolver multipartResolver() {
-	    CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-//	    resolver.setMaxUploadSize(5242880L);
-	    resolver.setDefaultEncoding("UTF-8");
-	    return resolver;
-	}
-
 	/**
 	 * Rest template.
 	 *
