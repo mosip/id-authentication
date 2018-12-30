@@ -14,7 +14,7 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_NOT_FOUND("KER-MSD-042", "Registration Center not found"),
 
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043",
-			"Invalid date format. Require ISO-8601 format  without offset e.g. 2011-12-03T10:15:30");
+			"Invalid date format");
 
 	private final String errorCode;
 	private final String errorMessage;

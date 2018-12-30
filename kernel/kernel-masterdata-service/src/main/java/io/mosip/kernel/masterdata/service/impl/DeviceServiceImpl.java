@@ -115,8 +115,12 @@ public class DeviceServiceImpl implements DeviceService {
 		Device device = null;
 
 		Device entity = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), Device.class);
+		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), DeviceHistory.class);
+		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
+		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 		try {
 			device = deviceRepository.create(entity);
+			deviceHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
