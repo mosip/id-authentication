@@ -49,16 +49,27 @@ The key **non-functional requirements** are
 -   Background threads shouldn't run too many threads. 
 
 **Solution**
+
+The overall batch job technical process and individual job detail has been provided below.
+
+-   Spring + Quartz job has been used to configure and execute the batch jobs.  
+-   The required job(s) configuration has been externalized and configurable at DB table level along with the frequency detail. 
+-   JobConfigurationServiceImpl - this is the main job class which pulls the configured jobs from table and schedule the same. 
+    The scheduler will execute the each individual job which has to extend the BaseJOB class. 
+-   Once the job execution completed it invokes the SyncJobManager class to update the respective status into the table.
+-   Any new job created should extend the BaseJOB and configure the same at the db level along with the frequency. 
+-   Individual Job can also be triggered through manually from application UI if required. 
+-   Feature has been provided to fetch the list of currently running job from JobContext.
 	
 
-Class and Sequence Diagram: [Batch Jobs]
-![Sync job sequence diagram](_images/registration-sync-batch-jobs.png)
+Technical Flow, Class and Sequence Diagram: [Batch Jobs]
+![Class and Sync job sequence diagram](_images/registration-sync-batch-jobs.png)
 
 Design of **[Packet Status Reader](registration-packetstatusreader.md)**
 
 Design of **[Master Data Sync](registration-master-data-Sync.md)**
 
-Design of **[Configuration Sync]**
+Design of **[Configuration Sync](registration-config-Sync.md)**
 
-Design of **[Policy Sync]**
+Design of **[Policy Sync](registration-policy-sync.md)**
 
