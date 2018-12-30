@@ -18,6 +18,7 @@ import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
@@ -78,7 +79,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 				MetaDataUtils.setUpdateMetaData(templateFileFormatDto, templateFileFormat, false);
 				templateFileFormatRepository.update(templateFileFormat);
 			} else {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
 			}
@@ -104,7 +105,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 			int updatedRows = templateFileFormatRepository.deleteTemplateFileFormat(LocalDateTime.now(ZoneId.of("UTC")),
 					code, MetaDataUtils.getContextUser());
 			if (updatedRows < 1) {
-				throw new DataNotFoundException(
+				throw new RequestException(
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
 			}

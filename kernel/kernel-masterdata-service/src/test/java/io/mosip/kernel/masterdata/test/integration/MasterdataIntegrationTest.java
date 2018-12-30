@@ -2863,7 +2863,7 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataNotFoundException("", "cannot update", null));
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 	}
 
 	// -----------------------------------------MachineHistory---------------------------------------------
