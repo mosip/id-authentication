@@ -67,6 +67,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
@@ -105,6 +106,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.TemplateType;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -121,6 +123,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistory
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
@@ -147,6 +150,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserReposi
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
+import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
@@ -165,6 +169,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
  * @author Uday Kumar
  * @author Megha Tanga
  * @author Srinivasan
+ * @author Neha
  * @since 1.0.0
  */
 @SpringBootTest
@@ -178,6 +183,9 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private DeviceRepository deviceRepository;
+
+	@MockBean
+	private DeviceHistoryRepository myDeviceHistoryRepository;
 
 	@MockBean
 	private DocumentTypeRepository documentTypeRepository;
@@ -197,6 +205,14 @@ public class MasterdataIntegrationTest {
 	private TemplateRepository templateRepository;
 	private Template template;
 	private TemplateDto templateDto;
+
+	private TemplateFileFormatDto templateFileFormatDto;
+	private TemplateFileFormat templateFileFormat;
+
+	@MockBean
+	private TemplateFileFormatRepository templateFileFormatRepository;
+
+	private RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto = new RequestDto<TemplateFileFormatDto>();
 
 	@MockBean
 	private TemplateTypeRepository templateTypeRepository;
@@ -420,6 +436,7 @@ public class MasterdataIntegrationTest {
 		biometricAttributeTestSetup();
 		templateTestSetup();
 		templateTypeTestSetup();
+		templateFileFormatSetup();
 	}
 
 	private DeviceType deviceType;
@@ -744,6 +761,19 @@ public class MasterdataIntegrationTest {
 				"LaptopCode" };
 		objectList.add(objects);
 
+	}
+
+	private void templateFileFormatSetup() {
+		templateFileFormatDto = new TemplateFileFormatDto();
+		templateFileFormatDto.setCode("xml");
+		templateFileFormatDto.setLangCode("ENG");
+		templateFileFormatDto.setIsActive(true);
+		templateFileFormat = new TemplateFileFormat();
+		templateFileFormat.setCode("xml");
+		templateFileFormat.setLangCode("ENG");
+		templateFileFormat.setIsActive(true);
+
+		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
 	private void addValidDocumentSetUp() {
@@ -2833,7 +2863,8 @@ public class MasterdataIntegrationTest {
 		requestDto.setVer("1.0.0");
 		requestDto.setRequest(deviceDto);
 		String content = mapper.writeValueAsString(requestDto);
-		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(device);
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(device);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
@@ -2853,6 +2884,25 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataNotFoundException("", "cannot update", null));
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void deleteDeviceSuccessTest() throws Exception {
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(device);
+		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
+		Mockito.when(myDeviceHistoryRepository.create(Mockito.any())).thenReturn(null);
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/123").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteDeviceExceptionTest() throws Exception {
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
+		Mockito.when(deviceRepository.update(Mockito.any()))
+				.thenThrow(new DataNotFoundException("", "cannot update", null));
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/1").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
 
@@ -3520,6 +3570,64 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 
+	}
+
+	// ------------------------------- TemplateFileFormat Test
+	@Test
+	public void updateTemplateFileFormatSuccessTest() throws Exception {
+		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.update");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateFileFormatDto);
+		String content = mapper.writeValueAsString(requestDto);
+		Mockito.when(templateFileFormatRepository
+				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(templateFileFormat);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateTemplateFileFormatExceptionTest() throws Exception {
+		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.update");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateFileFormatDto);
+		String content = mapper.writeValueAsString(requestDto);
+
+		Mockito.when(templateFileFormatRepository
+				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(null);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any()))
+				.thenThrow(new DataNotFoundException("", "cannot update", null));
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void deleteTemplateFileFormatSuccessTest() throws Exception {
+		List<Template> templates = new ArrayList<>();
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(templates);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(1);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
+		mockMvc.perform(
+				MockMvcRequestBuilders.delete("/v1.0/templatefileformats/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteTemplateFileFormatExceptionTest() throws Exception {
+		List<Template> templates = new ArrayList<>();
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(templates);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.any(), Mockito.anyString(),
+				Mockito.anyString())).thenReturn(-1);
+		mockMvc.perform(
+				MockMvcRequestBuilders.delete("/v1.0/templatefileformats/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
 	}
 
 	/*------------------------------------Holiday Update/delete -------------------------------------*/

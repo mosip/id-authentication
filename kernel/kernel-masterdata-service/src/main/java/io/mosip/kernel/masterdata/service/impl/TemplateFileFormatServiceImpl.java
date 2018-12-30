@@ -95,7 +95,7 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 	@Override
 	public CodeResponseDto deleteTemplateFileFormat(String code) {
 		try {
-			List<Template> templates = templateRepository.findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
+			List<Template> templates = templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(code);
 			if (!templates.isEmpty()) {
 				throw new MasterDataServiceException(
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_DELETE_DEPENDENCY_EXCEPTION.getErrorCode(),

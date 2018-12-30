@@ -36,6 +36,16 @@ public interface TemplateRepository extends BaseRepository<Template, String> {
 	List<Template> findAllByCodeAndIsDeletedFalseOrIsDeletedIsNull(String code);
 	
 	/**
+	 * To fetch all the {@link Template} based on language file format code
+	 * 
+	 * @param file format code
+	 *            the file format code
+	 * @return All the {@link Template}
+	 */
+	@Query("FROM Template WHERE fileFormatCode =?1 AND (isDeleted is null OR isDeleted = false)")
+	List<Template> findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(String fileFormatCode);
+	
+	/**
 	 * To fetch all the {@link Template} based on language code
 	 * 
 	 * @param langCode

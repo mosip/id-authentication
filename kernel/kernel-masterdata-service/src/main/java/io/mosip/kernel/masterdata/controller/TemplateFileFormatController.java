@@ -65,7 +65,7 @@ public class TemplateFileFormatController {
 	 *         {@link ResponseEntity}
 	 */
 	@PutMapping
-	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id", response = IdResponseDto.class)
+	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id", response = CodeAndLanguageCodeID.class)
 	@ApiResponses({
 			@ApiResponse(code = 200, message = "When TemplateFileFormat updated successfully", response = IdResponseDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -86,9 +86,9 @@ public class TemplateFileFormatController {
 	 * @return the code
 	 */
 	@DeleteMapping("/{code}")
-	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
+	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code", response = CodeResponseDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 200, message = "When document category successfully deleted", response = CodeResponseDto.class),
+			@ApiResponse(code = 200, message = "When TemplateFileFormat successfully deleted", response = CodeResponseDto.class),
 			@ApiResponse(code = 400, message = "When path is invalid"),
 			@ApiResponse(code = 404, message = "When No document category found"),
 			@ApiResponse(code = 500, message = "While deleting document category any error occured") })
