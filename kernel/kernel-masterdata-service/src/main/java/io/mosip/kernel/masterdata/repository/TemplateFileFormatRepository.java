@@ -33,6 +33,8 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	/**
 	 * Delete TemplateFileFormat based on code provided.
 	 * 
+	 * @param updatedBy
+	 *            name of user
 	 * @param deletedDateTime
 	 *            the Date and time of deletion.
 	 * @param code

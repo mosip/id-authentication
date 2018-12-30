@@ -54,15 +54,15 @@ public class TemplateFileFormatController {
 				HttpStatus.CREATED);
 
 	}
-	
+
 	/**
 	 * API to update an existing row of Templatefileformat data
 	 * 
 	 * @param templateFileFormatRequestDto
 	 *            input parameter templateFileFormatRequestDto
 	 * 
-	 * @return ResponseEntity TemplateFileFormat Code and LangCode which is updated successfully
-	 *         {@link ResponseEntity}
+	 * @return ResponseEntity TemplateFileFormat Code and LangCode which is updated
+	 *         successfully {@link ResponseEntity}
 	 */
 	@PutMapping
 	@ApiOperation(value = "Service to update TemplateFileFormat", notes = "Update TemplateFileFormat and return TemplateFileFormat id", response = CodeAndLanguageCodeID.class)
@@ -71,19 +71,19 @@ public class TemplateFileFormatController {
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
 			@ApiResponse(code = 404, message = "When TemplateFileFormat is not found"),
 			@ApiResponse(code = 500, message = "While updating TemplateFileFormat any error occured") })
-	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
+	public ResponseEntity<CodeAndLanguageCodeID> updateDevice(
+			@Valid @RequestBody RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto) {
 
-		return new ResponseEntity<>(templateFileFormatService.updateDevice(templateFileFormatRequestDto), HttpStatus.OK);
+		return new ResponseEntity<>(templateFileFormatService.updateDevice(templateFileFormatRequestDto),
+				HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Api to delete TemplateFileFormat
 	 * 
 	 * @param code
-	 *            the TemplateFileFormat code.
-	 * @param langCode
-	 *            the TemplateFileFormat language code.
-	 * @return the code
+	 *            the TemplateFileFormat code
+	 * @return the code of templatefileformat
 	 */
 	@DeleteMapping("/{code}")
 	@ApiOperation(value = "Service to delete TemplateFileFormat", notes = "Delete TemplateFileFormat and return code", response = CodeResponseDto.class)
