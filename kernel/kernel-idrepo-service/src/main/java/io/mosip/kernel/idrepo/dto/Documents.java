@@ -1,5 +1,6 @@
 package io.mosip.kernel.idrepo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
  * Instantiates a new documents.
  */
 @Data
+@AllArgsConstructor
 public class Documents {
 
 	/** The doc type. */

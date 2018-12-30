@@ -42,6 +42,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoController {
 
+	private static final String ALL = "all";
+
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
@@ -107,8 +109,11 @@ public class IdRepoController {
 			@RequestParam(required = false) String filter) throws IdRepoAppException {
 		try {
 			if (!Objects.isNull(uin)) {
+				if (Objects.isNull(filter)) {
+					filter = ALL;
+				}
 				uinValidatorImpl.validateId(uin);
-				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin), HttpStatus.OK);
+				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, filter), HttpStatus.OK);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
 			}
