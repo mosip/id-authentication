@@ -1,7 +1,6 @@
-Technical Design for the Registration Packet Status Reader
+Design - Registration Packet Status Reader
 
-**Functional Background**
-=========================
+**Background**
 
 Registration client application will save the each individual
 registration details as form as packet in the local disk and same thing
