@@ -25,19 +25,40 @@ The key **requirements** are
 -   Always the job should send the delta data to the server.
 -   Always the job should pull the delta data from the server based on the last success update date and time.
 -   Different state of the job should be captured.
+-   The job should be started once the user has been logged into the application.
 
 **List of Jobs**
--   Packet Status Reader
--   Sync Master data from server
--   Sync platform configuration from server
+-   Packet Status Reader.
+-   Pre-registration packet sync from server.
+-   Sync Master data from server.
+-   Sync User detail from server.
+-   Sync User machine mapping from client to server.
+-   Sync platform configuration from server.
 -   Policy sync from server.
+-   Sync Audit data to server.
+-   Clean up Jobs:
+    - Registration Packet cleanup.
+    - Pre-Registration Packet cleanup.
+    - Audit log sync with the server.
 
 The key **non-functional requirements** are
 -   The background process should not consume too much of memory and stop the UI application.
--    
+-   During config and data sync with the server the application should not be used.
+-   Each job status to be recorded into the respective job transaction table.
+-   Any abnormal behavior while executing the job, the same to be notified to the user and stop the application and log the exception detail.
+-   Background threads shouldn't run too many threads. 
 
 **Solution**
 	
 
-Class and Sequence Diagram:
+Class and Sequence Diagram: [Batch Jobs]
 ![Sync job sequence diagram](_images/registration-sync-batch-jobs.png)
+
+Design of **[Packet Status Reader](registration-packetstatusreader.md)**
+
+Design of **[Master Data Sync](registration-master-data-Sync.md)**
+
+Design of **[Configuration Sync]**
+
+Design of **[Policy Sync]**
+
