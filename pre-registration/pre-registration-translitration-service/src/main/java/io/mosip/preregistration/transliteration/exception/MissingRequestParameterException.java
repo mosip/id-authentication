@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;

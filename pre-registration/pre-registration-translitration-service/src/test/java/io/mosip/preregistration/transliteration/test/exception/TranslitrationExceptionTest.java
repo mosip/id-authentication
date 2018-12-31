@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.test.exception;
 
 import java.sql.Timestamp;
@@ -23,21 +27,40 @@ import io.mosip.preregistration.transliteration.exception.MissingRequestParamete
 import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 
+/**
+ * Test class to test the transliteration application exceptions
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TranslitrationExceptionTest {
 	
+	/**
+	 * MockBean reference for $link{LanguageIdRepository}
+	 */
 	@MockBean
 	private LanguageIdRepository idRepository;
 	
+	/**
+	 * Mock reference for $link{TransliterationService}
+	 */
 	@Mock
 	private TransliterationService serviceImpl2;
 	
+	/**
+	 * Autowired reference for $link{TransliterationService}
+	 */
 	@Autowired
 	private TransliterationService serviceImpl;
 	
 	private LanguageIdEntity idEntity;
 	
+	/**
+	 * Throws the InvalidRequestParameterException.
+	 */
 	@Test(expected=InvalidRequestParameterException.class)
 	public void mandetoryRequestFieldsTest() {
 		TransliterationDTO mandatoryFielddto=new TransliterationDTO();
@@ -54,6 +77,10 @@ public class TranslitrationExceptionTest {
 		
 	}
 	
+	
+	/**
+	 * Throws the MandatoryFieldRequiredException.
+	 */
 	@Test
 	public void mandetoryDtoFieldsTest() {
 		MandatoryFieldRequiredException ex=new MandatoryFieldRequiredException();
@@ -76,6 +103,9 @@ public class TranslitrationExceptionTest {
 		
 	}
 	
+	/**
+	 * Throws the MissingRequestParameterException.
+	 */
 	@Test
 	public void illegalParamTest() {
 		MissingRequestParameterException ex=new MissingRequestParameterException("MISSING_PARAM") ;

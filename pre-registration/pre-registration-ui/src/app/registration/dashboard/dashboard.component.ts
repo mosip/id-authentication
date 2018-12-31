@@ -95,12 +95,6 @@ export class DashBoardComponent implements OnInit {
         }
       },
       error => {
-        // if (error && error.err.errorCode === 'PRG_PAM_APP_005') {
-        //   console.log('NO applicant');
-
-        //   this.isFetched = true;
-        //   this.onNewApplication();
-        // }
         console.log('error', error.error.err.errorCode);
         if ((error.error.err.errorCode = 'PRG_PAM_APP_005')) {
           sessionStorage.setItem('newApplicant', 'true');
@@ -108,7 +102,7 @@ export class DashBoardComponent implements OnInit {
         } else {
           this.router.navigate(['error']);
         }
-        // this.isFetched = true;
+        this.isFetched = true;
       },
       () => {
         this.isFetched = true;
@@ -132,18 +126,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic', 1]);
+    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
     this.isNewApplication = true;
-    //   const data = {
-    //     case: 'APPLICANTS'
-    //   };
-    //   const dialogRef = this.openDialog(data, `250px`);
-    //   dialogRef.afterClosed().subscribe(numberOfApplicant => {
-    //     if (numberOfApplicant != null) {
-    //       this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
-    //       this.isNewApplication = true;
-    //     }
-    //   });
   }
 
   openDialog(data, width) {
@@ -290,7 +274,7 @@ export class DashBoardComponent implements OnInit {
         () => {
           this.fetchedDetails = true;
           // this.router.navigate(['demographic', '1'], { relativeTo: this.route });
-          this.router.navigate(['pre-registration', this.loginId, 'demographic', 1]);
+          this.router.navigate(['pre-registration', this.loginId, 'demographic']);
         }
       );
     } else {
@@ -352,13 +336,14 @@ export class DashBoardComponent implements OnInit {
       [new AttributeModel(obj.mobileNumber[0].language, obj.mobileNumber[0].label, obj.mobileNumber[0].value)],
       [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
       [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)]
-      // [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
     );
 
     return identity;
   }
 
   setUserFiles(response) {
+    console.log('user files fetched', response);
+
     this.userFile = response.response;
     this.userFiles.push(this.userFile);
   }

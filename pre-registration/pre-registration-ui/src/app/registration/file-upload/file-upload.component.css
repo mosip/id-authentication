@@ -73,8 +73,9 @@ mat-select:focus {
   position: absolute;
 }
 .file-upload {
-  box-shadow: 1px 1px 1px 1px #000000;
+  box-shadow: 1px 1px 10px 4px #eeeeee;
   background: #ffffff;
+  margin: 10px;
 }
 
 .file-uploaad__header {

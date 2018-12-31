@@ -186,6 +186,7 @@
   border: 1px solid gray;
   background-color: white;
   color: #ff4081;
+  cursor: default;
 }
 
 /* .user__btn__continue {

@@ -15,6 +15,6 @@ export class IdentityModel {
     public postalcode: AttributeModel[],
     public mobileNumber: AttributeModel[],
     public emailId: AttributeModel[],
-    public CNEOrPINNumber: AttributeModel[] // public age: AttributeModel[]
+    public CNEOrPINNumber: AttributeModel[]
   ) {}
 }

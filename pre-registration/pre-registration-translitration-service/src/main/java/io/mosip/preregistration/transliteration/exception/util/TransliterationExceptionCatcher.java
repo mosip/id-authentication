@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.exception.util;
 
 import org.springframework.stereotype.Component;
@@ -13,9 +17,22 @@ import io.mosip.preregistration.transliteration.exception.IllegalParamException;
 import io.mosip.preregistration.transliteration.exception.JsonValidationException;
 import io.mosip.preregistration.transliteration.exception.MissingRequestParameterException;
 
+/**
+ * This class is used to catch the exceptions that occur while creating the
+ * transliteration application
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 @Component
 public class TransliterationExceptionCatcher {
 	
+	/**
+	 * Method to handle the respective exceptions
+	 * 
+	 * @param ex pass the exception
+	 */
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {
 			throw new JsonValidationException(ErrorCodes.PRG_TRL_APP_004.getCode(),

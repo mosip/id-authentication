@@ -4,12 +4,18 @@
       <header>Demographic Details</header>
       <hr />
       <div class="user__container">
-        <form [formGroup]="userForm" class="user__form" #f1>
+        <form [formGroup]="userForm" class="user__form">
           <h6>Language - English</h6>
 
           <mat-form-field>
-            <input matInput #fullName maxlength="50" placeholder="{{ demo.fullName }}" formControlName="fullName" />
-            <!-- <mat-placeholder [ngClass]="{ test: fullName.value.length !== 0 }">FULL NAME</mat-placeholder> -->
+            <input
+              matInput
+              #fullName
+              maxlength="50"
+              placeholder="{{ demo.fullName }}"
+              formControlName="fullName"
+              (focusout)="onTransliteration(fullName.value, t_fullName)"
+            />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!fullName.invalid">Full Name is required</mat-error>
           </mat-form-field>
@@ -75,9 +81,9 @@
 
           <div class="user__gender">
             Gender
+            <!-- (change)="onGenderChange()" -->
             <mat-button-toggle-group
               formControlName="gender"
-              (change)="onGenderChange($event.value)"
               appearance="legacy"
               name="fontStyle"
               aria-label="Font Style"
@@ -101,6 +107,7 @@
               placeholder="{{ demo.addressLine1 }}"
               formControlName="addressLine1"
               (focusout)="onGenderChange()"
+              (focusout)="onTransliteration(addressLine1.value, t_addressLine1)"
             />
             <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
@@ -112,6 +119,7 @@
               maxlength="50"
               placeholder="{{ demo.addressLine2 }}"
               formControlName="addressLine2"
+              (focusout)="onTransliteration(addressLine2.value, t_addressLine2)"
             />
             <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
           </mat-form-field>
@@ -122,6 +130,7 @@
               maxlength="50"
               placeholder="{{ demo.addressLine3 }}"
               formControlName="addressLine3"
+              (focusout)="onTransliteration(addressLine3.value, t_addressLine3)"
             />
             <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
           </mat-form-field>
@@ -482,10 +491,8 @@
     </div>
   </div>
   <div class="user__buttons">
-    <!-- mat-button -->
-    <!-- color="accent" -->
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">Back</button>
-    <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit(f)">
+    <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
       <!-- <div *ngIf="dataUploadComplete">Continue</div>
       <div *ngIf="!dataUploadComplete" class="pgbar">
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>

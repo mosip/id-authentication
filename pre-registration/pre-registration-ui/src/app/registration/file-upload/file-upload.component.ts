@@ -110,7 +110,15 @@ export class FileUploadComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+    // console.log('users length', this.registration.getUsers().length);
+    if (this.registration.getUsers().length > 0) {
+      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+      this.users[0].files.push([]);
+    }
+    // else {
+    //   this.users[0] = this.user;
+    //   this.users[0].files[0] = [[]];
+    // }
     console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
@@ -196,7 +204,7 @@ export class FileUploadComponent implements OnInit {
 
     console.log('users befor update', this.users);
     this.users.forEach(element => {
-      if (element.files[0].length) {
+      if (element.files[0]) {
         this.users[this.step].files[0][this.documentIndex] = this.userFiles;
         // element.files[0][this.documentIndex] = this.userFiles;
       } else {

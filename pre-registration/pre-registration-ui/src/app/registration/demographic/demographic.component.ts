@@ -104,13 +104,8 @@ export class DemographicComponent implements OnInit {
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
-    this.route.params.subscribe((params: Params) => {
-      this.numberOfApplicants = +params['id'];
-      this.numbers = Array(this.numberOfApplicants)
-        .fill(0)
-        .map((x, i) => i);
-      this.initForm();
-    });
+    this.numberOfApplicants = 1;
+    this.initForm();
     this.isDisabled[0] = true;
 
     // this.uppermostLocationHierarchy = this.dataStorageService
@@ -159,7 +154,7 @@ export class DemographicComponent implements OnInit {
       month = user.identity.dateOfBirth[0].value.split('/')[1];
       year = user.identity.dateOfBirth[0].value.split('/')[2];
       dob = user.identity.dateOfBirth[0].value;
-      age = user.identity.dateOfBirth[0].value;
+      age = this.calculateAge(new Date(new Date(dob))).toString();
       postalCode = user.identity.postalcode[0].value;
       mobilePhone = user.identity.mobileNumber[0].value;
       pin = user.identity.CNEOrPINNumber[0].value;
@@ -218,10 +213,10 @@ export class DemographicComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['../../'], { relativeTo: this.route });
+    this.router.navigate(['dashboard', this.loginId]);
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit() {
     // console.log(this.uppermostLocationHierarchy[0].code);
     // this.dataStorageService.getLocationList('BLR', 'ENG');
     let preId = '';
@@ -257,17 +252,14 @@ export class DemographicComponent implements OnInit {
         this.checked = true;
         this.dataUploadComplete = true;
         if (this.step === this.numberOfApplicants) {
-          // this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+          this.router.navigate(['../file-upload'], { relativeTo: this.route });
         }
       }
     );
   }
 
-  onGenderChange(gender: string) {
+  onGenderChange() {
     this.userForm.controls['gender'].markAsTouched();
-    if (gender) {
-      this.userForm.controls.gender.patchValue(gender);
-    }
   }
 
   onAgeChange() {
@@ -307,6 +299,11 @@ export class DemographicComponent implements OnInit {
     const now = new Date();
     const born = new Date(bDay);
     const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+
+    if (this.regService.getUser(this.step) != null) {
+      console.log(bDay);
+      return years;
+    }
     if (years > 150) {
       this.userForm.controls['dob'].markAsTouched();
       this.userForm.controls['dob'].setErrors({ incorrect: true });
@@ -320,11 +317,33 @@ export class DemographicComponent implements OnInit {
     }
   }
 
-  private noWhitespaceValidatorHTML(control: FormControl) {
+  onTransliteration(fromControl, toControl) {
+    console.log(toControl.name);
+
+    console.log(fromControl.value);
+
+    if (fromControl) {
+      console.log('inside trans');
+      const request: any = {
+        from_field_lang: 'English',
+        from_field_name: 'Name1',
+        from_field_value: fromControl,
+        to_field_lang: 'Arabic',
+        to_field_name: 'Name2',
+        to_field_value: ''
+      };
+      this.dataStorageService.getTransliteration(request).subscribe(response => {
+        console.log(response);
+        this.transForm.controls[toControl.name].patchValue(response['response'].to_field_value);
+      });
+    }
+  }
+
+  noWhitespaceValidatorHTML(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     if (!isValid) {
-      return control.setErrors({ incorrect: true });
+      control.setErrors({ incorrect: true });
     }
   }
 
