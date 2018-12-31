@@ -252,6 +252,6 @@ def getChangedModules() {
    }
   }
  }
- echo "Changed modules are ::::::::::> "+changedModules
+ echo "Changed modules are ::::::::::>> "+changedModules
  return changedModules
 }
