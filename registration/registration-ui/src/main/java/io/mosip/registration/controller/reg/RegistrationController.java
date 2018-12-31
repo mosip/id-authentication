@@ -445,6 +445,16 @@ public class RegistrationController extends BaseController {
 			
 			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			
+			parentName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
+			uinId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
+			if(getRegistrationDtoContent().getSelectionListDTO().isChild()) {
+				documentScanController.documentScan.setLayoutY(134.00);
+			}else {
+				documentScanController.documentScan.setLayoutY(25.00);
+			}
+			
+			
 		}
 	}
 
@@ -1226,10 +1236,14 @@ public class RegistrationController extends BaseController {
 							childSpecificFields.setVisible(true);
 							isChild = true;
 							documentScanController.documentScan.setLayoutY(134.00);
+							parentName.setDisable(false);
+							uinId.setDisable(false);
 						} else {
 							isChild = false;
 							childSpecificFields.setVisible(false);
 							documentScanController.documentScan.setLayoutY(25.00);
+							parentName.setDisable(true);
+							uinId.setDisable(true);
 						}
 					}
 				}
