@@ -30,6 +30,36 @@ public enum PlatformErrorMessages {
 	RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "002",
 			"Transaction table is not accessible"),
 
+	RPR_RGS_INVALID_SYNCTYPE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "003",
+			"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"),
+
+	RPR_RGS_INVALID_LANGUAGECODE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "004",
+			"Language Code must be of three character"),
+
+	RPR_RGS_INVALID_REGID_PARENTREGID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "005",
+			"RegistrationId and Parent RegistrationId cannot be same"),
+
+	RPR_RGS_EMPTY_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "006",
+			"RegistrationId cannot be null"),
+
+	RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "007",
+			"Invalid Time Stamp Found in RegistrationId"),
+
+	RPR_RGS_INVALID_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "008",
+			"RegistrationId Must Be Numeric Only"),
+
+	RPR_RGS_INVALID_REGISTRATIONID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "009",
+			"RegistrationId Length Must Be 29"),
+
+	RPR_RGS_INVALID_PRID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "010",
+			"Invalid Time Stamp Found in Parent RegistrationId"),
+
+	RPR_RGS_INVALID_PRID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "011",
+			"Parent RegistrationId Must Be Numeric Only"),
+
+	RPR_RGS_INVALID_PRID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "012",
+			"Parent RegistrationId Length Must Be 29"),
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"), RPR_PIS_IDENTITY_NOT_FOUND(
@@ -121,17 +151,17 @@ public enum PlatformErrorMessages {
 
 	//Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
-	
+
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "The Processing of Template Failed "),
-	
+
 	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template Generation failed"),
-	
+
 	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "Phone number was not found"),
-	
+
 	RPR_EML_EMAILID_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Email Id was not found"),
-	
+
 	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003", "The Configuration and Language code not found"),
-	
+
 	/*****System Exception*****/
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Unexpected exception"),
