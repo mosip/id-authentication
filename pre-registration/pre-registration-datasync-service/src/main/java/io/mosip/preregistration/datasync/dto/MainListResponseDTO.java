@@ -28,10 +28,10 @@ public class MainListResponseDTO<T> implements Serializable {
 	private ExceptionJSONInfoDTO err;
 
 	@ApiModelProperty(value = "Response Status", position = 2)
-	private String status;
+	private boolean status;
 
 	@ApiModelProperty(value = "Response Time", position = 3)
-	private Date resTime;
+	private String resTime;
 
 	@ApiModelProperty(value = "List of Response", position = 4)
 	private List<T> response;

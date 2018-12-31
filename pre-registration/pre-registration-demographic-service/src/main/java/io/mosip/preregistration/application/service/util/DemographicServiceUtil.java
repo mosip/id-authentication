@@ -25,7 +25,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
+import io.mosip.preregistration.application.dto.MainRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -45,6 +45,7 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 @Component
 public class DemographicServiceUtil {
 
+	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	/**
 	 * This setter method is used to assign the initial demographic entity values to
 	 * the createDTO
@@ -140,7 +141,7 @@ public class DemographicServiceUtil {
 	 * @return a map for request input validation
 	 */
 	public Map<String, String> prepareRequestParamMap(
-			DemographicRequestDTO<CreateDemographicDTO> demographicRequestDTO) {
+			MainRequestDTO<CreateDemographicDTO> demographicRequestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.toString(), demographicRequestDTO.getId());
 		inputValidation.put(RequestCodes.ver.toString(), demographicRequestDTO.getVer());
@@ -247,5 +248,9 @@ public class DemographicServiceUtil {
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), e.getCause());
 		}
 		return timeStampMap;
+	}
+	
+	public String getCurrentResponseTime() {
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
 }

@@ -31,7 +31,7 @@ import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.ResponseDTO;
+import io.mosip.preregistration.application.dto.MainListResponseDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
@@ -89,7 +89,7 @@ public class DemographicControllerTest {
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
-		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<CreateDemographicDTO> response = new MainListResponseDTO<>();
 		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
 		CreateDemographicDTO createDto = new CreateDemographicDTO();
 
@@ -128,7 +128,7 @@ public class DemographicControllerTest {
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
-		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<CreateDemographicDTO> response = new MainListResponseDTO<>();
 		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
 		CreateDemographicDTO createDto = new CreateDemographicDTO();
 		createDto.setPreRegistrationId("22893647484937");
@@ -151,7 +151,7 @@ public class DemographicControllerTest {
 	public void getAllApplicationTest() throws Exception {
 
 		String userId = "9988905333";
-		ResponseDTO<PreRegistrationViewDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreId("1234");
@@ -175,7 +175,7 @@ public class DemographicControllerTest {
 	@Test
 	public void getApplicationStatusTest() throws Exception {
 		String preId = "14532456789";
-		ResponseDTO<PreRegistartionStatusDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<PreRegistartionStatusDTO> response = new MainListResponseDTO<>();
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<PreRegistartionStatusDTO>();
 		PreRegistartionStatusDTO statusDto = new PreRegistartionStatusDTO();
 		statusDto.setPreRegistartionId(preId);
@@ -197,7 +197,7 @@ public class DemographicControllerTest {
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
-		ResponseDTO<DeletePreRegistartionDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<DeletePreRegistartionDTO> response = new MainListResponseDTO<>();
 		List<DeletePreRegistartionDTO> DeleteList = new ArrayList<DeletePreRegistartionDTO>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 
@@ -218,7 +218,7 @@ public class DemographicControllerTest {
 	 */
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
-		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<CreateDemographicDTO> response = new MainListResponseDTO<>();
 		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
 		CreateDemographicDTO createDto = new CreateDemographicDTO();
 
@@ -263,7 +263,7 @@ public class DemographicControllerTest {
 
 		String fromDate = "2018-12-06 09:49:29";
 		String toDate = "2018-12-06 12:59:29";
-		ResponseDTO<String> response = new ResponseDTO<>();
+		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		preIds.add("1234");
 		response.setResponse(preIds);

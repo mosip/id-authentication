@@ -63,7 +63,7 @@ public class DataSyncConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Datasync").select()
-				.apis(RequestHandlerSelectors.basePackage("io.mosip.pregistration.datasync.controller"))
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.datasync.controller"))
 				.paths(PathSelectors.ant("/v0.1/pre-registration/data-sync/*")).build();
 
 		if (swaggerBaseUrlSet) {

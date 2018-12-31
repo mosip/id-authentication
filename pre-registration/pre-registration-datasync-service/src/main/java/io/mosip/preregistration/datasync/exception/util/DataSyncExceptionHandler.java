@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 import io.mosip.preregistration.datasync.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.datasync.dto.MainResponseDTO;
@@ -29,8 +30,8 @@ import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
  */
 @RestControllerAdvice
 public class DataSyncExceptionHandler {
-	private String status = "false";
-
+	private boolean status = Boolean.FALSE;
+	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	/**
 	 * DataSyncRecordNotFoundException Handling
 	 * 
@@ -46,7 +47,7 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 
 	}
@@ -66,7 +67,7 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 
 	}
@@ -85,7 +86,7 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setErr(errorDetails);
 		responseDto.setStatus(status);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
@@ -103,7 +104,7 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setErr(errorDetails);
 		responseDto.setStatus(status);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -121,7 +122,7 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
@@ -139,7 +140,7 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 
 	}
@@ -156,9 +157,12 @@ public class DataSyncExceptionHandler {
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);
-		responseDto.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(new Date()));
+		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 
 	}
 
+	public String getCurrentResponseTime() {
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+	}
 }

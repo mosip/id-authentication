@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -38,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.datasync.code.RequestCodes;
@@ -228,6 +228,7 @@ public class DataSyncServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println(uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -254,8 +255,8 @@ public class DataSyncServiceUtil {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
-			preRegIdsByRegCenterIdDTO.setRegistration_center_id(regCenterId);
-			preRegIdsByRegCenterIdDTO.setPre_registration_ids(preRegIds);
+			preRegIdsByRegCenterIdDTO.setRegistrationCenterId(regCenterId);
+			preRegIdsByRegCenterIdDTO.setPreRegistrationIds(preRegIds);
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDto = new MainRequestDTO<>();
 			requestDto.setRequest(preRegIdsByRegCenterIdDTO);
 			@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -381,7 +382,7 @@ public class DataSyncServiceUtil {
 
 			File jsonFile = new File(pathDoc.toString());
 			if (jsonFile.exists()) {
-				Files.deleteIfExists(pathDoc);
+				FileUtils.forceDelete(jsonFile);
 			}
 
 			if (jsonFile.createNewFile()) {
@@ -398,12 +399,11 @@ public class DataSyncServiceUtil {
 					fileDoc = new File(pathDoc.toString());
 					byte[] docBytes = documentEntityList.get(i).getMultipartFile();
 					if (fileDoc.exists()) {
-						Files.deleteIfExists(pathDoc);
+						 FileUtils.forceDelete(fileDoc);
 					}
 					if (fileDoc.createNewFile()) {
 						outputStream(fileDoc, docBytes, inputMultiFileList);
 					}
-					inputMultiFileList.add(fileDoc.getAbsolutePath());
 				}
 
 			}
@@ -412,8 +412,7 @@ public class DataSyncServiceUtil {
 
 			if (inputMultiFileList != null && !inputMultiFileList.isEmpty()) {
 				for (String filePath : inputMultiFileList) {
-					Path path = Paths.get(filePath);
-					Files.deleteIfExists(path);
+					FileUtils.forceDelete(Paths.get(filePath).toFile());
 				}
 			}
 		} catch (Exception e) {

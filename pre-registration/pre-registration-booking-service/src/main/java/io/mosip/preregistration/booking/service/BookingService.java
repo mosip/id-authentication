@@ -167,7 +167,6 @@ public class BookingService {
 			AppointmentCannotBeBookedException.class })
 	public MainResponseDTO<List<BookingStatusDTO>> bookAppointment(MainListRequestDTO<BookingRequestDTO> bookingDTO) {
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
-		RegistrationBookingPK bookingPK = new RegistrationBookingPK();
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(bookingDTO), requiredRequestMap)) {
@@ -178,7 +177,7 @@ public class BookingService {
 								/* booking of new Appointment */
 								synchronized (bookingRequestDTO) {
 									BookingStatusDTO statusDTO = serviceUtil.bookingAPI(bookingDTO.getReqTime(),
-											bookingRequestDTO, bookingPK, registrationBookingRepository,
+											bookingRequestDTO, registrationBookingRepository,
 											bookingAvailabilityRepository);
 									respList.add(statusDTO);
 								}
@@ -199,7 +198,7 @@ public class BookingService {
 										if (cancelBookingResponseDTO != null && cancelBookingResponseDTO.getMessage()
 												.equals("APPOINTMENT_SUCCESSFULLY_CANCELED")) {
 											BookingStatusDTO statusDTO = serviceUtil.bookingAPI(bookingDTO.getReqTime(),
-													bookingRequestDTO, bookingPK, registrationBookingRepository,
+													bookingRequestDTO, registrationBookingRepository,
 													bookingAvailabilityRepository);
 											respList.add(statusDTO);
 										} else {

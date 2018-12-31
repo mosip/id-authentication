@@ -227,7 +227,7 @@ public class BookingServiceUtil {
 			String text = "2016-11-09 00:00:00";
 			LocalDateTime localDateTime = LocalDateTime.parse(text, format);
 			LocalTime localTime = localDateTime.toLocalTime();
-			saveAvailability(regDto, sDate, localTime, localTime,bookingAvailabilityRepository);
+			saveAvailability(regDto, sDate, localTime, localTime, bookingAvailabilityRepository);
 
 		} else {
 
@@ -256,7 +256,7 @@ public class BookingServiceUtil {
 
 				} else {
 					LocalTime toTime = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-					saveAvailability(regDto, sDate, currentTime1, toTime,bookingAvailabilityRepository);
+					saveAvailability(regDto, sDate, currentTime1, toTime, bookingAvailabilityRepository);
 				}
 				currentTime1 = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
 			}
@@ -266,11 +266,11 @@ public class BookingServiceUtil {
 				if (i == (loop2 - 1)) {
 					LocalTime toTime = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
 							.plusMinutes(extraTime2);
-					saveAvailability(regDto, sDate, currentTime2, toTime,bookingAvailabilityRepository);
+					saveAvailability(regDto, sDate, currentTime2, toTime, bookingAvailabilityRepository);
 
 				} else {
 					LocalTime toTime = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
-					saveAvailability(regDto, sDate, currentTime2, toTime,bookingAvailabilityRepository);
+					saveAvailability(regDto, sDate, currentTime2, toTime, bookingAvailabilityRepository);
 				}
 				currentTime2 = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute());
 			}
@@ -331,8 +331,8 @@ public class BookingServiceUtil {
 		return false;
 	}
 
-	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime,
-			LocalTime toTime,BookingAvailabilityRepository bookingAvailabilityRepository) {
+	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime, LocalTime toTime,
+			BookingAvailabilityRepository bookingAvailabilityRepository) {
 		AvailibityEntity avaEntity = new AvailibityEntity();
 		avaEntity.setRegDate(date);
 		avaEntity.setRegcntrId(regDto.getId());
@@ -376,7 +376,7 @@ public class BookingServiceUtil {
 	}
 
 	public BookingStatusDTO bookingAPI(Date reqDateTime, BookingRequestDTO bookingRequestDTO,
-			RegistrationBookingPK bookingPK, RegistrationBookingRepository registrationBookingRepository,
+			RegistrationBookingRepository registrationBookingRepository,
 			BookingAvailabilityRepository bookingAvailabilityRepository) {
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		BookingRegistrationDTO registrationDTO = bookingRequestDTO.getNewBookingDetails();
@@ -396,11 +396,7 @@ public class BookingServiceUtil {
 						bookingRequestDTO.getPreRegistrationId(), StatusCodes.BOOKED.getCode());
 
 				if (!slotExistsFlag) {
-					bookingPK.setPreregistrationId(bookingRequestDTO.getPreRegistrationId());
-
-					bookingPK.setBookingDateTime(DateUtils.parseDateToLocalDateTime(reqDateTime));
-
-					entity.setBookingPK(bookingPK);
+					entity.setBookingPK(new RegistrationBookingPK(bookingRequestDTO.getPreRegistrationId(), DateUtils.parseDateToLocalDateTime(reqDateTime)));
 					entity.setRegistrationCenterId(registrationDTO.getRegistrationCenterId());
 					entity.setStatusCode(StatusCodes.BOOKED.getCode());
 					entity.setLangCode("12L");
@@ -583,6 +579,7 @@ public class BookingServiceUtil {
 		cancelBookingDTO.setSlotToTime(oldBookingRegistrationDTO.getSlotToTime());
 		return cancelBookingDTO;
 	}
+
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}

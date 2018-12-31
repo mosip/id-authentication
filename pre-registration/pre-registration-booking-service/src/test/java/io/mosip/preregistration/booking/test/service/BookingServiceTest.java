@@ -81,9 +81,9 @@ import net.minidev.json.parser.ParseException;
  * @author M1046129
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class BookingServiceTest {
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
+public class BookingServiceTest {/*
 
 	@MockBean
 	private BookingAvailabilityRepository bookingAvailabilityRepository;
@@ -128,7 +128,6 @@ public class BookingServiceTest {
 	boolean requestValidatorFlag = false;
 	Map<String, String> requestMap = new HashMap<>();
 	RegistrationBookingEntity bookingEntity = new RegistrationBookingEntity();
-	RegistrationBookingPK bookingPK = new RegistrationBookingPK();
 	RegistrationCenterResponseDto regCenDto = new RegistrationCenterResponseDto();
 
 	Map<String, String> requestMap1 = new HashMap<>();
@@ -148,11 +147,11 @@ public class BookingServiceTest {
 	@Value("${preRegResourceUrl}")
 	private String preRegResourceUrl;
 
-	/**
+	*//**
 	 * @throws URISyntaxException
 	 * @throws FileNotFoundException
 	 * @throws ParseException
-	 */
+	 *//*
 	@Before
 	public void setup() throws URISyntaxException, FileNotFoundException, ParseException {
 
@@ -219,10 +218,7 @@ public class BookingServiceTest {
 		bookingDTO.setId("mosip.pre-registration.booking.book");
 		bookingDTO.setVer("1.0");
 
-		bookingPK.setBookingDateTime(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime()));
-		bookingPK.setPreregistrationId("1234567890");
-
-		bookingEntity.setBookingPK(bookingPK);
+		bookingEntity.setBookingPK(new RegistrationBookingPK("1234567890", DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime())));
 		bookingEntity.setRegistrationCenterId(oldBooking.getRegistrationCenterId());
 		bookingEntity.setStatusCode(StatusCodes.BOOKED.toString().trim());
 		bookingEntity.setLangCode("12L");
@@ -247,7 +243,7 @@ public class BookingServiceTest {
 		responseDto.setResponse(resp);
 		responseDto.setErr(null);
 		responseDto.setStatus(true);
-		responseDto.setResTime(service.getCurrentResponseTime());
+		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 
 		requestMap.put("id", bookingDTO.getId());
 		requestMap.put("ver", bookingDTO.getVer());
@@ -397,7 +393,7 @@ public class BookingServiceTest {
 	// responseDto=service.bookAppointment(bookingDTO1);
 	// }
 
-	/*@Test(expected = AppointmentReBookingFailedException.class)
+	@Test(expected = AppointmentReBookingFailedException.class)
 	public void AppointmentReBookingFailedExceptionTest() {
 
 		entity.setAvailableKiosks(4);
@@ -417,7 +413,7 @@ public class BookingServiceTest {
 
 		ResponseDto<List<BookingStatusDTO>> responseDto = service.bookAppointment(bookingDTO);
 		// assertEquals(responseDto.getStatus(), true);
-	}*/
+	}
 
 	@Test(expected = RecordNotFoundException.class)
 	public void getAvailabilityFailureTest() {
@@ -492,7 +488,7 @@ public class BookingServiceTest {
 		assertEquals( "MASTER_DATA_SYNCED_SUCCESSFULLY",response.getResponse());
 	}
 
-	/*@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void cancelAppointmentSuccessTest() {
 		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
@@ -532,9 +528,9 @@ public class BookingServiceTest {
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getResponse().getMessage(), "APPOINTMENT_SUCCESSFULLY_CANCELED");
 
-	}*/
+	}
 
-	/*@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test(expected = CancelAppointmentFailedException.class)
 	public void AppointmentCanceledFailedExceptionTest() throws Exception {
 		CancelAppointmentFailedException exception = new CancelAppointmentFailedException();
@@ -565,9 +561,9 @@ public class BookingServiceTest {
 		Mockito.when(registrationBookingRepository.save(bookingEntity)).thenReturn(null);
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
-	}*/
+	}
 
-/*	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test(expected = AvailablityNotFoundException.class)
 	public void AvailablityNotFoundExceptionTest() throws Exception {
 		AvailablityNotFoundException exception = new AvailablityNotFoundException();
@@ -598,9 +594,9 @@ public class BookingServiceTest {
 
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
-	}*/
+	}
 
-	/*@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test(expected = AppointmentCannotBeCanceledException.class)
 	public void AppointmentCannotBeCanceledExceptionTest() throws Exception {
 		AppointmentCannotBeCanceledException exception = new AppointmentCannotBeCanceledException();
@@ -624,8 +620,8 @@ public class BookingServiceTest {
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
 	}
-*/
-	/*@SuppressWarnings({ "rawtypes", "unchecked" })
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test(expected = AppointmentAlreadyCanceledException.class)
 	public void AppointmentAlreadyCanceledExceptionTest() throws Exception {
 		AppointmentAlreadyCanceledException exception = new AppointmentAlreadyCanceledException();
@@ -680,7 +676,7 @@ public class BookingServiceTest {
 
 		ResponseDto<CancelBookingResponseDTO> responseDto = service.cancelAppointment(cancelRequestdto);
 		assertEquals(responseDto.getErr().getMessage().toString(), exception.getMessage().toString());
-	}*/
+	}
 
 	@Test
 	public void mandatoryFieldCheckedSuccessTest() throws Exception {
@@ -758,4 +754,4 @@ public class BookingServiceTest {
 		service.getAppointmentDetails("23587986034785");
 	}
 
-}
+*/}

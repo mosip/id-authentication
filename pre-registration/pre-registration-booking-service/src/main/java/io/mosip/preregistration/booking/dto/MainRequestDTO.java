@@ -18,7 +18,7 @@ public class MainRequestDTO<T> {
 	private String id;
 	@ApiModelProperty(value = "request ver", position = 2)
 	private String ver;
-	@ApiModelProperty(value = "request teme", position = 3)
+	@ApiModelProperty(value = "request time", position = 3)
 	private Date reqTime;
 	@ApiModelProperty(value = "request", position = 4)
 	private T request;

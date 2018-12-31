@@ -34,6 +34,7 @@ import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.MainResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
+import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
@@ -46,6 +47,9 @@ public class BookingControllerTest {
 
 	@MockBean
 	private BookingService service;
+	
+	@MockBean
+	private BookingServiceUtil serviceUtil;
 
 	private AvailabilityDto availabilityDto;
 
@@ -137,7 +141,7 @@ public class BookingControllerTest {
 	public void successBookingTest() throws Exception {
 
 		responseDto.setStatus(true);
-		responseDto.setResTime(service.getCurrentResponseTime());
+		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 		List<String> respList = new ArrayList<>();
 		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
@@ -172,7 +176,7 @@ public class BookingControllerTest {
 		
 		responseDto.setErr(null);
 		responseDto.setStatus(true);
-		responseDto.setResTime(service.getCurrentResponseTime());
+		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 		cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);

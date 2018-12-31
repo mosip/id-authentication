@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
+import io.mosip.preregistration.application.dto.MainRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.ResponseDTO;
+import io.mosip.preregistration.application.dto.MainListResponseDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.swagger.annotations.Api;
@@ -65,8 +65,8 @@ public class DemographicController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully Created"),
 			@ApiResponse(code = 400, message = "Unable to create the demographic data") })
-	public ResponseEntity<ResponseDTO<CreateDemographicDTO>> register(
-			@RequestBody(required = true) DemographicRequestDTO<CreateDemographicDTO> jsonObject) {
+	public ResponseEntity<MainListResponseDTO<CreateDemographicDTO>> register(
+			@RequestBody(required = true) MainRequestDTO<CreateDemographicDTO> jsonObject) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.addPreRegistration(jsonObject));
 	}
 
@@ -80,7 +80,7 @@ public class DemographicController {
 	@ApiOperation(value = "Get Pre-Registartion data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the demographic data") })
-	public ResponseEntity<ResponseDTO<CreateDemographicDTO>> getApplication(
+	public ResponseEntity<MainListResponseDTO<CreateDemographicDTO>> getApplication(
 			@RequestParam(value = "preRegId", required = true) String preRegId) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getDemographicData(preRegId));
 	}
@@ -113,7 +113,7 @@ public class DemographicController {
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
-	public ResponseEntity<ResponseDTO<PreRegistrationViewDTO>> getAllApplications(
+	public ResponseEntity<MainListResponseDTO<PreRegistrationViewDTO>> getAllApplications(
 			@RequestParam(value = "userId", required = true) String userId) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getAllApplicationDetails(userId));
 	}
@@ -128,7 +128,7 @@ public class DemographicController {
 	@ApiOperation(value = "Fetch the status of a application")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch application status ") })
-	public ResponseEntity<ResponseDTO<PreRegistartionStatusDTO>> getApplicationStatus(
+	public ResponseEntity<MainListResponseDTO<PreRegistartionStatusDTO>> getApplicationStatus(
 			@RequestParam(value = "preId", required = true) String preId) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.getApplicationStatus(preId));
 	}
@@ -144,7 +144,7 @@ public class DemographicController {
 	@ApiOperation(value = "Discard individual")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete individual") })
-	public ResponseEntity<ResponseDTO<DeletePreRegistartionDTO>> discardIndividual(
+	public ResponseEntity<MainListResponseDTO<DeletePreRegistartionDTO>> discardIndividual(
 			@RequestParam(value = "preId") String preId) {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId));
 	}
@@ -160,7 +160,7 @@ public class DemographicController {
 	@ApiOperation(value = "Get Pre-Registartion data By Date And Time")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Demographic data successfully retrieved"),
 			@ApiResponse(code = 400, message = "Unable to get the Pre-Registration data") })
-	public ResponseEntity<ResponseDTO<String>> getApplicationByDate(@RequestParam(value = "fromDate") String fromDate,
+	public ResponseEntity<MainListResponseDTO<String>> getApplicationByDate(@RequestParam(value = "fromDate") String fromDate,
 			@RequestParam(value = "toDate") String toDate) {
 		System.out.println("Inside controller");
 		return ResponseEntity.status(HttpStatus.OK)

@@ -85,8 +85,8 @@ public class DataSyncService {
 				PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = serviceUtil
 						.callGetPreIdsByRegCenterIdRestService(dataSyncRequestDTO.getRegClientId(), preregIds);
 				preRegistrationIdsDTO = serviceUtil
-						.getLastUpdateTimeStamp(preRegIdsByRegCenterIdResponseDTO.getPre_registration_ids());
-				responseDto.setStatus("true");
+						.getLastUpdateTimeStamp(preRegIdsByRegCenterIdResponseDTO.getPreRegistrationIds());
+				responseDto.setStatus(Boolean.TRUE);
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setResponse(preRegistrationIdsDTO);
 			}
@@ -104,12 +104,13 @@ public class DataSyncService {
 	public MainResponseDTO<PreRegArchiveDTO> getPreRegistrationData(String preId) {
 		MainResponseDTO<PreRegArchiveDTO> responseDto = new MainResponseDTO<>();
 		PreRegArchiveDTO preRegArchiveDTO = null;
-		try {
+		try{
+		
 			CreateDemographicDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId);
 			List<DocumentServiceDTO> documentlist = serviceUtil.callGetDocRestService(preId);
 			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil.callGetAppointmentDetailsRestService(preId);
 			preRegArchiveDTO = serviceUtil.archivingFiles(preRegistrationDTO, bookingRegistrationDTO, documentlist);
-			responseDto.setStatus("true");
+			responseDto.setStatus(Boolean.TRUE);
 			responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 			responseDto.setResponse(preRegArchiveDTO);
 		} catch (Exception e) {
@@ -132,7 +133,7 @@ public class DataSyncService {
 					&& serviceUtil.validateReverseDataSyncRequest(reverseDataSyncRequest.getRequest())) {
 				reverseDatasyncReponse = serviceUtil.reverseDateSyncSave(reverseDataSyncRequest.getReqTime(),
 						reverseDataSyncRequest.getRequest());
-				responseDto.setStatus("true");
+				responseDto.setStatus(Boolean.TRUE);
 				responseDto.setResponse(reverseDatasyncReponse);
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setErr(null);
