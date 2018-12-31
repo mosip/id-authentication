@@ -227,39 +227,6 @@ export class DemographicComponent implements OnInit {
     let preId = '';
     const identity = this.createIdentityJSON();
     this.dataUploadComplete = false;
-<<<<<<< Updated upstream
-    return new Promise((resolve, reject) => {
-      this.dataStorageService.addUser(this.createRequestJSON(this.preRegId)).subscribe(
-        response => {
-          if (this.regService.getUser(this.step) != null) {
-            this.regService.updateUser(
-              this.step,
-              new UserModel(this.preRegId, identity, this.regService.getUserFiles(this.step))
-            );
-            this.sharedService.updateNameList(this.step, {
-              fullName: this.userForm.controls.fullName.value,
-              preRegId: this.preRegId
-            });
-          } else {
-            preId = response['response'][0].prId;
-            this.regService.addUser(new UserModel(preId, identity, []));
-            this.sharedService.addNameList({
-              fullName: this.userForm.controls.fullName.value,
-              preRegId: preId
-            });
-          }
-        },
-        error => console.log(error),
-        () => {
-          this.isDisabled[this.step] = true;
-          this.step++;
-          this.checked = true;
-          this.dataUploadComplete = true;
-          if (this.step === this.numberOfApplicants) {
-            this.router.navigate(['../../file-upload'], { relativeTo: this.route });
-          }
-          return resolve(true);
-=======
     this.dataStorageService.addUser(this.createRequestJSON(this.preRegId)).subscribe(
       response => {
         if (this.regService.getUser(this.step) != null) {
@@ -278,7 +245,6 @@ export class DemographicComponent implements OnInit {
             fullName: this.userForm.controls.fullName.value,
             preRegId: preId
           });
->>>>>>> Stashed changes
         }
       },
       error => {
