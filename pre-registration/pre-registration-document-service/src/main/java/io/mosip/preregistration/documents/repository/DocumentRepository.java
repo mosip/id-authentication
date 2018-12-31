@@ -11,8 +11,11 @@ import javax.transaction.Transactional;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 
 /**
  * This repository interface is used to define the JPA methods for Document
@@ -26,7 +29,7 @@ import io.mosip.preregistration.documents.entity.DocumentEntity;
  * 
  */
 @Repository("documentRepository")
-@Transactional
+@Transactional(rollbackOn= {Exception.class})
 public interface DocumentRepository extends BaseRepository<DocumentEntity, String> {
 	/**
 	 * @param preregId

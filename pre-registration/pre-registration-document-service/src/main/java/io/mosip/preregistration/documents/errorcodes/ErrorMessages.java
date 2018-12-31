@@ -35,6 +35,10 @@ public enum ErrorMessages {
 	 */
 	DOCUMENT_NOT_PRESENT,
 	/**
+	 * ErrorMessage for PRG_PAM_DOC_005
+	 */
+	DOCUMENT_FAILED_TO_FETCH,
+	/**
 	 * ErrorMessage for PRG_PAM_DOC_006
 	 */
 	DOCUMENT_FAILED_TO_DELETE,
@@ -85,7 +89,23 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
-	
-	INVALID_REQUEST_PARAMETER;
+	INVALID_REQUEST_PARAMETER,
 
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_019
+	 */
+	INVALID_DOCUMENT_ID,
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_019
+	 */
+	INVALID_DOCUMENT_CATEGORY_CODE,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_019
+	 */
+	DEMOGRAPHIC_DATA_NOT_FOUND,
+	/**
+	 * ErrorMessage for PRG_PAM_DOC_019
+	 */
+	DEMOGRAPHIC_GET_RECORD_FAILED;
 }

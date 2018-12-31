@@ -7,6 +7,8 @@ package io.mosip.preregistration.documents.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @AllArgsConstructor
-public class DocumentDTO implements Serializable {
+public class DocumentRequestDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
@@ -32,36 +34,49 @@ public class DocumentDTO implements Serializable {
 	/**
 	 * PreRegistration Id
 	 */
-	private String prereg_id;
+	@JsonProperty("pre_registartion_id")
+	private String preregId;
 
 	/**
 	 * Document Category
 	 */
-	private String doc_cat_code;
+	@JsonProperty("doc_cat_code")
+	private String docCatCode;
 
 	/**
 	 * Document type
 	 */
-	private String doc_typ_code;
+	@JsonProperty("doc_typ_code")
+	private String docTypeCode;
 
 	/**
 	 * Document file format
 	 */
-	private String doc_file_format;
+	@JsonProperty("doc_file_format")
+	private String docFileFormat;
 
 	/**
 	 * Status code
 	 */
-	private String status_code;
+	@JsonProperty("status_code")
+	private String statusCode;
 
 	/**
 	 * Uploaded Date Time
 	 */
-	private Date upload_DateTime;
+	@JsonProperty("upload_date_time")
+	private Date uploadDateTime;
+	
+	/**
+	 * Uploaded lang code
+	 */
+	@JsonProperty("lang_code")
+	private String langCode;
 
 	/**
 	 * uploaded By
 	 */
-	private String upd_by;
+	@JsonProperty("upload_by")
+	private String uploadBy;
 
 }

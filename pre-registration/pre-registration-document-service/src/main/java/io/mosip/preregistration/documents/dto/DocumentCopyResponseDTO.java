@@ -6,6 +6,7 @@ package io.mosip.preregistration.documents.dto;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +22,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class DocumentCopyDTO implements Serializable {
+public class DocumentCopyResponseDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
@@ -29,18 +30,22 @@ public class DocumentCopyDTO implements Serializable {
 	/**
 	 * source PreRegistration Id
 	 */
+	@ApiModelProperty(value = "Source PreReg ID", position = 1)
 	private String sourcePreRegId;
 	/**
 	 * source Document Id 
 	 */
+	@ApiModelProperty(value = "Source Documnet ID", position = 2)
 	private String sourceDocumnetId;
 	/**
 	 * destination PreRegistration Id
 	 */
+	@ApiModelProperty(value = "Destination PreReg ID", position = 3)
 	private String destPreRegId;
 	/**
 	 * destination Document Id
 	 */
+	@ApiModelProperty(value = "Destination Documnet ID", position = 4)
 	private String destDocumnetId;
 
 }

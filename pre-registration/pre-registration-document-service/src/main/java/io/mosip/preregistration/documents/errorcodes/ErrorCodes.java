@@ -85,8 +85,16 @@ public enum ErrorCodes {
 	/**
 	 * ErrorCode for INVALID_REQUEST_PARAMETER
 	 */
-	PRG_PAM_DOC_018;
+	PRG_PAM_DOC_018,
 	
+	/**
+	 * ErrorCode for INVALID_REQUEST_PARAMETER
+	 */
+	PRG_PAM_DOC_019,
 	
+	/**
+	 * ErrorCode for INVALID_REQUEST_PARAMETER
+	 */
+	PRG_PAM_DOC_020;
 
 }

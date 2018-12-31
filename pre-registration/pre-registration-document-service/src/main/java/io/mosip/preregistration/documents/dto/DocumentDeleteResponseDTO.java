@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocumentDeleteDTO implements Serializable {
+public class DocumentDeleteResponseDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
