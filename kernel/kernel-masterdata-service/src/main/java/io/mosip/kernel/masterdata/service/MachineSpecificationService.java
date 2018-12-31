@@ -4,6 +4,7 @@ import io.mosip.kernel.masterdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
  * This interface provides methods to do CRUD operations on MachineSpecification
@@ -35,20 +36,28 @@ public interface MachineSpecificationService {
 	 * 
 	 * @return IdResponseDto Machine Specification ID which is successfully updated
 	 *         {@link IdResponseDto}
+	 *         
+	 * @throws RequestException
+	 *             if Machine Specification not Found
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Machine Specification
+	 *
 	 */
 	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 	/**
-	 * Abstract method to update Machine Specification Details to the Database
+	 * Abstract method to delete Machine Specification Details to the Database
 	 * 
 	 * @param id
 	 *            machineSpecification id
 	 * 
 	 * @return IdResponseDto Machine Specification ID which is successfully deleted
 	 *         {@link IdResponseDto}
+	 *         
+	 * @throws RequestException
+	 *             if Machine Specification not Found
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while deleting Machine Specification
+	 *  
 	 */
 	public IdResponseDto deleteMachineSpecification(String id);
 

@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * 
- * This controller class to save Machine Specification details.
+ * This class provide services to do CRUD operations on MachineSpecification.
  * 
  * @author Megha Tanga
  * @since 1.0.0
