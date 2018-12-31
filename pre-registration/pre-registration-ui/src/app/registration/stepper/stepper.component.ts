@@ -37,6 +37,7 @@ export class StepperComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+    console.log(this.componentName);
     if (this.componentName === 'DemographicComponent') {
       this.classes.step1.p = ['active'];
       this.classes.step1.icon = ['inline-icon', 'inline-icon-background-active'];
