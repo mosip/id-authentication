@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -36,9 +35,8 @@ public class RegistrationCenterDeviceHistory extends BaseEntity implements Seria
 
 	@EmbeddedId
 	@AttributeOverrides({ @AttributeOverride(name = "regCenterId", column = @Column(name = "regcntr_id")),
+			@AttributeOverride(name = "effectivetimes", column = @Column(name = "eff_dtimes")),
 			@AttributeOverride(name = "deviceId", column = @Column(name = "device_id")) })
 	private RegistrationCenterDeviceHistoryPk registrationCenterDeviceHistoryPk;
 
-	@Column(name = "eff_dtimes", nullable = false)
-	private LocalDateTime effectivetimes;
 }

@@ -1,3 +1,4 @@
+
 package io.mosip.registration.processor.stages.demodedupe;
 
 import java.io.IOException;
@@ -216,5 +217,4 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 		}
 	}
-
 }

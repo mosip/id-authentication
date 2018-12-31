@@ -206,7 +206,7 @@ public class DemographicServiceUtil {
 	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {
 		Map<String, Timestamp> timeStampMap = new HashMap<>();
 		try {
-			Date fromDate = DateUtils.parse(URLDecoder.decode(dateMap.get("FromDate"), "UTF-8"), format);
+			Date fromDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get("FromDate"), "UTF-8"), format);
 			Date toDate = null;
 			if (dateMap.get("ToDate") == null || isNull(dateMap.get("ToDate"))) {
 				toDate = fromDate;
@@ -217,7 +217,7 @@ public class DemographicServiceUtil {
 				cal.set(Calendar.SECOND, 59);
 				toDate = cal.getTime();
 			} else {
-				toDate = DateUtils.parse(URLDecoder.decode(dateMap.get("ToDate"), "UTF-8"), format);
+				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get("ToDate"), "UTF-8"), format);
 			}
 			timeStampMap.put("FromDate", new Timestamp(fromDate.getTime()));
 			timeStampMap.put("ToDate", new Timestamp(toDate.getTime()));
