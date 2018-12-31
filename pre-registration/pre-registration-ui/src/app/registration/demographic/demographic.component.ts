@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { RegistrationService } from '../registration.service';
@@ -12,6 +12,7 @@ import { RequestModel } from './request.model';
 import { DemoIdentityModel } from './demo.identity.model';
 import { UserModel } from './user.model';
 import { SharedService } from 'src/app/shared/shared.service';
+import * as appConstants from '../../app.constants';
 
 @Component({
   selector: 'app-demographic',
@@ -23,7 +24,10 @@ export class DemographicComponent implements OnInit {
   step = 0;
   demo = new DemoLabels(
     'Full Name',
-    'Date Of Birth',
+    'dob',
+    'dd',
+    'mm',
+    'yyyy',
     'gender',
     'Address Line 1',
     'Address Line 2',
@@ -38,8 +42,31 @@ export class DemographicComponent implements OnInit {
     'CNE/PIN Number',
     'Age'
   );
-  numberPattern = '^[0-9]+[0-9]*$';
-  textPattern = '^[a-zA-Z ]*$';
+
+  demo1 = new DemoLabels(
+    't_Full Name',
+    't_dob',
+    't_dd',
+    't_mm',
+    't_yyyy',
+    't_gender',
+    't_Address Line 1',
+    't_Address Line 2',
+    't_Address Line 3',
+    't_Region',
+    't_Province',
+    't_City',
+    't_Postal Code',
+    't_Local Administrative Authority',
+    't_Email Id',
+    't_Mobile Number',
+    't_CNE/PIN Number',
+    't_Age'
+  );
+  numberPattern = appConstants.NUMBER_PATTERN;
+  textPattern = appConstants.TEXT_PATTERN;
+  primaryLang = 'en';
+  secondaryLang = 'fr';
   ageOrDobPref = '';
   showCalender: boolean;
   showDate = false;
@@ -59,7 +86,7 @@ export class DemographicComponent implements OnInit {
   @ViewChild('yyyy') yyyy;
   @ViewChild('age') age;
   @ViewChild('f') transForm;
-  @ViewChild('f1') form;
+  // @ViewChild('f1') form;
   @ViewChild('gen') gender;
 
   constructor(
@@ -188,37 +215,19 @@ export class DemographicComponent implements OnInit {
       ]),
       pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
     });
-    // this.userForm.setValidators([this.oneOfControlRequired(this.userForm.get('dob'), this.userForm.get('age'))]);
   }
 
   onBack() {
     this.router.navigate(['../../'], { relativeTo: this.route });
   }
 
-  onSubmit() {
-    // console.log(this.userForm.controls.dob.value);
-    // console.log(
-    //   this.form.nativeElement[1].value + '/' + this.form.nativeElement[2].value + '/' + this.form.nativeElement[3].value
-    // );
-    let i = 0;
-    while (i < this.form.nativeElement.length) {
-      console.log(this.form.nativeElement[i++].value);
-    }
-    console.log('trnsa', this.transForm);
-    console.log(this.gender);
-
-    // console.log('origi', this.form);
-
-    // console.log(this.transForm.nativeElement[0].value);
-    // console.log(this.transForm.nativeElement[0].placeholder);
-    // console.log(this.form.nativeElement[0].value);
-    // console.log(this.form.nativeElement[0].placeholder);
-
+  onSubmit(form: NgForm) {
     // console.log(this.uppermostLocationHierarchy[0].code);
     // this.dataStorageService.getLocationList('BLR', 'ENG');
     let preId = '';
     const identity = this.createIdentityJSON();
     this.dataUploadComplete = false;
+<<<<<<< Updated upstream
     return new Promise((resolve, reject) => {
       this.dataStorageService.addUser(this.createRequestJSON(this.preRegId)).subscribe(
         response => {
@@ -250,9 +259,42 @@ export class DemographicComponent implements OnInit {
             this.router.navigate(['../../file-upload'], { relativeTo: this.route });
           }
           return resolve(true);
+=======
+    this.dataStorageService.addUser(this.createRequestJSON(this.preRegId)).subscribe(
+      response => {
+        if (this.regService.getUser(this.step) != null) {
+          this.regService.updateUser(
+            this.step,
+            new UserModel(this.preRegId, identity, this.regService.getUserFiles(this.step))
+          );
+          this.sharedService.updateNameList(this.step, {
+            fullName: this.userForm.controls.fullName.value,
+            preRegId: this.preRegId
+          });
+        } else {
+          preId = response['response'][0].prId;
+          this.regService.addUser(new UserModel(preId, identity, []));
+          this.sharedService.addNameList({
+            fullName: this.userForm.controls.fullName.value,
+            preRegId: preId
+          });
+>>>>>>> Stashed changes
         }
-      );
-    });
+      },
+      error => {
+        console.log(error);
+        this.router.navigate(['error']);
+      },
+      () => {
+        this.isDisabled[this.step] = true;
+        this.step++;
+        this.checked = true;
+        this.dataUploadComplete = true;
+        if (this.step === this.numberOfApplicants) {
+          // this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+        }
+      }
+    );
   }
 
   onGenderChange(gender: string) {
@@ -283,17 +325,14 @@ export class DemographicComponent implements OnInit {
       const dateform = new Date(newDate);
       const _month = dateform.getMonth() + 1;
       if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
-        console.log('inside valid');
         const pipe = new DatePipe('en-US');
         const myFormattedDate = pipe.transform(dateform, 'dd/MM/yyyy');
         this.userForm.controls.dob.patchValue(myFormattedDate);
         this.userForm.controls.age.patchValue(this.calculateAge(dateform));
-        console.log(myFormattedDate);
       } else {
         this.userForm.controls['dob'].markAsTouched();
         this.userForm.controls['dob'].setErrors({ incorrect: true });
         this.userForm.controls.age.patchValue('');
-        console.log('invalid date');
       }
     }
   }
@@ -315,6 +354,14 @@ export class DemographicComponent implements OnInit {
     }
   }
 
+  private noWhitespaceValidatorHTML(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    if (!isValid) {
+      return control.setErrors({ incorrect: true });
+    }
+  }
+
   private noWhitespaceValidator(control: FormControl) {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
@@ -323,28 +370,72 @@ export class DemographicComponent implements OnInit {
 
   private createIdentityJSON() {
     const identity = new IdentityModel(
-      [new AttributeModel('en', this.demo.fullName, this.userForm.controls.fullName.value)],
-      [new AttributeModel('en', this.demo.dateOfBirth, this.userForm.controls.dob.value)],
-      [new AttributeModel('en', this.demo.gender, this.userForm.controls.gender.value)],
-      [new AttributeModel('en', this.demo.addressLine1, this.userForm.controls.addressLine1.value)],
-      [new AttributeModel('en', this.demo.addressLine2, this.userForm.controls.addressLine2.value)],
-      [new AttributeModel('en', this.demo.addressLine3, this.userForm.controls.addressLine3.value)],
-      [new AttributeModel('en', this.demo.region, this.userForm.controls.region.value)],
-      [new AttributeModel('en', this.demo.province, this.userForm.controls.province.value)],
-      [new AttributeModel('en', this.demo.city, this.userForm.controls.city.value)],
+      [
+        new AttributeModel(this.primaryLang, this.demo.fullName, this.userForm.controls.fullName.value),
+        new AttributeModel(this.secondaryLang, this.demo1.fullName, this.transForm.controls.t_fullName.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.dateOfBirth, this.userForm.controls.dob.value),
+        new AttributeModel(this.secondaryLang, this.demo1.dateOfBirth, this.userForm.controls.dob.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.gender, this.userForm.controls.gender.value),
+        new AttributeModel(this.secondaryLang, this.demo1.gender, this.transForm.controls.t_gender.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.addressLine1, this.userForm.controls.addressLine1.value),
+        new AttributeModel(this.secondaryLang, this.demo1.addressLine1, this.transForm.controls.t_addressLine1.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.addressLine2, this.userForm.controls.addressLine2.value),
+        new AttributeModel(this.secondaryLang, this.demo1.addressLine2, this.transForm.controls.t_addressLine2.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.addressLine3, this.userForm.controls.addressLine3.value),
+        new AttributeModel(this.secondaryLang, this.demo1.addressLine3, this.transForm.controls.t_addressLine3.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.region, this.userForm.controls.region.value),
+        new AttributeModel(this.secondaryLang, this.demo1.region, this.transForm.controls.t_region.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.province, this.userForm.controls.province.value),
+        new AttributeModel(this.secondaryLang, this.demo1.province, this.transForm.controls.t_province.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.city, this.userForm.controls.city.value),
+        new AttributeModel(this.secondaryLang, this.demo1.city, this.transForm.controls.t_city.value)
+      ],
       [
         new AttributeModel(
-          'en',
+          this.primaryLang,
           this.demo.localAdministrativeAuthority,
           this.userForm.controls.localAdministrativeAuthority.value
+        ),
+        new AttributeModel(
+          this.secondaryLang,
+          this.demo1.localAdministrativeAuthority,
+          this.transForm.controls.t_localAdministrativeAuthority.value
         )
       ],
-      [new AttributeModel('en', this.demo.postalCode, this.userForm.controls.postalCode.value)],
-      [new AttributeModel('en', this.demo.mobileNumber, this.userForm.controls.mobilePhone.value)],
-      [new AttributeModel('en', this.demo.emailId, this.userForm.controls.email.value)],
-      [new AttributeModel('en', this.demo.CNEOrPINNumber, this.userForm.controls.pin.value)]
-      // [new AttributeModel('en', this.demo.age, this.userForm.controls.age.value)]
+      [
+        new AttributeModel(this.primaryLang, this.demo.postalCode, this.userForm.controls.postalCode.value),
+        new AttributeModel(this.secondaryLang, this.demo1.postalCode, this.transForm.controls.t_postalCode.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.mobileNumber, this.userForm.controls.mobilePhone.value),
+        new AttributeModel(this.secondaryLang, this.demo1.mobileNumber, this.transForm.controls.t_mobilePhone.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.emailId, this.userForm.controls.email.value),
+        new AttributeModel(this.secondaryLang, this.demo1.emailId, this.transForm.controls.t_email.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.demo.CNEOrPINNumber, this.userForm.controls.pin.value),
+        new AttributeModel(this.secondaryLang, this.demo1.CNEOrPINNumber, this.transForm.controls.t_pin.value)
+      ]
     );
+
     return identity;
   }
 
@@ -356,8 +447,8 @@ export class DemographicComponent implements OnInit {
       createdDateTime: '',
       updatedBy: '',
       updatedDateTime: '',
-      statusCode: 'Pending_Appointment',
-      langCode: 'en',
+      statusCode: appConstants.STATUS_CODE,
+      langCode: appConstants.LANG_CODE,
       demographicDetails: new DemoIdentityModel(identity)
     };
     return req;

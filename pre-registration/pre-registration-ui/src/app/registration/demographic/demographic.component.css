@@ -45,11 +45,15 @@
 
 .user__container {
   font-size: 1rem;
-  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3);
+  /* box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3); */
   padding: 2rem 0 3.5rem 1.5rem;
   width: 48%;
   margin-left: 2%;
   float: left;
+}
+
+.user__container:focus-within {
+  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3);
 }
 
 .user__container h6 {
@@ -162,30 +166,46 @@
 }
 
 .user__btn {
-  padding: 0px 53px;
+  /* padding: 0px 53px;
   border: 1px solid red;
-  margin: 5px;
-}
-
-.user__btn:disabled {
-  padding: 0px 53px;
-  border: 1px solid grey;
-  margin: 5px;
-}
-
-.user__btn__continue {
-  padding: 0px 40px;
+  margin: 5px; */
+  background-color: #ff4081;
+  border: none;
   color: white;
-  background-color: red;
-  margin: 5px;
-  float: right;
+  padding: 0.8rem 4rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.user__btn:disabled,
+.user__btn:active {
+  border: 1px solid gray;
+  background-color: white;
+  color: #ff4081;
+}
+
+/* .user__btn__continue {
+  background-color: #ff4081;
+  border: none;
+  color: white;
+  padding: 13px 50px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
 }
 
 .user__btn__continue:disabled {
   border: 1px solid grey;
   color: black;
   background-color: grey;
-}
+} */
 
 @media (max-width: 550px) {
   .user__container {
