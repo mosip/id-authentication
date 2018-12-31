@@ -24,7 +24,7 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "uin_ref_id")
+	@Column(name = "uin")
 	private String uinRefId;
 
 	@Column(name = "name")

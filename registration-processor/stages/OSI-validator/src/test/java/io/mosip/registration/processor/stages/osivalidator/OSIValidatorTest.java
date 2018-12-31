@@ -122,7 +122,7 @@ public class OSIValidatorTest {
 		regOsiDto.setSupervisorIrisImageName("supervisorIrisImageName");
 		regOsiDto.setSupervisorIrisType("LEFTEYE");
 		regOsiDto.setSupervisorPhotoName("supervisorPhotoName");
-
+		regOsiDto.setSupervisorHashedPin("supervisorHashedPin");
 		regOsiDto.setIntroducerUin(null);
 		regOsiDto.setIntroducerRegId("reg1234");
 		regOsiDto.setIntroducerTyp("Parent");
@@ -287,6 +287,21 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	@Test
+	public void tesAllIntroducerFingerPrint1() throws ApisResourceAccessException, IOException {
+		regOsiDto.setIntroducerFingerpType("LEFTINDEX");
+		regOsiDto.setOfficerfingerType("LEFTRING");
+		regOsiDto.setSupervisorFingerType("RIGHTINDEX");
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertTrue(isValid);
+	}
+	
 	/**
 	 * Test invalid iris.
 	 * 
@@ -310,4 +325,6 @@ public class OSIValidatorTest {
 
 		assertTrue(isValid);
 	}
+	
+	
 }

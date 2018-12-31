@@ -36,12 +36,6 @@ public class FtpScannerStage extends MosipVerticleManager {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpScannerStage.class);
 
 	private static final String LOGDISPLAY = "{} - {}";
-
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 	
 //	@Value("${landingzone.scanner.stage.time.interval}")
 	private int secs = 30;
@@ -54,13 +48,16 @@ public class FtpScannerStage extends MosipVerticleManager {
 	
 	@Autowired
 	private MessageDTO messageDto;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
 	private static final String FILE_NOT_ACCESSIBLE = "The File Path is not accessible";
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 	
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs  * 1000, msg -> {
 			this.process(messageDto);
 		});

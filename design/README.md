@@ -1,4 +1,4 @@
-# MOSIP Functional View
+# MOSIP Functional View:
 
 ![Functional View](_images/MOSIP_functional_view.png)
 

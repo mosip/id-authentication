@@ -26,7 +26,7 @@ public interface DeviceTypeRepository extends BaseRepository<DeviceType, String>
 	 *            id of the machine
 	 * @return list of {@link DeviceType}
 	 */
-	@Query(value = "SELECT dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from  master.device_type dt, master.device_spec ds ,master.device_master dm, master.reg_center_machine_device rcmd where dt.code = ds.dtyp_code and dm.dspec_id = ds.id and dm.id= rcmd.device_id and rcmd.machine_id = ?1   ", nativeQuery = true)
+	@Query(value = "SELECT distinct dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from  master.device_type dt, master.device_spec ds ,master.device_master dm, master.reg_center_machine_device rcmd where dt.code = ds.dtyp_code and dm.dspec_id = ds.id and dm.id= rcmd.device_id and rcmd.machine_id = ?1   ", nativeQuery = true)
 	List<DeviceType> findDeviceTypeByMachineId(String machineId);
 
 	/**
@@ -39,6 +39,6 @@ public interface DeviceTypeRepository extends BaseRepository<DeviceType, String>
 	 *            timeStamp
 	 * @return list of {@link DeviceType}
 	 */
-	@Query(value = "SELECT dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from  master.device_type dt, master.device_spec ds ,master.device_master dm, master.reg_center_machine_device rcmd where dt.code = ds.dtyp_code and dm.dspec_id = ds.id and dm.id= rcmd.device_id and rcmd.machine_id = ?1 and (dt.cr_dtimes > ?2 or dt.upd_dtimes > ?2 or dt.del_dtimes > ?2)  ", nativeQuery = true)
+	@Query(value = "SELECT distinct dt.code, dt.name, dt.descr, dt.lang_code, dt.is_active, dt.cr_by, dt.cr_dtimes, dt.upd_by, dt.upd_dtimes, dt.is_deleted, dt.del_dtimes from  master.device_type dt, master.device_spec ds ,master.device_master dm, master.reg_center_machine_device rcmd where dt.code = ds.dtyp_code and dm.dspec_id = ds.id and dm.id= rcmd.device_id and rcmd.machine_id = ?1 and (dt.cr_dtimes > ?2 or dt.upd_dtimes > ?2 or dt.del_dtimes > ?2)  ", nativeQuery = true)
 	List<DeviceType> findLatestDeviceTypeByMachineId(String machineId, LocalDateTime lastUpdated);
 }

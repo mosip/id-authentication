@@ -301,9 +301,9 @@ public class MasterDataServiceTest {
 		locationHierarchy.setCode("IND");
 		locationHierarchy.setName("INDIA");
 		locationHierarchy.setHierarchyLevel(0);
-		locationHierarchy.setHierarchyName(null);
+		locationHierarchy.setHierarchyName("country");
 		locationHierarchy.setParentLocCode(null);
-		locationHierarchy.setLanguageCode("HIN");
+		locationHierarchy.setLangCode("HIN");
 		locationHierarchy.setCreatedBy("dfs");
 		locationHierarchy.setUpdatedBy("sdfsd");
 		locationHierarchy.setIsActive(true);
@@ -314,7 +314,7 @@ public class MasterDataServiceTest {
 		locationHierarchy1.setHierarchyLevel(1);
 		locationHierarchy1.setHierarchyName(null);
 		locationHierarchy1.setParentLocCode("TEST");
-		locationHierarchy1.setLanguageCode("KAN");
+		locationHierarchy1.setLangCode("KAN");
 		locationHierarchy1.setCreatedBy("dfs");
 		locationHierarchy1.setUpdatedBy("sdfsd");
 		locationHierarchy1.setIsActive(true);
@@ -330,11 +330,12 @@ public class MasterDataServiceTest {
 		locationDto.setName("KARNATAKA");
 		locationDto.setHierarchyLevel(2);
 		locationDto.setHierarchyName("STATE");
-		locationDto.setLanguageCode("FRA");
+		locationDto.setLangCode("FRA");
 		locationDto.setParentLocCode("IND");
 		locationDto.setIsActive(true);
 		requestLocationDto = new RequestDto<>();
 		requestLocationDto.setRequest(locationDto);
+
 	}
 
 	private void langServiceSetup() {
@@ -459,6 +460,7 @@ public class MasterDataServiceTest {
 		blacklistedWords.setWord("abc");
 		blacklistedWords.setLangCode("ENG");
 		blacklistedWords.setDescription("no description available");
+
 		words.add(blacklistedWords);
 	}
 
@@ -1137,6 +1139,39 @@ public class MasterDataServiceTest {
 		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 
+	/**
+	 * 
+	 * @author M1043226
+	 * @since 1.0.0
+	 *
+	 */
+	
+	@Test()
+	public void getLocationHierachyBasedOnHierarchyNameTest() {
+		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
+				.thenReturn(locationHierarchies);
+
+		LocationResponseDto locationResponseDto = locationHierarchyService
+				.getLocationDataByHierarchyName("country");
+		Assert.assertEquals("country", locationResponseDto.getLocations().get(0).getHierarchyName());
+
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void dataNotFoundExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("123"))
+				.thenReturn(null);
+		locationHierarchyService.getLocationDataByHierarchyName("country");
+
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void masterDataServiceExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
+				.thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.getLocationDataByHierarchyName("country");
+
+	}
 	// ------------------ TemplateServiceTest -----------------//
 
 	@Test(expected = MasterDataServiceException.class)
