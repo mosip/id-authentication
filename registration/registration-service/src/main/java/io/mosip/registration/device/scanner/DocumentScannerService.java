@@ -11,14 +11,14 @@ public interface DocumentScannerService {
 	 * 
 	 * @return boolean - the value is true if the scanner is connected
 	 */
-	boolean isScannerConnected();
+	boolean isConnected();
 
 	/**
 	 * This is used to connect the scanner device and get the scanned document
 	 * 
 	 * @return byte[] - The scanned document data
 	 */
-	BufferedImage scanDocument();
+	BufferedImage scan();
 
 	/**
 	 * This method converts the separate scanned file into single document
@@ -27,7 +27,7 @@ public interface DocumentScannerService {
 	 *            - the scanned files
 	 * @return byte[] - The single document which contains all the scanned files
 	 */
-	byte[] getSinglePDFInBytes(List<BufferedImage> bufferedImages);
+	byte[] asPDF(List<BufferedImage> bufferedImages);
 
 	/**
 	 * This method is used to merge all the scanned images into single image side by
@@ -38,7 +38,7 @@ public interface DocumentScannerService {
 	 * @return byte[] - The final single file which contains all the scanned files
 	 * @throws IOException
 	 */
-	byte[] getSingleImageFromList(List<BufferedImage> bufferedImages) throws IOException;
+	byte[] asImage(List<BufferedImage> bufferedImages) throws IOException;
 
 	byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException;
 

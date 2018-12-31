@@ -45,7 +45,7 @@ public class DocumentScannerServiceImplTest {
 	public void isScannerConnectedTest() {
 
 		intializeValues();
-		boolean isConnected = documentScannerServiceImpl.isScannerConnected();
+		boolean isConnected = documentScannerServiceImpl.isConnected();
 
 		Assert.assertNotNull(isConnected);
 	}
@@ -53,7 +53,7 @@ public class DocumentScannerServiceImplTest {
 	@Test
 	public void scanDocumentTest() {
 		intializeValues();
-		documentScannerServiceImpl.scanDocument();
+		documentScannerServiceImpl.scan();
 		Assert.assertNotNull(bufferedImage);
 
 	}
@@ -61,7 +61,7 @@ public class DocumentScannerServiceImplTest {
 	@Test
 	public void getSinglePDFInBytesTest() {
 		intializeValues();
-		byte[] data = documentScannerServiceImpl.getSinglePDFInBytes(bufferedImages);
+		byte[] data = documentScannerServiceImpl.asPDF(bufferedImages);
 		assertNotNull(data);
 
 	}
@@ -69,7 +69,7 @@ public class DocumentScannerServiceImplTest {
 	@Test
 	public void getSingleImageFromListTest() throws java.io.IOException {
 		intializeValues();
-		byte[] data = documentScannerServiceImpl.getSingleImageFromList(bufferedImages);
+		byte[] data = documentScannerServiceImpl.asImage(bufferedImages);
 		assertNotNull(data);
 
 	}
@@ -78,7 +78,7 @@ public class DocumentScannerServiceImplTest {
 	public void getSingleImageAlternateFlowTest() throws java.io.IOException {
 		intializeValues();
 		bufferedImages.add(bufferedImage);
-		byte[] data = documentScannerServiceImpl.getSingleImageFromList(bufferedImages);
+		byte[] data = documentScannerServiceImpl.asImage(bufferedImages);
 		assertNotNull(data);
 
 	}

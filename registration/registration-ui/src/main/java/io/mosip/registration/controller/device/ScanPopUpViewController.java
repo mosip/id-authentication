@@ -92,8 +92,6 @@ public class ScanPopUpViewController extends BaseController {
 			popupStage.initOwner(fXComponents.getStage());
 			popupStage.show();
 
-			scanningMsg.setVisible(false);
-
 			if (!isDocumentScan) {
 				totalScannedPages.setVisible(false);
 				saveBtn.setVisible(false);

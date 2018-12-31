@@ -223,12 +223,18 @@ public class DocumentScanController extends BaseController {
 	public void scan(Stage popupStage) {
 
 		try {
+
+			if (!documentScanFacade.isConnected()) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
+				return;
+			}
+
 			scanPopUpViewController.getScanningMsg().setVisible(true);
 
 			BufferedImage bufferedImage = documentScanFacade.getScannedDocumentFromScanner();
 
 			if (bufferedImage == null) {
-				// TODO show err message
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 				return;
 			}
 			if (scannedPages == null) {
@@ -266,8 +272,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 		if (scannedPages == null || scannedPages.isEmpty()) {
-
-			// TODO show err mesg
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
 			return;
 		}
 		byte[] byteArray = documentScanFacade.getSingleImageFromList(scannedPages);

@@ -40,7 +40,7 @@ public class DocumentScanFacade {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
 
-		return documentScannerService.scanDocument();
+		return documentScannerService.scan();
 
 	}
 
@@ -58,7 +58,12 @@ public class DocumentScanFacade {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
 
-		return documentScannerService.getSingleImageFromList(bufferedImages);
+		return documentScannerService.asImage(bufferedImages);
+
+	}
+
+	public boolean isConnected() {
+		return documentScannerService.isConnected();
 
 	}
 

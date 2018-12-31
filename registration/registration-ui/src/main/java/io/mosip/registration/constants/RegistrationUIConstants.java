@@ -86,6 +86,8 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");
 	public static final String SCAN_DOC_SUCCESS = bundle.getString("SCAN_DOC_SUCCESS");
 	public static final String SCAN_DOC_SIZE = bundle.getString("SCAN_DOC_SIZE");
+	public static final String SCAN_DOCUMENT_CONNECTION_ERR = bundle.getString("SCAN_DOCUMENT_CONNECTION_ERR");
+	public static final String SCAN_DOCUMENT_EMPTY = bundle.getString("SCAN_DOCUMENT_EMPTY");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
 
