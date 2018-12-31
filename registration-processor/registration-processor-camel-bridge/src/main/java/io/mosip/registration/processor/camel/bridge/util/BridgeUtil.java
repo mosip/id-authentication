@@ -1,7 +1,5 @@
 package io.mosip.registration.processor.camel.bridge.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -76,32 +74,5 @@ public class BridgeUtil {
 		}
 		return BridgeUtil.bridgeConfiguration.getString("registration.processor.component")
 				+ messageBusAddress.getAddress();
-	}
-
-	/**
-	 * This method returns the address for localhost
-	 *
-	 * @return The address for localhost
-	 */
-	public static String getLocalHost() {
-		if (BridgeUtil.bridgeConfiguration == null) {
-			getConfiguration();
-		}
-		return BridgeUtil.bridgeConfiguration.getString("registration.processor.localhost");
-	}
-
-	/**
-	 * This method returns the configured IP and port range for Vertx clustering
-	 *
-	 * @return the configured IP and port range for Vertx clustering as a List
-	 */
-	public static List<String> getIpAddressPortRange() {
-		if (BridgeUtil.bridgeConfiguration == null) {
-			getConfiguration();
-		}
-		String ipPortRange = BridgeUtil.bridgeConfiguration.getString("registration.processor.vertx.ip.range");
-		ArrayList<String> ipPort = new ArrayList<>();
-		ipPort.add(ipPortRange);
-		return ipPort;
 	}
 }
