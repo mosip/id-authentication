@@ -88,4 +88,12 @@ public class ValidationUtil {
 		return true;
 	}
 
+	public static boolean isvalidPreRegId(String preRegId) {
+		if (preRegId.matches("[0-9]+") && preRegId.length() == 14) {
+			return true;
+		}else {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+					ErrorMessages.INVALID_PRE_REGISTRATION_ID.toString());
+		}
+	}
 }
