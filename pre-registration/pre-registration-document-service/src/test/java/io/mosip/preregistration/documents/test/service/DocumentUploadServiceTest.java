@@ -24,8 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -172,9 +176,17 @@ public class DocumentUploadServiceTest {
 	@Test
 	public void uploadDocumentSuccessTest() throws IOException {
 		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainListResponseDTO restRes= new MainListResponseDTO<>();
 		docResp.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		restRes.setStatus(true);
+
+		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
@@ -211,6 +223,13 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = DocumentFailedToUploadException.class)
 	public void uploadDocumentRepoFailurTest() throws IOException {
+		MainListResponseDTO restRes= new MainListResponseDTO<>();
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		restRes.setStatus(true);
+		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
 		Mockito.when(virusScan.scanDocument(mockMultipartSaveCheck.getBytes())).thenReturn(true);
 		Mockito.when(documentRepository.save(entity)).thenReturn(null);
 		documentUploadService.uploadDoucment(mockMultipartSaveCheck, docJson);
@@ -370,6 +389,6 @@ public class DocumentUploadServiceTest {
 	@Test(expected = DocumentFailedToDeleteException.class)
 	public void deleteByPreIdFailureTest() {
 		Mockito.when(documentRepository.findBypreregId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
-		documentUploadService.deleteAllByPreId("113245675675");
+		documentUploadService.deleteAllByPreId("91324567567565");
 	}
 }
