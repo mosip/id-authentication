@@ -434,6 +434,7 @@ public class MasterdataIntegrationTest {
 
 		DeviceSpecsetUp();
 		DevicetypeSetUp();
+		deviceHistorySetUp();
 
 		machineHistorySetUp();
 		biometricAttributeTestSetup();
@@ -576,6 +577,25 @@ public class MasterdataIntegrationTest {
 
 	}
 
+	List<DeviceHistory> deviceHistoryList;
+
+	private void deviceHistorySetUp() {
+		LocalDateTime eDate = LocalDateTime.of(2018, Month.JANUARY, 1, 10, 10, 30);
+		LocalDateTime vDate = LocalDateTime.of(2022, Month.JANUARY, 1, 10, 10, 30);
+		deviceHistoryList = new ArrayList<>();
+		DeviceHistory deviceHistory = new DeviceHistory();
+		deviceHistory.setId("1000");
+		deviceHistory.setName("Laptop");
+		deviceHistory.setIpAddress("129.0.0.0");
+		deviceHistory.setMacAddress("129.0.0.0");
+		deviceHistory.setEffectDateTime(eDate);
+		deviceHistory.setValidityDateTime(vDate);
+		deviceHistory.setIsActive(true);
+		deviceHistory.setLangCode("ENG");
+		deviceHistoryList.add(deviceHistory);
+
+	}
+	
 	List<DeviceSpecification> deviceSpecList;
 	DeviceSpecification deviceSpecification;
 	DeviceSpecificationDto deviceSpecificationDto;
@@ -3876,4 +3896,34 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
+	
+	// -----------------------------------------DeviceHistory---------------------------------------------
+		@Test
+		public void getDeviceHistroyIdLangEffDTimeSuccessTest() throws Exception {
+			when(deviceHistoryRepository
+					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(deviceHistoryList);
+			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+					"2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
+		}
+
+		@Test
+		public void getDeviceHistroyIdLangEffDTimeNullResponseTest() throws Exception {
+			when(deviceHistoryRepository
+					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+			mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+					"2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
+		}
+
+		@Test
+		public void getDeviceHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
+			when(deviceHistoryRepository
+					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+							Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+									.thenThrow(DataRetrievalFailureException.class);
+			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+					"2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
+		}
+
 }
