@@ -7,6 +7,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
  * Service class to fetch titles from master db
@@ -60,6 +61,7 @@ public interface TitleService {
 	 * @return composite primary key of updated row of data
 	 * @throws RequestException
 	 *             when data not found
+	 * 
 	 * @throws MasterDataServiceException
 	 *             when data not updated successfully
 	 */
@@ -73,6 +75,7 @@ public interface TitleService {
 	 * @return composite key of deleted row of data
 	 * @throws RequestException
 	 *             when data not found
+	 * 
 	 * @throws MasterDataServiceException
 	 *             when data not deleted successfully
 	 */

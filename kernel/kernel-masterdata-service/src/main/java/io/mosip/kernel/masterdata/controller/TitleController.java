@@ -99,8 +99,6 @@ public class TitleController {
 	 * 
 	 * @param code
 	 *            input from user
-	 * @param langCode
-	 *            input from user
 	 * @return composite key of deleted row of data
 	 */
 	@DeleteMapping("/v1.0/title/{code}")
