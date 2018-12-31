@@ -87,6 +87,8 @@ public interface MachineService {
 	 * 
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Machine
+	 * @throws RequestException
+	 * 			   if required Machine not Found
 	 */
 	public IdResponseDto updateMachine(RequestDto<MachineDto> machine);
 	/**
@@ -100,6 +102,8 @@ public interface MachineService {
 	 * 
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Machine
+	 * @throws RequestException
+	 * 			   if required Machine not Found
 	 */
 	IdResponseDto deleteMachine(String id);
 
