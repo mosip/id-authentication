@@ -37,8 +37,7 @@ public interface MachineSpecificationService {
 	 *         {@link IdResponseDto}
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while updating Machine Specification
-	 * @throws RequestException
-	 * 				if required Machine Specification not Found
+	 *
 	 */
 	public IdResponseDto updateMachineSpecification(RequestDto<MachineSpecificationDto> machineSpecification);
 	/**
@@ -51,8 +50,7 @@ public interface MachineSpecificationService {
 	 *         {@link IdResponseDto}
 	 * @throws MasterDataServiceException
 	 *             if any error occurred while deleting Machine Specification
-	 *  @throws RequestException
-	 * 				if required Machine Specification not Found
+	 *  
 	 */
 	public IdResponseDto deleteMachineSpecification(String id);
 
