@@ -235,10 +235,10 @@ node {
 def getChangedModules() {
  Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
- print "changelogsets are>>>>>>>>>>>>>>  " +changeLogSets[0]
+ print changeLogSets
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
-  print "entries>>>>>>>>>>>>>>  " +entries[0]
+  print entries[0]
   for (int j = 0; j < entries.length; j++) {
    def entry = entries[j]
    echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
