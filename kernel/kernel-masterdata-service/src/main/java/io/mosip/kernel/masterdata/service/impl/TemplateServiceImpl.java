@@ -14,6 +14,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
@@ -51,8 +52,8 @@ public class TemplateServiceImpl implements TemplateService {
 			templateList = templateRepository.findAllByIsDeletedFalseOrIsDeletedIsNull(Template.class);
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(exception));
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -76,8 +77,8 @@ public class TemplateServiceImpl implements TemplateService {
 			templateList = templateRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(exception));
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -104,8 +105,8 @@ public class TemplateServiceImpl implements TemplateService {
 					languageCode, templateTypeCode);
 		} catch (DataAccessException | DataAccessLayerException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(exception));
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templateDtoList = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -134,8 +135,7 @@ public class TemplateServiceImpl implements TemplateService {
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					TemplateErrorCode.TEMPLATE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
@@ -144,8 +144,12 @@ public class TemplateServiceImpl implements TemplateService {
 		return idResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TemplateService#updateTemplates(io.mosip.kernel.masterdata.dto.TemplateDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateService#updateTemplates(io.mosip.
+	 * kernel.masterdata.dto.TemplateDto)
 	 */
 	@Override
 	public IdResponseDto updateTemplates(TemplateDto template) {
@@ -157,19 +161,22 @@ public class TemplateServiceImpl implements TemplateService {
 				templateRepository.update(entity);
 				idResponseDto.setId(entity.getId());
 			} else {
-				throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					TemplateErrorCode.TEMPLATE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return idResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.TemplateService#deleteTemplates(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TemplateService#deleteTemplates(java.lang.
+	 * String)
 	 */
 	@Override
 	public IdResponseDto deleteTemplates(String id) {
@@ -181,13 +188,12 @@ public class TemplateServiceImpl implements TemplateService {
 				templateRepository.update(entity);
 				idResponseDto.setId(entity.getId());
 			} else {
-				throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+				throw new RequestException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 						TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorCode(),
-					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					TemplateErrorCode.TEMPLATE_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		return idResponseDto;

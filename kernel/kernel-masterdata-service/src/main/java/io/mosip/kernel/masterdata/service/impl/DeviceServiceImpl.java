@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
@@ -155,8 +156,9 @@ public class DeviceServiceImpl implements DeviceService {
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(updatedDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
+				deviceHistoryRepository.create(deviceHistory);
 			} else {
-				throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -192,7 +194,7 @@ public class DeviceServiceImpl implements DeviceService {
 				deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
 				deviceHistoryRepository.create(deviceHistory);
 			} else {
-				throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {

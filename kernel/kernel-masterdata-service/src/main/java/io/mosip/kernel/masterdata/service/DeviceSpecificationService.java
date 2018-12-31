@@ -86,7 +86,7 @@ public interface DeviceSpecificationService {
 	 * 
 	 * @return IdResponseDto Device Specification ID which is successfully deleted
 	 * @throws MasterDataServiceException
-	 *             if any error occurred while saving device Specification
+	 *             if any error occurred while deleting device Specification
 	 */
 
 	public IdResponseDto deleteDeviceSpecification(String id);

@@ -67,6 +67,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.TemplateTypeDto;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
@@ -106,6 +107,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.TemplateType;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -120,6 +122,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
@@ -149,6 +152,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserReposi
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
+import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
@@ -167,6 +171,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
  * @author Uday Kumar
  * @author Megha Tanga
  * @author Srinivasan
+ * @author Neha
  * @since 1.0.0
  */
 @SpringBootTest
@@ -199,6 +204,14 @@ public class MasterdataIntegrationTest {
 	private TemplateRepository templateRepository;
 	private Template template;
 	private TemplateDto templateDto;
+
+	private TemplateFileFormatDto templateFileFormatDto;
+	private TemplateFileFormat templateFileFormat;
+
+	@MockBean
+	private TemplateFileFormatRepository templateFileFormatRepository;
+
+	private RequestDto<TemplateFileFormatDto> templateFileFormatRequestDto = new RequestDto<TemplateFileFormatDto>();
 
 	@MockBean
 	private TemplateTypeRepository templateTypeRepository;
@@ -361,15 +374,16 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private MachineHistoryRepository machineHistoryRepository;
-	
+
 	@MockBean
 	private DeviceHistoryRepository deviceHistoryRepository;
 
 	public static LocalDateTime localDateTimeUTCFormat = LocalDateTime.now();
 
-	public static final DateTimeFormatter UTC_DATE_TIME_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+	public static final DateTimeFormatter UTC_DATE_TIME_FORMAT = DateTimeFormatter
+			.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-	public static final String UTC_DATE_TIME_FORMAT_DATE_STRING = "2018-12-02T02:50:12.208";
+	public static final String UTC_DATE_TIME_FORMAT_DATE_STRING = "2018-12-02T02:50:12.208Z";
 
 	@SuppressWarnings("static-access")
 	@Before
@@ -425,6 +439,7 @@ public class MasterdataIntegrationTest {
 		biometricAttributeTestSetup();
 		templateTestSetup();
 		templateTypeTestSetup();
+		templateFileFormatSetup();
 	}
 
 	private DeviceType deviceType;
@@ -749,9 +764,22 @@ public class MasterdataIntegrationTest {
 		Object objects[] = { "1001", "Laptop", "129.0.0.0", "123", "129.0.0.0", "1212", "ENG", true, validDateTime,
 				"LaptopCode" };
 		objectList.add(objects);
-		
+
 		deviceHistory = new DeviceHistory();
 
+	}
+
+	private void templateFileFormatSetup() {
+		templateFileFormatDto = new TemplateFileFormatDto();
+		templateFileFormatDto.setCode("xml");
+		templateFileFormatDto.setLangCode("ENG");
+		templateFileFormatDto.setIsActive(true);
+		templateFileFormat = new TemplateFileFormat();
+		templateFileFormat.setCode("xml");
+		templateFileFormat.setLangCode("ENG");
+		templateFileFormat.setIsActive(true);
+
+		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
 	private void addValidDocumentSetUp() {
@@ -1493,7 +1521,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addHolidayTypeTest() throws Exception {
-		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190\", \"ver\": \"string\"}";
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
 		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
 		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -1502,7 +1530,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void addHolidayTypeExceptionTest() throws Exception {
 
-		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190\", \"ver\": \"string\"}";
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
 		when(holidayRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -2842,7 +2870,8 @@ public class MasterdataIntegrationTest {
 		requestDto.setVer("1.0.0");
 		requestDto.setRequest(deviceDto);
 		String content = mapper.writeValueAsString(requestDto);
-		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(device);
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(device);
 		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
@@ -2859,10 +2888,29 @@ public class MasterdataIntegrationTest {
 
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
 		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new DataNotFoundException("", "cannot update", null));
+				.thenThrow(new DataNotFoundException("", ""));
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void deleteDeviceSuccessTest() throws Exception {
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(device);
+		Mockito.when(deviceRepository.update(Mockito.any())).thenReturn(device);
+		Mockito.when(deviceHistoryRepository.create(Mockito.any())).thenReturn(null);
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/123").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteDeviceExceptionTest() throws Exception {
+		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
+		Mockito.when(deviceRepository.update(Mockito.any()))
+				.thenThrow(new RequestException("", ""));
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
 	}
 
 	// -----------------------------------------MachineHistory---------------------------------------------
@@ -2871,9 +2919,8 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
-		mockMvc.perform(
-				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
-				.andExpect(status().isOk());
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+				"2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
 	}
 
 	@Test
@@ -2881,9 +2928,8 @@ public class MasterdataIntegrationTest {
 		when(machineHistoryRepository
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-		mockMvc.perform(
-				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
-				.andExpect(status().isNotFound());
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+				"2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -2892,9 +2938,8 @@ public class MasterdataIntegrationTest {
 				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 								.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(
-				get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956"))
-				.andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+				"2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -3392,7 +3437,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateDeviceSpecificationNotFoundExceptionTest() throws Exception {
+	public void updateDeviceSpecificationRequestExceptionTest() throws Exception {
 		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
@@ -3401,7 +3446,7 @@ public class MasterdataIntegrationTest {
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3432,10 +3477,10 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void deleteDeviceSpecificationNotFoundExceptionTest() throws Exception {
+	public void deleteDeviceSpecificationRequestExceptionTest() throws Exception {
 		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/devicespecifications/DS001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3479,7 +3524,7 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateTemplateNotFoundExceptionTest() throws Exception {
+	public void updateTemplateNotRequestExceptionTest() throws Exception {
 		RequestDto<TemplateDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
@@ -3487,7 +3532,7 @@ public class MasterdataIntegrationTest {
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(deviceSpecificationRepository.findByIdAndIsDeletedFalseorIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3514,10 +3559,10 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void deleteTemplateNotFoundExceptionTest() throws Exception {
+	public void deleteTemplateRequestExceptionTest() throws Exception {
 		when(templateRepository.findTemplateByIDAndIsDeletedFalseOrIsDeletedIsNull(Mockito.any())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3529,6 +3574,64 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(delete("/v1.0/templates/T001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 
+	}
+
+	// ------------------------------- TemplateFileFormat Test
+	@Test
+	public void updateTemplateFileFormatSuccessTest() throws Exception {
+		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.update");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateFileFormatDto);
+		String content = mapper.writeValueAsString(requestDto);
+		Mockito.when(templateFileFormatRepository
+				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(templateFileFormat);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateTemplateFileFormatExceptionTest() throws Exception {
+		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.update");
+		requestDto.setVer("1.0.0");
+		requestDto.setRequest(templateFileFormatDto);
+		String content = mapper.writeValueAsString(requestDto);
+
+		Mockito.when(templateFileFormatRepository
+				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(null);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any()))
+				.thenThrow(new RequestException("", ""));
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void deleteTemplateFileFormatSuccessTest() throws Exception {
+		List<Template> templates = new ArrayList<>();
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(templates);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.anyString(), Mockito.any(),
+				Mockito.anyString())).thenReturn(1);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
+		mockMvc.perform(
+				MockMvcRequestBuilders.delete("/v1.0/templatefileformats/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteTemplateFileFormatExceptionTest() throws Exception {
+		List<Template> templates = new ArrayList<>();
+		Mockito.when(templateRepository.findAllByFileFormatCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString()))
+				.thenReturn(templates);
+		Mockito.when(templateFileFormatRepository.deleteTemplateFileFormat(Mockito.anyString(), Mockito.any(),
+				Mockito.anyString())).thenThrow(new RequestException("", ""));
+		mockMvc.perform(
+				MockMvcRequestBuilders.delete("/v1.0/templatefileformats/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
 	}
 
 	/*------------------------------------Holiday Update/delete -------------------------------------*/
