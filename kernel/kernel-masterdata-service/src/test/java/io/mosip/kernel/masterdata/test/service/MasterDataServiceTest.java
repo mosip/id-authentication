@@ -77,6 +77,7 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
@@ -237,6 +238,9 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	MachineHistoryService machineHistoryService;
+	
+	@Autowired
+	DeviceHistoryService deviceHistoryService;
 
 	private RequestDto<BiometricTypeDto> biometricTypeRequestDto;
 
@@ -1424,11 +1428,16 @@ public class MasterDataServiceTest {
 		blacklistedWordsService.validateWord(wordsList);
 	}
 
-	// -------------------------------------Machine Histroy
-	// Test----------------------------//
+	// -------------------------------------MachineHistroyTest----------------------------
 	@Test(expected = RequestException.class)
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
+	
+	// -------------------------------------DeviceHistroyTest------------------------------------------
+		@Test(expected = RequestException.class)
+		public void getDeviceHistroyIdLangEffDTimeParseDateException() {
+			deviceHistoryService.getDeviceHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
+		}
 
 }
