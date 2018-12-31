@@ -15,7 +15,7 @@ public class MandatoryFieldRequiredException extends BaseUncheckedException {
 	}
 
 	public MandatoryFieldRequiredException(String message) {
-		super(ErrorCodes.PRG_TRL_002.toString(), message);
+		super(ErrorCodes.PRG_TRL_APP_002.getCode(), message);
 	}
 
 }

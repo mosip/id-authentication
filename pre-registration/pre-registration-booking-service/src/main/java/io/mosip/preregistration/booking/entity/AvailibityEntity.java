@@ -1,8 +1,8 @@
 package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.AttributeOverride;
@@ -55,18 +55,18 @@ public class AvailibityEntity implements Serializable {
 	private String crBy;
 
 	@Column(name = "cr_dtimes")
-	private Timestamp crDate;
+	private LocalDateTime crDate;
 
 	@Column(name = "upd_by")
 	private String upBy;
 
 	@Column(name = "upd_dtimes")
-	private Timestamp updDate;
+	private LocalDateTime updDate;
 
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
 	@Column(name = "del_dtimes")
-	private Timestamp delTime;
+	private LocalDateTime delTime;
 
 }

@@ -289,7 +289,8 @@ export class DashBoardComponent implements OnInit {
         },
         () => {
           this.fetchedDetails = true;
-          this.router.navigate(['demographic', '1'], { relativeTo: this.route });
+          // this.router.navigate(['demographic', '1'], { relativeTo: this.route });
+          this.router.navigate(['pre-registration', this.loginId, 'demographic', 1]);
         }
       );
     } else {
