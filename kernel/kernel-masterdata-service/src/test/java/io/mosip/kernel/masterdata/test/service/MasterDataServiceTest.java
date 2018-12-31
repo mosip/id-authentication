@@ -90,7 +90,8 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * @author Bal Vikash Sharma
  * @author Neha Sinha
- * @author M1043226
+ * @author tapaswini
+ * @author srinivasan
  * @since 1.0.0
  *
  * 
@@ -1215,6 +1216,30 @@ public class MasterDataServiceTest {
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
+	}
+
+	@Test
+	public void getImmediateChildrenTest() {
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locationHierarchies);
+		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
+	}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void getImmediateChildrenServiceExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
+	}
+	
+	@Test(expected=DataNotFoundException.class)
+	public void getImmediateChildrenDataExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new ArrayList<Location>());
+		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
 	}
 
 	// ------------------ TemplateServiceTest -----------------//

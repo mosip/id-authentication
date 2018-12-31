@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponses;
 
 /**
  * 
- * Controller with api to save and get Machine Details
+ * This class provide services to do CRUD operations on Machine.
  * 
  * @author Megha Tanga
  * @since 1.0.0
