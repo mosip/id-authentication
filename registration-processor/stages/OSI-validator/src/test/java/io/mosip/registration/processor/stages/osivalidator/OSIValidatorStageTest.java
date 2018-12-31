@@ -46,7 +46,7 @@ public class OSIValidatorStageTest {
 	@InjectMocks
 	private OSIValidatorStage osiValidatorStage = new OSIValidatorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterConfigAddress) {
 			return null;
 		}
 

@@ -7,6 +7,7 @@ import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -21,6 +22,9 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -32,23 +36,19 @@ import io.mosip.registration.processor.virus.scanner.job.decrypter.Decryptor;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException;
 import io.mosip.registration.processor.virus.scanner.job.util.StatusMessage;
-
 /**
  * The Class VirusScannerStage.
  */
 @Service
 public class VirusScannerStage extends MosipVerticleManager {
 
-	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerStage.class);
+	/** The reg proc logger. */
+	private static Logger regProcLogger = (Logger) RegProcessorLogger.getLogger(VirusScannerStage.class);
+
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The Constant LOGDISPLAY. */
-	private static final String LOGDISPLAY = "{} - {}";
-
-	/** The env. */
 	@Autowired
 	private Environment env;
 
@@ -56,15 +56,6 @@ public class VirusScannerStage extends MosipVerticleManager {
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
-	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -81,8 +72,13 @@ public class VirusScannerStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The decryptor. */
+    Decryptor decryptor;
+
 	@Autowired
-	Decryptor decryptor;
+	private FileSystemAdapter<InputStream, Boolean> adapter;
+
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/** The Constant VIRUS_SCAN_FAILED. */
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
@@ -97,13 +93,13 @@ public class VirusScannerStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.VIRUS_SCAN_BUS_IN, MessageBusAddress.PACKET_UPLOADER_IN);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)
@@ -156,9 +152,9 @@ public class VirusScannerStage extends MosipVerticleManager {
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (VirusScanFailedException | IOException | io.mosip.kernel.core.exception.IOException e) {
-			LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
+            regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), VIRUS_SCAN_FAILED + e.getMessage());
 		} catch (PacketDecryptionFailureException e) {
-			LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getErrorText(), e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(), e.getErrorCode(), e.getErrorText(), e);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILURE);
 			registrationStatusDto.setUpdatedBy(USER);
@@ -198,7 +194,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		registrationStatusDto.setUpdatedBy(USER);
 		isTransactionSuccessful = false;
 		description = registrationId + " packet is infected.";
-		LOGGER.info(LOGDISPLAY, registrationStatusDto.getRegistrationId(), "File is infected.");
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(), "File is infected.");
 
 	}
 
@@ -215,7 +211,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		entry.setStatusComment(StatusMessage.PACKET_VIRUS_SCAN_SUCCESS);
 		entry.setUpdatedBy(USER);
 		isTransactionSuccessful = true;
-		LOGGER.info(LOGDISPLAY, entry.getRegistrationId(), "File is successfully scanned.");
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), entry.getRegistrationId(), "File is successfully scanned.");
 		description = registrationId + " packet successfully  scanned for virus";
 
 	}

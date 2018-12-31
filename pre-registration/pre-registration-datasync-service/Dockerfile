@@ -11,4 +11,4 @@ copy ./target/pre-registration-datasync-service-*.jar pre-registration-datasync-
 
 EXPOSE 9094
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-datasync-service-1.0.0-SNAPSHOT.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-datasync-service.jar"] 

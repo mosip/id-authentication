@@ -22,22 +22,22 @@ public class StatusMessage {
 	public static final String INTRODUCER = "INTRODUCER";
 
 	/** The Constant FINGER_PRINT. */
-	public static final String FINGER_PRINT = "FINGER_PRINT_VALIDATION_FAILED";
+	public static final String FINGER_PRINT = "Fingerprint validation failed";
 
 	/** The Constant IRIS. */
-	public static final String IRIS = "IRIS_VALIDATION_FAILED";
+	public static final String IRIS = "Iris validation failed";
 
 	/** The Constant FACE. */
-	public static final String FACE = "FACE_VALIDATION_FAILED";
+	public static final String FACE = "Face validation failed";
 
 	/** The Constant PIN. */
-	public static final String PIN = "PIN_VALIDATION_FAILED";
+	public static final String PIN = "Pin validation failed";
 
 	/** The Constant VALIDATION_DETAILS. */
-	public static final String VALIDATION_DETAILS = "ALL_THE_VALIDATION_DETAILS_ARE_NULL";
+	public static final String VALIDATION_DETAILS = "All the validation details are null";
 
 	/** The Constant OSI_VALIDATION_SUCCESS. */
-	public static final String OSI_VALIDATION_SUCCESS = "OSI_VALIDATION_SUCCESS";
+	public static final String OSI_VALIDATION_SUCCESS = "OSI Validation is successful";
 
 	/** The Constant PARENT_UIN_AND_RID_NOT_IN_PACKET. */
 	public static final String PARENT_UIN_AND_RID_NOT_IN_PACKET = "The UIN and RID of Parent is not present in Packet";
@@ -49,7 +49,7 @@ public class StatusMessage {
 	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
 
 	/** The Constant MACHINE_ID_NOT_FOUND. */
-	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID.";
+	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID";
 
 	/** The Constant MACHINE_NOT_ACTIVE. */
 	public static final String MACHINE_NOT_ACTIVE = "The Machine ID was not active when Registration ID  was created";

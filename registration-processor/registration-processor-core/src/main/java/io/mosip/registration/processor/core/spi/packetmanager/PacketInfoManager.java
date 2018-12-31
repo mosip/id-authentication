@@ -91,5 +91,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId);
+	
+	public List<String> getRegIdByUIN(String uin);
 
 }

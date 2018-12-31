@@ -1,6 +1,7 @@
 package io.mosip.preregistration.booking.service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
 import io.mosip.preregistration.booking.dto.BookingDTO;
@@ -77,8 +79,8 @@ import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
-import io.mosip.preregistration.core.exceptions.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -145,7 +147,7 @@ public class BookingService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<RegistrationCenterResponseDto> entity = new HttpEntity<>(headers);
 			String uriBuilder = regbuilder.build().encode().toUriString();
-			System.out.println("uriBuilder::::"+uriBuilder);
+			System.out.println("uriBuilder::::" + uriBuilder);
 			ResponseEntity<RegistrationCenterResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
 					HttpMethod.GET, entity, RegistrationCenterResponseDto.class);
 
@@ -163,10 +165,10 @@ public class BookingService {
 					HttpEntity<RegistrationCenterHolidayDto> entity2 = new HttpEntity<>(headers);
 
 					String uriBuilder2 = builder2.build().encode().toUriString();
-					System.out.println("uriBuilder2::::"+uriBuilder2);
+					System.out.println("uriBuilder2::::" + uriBuilder2);
 					ResponseEntity<RegistrationCenterHolidayDto> responseEntity2 = restTemplate.exchange(uriBuilder2,
 							HttpMethod.GET, entity2, RegistrationCenterHolidayDto.class);
-					System.out.println("responseEntity2::::"+responseEntity2);
+					System.out.println("responseEntity2::::" + responseEntity2);
 					List<String> holidaylist = new ArrayList<>();
 					if (!responseEntity2.getBody().getHolidays().isEmpty()) {
 						for (HolidayDto holiday : responseEntity2.getBody().getHolidays()) {
@@ -189,23 +191,27 @@ public class BookingService {
 									+ regDto.getLunchStartTime().getMinute())
 									- (regDto.getCenterStartTime().getHour() * 60
 											+ regDto.getCenterStartTime().getMinute()))
-									/ (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
+									/ (regDto.getPerKioskProcessTime().getHour() * 60
+											+ regDto.getPerKioskProcessTime().getMinute());
 
 							int loop2 = ((regDto.getCenterEndTime().getHour() * 60
 									+ regDto.getCenterEndTime().getMinute())
 									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-									/ (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
+									/ (regDto.getPerKioskProcessTime().getHour() * 60
+											+ regDto.getPerKioskProcessTime().getMinute());
 
 							int extraTime1 = ((regDto.getLunchStartTime().getHour() * 60
 									+ regDto.getLunchStartTime().getMinute())
 									- (regDto.getCenterStartTime().getHour() * 60
 											+ regDto.getCenterStartTime().getMinute()))
-									% (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
+									% (regDto.getPerKioskProcessTime().getHour() * 60
+											+ regDto.getPerKioskProcessTime().getMinute());
 
 							int extraTime2 = ((regDto.getCenterEndTime().getHour() * 60
 									+ regDto.getCenterEndTime().getMinute())
 									- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
-									% (regDto.getPerKioskProcessTime().getHour()*60+regDto.getPerKioskProcessTime().getMinute()) ;
+									% (regDto.getPerKioskProcessTime().getHour() * 60
+											+ regDto.getPerKioskProcessTime().getMinute());
 
 							LocalTime currentTime1 = regDto.getCenterStartTime();
 							for (int i = 0; i < loop1; i++) {
@@ -266,7 +272,6 @@ public class BookingService {
 	public ResponseDto<AvailabilityDto> getAvailability(String regID) {
 		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
 		LocalDate endDate = LocalDate.now().plusDays(noOfDays);
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		System.out.println("date " + endDate);
 		try {
 			List<java.sql.Date> dateList = bookingAvailabilityRepository.findDate(regID, endDate);
@@ -275,8 +280,8 @@ public class BookingService {
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
 				for (int i = 0; i < dateList.size(); i++) {
 					DateTimeDto dateTime = new DateTimeDto();
-					List<AvailibityEntity> entity = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID,
-							dateList.get(i).toLocalDate());
+					List<AvailibityEntity> entity = bookingAvailabilityRepository
+							.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID, dateList.get(i).toLocalDate());
 					if (!entity.isEmpty()) {
 						List<SlotDto> slotList = new ArrayList<>();
 						for (AvailibityEntity en : entity) {
@@ -327,10 +332,9 @@ public class BookingService {
 		avaEntity.setToTime(toTime);
 		avaEntity.setCrBy("Admin");
 		avaEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
-		if(!isMandatory(regDto.getContactPerson())) {
+		if (!isMandatory(regDto.getContactPerson())) {
 			avaEntity.setCrBy("Admin");
-		}
-		else {
+		} else {
 			avaEntity.setCrBy(regDto.getContactPerson());
 		}
 		if (currentTime.equals(toTime)) {
@@ -353,15 +357,16 @@ public class BookingService {
 		Map<String, String> requestMap = new HashMap<>();
 		ResponseDto<List<BookingStatusDTO>> responseDTO = new ResponseDto<>();
 		RegistrationBookingPK bookingPK = new RegistrationBookingPK();
-		InvalidRequestParameterException parameterException = null;
+		Boolean requestValidatorFlag = false;
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		try {
 			requestMap.put("id", bookingDTO.getId());
 			requestMap.put("ver", bookingDTO.getVer());
-			requestMap.put("reqTime", bookingDTO.getReqTime());
+			requestMap.put("reqTime", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(bookingDTO.getReqTime()));
 			requestMap.put("request", bookingDTO.getRequest().toString());
-			parameterException = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
-			if (parameterException == null) {
+			requestValidatorFlag = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
+			System.out.println("requestValidatorFlag: " + requestValidatorFlag);
+			if (requestValidatorFlag) {
 				for (BookingRequestDTO bookingRequestDTO : bookingDTO.getRequest()) {
 					if (mandatoryParameterCheck(bookingRequestDTO)) {
 						if (bookingRequestDTO.getOldBookingDetails() == null) {
@@ -415,17 +420,19 @@ public class BookingService {
 				responseDTO.setResTime(resTime);
 				responseDTO.setErr(null);
 				responseDTO.setResponse(respList);
-
-			} else {
-				throw parameterException;
 			}
-
 		} catch (DataAccessLayerException e) {
+			e.printStackTrace();
 			throw new DemographicStatusUpdationException("Table not accessable");
 		} catch (DateTimeException e) {
 			e.printStackTrace();
 			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
 					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
+		} catch (InvalidRequestParameterException e) {
+			// throw new InvalidRequestParameterException(
+			// io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.toString(),
+			// io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_ID.toString());
+			e.printStackTrace();
 		}
 		return responseDTO;
 	}
@@ -468,7 +475,7 @@ public class BookingService {
 				throw new BookingRegistrationCenterIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_007.toString(),
 						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.toString());
 			} else if (!isMandatory(newBookingDetails.getSlotFromTime())
-					&& !isMandatory(newBookingDetails.getSlotToTime())) {
+					|| !isMandatory(newBookingDetails.getSlotToTime())) {
 				throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.toString(),
 						ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.toString());
 			}
@@ -521,6 +528,7 @@ public class BookingService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<PreRegResponseDto> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
+			System.out.println("uriBuilder: "+uriBuilder);
 			ResponseEntity<PreRegResponseDto<PreRegistartionStatusDTO>> respEntity = (ResponseEntity) restTemplate
 					.exchange(uriBuilder, HttpMethod.GET, httpEntity, PreRegResponseDto.class);
 
@@ -531,6 +539,7 @@ public class BookingService {
 			statusCode = preRegResponsestatusDto.getStatusCode();
 
 		} catch (RestClientException e) {
+			e.printStackTrace();
 			throw new DemographicGetStatusException(ErrorCodes.PRG_BOOK_RCI_012.toString(),
 					ErrorMessages.DEMOGRAPHIC_GET_STATUS_FAILED.toString(), e.getCause());
 		}
@@ -560,15 +569,15 @@ public class BookingService {
 				if (!slotExistsFlag) {
 					bookingPK.setPreregistrationId(bookingRequestDTO.getPre_registration_id());
 
-					DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-					bookingPK.setBookingDateTime(LocalDateTime.parse(bookingDTO.getReqTime(), format));
-
+					//DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+					bookingPK.setBookingDateTime(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime()));
+					
 					entity.setBookingPK(bookingPK);
 					entity.setRegistrationCenterId(registrationDTO.getRegistration_center_id());
 					entity.setStatus_code(StatusCodes.Booked.toString().trim());
 					entity.setLang_code("12L");
 					entity.setCrBy("987654321");
-					entity.setCrDate(Timestamp.valueOf(LocalDateTime.parse(bookingDTO.getReqTime())));
+					entity.setCrDate(Timestamp.valueOf(DateUtils.parseDateToLocalDateTime(bookingDTO.getReqTime())));
 					entity.setRegDate(LocalDate.parse(registrationDTO.getReg_date()));
 					entity.setSlotFromTime(LocalTime.parse(registrationDTO.getSlotFromTime()));
 					entity.setSlotToTime(LocalTime.parse(registrationDTO.getSlotToTime()));
@@ -642,7 +651,8 @@ public class BookingService {
 			AppointmentCannotBeCanceledException.class })
 	public ResponseDto<CancelBookingResponseDTO> cancelAppointment(RequestDto<CancelBookingDTO> requestdto) {
 
-		InvalidRequestParameterException parameterException = null;
+		// InvalidRequestParameterException parameterException = null;
+		Boolean requestValidatorFlag = false;
 		ResponseDto<CancelBookingResponseDTO> dto = new ResponseDto<>();
 		Map<String, String> requestMap = new HashMap<>();
 		try {
@@ -650,9 +660,11 @@ public class BookingService {
 			requestMap.put("ver", requestdto.getVer());
 			requestMap.put("reqTime", requestdto.getReqTime());
 			requestMap.put("request", requestdto.getRequest().toString());
-			parameterException = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
+			System.out.println("requestMap: "+requestMap);
+			System.out.println("requiredRequestMap: "+requiredRequestMap);
+			requestValidatorFlag = ValidationUtil.requestValidator(requestMap, requiredRequestMap);
 			CancelBookingDTO cancelBookingDTO = requestdto.getRequest();
-			if (parameterException == null) {
+			if (requestValidatorFlag) {
 				CancelBookingResponseDTO cancelBookingResponseDTO = cancelBookingAPI(cancelBookingDTO);
 				if (cancelBookingResponseDTO != null) {
 					dto.setResponse(cancelBookingResponseDTO);
@@ -660,8 +672,6 @@ public class BookingService {
 					dto.setStatus(true);
 					dto.setResTime(new Timestamp(System.currentTimeMillis()));
 				}
-			} else {
-				throw parameterException;
 			}
 		} catch (DataAccessLayerException e) {
 			throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_019.toString(),
@@ -671,8 +681,11 @@ public class BookingService {
 			e.printStackTrace();
 			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
 					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
+		} catch (InvalidRequestParameterException e) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_001.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_ID.toString());
 		}
-
 		return dto;
 
 	}

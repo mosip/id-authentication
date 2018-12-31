@@ -83,7 +83,7 @@ public class PacketValidatorStageTest {
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage = new PacketValidatorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			vertx = Vertx.vertx();
 
 			return new MosipEventBus(vertx) {

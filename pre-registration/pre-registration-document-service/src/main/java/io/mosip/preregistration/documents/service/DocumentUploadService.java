@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.dto.DocResponseDto;
 import io.mosip.preregistration.documents.dto.DocumentCopyDTO;

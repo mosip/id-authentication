@@ -15,7 +15,7 @@ public class PacketReceiverStageTest {
 	private PacketReceiverStage packetReceiverStage = new PacketReceiverStage() {
 
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
 			return null;
 		}
 

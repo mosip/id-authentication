@@ -47,9 +47,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
+	/** The cluster url. */
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/** The secs. */
 	// @Value("${landingzone.scanner.stage.time.interval}")
@@ -57,10 +57,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 
 	/** The registration status service. */
 	@Autowired
@@ -234,7 +230,7 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 
-		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.PACKET_UPLOADER_IN);
 
 	}
