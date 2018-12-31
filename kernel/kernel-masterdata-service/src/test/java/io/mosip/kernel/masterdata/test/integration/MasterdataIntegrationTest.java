@@ -2912,6 +2912,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
+
 	}
 
 	@Test
@@ -2931,6 +2932,7 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/1").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
+
 	}
 
 	// -----------------------------------------MachineHistory---------------------------------------------

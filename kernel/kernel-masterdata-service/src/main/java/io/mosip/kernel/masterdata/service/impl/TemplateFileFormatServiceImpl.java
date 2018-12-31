@@ -78,7 +78,9 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 				MetaDataUtils.setUpdateMetaData(templateFileFormatDto, templateFileFormat, false);
 				templateFileFormatRepository.update(templateFileFormat);
 			} else {
+
 				throw new RequestException(TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
+
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
 			}
 
@@ -104,7 +106,9 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 			int updatedRows = templateFileFormatRepository.deleteTemplateFileFormat(MetaDataUtils.getContextUser(),
 					LocalDateTime.now(ZoneId.of("UTC")), code);
 			if (updatedRows < 1) {
+
 				throw new RequestException(TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorCode(),
+
 						TemplateFileFormatErrorCode.TEMPLATE_FILE_FORMAT_NOT_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
