@@ -64,11 +64,7 @@ public class MapperUtils {
 	 * @return a {@link LocalDateTime} of given pattern
 	 */
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-		try {
-			return LocalDateTime.parse(dateTime);
-		} catch (Exception e) {
-			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
-		}
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
 	/*
@@ -298,7 +294,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
-		mapFieldValues(source, destination);// this method simply map values if field name and type are same
+		    mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
@@ -517,5 +513,6 @@ public class MapperUtils {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-
+	
+	
 }

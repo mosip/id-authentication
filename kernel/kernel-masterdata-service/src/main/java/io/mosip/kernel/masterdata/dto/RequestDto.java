@@ -23,7 +23,7 @@ public class RequestDto<T> {
 
 	private String id;
 	private String ver;
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime timestamp;
 	@NotNull
 	@Valid

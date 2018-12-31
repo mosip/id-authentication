@@ -26,7 +26,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  * @author Urvil Joshi
  *
  */
-//@Configuration
+@Configuration
 public class LocalDateLocalTimeConfig {
 	public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
 	public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -43,7 +43,7 @@ public class LocalDateLocalTimeConfig {
 		javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer());
 		javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
 		javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-		//javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+		javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
 		objectMapper.registerModule(javaTimeModule);
 		return objectMapper;
 	}
