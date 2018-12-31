@@ -218,7 +218,7 @@ export class DemographicComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['../../'], { relativeTo: this.route });
+    this.router.navigate(['dashboard', this.loginId]);
   }
 
   onSubmit(form: NgForm) {
