@@ -21,7 +21,7 @@ public class OTPFilter extends BaseAuthFilter {
 	 * Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody,
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody,
 			Map<String, Object> responseBody) {
 		responseBody.put("txnID", requestBody.get("txnID"));
 		return responseBody;

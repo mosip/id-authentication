@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 //import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,8 @@ import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
  */
 @Component
 public abstract class BaseAuthFilter implements Filter {
+
+	private static final String DEFAULT_VERSION = "v1.0";
 
 	/** The env. */
 	@Autowired
@@ -129,6 +132,15 @@ public abstract class BaseAuthFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+
+		String ver = null;
+		if (request instanceof HttpServletRequest) {
+			String url = ((HttpServletRequest) request).getRequestURL().toString();
+			String context = ((HttpServletRequest) request).getContextPath();
+			
+			 ver = getVersionFromUrl(url, context);
+		}
+
 		requestTime = DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern"));
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
@@ -160,9 +172,12 @@ public abstract class BaseAuthFilter implements Filter {
 
 			requestWrapper.resetInputStream();
 
-			response.getWriter().write(
-					mapper.writeValueAsString(encodedResponse(setTxnId(getRequestBody(requestWrapper.getInputStream()),
-							getResponseBody(responseWrapper.toString())))));
+			Map<String, Object> responseMap = setResponseParam(getRequestBody(requestWrapper.getInputStream()),
+					getResponseBody(responseWrapper.toString()));
+			responseMap.put("ver", ver);
+			response.getWriter()
+					.write(mapper.writeValueAsString(
+							encodedResponse(responseMap)));
 
 			logResponseTime((String) getResponseBody(responseWrapper.toString()).get("resTime"));
 		} catch (IdAuthenticationAppException e) {
@@ -329,7 +344,28 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @param responseBody the response body
 	 * @return the map
 	 */
-	protected abstract Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody);
+	protected abstract Map<String, Object> setResponseParam(Map<String, Object> requestBody,
+			Map<String, Object> responseBody);
+
+	/**
+	 * Get version of url.
+	 * 
+	 * @param url     url
+	 * @param context context-path
+	 * @return version of url
+	 */
+	protected String getVersionFromUrl(String url, String context) {
+		String ver = null;
+
+		if ((url != null && !url.isEmpty()) && (context != null && !context.isEmpty())) {
+			String[] splitedUrlByContext = url.split(context);
+			String versionStr = Arrays.stream(splitedUrlByContext[1].split("/")).filter(s -> !s.isEmpty()).findFirst()
+					.orElse(DEFAULT_VERSION);
+			ver = versionStr.replaceAll("[\\s+a-zA-Z]", "");
+		}
+
+		return ver;
+	}
 
 	/*
 	 * (non-Javadoc)

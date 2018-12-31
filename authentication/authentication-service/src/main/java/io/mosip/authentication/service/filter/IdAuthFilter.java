@@ -26,7 +26,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody,
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody,
 			Map<String, Object> responseBody) {
 		responseBody.replace("txnID", requestBody.get("txnID"));
 		return responseBody;

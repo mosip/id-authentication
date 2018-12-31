@@ -92,7 +92,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody) {
 		Map<String, Object> authReq = (Map<String, Object>) requestBody.get(AUTH_REQUEST);
 		responseBody.replace("txnID", authReq.get("txnID"));
 		return responseBody;

@@ -73,7 +73,7 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody) {
 		if(Y.equals(responseBody.get(STATUS))) {
 			Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
 			if ((authType.get(PERSONAL_IDENTITY) instanceof Boolean) && (authType.get(FULL_ADDRESS) instanceof Boolean) 
