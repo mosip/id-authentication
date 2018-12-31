@@ -156,6 +156,7 @@ public class DeviceServiceImpl implements DeviceService {
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(updatedDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
+				deviceHistoryRepository.create(deviceHistory);
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
@@ -32,6 +33,8 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	/**
 	 * Delete TemplateFileFormat based on code provided.
 	 * 
+	 * @param updatedBy
+	 *            name of user
 	 * @param deletedDateTime
 	 *            the Date and time of deletion.
 	 * @param code
@@ -39,6 +42,7 @@ public interface TemplateFileFormatRepository extends BaseRepository<TemplateFil
 	 * @return the integer.
 	 */
 	@Modifying
-	@Query("UPDATE TemplateFileFormat t SET t.updatedBy = ?3, t.isDeleted = true , t.deletedDateTime = ?1 WHERE t.code =?2 and (t.isDeleted is null or t.isDeleted = false)")
-	int deleteTemplateFileFormat(LocalDateTime deletedDateTime, String code, String updatedBy);
+	@Transactional
+	@Query("UPDATE TemplateFileFormat t SET t.updatedBy = ?1, t.isDeleted = true , t.deletedDateTime = ?2 WHERE t.code =?3 and (t.isDeleted is null or t.isDeleted = false)")
+	int deleteTemplateFileFormat(String updatedBy, LocalDateTime deletedDateTime, String code);
 }

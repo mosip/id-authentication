@@ -22,6 +22,8 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	/**
 	 * This method trigger query to fetch the Device detail for the given id.
 	 * 
+	 * @param id
+	 *            the id of device
 	 * @return the device detail
 	 */
 	@Query("FROM Device d where d.id = ?1 AND (d.isDeleted is null or d.isDeleted = false)")
