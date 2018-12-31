@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -31,12 +34,8 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
-
 /**
  * The Class DemoDedupe.
- *
- * @author M1048358 Alok Ranjan
- * @author M1048860 Kiran Raj
  */
 @Component
 public class DemoDedupe {
@@ -56,14 +55,23 @@ public class DemoDedupe {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+
+	/** The env. */
+	@Autowired
+	private Environment env;
+
+
 	/** The auth request DTO. */
 	private AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+
 
 	/** The auth type DTO. */
 	private AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 
+
 	/** The identity DTO. */
 	private IdentityDTO identityDTO = new IdentityDTO();
+
 
 	/** The identity info DTO. */
 	private IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -71,20 +79,23 @@ public class DemoDedupe {
 	/** The request. */
 	private RequestDTO request = new RequestDTO();
 
+
 	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
 
 	/** The packet info dao. */
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
-	
+
+
 	/**
-	 * Perform demodedupe.
+	 * Perform dedupe.
 	 *
 	 * @param refId the ref id
-	 * @return duplicate Ids
+	 * @return the list
 	 */
 	public List<DemographicInfoDto> performDedupe(String refId) {
 
@@ -99,18 +110,15 @@ public class DemoDedupe {
 		return demographicInfoDtos;
 	}
 
+
 	/**
 	 * Authenticate duplicates.
 	 *
-	 * @param regId
-	 *            the reg id
-	 * @param duplicateUins
-	 *            the duplicate ids
+	 * @param regId the reg id
+	 * @param duplicateUins the duplicate uins
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public boolean authenticateDuplicates(String regId, List<String> duplicateUins)
 			throws ApisResourceAccessException, IOException {
@@ -133,22 +141,17 @@ public class DemoDedupe {
 
 	}
 
+
 	/**
-	 * Authenticate biometric.
+	 * Authenticate finger biometric.
 	 *
-	 * @param biometriclist
-	 *            the biometriclist
-	 * @param type
-	 *            the type
-	 * @param duplicateUin
-	 *            the duplicate id
-	 * @param regId
-	 *            the reg id
+	 * @param biometriclist the biometriclist
+	 * @param type the type
+	 * @param duplicateUin the duplicate uin
+	 * @param regId the reg id
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private boolean authenticateFingerBiometric(List<String> biometriclist, String type, String duplicateUin, String regId)
 			throws ApisResourceAccessException, IOException {
@@ -167,7 +170,7 @@ public class DemoDedupe {
 
 				//authTypeDTO.setFingerPrint(true);
 				setFingerBiometric(biometricData,type);
-				
+
 			}
 		}
 
@@ -176,25 +179,26 @@ public class DemoDedupe {
 
 
 	}
-	
+
+
 	/**
-	 * Call setter.
+	 * Sets the finger biometric dto.
 	 *
 	 * @param obj the obj
 	 * @param fieldName the field name
 	 * @param value the value
 	 */
-	private void callSetter(Object obj, String fieldName, Object value){
-		  PropertyDescriptor pd;
-		  try {
-		   pd = new PropertyDescriptor(fieldName, obj.getClass());
-		   pd.getWriteMethod().invoke(obj, value);
-		  } catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-		   // TODO Auto-generated catch block
-		   e.printStackTrace();
-		  }
-		 }
-	
+	private void setFingerBiometricDto(Object obj, String fieldName, Object value){
+		PropertyDescriptor pd;
+		try {
+			pd = new PropertyDescriptor(fieldName, obj.getClass());
+			pd.getWriteMethod().invoke(obj, value);
+		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 	/**
 	 * Sets the finger biometric.
 	 *
@@ -203,17 +207,20 @@ public class DemoDedupe {
 	 */
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData,String type) {
 		String finger=null;
-		String[] fingerType= {"leftThumb","leftIndex","leftMiddle","leftLittle","leftRing"
-		,"rightThumb","rightIndex","rightMiddle","rightLittle","rightRing"		
-		};
-				
-		for(String str:fingerType) {
-			if(str.equalsIgnoreCase(type))
-				finger=str;
-				
+		String[] fingerType=env.getProperty("fingerType").split(",");
+
+		List<String> list=new ArrayList<>(Arrays.asList(fingerType));
+
+		Iterator<String> it = list.iterator(); 
+		while (it.hasNext()) {
+			if(it.next().equalsIgnoreCase(type)) {
+				finger= it.next();
+				break;
+			}
 		}
-		this.callSetter(identityDTO, finger, biometricData);
-		}
+		this.setFingerBiometricDto(identityDTO, finger, biometricData);
+	}
+
 	/**
 	 * Authenticate iris biometric.
 	 *
@@ -257,12 +264,13 @@ public class DemoDedupe {
 		return validateBiometric( duplicateUin);
 	}
 
+
 	/**
 	 * Validate biometric.
 	 *
 	 * @param duplicateUin the duplicate uin
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException             the apis resource access exception
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean validateBiometric(String duplicateUin)
 			throws ApisResourceAccessException {
@@ -274,12 +282,12 @@ public class DemoDedupe {
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 
-		// sending request to get authentication response
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
 				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
 	}
+
 
 	/**
 	 * Sets the auth dto.

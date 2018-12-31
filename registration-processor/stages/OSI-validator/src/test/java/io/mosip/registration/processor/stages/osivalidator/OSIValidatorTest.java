@@ -40,6 +40,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 
+import org.springframework.core.env.Environment;
 /**
  * The Class OSIValidatorTest.
  *
@@ -78,6 +79,10 @@ public class OSIValidatorTest {
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
+	  @Mock 
+	  Environment env;
+
+	
 	/** The data. */
 	byte[] data = "1234567890".getBytes();
 
@@ -134,6 +139,9 @@ public class OSIValidatorTest {
 		registrationStatusDto.setApplicantType("Child");
 		demographicDedupeDtoList.add(demographicInfoDto);
 
+		Mockito.when(env.getProperty("fingerType"))
+           .thenReturn("LeftThumb");    
+		
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
 
