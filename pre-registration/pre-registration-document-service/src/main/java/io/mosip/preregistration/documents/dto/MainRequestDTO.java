@@ -7,6 +7,7 @@ package io.mosip.preregistration.documents.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class UploadRequestDTO<T> implements Serializable {
+public class MainRequestDTO<T> implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
@@ -30,18 +31,21 @@ public class UploadRequestDTO<T> implements Serializable {
 	/**
 	 * Id
 	 */
-	String id;
+	@ApiModelProperty(value = "request id", position = 1)
+	private String id;
 	/**
 	 * Version
 	 */
-	String ver;
+	@ApiModelProperty(value = "version", position = 2)
+	private String ver;
     /**
      * Request Time
      */
-    Date reqTime;
+	@ApiModelProperty(value = "request time", position = 3)
+	private Date reqTime;
     /**
      * Request object	
      */
-    T request;	
-	
+	@ApiModelProperty(value = "request", position = 4)
+	private T request;
 }

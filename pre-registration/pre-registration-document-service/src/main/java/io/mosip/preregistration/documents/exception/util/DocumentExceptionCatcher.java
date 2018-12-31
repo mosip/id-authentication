@@ -5,6 +5,7 @@
 package io.mosip.preregistration.documents.exception.util;
 
 import org.json.JSONException;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -19,8 +20,10 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
+import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.ConnectionUnavailableException;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
+import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
@@ -29,8 +32,10 @@ import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.FileNotFoundException;
 import io.mosip.preregistration.documents.exception.InvalidConnectionParameters;
+import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 
 /**
  * This class is used to catch the exceptions that occur while uploading the
@@ -42,10 +47,9 @@ import io.mosip.preregistration.documents.exception.ParsingException;
  */
 public class DocumentExceptionCatcher {
 	public void handle(Exception ex) {
-		if (ex instanceof DataAccessLayerException || ex instanceof DocumentFailedToUploadException) {
+		if (ex instanceof DocumentFailedToUploadException || ex instanceof InvalidDataAccessResourceUsageException) {
 			throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString(), ex.getCause());
-
 		} else if (ex instanceof IOException) {
 			// kernel exception
 			throw new DTOMappigException(((IOException) ex).getErrorCode(), ex.getMessage(), ex.getCause());
@@ -74,6 +78,8 @@ public class DocumentExceptionCatcher {
 				throw new FileNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 						ErrorMessages.DOCUMENT_NOT_PRESENT.toString());
 			}
+		} else if (ex instanceof PacketNotFoundException) {
+			throw new CephServerException(((PacketNotFoundException) ex).getErrorCode(),ex.getMessage());
 		} else if (ex instanceof SdkClientException) {
 			throw new ConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
 					ErrorMessages.CONNECTION_UNAVAILABLE.toString());
@@ -93,6 +99,15 @@ public class DocumentExceptionCatcher {
 		} else if (ex instanceof DocumentFailedToCopyException) {
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
+		} else if (ex instanceof InvalidDocumnetIdExcepion) {
+			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
+					ErrorMessages.INVALID_DOCUMENT_ID.toString());
+		} else if (ex instanceof DemographicGetDetailsException) {
+			throw new DemographicGetDetailsException(((DemographicGetDetailsException) ex).getErrorCode(),
+					ex.getMessage());
+		}else if(ex instanceof CephServerException) {
+			throw new CephServerException(((CephServerException) ex).getErrorCode(),
+					ex.getMessage());
 		}
 
 	}

@@ -16,11 +16,11 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.*")
-public class PreRegistrationDocument {
+public class DocumentApplication {
 	/**
 	 * @param args noUsed
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(PreRegistrationDocument.class, args);
+		SpringApplication.run(DocumentApplication.class, args);
 	}
 }

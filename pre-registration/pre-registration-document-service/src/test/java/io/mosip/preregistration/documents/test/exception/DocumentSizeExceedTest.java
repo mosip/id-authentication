@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +20,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.documents.dto.DocumentDTO;
+import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
-import io.mosip.preregistration.documents.service.DocumentUploadService;
+import io.mosip.preregistration.documents.service.DocumentService;
 
 /**
  * Test class to test the DocumentSizeExceed Exception
@@ -37,7 +38,7 @@ public class DocumentSizeExceedTest {
 	private static final String DOCUMENT_EXCEEDING_PERMITTED_SIZE = "This is document size exceed exception";
 
 	@Mock
-	private DocumentUploadService documentUploadService;
+	private DocumentService documentUploadService;
 
 	@MockBean
 	private MockMultipartFile multiPartFile;
@@ -55,8 +56,8 @@ public class DocumentSizeExceedTest {
 		DocumentSizeExceedException exceedException = new DocumentSizeExceedException(
 				DOCUMENT_EXCEEDING_PERMITTED_SIZE);
 
-		DocumentDTO documentDto = new DocumentDTO("48690172097498", "address", "POA", "pdf", "Pending-Appoinment",
-				new Timestamp(System.currentTimeMillis()), "9217148168");
+		DocumentRequestDTO documentDto = new DocumentRequestDTO("48690172097498", "address", "POA", "pdf", "Pending-Appoinment",
+				new Date(),"ENG", "9217148168");
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));

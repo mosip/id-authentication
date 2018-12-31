@@ -5,7 +5,7 @@
 package io.mosip.preregistration.documents.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,11 +49,13 @@ public class DocumentEntity implements Serializable {
 	/**
 	 * Document Id
 	 */
-	@Id
-	@SequenceGenerator(name = "applicant_document_id_seq", sequenceName = "applicant_document_id_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_document_id_seq")
-	@Column(name = "id")
-	private int documentId;
+	//@Id
+	//@SequenceGenerator(name = "applicant_document_id_seq", sequenceName = "applicant_document_id_seq", allocationSize = 1)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_document_id_seq")
+	@Id @GeneratedValue(generator="system-uuid" )
+	@GenericGenerator(name="system-uuid", strategy = "uuid" )
+	@Column(name = "id" ,columnDefinition = "BINARY(8)")
+	private String documentId;
 
 	/**
 	 * PreRegistration Id
@@ -105,7 +109,7 @@ public class DocumentEntity implements Serializable {
 	 * Created Date Time
 	 */
 	@Column(name = "cr_dtimes")
-	private Timestamp crDtime;
+	private LocalDateTime crDtime;
 
 	/**
 	 * Updated By
@@ -117,6 +121,6 @@ public class DocumentEntity implements Serializable {
 	 * Updated Date Time
 	 */
 	@Column(name = "upd_dtimes")
-	private Timestamp updDtime;
+	private LocalDateTime updDtime;
 
 }

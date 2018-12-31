@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +35,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.preregistration.documents.code.StatusCodes;
-import io.mosip.preregistration.documents.controller.DocumentUploader;
-import io.mosip.preregistration.documents.dto.DocumentDTO;
-import io.mosip.preregistration.documents.dto.ResponseDTO;
+import io.mosip.preregistration.documents.controller.DocumentController;
+import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
+import io.mosip.preregistration.documents.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
-import io.mosip.preregistration.documents.service.DocumentUploadService;
+import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 
 /**
@@ -52,8 +53,8 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
  * 
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(DocumentUploader.class)
-public class DocumentUploaderTest {
+@WebMvcTest(DocumentController.class)
+public class DocumentControllerTest {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -69,7 +70,7 @@ public class DocumentUploaderTest {
 	 * Creating Mock Bean for DocumentUploadService
 	 */
 	@MockBean
-	private DocumentUploadService service;
+	private DocumentService service;
 
 	/**
 	 * Creating Mock Bean for FilesystemCephAdapterImpl
@@ -83,12 +84,12 @@ public class DocumentUploaderTest {
 	String documentId;
 	boolean flag;
 	String json;
-	String jsonDTO="";
+	String jsonDTO = "";
 
 	Map<String, String> map = new HashMap<>();
-	ResponseDTO responseCopy = new ResponseDTO<>();
-	ResponseDTO responseDelete = new ResponseDTO<>();
-	DocumentDTO documentDto = null;
+	MainListResponseDTO responseCopy = new MainListResponseDTO<>();
+	MainListResponseDTO responseDelete = new MainListResponseDTO<>();
+	DocumentRequestDTO documentDto = null;
 
 	/**
 	 * @throws IOException
@@ -96,8 +97,7 @@ public class DocumentUploaderTest {
 	@Before
 	public void setUp() throws IOException {
 
-		documentDto = new DocumentDTO("59276903416082", "address", "POA", "pdf", "Pending-Appoinment",
-				new Timestamp(System.currentTimeMillis()), "Jagadishwari");
+		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "pdf", "Pending-Appoinment", new Date(), "ENG", "Jagadishwari");
 
 		json = "{\r\n" + 
 				"	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + 
