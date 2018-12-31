@@ -18,6 +18,7 @@
 
 .progress-incomplete {
   border-top: 3px solid grey;
+  opacity: 0.5;
 }
 
 .container {
@@ -44,6 +45,7 @@
 
 .inline-icon-background-incomplete {
   background: grey;
+  opacity: 0.5;
 }
 
 .active {
@@ -56,6 +58,7 @@
 
 .incomplete {
   color: grey;
+  opacity: 0.5;
 }
 
 @media(max-width: 500px) {

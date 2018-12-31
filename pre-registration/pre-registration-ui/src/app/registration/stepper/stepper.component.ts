@@ -61,7 +61,7 @@ export class StepperComponent implements OnInit, OnChanges {
       this.classes.step3.line = ['progress', 'progress-incomplete'];
       this.classes.step4.p = ['incomplete'];
       this.classes.step4.icon = ['inline-icon', 'inline-icon-background-incomplete'];
-    } else if (this.componentName === 'CenterSelectionComponent') {
+    } else if (this.componentName === 'CenterSelectionComponent' || this.componentName === 'TimeSelectionComponent') {
       this.classes.step1.p = ['complete'];
       this.classes.step1.icon = ['inline-icon', 'inline-icon-background-complete'];
       this.classes.step1.line = ['progress', 'progress-complete'];

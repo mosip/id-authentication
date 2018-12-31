@@ -14,6 +14,7 @@ const registrationRoutes: Routes = [
     path: 'pre-registration/:id',
     component: ParentComponent,
     children: [
+      { path: '', pathMatch: 'full', redirectTo: '/'},
       { path: 'demographic/:id', component: DemographicComponent },
       { path: 'file-upload', component: FileUploadComponent },
       { path: 'pick-center', component: CenterSelectionComponent },

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ export class LoginComponent implements OnInit {
   self: any = this;
   inputText = '';
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
@@ -84,6 +85,7 @@ export class LoginComponent implements OnInit {
 
     } else if (this.btnText === 'Verify') {
       // does nothing as of now
+      this.router.navigate(['dashboard', this.inputText]);
     }
 
 
