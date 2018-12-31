@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author M1046129
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

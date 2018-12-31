@@ -39,16 +39,10 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
 	MosipEventBus mosipEventBus = null;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -64,6 +58,9 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 	@Autowired
 	private PacketArchiver packetArchiver;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
 
@@ -95,7 +92,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 					} catch (PacketDecryptionFailureException e) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),e.getErrorCode()+" "+e.getErrorText());
 						dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
-						dto.setStatusComment("packet is in status packet for decryption failed");
+						dto.setStatusComment("Packet decryption failed");
 						dto.setUpdatedBy(USER);
 						registrationStatusService.updateRegistrationStatus(dto);
 						this.isTransactionSuccessful = false;
@@ -159,8 +156,8 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 		adapter.unpackPacket(dto.getRegistrationId());
 
-		dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESSFUL.toString());
-		dto.setStatusComment("packet is in status packet for decryption successful");
+		dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESS.toString());
+		dto.setStatusComment("Packet is succesfully decrypted");
 		dto.setUpdatedBy(USER);
 		registrationStatusService.updateRegistrationStatus(dto);
 
@@ -190,7 +187,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	}
 
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg ->
 		// sendMessage(mosipEventBus, new MessageDTO())
 		process(new MessageDTO()));

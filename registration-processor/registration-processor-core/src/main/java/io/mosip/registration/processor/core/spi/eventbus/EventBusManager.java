@@ -23,7 +23,7 @@ public interface EventBusManager<T, U, V> {
 	 * @return The EventBus instance
 	 * @throws InterruptedException
 	 */
-	public T getEventBus(Class<?> clazz, String clusterAddress, String localhost);
+	public T getEventBus(Class<?> clazz, String clusterManagerUrl);
 
 	/**
 	 * This method consumes a message from an address, processes it and forwards the

@@ -40,14 +40,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(OSIValidatorStage.class);
 	
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -63,12 +55,15 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	/** The umc validator. */
 	@Autowired
 	UMCValidator umcValidator;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
 	}
 
@@ -103,7 +98,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			if (isValidUMC && isValidOSI) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESSFUL.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
 				description = "OSI validation successful for registration id : " + registrationId;
 			} else {

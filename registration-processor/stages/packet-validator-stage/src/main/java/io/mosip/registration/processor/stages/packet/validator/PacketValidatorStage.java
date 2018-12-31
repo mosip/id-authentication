@@ -74,21 +74,18 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
 	}
 
