@@ -95,12 +95,6 @@ export class DashBoardComponent implements OnInit {
         }
       },
       error => {
-        // if (error && error.err.errorCode === 'PRG_PAM_APP_005') {
-        //   console.log('NO applicant');
-
-        //   this.isFetched = true;
-        //   this.onNewApplication();
-        // }
         console.log('error', error.error.err.errorCode);
         if ((error.error.err.errorCode = 'PRG_PAM_APP_005')) {
           sessionStorage.setItem('newApplicant', 'true');
@@ -108,7 +102,7 @@ export class DashBoardComponent implements OnInit {
         } else {
           this.router.navigate(['error']);
         }
-        // this.isFetched = true;
+        this.isFetched = true;
       },
       () => {
         this.isFetched = true;
@@ -134,16 +128,6 @@ export class DashBoardComponent implements OnInit {
   onNewApplication() {
     this.router.navigate(['pre-registration', this.loginId, 'demographic']);
     this.isNewApplication = true;
-    //   const data = {
-    //     case: 'APPLICANTS'
-    //   };
-    //   const dialogRef = this.openDialog(data, `250px`);
-    //   dialogRef.afterClosed().subscribe(numberOfApplicant => {
-    //     if (numberOfApplicant != null) {
-    //       this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
-    //       this.isNewApplication = true;
-    //     }
-    //   });
   }
 
   openDialog(data, width) {
