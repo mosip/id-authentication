@@ -8,9 +8,9 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum DeviceHistoryErrorCode {
-	DEVICE_HISTORY_FETCH_EXCEPTION("KER-MSD-xxx",
-			"Error occured while fetching Device History details"), DEVICE_HISTORY_NOT_FOUND_EXCEPTION("KER-MSD-xxx",
-					"Device History not found"), INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("KER-MSD-xxx",
+	DEVICE_HISTORY_FETCH_EXCEPTION("KER-MSD-031",
+			"Error occured while fetching Device History details"), DEVICE_HISTORY_NOT_FOUND_EXCEPTION("KER-MSD-032",
+					"Device History not found"), INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION("KER-MSD-033",
 							"Invalid date format");
 
 	private final String errorCode;

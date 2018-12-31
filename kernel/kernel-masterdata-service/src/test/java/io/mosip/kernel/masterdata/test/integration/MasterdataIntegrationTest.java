@@ -3914,7 +3914,7 @@ public class MasterdataIntegrationTest {
 			when(deviceHistoryRepository
 					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-			mockMvc.perform(get("/v1.0/machineshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
+			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
 					"2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
 		}
 
