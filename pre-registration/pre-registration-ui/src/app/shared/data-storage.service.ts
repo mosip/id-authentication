@@ -20,7 +20,7 @@ export class DataStorageService {
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   AVAILABILITY_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/book';
-  TRANSLITERATION_URL = '';
+  TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
@@ -40,19 +40,12 @@ export class DataStorageService {
     });
   }
 
-  getTransliteration() {
+  getTransliteration(request) {
     const obj = {
       id: 'mosip.pre-registration.transliteration.transliterate',
       reqTime: '2018-12-24T14:10:31.900Z',
       ver: '1.0',
-      request: {
-        from_field_lang: 'English',
-        from_field_name: 'Name1',
-        from_field_value: 'Kishan',
-        to_field_lang: 'Arabic',
-        to_field_name: 'Name2',
-        to_field_value: ''
-      }
+      request: request
     };
 
     return this.httpClient.post(this.TRANSLITERATION_URL, obj);
