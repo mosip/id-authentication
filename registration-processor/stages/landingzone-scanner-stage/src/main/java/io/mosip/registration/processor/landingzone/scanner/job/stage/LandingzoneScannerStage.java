@@ -26,7 +26,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-	
+
 /**
  * The Class LandingzoneScannerStage.
  */
@@ -42,15 +42,6 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
-	/** The secs. */
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
@@ -62,13 +53,16 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
+
 	/** The registration status service. */
 	@Autowired
 	protected RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The Constant VIRUS_SCAN_NOT_ACCESSIBLE. */
 	private static final String VIRUS_SCAN_NOT_ACCESSIBLE = "The Virus Scan Path set by the System is not accessible";
-	
+
 	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
@@ -76,7 +70,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> {
 			process(new MessageDTO());
 			this.send(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT, new MessageDTO());

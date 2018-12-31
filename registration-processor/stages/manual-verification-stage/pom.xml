@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
-		<artifactId>registration-processor</artifactId>
+		<artifactId>stages</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
@@ -109,14 +109,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
+							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
-						<configuration>
-							<classifier>exec</classifier>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

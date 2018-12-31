@@ -16,14 +16,9 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
  */
 @Component
 public class ManualVerificationStage extends MosipVerticleManager {
-
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/** The mosip event bus. */
 	private MosipEventBus mosipEventBus;
@@ -33,7 +28,7 @@ public class ManualVerificationStage extends MosipVerticleManager {
 	 */
 	public void deployStage() {
 		if (this.mosipEventBus == null) {
-			this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+			this.mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		}
 	}
 

@@ -11,37 +11,30 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-	
+
 /**
  * Retry stage verticle class for re processing different stages in case of
- * internal/system erroe.
+ * internal/system erroe
  *
  * @author Jyoti Prakash Nayak
  */
 @RefreshScope
 @Component
 public class RetryStage extends MosipVerticleManager {
-	
-	/** The wait period. */
+
 	@Value("${registration.processor.wait.period}")
 	private int waitPeriod;
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
-	/** The mosip event bus. */
 	private MosipEventBus mosipEventBus;
 
 	/**
 	 * method to deploy retry-stage.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		this.mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(this.mosipEventBus, MessageBusAddress.RETRY_BUS);
 
 	}

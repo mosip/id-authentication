@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.packet.decrypter.job.stage;
-	
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -30,75 +30,46 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-/**
- * The Class PacketDecrypterStage.
- */
 @Component
 public class PacketDecrypterStage extends MosipVerticleManager {
-	
-	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketDecrypterStage.class);
 
-	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The secs. */
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
-	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
-	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-	/** The decryptor. */
 	@Autowired
 	private Decryptor decryptor;
 
-	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
-	/** The packet archiver. */
 	@Autowired
 	private PacketArchiver packetArchiver;
 
-	/** The Constant DFS_NOT_ACCESSIBLE. */
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
+
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
 
-	/** The Constant REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
 			+ "is not accessible";
 
-	/** The description. */
 	private String description = "";
-	
-	/** The is transaction successful. */
 	private boolean isTransactionSuccessful = false;
-	
-	/** The registration id. */
 	private String registrationId = "";
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
-	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		List<InternalRegistrationStatusDto> dtolist = null;
@@ -164,11 +135,12 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	}
 
 	/**
-	 * method for decrypting registration packet.
+	 * method for decrypting registration packet
 	 *
-	 * @param dto            RegistrationStatus of the packet to be decrypted
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException the packet decryption failure exception
+	 * @param dto
+	 *            RegistrationStatus of the packet to be decrypted
+	 * @throws IOException
+	 * @throws PacketDecryptionFailureException
 	 */
 	private void decryptpacket(InternalRegistrationStatusDto dto) throws IOException, PacketDecryptionFailureException {
 		try {
@@ -223,22 +195,13 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 	}
 
-	/**
-	 * Deploy verticle.
-	 */
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg ->
 		// sendMessage(mosipEventBus, new MessageDTO())
 		process(new MessageDTO()));
 	}
 
-	/**
-	 * Send message.
-	 *
-	 * @param mosipEventBus the mosip event bus
-	 * @param message the message
-	 */
 	private void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
 		this.send(mosipEventBus, MessageBusAddress.BATCH_BUS, message);
 	}

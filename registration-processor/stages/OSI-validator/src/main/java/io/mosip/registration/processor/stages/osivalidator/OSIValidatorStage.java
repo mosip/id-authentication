@@ -40,14 +40,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(OSIValidatorStage.class);
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -63,12 +55,15 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	/** The umc validator. */
 	@Autowired
 	UMCValidator umcValidator;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
 	}
 

@@ -19,7 +19,6 @@ import lombok.ToString;
 public class PreRegistrationViewDTO {
 	private String preId;
 	private String fullname;
-	private String appointmentDate;
 	private String statusCode;
 	private BookingRegistrationDTO bookingRegistrationDTO;
 }

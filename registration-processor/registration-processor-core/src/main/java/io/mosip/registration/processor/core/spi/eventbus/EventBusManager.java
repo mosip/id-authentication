@@ -19,7 +19,7 @@ public interface EventBusManager<T, U, V> {
 	 * @param localhost the localhost
 	 * @return The EventBus instance
 	 */
-	public T getEventBus(Class<?> clazz, String clusterAddress, String localhost);
+	public T getEventBus(Class<?> clazz, String clusterManagerUrl);
 
 	/**
 	 * This method consumes a message from an address, processes it and forwards the

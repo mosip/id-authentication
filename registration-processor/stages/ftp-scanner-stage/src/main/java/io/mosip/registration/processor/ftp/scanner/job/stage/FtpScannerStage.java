@@ -33,7 +33,7 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 /**
  * The Class FtpScannerStage.
  */
-@Component	
+@Component
 public class FtpScannerStage extends MosipVerticleManager {
 
 	/** The Constant LOGGER. */
@@ -41,14 +41,6 @@ public class FtpScannerStage extends MosipVerticleManager {
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
-
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 	
 /** The secs. */
 //	@Value("${landingzone.scanner.stage.time.interval}")
@@ -58,7 +50,6 @@ public class FtpScannerStage extends MosipVerticleManager {
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
-	/** The packet handler service. */
 	@Autowired
 	protected PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 	
@@ -66,12 +57,15 @@ public class FtpScannerStage extends MosipVerticleManager {
 	@Autowired
 	private MessageDTO messageDto;
 
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
+
 	/** The Constant FTP_NOT_ACCESSIBLE. */
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
-	
+
 	/** The Constant FILE_NOT_ACCESSIBLE. */
 	private static final String FILE_NOT_ACCESSIBLE = "The File Path is not accessible";
-	
+
 	/** The Constant DUPLICATE_UPLOAD. */
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 	
@@ -79,15 +73,12 @@ public class FtpScannerStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs  * 1000, msg -> {
 			this.process(messageDto);
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
-	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		String filepath = this.filemanager.getCurrentDirectory();

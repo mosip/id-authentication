@@ -1,7 +1,5 @@
 package io.mosip.registration.processor.camel.bridge.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -14,30 +12,25 @@ import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-	
+
 /**
- * This class interacts with config server and gets the required values.
+ * This class interacts with config server and gets the required values
  *
  * @author Pranav Kumar
  * @since 0.0.1
+ *
  */
 public class BridgeUtil {
 
-	/** The bridge configuration. */
 	private static JsonObject bridgeConfiguration = null;
 
-	/**
-	 * Instantiates a new bridge util.
-	 */
 	private BridgeUtil() {
 
 	}
 
 	/**
 	 * This method gets all values from config server as a JsonObject and stores it
-	 * locally.
-	 *
-	 * @return the configuration
+	 * locally
 	 */
 	public static void getConfiguration() {
 		String url = PropertyFileUtil.getProperty(MosipCamelBridge.class, "bootstrap.properties", "url");
@@ -69,9 +62,10 @@ public class BridgeUtil {
 	}
 
 	/**
-	 * This method returns the camel endpoint along with component.
+	 * This method returns the camel endpoint along with component
 	 *
-	 * @param messageBusAddress            The address to be used for endpoint
+	 * @param messageBusAddress
+	 *            The address to be used for endpoint
 	 * @return The address as per the configured camel component
 	 */
 	public static String getEndpoint(MessageBusAddress messageBusAddress) {
@@ -80,32 +74,5 @@ public class BridgeUtil {
 		}
 		return BridgeUtil.bridgeConfiguration.getString("registration.processor.component")
 				+ messageBusAddress.getAddress();
-	}
-
-	/**
-	 * This method returns the address for localhost.
-	 *
-	 * @return The address for localhost
-	 */
-	public static String getLocalHost() {
-		if (BridgeUtil.bridgeConfiguration == null) {
-			getConfiguration();
-		}
-		return BridgeUtil.bridgeConfiguration.getString("registration.processor.localhost");
-	}
-
-	/**
-	 * This method returns the configured IP and port range for Vertx clustering.
-	 *
-	 * @return the configured IP and port range for Vertx clustering as a List
-	 */
-	public static List<String> getIpAddressPortRange() {
-		if (BridgeUtil.bridgeConfiguration == null) {
-			getConfiguration();
-		}
-		String ipPortRange = BridgeUtil.bridgeConfiguration.getString("registration.processor.vertx.ip.range");
-		ArrayList<String> ipPort = new ArrayList<>();
-		ipPort.add(ipPortRange);
-		return ipPort;
 	}
 }

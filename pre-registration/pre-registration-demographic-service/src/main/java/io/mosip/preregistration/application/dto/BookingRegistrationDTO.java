@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -7,6 +11,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author M1046129
+ *
+ */
 @Getter
 @Setter
 public class BookingRegistrationDTO implements Serializable{

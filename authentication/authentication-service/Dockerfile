@@ -1,10 +1,12 @@
 FROM java:8
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /tmp
+ARG active_profile
 
-ADD target/authentication-service-1.0.0-SNAPSHOT.jar /AuthenticationService.jar
+# environment variable to pass active profile such as DEV, QA etc at docker runtime
+ENV active_profile_env=${active_profile}
+
+ADD target/authentication-service-*.jar /AuthenticationService.jar
 
 EXPOSE 8090
 
-ENTRYPOINT ["java","-jar","/AuthenticationService.jar"]
+ENTRYPOINT ["java","-jar","-Dspring.profiles.active=${active_profile_env}","/AuthenticationService.jar"]
