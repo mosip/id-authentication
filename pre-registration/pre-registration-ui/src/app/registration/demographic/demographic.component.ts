@@ -216,7 +216,7 @@ export class DemographicComponent implements OnInit {
     this.router.navigate(['dashboard', this.loginId]);
   }
 
-  onSubmit(form: NgForm) {
+  onSubmit() {
     // console.log(this.uppermostLocationHierarchy[0].code);
     // this.dataStorageService.getLocationList('BLR', 'ENG');
     let preId = '';
@@ -252,7 +252,7 @@ export class DemographicComponent implements OnInit {
         this.checked = true;
         this.dataUploadComplete = true;
         if (this.step === this.numberOfApplicants) {
-          this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+          this.router.navigate(['../file-upload'], { relativeTo: this.route });
         }
       }
     );
