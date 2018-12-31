@@ -98,7 +98,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 						LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getErrorText(), e);
 
 						dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
-						dto.setStatusComment("packet is in status packet for decryption failed");
+						dto.setStatusComment("Packet decryption failed");
 						dto.setUpdatedBy(USER);
 						registrationStatusService.updateRegistrationStatus(dto);
 						this.isTransactionSuccessful = false;
@@ -165,8 +165,8 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 		adapter.unpackPacket(dto.getRegistrationId());
 
-		dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESSFUL.toString());
-		dto.setStatusComment("packet is in status packet for decryption successful");
+		dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESS.toString());
+		dto.setStatusComment("Packet is succesfully decrypted");
 		dto.setUpdatedBy(USER);
 		registrationStatusService.updateRegistrationStatus(dto);
 

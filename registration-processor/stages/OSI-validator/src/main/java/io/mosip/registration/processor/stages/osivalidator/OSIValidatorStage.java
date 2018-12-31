@@ -102,7 +102,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			if (isValidUMC && isValidOSI) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESSFUL.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
 				description = "OSI validation successful for registration id : " + registrationId;
 			} else {

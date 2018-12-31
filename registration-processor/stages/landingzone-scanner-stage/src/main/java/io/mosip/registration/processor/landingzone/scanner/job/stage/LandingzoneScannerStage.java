@@ -87,7 +87,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 						if (this.filemanager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, dto.getRegistrationId())) {
 
 							dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
-							dto.setStatusComment("packet is in status packet for virus scan");
+							dto.setStatusComment("Packet successfully uploaded to Landing Zone");
 							dto.setUpdatedBy(USER);
 							this.registrationStatusService.updateRegistrationStatus(dto);
 
