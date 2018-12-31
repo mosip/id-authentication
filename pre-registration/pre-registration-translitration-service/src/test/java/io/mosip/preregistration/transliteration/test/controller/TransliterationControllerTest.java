@@ -1,9 +1,15 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +26,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
-import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
-import io.mosip.preregistration.transliteration.service.TransliterationService;
 import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
-import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+import io.mosip.preregistration.transliteration.exception.IllegalParamException;
+import io.mosip.preregistration.transliteration.service.TransliterationService;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 
 /**
  * 
@@ -38,7 +44,7 @@ import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 @RunWith(SpringRunner.class)
 @WebMvcTest(TransliterationControllerTest.class)
 public class TransliterationControllerTest {
-	
+
 	/**
 	 * Autowired reference for {@link #MockMvc}
 	 */
@@ -52,53 +58,59 @@ public class TransliterationControllerTest {
 	private TransliterationService serviceImpl;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	private Object jsonObject = null;
-	
-	private MainRequestDTO<TransliterationDTO> requestDto;
-	
+
+	private Object jsonObject, failObject = null;
+
+	/**
+	 * @throws FileNotFoundException
+	 *             when file not found
+	 * @throws IOException
+	 *             on input error
+	 * @throws ParseException
+	 *             on json parsing error
+	 */
 	@Before
-	public void setup() {
-		requestDto=new MainRequestDTO<>();
-		requestDto.setId("mosip.pre-registration.translitration.translitrate");
-		requestDto.setReqTime(new Date());
-		requestDto.getRequest().setFromFieldLang("English");
-		requestDto.getRequest().setFromFieldName("Name1");
-		requestDto.getRequest().setFromFieldValue("Kishan");
-		requestDto.getRequest().setToFieldLang("Arabic");
-		requestDto.getRequest().setToFieldName("Name2");
-		requestDto.getRequest().setToFieldValue("");
+	public void setup() throws FileNotFoundException, IOException, ParseException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		JSONParser parser = new JSONParser();
+		File file = new File(classLoader.getResource("transliteration-application.json").getFile());
+		jsonObject = parser.parse(new FileReader(file));
+
+		File failFile = new File(classLoader.getResource("transliteration-application.json").getFile());
+		failObject = parser.parse(new FileReader(failFile));
 	}
-	
+
+	/**
+	 * @throws Exception on eoor
+	 */
 	@Test
 	public void successTest() throws Exception {
-		MainResponseDTO<TransliterationDTO> response=new MainResponseDTO<>();
-		TransliterationDTO dto=new TransliterationDTO();
-		dto.setToFieldValue("كِسهَن");
-		response.setResponse(dto);
+
+		logger.info("----------Successful transliteration controller operation-------");
+		MainResponseDTO<TransliterationDTO> response = new MainResponseDTO<>();
+		TransliterationDTO dto = new TransliterationDTO();
+		//response.setResponse(dto);
 		Mockito.when(serviceImpl.translitratorService(Mockito.any())).thenReturn(response);
-		logger.info("Resonse " + response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/translitrate")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(requestDto.toString());
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 		logger.info("Resonse " + response);
-		mockMvc.perform(requestBuilder).andExpect(status().isOk());	
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
-	
+
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
-	@Test(expected=MandatoryFieldRequiredException.class)
-	public void failureSave() throws Exception {
-		logger.info("----------Unsuccessful-------");
-		MainResponseDTO<TransliterationDTO> response=new MainResponseDTO<>();
-		TransliterationDTO dto=new TransliterationDTO();
-		dto.setToFieldValue("كِسهَن");
-		response.setResponse(dto);
-		Mockito.when(serviceImpl.translitratorService(Mockito.any())).thenThrow(MandatoryFieldRequiredException.class);
+	@Test
+	public void failureTest() throws Exception {
+		logger.info("----------Unsuccessful transliteration controller operation-------");
+		Mockito.doThrow(new IllegalParamException("ex")).when(serviceImpl).translitratorService(Mockito.any());
+
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/translitrate")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).content(requestDto.toString());
-		mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(failObject.toString());
+		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
 	}
 }

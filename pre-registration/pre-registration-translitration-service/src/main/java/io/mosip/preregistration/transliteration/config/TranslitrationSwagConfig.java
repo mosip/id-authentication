@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.config;
 
 import java.net.MalformedURLException;
@@ -15,28 +19,61 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * This class is used for Swagger configuration, also to configure Host and
+ * Port.
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 @Configuration
 @EnableSwagger2
 public class TranslitrationSwagConfig {
 
 	/**
-	 *Swaager configuration 
-	 *
+	 * Reference for ${application.env.local:false} from property file.
 	 */
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
+	/**
+	 * Reference for ${swagger.base-url:#{null}} from property file.
+	 */
 	@Value("${swagger.base-url:#{null}}")
 	private String swaggerBaseUrl;
 
+	/**
+	 * Reference for ${server.port:9098} from property file.
+	 */
 	@Value("${server.port:9098}")
 	private int serverPort;
 
+	/**
+	 * To define Protocol
+	 */
 	String proto = "http";
+
+	/**
+	 * To define Host
+	 */
 	String host = "localhost";
+
+	/**
+	 * To define port
+	 */
 	int port = -1;
+
+	/**
+	 * To define host along with the port
+	 */
 	String hostWithPort = "localhost:9098";
-	@Bean
+
+	/**
+	 * To configure Host and port along with docket.
+	 * 
+	 * @return Docket docket
+	 */
 	public Docket registrationStatusBean() {
 		boolean swaggerBaseUrlSet = false;
 		if (!localEnv && swaggerBaseUrl != null && !swaggerBaseUrl.isEmpty()) {
@@ -66,6 +103,9 @@ public class TranslitrationSwagConfig {
 		return docket;
 	}
 	
+	/**
+	 * @return set or protocols
+	 */
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);

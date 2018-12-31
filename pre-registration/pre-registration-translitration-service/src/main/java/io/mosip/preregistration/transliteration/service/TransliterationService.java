@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.service;
 
 import java.util.HashMap;
@@ -20,15 +24,31 @@ import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
 import io.mosip.preregistration.transliteration.util.PreRegistrationTransliterator;
 
+/**
+ * This class provides the service implementation for Transliteration application.
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 @Service
 public class TransliterationService {
 
+	/**
+	 * Autowired reference for {@link #LanguageIdRepository}
+	 */
 	@Autowired
 	private LanguageIdRepository idRepository;
 
+	/**
+	 * Autowired reference for {@link #translitrator}
+	 */
 	@Autowired
 	private PreRegistrationTransliterator translitrator;
 
+	/**
+	 * Autowired reference for {@link #serviceUtil}
+	 */
 	@Autowired
 	private TransliterationServiceUtil serviceUtil;
 
@@ -62,6 +82,14 @@ public class TransliterationService {
 
 	protected boolean trueStatus = true;
 
+	
+	/**
+	 * 
+	 * This method is used to transliterate the given data.
+	 * 
+	 * @param requestDTO
+	 * @return responseDto with transliterated value
+	 */
 	public MainResponseDTO<TransliterationDTO> translitratorService(
 		MainRequestDTO<TransliterationDTO> requestDTO) {
 		MainResponseDTO<TransliterationDTO> responseDTO = new MainResponseDTO<>();

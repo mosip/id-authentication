@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.transliteration.dto;
 
 import java.io.Serializable;
@@ -8,6 +12,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Main response DTO
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ * @param <T>
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,12 +33,21 @@ public class MainResponseDTO<T> implements Serializable {
 	@ApiModelProperty(value = "Error Details", position = 1)
 	private ExceptionJSONInfoDTO err;
 
+	/**
+	 * Response Status
+	 */
 	@ApiModelProperty(value = "Response Status", position = 2)
 	private boolean status;
 
+	/**
+	 * Response Date Time
+	 */
 	@ApiModelProperty(value = "Response Time", position = 3)
 	private String resTime;
 
+	/**
+	 * Object of Response
+	 */
 	@ApiModelProperty(value = "Response", position = 4)
 	private T response;
 
