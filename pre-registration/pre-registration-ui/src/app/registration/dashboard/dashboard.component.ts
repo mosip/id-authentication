@@ -343,6 +343,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
+    console.log('user files fetched', response);
+
     this.userFile = response.response;
     this.userFiles.push(this.userFile);
   }
