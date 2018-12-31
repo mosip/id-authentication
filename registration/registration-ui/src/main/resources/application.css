@@ -330,15 +330,21 @@
 
 .headerPane {
 	-fx-background-color:#808080;
+	-fx-pref-height: 54px;
+	-fx-pref-width: 483px;
 }
 
 .paneRoot {
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
+	-fx-pref-height: 359px;
+	-fx-pref-width: 477px;
 }
 
 .subPane {
 	-fx-background-color:#ffffff;
+	-fx-pref-height: 307px;
+	-fx-pref-width: 483px;
 }
 
 #submit, #rejectionSubmit,#submitBtn{
@@ -365,6 +371,8 @@
 	-fx-background-color:#ffffff;
 	-fx-border-width: 1.0;
 	-fx-border-color: black;
+	-fx-pref-height: 238px;
+	-fx-pref-width: 349px;
 }
 
 .exit {
@@ -380,4 +388,10 @@
 
 #bioPreviewGridId{
 	-fx-background-color: white;
+}
+
+.scanPopupHeader {
+	-fx-font-size: 18px;
+	-fx-font-weight: bold;
+	-fx-font-family: System;
 }
