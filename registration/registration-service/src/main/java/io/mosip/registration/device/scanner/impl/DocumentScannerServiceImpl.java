@@ -1,9 +1,14 @@
 package io.mosip.registration.device.scanner.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_DOC_SCAN_CONTROLLER;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
@@ -23,6 +28,8 @@ import au.com.southsky.jfreesane.SaneDevice;
 import au.com.southsky.jfreesane.SaneException;
 import au.com.southsky.jfreesane.SaneOption;
 import au.com.southsky.jfreesane.SaneSession;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.device.scanner.DocumentScannerService;
 
 /**
@@ -47,6 +54,8 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
 
+	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerServiceImpl.class);
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,9 +79,9 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	 * ()
 	 */
 	@Override
-	public byte[] scanDocument() {
+	public BufferedImage scanDocument() {
 
-		byte[] imageInBytes = null;
+		BufferedImage bufferedImage = null;
 		List<SaneDevice> saneDevices = getScannerDevices();
 		if (isListNotEmpty(saneDevices)) {
 			SaneDevice saneDevice = saneDevices.get(0);
@@ -81,18 +90,18 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 				setScannerSettings(saneDevice);
 
-				BufferedImage bufferedImage = saneDevice.acquireImage();
+				bufferedImage = saneDevice.acquireImage();
 
-				imageInBytes = getImageBytesFromBufferedImage(bufferedImage);
+				// imageInBytes = getImageBytesFromBufferedImage(bufferedImage);
 
 				// ImageIO.write(bufferedImage, "JPG", new
 				// File("C:/Users/M1046540/Desktop/testDoc.jpg"));
 				saneDevice.close();
 			} catch (IOException | SaneException e) {
-				e.printStackTrace();
+				LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 			}
 		}
-		return imageInBytes;
+		return bufferedImage;
 	}
 
 	/**
@@ -118,7 +127,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	 * @return byte[] - scanned document Content
 	 * @throws IOException
 	 */
-	private byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
+	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 		byte[] imageInByte;
 
 		ByteArrayOutputStream imagebyteArray = new ByteArrayOutputStream();
@@ -157,7 +166,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 			writer.close();
 			byteArrayOutputStream.close();
 		} catch (DocumentException | IOException e) {
-			e.printStackTrace();
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 		}
 		return scannedPdfFile;
 
@@ -174,7 +183,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 			SaneSession session = SaneSession.withRemoteSane(InetAddress.getByName(scannerhost), scannerPort);
 			saneDevices = session.listDevices();
 		} catch (IOException | SaneException e) {
-			e.printStackTrace();
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 		}
 		return saneDevices;
 	}
@@ -212,6 +221,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 			g2.dispose();
 
 			newSingleImage = getImageBytesFromBufferedImage(singleBufferedImage);
+
 		}
 
 		return newSingleImage;

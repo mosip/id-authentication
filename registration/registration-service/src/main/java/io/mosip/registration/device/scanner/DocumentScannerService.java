@@ -18,7 +18,7 @@ public interface DocumentScannerService {
 	 * 
 	 * @return byte[] - The scanned document data
 	 */
-	byte[] scanDocument();
+	BufferedImage scanDocument();
 
 	/**
 	 * This method converts the separate scanned file into single document
@@ -39,5 +39,7 @@ public interface DocumentScannerService {
 	 * @throws IOException
 	 */
 	byte[] getSingleImageFromList(List<BufferedImage> bufferedImages) throws IOException;
+
+	byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException;
 
 }

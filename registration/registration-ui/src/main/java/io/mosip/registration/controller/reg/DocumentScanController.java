@@ -1,23 +1,12 @@
 package io.mosip.registration.controller.reg;
 
-import java.io.IOException;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.Cursor;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,9 +26,22 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.util.scan.DocumentScanFacade;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * This controller class is to handle the screen of the Demographic document
@@ -96,6 +98,8 @@ public class DocumentScanController extends BaseController {
 	protected Button dobScanBtn;
 	@FXML
 	protected AnchorPane documentScan;
+
+	List<BufferedImage> scannedPages;
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
@@ -205,7 +209,7 @@ public class DocumentScanController extends BaseController {
 	 * This method will display Scan window to scan and upload documents
 	 */
 	private void scanWindow() {
-
+		scanPopUpViewController.setDocumentScan(true);
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -219,55 +223,26 @@ public class DocumentScanController extends BaseController {
 	public void scan(Stage popupStage) {
 
 		try {
+			scanPopUpViewController.getScanningMsg().setVisible(true);
 
-			byte[] byteArray = documentScanFacade.getScannedDocument();
+			BufferedImage bufferedImage = documentScanFacade.getScannedDocumentFromScanner();
 
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
-
-			if (byteArray.length > documentSize) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
-			} else {
-				if (selectedDocument != null) {
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
-
-					DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
-
-					switch (selectedDocument) {
-					case RegistrationConstants.POA_DOCUMENT:
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.setProofOfAddress(documentDetailsDTO);
-						attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
-						SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
-						break;
-					case RegistrationConstants.POI_DOCUMENT:
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.setProofOfIdentity(documentDetailsDTO);
-						attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
-						SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
-						break;
-					case RegistrationConstants.POR_DOCUMENT:
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.setProofOfRelationship(documentDetailsDTO);
-						attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
-						SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
-						break;
-					case RegistrationConstants.DOB_DOCUMENT:
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.setDateOfBirthProof(documentDetailsDTO);
-						attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
-						SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
-						break;
-					default:
-					}
-
-					popupStage.close();
-
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "Documents added successfully");
-				}
+			if (bufferedImage == null) {
+				// TODO show err message
+				return;
 			}
+			if (scannedPages == null) {
+				scannedPages = new ArrayList<>();
+			}
+			scannedPages.add(bufferedImage);
+
+			byte[] byteArray = documentScanFacade.getImageBytesFromBufferedImage(bufferedImage);
+			/* show the scanned page in the preview */
+			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
+
+			scanPopUpViewController.getTotalScannedPages().setText(String.valueOf(scannedPages.size()));
+
+			scanPopUpViewController.getScanningMsg().setVisible(false);
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -286,15 +261,71 @@ public class DocumentScanController extends BaseController {
 
 	}
 
+	public void attachScannedDocument(Stage popupStage) throws IOException {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
+		if (scannedPages == null || scannedPages.isEmpty()) {
+
+			// TODO show err mesg
+			return;
+		}
+		byte[] byteArray = documentScanFacade.getSingleImageFromList(scannedPages);
+
+		if (byteArray.length > documentSize) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
+		} else {
+			if (selectedDocument != null) {
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
+
+				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+
+				switch (selectedDocument) {
+				case RegistrationConstants.POA_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfAddress(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
+					break;
+				case RegistrationConstants.POI_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfIdentity(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
+					break;
+				case RegistrationConstants.POR_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfRelationship(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
+					break;
+				case RegistrationConstants.DOB_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setDateOfBirthProof(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
+					break;
+				default:
+				}
+
+				scannedPages.clear();
+				popupStage.close();
+
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
+			}
+		}
+	}
+
 	/**
 	 * This method will add Hyperlink and Image for scanned documents
 	 */
-	private void attachDocuments(DocumentDetailsDTO documentDetailsDTO, String document, VBox vboxElement, byte[] byteArray) {
+	private void attachDocuments(DocumentDetailsDTO documentDetailsDTO, String document, VBox vboxElement,
+			byte[] byteArray) {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
-
-		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setCategory(document);
@@ -329,7 +360,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
 
 	}
-	
+
 	/**
 	 * This method will display the scanned document
 	 */
@@ -340,7 +371,7 @@ public class DocumentScanController extends BaseController {
 
 		Image img = convertBytesToImage(document);
 		ImageView view = new ImageView(img);
-		Scene scene = new Scene(new StackPane(view), 700, 600);
+		Scene scene = new Scene(new StackPane(view));
 		Stage primaryStage = new Stage();
 		primaryStage.setTitle(documentName);
 		primaryStage.setScene(scene);
@@ -371,7 +402,7 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(MouseEvent event) {
 				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
-				
+
 				switch (((VBox) gridpane.getParent()).getId()) {
 				case "poaBox":
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
@@ -394,7 +425,6 @@ public class DocumentScanController extends BaseController {
 
 				vboxElement.getChildren().remove(gridpane);
 			}
-
 
 		});
 
@@ -424,9 +454,9 @@ public class DocumentScanController extends BaseController {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
-				
+
 				DocumentDetailsDTO selectedDocumentToDisplay = null;
-				
+
 				switch (((VBox) pane.getParent()).getId()) {
 				case "poaBox":
 					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
@@ -536,7 +566,7 @@ public class DocumentScanController extends BaseController {
 
 	protected void prepareEditPageContent() {
 		if (getRegistrationDtoContent().getDemographicDTO() != null) {
-			
+
 			Identity identity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 
 			if (identity.getProofOfAddress() != null) {

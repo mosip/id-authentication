@@ -1,7 +1,9 @@
 package io.mosip.registration.util.scan;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,12 +35,30 @@ public class DocumentScanFacade {
 
 	}
 
-	public byte[] getScannedDocumentFromScanner() throws IOException {
+	public BufferedImage getScannedDocumentFromScanner() throws IOException {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
 
 		return documentScannerService.scanDocument();
+
+	}
+
+	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+
+		return documentScannerService.getImageBytesFromBufferedImage(bufferedImage);
+
+	}
+
+	public byte[] getSingleImageFromList(List<BufferedImage> bufferedImages) throws IOException {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+
+		return documentScannerService.getSingleImageFromList(bufferedImages);
 
 	}
 
