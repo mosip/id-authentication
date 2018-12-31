@@ -3,13 +3,11 @@ package io.mosip.registration.processor.packet.decrypter.job.stage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -17,6 +15,8 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -32,7 +32,8 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @Component
 public class PacketDecrypterStage extends MosipVerticleManager {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PacketDecrypterStage.class);
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketDecrypterStage.class);
 
 	private static final String USER = "MOSIP_SYSTEM";
 
@@ -84,16 +85,12 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 						decryptpacket(dto);
 
 					} catch (TablenotAccessibleException e) {
-
-						LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e.getMessage(), e);
-
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE+e.getMessage());
 						this.isTransactionSuccessful = false;
 						this.description = "Registration status table is not accessible for packet "
 								+ this.registrationId;
 					} catch (PacketDecryptionFailureException e) {
-
-						LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getErrorText(), e);
-
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),e.getErrorCode()+" "+e.getErrorText());
 						dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 						dto.setStatusComment("Packet decryption failed");
 						dto.setUpdatedBy(USER);
@@ -101,8 +98,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 						this.isTransactionSuccessful = false;
 						this.description = "Packet decryption failed for packet " + this.registrationId;
 					} catch (IOException e) {
-
-						LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),DFS_NOT_ACCESSIBLE+" "+ e.getMessage());
 						this.isTransactionSuccessful = false;
 						this.description = "File System is not accessible for packet " + this.registrationId;
 					} finally {
@@ -123,13 +119,11 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 					}
 				});
 			} else if (dtolist.isEmpty()) {
-
-				LOGGER.info("There are currently no files to be decrypted");
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),"NOFILESTOBEDECRYPTED","There are currently no files to be decrypted");
 			}
 		} catch (TablenotAccessibleException e) {
-
-			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
-		}
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE,e.getMessage());
+			}
 
 		return null;
 	}
@@ -146,9 +140,9 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 		} catch (UnableToAccessPathException e) {
-			LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getMessage(), e.getCause());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(),e.getErrorCode()+" "+e.getMessage());
 		} catch (PacketNotFoundException ex) {
-			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId(), ex.getErrorCode()+" "+ex.getMessage());
 		}
 
 		InputStream encryptedPacket = adapter.getPacket(dto.getRegistrationId());
@@ -170,10 +164,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 		MessageDTO messageDTO = new MessageDTO();
 
 		messageDTO.setRid(dto.getRegistrationId());
-
-		LOGGER.info(LOGDISPLAY, dto.getRegistrationId(),
-				" Packet decrypted and extracted encrypted files stored in DFS.");
-
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),dto.getRegistrationId()," Packet decrypted and extracted encrypted files stored in DFS.");
 		MessageDTO message = new MessageDTO();
 		message.setRid(dto.getRegistrationId());
 
