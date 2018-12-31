@@ -104,13 +104,15 @@ export class DemographicComponent implements OnInit {
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
-    this.route.params.subscribe((params: Params) => {
-      this.numberOfApplicants = +params['id'];
-      this.numbers = Array(this.numberOfApplicants)
-        .fill(0)
-        .map((x, i) => i);
-      this.initForm();
-    });
+    // this.route.params.subscribe((params: Params) => {
+    //   this.numberOfApplicants = +params['id'];
+    //   this.numbers = Array(this.numberOfApplicants)
+    //     .fill(0)
+    //     .map((x, i) => i);
+    //   this.initForm();
+    // });
+    this.numberOfApplicants = 1;
+    this.initForm();
     this.isDisabled[0] = true;
 
     // this.uppermostLocationHierarchy = this.dataStorageService

@@ -132,7 +132,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic', 1]);
+    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
     this.isNewApplication = true;
     //   const data = {
     //     case: 'APPLICANTS'
@@ -290,7 +290,7 @@ export class DashBoardComponent implements OnInit {
         () => {
           this.fetchedDetails = true;
           // this.router.navigate(['demographic', '1'], { relativeTo: this.route });
-          this.router.navigate(['pre-registration', this.loginId, 'demographic', 1]);
+          this.router.navigate(['pre-registration', this.loginId, 'demographic']);
         }
       );
     } else {
