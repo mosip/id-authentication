@@ -235,7 +235,7 @@ node {
 def getChangedModules() {
  Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
- print "changelogsets are>>>>>>>>>>>>>>  " +changeLogSet[0]
+ print "changelogsets are>>>>>>>>>>>>>>  " +changeLogSets[0]
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
   print "entries>>>>>>>>>>>>>>  " +entries[0]
