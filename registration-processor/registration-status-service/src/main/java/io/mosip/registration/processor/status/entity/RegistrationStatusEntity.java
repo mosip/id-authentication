@@ -75,6 +75,10 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	@Column(name = "trn_retry_count")
 	private Integer retryCount;
 
+	/** The applicant type. */
+	@Column(name = "applicant_type")
+	private String applicantType;
+
 	/**
 	 * Instantiates a new registration status entity.
 	 */
@@ -347,6 +351,25 @@ public class RegistrationStatusEntity extends BaseRegistrationEntity {
 	 */
 	public void setRetryCount(Integer retryCount) {
 		this.retryCount = retryCount;
+	}
+
+	/**
+	 * Gets the applicant type.
+	 *
+	 * @return the applicant type
+	 */
+	public String getApplicantType() {
+		return applicantType;
+	}
+
+	/**
+	 * Sets the applicant type.
+	 *
+	 * @param applicantType
+	 *            the new applicant type
+	 */
+	public void setApplicantType(String applicantType) {
+		this.applicantType = applicantType;
 	}
 
 }

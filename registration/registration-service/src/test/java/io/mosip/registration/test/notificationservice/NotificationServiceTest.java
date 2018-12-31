@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,12 +20,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.impl.NotificationServiceImpl;
+import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class NotificationServiceTest {
@@ -40,7 +41,7 @@ public class NotificationServiceTest {
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
@@ -48,9 +49,11 @@ public class NotificationServiceTest {
 	public void sendEmailTest()
 			throws HttpClientErrorException, RegBaseCheckedException, ResourceAccessException, SocketTimeoutException {
 
-		NotificationDTO emailDTO = new NotificationDTO();
-		emailDTO.setStatus("Email Request submitted");
-
+		//NotificationDTO emailDTO = new NotificationDTO();
+		//emailDTO.setStatus("Email Request submitted");
+		HashMap<String, String> emailDTO=new HashMap<>();
+		emailDTO.put("status", "Email Request submitted");
+		
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(emailDTO);
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", "qwerty@gmail.com", "regid");
 
@@ -64,8 +67,10 @@ public class NotificationServiceTest {
 		smsdto.setMessage("Test");
 		smsdto.setNumber("9994019598");
 		smsdto.setStatus("success");
+		HashMap<String, String> smsResponse=new HashMap<>();
+		smsResponse.put("status", "success");
 
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(smsdto);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(smsResponse);
 		ResponseDTO responseDTO = notificationServiceImpl.sendSMS("Hi", "9999999999", "regid");
 
 		Assert.assertEquals("Success", responseDTO.getSuccessResponseDTO().getMessage());

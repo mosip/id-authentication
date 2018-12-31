@@ -21,14 +21,12 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 @RefreshScope
 @Component
 public class RetryStage extends MosipVerticleManager {
+	
 	@Value("${registration.processor.wait.period}")
 	private int waitPeriod;
-
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	private MosipEventBus mosipEventBus;
 
@@ -36,7 +34,7 @@ public class RetryStage extends MosipVerticleManager {
 	 * method to deploy retry-stage.
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		this.mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(this.mosipEventBus, MessageBusAddress.RETRY_BUS);
 
 	}

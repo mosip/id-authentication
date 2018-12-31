@@ -11,7 +11,6 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.impl.JobTransactionDAOImpl;
 import io.mosip.registration.entity.SyncTransaction;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.SyncTransactionRepository;
 
 public class JobTransactionDAOTest {

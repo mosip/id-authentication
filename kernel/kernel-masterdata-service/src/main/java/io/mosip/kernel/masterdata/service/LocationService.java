@@ -44,13 +44,12 @@ public interface LocationService {
 
 	/**
 	 * 
-	 * 
 	 * @param hierarchyName
 	 *            - hierarchyName
 	 * @return location response dto
 	 */
 	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName);
-	
+
 	/**
 	 * 
 	 * @param locationRequestDto - location request DTO
@@ -75,4 +74,5 @@ public interface LocationService {
 	 */
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode);
 	
+
 }

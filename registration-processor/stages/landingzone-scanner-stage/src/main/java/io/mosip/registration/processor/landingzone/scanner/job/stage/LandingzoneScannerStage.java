@@ -2,7 +2,6 @@ package io.mosip.registration.processor.landingzone.scanner.job.stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,12 +36,6 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 	private static final String LOGDISPLAY = "{} - {}";
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	// @Value("${landingzone.scanner.stage.time.interval}")
 	private long secs = 30;
 
@@ -51,6 +44,9 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	@Autowired
 	protected RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -59,7 +55,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> {
 			process(new MessageDTO());
 			this.send(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT, new MessageDTO());
@@ -87,7 +83,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 						if (this.filemanager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, dto.getRegistrationId())) {
 
 							dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
-							dto.setStatusComment("packet is in status packet for virus scan");
+							dto.setStatusComment("Packet successfully uploaded to Landing Zone");
 							dto.setUpdatedBy(USER);
 							this.registrationStatusService.updateRegistrationStatus(dto);
 

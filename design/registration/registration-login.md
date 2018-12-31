@@ -1,8 +1,8 @@
-Design -- Login
+**Design -- Login**
 
-\[Username-Password / OTP/ Bio\]
+[Username-Password / OTP/ Bio]
 
-Background
+**Background**
 
 The Registration Officer/Supervisor can be used the provided ways to
 login to the registration client. The provided ways are
@@ -17,10 +17,16 @@ The **target users** are
 
 -   Officer
 
+-   Admin
+
 The key **requirements** are
 
--   Provide login screen to validate Registration officer or supervisor
-    credentials.
+-  Registrtaion Client has two types of users 
+    1. Admin
+    2. Others [Officer/Supervisior]
+- The login screen should be a confgigurbale one and get the details as part of the master sync. 
+
+-   Provide login screen to validate for the Admin and Registration officer/supervisor credentials.
 
 -   Mode of login:
 
@@ -125,24 +131,22 @@ The key **non-functional requirements** are
 
     -   Logging, audit, exception handling.
 
-**\
-**
-
 **Solution**
 
-> The detailed technical process for Registration Login is provided
-> below:
->
-> **Login API:**
+  The detailed technical process for Registration Login is provided
+  below:
 
--   Create a UI to accept and submitted credentials from the client
-    application.
+**Login API:**
+
+-   Create a UI for login with the User ID a text field prompt to enter the details. 
+    
+-   Create a UI to accept and submitted credentials from the client application. Please refer the latest registraion design.
 
 -   Create a Java component as 'LoginController' with 'login' method to
     accept the Defined [DTO structure](#_Entity_Object_Structure:).
 
--   Based on the user input check the mode of login (user id and
-    password, OTP and fingerprint \[Thumb\] login).
+-   Based on the user input check the role of login (user id )and display the respective authenticaiton screen
+    (password, OTP and fingerprint thumb login).
 
 -   Create java component "ValidateUser" with 'validate' method to
     accept the Defined [DTO structure](#_Entity_Object_Structure:).
@@ -237,8 +241,9 @@ Solution
 
 Class Diagram
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/LoginClassDiagram.png>
+![Login Class Diagram](_images/_class_diagram/LoginClassDiagram.png)
 
 Sequence Diagram
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/LoginSequenceDiagarm.png>
+![Login Sequence Diagram](_images/_sequence_diagram/LoginSequenceDiagarm.png)
+

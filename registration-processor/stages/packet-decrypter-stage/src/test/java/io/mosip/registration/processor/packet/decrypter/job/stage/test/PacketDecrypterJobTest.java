@@ -171,14 +171,15 @@ public class PacketDecrypterJobTest {
 
 		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
 
-		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(null);
+		// Mockito.when(decryptor.decrypt(any(InputStream.class),
+		// any(String.class))).thenReturn(null);
 
 		MessageDTO msg = new MessageDTO();
 		packetDecrypterStage.process(msg);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR, " -  --> Packet not found Exception - null"),
-						Tuple.tuple(Level.INFO, "1001 -  Packet is null and could not be  decrypted  - {}"));
+				.containsExactly(Tuple.tuple(Level.ERROR, " -  --> Packet not found Exception - null"), Tuple.tuple(
+						Level.INFO, "1001 -  Packet decrypted and extracted encrypted files stored in DFS. - {}"));
 
 	}
 

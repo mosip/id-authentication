@@ -31,14 +31,14 @@ public class TemplateDaoImpl implements TemplateDao{
 	private TemplateFileFormatRepository<TemplateFileFormat> fileFormatRepository;
 	
 	public List<Template> getAllTemplates(){
-		return (List<Template>)templateRepository.findByIsActiveTrue();
+		return templateRepository.findByIsActiveTrue();
 	}
 	
 	public List<TemplateType> getAllTemplateTypes(){
-		return (List<TemplateType>)typeRepository.findByIsActiveTrue();
+		return typeRepository.findByIsActiveTrue();
 	}
 	
 	public List<TemplateFileFormat> getAllTemplateFileFormats(){
-		return (List<TemplateFileFormat>)fileFormatRepository.findByIsActiveTrue();
+		return fileFormatRepository.findByIsActiveTrue();
 	}	
 }

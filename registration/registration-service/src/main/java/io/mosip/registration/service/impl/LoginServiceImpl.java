@@ -17,18 +17,18 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.RegistrationAppLoginDAO;
+import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.OtpGeneratorRequestDto;
-import io.mosip.registration.dto.OtpGeneratorResponseDto;
-import io.mosip.registration.dto.OtpValidatorResponseDto;
+import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpGeneratorResponseDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -68,7 +68,7 @@ public class LoginServiceImpl implements LoginService {
 	 * Class to retrieve the Login Details from DB
 	 */
 	@Autowired
-	private RegistrationAppLoginDAO registrationAppLoginDAO;
+	private RegistrationAppAuthenticationDAO registrationAppLoginDAO;
 
 	/**
 	 * Class to retrieve the Registration Officer Details from DB
@@ -94,16 +94,16 @@ public class LoginServiceImpl implements LoginService {
 	 * @see org.mosip.registration.service.login.LoginService#getModesOfLogin()
 	 */
 	@Override
-	public Map<String, Object> getModesOfLogin() {
+	public Map<String, Object> getModesOfLogin(String authType) {
 		// Retrieve Login information
 
 		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of login modes");
 
-		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, AppModule.LOGIN_MODES, "Fetching list of login modes",
+		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of login modes",
 				"refId", "refIdType");
 
-		return registrationAppLoginDAO.getModesOfLogin();
+		return registrationAppLoginDAO.getModesOfLogin(authType);
 	}
 	
 	/*
@@ -120,7 +120,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
-		auditFactory.audit(AuditEvent.FETCH_USR_DET, AppModule.USER_DETAIL, "Fetching User details", "refId",
+		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, "Fetching User details", "refId",
 				"refIdType");
 
 		return registrationUserDetailDAO.getUserDetail(userId);
@@ -139,7 +139,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Center details");
 
-		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, AppModule.CENTER_DETAIL, "Fetching Center details",
+		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, "Fetching Center details",
 				"refId", "refIdType");
 
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId);
@@ -158,7 +158,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of Screens to be Authorized");
 
-		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, AppModule.SCREEN_AUTH,
+		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, Components.SCREEN_AUTH,
 				"Fetching list of Screens to be Authorized", "refId", "refIdType");
 
 		return registrationScreenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
@@ -176,29 +176,29 @@ public class LoginServiceImpl implements LoginService {
 
           // Create Response to return to UI layer
           ResponseDTO response = new ResponseDTO();
-          OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-          OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
+          OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+          OtpGeneratorResponseDTO otpGeneratorResponseDTO = new OtpGeneratorResponseDTO();
 
           SuccessResponseDTO successResponse = null;
 
           // prepare otpGeneratorRequestDto with specified key(EO Username) obtained from
-          otpGeneratorRequestDto.setKey(key);
+          otpGeneratorRequestDTO.setKey(key);
 
           try {
 
                  // obtain otpGeneratorResponseDto from serviceDelegateUtil
-                 otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
-                              .post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
-                 if (otpGeneratorResponseDto != null && otpGeneratorResponseDto.getOtp() != null) {
+                 otpGeneratorResponseDTO = (OtpGeneratorResponseDTO) serviceDelegateUtil
+                              .post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDTO);
+                 if (otpGeneratorResponseDTO != null && otpGeneratorResponseDTO.getOtp() != null) {
 
                        // create Success Response
                        successResponse = new SuccessResponseDTO();
                         successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
                        successResponse
-                                     .setMessage(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
+                                     .setMessage(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDTO.getOtp());
 
                        Map<String, Object> otherAttributes = new HashMap<String, Object>();
-                     otherAttributes.put(RegistrationConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
+                     otherAttributes.put(RegistrationConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDTO);
 
                         successResponse.setOtherAttributes(otherAttributes);
                         response.setSuccessResponseDTO(successResponse);
@@ -207,7 +207,7 @@ public class LoginServiceImpl implements LoginService {
 
                  } else {
                        // create Error Response
-                       response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
+                       getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Error Response called");
 
@@ -215,7 +215,7 @@ public class LoginServiceImpl implements LoginService {
 
           } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // create Error Response
-                 response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
+                 getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                               APPLICATION_ID, "Error Response created");
 
@@ -243,7 +243,7 @@ public class LoginServiceImpl implements LoginService {
           // Create Response to Return to UI layer
           ResponseDTO response = new ResponseDTO();
           SuccessResponseDTO successResponse;
-          OtpValidatorResponseDto otpValidatorResponseDto = null;
+          OtpValidatorResponseDTO otpValidatorResponseDTO = null;
 
           // prepare request params to pass through URI
           Map<String, String> requestParamMap = new HashMap<String, String>();
@@ -252,9 +252,9 @@ public class LoginServiceImpl implements LoginService {
 
           try {
                  // Obtain otpValidatorResponseDto from service delegate util
-                 otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
-                 if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
-                              && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
+                 otpValidatorResponseDTO = (OtpValidatorResponseDTO) serviceDelegateUtil.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
+                 if (otpValidatorResponseDTO != null && otpValidatorResponseDTO.getStatus() != null
+                              && otpValidatorResponseDTO.getStatus().equalsIgnoreCase("true")) {
 
                        // Create Success Response
                        successResponse = new SuccessResponseDTO();
@@ -325,4 +325,5 @@ public class LoginServiceImpl implements LoginService {
 		return response;
 
 	}
+
 }

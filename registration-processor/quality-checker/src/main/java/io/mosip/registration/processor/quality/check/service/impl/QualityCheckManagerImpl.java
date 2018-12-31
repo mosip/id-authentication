@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
@@ -28,6 +28,7 @@ import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdEx
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
 import io.mosip.registration.processor.quality.check.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 
 @Component
@@ -85,7 +86,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			isTransactionSuccessful = true;
 			return resultDtos;
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 			description = isTransactionSuccessful ? "description--QC User status update successful"
@@ -133,7 +134,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			isTransactionSuccessful = true;
 
 			return convertEntityToDto(qcUserEntity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 			description = isTransactionSuccessful ? "description--Demographic-data saved Success"

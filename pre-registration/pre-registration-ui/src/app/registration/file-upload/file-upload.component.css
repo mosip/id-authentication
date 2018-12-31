@@ -16,8 +16,7 @@
   height: 50%;
 }
 .browseInput {
-  width: 90%;
-  height: 100%;
+  height: 10%;
 }
 .documentWrapper {
   width: 100%;
@@ -41,8 +40,9 @@ mat-select:focus {
 
 .docsContainer > p.fileName {
   padding: 1em 10px 10px 10px;
-  height: 100%;
+  height: 20%;
   width: 85%;
+  overflow: hidden;
 }
 
 .dropzone {
@@ -71,4 +71,5 @@ mat-select:focus {
   color: red;
   font-weight: 800;
   cursor: pointer;
+  position: absolute;
 }

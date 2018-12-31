@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
@@ -64,7 +64,7 @@ public class ApplicantInfoDao {
 				String regId = assignedPacket.getId().getRegId();
 				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
 			});
-			List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
@@ -120,24 +120,17 @@ public class ApplicantInfoDao {
 	 * bioData.setIrisData(irisData); return bioData; }
 	 */
 
-	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
-		DemographicDedupeDto demo = new DemographicDedupeDto();
-		demo.setRegId(object.getId().getRefId());
-		demo.setPreRegId(object.getId().getRefId());
+	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
+		DemographicInfoDto demo = new DemographicInfoDto();
+		demo.setRegId(object.getId().getRegId());
+		demo.setUin(object.getUinRefId());
 		demo.setLangCode(object.getId().getLangCode());
-		demo.setFirstName(object.getFirstName());
-		demo.setMiddleName(object.getMiddleName());
-		demo.setLastName(object.getLastName());
-		demo.setFullName(object.getFullName());
-		demo.setGenderCode(object.getGenderCode());
+		demo.setName(object.getName());
+		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-		demo.setAddrLine1(object.getAddrLine1());
-		demo.setAddrLine2(object.getAddrLine2());
-		demo.setAddrLine3(object.getAddrLine3());
-		demo.setAddrLine4(object.getAddrLine4());
-		demo.setAddrLine5(object.getAddrLine5());
-		demo.setAddrLine6(object.getAddrLine6());
-		demo.setZipCode(object.getZipCode());
+		demo.setPhoneticName(object.getPhoneticName());
+
+
 		return demo;
 	}
 

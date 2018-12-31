@@ -20,9 +20,11 @@ public class LoggerConstants {
 	private static final String PKT_CREATION = APP_NAME + "PACKET_CREATION - ";
 	private static final String PKT_STORAGE = APP_NAME + "PACKET_STORAGE_MANAGER - ";
 	private static final String AUDIT_LOG_SYNC = APP_NAME + "AUDIT_LOG_SYNCHER - ";
-	private static final String DEVICE_ONBOARD = APP_NAME + "DEVICE_ONBOARDING";
+	private static final String DEVICE_ONBOARD = APP_NAME + "DEVICE_ONBOARDING - ";
 	private static final String PKT_APPROVAL = APP_NAME + "REGISTRATION_APPROVAL - ";
-	
+	private static final String USER_REGISTRATION = APP_NAME + "USER_REGISTRATION - ";
+	private static final String MASTER_SYNC = APP_NAME + "MASTER_SYNC - ";
+
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
 	public static final String LOG_PKT_CREATION = PKT_CREATION + "CREATE";
@@ -43,5 +45,13 @@ public class LoggerConstants {
 	public static final String LOG_REG_EOD_CONTROLLER = PKT_APPROVAL + "EOD_CONTROLLER";
 	public static final String LOG_REG_ONHOLD_CONTROLLER = PKT_APPROVAL + "ONHOLD_CONTROLLER";
 	public static final String LOG_REG_REJECT_CONTROLLER = PKT_APPROVAL + "REJECTION_CONTROLLER";
+	public static final String LOG_REG_IRIS_CAPTURE_CONTROLLER = USER_REGISTRATION + "IRIS_CAPTURE_CONTROLLER";
+	public static final String LOG_REG_BIOMETRIC_SCAN_CONTROLLER = USER_REGISTRATION + "FINGERPRINT_SCAN_CONTROLLER";
+	public static final String LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER = USER_REGISTRATION + "FINGERPRINT_CAPTURE_CONTROLLER";
+	public static final String LOG_REG_REGISTRATION_CONTROLLER = USER_REGISTRATION + "REGISTRATION_CONTROLLER";
+	public static final String LOG_REG_SCAN_CONTROLLER = USER_REGISTRATION + "SCAN_CONTROLLER";
+	public static final String LOG_REG_FINGERPRINT_FACADE = USER_REGISTRATION + "FINGERPRINT_FACADE";
+	public static final String LOG_REG_IRIS_FACADE = USER_REGISTRATION + "IRIS_FACADE";
+	public static final String LOG_REG_MASTER_SYNC = MASTER_SYNC + "MASTER_SYNC_CONTROLLER";
 
 }

@@ -727,6 +727,7 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
+
 	@Test
 	public void testUpdateLocationDetails() throws Exception {
 		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
@@ -772,6 +773,7 @@ public class MasterdataControllerTest {
 
 	}
 	
+
 	/**
 	 * 
 	 * @author M1043226
@@ -809,7 +811,7 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 
 	}
-	
+
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test

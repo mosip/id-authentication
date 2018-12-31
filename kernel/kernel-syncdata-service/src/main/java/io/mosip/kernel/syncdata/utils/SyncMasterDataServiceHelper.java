@@ -178,7 +178,11 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!machineDetailList.isEmpty()) {
+<<<<<<< HEAD
 			machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
+=======
+			machineDetailDtoList =  MapperUtils.mapAll(machineDetailList,MachineDto.class);
+>>>>>>> DEV
 		}
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
@@ -210,7 +214,11 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (machineTypes != null && !machineTypes.isEmpty())
+<<<<<<< HEAD
 			machineTypeList = MapperUtils.mapAll(machineTypes, MachineTypeDto.class);
+=======
+			machineTypeList =  MapperUtils.mapAll(machineTypes,MachineTypeDto.class);
+>>>>>>> DEV
 		return CompletableFuture.completedFuture(machineTypeList);
 
 	}
@@ -243,7 +251,11 @@ public class SyncMasterDataServiceHelper {
 		}
 
 		if (machineSpecification != null && !machineSpecification.isEmpty())
+<<<<<<< HEAD
 			machineSpecificationDto = MapperUtils.mapAll(machineSpecification,MachineSpecificationDto.class);
+=======
+			machineSpecificationDto =  MapperUtils.mapAll(machineSpecification,MachineSpecificationDto.class);
+>>>>>>> DEV
 
 		return CompletableFuture.completedFuture(machineSpecificationDto);
 	}
@@ -575,7 +587,8 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (titles != null && !titles.isEmpty()) {
-			titleList = MapperUtils.mapAll(titles, TitleDto.class);
+
+			titleList = MapperUtils.mapAll(titles,TitleDto.class);
 		}
 		return CompletableFuture.completedFuture(titleList);
 
