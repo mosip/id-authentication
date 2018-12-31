@@ -80,7 +80,7 @@ public class InternalAuthFilterTest {
 
 	@Test
 	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
-		Method txvIdMethod = InternalAuthFilter.class.getDeclaredMethod("setTxnId",
+		Method txvIdMethod = InternalAuthFilter.class.getDeclaredMethod("setResponseParam",
 				Map.class, Map.class);
 		txvIdMethod.setAccessible(true);
 		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(internalAuthFilter, createEncodedRequest(),

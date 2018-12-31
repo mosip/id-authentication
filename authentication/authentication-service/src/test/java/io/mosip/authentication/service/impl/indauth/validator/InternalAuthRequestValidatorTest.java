@@ -265,7 +265,9 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
+		//authRequestDTO.setReqTime("2018-11-23T17:00:57.086+0530");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");

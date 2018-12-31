@@ -136,8 +136,13 @@ public class NotificationServiceImplTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		
+
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+		
+		//authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("N");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
@@ -179,8 +184,12 @@ public class NotificationServiceImplTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authRequestDTO.setReqTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+		
+		//authRequestDTO.setReqTime(ZonedDateTime.now()
+		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("y");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
@@ -239,8 +248,11 @@ public class NotificationServiceImplTest {
 		String time = "";
 		String email = "abc@gmail.cpm";
 		String mobileNumber = "";
-		otpRequestDto.setReqTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		
+		otpRequestDto.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+		//otpRequestDto.setReqTime(ZonedDateTime.now()
+		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -258,7 +270,9 @@ public class NotificationServiceImplTest {
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
-				environment.getProperty("datetime.pattern"));
+				"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		//String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
+		//		environment.getProperty("datetime.pattern"));
 		date = dateAndTime[0];
 		time = dateAndTime[1];
 

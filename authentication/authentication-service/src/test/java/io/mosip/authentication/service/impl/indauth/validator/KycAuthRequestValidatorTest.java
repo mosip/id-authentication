@@ -175,7 +175,7 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("23456789012344");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
@@ -221,7 +221,7 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");

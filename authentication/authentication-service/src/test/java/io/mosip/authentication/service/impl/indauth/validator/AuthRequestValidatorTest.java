@@ -36,8 +36,8 @@ import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
-import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
@@ -95,10 +95,8 @@ public class AuthRequestValidatorTest {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
-
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
 		ReflectionTestUtils.setField(authRequestValidator, "phoneValidatorImpl", phoneValidatorImpl);
-		
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 
@@ -120,7 +118,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		// authRequestDTO.setVer("1.1");
@@ -222,7 +220,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Test
+	@Test(expected = ParseException.class)
 	public void testInvalidTimestamp() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
