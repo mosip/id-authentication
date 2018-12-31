@@ -45,10 +45,10 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
  }
 
-stage('---------- SonarQube Analysis --------------') {
+/*stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
@@ -57,7 +57,7 @@ stage('---------- SonarQube Analysis --------------') {
 
  stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
- }
+ }*/
 
   stage('------ Docker Images : Push & Cleanup -------') {
   if ("${env.BUIILD_OPTION}" == "Build All") {
@@ -234,10 +234,10 @@ stage('---------- SonarQube Analysis --------------') {
 def getChangedModules() {
  Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
- echo "changelogsets are>>>>>>>>>>>>>>  " +changeLogSets
+ print "changelogsets are>>>>>>>>>>>>>>  " +changeLogSets.toString()
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
-  echo "entries>>>>>>>>>>>>>>  " +entries
+  print "entries>>>>>>>>>>>>>>  " +entries.toString()
   for (int j = 0; j < entries.length; j++) {
    def entry = entries[j]
    echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
