@@ -118,5 +118,21 @@ public class LocationController {
 	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
 		return locationHierarchyService.deleteLocationDetials(locationCode);
 	}
+	
+	/**
+	 * 
+	 * @param locationCode
+	 *            location code
+	 * @param langCode
+	 *            language code
+	 * @return list of location hierarchies
+	 */
+	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
+	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(@PathVariable("locationcode") String locationCode,
+			@PathVariable("langcode") String langCode) {
+
+		return locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode(locationCode, langCode);
+
+	}
 
 }

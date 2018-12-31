@@ -742,7 +742,27 @@ public class MasterdataControllerTest {
 				.content(LOCATION_JSON_EXPECTED_POST))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
-
+	
+	@Test
+	public void getImmediateChildrenTest() throws Exception {
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenReturn(locationResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isOk());
+		
+	}
+	
+	@Test
+	public void getImmediateChildrenServiceExceptionTest() throws Exception {
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isInternalServerError());
+		
+	}
+	
+	@Test
+	public void getImmediateChildrenDataNotFoundExceptionTest() throws Exception {
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataNotFoundException("111111","data not found"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isNotFound());
+		
+	}
 	@Test
 	public void testDeleteLocationDetails() throws Exception {
 		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString()))

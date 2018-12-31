@@ -65,4 +65,14 @@ public interface LocationService {
 	 */
 	public CodeResponseDto deleteLocationDetials(String locationCode);
 	
+	/**
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
+	 * @return location response dto
+	 */
+	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode);
+	
 }
