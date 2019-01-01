@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		"io.mosip.registration.processor.packet.manager", "io.mosip.registration.processor.core",
 		"io.mosip.registration.processor.auditmanager", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client" })
+
 public class PacketInfoManagerApplication {
 
 	/**
@@ -21,4 +22,5 @@ public class PacketInfoManagerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PacketInfoManagerApplication.class, args);
 	}
+
 }

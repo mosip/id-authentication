@@ -8,5 +8,5 @@ package io.mosip.preregistration.application.code;
  *
  */
 public enum RequestCodes {
-	id, ver, reqTime, request, preRegistrationId, createdBy, createdDatetime, updatedBy, updatedDatetime, statusCode, langCode, demographicDetails, identity, value, language, label, FullName, dateOfBirth, gender;
+	id, ver, reqTime, request, userId, preRegistrationId, createdBy, createdDatetime, updatedBy, updatedDatetime, statusCode, langCode, demographicDetails, identity, value, language, label, FullName, dateOfBirth, gender;
 }

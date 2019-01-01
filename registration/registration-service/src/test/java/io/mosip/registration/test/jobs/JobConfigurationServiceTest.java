@@ -2,7 +2,6 @@ package io.mosip.registration.test.jobs;
 
 import static org.mockito.Mockito.doNothing;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.service.config.impl.JobConfigurationServiceImpl;
 
 public class JobConfigurationServiceTest {
 
@@ -144,7 +143,7 @@ public class JobConfigurationServiceTest {
 	@Test
 	public void executeJobJobTest() throws SchedulerException {
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
-		Mockito.when(packetSyncJob.executeJob(Mockito.anyString())).thenReturn(new ResponseDTO());
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(),Mockito.anyString())).thenReturn(new ResponseDTO());
 		jobConfigurationService.executeJob(applicationContext, "packetSyncStatusJob");
 	}
 	@Test

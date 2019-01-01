@@ -1,5 +1,8 @@
 package io.mosip.registration.test.clientmachinemapping;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.doNothing;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -21,9 +24,10 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.DeviceDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -45,11 +49,8 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.impl.MapMachineServiceImpl;
+import io.mosip.registration.service.mapping.impl.MapMachineServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-
-import static org.mockito.Mockito.doNothing;
-import static org.hamcrest.CoreMatchers.is;
 
 public class UserClientMachineMappingServiceTest {
 
@@ -61,17 +62,19 @@ public class UserClientMachineMappingServiceTest {
 	MapMachineServiceImpl mapMachineServiceImpl;
 	@Mock
 	private AuditFactoryImpl auditFactory;
+	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test
 	public void view() throws RegBaseCheckedException {
 
-		ResponseDTO responseDTO = new ResponseDTO();
 		String machineID = RegistrationSystemPropertiesChecker.getMachineId();
 
 		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenReturn("StationID");
@@ -106,12 +109,13 @@ public class UserClientMachineMappingServiceTest {
 		registrationUserDetail.setUserMachineMapping(userMachine);
 		registrationUserDetail.setUserRole(userRole);
 		userDetailsList.add(registrationUserDetail);
+	
 
-		Mockito.when(machineMappingDAO.getUsers(Mockito.anyString())).thenReturn(userDetailsList);
-
+		Mockito.when(machineMappingDAO.getUsers(Mockito.anyString())).thenReturn(userDetailsList);		
+		
 		ResponseDTO res = mapMachineServiceImpl.view();
 
-		Assert.assertSame("User Data Fetched Successfully", res.getSuccessResponseDTO().getMessage());
+		Assert.assertEquals("User Data Fetched Successfully", res.getSuccessResponseDTO().getMessage());
 	}
 
 	@Test
@@ -119,7 +123,7 @@ public class UserClientMachineMappingServiceTest {
 		RegBaseCheckedException baseCheckedException = new RegBaseCheckedException("101", "No record Found");
 		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenReturn(baseCheckedException.getMessage());
 		ResponseDTO res = mapMachineServiceImpl.view();
-		Assert.assertSame("No Records Found", res.getErrorResponseDTOs().get(0).getMessage());
+		Assert.assertEquals("No Records Found", res.getErrorResponseDTOs().get(0).getMessage());
 	}
 
 	@Test
@@ -146,11 +150,9 @@ public class UserClientMachineMappingServiceTest {
 	public void updateTest() {
 		UserMachineMappingDTO machineMappingDTO = new UserMachineMappingDTO("ID123", "Nm123", "ADmin", "ACTIVE",
 				"CNTR123", "STN123", "MCHN123");
-		UserMachineMapping user = new UserMachineMapping();
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
@@ -171,8 +173,6 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
-		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
@@ -192,13 +192,12 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		Mockito.when(machineMappingDAO.findByID(Mockito.any())).thenThrow(RegBaseUncheckedException.class);
-		Assert.assertSame(
+		Assert.assertEquals(
 				mapMachineServiceImpl.saveOrUpdate(machineMappingDTO).getErrorResponseDTOs().get(0).getMessage(),
 				"Unable to map user");
 	}
