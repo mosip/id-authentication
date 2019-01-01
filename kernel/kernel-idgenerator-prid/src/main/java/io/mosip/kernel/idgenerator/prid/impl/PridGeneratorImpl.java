@@ -4,19 +4,12 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.idgenerator.exception.PridGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorConstants;
-import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorErrorCodes;
-import io.mosip.kernel.idgenerator.prid.entity.Prid;
-import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
 import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
 
 /**
@@ -29,10 +22,10 @@ import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
  */
 @Component
 public class PridGeneratorImpl implements PridGenerator<String> {
+	
 	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
-	@Autowired
-	private PridRepository pridRepository;
+
 
 
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
@@ -51,35 +44,16 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 
 	@Override
 	public String generateId() {
-		Prid prid = new Prid();
-		boolean unique = false;
-		String generatedPrid = null;
-		while (!unique) {
-			generatedPrid = this.generatePrid();
-			long currentTimestamp = System.currentTimeMillis();
-			prid.setId(generatedPrid);
-			prid.setCreatedAt(currentTimestamp);
-			unique = saveGeneratedPrid(prid);
-		}
-		return generatedPrid;
+		return generatePrid();
+			
+		
 	}
-
-	private boolean saveGeneratedPrid(Prid prid) {
-		try {
-			pridRepository.save(prid);
-			return true;
-		}
-		/*
-		 * catch (DataAccessLayerException e) { 
-		 * // Check for PK constraint else throw
-		 * error return false; }
-		 */
-		catch (DataAccessException | DataAccessLayerException e) {
-			throw new PridGenerationException(PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
-					PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
-		}
-	}
-
+	
+	/**
+	 * Generates a id and then validate a id
+	 *
+	 * @return the PRID with checksum
+	 */
 	private String generatePrid() {
 		String generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		while (!PridFilterUtils.isValidId(generatedPrid)) {

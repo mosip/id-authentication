@@ -6,17 +6,25 @@ package io.mosip.kernel.idgenerator.prid.util;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+
+
 /**
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
+@Component
 public class PridFilterUtils {
 
 	/**
 	 * Private constructor for IdFilter
 	 */
-	private PridFilterUtils() {
+	
+	public PridFilterUtils() {
 	}
 
 	/**
@@ -24,12 +32,14 @@ public class PridFilterUtils {
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
 	 */
+	@Value("${mosip.kernel.prid.SEQUENCE_LIMIT}")
 	private static final int SEQUENCE_LIMIT = 3;
 
 	/**
 	 * Number of digits in repeating block allowed in id. For example if limit is 2,
 	 * then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
 	 */
+	@Value("${mosip.kernel.prid.REPEATING_BLOCK_LIMIT}")
 	private static final int REPEATING_BLOCK_LIMIT = 2;
 
 	/**
@@ -37,6 +47,7 @@ public class PridFilterUtils {
 	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
 	 * digit)
 	 */
+	@Value("${mosip.kernel.prid.REPEATING_LIMIT}")
 	private static final int REPEATING_LIMIT = 2;
 
 	/**
