@@ -84,6 +84,7 @@ import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -169,7 +170,8 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private LanguageService languageService;
-
+	@Autowired
+	private RegistrationCenterDeviceHistoryService registrationCenterDeviceHistoryService;
 	@MockBean
 	private LanguageRepository languageRepository;
 
@@ -238,7 +240,7 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	MachineHistoryService machineHistoryService;
-	
+
 	@Autowired
 	DeviceHistoryService deviceHistoryService;
 
@@ -1148,7 +1150,6 @@ public class MasterDataServiceTest {
 		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 
-
 	@Test
 	public void updateLocationDetailsTest() {
 
@@ -1199,12 +1200,10 @@ public class MasterDataServiceTest {
 
 	}
 
-
 	@Test()
 	public void getLocationHierachyBasedOnHierarchyNameTest() {
 		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
 				.thenReturn(locationHierarchies);
-
 
 		LocationResponseDto locationResponseDto = locationHierarchyService.getLocationDataByHierarchyName("country");
 
@@ -1229,7 +1228,6 @@ public class MasterDataServiceTest {
 
 	}
 
-
 	@Test
 	public void getImmediateChildrenTest() {
 		Mockito.when(locationHierarchyRepository
@@ -1237,23 +1235,22 @@ public class MasterDataServiceTest {
 				.thenReturn(locationHierarchies);
 		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
 	}
-	
-	@Test(expected=MasterDataServiceException.class)
+
+	@Test(expected = MasterDataServiceException.class)
 	public void getImmediateChildrenServiceExceptionTest() {
 		Mockito.when(locationHierarchyRepository
 				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
 	}
-	
-	@Test(expected=DataNotFoundException.class)
+
+	@Test(expected = DataNotFoundException.class)
 	public void getImmediateChildrenDataExceptionTest() {
 		Mockito.when(locationHierarchyRepository
 				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
 	}
-
 
 	// ------------------ TemplateServiceTest -----------------//
 
@@ -1442,11 +1439,18 @@ public class MasterDataServiceTest {
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
-	
+
 	// -------------------------------------DeviceHistroyTest------------------------------------------
-		@Test(expected = RequestException.class)
-		public void getDeviceHistroyIdLangEffDTimeParseDateException() {
-			deviceHistoryService.getDeviceHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
-		}
+	@Test(expected = RequestException.class)
+	public void getDeviceHistroyIdLangEffDTimeParseDateException() {
+		deviceHistoryService.getDeviceHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
+	}
+
+	// ----------------------------------
+	@Test(expected = RequestException.class)
+	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() {
+		registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime("RCI100", "DI001",
+				"2018-12-11T11:18:261.033Z");
+	}
 
 }
