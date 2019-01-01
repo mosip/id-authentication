@@ -32,9 +32,9 @@ public class LanguageUtils {
 		if (EmptyCheckUtils.isNullEmpty(code)) {
 			return false;
 		}
-		Language lan = languageRepository.findLanguageById(code);
-		
-		return !EmptyCheckUtils.isNullEmpty(lan);
+		Language language = languageRepository.findLanguageByCode(code);
+
+		return !EmptyCheckUtils.isNullEmpty(language);
 	}
 
 }
