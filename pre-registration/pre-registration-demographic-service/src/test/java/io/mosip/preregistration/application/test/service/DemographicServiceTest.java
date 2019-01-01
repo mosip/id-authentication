@@ -543,9 +543,9 @@ public class DemographicServiceTest {
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
 		Date myFromDate;
 		try {
-			myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
+			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
 
-			Date myToDate = DateUtils.parse(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
+			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
 			Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
 					new Timestamp(myToDate.getTime()))).thenReturn(details);
@@ -579,9 +579,9 @@ public class DemographicServiceTest {
 		Date myFromDate;
 		Date myToDate;
 
-		myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
+		myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
 
-		myToDate = DateUtils.parse(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
+		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
 		Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
 				new Timestamp(myToDate.getTime()))).thenThrow(exception);
@@ -609,9 +609,9 @@ public class DemographicServiceTest {
 		Date myFromDate;
 		Date myToDate;
 
-		myFromDate = DateUtils.parse(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
+		myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-0"), dateFormat);
 
-		myToDate = DateUtils.parse(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
+		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
 		Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
 				new Timestamp(myToDate.getTime()))).thenThrow(exception);

@@ -6,6 +6,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
  * This interface provides methods to do CRUD operations on Machine details
@@ -76,5 +77,37 @@ public interface MachineService {
 	 *             if any error occurred while saving Machine
 	 */
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine);
+	/**
+	 * Abstract method to update Machine Details to the Database
+	 * 
+	 * @param machine
+	 *            machine DTO 
+	 * 
+	 * @return IdResponseDto returning machine id which is updated successfully
+	 *         {@link IdResponseDto}
+	 * @throws RequestException
+	 *             if Machine not Found
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine
+	 * 
+	 */
+	public IdResponseDto updateMachine(RequestDto<MachineDto> machine);
+	/**
+	 * Abstract method to delete Machine Details to the Database
+	 * 
+	 * @param id
+	 *            machine id 
+	 * 
+	 * @return IdResponseDto returning machine id which is updated successfully
+	 *         {@link IdResponseDto}
+	 * @throws RequestException
+	 *             if Machine not Found
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Machine
+	 * 
+	 */
+	IdResponseDto deleteMachine(String id);
 
 }

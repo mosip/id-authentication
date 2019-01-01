@@ -39,6 +39,7 @@ The solution is divided into 3 parts :
 	2. IDENTIFY
 	3. PING
 	4. DELETE
+	
 	Please refer to [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for more info.
 - Since its a dummy ABIS, dont bother about how Abis internally perform dedupe check. Create a dummy logic to convert CBEFF file into byte array and match against other records.
 - ReferenceID : the reference id is unique for each applicant. It will be mapped against the registration id and will be created when insert is called. After successful response from ABIS the referenceid and registrationid mapping will be stored inside table.
@@ -84,4 +85,4 @@ The solution is divided into 3 parts :
 
 **Sequence Diagram**
 
-![Bio dedupe sequence diagram](_images/123456789.png)
+![Bio dedupe sequence diagram](_images/bio_dedupe_seq_diagram.png)

@@ -2,20 +2,19 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -33,6 +32,7 @@ import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
+
 /**
  * The Class PacketReceiverServiceImpl.
  *
@@ -41,13 +41,12 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 @Component
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
 
-	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(PacketReceiverServiceImpl.class);
-
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverServiceImpl.class);
+	
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
-
-	public static final String LOG_FORMATTER = "{} - {}";
 
 	/** The file extension. */
 	@Value("${registration.processor.file.extension}")
@@ -65,6 +64,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	private SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
+	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -92,7 +92,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				boolean isTransactionSuccessful = false;
 				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 				if (regEntity == null) {
-					logger.info("Registration Packet is Not yet sync in Sync table");
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,"Registration Packet is Not yet sync in Sync table.");
 					throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 				}
 
@@ -105,7 +105,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				} else if (!(isDuplicatePacket(registrationId))) {
 					try {
 						fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
-
 						InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 						dto.setRegistrationId(registrationId);
 						dto.setRegistrationType(regEntity.getRegistrationType());
@@ -120,7 +119,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 						storageFlag = true;
 						isTransactionSuccessful = true;
 					} catch (DataAccessException | IOException e) {
-						logger.info(LOG_FORMATTER, "Error while updating status", e.getMessage());
+						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,"Error while updating status : "+e.getMessage());
 					} finally {
 						String eventId = "";
 						String eventName = "";

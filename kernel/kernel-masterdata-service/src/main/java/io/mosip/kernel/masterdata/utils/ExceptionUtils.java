@@ -32,7 +32,8 @@ public final class ExceptionUtils {
 	public static String parseException(Throwable exception) {
 		Optional<Throwable> rootCause = Stream.iterate(exception, Throwable::getCause)
 				.filter(element -> element.getCause() == null).findFirst();
-		return rootCause.isPresent() ? rootCause.get().getMessage() : exception.getMessage();
+		String cause = rootCause.isPresent() ? rootCause.get().getMessage() : exception.getMessage();
+	    return " "+cause;
 	}
 }
 

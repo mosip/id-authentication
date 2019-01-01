@@ -35,7 +35,7 @@ public class MetaDataUtils {
 	private static String contextUser = "TestAdmin";
 
 	/**
-	 * This method takes <code>source</code> object like an DTO and a class which
+	 * This method takes <code>source</code> object like an DTO and an object which
 	 * must extends {@link BaseEntity} and map all values from DTO object to the
 	 * <code>destination</code> object and return it.
 	 * 
@@ -50,7 +50,7 @@ public class MetaDataUtils {
 	 * @param mapNullvalues
 	 *            if marked as false then field inside source which are null will
 	 *            not be mapped into destination
-	 * @return an entity class which extends {@link BaseEntity}
+	 * @return <code>destination</code> object which extends {@link BaseEntity}
 	 * @throws DataAccessLayerException
 	 *             if any error occurs while mapping values
 	 * @see MapperUtils#map(Object, Object, Boolean)
@@ -61,9 +61,23 @@ public class MetaDataUtils {
 			contextUser = authN.getName();
 		}
 
-		D entity = MapperUtils.map(source, destination, mapNullvalues);
+		MapperUtils.map(source, destination, mapNullvalues);
 
-		setUpdatedDateTime(contextUser, entity);
+		setUpdatedDateTime(contextUser, destination);
+		return destination;
+	}
+
+	/**
+	 * This method is used to set meta data used for delete.
+	 * 
+	 * @param entity
+	 *            which extends base entity
+	 * @return entity having isDeleted value as true and deleted times
+	 */
+	public static <E extends BaseEntity> E setDeleteMetaData(final E entity) {
+		entity.setUpdatedBy(contextUser);
+		entity.setIsDeleted(true);
+		entity.setDeletedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		return entity;
 	}
 
@@ -126,6 +140,14 @@ public class MetaDataUtils {
 	private static <D extends BaseEntity> void setUpdatedDateTime(String contextUser, D entity) {
 		entity.setUpdatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		entity.setUpdatedBy(contextUser);
+	}
+	
+	public static String getContextUser() {
+		return SecurityContextHolder.getContext().getAuthentication().getName();
+	}
+	
+	public static LocalDateTime getCurrentDateTime() {
+		return LocalDateTime.now(ZoneId.of("UTC"));
 	}
 
 }

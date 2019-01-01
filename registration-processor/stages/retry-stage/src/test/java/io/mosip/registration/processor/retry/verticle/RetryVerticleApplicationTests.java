@@ -1,7 +1,8 @@
-/*package io.mosip.registration.processor.retry.verticle;
+package io.mosip.registration.processor.retry.verticle;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +37,6 @@ public class RetryVerticleApplicationTests {
 	@Before
 	public void setup(TestContext context) {
 		retryStage.deployVerticle();
-		// vertx = retryStage.getEventBus(RetryStage.class, clusterAddress,
-		// localhost).getEventbus();
-		// revertx = retryStage.getEventBus(RetryStage.class, clusterAddress,
-		// localhost).getEventbus();
-		// ;
 		dto.setRid("1001");
 		dto.setRetryCount(null);
 		dto.setIsValid(false);
@@ -57,6 +53,7 @@ public class RetryVerticleApplicationTests {
 	}
 
 	@Test
+	@Ignore
 	public void checkProcessRetry(TestContext testContext) {
 
 		final Async async = testContext.async();
@@ -71,6 +68,7 @@ public class RetryVerticleApplicationTests {
 	}
 
 	@Test
+	@Ignore
 	public void checkProcessError(TestContext testContext) {
 
 		final Async async = testContext.async();
@@ -85,4 +83,4 @@ public class RetryVerticleApplicationTests {
 		async.awaitSuccess();
 	}
 
-}*/
+}
