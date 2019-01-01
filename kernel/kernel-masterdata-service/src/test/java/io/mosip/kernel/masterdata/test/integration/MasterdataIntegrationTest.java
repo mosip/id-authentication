@@ -1276,7 +1276,7 @@ public class MasterdataIntegrationTest {
 		french.setIsActive(true);
 		french.setNativeName("french_naiv");
 		String content = mapper.writeValueAsString(requestDto);
-		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(french);
+		when(languageRepository.findLanguageByCode(frenchDto.getCode())).thenReturn(french);
 		when(languageRepository.update(Mockito.any())).thenReturn(french);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isOk());
@@ -1303,7 +1303,7 @@ public class MasterdataIntegrationTest {
 		french.setIsActive(true);
 		french.setNativeName("french_naiv");
 		String content = mapper.writeValueAsString(requestDto);
-		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(french);
+		when(languageRepository.findLanguageByCode(frenchDto.getCode())).thenReturn(french);
 		when(languageRepository.update(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
@@ -1330,7 +1330,7 @@ public class MasterdataIntegrationTest {
 		french.setIsActive(true);
 		french.setNativeName("french_naiv");
 		String content = mapper.writeValueAsString(requestDto);
-		when(languageRepository.findLanguageById(frenchDto.getCode())).thenReturn(null);
+		when(languageRepository.findLanguageByCode(frenchDto.getCode())).thenReturn(null);
 		mockMvc.perform(put("/v1.0/languages").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
 
@@ -1338,14 +1338,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteLanguagesTest() throws Exception {
-		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(language);
+		when(languageRepository.findLanguageByCode(languageDto.getCode())).thenReturn(language);
 		when(languageRepository.update(Mockito.any())).thenReturn(language);
 		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteDataAccessLayerLanguagesTest() throws Exception {
-		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(language);
+		when(languageRepository.findLanguageByCode(languageDto.getCode())).thenReturn(language);
 		when(languageRepository.update(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode()))
 				.andExpect(status().isInternalServerError());
@@ -1353,7 +1353,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void deleteNotFoundLanguagesTest() throws Exception {
-		when(languageRepository.findLanguageById(languageDto.getCode())).thenReturn(null);
+		when(languageRepository.findLanguageByCode(languageDto.getCode())).thenReturn(null);
 		mockMvc.perform(delete("/v1.0/languages/{code}", languageDto.getCode())).andExpect(status().isBadRequest());
 	}
 
