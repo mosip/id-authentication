@@ -82,19 +82,20 @@ public class LocationController {
 	}
 
 	/**
-	 * 
-	 * 
 	 * @param hierarchyName
 	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
+
 	public LocationResponseDto getLocationDataByHierarchyName(
 			@PathVariable(value = "hierarchyname") String hierarchyName) {
+
 
 		return locationHierarchyService.getLocationDataByHierarchyName(hierarchyName);
 
 	}
+
 
 	/**
 	 * 
@@ -134,5 +135,6 @@ public class LocationController {
 		return locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode(locationCode, langCode);
 
 	}
+
 
 }

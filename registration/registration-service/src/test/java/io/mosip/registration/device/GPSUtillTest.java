@@ -21,7 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.device.gps.impl.GPSBU343Connector;
+import io.mosip.registration.device.gps.impl.GPSBU343Connector.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -37,7 +38,7 @@ public class GPSUtillTest {
 	private Logger logger;
 
 	@InjectMocks
-	private GPSUtill gpsUtillMock;
+	private GPSBU343Connector gpsUtillMock;
 
 	@Mock
 	private AuditFactory auditFactory;
@@ -60,7 +61,7 @@ public class GPSUtillTest {
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
+	 * {@link io.mosip.registration.device.gps.GPSProvider#parse(java.lang.String)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -69,14 +70,14 @@ public class GPSUtillTest {
 
 		String line = "$GPRMC,055218.000,A,1259.4845,N,08014.7602,E,0.07,120.70,171018,,,A*64";
 
-		GPSPosition gpsVale = gpsUtillMock.parse(line);
+		GPSPosition gpsVale = gpsUtillMock.signlaParser(line);
 		assertTrue(gpsVale.getResponse().equals("success"));
 
 	}
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
+	 * {@link io.mosip.registration.device.gps.GPSProvider#parse(java.lang.String)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -85,14 +86,14 @@ public class GPSUtillTest {
 
 		String line = "$GPGGA,055218.000,A,1259.4845,N,08014.7602,E,0.07,120.70,171018,,,A*64";
 
-		GPSPosition gpsVale = gpsUtillMock.parse(line);
+		GPSPosition gpsVale = gpsUtillMock.signlaParser(line);
 		assertTrue(gpsVale.getLat() == 0.0 && gpsVale.getLon() == 0.0 && gpsVale.getResponse().equals("failure"));
 
 	}
 
 	/**
 	 * Test method for
-	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
+	 * {@link io.mosip.registration.device.gps.GPSProvider#parse(java.lang.String)}.
 	 * 
 	 * @throws RegBaseCheckedException
 	 */
@@ -101,7 +102,7 @@ public class GPSUtillTest {
 
 		String line = "$GPRMC,055218.000,V,1259.4845,N,08014.7602,E,0.07,120.70,171018,,,A*64";
 
-		GPSPosition gpsVale = gpsUtillMock.parse(line);
+		GPSPosition gpsVale = gpsUtillMock.signlaParser(line);
 		assertTrue(gpsVale.getLat() == 0.0 && gpsVale.getLon() == 0.0 && gpsVale.getResponse().equals("failure"));
 
 	}

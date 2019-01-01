@@ -40,12 +40,12 @@
 			{
 				"language": "ar",
 				"label": "تاريخ الولادة",
-				"value": "16/04/1955"
+				"value": "Thu Jan 01 00:00:00 IST 2015"
 			},
 			{
 				"language": "fr",
 				"label": "date de naissance",
-				"value": "16/04/1955"
+				"value": "Thu Jan 01 00:00:00 IST 2015"
 			}
 		],
 		"gender": [

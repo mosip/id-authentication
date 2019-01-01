@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.PacketUploadController">
+<AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketUploadController">
    <children>
       <TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
         <columns>
@@ -20,5 +22,18 @@
          </font>
       </Label>
       <ProgressIndicator fx:id="progressIndicator" layoutX="394.0" layoutY="62.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
+      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="52.0" layoutY="24.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <image>
+            <Image url="@../images/Home.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="69.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ Upload Packet">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

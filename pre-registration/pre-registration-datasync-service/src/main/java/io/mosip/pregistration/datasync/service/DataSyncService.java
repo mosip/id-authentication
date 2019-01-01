@@ -49,7 +49,7 @@ import io.mosip.pregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.pregistration.datasync.repository.DataSyncRepo;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
 import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * DataSync Service
@@ -307,7 +307,7 @@ public class DataSyncService {
 		String fromDate = dataSyncRequestDTO.getFromDate();
 		String toDate = dataSyncRequestDTO.getToDate();
 		String dateFormat = "yyyy-MM-dd HH:mm:ss";
-		Date myDate = DateUtils.parse(fromDate, dateFormat);
+		Date myDate = DateUtils.parseToDate(fromDate, dateFormat);
 				
 		Date myDate1 = null;
 
@@ -320,7 +320,7 @@ public class DataSyncService {
 			cal.set(Calendar.SECOND, 59);
 			myDate1 = cal.getTime();
 		} else {
-			myDate1 = DateUtils.parse(toDate,dateFormat); 
+			myDate1 = DateUtils.parseToDate(toDate,dateFormat); 
 		}
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		DataSyncResponseDTO<PreRegistrationIdsDTO> responseDto = new DataSyncResponseDTO<>();
