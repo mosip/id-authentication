@@ -25,7 +25,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
+import io.mosip.preregistration.application.dto.MainRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -37,17 +37,21 @@ import io.mosip.preregistration.application.exception.system.SystemUnsupportedEn
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 /**
+ * This class provides the utility methods for DemographicService
+ *  
  * @author Ravi C Balaji
  * @since 1.0.0
  */
 @Component
 public class DemographicServiceUtil {
 
+	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	/**
 	 * This setter method is used to assign the initial demographic entity values to
 	 * the createDTO
 	 * 
-	 * @param demographicEntity
+	 * @param demographicEntity 
+	 * 						pass the demographicEntity
 	 * @return createDTO with the values
 	 */
 	public CreateDemographicDTO setterForCreateDTO(DemographicEntity demographicEntity) {
@@ -74,9 +78,12 @@ public class DemographicServiceUtil {
 	 * This method is used to set the values from the request to the
 	 * demographicEntity entity fields.
 	 * 
-	 * @param demographicRequest
+	 * @param demographicRequest 
+	 * 					pass demographicRequest
 	 * @param requestId
+	 * 				pass requestId
 	 * @param entityType
+	 * 				pass entityType
 	 * @return demographic entity with values
 	 */
 	public DemographicEntity prepareDemographicEntity(CreateDemographicDTO demographicRequest, String requestId,
@@ -129,11 +136,12 @@ public class DemographicServiceUtil {
 	 * This method is used to add the initial request values into a map for input
 	 * validations.
 	 * 
-	 * @param demographicRequestDTO
+	 * @param demographicRequestDTO 
+	 * 						pass demographicRequestDTO
 	 * @return a map for request input validation
 	 */
 	public Map<String, String> prepareRequestParamMap(
-			DemographicRequestDTO<CreateDemographicDTO> demographicRequestDTO) {
+			MainRequestDTO<CreateDemographicDTO> demographicRequestDTO) {
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.toString(), demographicRequestDTO.getId());
 		inputValidation.put(RequestCodes.ver.toString(), demographicRequestDTO.getVer());
@@ -147,9 +155,13 @@ public class DemographicServiceUtil {
 	 * This method is used to set the JSON values to RequestCodes constants.
 	 * 
 	 * @param demographicData
+	 * 					pass demographicData
 	 * @param identityKey
+	 * 					pass identityKey
 	 * @return values from JSON
-	 * @throws ParseException
+	 * 					
+	 * @throws ParseException On json Parsing Failed
+	 * 					
 	 */
 	public String getValueFromIdentity(byte[] demographicData, String identityKey) throws ParseException {
 		JSONParser jsonParser = new JSONParser();
@@ -163,7 +175,8 @@ public class DemographicServiceUtil {
 	/**
 	 * This method is used as Null checker for different input keys.
 	 *
-	 * @param key
+	 * @param key 
+	 * 			pass the key
 	 * @return true if key not null and return false if key is null.
 	 */
 	public boolean isNull(Object key) {
@@ -182,9 +195,9 @@ public class DemographicServiceUtil {
 	}
 
 	/**
-	 * This method is used to validate Pending_Appointment & Booked status codes.
+	 * This method is used to validate Pending_Appointment and Booked status codes.
 	 * 
-	 * @param statusCode
+	 * @param statusCode pass statusCode
 	 * @return true or false
 	 */
 	public boolean checkStatusForDeletion(String statusCode) {
@@ -197,18 +210,24 @@ public class DemographicServiceUtil {
 	}
 
 	/**
-	 * This method is used for parsing & formatting the fromDate and toDate.
+	 * This method is used for parsing and formatting the fromDate and toDate
 	 * 
 	 * @param dateMap
+	 * 				pass dateMap
 	 * @param format
+	 * 				pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
 	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {
 		Map<String, Timestamp> timeStampMap = new HashMap<>();
 		try {
-			Date fromDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get("FromDate"), "UTF-8"), format);
+
+			Date fromDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.fromDate.toString()), "UTF-8"),
+					format);
+
 			Date toDate = null;
-			if (dateMap.get("ToDate") == null || isNull(dateMap.get("ToDate"))) {
+			if (dateMap.get(RequestCodes.toDate.toString()) == null
+					|| isNull(dateMap.get(RequestCodes.toDate.toString()))) {
 				toDate = fromDate;
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(toDate);
@@ -217,10 +236,11 @@ public class DemographicServiceUtil {
 				cal.set(Calendar.SECOND, 59);
 				toDate = cal.getTime();
 			} else {
-				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get("ToDate"), "UTF-8"), format);
+				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.toDate.toString()), "UTF-8"),
+						format);
 			}
-			timeStampMap.put("FromDate", new Timestamp(fromDate.getTime()));
-			timeStampMap.put("ToDate", new Timestamp(toDate.getTime()));
+			timeStampMap.put(RequestCodes.fromDate.toString(), new Timestamp(fromDate.getTime()));
+			timeStampMap.put(RequestCodes.toDate.toString(), new Timestamp(toDate.getTime()));
 
 		} catch (java.text.ParseException e) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
@@ -230,5 +250,9 @@ public class DemographicServiceUtil {
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), e.getCause());
 		}
 		return timeStampMap;
+	}
+	
+	public String getCurrentResponseTime() {
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
 }

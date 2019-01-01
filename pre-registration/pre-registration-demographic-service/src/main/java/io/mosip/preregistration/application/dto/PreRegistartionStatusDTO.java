@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -8,8 +12,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author M1046129
- *
+ * This DTO class is used to define the Preregistration Id and Status code
+ * 
+ * @author Jagadishwari S
+ * @since 1.0.0
  */
 @Getter
 @Setter
@@ -17,13 +23,17 @@ import lombok.ToString;
 @ToString
 public class PreRegistartionStatusDTO implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1088172470058130997L;
 
+	/**
+	 * PreRegistartion Id
+	 */
 	private String PreRegistartionId;
 
+	/**
+	 * Status Code
+	 */
 	private String StatusCode;
 
 }
