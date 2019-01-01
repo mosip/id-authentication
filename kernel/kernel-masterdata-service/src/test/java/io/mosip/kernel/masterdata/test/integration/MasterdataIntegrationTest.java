@@ -158,6 +158,7 @@ import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import javafx.beans.binding.When;
 
 /**
  * 
@@ -595,7 +596,7 @@ public class MasterdataIntegrationTest {
 		deviceHistoryList.add(deviceHistory);
 
 	}
-	
+
 	List<DeviceSpecification> deviceSpecList;
 	DeviceSpecification deviceSpecification;
 	DeviceSpecificationDto deviceSpecificationDto;
@@ -2907,8 +2908,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
-		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new DataNotFoundException("", ""));
+		Mockito.when(deviceRepository.update(Mockito.any())).thenThrow(new DataNotFoundException("", ""));
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
@@ -2928,8 +2928,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteDeviceExceptionTest() throws Exception {
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
-		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new RequestException("", ""));
+		Mockito.when(deviceRepository.update(Mockito.any())).thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/1").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 
@@ -3399,6 +3398,32 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void deleteValidDocumentTest() throws Exception {
+		when(validDocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(1);
+		mockMvc.perform(delete("/v1.0/validdocuments/DC001/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void deleteValidDocumentNotFoundExceptionTest() throws Exception {
+		when(validDocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
+		mockMvc.perform(delete("/v1.0/validdocuments/DC001/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+
+	}
+
+	@Test
+	public void deleteValidDocumentDatabaseConnectionExceptionTest() throws Exception {
+		when(validDocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/validdocuments/DC001/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
 	public void createRegistrationCenterExceptionTest() throws Exception {
 		RequestDto<RegistrationCenterDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
@@ -3625,8 +3650,7 @@ public class MasterdataIntegrationTest {
 		Mockito.when(templateFileFormatRepository
 				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
-		Mockito.when(templateFileFormatRepository.update(Mockito.any()))
-				.thenThrow(new RequestException("", ""));
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content(content)).andExpect(status().isBadRequest());
 	}
@@ -3898,34 +3922,37 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	// -----------------------------------------DeviceHistory---------------------------------------------
-		@Test
-		public void getDeviceHistroyIdLangEffDTimeSuccessTest() throws Exception {
-			when(deviceHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(deviceHistoryList);
-			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-					"2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
-		}
+	@Test
+	public void getDeviceHistroyIdLangEffDTimeSuccessTest() throws Exception {
+		when(deviceHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(deviceHistoryList);
+		mockMvc.perform(
+				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
+				.andExpect(status().isOk());
+	}
 
-		@Test
-		public void getDeviceHistroyIdLangEffDTimeNullResponseTest() throws Exception {
-			when(deviceHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-					"2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
-		}
+	@Test
+	public void getDeviceHistroyIdLangEffDTimeNullResponseTest() throws Exception {
+		when(deviceHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(
+				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
+				.andExpect(status().isNotFound());
+	}
 
-		@Test
-		public void getDeviceHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
-			when(deviceHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-									.thenThrow(DataRetrievalFailureException.class);
-			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-					"2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
-		}
+	@Test
+	public void getDeviceHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
+		when(deviceHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+								.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(
+				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
+				.andExpect(status().isInternalServerError());
+	}
 
 }
