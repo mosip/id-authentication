@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidDocumentErrorCode;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostValidDocumentResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -73,7 +73,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public PostValidDocumentResponseDto deleteValidDocuemnt(String docCatCode, String docTypeCode) {
+	public DocCategoryAndTypeResponseDto deleteValidDocuemnt(String docCatCode, String docTypeCode) {
 		try {
 			int updatedRows = documentRepository.deleteValidDocument(LocalDateTime.now(ZoneId.of("UTC")), docCatCode,
 					docTypeCode, MetaDataUtils.getContextUser());
@@ -88,7 +88,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_DELETE_EXCEPTION.getErrorCode(),
 					ValidDocumentErrorCode.VALID_DOCUMENT_DELETE_EXCEPTION.getErrorMessage());
 		}
-		PostValidDocumentResponseDto responseDto = new PostValidDocumentResponseDto();
+		DocCategoryAndTypeResponseDto responseDto = new DocCategoryAndTypeResponseDto();
 		responseDto.setDocCategoryCode(docCatCode);
 		responseDto.setDocTypeCode(docTypeCode);
 		return responseDto;

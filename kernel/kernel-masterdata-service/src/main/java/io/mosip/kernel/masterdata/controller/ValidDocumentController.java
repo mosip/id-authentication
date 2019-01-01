@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostValidDocumentResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
 import io.swagger.annotations.Api;
@@ -60,8 +60,8 @@ public class ValidDocumentController {
 	 * @return the PostValidDocumentResponseDto.
 	 */
 	@DeleteMapping("/v1.0/validdocuments/{doccategorycode}/{doctypecode}")
-	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = PostValidDocumentResponseDto.class)
-	public ResponseEntity<PostValidDocumentResponseDto> deleteValidDocuemnt(
+	@ApiOperation(value = "Service to delete valid document", notes = "Delete valid document and return composite id", response = DocCategoryAndTypeResponseDto.class)
+	public ResponseEntity<DocCategoryAndTypeResponseDto> deleteValidDocuemnt(
 			@PathVariable("doccategorycode") String docCatCode, @PathVariable("doctypecode") String docTypeCode) {
 		return new ResponseEntity<>(documentService.deleteValidDocuemnt(docCatCode, docTypeCode), HttpStatus.OK);
 	}

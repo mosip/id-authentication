@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
-import io.mosip.kernel.masterdata.dto.postresponse.PostValidDocumentResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 
 /**
@@ -29,7 +29,7 @@ public interface ValidDocumentService {
 	 *            the document category code.
 	 * @param docTypeCode
 	 *            the docuemnt type code.
-	 * @return {@link PostValidDocumentResponseDto}.
+	 * @return {@link DocCategoryAndTypeResponseDto}.
 	 */
-	public PostValidDocumentResponseDto deleteValidDocuemnt(String docCatCode, String docTypeCode);
+	public DocCategoryAndTypeResponseDto deleteValidDocuemnt(String docCatCode, String docTypeCode);
 }
