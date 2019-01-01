@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -17,6 +18,9 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -30,16 +34,18 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-
 /**
  * The Class PacketUploaderStage.
+ * 
  * @author M1049387
  */
 @Component
 public class PacketUploaderStage extends MosipVerticleManager {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(PacketUploaderStage.class);
+	// private static final Logger LOGGER =
+	// LoggerFactory.getLogger(PacketUploaderStage.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketUploaderStage.class);
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
@@ -66,7 +72,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-
 	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
@@ -86,7 +91,8 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
 
 	/** The Constant REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE. */
-	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "+ "is not accessible";
+	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
+			+ "is not accessible";
 
 	/** The description. */
 	private String description = "";
@@ -101,111 +107,126 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		try {
 
 			this.registrationId = object.getRid();
-			InternalRegistrationStatusDto dto=registrationStatusService.getRegistrationStatus(registrationId);
+			InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus(registrationId);
 			uploadpacket(dto);
 
 		} catch (TablenotAccessibleException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name() + e.getMessage());
 
-			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e.getMessage(), e);
 			this.isTransactionSuccessful = false;
-			this.description = "Registration status table is not accessible for packet "+ this.registrationId;
+			this.description = "Registration status table is not accessible for packet " + this.registrationId;
 
 		} finally {
 
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			eventId = this.isTransactionSuccessful ? EventId.RPR_402.toString()
-					: EventId.RPR_405.toString();
+			eventId = this.isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(this.description, eventId, eventName,
-					eventType, this.registrationId);
+			auditLogRequestBuilder.createAuditRequestBuilder(this.description, eventId, eventName, eventType,
+					this.registrationId);
 
 		}
-
 
 		return null;
 	}
 
-
 	/**
 	 * Uploadpacket.
-	 * @param dto the dto
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * 
+	 * @param dto
+	 *            the dto
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	private void uploadpacket(InternalRegistrationStatusDto dto){
+	private void uploadpacket(InternalRegistrationStatusDto dto) {
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
-			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator	+ dto.getRegistrationId()+".zip";
-			File file = new File(filepath);	
+			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString()) + File.separator
+					+ dto.getRegistrationId() + ".zip";
+			File file = new File(filepath);
 			InputStream decryptedData = new FileInputStream(file);
-			sendToDFS(dto,decryptedData);
+			sendToDFS(dto, decryptedData);
 		} catch (PacketNotFoundException ex) {
-			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.name() + ex.getMessage());
 		} catch (IOException e) {
-			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + e.getMessage());
 
 		}
 	}
 
-
-
-
 	/**
 	 * Send to DFS.
 	 *
-	 * @param entry            the entry
-	 * @param decryptedData the decrypted data
+	 * @param entry
+	 *            the entry
+	 * @param decryptedData
+	 *            the decrypted data
 	 */
-	private void sendToDFS(InternalRegistrationStatusDto entry,InputStream decryptedData) {
+	private void sendToDFS(InternalRegistrationStatusDto entry, InputStream decryptedData) {
 
-		registrationId=entry.getRegistrationId();
+		registrationId = entry.getRegistrationId();
 		try {
+
+			// LOGGER.info(LOGDISPLAY, registrationId, "File is Already exists in DFS
+			// location And its now Deleted from Virus scanner job");
+
+			// } else {
+
+			adapter.storePacket(registrationId, decryptedData);
+			adapter.unpackPacket(registrationId);
+			// LOGGER.info(LOGDISPLAY, registrationId,
+			// "File Stored in File System and same has been deleted from virus scanner
+			// job.");
+			// }
 			if (adapter.isPacketPresent(registrationId)) {
+				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
+				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
+				fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK, registrationId);
 
-				LOGGER.info(LOGDISPLAY, registrationId, "File is Already exists in DFS location And its now Deleted from Virus scanner job");
+				entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
+				entry.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
+				entry.setUpdatedBy(USER);
 
-			} else {
-
-				adapter.storePacket(registrationId, decryptedData);
-				adapter.unpackPacket(registrationId);
-				LOGGER.info(LOGDISPLAY, registrationId,"File Stored in File System and same has been deleted from virus scanner job.");
+				registrationStatusService.updateRegistrationStatus(entry);
+				isTransactionSuccessful = true;
+				description = registrationId + " packet successfully has been send to DFS";
 			}
-
-			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC,registrationId);
-			fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
-			fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_UNPACK,registrationId);
-
-			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			entry.setStatusComment("Packet "+registrationId+" is uploaded in file system.");
-			entry.setUpdatedBy(USER);
-
-			registrationStatusService.updateRegistrationStatus(entry);
-			isTransactionSuccessful = true;
-			description =  registrationId + " packet successfully has been send to DFS";
 		} catch (DFSNotAccessibleException e) {
-			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
-			description =  "FileSytem is not accessible for packet " +registrationId ;
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.name() + e.getMessage());
+
+			description = "FileSytem is not accessible for packet " + registrationId;
 		} catch (IOException e) {
-			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() +" "+ UNABLE_TO_DELETE, e);
-			description =  "Virus scan path is not accessible for packet " +registrationId ;
-		}
-		catch (TablenotAccessibleException e) {
-			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
-			description =  "The Registration Status table is not accessible for packet " +registrationId ;
-		}finally {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.name() + e.getMessage());
+			description = "Virus scan path is not accessible for packet " + registrationId;
+		} catch (TablenotAccessibleException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name() + e.getMessage());
+			description = "The Registration Status table is not accessible for packet " + registrationId;
+		} finally {
 
 			String eventId = "";
 			String eventName = "";
@@ -222,8 +243,6 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		}
 
 	}
-
-
 
 	/**
 	 * Deploy verticle.

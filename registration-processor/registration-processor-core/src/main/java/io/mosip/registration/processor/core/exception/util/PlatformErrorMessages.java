@@ -162,6 +162,9 @@ public enum PlatformErrorMessages {
 
 	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003", "The Configuration and Language code not found"),
 
+	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "001", "Packet Not Found in Packet Store"),
+
+	
 	/*****System Exception*****/
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Unexpected exception"),
@@ -175,8 +178,8 @@ public enum PlatformErrorMessages {
 	RPR_SYS_NO_SUCH_FIELD_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "008","Could not find the field"),
 	RPR_SYS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "009","Error while parsing Json"),
 	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010","Error while converting inputstream to bytes"),
-	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011","Error while parsing date ");
-
+	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011","Error while parsing date "),
+	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012","IO EXCEPTION ");
 	/** The error message. */
 	private final String errorMessage;
 

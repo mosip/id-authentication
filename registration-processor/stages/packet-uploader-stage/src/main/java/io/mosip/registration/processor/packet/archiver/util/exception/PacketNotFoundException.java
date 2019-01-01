@@ -1,50 +1,29 @@
 package io.mosip.registration.processor.packet.archiver.util.exception;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * The Class PacketNotFoundException.
  * 
  * @author M1039285
  */
-public class PacketNotFoundException extends BaseCheckedException {
+public class PacketNotFoundException extends BaseUncheckedException {
 
-	/** The Constant serialVersionUID. */
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new packet not found exception.
-	 */
 	public PacketNotFoundException() {
 		super();
-
 	}
 
-	/**
-	 * Instantiates a new packet not found exception.
-	 *
-	 * @param code
-	 *            the code
-	 * @param message
-	 *            the message
-	 */
-	public PacketNotFoundException(String code, String message) {
-		super(code, message);
-
+	public PacketNotFoundException(String errorMessage) {
+		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getCode() + EMPTY_SPACE, errorMessage);
 	}
 
-	/**
-	 * Instantiates a new packet not found exception.
-	 *
-	 * @param code
-	 *            the code
-	 * @param message
-	 *            the message
-	 * @param cause
-	 *            the cause
-	 */
-	public PacketNotFoundException(String code, String message, Throwable cause) {
-		super(code, message, cause);
-
+	public PacketNotFoundException(String message, Throwable cause) {
+		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

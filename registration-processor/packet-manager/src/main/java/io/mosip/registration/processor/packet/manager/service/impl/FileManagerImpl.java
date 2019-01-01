@@ -20,7 +20,6 @@ import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDe
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInSourceException;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The implementation Class for FileManager.
  *

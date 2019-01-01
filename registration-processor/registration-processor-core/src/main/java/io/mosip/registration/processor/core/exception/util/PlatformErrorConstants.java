@@ -38,15 +38,17 @@ public final class PlatformErrorConstants {
 
 	/** The Constant RPR_PACKET_DECRYPTION_JOB_MODULE. */
 	public static final String RPR_PACKET_DECRYPTION_JOB_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PDS-";
-	
+
 	/** The Constant RPR_MANUAL_VERIFICATION_MODULE. */
 	public static final String RPR_MANUAL_VERIFICATION_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MVS-";
 
 	public static final String RPR_REST_CLIENT_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RCT-";
 
 	public static final String RPR_SYSTEM_EXCEPTION = RPR_REGISTRATION_PROCESSOR_PREFIX + "SYS-";
-	
+
 	public static final String RPR_MESSAGE_SENDER_TEMPLATE = RPR_REGISTRATION_PROCESSOR_PREFIX + "TEM-";
+
+	public static final String RER_PACKET_UPLOADER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ARC-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.

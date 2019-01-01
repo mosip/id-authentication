@@ -4,18 +4,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
-import io.mosip.registration.processor.packet.archiver.util.exception.constant.PacketNotFoundExceptionConstant;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-
 
 /**
  * The Class PacketArchiver.
@@ -55,8 +56,7 @@ public class PacketArchiver {
 	 * @throws PacketNotFoundException
 	 *             the packet not found exception
 	 */
-	public void archivePacket(String registrationId)
-			throws IOException, PacketNotFoundException {
+	public void archivePacket(String registrationId) throws IOException, PacketNotFoundException {
 		description = "failure";
 
 		String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString()) + File.separator + registrationId
@@ -71,7 +71,7 @@ public class PacketArchiver {
 				try {
 					filemanager.put(registrationId, encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
 					description = "The file is successfully archived " + registrationId;
-				}  finally {
+				} finally {
 
 					String eventId = "";
 					String eventName = "";
@@ -103,8 +103,7 @@ public class PacketArchiver {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 
-			throw new PacketNotFoundException(PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorCode(),
-					PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorMessage());
+			throw new PacketNotFoundException(PlatformErrorMessages.RPR_PUM_PACKET_NOT_FOUND_EXCEPTION.getMessage());
 
 		}
 	}
