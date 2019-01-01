@@ -32,8 +32,11 @@ public class RegistrationCenterDeviceHistoryServiceImpl implements RegistrationC
 	RegistrationCenterDeviceHistoryRepository repository;
 
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService#getRegCenterDeviceHisByregCenterIdDevIdEffDTime(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
-	public RegistrationCenterDeviceHistoryResponseDto getRegCenterDeviceHisByregCenterIddevIdEffDTime(
+	public RegistrationCenterDeviceHistoryResponseDto getRegCenterDeviceHisByregCenterIdDevIdEffDTime(
 			String regCenterId, String deviceId, String effDateTime) {
 		LocalDateTime lDateAndTime = null;
 		try {

@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping("/v1.0/registrationcenterdevicehistory")
-@Api(value = "Operation to fetach registration center and devices history")
+@Api(tags = { "RegistrationCenterDevicesHistory" })
 public class RegistrationCenterDeviceHistoryController {
 
 	/**
@@ -42,8 +42,8 @@ public class RegistrationCenterDeviceHistoryController {
 	 * @param effectivetimes
 	 *            input effective date and time from user
 	 * 
-	 * @return MachineHistoryResponseDto returning machine history detail based on
-	 *         given Machine ID, Language code and effective date time
+	 * @return RegistrationCenterDeviceHistoryResponseDto returning machine history
+	 *         detail based on given regCenterId, deviceId and effective date time
 	 */
 	@GetMapping(value = "/{regcenterid}/{deviceid}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class)
@@ -55,7 +55,7 @@ public class RegistrationCenterDeviceHistoryController {
 			@PathVariable("regcenterid") String regCenterId, @PathVariable("deviceid") String deviceId,
 			@PathVariable("effdatetimes") String effectivetimes) {
 
-		return registrationCenterDeviceHistoryService
-				.getRegCenterDeviceHisByregCenterIddevIdEffDTime(regCenterId, deviceId, effectivetimes);
+		return registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime(regCenterId,
+				deviceId, effectivetimes);
 	}
 }

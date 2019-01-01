@@ -24,7 +24,7 @@ public interface RegistrationCenterDeviceHistoryService {
 	 *         Device History Detail for given regCenterId,deviceId and effDateTime
 	 *
 	 */
-	RegistrationCenterDeviceHistoryResponseDto getRegCenterDeviceHisByregCenterIddevIdEffDTime(String regCenterId,
+	RegistrationCenterDeviceHistoryResponseDto getRegCenterDeviceHisByregCenterIdDevIdEffDTime(String regCenterId,
 			String deviceId, String effDateTime);
 
 }

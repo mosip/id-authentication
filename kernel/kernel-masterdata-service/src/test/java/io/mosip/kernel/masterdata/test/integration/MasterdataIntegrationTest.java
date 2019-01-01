@@ -60,6 +60,7 @@ import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
@@ -441,6 +442,7 @@ public class MasterdataIntegrationTest {
 		templateTestSetup();
 		templateTypeTestSetup();
 		templateFileFormatSetup();
+		registrationCenterDeviceHistorySetup();
 	}
 
 	private DeviceType deviceType;
@@ -595,7 +597,7 @@ public class MasterdataIntegrationTest {
 		deviceHistoryList.add(deviceHistory);
 
 	}
-	
+
 	List<DeviceSpecification> deviceSpecList;
 	DeviceSpecification deviceSpecification;
 	DeviceSpecificationDto deviceSpecificationDto;
@@ -1035,6 +1037,24 @@ public class MasterdataIntegrationTest {
 		blacklistedWords.setLangCode("TST");
 		blacklistedWords.setIsActive(true);
 		blacklistedWords.setWord("testword");
+	}
+
+	private RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDto;
+
+	private void registrationCenterDeviceHistorySetup() {
+		registrationCenterDeviceHistoryDto = new RegistrationCenterDeviceHistoryDto();
+		registrationCenterDeviceHistoryDto.setDeviceId("101");
+		registrationCenterDeviceHistoryDto.setRegCenterId("1");
+		registrationCenterDeviceHistoryDto.setEffectivetimes(localDateTimeUTCFormat);
+
+		registrationCenterDeviceHistory = new RegistrationCenterDeviceHistory();
+		RegistrationCenterDeviceHistoryPk rc = new RegistrationCenterDeviceHistoryPk();
+		rc.setDeviceId(registrationCenterDeviceHistoryDto.getDeviceId());
+		rc.setRegCenterId(registrationCenterDeviceHistoryDto.getRegCenterId());
+		rc.setEffectivetimes(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterDeviceHistory.setRegistrationCenterDeviceHistoryPk(rc);
+		registrationCenterDeviceHistory.setIsActive(true);
+
 	}
 
 	// -------RegistrationCenter mapping-------------------------
@@ -2907,8 +2927,7 @@ public class MasterdataIntegrationTest {
 		String content = mapper.writeValueAsString(requestDto);
 
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
-		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new DataNotFoundException("", ""));
+		Mockito.when(deviceRepository.update(Mockito.any())).thenThrow(new DataNotFoundException("", ""));
 		mockMvc.perform(
 				MockMvcRequestBuilders.put("/v1.0/devices").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isBadRequest());
@@ -2928,8 +2947,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void deleteDeviceExceptionTest() throws Exception {
 		Mockito.when(deviceRepository.findByIdAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString())).thenReturn(null);
-		Mockito.when(deviceRepository.update(Mockito.any()))
-				.thenThrow(new RequestException("", ""));
+		Mockito.when(deviceRepository.update(Mockito.any())).thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/devices/1").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 
@@ -3625,8 +3643,7 @@ public class MasterdataIntegrationTest {
 		Mockito.when(templateFileFormatRepository
 				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
-		Mockito.when(templateFileFormatRepository.update(Mockito.any()))
-				.thenThrow(new RequestException("", ""));
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenThrow(new RequestException("", ""));
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content(content)).andExpect(status().isBadRequest());
 	}
@@ -3898,34 +3915,76 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(delete("/v1.0/registrationcentertypes/RC001").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
-	
+
 	// -----------------------------------------DeviceHistory---------------------------------------------
-		@Test
-		public void getDeviceHistroyIdLangEffDTimeSuccessTest() throws Exception {
-			when(deviceHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(deviceHistoryList);
-			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-					"2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
-		}
+	@Test
+	public void getDeviceHistroyIdLangEffDTimeSuccessTest() throws Exception {
+		when(deviceHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(deviceHistoryList);
+		mockMvc.perform(
+				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
+				.andExpect(status().isOk());
+	}
 
-		@Test
-		public void getDeviceHistroyIdLangEffDTimeNullResponseTest() throws Exception {
-			when(deviceHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
-			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-					"2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
-		}
+	@Test
+	public void getDeviceHistroyIdLangEffDTimeNullResponseTest() throws Exception {
+		when(deviceHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(
+				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
+				.andExpect(status().isNotFound());
+	}
 
-		@Test
-		public void getDeviceHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
-			when(deviceHistoryRepository
-					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-									.thenThrow(DataRetrievalFailureException.class);
-			mockMvc.perform(get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG",
-					"2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
-		}
+	@Test
+	public void getDeviceHistroyIdLangEffDTimeFetchExceptionTest() throws Exception {
+		when(deviceHistoryRepository
+				.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+								.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(
+				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
+				.andExpect(status().isInternalServerError());
+	}
+
+	// -------------------Registration center device history-----------
+	@Test
+	public void getRegCentDevHistByregCentIdDevIdEffTimeTest() throws Exception {
+		when(registrationCenterDeviceHistoryRepository
+				.findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+								.thenReturn(registrationCenterDeviceHistory);
+		mockMvc.perform(get("/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
+				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void getRegCentDevHistByregCentIdDevIdEffTimeNullResponseTest() throws Exception {
+		when(registrationCenterDeviceHistoryRepository
+				.findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(null);
+		mockMvc.perform(get("/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
+				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void getRegCentDevHistByregCentIdDevIdEffTimeFetchExceptionTest() throws Exception {
+		when(registrationCenterDeviceHistoryRepository
+				.findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+						Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+								.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
+				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
+	}
+
+	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() throws Exception {
+		// when(registrationCenterDeviceHistoryRepository
+		// .findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+		// Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+		// .thenReturn(registrationCenterDeviceHistory);
+		mockMvc.perform(get("/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
+				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isBadRequest());
+	}
 
 }
