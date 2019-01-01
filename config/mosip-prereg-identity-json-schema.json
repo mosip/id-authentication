@@ -53,10 +53,7 @@
 				},
 				"CNEOrPINNumber": {
 					"$ref": "#/definitions/values"
-				}//,
-				//"foreigner": {
-				//	"$ref": "#/definitions/values"
-				//}
+				}
 			}
 		}
 	},
