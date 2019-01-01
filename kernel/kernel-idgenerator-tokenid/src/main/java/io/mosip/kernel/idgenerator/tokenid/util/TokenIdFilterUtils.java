@@ -5,7 +5,6 @@ package io.mosip.kernel.idgenerator.tokenid.util;
 
 import java.util.stream.IntStream;
 
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,15 +25,14 @@ public class TokenIdFilterUtils {
 	 * ascending and descending order)
 	 */
 	@Value("${mosip.kernel.tokenid.sequenselimit}")
-	//private static final int SEQUENCE_LIMIT =3;
 	private int sequenceLimit;
 	
 	/**
 	 * Private constructor for IdFilter
 	 */
-	/*@PostConstruct
-	public void TokenIdFilterUtils() {
-	}*/
+	
+	private TokenIdFilterUtils() {
+	}
    
 	
 	
@@ -72,7 +70,6 @@ public class TokenIdFilterUtils {
 	 * @return true if the id matches the filter
 	 */
 	private  boolean sequenceFilter(String id) {
-		System.out.println("======sequenceLimit==="+sequenceLimit);
 		return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
 				.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
 				.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
