@@ -143,7 +143,10 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
 
+		<module>kernel-idvalidator-prid</module>
 		<module>kernel-idvalidator-rid</module>
+		<module>kernel-idvalidator-uin</module>
+		<module>kernel-idvalidator-vid</module>
 	</modules>
 
 	<dependencies>
