@@ -1,7 +1,8 @@
 package io.mosip.registration.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
@@ -14,21 +15,21 @@ import io.mosip.registration.validator.AuthenticationBaseValidator;
 @Service
 public class AuthenticationService {
 
-	@Autowired
-	@Qualifier("fingerprintValidator")
-	AuthenticationBaseValidator fingerprintValidator;
-
-	@Autowired
-	@Qualifier("oTPValidatorImpl")
-	AuthenticationBaseValidator otpValidator;
+	private List<AuthenticationBaseValidator> authenticationBaseValidators;
 
 	public Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO) {
-		
-		if (validatorType.equals("Fingerprint")) {
-			return fingerprintValidator.validate(authenticationValidatorDTO);
-		} else if (validatorType.equals("otp")) {
-			return otpValidator.validate(authenticationValidatorDTO);
+
+		for (AuthenticationBaseValidator validator : authenticationBaseValidators) {
+			if (validator.getClass().getName().toLowerCase().contains(validatorType.toLowerCase())) {
+				return validator.validate(authenticationValidatorDTO);
+			}
 		}
 		return false;
 	}
+
+	@Autowired
+	public void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators) {
+		this.authenticationBaseValidators = authBaseValidators;
+	}
+
 }

@@ -1562,13 +1562,10 @@ public class RegistrationController extends BaseController {
 		try {
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
-
-			if (toggleBiometricException) {
+			authenticationController.initData(ProcessNames.PACKET.getType());
+			/*if (toggleBiometricException) {
 				authenticationController.initData(ProcessNames.EXCEPTION.getType());
-			} else {
-				authenticationController.initData(ProcessNames.PACKET.getType());
-
-			}
+			} */
 			accord.setExpandedPane(authenticationTitlePane);
 			headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
 

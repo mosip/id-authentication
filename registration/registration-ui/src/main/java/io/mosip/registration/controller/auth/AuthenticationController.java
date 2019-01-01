@@ -261,7 +261,6 @@ public class AuthenticationController extends BaseController {
 	private void loadNextScreen() {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
-		authCount++;
 		Boolean toogleBioException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
@@ -274,6 +273,7 @@ public class AuthenticationController extends BaseController {
 		} else {
 			if (!isSupervisor) {
 				if (toogleBioException != null && toogleBioException.booleanValue()) {
+					authCount++;
 					isSupervisor = true;
 					getAuthenticationModes(ProcessNames.EXCEPTION.getType());
 				} else {
