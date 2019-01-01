@@ -3417,6 +3417,32 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void deleteValidDocumentTest() throws Exception {
+		when(validDocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(1);
+		mockMvc.perform(delete("/v1.0/validdocuments/DC001/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void deleteValidDocumentNotFoundExceptionTest() throws Exception {
+		when(validDocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(0);
+		mockMvc.perform(delete("/v1.0/validdocuments/DC001/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+
+	}
+
+	@Test
+	public void deleteValidDocumentDatabaseConnectionExceptionTest() throws Exception {
+		when(validDocumentRepository.deleteValidDocument(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		mockMvc.perform(delete("/v1.0/validdocuments/DC001/DT001").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
 	public void createRegistrationCenterExceptionTest() throws Exception {
 		RequestDto<RegistrationCenterDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
@@ -3983,8 +4009,9 @@ public class MasterdataIntegrationTest {
 		// .findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 		// Mockito.anyString(), Mockito.anyString(), Mockito.any()))
 		// .thenReturn(registrationCenterDeviceHistory);
-		mockMvc.perform(get("/v1.0/registrationcenterdevicehistory/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
+		mockMvc.perform(get("/v1.0/deviceshistories/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
 				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isBadRequest());
 	}
+
 
 }
