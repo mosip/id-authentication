@@ -15,6 +15,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
@@ -144,6 +145,12 @@ public class RegistrationCenterController {
 				hierarchyLevel, text);
 
 	}
+	
+	@GetMapping("/v1.0/registrationcenters/validate/{id}/{timestamp}")
+	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId ,@PathVariable("timestamp") String timeStamp) {
+		return registrationCenterService.validateTimestampWithRegistrationCenter(regId, timeStamp);
+		
+	}
 
 	/**
 	 * This method creates registration center.
@@ -158,4 +165,6 @@ public class RegistrationCenterController {
 		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
 				HttpStatus.CREATED);
 	}
+	
+	
 }
