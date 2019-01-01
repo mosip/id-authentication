@@ -3,22 +3,44 @@ package io.mosip.kernel.masterdata.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.utils.LanguageUtils;
 
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
 
 	@Autowired
-	private LanguageUtils languageUtils;
+	private RestTemplate restTemplate;
+
+	/**
+	 * Environment instance
+	 */
+	@Autowired
+	private Environment env;
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		if (EmptyCheckUtils.isNullEmpty(value) && value.trim().length() > 3) {
 			return false;
 		} else {
-			return languageUtils.isValid(value);
+			try {
+				String url = env.getProperty("global.config.uri");
+				JSONObject result = restTemplate.getForObject(url, JSONObject.class);
+				JSONArray arr = result.getJSONArray("languagesSupported");
+				for (int i = 0; i < arr.length(); i++) {
+					if (value.equals(arr.getString(i))) {
+						return true;
+					}
+				}
+			} catch (Exception e) {
+				throw new MasterDataServiceException("KER-MSD-1001", "LanguageCodeValidator error");
+			}
+			return false;
 		}
 	}
 

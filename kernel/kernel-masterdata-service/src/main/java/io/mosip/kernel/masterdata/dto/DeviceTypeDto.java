@@ -25,7 +25,7 @@ public class DeviceTypeDto {
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
-	@ValidLangCode
+//	@ValidLangCode
 	@NotNull
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
