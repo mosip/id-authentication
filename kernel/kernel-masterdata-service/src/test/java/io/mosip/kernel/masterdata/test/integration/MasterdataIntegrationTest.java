@@ -158,7 +158,6 @@ import io.mosip.kernel.masterdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
-import javafx.beans.binding.When;
 
 /**
  * 
