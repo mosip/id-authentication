@@ -4004,14 +4004,4 @@ public class MasterdataIntegrationTest {
 				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isInternalServerError());
 	}
 
-	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() throws Exception {
-		// when(registrationCenterDeviceHistoryRepository
-		// .findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-		// Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-		// .thenReturn(registrationCenterDeviceHistory);
-		mockMvc.perform(get("/v1.0/deviceshistories/{regcenterid}/{deviceid}/{effdatetimes}", "RCI1000",
-				"DID10", "2018-01-01T10:10:30.956Z")).andExpect(status().isBadRequest());
-	}
-
-
 }
