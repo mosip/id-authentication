@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.spi.filesystem.adapter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * MOSIP ADAPTER INTERFACE FOR CONNECTING TO DFS
@@ -111,5 +112,18 @@ public interface FileSystemAdapter<T, V> {
 	 * @return the boolean
 	 */
 	public Boolean isPacketPresent(String registrationId);
+	
+	/**
+	 * This method stores the packet corresponding to an enrolment ID
+	 * 
+	 * @param enrolmentId
+	 *            The enrolmentId
+	 * @param key
+	 *            Physical path of the packet which needs to be stored
+	 * @param file
+	 *            file to be stored
+	 * @return True If the packet is stored successfully
+	 */
+	public Boolean storeDocument(String enrolmentId, String key, InputStream document);
 
 }

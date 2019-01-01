@@ -46,6 +46,7 @@ import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundExcept
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 
 /**
@@ -82,10 +83,10 @@ public class DocumentService {
 	private boolean responseStatus = true;
 
 	/**
-	 * Autowired reference for {@link #FilesystemCephAdapterImpl}
+	 * Autowired reference for {@link #FileSystemAdapter}
 	 */
 	@Autowired
-	private FilesystemCephAdapterImpl ceph;
+	private FileSystemAdapter<InputStream, Boolean> ceph;
 
 	/**
 	 * Autowired reference for {@link #DocumentServiceUtil}
@@ -169,7 +170,7 @@ public class DocumentService {
 			documentEntity = documentRepository.save(documentEntity);
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				boolean isStoreSuccess = ceph.storeFile(documentEntity.getPreregId(), key, file.getInputStream());
+				boolean isStoreSuccess = ceph.storeDocument(documentEntity.getPreregId(), key, file.getInputStream());
 				if(!isStoreSuccess) {
 					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
@@ -221,7 +222,7 @@ public class DocumentService {
 					if (copyDocumentEntity != null) {
 						String key2 = copyDocumentEntity.getDocCatCode() + "_"
 								+ copyDocumentEntity.getDocumentId();
-						boolean isStoreSuccess = ceph.storeFile(copyDocumentEntity.getPreregId(), key2, sourcefile);
+						boolean isStoreSuccess = ceph.storeDocument(copyDocumentEntity.getPreregId(), key2, sourcefile);
 						if(!isStoreSuccess) {
 							throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 									ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
