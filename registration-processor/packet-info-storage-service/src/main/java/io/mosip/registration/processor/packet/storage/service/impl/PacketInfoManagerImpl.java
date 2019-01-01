@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,12 +38,14 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
+import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -149,15 +152,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	private PacketInfoDao packetInfoDao;
 
 	@Autowired
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	@Autowired
 	private Utilities utility;
 
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
-	private RegOsiDto regOsiDto;
 
 	/** The meta data. */
 	private List<FieldValue> metaData;
@@ -325,7 +326,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
 
-		String fileName = "";
+		String fileName;
 		if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
 			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
 		} else {
@@ -396,7 +397,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
 		try {
-			LOGGER.info(LOG_FORMATTER, "Packet-Name : " + registrationId + " FilePath " + documentName);
+			LOGGER.info("{}{} - {}{} ", "Packet-Name : ", registrationId, " FilePath: ", documentName);
 			@Cleanup
 			InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
 			byte[] buffer = new byte[1024];
@@ -475,6 +476,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			// Get Identity Json from config server and map keys to Java Object
 			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorIdentityJson());
+
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -484,19 +486,21 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			demographicData.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getFirstName()));
-			demographicData.setMiddleName(getJsonValues(regProcessorIdentityJson.getIdentity().getMiddleName()));
-			demographicData.setLastName(getJsonValues(regProcessorIdentityJson.getIdentity().getLastName()));
-			demographicData.setFullName(getJsonValues(regProcessorIdentityJson.getIdentity().getFullName()));
-			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob()));
-			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender()));
-			demographicData.setAddressLine1(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine1()));
-			demographicData.setAddressLine2(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine2()));
-			demographicData.setAddressLine3(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine3()));
-			demographicData.setAddressLine4(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine4()));
-			demographicData.setAddressLine5(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine5()));
-			demographicData.setAddressLine6(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine6()));
-			demographicData.setZipcode(getJsonValues(regProcessorIdentityJson.getIdentity().getPincode()));
+			List<JsonValue[]> jsonNameList = new ArrayList<>();
+
+			String[] nameArray = regProcessorIdentityJson.getIdentity().getName().getValue().split("\\+");
+			for (int i = 0; i < nameArray.length; i++) {
+				JsonValue[] name = getJsonValues(nameArray[i]);
+				if (name != null) {
+					jsonNameList.add(getJsonValues(nameArray[i]));
+
+				}
+
+			}
+
+			demographicData.setName(jsonNameList.isEmpty() ? null : jsonNameList);
+			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob().getValue()));
+			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
 			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
@@ -530,12 +534,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
 		boolean isTransactionSuccessful = false;
 		try {
-
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
-					.converDemographicDedupeDtoToEntity(demographicData, regId, preRegId);
+					.converDemographicDedupeDtoToEntity(demographicData, regId);
 			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
 				demographicDedupeRepository.save(applicantDemographicEntity);
-				LOGGER.info(applicantDemographicEntity.getId().getRefId() + " --> DemographicDedupeData SAVED");
+				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> DemographicDedupeData SAVED");
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
@@ -603,9 +606,34 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Override
 	public RegOsiDto getOsi(String regid) {
-
-		regOsiDto = packetInfoDao.getEntitiesforRegOsi(regid);
-		return regOsiDto;
+		return packetInfoDao.getEntitiesforRegOsi(regid);
 	}
+
+	@Override
+	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
+
+		return packetInfoDao.getRegistrationCenterMachine(regid);
+	}
+
+	@Override
+	public List<DemographicInfoDto> findDemoById(String regId) {
+		return packetInfoDao.findDemoById(regId);
+	}
+
+	@Override
+	public List<String> getApplicantFingerPrintImageNameById(String regId) {
+		return packetInfoDao.getApplicantFingerPrintImageNameById(regId);
+	}
+
+	@Override
+	public List<String> getApplicantIrisImageNameById(String regId) {
+		return packetInfoDao.getApplicantIrisImageNameById(regId);
+	}
+	
+	@Override
+	public List<String> getRegIdByUIN(String uin) {
+		return packetInfoDao.getRegIdByUIN(uin);
+	}
+	
 
 }

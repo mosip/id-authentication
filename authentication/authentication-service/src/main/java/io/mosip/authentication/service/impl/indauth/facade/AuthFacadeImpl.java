@@ -117,16 +117,14 @@ public class AuthFacadeImpl implements AuthFacade {
 	private NotificationService notificationService;
 
 	/**
-	 * Process the authorisation type and authorisation response is returned.
+	 * Process the authorization type and authorization response is returned.
 	 *
 	 * @param authRequestDTO the auth request DTO
-	 * @return the auth response DTO
+	 * @param isAuth         boolean i.e is auth type request.
+	 * @return AuthResponseDTO the auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
-	 *                                           exception
-	 * @throws IdAuthenticationDaoException
-	 * @throws ParseException
+	 *                                           exception.
 	 */
-
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO, boolean isAuth)
 			throws IdAuthenticationBusinessException {
@@ -137,7 +135,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		String refId =  String.valueOf(idResDTO.get("registrationId"));
+		String refId = String.valueOf(idResDTO.get("registrationId"));
 		try {
 			idInfo = getIdEntity(idResDTO);
 
@@ -166,7 +164,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * AuthRequestDTO.
 	 *
 	 * @param authRequestDTO the auth request DTO
-	 * @param idInfo
+	 * @param idInfo         list of identityInfoDto request
 	 * @param refId          the ref id
 	 * @return the list
 	 * @throws IdAuthenticationBusinessException the id authentication business
@@ -228,27 +226,33 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authStatusList;
 	}
-	
+
+	/**
+	 * Processed to authentic bio type request.
+	 * 
+	 * @param authRequestDTO authRequestDTO
+	 * @param isAuth         boolean value for verify is auth type request or not.
+	 * @param idType         idtype
+	 * @throws IDDataValidationException exception
+	 */
 	private void processBioAuthType(AuthRequestDTO authRequestDTO, boolean isAuth, IdType idType)
 			throws IDDataValidationException {
 		String desc;
-		if (authRequestDTO.getBioInfo().stream().anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
-				|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
+		if (authRequestDTO.getBioInfo().stream()
+				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
+						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
 			desc = "Fingerprint Authentication requested";
-			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-					desc);
+			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
 			desc = "Iris Authentication requested";
-			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-					desc);
+			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
 			desc = "Face Authentication requested";
-			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType,
-					desc);
+			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 		}
 	}
 
@@ -286,28 +290,28 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequest = kycAuthRequestDTO.getAuthRequest();
 		Map<String, Object> idResDTO = null;
-		String key=null;
-		String resTime=null;
-		IdType idType=null;
+		String key = null;
+		String resTime = null;
+		IdType idType = null;
 		if (authRequest != null) {
 			idResDTO = idAuthService.processIdType(authRequest.getIdvIdType(), authRequest.getIdvId());
-			 key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
-			 
+			key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
 
-				if (kycAuthRequestDTO.getAuthRequest().getIdvIdType().equals(IdType.UIN.getType())) {
-					idType = IdType.UIN;
-				} else {
-					idType = IdType.VID;
-				}
-				String dateTimePattern = env.getProperty(DATETIME_PATTERN);
+			if (kycAuthRequestDTO.getAuthRequest().getIdvIdType().equals(IdType.UIN.getType())) {
+				idType = IdType.UIN;
+			} else {
+				idType = IdType.VID;
+			}
+			String dateTimePattern = env.getProperty(DATETIME_PATTERN);
 
-				DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
+			DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(dateTimePattern);
 
-				ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getAuthRequest().getReqTime(), isoPattern);
-				ZoneId zone = zonedDateTime2.getZone();
-				resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
-				auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
-						kycAuthRequestDTO.getAuthRequest().getIdvId(), idType, "eKYC Authentication requested");
+			ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(kycAuthRequestDTO.getAuthRequest().getReqTime(),
+					isoPattern);
+			ZoneId zone = zonedDateTime2.getZone();
+			resTime = DateUtils.formatDate(new Date(), dateTimePattern, TimeZone.getTimeZone(zone));
+			auditHelper.audit(AuditModules.EKYC_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE,
+					kycAuthRequestDTO.getAuthRequest().getIdvId(), idType, "eKYC Authentication requested");
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = getIdEntity(idResDTO);
 		KycInfo info = null;
@@ -315,7 +319,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			info = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					KycType.getEkycAuthType(env.getProperty(key)), kycAuthRequestDTO.isEPrintReq(),
 					kycAuthRequestDTO.isSecLangReq(), idInfo);
-			
+
 		}
 
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
@@ -327,10 +331,9 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 
 		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
-		
+
 		kycAuthResponseDTO.setResTime(resTime);
-		
-		
+
 		return kycAuthResponseDTO;
 	}
 

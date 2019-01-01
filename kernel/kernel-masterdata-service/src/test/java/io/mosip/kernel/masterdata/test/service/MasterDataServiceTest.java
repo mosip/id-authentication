@@ -77,6 +77,7 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
@@ -237,6 +238,9 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	MachineHistoryService machineHistoryService;
+	
+	@Autowired
+	DeviceHistoryService deviceHistoryService;
 
 	private RequestDto<BiometricTypeDto> biometricTypeRequestDto;
 
@@ -465,6 +469,7 @@ public class MasterDataServiceTest {
 		blacklistedWords.setWord("abc");
 		blacklistedWords.setLangCode("ENG");
 		blacklistedWords.setDescription("no description available");
+
 		words.add(blacklistedWords);
 	}
 
@@ -1143,6 +1148,7 @@ public class MasterDataServiceTest {
 		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 
+
 	@Test
 	public void updateLocationDetailsTest() {
 
@@ -1193,19 +1199,24 @@ public class MasterDataServiceTest {
 
 	}
 
+
 	@Test()
 	public void getLocationHierachyBasedOnHierarchyNameTest() {
 		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
 				.thenReturn(locationHierarchies);
 
+
 		LocationResponseDto locationResponseDto = locationHierarchyService.getLocationDataByHierarchyName("country");
+
 		Assert.assertEquals("country", locationResponseDto.getLocations().get(0).getHierarchyName());
 
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void dataNotFoundExceptionTest() {
+
 		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("123")).thenReturn(null);
+
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
@@ -1217,6 +1228,7 @@ public class MasterDataServiceTest {
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
+
 
 	@Test
 	public void getImmediateChildrenTest() {
@@ -1241,6 +1253,7 @@ public class MasterDataServiceTest {
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
 	}
+
 
 	// ------------------ TemplateServiceTest -----------------//
 
@@ -1424,11 +1437,16 @@ public class MasterDataServiceTest {
 		blacklistedWordsService.validateWord(wordsList);
 	}
 
-	// -------------------------------------Machine Histroy
-	// Test----------------------------//
+	// -------------------------------------MachineHistroyTest----------------------------
 	@Test(expected = RequestException.class)
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
+	
+	// -------------------------------------DeviceHistroyTest------------------------------------------
+		@Test(expected = RequestException.class)
+		public void getDeviceHistroyIdLangEffDTimeParseDateException() {
+			deviceHistoryService.getDeviceHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
+		}
 
 }

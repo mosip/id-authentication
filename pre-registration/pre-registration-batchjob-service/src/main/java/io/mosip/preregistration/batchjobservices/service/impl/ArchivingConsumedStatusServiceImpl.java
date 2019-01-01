@@ -19,7 +19,7 @@ import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableExce
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationDemographicRepository;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationHistoryTableRepository;
 import io.mosip.preregistration.batchjobservices.service.ArchivingConsumedStatusService;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * @author M1043008

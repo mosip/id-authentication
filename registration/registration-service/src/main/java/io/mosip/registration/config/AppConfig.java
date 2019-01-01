@@ -15,14 +15,17 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auditmanager.config.AuditConfig;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
-import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
+import io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
+import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
 
@@ -36,7 +39,8 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @Configuration
 @Import({ HibernateDaoConfig.class, AuditConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
-@ComponentScan({"io.mosip.registration", "io.moisp.kernel"})
+@ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
+		"io.mosip.kernel.idvalidator" , "io.mosip.kernel.ridgenerator"})
 @PropertySource("spring.properties")
 public class AppConfig {
 
@@ -80,12 +84,18 @@ public class AppConfig {
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}
-	
+
 	@Bean
 	public TemplateManagerBuilder getTemplateManagerBuilder() {
 		return new TemplateManagerBuilderImpl();
 	}
 
+	@Bean
+	public IdValidator<String> getIdValidator() {
+		return new PridValidatorImpl();
+	}
+	
+	
 	/**
 	 * scheduler factory bean used to shedule the batch jobs
 	 * 

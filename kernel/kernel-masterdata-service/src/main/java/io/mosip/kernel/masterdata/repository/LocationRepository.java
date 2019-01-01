@@ -12,7 +12,6 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  * This interface is JPA repository class which interacts with database and does the CRUD function. It is 
  * extended from {@link BaseRepository}
  * @author Srinivasan
- * @author Tapaswini
  *
  */
 @Repository
@@ -26,6 +25,7 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 			String languageCode);
 	@Query(value="select distinct hierarchy_level, hierarchy_level_name, is_active from master.location where lang_code='ENG' and (is_deleted='f' or is_deleted=null)",nativeQuery=true)
 	List<Object[]> findDistinctLocationHierarchyByIsDeletedFalse(String langCode);
+
 	@Query(value="FROM Location l where l.code=?1 and (l.isDeleted is null or l.isDeleted=false)")
 	List<Location> findByCode(String locationCode);
 	

@@ -22,7 +22,7 @@ import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.impl.TemplateServiceImpl;
+import io.mosip.registration.service.template.impl.TemplateServiceImpl;
 
 public class TemplateServiceTest {
 

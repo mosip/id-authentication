@@ -10,9 +10,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.JobManager;
-import io.mosip.registration.manager.SyncManager;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 
 /**
  * This class gives the information of job process
