@@ -22,9 +22,7 @@
 		<module>failover-stage</module>
 		<module>quality-matchness-checker-stage</module>
 		<module>OSI-validator</module>
-		<module>landingzone-scanner-stage</module>
 		<module>virus-scanner-stage</module>
-		<module>packet-decrypter-stage</module>
 		<module>Demo-dedupe-stage</module>
 		<module>manual-verification-stage</module>
 	</modules>
