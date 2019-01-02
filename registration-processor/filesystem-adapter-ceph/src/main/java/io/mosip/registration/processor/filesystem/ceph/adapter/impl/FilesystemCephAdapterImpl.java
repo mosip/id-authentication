@@ -134,6 +134,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	 *            document as InputStream
 	 * @return True if document is stored
 	 */
+
 	@Override
 	public Boolean storeFile(String enrolmentId, String key, InputStream document) {
 		try {
@@ -150,6 +151,20 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		}
 		return true;
 	}
+	
+	/**
+	 * This method copy document from one bucket to another
+	 * 
+	 * @param sourceBucketName
+	 * 
+	 * @param sourceKey
+	 * 
+	 * @param destinationBucketName
+	 * 
+	 * @param destinationKey
+	 * 
+	 * @return True if document copy is successful 
+	 */
 
 	@Override
 	public Boolean copyFile(String sourceBucketName, String sourceKey,
@@ -304,4 +319,6 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	public Boolean isPacketPresent(String registrationId) {
 		return this.getPacket(registrationId) != null;
 	}
+
+
 }

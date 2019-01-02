@@ -124,6 +124,7 @@ public interface FileSystemAdapter<T, V> {
 	 *            file to be stored
 	 * @return True If the packet is stored successfully
 	 */
+
 	public Boolean storeFile(String enrolmentId, String key, InputStream document);
 	
 	/**
@@ -142,4 +143,5 @@ public interface FileSystemAdapter<T, V> {
 	public Boolean copyFile(String sourceBucketName, String sourceKey,
             String destinationBucketName, String destinationKey) ;
 	
+
 }

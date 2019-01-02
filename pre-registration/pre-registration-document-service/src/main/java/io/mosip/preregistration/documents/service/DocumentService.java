@@ -47,6 +47,8 @@ import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatche
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+
 
 /**
  * This class provides the service implementation for Document
@@ -228,6 +230,7 @@ public class DocumentService {
 						boolean isStoreSuccess = ceph.copyFile(sourceBucketName, sourceKey,
 					            destinationBucketName, destinationKey);
 						if (!isStoreSuccess) {
+
 							throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 									ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 						}
