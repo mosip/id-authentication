@@ -12,6 +12,8 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -48,6 +50,9 @@ public class BioDedupeStage extends MosipVerticleManager {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Autowired
+	private BioDedupeService bioDedupeService;
+
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIODEDUPE_BUS_IN, MessageBusAddress.BIODEDUPE_BUS_OUT);
@@ -64,9 +69,18 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
-		// BioDedupeService.insertBiometrics(RegistrationId) to insert the applicant
-		// biometric in Abis
+		try {
+			String insertionResult = bioDedupeService.insertBiometrics(registrationId);
+			if (insertionResult.equalsIgnoreCase("success")) {
+				bioDedupeService.performDedupe(registrationId);
+			} else {
 
+			}
+
+		} catch (ApisResourceAccessException e) {
+
+			e.printStackTrace();
+		}
 		return null;
 	}
 
