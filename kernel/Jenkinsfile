@@ -55,7 +55,7 @@ node {
  }
 
  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  }
 
 stage('---------- SonarQube Analysis --------------') {
