@@ -120,7 +120,6 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerIrisType("LEFTEYE");
 		regOsiDto.setOfficerPhotoName(null);
 		regOsiDto.setOfficerHashedPin("officerHashedPin");
-
 		regOsiDto.setSupervisorId("S1234");
 		regOsiDto.setSupervisorFingerpImageName("supervisorFingerpImageName");
 		regOsiDto.setSupervisorFingerType("LEFTINDEX");

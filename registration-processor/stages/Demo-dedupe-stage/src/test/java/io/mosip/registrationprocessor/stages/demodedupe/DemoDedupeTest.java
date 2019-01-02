@@ -120,8 +120,8 @@ public class DemoDedupeTest {
 
 	@Test
 	public void testDemodedupeEmpty() {
+		
 		String regId = "1234567890";
-
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
