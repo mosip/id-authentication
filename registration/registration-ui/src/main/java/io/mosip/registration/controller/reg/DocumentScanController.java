@@ -263,6 +263,9 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
+				
+				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
+				
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
@@ -605,28 +608,6 @@ public class DocumentScanController extends BaseController {
 			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
-	}
-
-	public boolean validateDocuments() {
-		if (poaBox.getChildren().isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.POA_DOCUMENT_EMPTY);
-		} else {
-			if (poiBox.getChildren().isEmpty()) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.POI_DOCUMENT_EMPTY);
-			} else {
-				if (isChild && porBox.getChildren().isEmpty()) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.POR_DOCUMENT_EMPTY);
-				} else {
-					if (dobBox.getChildren().isEmpty()) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DOB_DOCUMENT_EMPTY);
-					} else {
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
 	}
 
 	public RegistrationDTO getRegistrationDtoContent() {
