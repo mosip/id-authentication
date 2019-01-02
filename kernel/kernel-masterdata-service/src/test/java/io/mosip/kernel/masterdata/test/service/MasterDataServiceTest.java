@@ -77,6 +77,7 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
+import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
@@ -90,6 +91,11 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  * @author Bal Vikash Sharma
  * @author Neha Sinha
+ * @author tapaswini
+ * @author srinivasan
+ * @since 1.0.0
+ *
+ * 
  * @since 1.0.0
  *
  */
@@ -232,6 +238,9 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	MachineHistoryService machineHistoryService;
+	
+	@Autowired
+	DeviceHistoryService deviceHistoryService;
 
 	private RequestDto<BiometricTypeDto> biometricTypeRequestDto;
 
@@ -1139,28 +1148,75 @@ public class MasterDataServiceTest {
 		locationHierarchyService.createLocationHierarchy(requestLocationDto);
 	}
 
-	/**
-	 * 
-	 * @author M1043226
-	 * @since 1.0.0
-	 *
-	 */
-	
+
+	@Test
+	public void updateLocationDetailsTest() {
+
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
+
+		locationHierarchyService.updateLocationDetails(requestLocationDto);
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void updateLocationDetailsExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+
+		locationHierarchyService.updateLocationDetails(requestLocationDto);
+	}
+
+	@Test(expected = RequestException.class)
+	public void updateLocationDetailsDataNotFoundTest() {
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+		locationHierarchyService.updateLocationDetails(requestLocationDto);
+	}
+
+	@Test
+	public void deleteLocationDetailsTest() {
+
+		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(locationHierarchies);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenReturn(locationHierarchy);
+		locationHierarchyService.deleteLocationDetials("KAR");
+
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void deleteLocationDetailsServiceExceptionTest() {
+
+		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(locationHierarchies);
+		Mockito.when(locationHierarchyRepository.update(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.deleteLocationDetials("KAR");
+
+	}
+
+	@Test(expected = RequestException.class)
+	public void deleteLocationDetailDataNotFoundExceptionTest() {
+
+		Mockito.when(locationHierarchyRepository.findByCode(Mockito.anyString())).thenReturn(new ArrayList<Location>());
+
+		locationHierarchyService.deleteLocationDetials("KAR");
+
+	}
+
+
 	@Test()
 	public void getLocationHierachyBasedOnHierarchyNameTest() {
 		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("country"))
 				.thenReturn(locationHierarchies);
 
-		LocationResponseDto locationResponseDto = locationHierarchyService
-				.getLocationDataByHierarchyName("country");
+
+		LocationResponseDto locationResponseDto = locationHierarchyService.getLocationDataByHierarchyName("country");
+
 		Assert.assertEquals("country", locationResponseDto.getLocations().get(0).getHierarchyName());
 
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void dataNotFoundExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("123"))
-				.thenReturn(null);
+
+		Mockito.when(locationHierarchyRepository.findAllByHierarchyNameIgnoreCase("123")).thenReturn(null);
+
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
@@ -1172,6 +1228,33 @@ public class MasterDataServiceTest {
 		locationHierarchyService.getLocationDataByHierarchyName("country");
 
 	}
+
+
+	@Test
+	public void getImmediateChildrenTest() {
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locationHierarchies);
+		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
+	}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void getImmediateChildrenServiceExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
+	}
+	
+	@Test(expected=DataNotFoundException.class)
+	public void getImmediateChildrenDataExceptionTest() {
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new ArrayList<Location>());
+		locationHierarchyService.getImmediateChildrenByLocCodeAndLangCode("KAR", "KAN");
+	}
+
+
 	// ------------------ TemplateServiceTest -----------------//
 
 	@Test(expected = MasterDataServiceException.class)
@@ -1318,8 +1401,7 @@ public class MasterDataServiceTest {
 
 	}
 
-	// ----------------------------------------------- Blacklisted word
-	// validator----------------------//
+	/*---------------------- Blacklisted word validator----------------------*/
 
 	@Test
 	public void validateWordNegativeTest() {
@@ -1355,11 +1437,16 @@ public class MasterDataServiceTest {
 		blacklistedWordsService.validateWord(wordsList);
 	}
 
-	// -------------------------------------Machine Histroy
-	// Test----------------------------//
+	// -------------------------------------MachineHistroyTest----------------------------
 	@Test(expected = RequestException.class)
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
+	
+	// -------------------------------------DeviceHistroyTest------------------------------------------
+		@Test(expected = RequestException.class)
+		public void getDeviceHistroyIdLangEffDTimeParseDateException() {
+			deviceHistoryService.getDeviceHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
+		}
 
 }

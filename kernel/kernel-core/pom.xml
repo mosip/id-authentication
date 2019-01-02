@@ -11,6 +11,7 @@
 	</parent>
 
 	<artifactId>kernel-core</artifactId>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

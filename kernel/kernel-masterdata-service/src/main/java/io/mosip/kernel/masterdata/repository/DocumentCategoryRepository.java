@@ -1,7 +1,9 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +13,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * @author Neha
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
@@ -48,4 +51,18 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	@Query("FROM DocumentCategory WHERE code =?1 AND langCode =?2 AND (isDeleted is null OR isDeleted = false)")
 	DocumentCategory findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(String code, String langCode);
 
+	/**
+	 * Delete Document Category based on code provided.
+	 * 
+	 * @param deletedDateTime
+	 *            the Date and time of deletion.
+	 * @param code
+	 *            the document category code.
+	 * @param updatedBy
+	 *            the updatedby user name.
+	 * @return the integer.
+	 */
+	@Modifying
+	@Query("UPDATE DocumentCategory d SET d.updatedBy=?3,d.isDeleted =true , d.deletedDateTime = ?1 WHERE d.code =?2 and (d.isDeleted is null or d.isDeleted =false)")
+	int deleteDocumentCategory(LocalDateTime deletedDateTime, String code, String updatedBy);
 }

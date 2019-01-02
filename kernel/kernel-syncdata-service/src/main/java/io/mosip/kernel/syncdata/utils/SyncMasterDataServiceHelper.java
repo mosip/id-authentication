@@ -178,7 +178,9 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!machineDetailList.isEmpty()) {
-			machineDetailDtoList =  MapperUtils.mapAll(machineDetailList,MachineDto.class);
+
+			machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
+
 		}
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
@@ -210,7 +212,9 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (machineTypes != null && !machineTypes.isEmpty())
-			machineTypeList =  MapperUtils.mapAll(machineTypes,MachineTypeDto.class);
+
+			machineTypeList = MapperUtils.mapAll(machineTypes, MachineTypeDto.class);
+
 		return CompletableFuture.completedFuture(machineTypeList);
 
 	}
@@ -243,7 +247,9 @@ public class SyncMasterDataServiceHelper {
 		}
 
 		if (machineSpecification != null && !machineSpecification.isEmpty())
-			machineSpecificationDto =  MapperUtils.mapAll(machineSpecification,MachineSpecificationDto.class);
+
+			machineSpecificationDto = MapperUtils.mapAll(machineSpecification,MachineSpecificationDto.class);
+
 
 		return CompletableFuture.completedFuture(machineSpecificationDto);
 	}
@@ -575,6 +581,7 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (titles != null && !titles.isEmpty()) {
+
 			titleList = MapperUtils.mapAll(titles,TitleDto.class);
 		}
 		return CompletableFuture.completedFuture(titleList);

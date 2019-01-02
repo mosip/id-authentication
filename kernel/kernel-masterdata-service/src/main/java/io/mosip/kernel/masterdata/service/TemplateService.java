@@ -46,9 +46,28 @@ public interface TemplateService {
 	 * Method to create template based on provided details
 	 * 
 	 * @param template
-	 *            the Template Dto .
+	 *            the Template Dto.
 	 * @return {@linkplain IdResponseDto}
 	 */
 	public IdResponseDto createTemplate(TemplateDto template);
+
+	/**
+	 * Method to update template based on provided details
+	 * 
+	 * @param template
+	 *            the Template Dto.
+	 * @return {@linkplain IdResponseDto}
+	 */
+	public IdResponseDto updateTemplates(TemplateDto template);
+
+	/**
+	 * Method to delete template based on provided template id
+	 * 
+	 * @param id
+	 *            Template id.
+	 * @return {@linkplain IdResponseDto}
+	 */
+
+	public IdResponseDto deleteTemplates(String id);
 
 }

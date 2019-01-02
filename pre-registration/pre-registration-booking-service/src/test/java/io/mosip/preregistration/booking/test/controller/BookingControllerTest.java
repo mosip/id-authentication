@@ -26,14 +26,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
-import io.mosip.preregistration.booking.dto.BookingDTO;
+import io.mosip.preregistration.booking.dto.MainListRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
-import io.mosip.preregistration.booking.dto.RequestDto;
-import io.mosip.preregistration.booking.dto.ResponseDto;
+import io.mosip.preregistration.booking.dto.MainRequestDTO;
+import io.mosip.preregistration.booking.dto.MainResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
+import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
@@ -46,23 +47,26 @@ public class BookingControllerTest {
 
 	@MockBean
 	private BookingService service;
+	
+	@MockBean
+	private BookingServiceUtil serviceUtil;
 
 	private AvailabilityDto availabilityDto;
 
-	BookingDTO bookingDTO = new BookingDTO();
+	MainListRequestDTO bookingDTO = new MainListRequestDTO();
 	List<BookingRequestDTO> bookingList=new ArrayList<>();
 	BookingRequestDTO bookingRequestDTO = new BookingRequestDTO();
 	BookingRegistrationDTO oldBooking= new BookingRegistrationDTO();
 	BookingRegistrationDTO newBooking= new BookingRegistrationDTO();
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 	@SuppressWarnings("rawtypes")
-	ResponseDto responseDto = new ResponseDto();
+	MainResponseDTO responseDto = new MainResponseDTO();
 	private Object jsonObject = null;
 	
 	private Object jsonObject1 = null;
 	CancelBookingResponseDTO cancelBookingResponseDTO=new CancelBookingResponseDTO();
 	CancelBookingDTO cancelbookingDto=new CancelBookingDTO();
-	RequestDto<CancelBookingDTO> dto=new RequestDto<>();
+	MainRequestDTO<CancelBookingDTO> dto=new MainRequestDTO<>();
 
 	@SuppressWarnings({ "deprecation" })
 	@Before
@@ -76,7 +80,7 @@ public class BookingControllerTest {
 		File file = new File(dataSyncUri.getPath());
 		jsonObject = parser.parse(new FileReader(file));
 
-		bookingRequestDTO.setPre_registration_id("23587986034785");
+		bookingRequestDTO.setPreRegistrationId("23587986034785");
 		bookingRequestDTO.setNewBookingDetails(new BookingRegistrationDTO());
 		bookingRequestDTO.setOldBookingDetails(new BookingRegistrationDTO());
 //		bookingRequestDTOA.setSlotFromTime("09:00");
@@ -100,19 +104,19 @@ public class BookingControllerTest {
 		File file1 = new File(cancelUri.getPath());
 		jsonObject1 = parser.parse(new FileReader(file1));
 		
-		cancelbookingDto.setPre_registration_id("12345");
-		cancelbookingDto.setRegistration_center_id("2");
+		cancelbookingDto.setPreRegistrationId("12345");
+		cancelbookingDto.setRegistrationCenterId("2");
 		cancelbookingDto.setSlotFromTime("09:00");
 		cancelbookingDto.setSlotToTime("09:20");
 		String restime="2018-12-04T07:22:57.086+0000";
-		cancelbookingDto.setReg_date(restime);
+		cancelbookingDto.setRegDate(restime);
 		
 		dto.setRequest(cancelbookingDto);
 	}
 
 	@Test
 	public void getAvailability() throws Exception {
-		ResponseDto<AvailabilityDto> response = new ResponseDto<>();
+		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/availability")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -122,7 +126,7 @@ public class BookingControllerTest {
 
 	@Test
 	public void saveAvailability() throws Exception {
-		ResponseDto<String> response = new ResponseDto<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/masterSync")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
@@ -137,7 +141,7 @@ public class BookingControllerTest {
 	public void successBookingTest() throws Exception {
 
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 		List<String> respList = new ArrayList<>();
 		respList.add("APPOINTMENT_SUCCESSFULLY_BOOKED");
 		responseDto.setResponse(respList);
@@ -172,7 +176,7 @@ public class BookingControllerTest {
 		
 		responseDto.setErr(null);
 		responseDto.setStatus(true);
-		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 		cancelBookingResponseDTO.setMessage("APPOINTMENT_SUCCESSFULLY_CANCELED");
 		cancelBookingResponseDTO.setTransactionId("375765");
 		responseDto.setResponse(cancelBookingResponseDTO);
