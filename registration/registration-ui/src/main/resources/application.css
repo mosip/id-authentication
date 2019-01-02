@@ -455,3 +455,23 @@
 	-fx-pref-height: 127px;
 	-fx-pref-width: 231px;
 }
+
+.reRegAnchorPane{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 625.0px;
+}
+
+.reRegToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 86.0px;
+}
+
+.reRegTable{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 250.0px;
+}
+
+.reRegRoot{
+	-fx-pref-height: 316.0px; 
+	-fx-pref-width: 900.0px;
+}
