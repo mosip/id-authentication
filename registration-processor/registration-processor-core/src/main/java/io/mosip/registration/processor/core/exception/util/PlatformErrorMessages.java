@@ -243,10 +243,10 @@ public enum PlatformErrorMessages {
 	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010","Error while converting inputstream to bytes"),
 
 	/** The rpr sys parsing date exception. */
-	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011","Error while parsing date ");
+	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011", "Error while parsing date "),
 
     /** The rpr sys io exception. */
-    RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012","IO EXCEPTION ");
+    RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION ");
 	/** The error message. */
 	private final String errorMessage;
 
