@@ -188,17 +188,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 		registrationId = entry.getRegistrationId();
 		try {
 
-			// LOGGER.info(LOGDISPLAY, registrationId, "File is Already exists in DFS
-			// location And its now Deleted from Virus scanner job");
-
-			// } else {
-
 			adapter.storePacket(registrationId, decryptedData);
 			adapter.unpackPacket(registrationId);
-			// LOGGER.info(LOGDISPLAY, registrationId,
-			// "File Stored in File System and same has been deleted from virus scanner
-			// job.");
-			// }
+
 			if (adapter.isPacketPresent(registrationId)) {
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_DEC, registrationId);
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, registrationId);
