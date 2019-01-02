@@ -77,6 +77,7 @@ import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
@@ -85,12 +86,16 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Connec
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
+	/** The Constant RETRIEVE_IDENTITY. */
 	private static final String RETRIEVE_IDENTITY = "retrieveIdentity";
 
+	/** The Constant ENTITY. */
 	private static final String ENTITY = "entity";
 
+	/** The Constant ERR. */
 	private static final String ERR = "err";
 
+	/** The Constant RESPONSE_FILTER. */
 	private static final String RESPONSE_FILTER = "responseFilter";
 
 	/** The Constant BIOMETRICS. */
@@ -249,23 +254,23 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
 				identityInfo = mapper.writeValueAsBytes(mapper.readValue(identityInfo, ObjectNode.class).get(IDENTITY));
 				if (Objects.nonNull(documents) && !documents.isEmpty()) {
-					if (storeDocuments(uin, uinRefId, identityInfo, documents).entrySet().stream()
-							.anyMatch(entry -> !(boolean) entry.getValue())) {
-						throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR);
-					}
+					ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
+					storeDocument(uin, regId, documents, uinRefId, identityObject);
+				} else {
+					uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
+							env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
+							now(), false, now()));
 				}
 
 				uinHistoryRepo.save(new UinHistory(uinRefId, now(), uin, identityInfo, hash(identityInfo), regId,
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now()));
 
-				return uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
-						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
-						now(), false, now()));
+				return retrieveIdentityByUin(uin);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 			}
-		} catch (DataAccessException e) {
+		} catch (IdRepoAppUncheckedException | DataAccessException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} catch (IOException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, e);
@@ -273,70 +278,74 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	}
 
 	/**
-	 * Store documents.
+	 * Store document.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param uinRefId
-	 *            the uin ref id
-	 * @param identity
-	 *            the identity
-	 * @param docList
-	 *            the doc list
-	 * @return the map
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uin the uin
+	 * @param regId the reg id
+	 * @param documents the documents
+	 * @param uinRefId the uin ref id
+	 * @param identityObject the identity object
+	 * @throws IdRepoAppException the id repo app exception
 	 */
-	private Map<String, Boolean> storeDocuments(String uin, String uinRefId, byte[] identity, List<Documents> docList)
-			throws IdRepoAppException {
-		try {
-			ObjectNode identityObject = (ObjectNode) convertToObject(identity, ObjectNode.class);
-			return docList.stream().filter(doc -> identityObject.has(doc.getDocType())).map(doc -> {
-				JsonNode docType = identityObject.get(doc.getDocType());
-				String fileName = docType.get(VALUE).asText() + "." + docType.get(FORMAT).asText();
-				try {
-					if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
-						StringBuilder bioId = new StringBuilder();
-						bioId.append(BIOMETRICS);
-						bioId.append(doc.getDocType());
-						bioId.append("/");
+	@Transactional
+	private void storeDocument(String uin, String regId, List<Documents> documents, String uinRefId,
+			ObjectNode identityObject) throws IdRepoAppException {
+		if (documents.stream().filter(doc -> identityObject.has(doc.getDocType())).anyMatch(doc -> {
+			JsonNode docType = identityObject.get(doc.getDocType());
+			String fileName = docType.get(VALUE).asText() + "." + docType.get(FORMAT).asText();
+			try {
+				Uin uinEntity = new Uin(uinRefId, uin, identityObject.toString().getBytes(),
+						hash(identityObject.toString().getBytes()), regId,
+						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
+						now(), false, now());
+				if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
+					StringBuilder bioId = new StringBuilder();
+					bioId.append(uin);
+					bioId.append("/");
+					bioId.append(BIOMETRICS);
+					bioId.append(doc.getDocType());
+					bioId.append("/");
 
-						storeFile(uin, bioId + fileName, CryptoUtil.decodeBase64(doc.getDocValue()));
+					storeFile(uin, bioId + fileName, CryptoUtil.decodeBase64(doc.getDocValue()));
 
-						uinBioRepo.save(new UinBiometric(uinRefId, bioId.toString(), docType.get(VALUE).asText(),
-								hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE, CREATED_BY, now(),
-								UPDATED_BY, now(), false, now()));
+					uinEntity.setBiometrics(Collections.singletonList(new UinBiometric(uinRefId, bioId.toString(),
+							docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE,
+							CREATED_BY, now(), UPDATED_BY, now(), false, now())));
 
-						uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), bioId.toString(),
-								docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
-								LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-					} else {
-						StringBuilder docId = new StringBuilder();
-						docId.append(DOCUMENTS);
-						docId.append(doc.getDocType());
-						docId.append("/");
+					uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), bioId.toString(),
+							docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE,
+							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
-						storeFile(uin, docId + fileName, CryptoUtil.decodeBase64(doc.getDocValue()));
+					uinRepo.save(uinEntity);
+				} else {
+					StringBuilder docId = new StringBuilder();
+					docId.append(uin);
+					docId.append("/");
+					docId.append(DOCUMENTS);
+					docId.append(doc.getDocType());
+					docId.append("/");
 
-						uinDocRepo.save(new UinDocument(uinRefId, docType.get("category").asText(), doc.getDocType(),
-								docId.toString(), docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-								hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE, CREATED_BY, now(),
-								UPDATED_BY, now(), false, now()));
+					storeFile(uin, docId + fileName, CryptoUtil.decodeBase64(doc.getDocValue()));
 
-						uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), docType.get("category").asText(),
-								doc.getDocType(), docId.toString(), docType.get(VALUE).asText(),
-								docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
-								LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-					}
+					uinEntity.setDocuments(
+							Collections.singletonList(new UinDocument(uinRefId, docType.get("category").asText(),
+									doc.getDocType(), docId.toString(), docType.get(VALUE).asText(),
+									docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
+									LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now())));
 
-					return Collections.singletonMap(fileName, true);
-				} catch (IdRepoAppException e) {
-					return Collections.singletonMap(fileName, false);
+					uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), docType.get("category").asText(),
+							doc.getDocType(), docId.toString(), docType.get(VALUE).asText(),
+							docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE,
+							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
+
+					uinRepo.save(uinEntity);
 				}
-			}).collect(Collectors.toMap((Map<String, Boolean> map) -> map.keySet().iterator().next(),
-					(Map<String, Boolean> value) -> value.values().iterator().next()));
-		} catch (IdRepoAppUncheckedException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+				return false;
+			} catch (IdRepoAppException e) {
+				return true;
+			}
+		})) {
+			throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR);
 		}
 	}
 
@@ -486,12 +495,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				Map<String, List<Map<String, String>>> requestData = convertToMap(request.getRequest());
 				Map<String, List<Map<String, String>>> dbData = (Map<String, List<Map<String, String>>>) convertToObject(
 						dbUinData.getUinData(), Map.class);
-				MapDifference<String, List<Map<String, String>>> mapDifference = Maps
-						.difference(requestData, dbData);
+				MapDifference<String, List<Map<String, String>>> mapDifference = Maps.difference(requestData, dbData);
 				mapDifference.entriesOnlyOnLeft().forEach((key, value) -> dbData.put(key, value));
 				mapDifference.entriesDiffering()
-						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData
-								.put(key, findDifference(value.leftValue(), value.rightValue())));
+						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData.put(key,
+								findDifference(value.leftValue(), value.rightValue())));
 
 				uinObject = updateIdentityInfo(dbUinData, convertToBytes(dbData));
 			}
@@ -609,14 +617,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Construct id response.
 	 *
-	 * @param id
-	 *            the id
-	 * @param uin
-	 *            the uin
-	 * @param documents
+	 * @param id            the id
+	 * @param uin            the uin
+	 * @param documents the documents
 	 * @return the id response DTO
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException             the id repo app exception
 	 */
 	private IdResponseDTO constructIdResponse(String id, Uin uin, List<Documents> documents) throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
@@ -636,8 +641,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
 				response.setEntity(linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null))
 						.toUri().toString());
-				mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-						SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERR, DOCUMENTS.toLowerCase().substring(0, 9))));
+				mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER, SimpleBeanPropertyFilter
+						.serializeAllExcept(IDENTITY, ERR, DOCUMENTS.toLowerCase().substring(0, 9))));
 			} else {
 				if (Objects.isNull(documents)) {
 					ignoredProperties.add(ENTITY);
@@ -717,8 +722,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	private Map<String, List<Map<String, String>>> convertToMap(Object identity)
-			throws IdRepoAppException {
+	private Map<String, List<Map<String, String>>> convertToMap(Object identity) throws IdRepoAppException {
 		try {
 			return mapper.readValue(mapper.writeValueAsBytes(identity),
 					new TypeReference<Map<String, Map<String, List<Map<String, String>>>>>() {

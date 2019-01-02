@@ -4,13 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
@@ -103,14 +104,12 @@ public class Uin {
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "uin", cascade = CascadeType.ALL)
 	@NotFound(action=NotFoundAction.IGNORE)
-	@JoinColumn(name = "uinRefId", referencedColumnName = "uinRefId", insertable = false, updatable = false, nullable = false)
 	private List<UinBiometric> biometrics;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "uin", cascade = CascadeType.ALL)
 	@NotFound(action=NotFoundAction.IGNORE)
-	@JoinColumn(name = "uinRefId", referencedColumnName = "uinRefId", insertable = false, updatable = false, nullable = false)
 	private List<UinDocument> documents;
 
 	/**

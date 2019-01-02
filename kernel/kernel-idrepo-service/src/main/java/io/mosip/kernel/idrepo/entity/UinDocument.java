@@ -5,9 +5,10 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,10 +20,29 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(schema = "idrepo")
 public class UinDocument {
 	
+	public UinDocument(String uinRefId, String doccatCode, String doctypCode, String docId, String docName,
+			String docfmtCode, String docHash, String langCode, String createdBy, LocalDateTime createdDateTime,
+			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+		super();
+		this.uinRefId = uinRefId;
+		this.doccatCode = doccatCode;
+		this.doctypCode = doctypCode;
+		this.docId = docId;
+		this.docName = docName;
+		this.docfmtCode = docfmtCode;
+		this.docHash = docHash;
+		this.langCode = langCode;
+		this.createdBy = createdBy;
+		this.createdDateTime = createdDateTime;
+		this.updatedBy = updatedBy;
+		this.updatedDateTime = updatedDateTime;
+		this.isDeleted = isDeleted;
+		this.deletedDateTime = deletedDateTime;
+	}
+
 	/** The uin ref id. */
 	@Id
 	private String uinRefId;
@@ -70,4 +90,8 @@ public class UinDocument {
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
+	
+	@ManyToOne
+	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
+	private Uin uin;
 }
