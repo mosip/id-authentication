@@ -52,7 +52,7 @@ import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundExcept
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -68,7 +68,7 @@ public class DocumentUploadServiceTest {
 	RestTemplateBuilder restTemplateBuilder; 
 
 	@MockBean
-	private FilesystemCephAdapterImpl ceph;
+	private FileSystemAdapter<InputStream, Boolean> ceph;
 
 	List<DocumentEntity> docEntity = new ArrayList<>();
 
@@ -253,10 +253,7 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
-		InputStream sourceFile;
-		sourceFile = new FileInputStream(file);
-		Mockito.doReturn(sourceFile).when(ceph).getFile(Mockito.anyString(), Mockito.anyString());
-		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.doReturn(true).when(ceph).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
 		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = documentUploadService.copyDoucment("POA",
 				"48690172097498", "48690172097499");
 		assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
@@ -342,15 +339,15 @@ public class DocumentUploadServiceTest {
 
 		responsedelete.setResponse(deleteresponseList);
 		Mockito.doReturn(true).when(ceph).deleteFile(Mockito.anyString(), Mockito.anyString());
-		Mockito.when(documentRepository.findBydocumentId(Integer.parseInt(documentId))).thenReturn(entity);
-		Mockito.when(documentRepository.deleteAllBydocumentId(Integer.parseInt(documentId))).thenReturn(1);
+		Mockito.when(documentRepository.findBydocumentId(documentId)).thenReturn(entity);
+		Mockito.when(documentRepository.deleteAllBydocumentId(documentId)).thenReturn(1);
 		MainListResponseDTO<DocumentDeleteResponseDTO> responseDto = documentUploadService.deleteDocument(documentId);
 		assertEquals(responseDto.getResponse().get(0).getResMsg(), responsedelete.getResponse().get(0).getResMsg());
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
 	public void deleteDocumentFailureTest() {
-		Mockito.when(documentRepository.findBydocumentId(Mockito.anyInt())).thenReturn(null);
+		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(null);
 		documentUploadService.deleteDocument(documentId);
 
 	}
@@ -375,13 +372,13 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = DocumentFailedToDeleteException.class)
 	public void deleteFailureTest() {
-		Mockito.when(documentRepository.findBydocumentId(Mockito.anyInt())).thenThrow(DataAccessLayerException.class);
+		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.deleteDocument("1");
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
 	public void deleteAllByPreIdFailureTest() {
-		Mockito.when(documentRepository.findBydocumentId(Mockito.anyInt())).thenReturn(null);
+		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(null);
 		documentUploadService.deleteAllByPreId(preId);
 
 	}

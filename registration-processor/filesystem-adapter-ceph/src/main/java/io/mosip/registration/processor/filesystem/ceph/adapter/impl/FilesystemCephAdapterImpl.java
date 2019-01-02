@@ -98,21 +98,65 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		return true;
 	}
 
+//	/**
+//	 * This method stores a File to DFS
+//	 * 
+//	 * @param enrolmentId
+//	 *            The enrolment ID
+//	 * @param key
+//	 *            The key that is to be stored
+//	 * @param file
+//	 *            The file to be stored
+//	 * @return true if the file is stored successfully
+//	 */
+//	private boolean storeFile(String enrolmentId, String key, InputStream file) {
+//		try {
+//			this.conn.putObject(enrolmentId, key, file, null);
+//			LOGGER.debug(LOGDISPLAY, enrolmentId, key, SUCCESS_UPLOAD_MESSAGE);
+//		} catch (AmazonS3Exception e) {
+//			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
+//			ExceptionHandler.exceptionHandler(e);
+//		} catch (SdkClientException e) {
+//			ExceptionHandler.exceptionHandler(e);
+//		}
+//		return true;
+//	}
+	
+
 	/**
-	 * This method stores a File to DFS
+	 * This method stores a document in DFS
 	 * 
 	 * @param enrolmentId
-	 *            The enrolment ID
-	 * @param fileName
-	 *            The fileName that is to be stored
-	 * @param file
-	 *            The file to be stored
-	 * @return true if the file is stored successfully
+	 *            The enrolment ID for the document
+	 * @param key
+	 *            The key for the document
+	 * @param document
+	 *            document as InputStream
+	 * @return True if document is stored
 	 */
-	public boolean storeFile(String enrolmentId, String fileName, InputStream file) {
+	@Override
+	public Boolean storeFile(String enrolmentId, String key, InputStream document) {
 		try {
-			this.conn.putObject(enrolmentId, fileName, file, null);
-			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, SUCCESS_UPLOAD_MESSAGE);
+			if (!conn.doesBucketExistV2(enrolmentId)) {
+				conn.createBucket(enrolmentId);
+			}
+			this.conn.putObject(enrolmentId, key, document, null);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, key, SUCCESS_UPLOAD_MESSAGE);
+		} catch (AmazonS3Exception e) {
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
+			ExceptionHandler.exceptionHandler(e);
+		} catch (SdkClientException e) {
+			ExceptionHandler.exceptionHandler(e);
+		}
+		return true;
+	}
+
+	@Override
+	public Boolean copyFile(String sourceBucketName, String sourceKey,
+            String destinationBucketName, String destinationKey) {
+		try {
+			this.conn.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
+			LOGGER.debug(LOGDISPLAY, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);

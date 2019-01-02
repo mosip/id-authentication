@@ -93,6 +93,7 @@ public class BookingService {
 	 * 
 	 * @return ResponseDto<String>
 	 */
+	@Transactional
 	public MainResponseDTO<String> addAvailability() {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		try {
