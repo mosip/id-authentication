@@ -72,10 +72,7 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 	FGR_MIN_MULTI("fgrMin",
-			setOf(BioMatchType.FGRIMG_LEFT_THUMB, BioMatchType.FGRIMG_LEFT_INDEX, BioMatchType.FGRIMG_LEFT_MIDDLE,
-					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
-					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
-					BioMatchType.FGRIMG_RIGHT_LITTLE),
+			setOf(BioMatchType.FGRMIN_MULTI),
 			"Fingerprint", 2) {
 
 		@Override
@@ -117,8 +114,7 @@ public enum BioAuthType implements AuthType {
 	}
 
 	private Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
-		Set<MatchType> matchTypes = getAssociatedMatchTypes();
-		Long count = matchTypes.stream().filter(matchType -> helper.getIdentityInfo(matchType, reqDTO.getRequest().getIdentity()).size() > 0).count();
+		Long count = (long) helper.getIdentityInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity()).size();
 		return count;
 	}
 
