@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.spi.fingerprintauth.provider;
 
 import java.util.Base64;
+import java.util.Map;
 
 import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintMatcher;
@@ -72,6 +73,28 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 
 	static byte[] decodeValue(String value) {
 		return Base64.getDecoder().decode(value);
+	}
+	
+	public double matchMultiMinutae( Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		double matchScore=0;
+		for (Map.Entry<String, String> e : reqInfo.entrySet()) {
+			  String key = e.getKey();
+			  String value1 = e.getValue();
+			  String value2 = entityInfo.get(key); 
+			matchScore+=matchMinutiea(value1,value2);
+			}
+		return matchScore;
+	}
+	
+	public double matchMultiImage( Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		double matchScore=0;
+		for (Map.Entry<String, String> e : reqInfo.entrySet()) {
+			  String key = e.getKey();
+			  String value1 = e.getValue();
+			  String value2 = entityInfo.get(key); 
+			matchScore+=matchImage(value1,value2);
+			}
+		return matchScore;
 	}
 
 }

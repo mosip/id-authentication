@@ -27,11 +27,11 @@ public class VIDEntity {
 	@NotNull
 	@Column(name = "id", nullable = false)
 	private String id;
-
-	/** The ref id. */
+	
+	/** The uin */
 	@NotNull
-	@Column(name = "uin_ref_id", unique = true, nullable = false)
-	private String refId;
+	@Column(name = "uin", unique = true, nullable = false)
+	private String uin;
 
 	/** The generated on. */
 	@Column(name = "generated_dtimes")

@@ -53,7 +53,7 @@ public class IdAuthFilterTest {
     public void testSetTxnId() throws IdAuthenticationAppException, ServletException {
 	requestBody.put("txnId", null);
 	responseBody.put("txnId", "1234");
-	assertEquals(responseBody.toString(), filter.setTxnId(requestBody, responseBody).toString());
+	assertEquals(responseBody.toString(), filter.setResponseParam(requestBody, responseBody).toString());
     }
 
     @Ignore
