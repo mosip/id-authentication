@@ -22,7 +22,7 @@ public class TokenIdFilterUtils {
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
 	 */
-	@Value("${mosip.kernel.tokenid.sequenselimit}")
+	@Value("${mosip.kernel.tokenid.sequence-limit}")
 	private int sequenceLimit;
 
 	/**

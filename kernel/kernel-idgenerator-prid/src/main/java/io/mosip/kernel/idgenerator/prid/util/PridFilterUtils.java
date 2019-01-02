@@ -25,14 +25,14 @@ public class PridFilterUtils {
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
 	 */
-	@Value("${mosip.kernel.prid.sequenceLimit}")
+	@Value("${mosip.kernel.prid.sequence-limit}")
 	private int sequenceLimit;
 
 	/**
 	 * Number of digits in repeating block allowed in id. For example if limit is 2,
 	 * then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
 	 */
-	@Value("${mosip.kernel.prid.repeatingBlockLimit}")
+	@Value("${mosip.kernel.prid.repeating-block-limit}")
 	private int repeatingBlockLimit;
 
 	/**
@@ -40,7 +40,7 @@ public class PridFilterUtils {
 	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
 	 * digit)
 	 */
-	@Value("${mosip.kernel.prid.repeatingLimit}")
+	@Value("${mosip.kernel.prid.repeating-limit}")
 	private int repeatingLimit;
 
 	/**

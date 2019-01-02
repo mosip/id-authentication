@@ -44,6 +44,10 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	private long lowerBound;
 	private long upperBound;
 
+	/**
+	 * Calculating PRID Length and lower Bound and upper Bound
+	 * 
+	 */
 	@PostConstruct
 	public void pridGeneratorPostConstruct() {
 		generatedIdLength = pridLength - 1;

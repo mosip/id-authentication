@@ -25,14 +25,14 @@ public class VidFilterUtils {
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
 	 */
-	@Value("${mosip.kernel.vid.length.sequenceLimit}")
+	@Value("${mosip.kernel.vid.length.sequence-limit}")
 	private int sequenceLimit;
 
 	/**
 	 * Number of digits in repeating block allowed in id. For example if limit is 2,
 	 * then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
 	 */
-	@Value("${mosip.kernel.vid.length.repeatingBlockLimit}")
+	@Value("${mosip.kernel.vid.length.repeating-block-limit}")
 	private int repeatingBlockLimit;
 
 	/**
@@ -40,7 +40,7 @@ public class VidFilterUtils {
 	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
 	 * digit)
 	 */
-	@Value("${mosip.kernel.vid.length.repeatingLimit}")
+	@Value("${mosip.kernel.vid.length.repeating-limit}")
 	private int repeatingLimit;
 
 	/**
