@@ -33,17 +33,18 @@ public class RegistrationCenterDeviceHistoryController {
 
 	/**
 	 * Get API to fetch a Registration Center Device History based on given
-	 * registration id, device id and effective date time
+	 * registration center id, device id and effective date time
 	 * 
 	 * @param regCenterId
 	 *            input Registration Center Id from User
 	 * @param deviceId
 	 *            input Device Id from user
-	 * @param effectivetimes
+	 * @param effectiveTimes
 	 *            input effective date and time from user
 	 * 
-	 * @return RegistrationCenterDeviceHistoryResponseDto returning machine history
-	 *         detail based on given regCenterId, deviceId and effective date time
+	 * @return RegistrationCenterDeviceHistoryResponseDto returning registration
+	 *         center device history based on given regCenterId, deviceId and
+	 *         effective date time
 	 */
 	@GetMapping(value = "/{regcenterid}/{deviceid}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve Registration Center Device History Details for the given Registration Center Id, Device Id and Effective date time", response = RegistrationCenterDeviceHistoryDto.class)
@@ -53,9 +54,9 @@ public class RegistrationCenterDeviceHistoryController {
 			@ApiResponse(code = 500, message = "While retrieving Registration Center Device History Details any error occured") })
 	public RegistrationCenterDeviceHistoryResponseDto getRegCentDevHistByregCentIdDevIdEffTime(
 			@PathVariable("regcenterid") String regCenterId, @PathVariable("deviceid") String deviceId,
-			@PathVariable("effdatetimes") String effectivetimes) {
+			@PathVariable("effdatetimes") String effectiveTimes) {
 
 		return registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime(regCenterId,
-				deviceId, effectivetimes);
+				deviceId, effectiveTimes);
 	}
 }
