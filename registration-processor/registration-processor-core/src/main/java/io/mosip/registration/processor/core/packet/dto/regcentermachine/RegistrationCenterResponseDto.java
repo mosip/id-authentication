@@ -25,5 +25,5 @@ import lombok.NoArgsConstructor;
 public class RegistrationCenterResponseDto {
 	
 	/** The registration centers. */
-	private List<RegistrationCenterDto> registrationCenters;
+	private List<RegistrationCenterDto> registrationCentersHistory;
 }
