@@ -58,7 +58,7 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 	@Autowired
 	private PacketArchiver packetArchiver;
-	
+
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 

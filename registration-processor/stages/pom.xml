@@ -26,7 +26,7 @@
 		<module>virus-scanner-stage</module>
 		<module>packet-decrypter-stage</module>
 		<module>Demo-dedupe-stage</module>
-		<module>manual-verification-stage</module>
+	    <module>manual-verification-stage</module>
 	</modules>
 
 </project>

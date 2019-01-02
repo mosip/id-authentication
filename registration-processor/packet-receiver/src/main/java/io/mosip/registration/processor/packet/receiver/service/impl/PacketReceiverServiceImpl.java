@@ -82,12 +82,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Override
 	public Boolean storePacket(MultipartFile file) {
 		boolean storageFlag = false;
-
-		if (file.getOriginalFilename() != null && !file.isEmpty()) {
-			String fileOriginalName = file.getOriginalFilename();
-			if (fileOriginalName != null) {
-
-				String registrationId = fileOriginalName.split("\\.")[0];
+		String registrationId =null;
+		String fileOriginalName = file.getOriginalFilename();
+		
+		if (fileExists(file,fileOriginalName)) {
+			 registrationId = fileOriginalName.split("\\.")[0];
 
 				boolean isTransactionSuccessful = false;
 				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
@@ -139,11 +138,16 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					throw new DuplicateUploadRequestException(
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
-			}
+			
 		}
 		return storageFlag;
 	}
 
+	
+	boolean fileExists(MultipartFile file, String fileOriginalName){
+		return file.getOriginalFilename() != null && !file.isEmpty() && fileOriginalName != null;
+	}
+	
 	/**
 	 * Gets the file extension.
 	 *

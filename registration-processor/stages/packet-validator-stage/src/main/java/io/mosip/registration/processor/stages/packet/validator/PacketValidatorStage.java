@@ -58,12 +58,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketValidatorStage.class);
 	
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant APPLICANT_TYPE. */
 	public static final String APPLICANT_TYPE = "applicantType";
 
 	/** The registration status service. */
@@ -77,7 +79,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
-	
+
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
@@ -201,6 +203,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		return object;
 	}
 
+	/**
+	 * Sets the applicant.
+	 *
+	 * @param identity the identity
+	 * @param registrationStatusDto the registration status dto
+	 */
 	private void setApplicant(Identity identity, InternalRegistrationStatusDto registrationStatusDto) {
 		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 		String applicantType = identityIteratorUtil.getFieldValue(identity.getMetaData(), APPLICANT_TYPE);

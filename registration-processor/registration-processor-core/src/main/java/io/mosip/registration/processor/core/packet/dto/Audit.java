@@ -1,6 +1,9 @@
 package io.mosip.registration.processor.core.packet.dto;
 
 import lombok.Data;
+/**
+ * Instantiates a new audit.
+ */
 
 /**
  * Instantiates a new audit.

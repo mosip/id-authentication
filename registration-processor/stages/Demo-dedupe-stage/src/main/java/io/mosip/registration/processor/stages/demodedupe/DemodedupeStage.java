@@ -35,11 +35,10 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
- * The Class DemodedupeStage
+ * The Class DemodedupeStage.
  *
  * @author M1048358 Alok Ranjan
- * 
- */
+ */	
 
 @RefreshScope
 @Service
@@ -56,15 +55,19 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The manual verfication repository. */
 	@Autowired
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
+	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 	
@@ -75,9 +78,11 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The demo dedupe. */
 	@Autowired
 	private DemoDedupe demoDedupe;
 
+	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
 
 	/**
@@ -88,6 +93,9 @@ public class DemodedupeStage extends MosipVerticleManager {
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMODEDUPE_BUS_IN, MessageBusAddress.DEMODEDUPE_BUS_OUT);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
@@ -176,6 +184,12 @@ public class DemodedupeStage extends MosipVerticleManager {
 		return object;
 	}
 
+	/**
+	 * Save manual adjudication data.
+	 *
+	 * @param uniqueMatchedRefIds the unique matched ref ids
+	 * @param registrationId the registration id
+	 */
 	private void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
 		boolean isTransactionSuccessful = false;
 		String description = "";

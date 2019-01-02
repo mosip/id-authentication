@@ -62,7 +62,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
-	
+
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 

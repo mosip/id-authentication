@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.packet.archiver.util.exception;
-
+	
 import io.mosip.kernel.core.exception.BaseCheckedException;
 
 /**

@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.packet.archiver.util;
-
+	
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,6 +27,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 @Component
 public class PacketArchiver {
 
+	/** The audit log request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -38,7 +39,10 @@ public class PacketArchiver {
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
+	/** The description. */
 	String description = "";
+	
+	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
 	
 	/**
