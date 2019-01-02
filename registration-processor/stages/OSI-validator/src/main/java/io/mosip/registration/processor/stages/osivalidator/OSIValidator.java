@@ -57,7 +57,7 @@ public class OSIValidator {
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
-	
+
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
@@ -106,7 +106,6 @@ public class OSIValidator {
 	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
 
-
 	/**
 	 * Checks if is valid OSI.
 	 *
@@ -116,18 +115,13 @@ public class OSIValidator {
 	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
-
 		boolean isValidOsi = false;
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
-
 		if ((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))
 				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
-
 		return isValidOsi;
-
 	}
-
 
 	/**
 	 * Checks if is valid operator.
@@ -145,7 +139,6 @@ public class OSIValidator {
 		if (uin == null)
 			return true;
 		else {
-
 			String fingerPrint = regOsi.getOfficerFingerpImageName();
 			String fingerPrintType = regOsi.getOfficerfingerType();
 			String iris = regOsi.getOfficerIrisImageName();
@@ -153,7 +146,6 @@ public class OSIValidator {
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
 			if(checkBiometricNull(fingerPrint,iris,face,pin)) {
-
 				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 				return false;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
@@ -161,13 +153,10 @@ public class OSIValidator {
 					&& (validatePin(uin, pin))) {
 				return true;
 			}
-
 		}
-
 		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
 		return true;
 	}
-
 
 	/**
 	 * Check biometric null.
@@ -212,9 +201,7 @@ public class OSIValidator {
 					&& (validatePin(uin, pin))) {
 				return true;
 			}
-
 		}
-
 		registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
 		return true;
 	}
@@ -235,14 +222,12 @@ public class OSIValidator {
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
 				&& registrationStatusDto.getApplicantType().equalsIgnoreCase(ApplicantType.CHILD.name())
 				&& regOsi.getIntroducerTyp().equalsIgnoreCase(IntroducerType.PARENT.name())) {
-
 			String introducerUin = regOsi.getIntroducerUin();
 			String introducerRid = regOsi.getIntroducerRegId();
 			if (introducerUin == null && introducerRid == null) {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
-
 			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
 
 				introducerUin = getIntroducerUIN(introducerRid);
@@ -258,10 +243,8 @@ public class OSIValidator {
 			} else {
 				return false;
 			}
-
 		}
 		return true;
-
 	}
 
 
@@ -280,29 +263,22 @@ public class OSIValidator {
 			throws IOException, ApisResourceAccessException {
 		if (fingerprint == null)
 			return true;
-
 		else {
 			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
 				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
 				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
-
 				setAuthDto();
 				identityInfoDTO.setValue(new String(fingerPrintByte));
 				List<IdentityInfoDTO> biometricData = new ArrayList<>();
 				biometricData.add(identityInfoDTO);
-
 				//authTypeDTO.setFingerPrint(true);
-
 				setFingerBiometric(biometricData,type.toUpperCase());
-
-
 				if (validateBiometric(uin))
 					return true;
 			}
 		}
 		message = StatusMessage.FINGER_PRINT;
 		return false;
-
 	}
 
 
@@ -331,10 +307,8 @@ public class OSIValidator {
 	 * @param type the type
 	 */
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData,String type) {
-
 		String finger=null;
 		String[] fingerType=env.getProperty("fingerType").split(",");
-
 		List<String> list=new ArrayList<>(Arrays.asList(fingerType));
 		finger= type;
 		Iterator<String> it = list.iterator(); 
@@ -345,7 +319,6 @@ public class OSIValidator {
 			}
 		}
 		this.setFingerBiometricDto(identityDTO, finger, biometricData);
-
 	}
 
 
@@ -378,14 +351,12 @@ public class OSIValidator {
 				} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(type.toUpperCase())) {
 					identityDTO.setRightEye(biometricData);
 				}
-
 				if (validateBiometric(uin))
 					return true;
 			}
 		}
 		message = StatusMessage.IRIS;
 		return false;
-
 	}
 
 
@@ -403,27 +374,22 @@ public class OSIValidator {
 			throws IOException, ApisResourceAccessException {
 		if (face == null)
 			return true;
-
 		else {
 			if (adapter.checkFileExistence(registrationId, face.toUpperCase())) {
 				setAuthDto();
 				InputStream faceFile = adapter.getFile(registrationId, face.toUpperCase());
 				byte[] faceByte = IOUtils.toByteArray(faceFile);
-
 				identityInfoDTO.setValue(new String(faceByte));
 				List<IdentityInfoDTO> biometricData = new ArrayList<>();
 				biometricData.add(identityInfoDTO);
 				// authTypeDTO.setFace(true);
 				identityDTO.setFace(biometricData);
-
-
 				if (validateBiometric(uin))
 					return true;
 			}
 		}
 		message = StatusMessage.FACE;
 		return false;
-
 	}
 
 
@@ -436,7 +402,6 @@ public class OSIValidator {
 	private boolean validateUIN(String uin) {
 		// todo To call IAM rest API for UNI validation
 		return true;
-
 	}
 
 
@@ -459,13 +424,10 @@ public class OSIValidator {
 		List<PinInfo> pinList = new ArrayList<>();
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
-
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-
 		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
 			isValidPin = true;
-
 		return isValidPin;
 	}
 
@@ -484,7 +446,6 @@ public class OSIValidator {
 		authRequestDTO.setAuthType(authTypeDTO);
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
-
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
@@ -512,9 +473,6 @@ public class OSIValidator {
 		//authTypeDTO.setFace(false);
 		//authTypeDTO.setFingerPrint(false);
 		//authTypeDTO.setIris(false);
-
-
-
 	}
 
 
