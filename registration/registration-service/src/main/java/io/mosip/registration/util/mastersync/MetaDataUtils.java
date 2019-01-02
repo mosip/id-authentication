@@ -83,17 +83,18 @@ public class MetaDataUtils {
 
 	public static <T, D extends MasterSyncBaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends MasterSyncBaseEntity> entityClass) {
-		Objects.requireNonNull(dtoList, "dtoList should not be null");
 
 		String contextUser = SessionContext.getInstance().getUserContext().getUserId();
-		
+
 		List<D> entities = new ArrayList<>();
 
-		dtoList.forEach(dto -> {
-			D entity = (D) MapperUtils.map(dto, entityClass);
-			setCreatedDateTime(contextUser, entity);
-			entities.add(entity);
-		});
+		if (null!=dtoList && !dtoList.isEmpty()) {
+			dtoList.forEach(dto -> {
+				D entity = (D) MapperUtils.map(dto, entityClass);
+				setCreatedDateTime(contextUser, entity);
+				entities.add(entity);
+			});
+		}
 
 		return entities;
 
