@@ -12,7 +12,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane id="loginScreen" prefHeight="530.0" prefWidth="808.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
+<BorderPane styleClass="loginBorderPaneStyle" id="loginScreen" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
 	<top>
 		<HBox id="header-section">
 			<children>
@@ -35,7 +35,7 @@
 		</HBox>
 	</top>
 	<left>
-		<AnchorPane prefHeight="326.0" prefWidth="285.0">
+		<AnchorPane styleClass="loginLeftPaneStyle">
 			<children>
 				<Label id="content" layoutY="33.0" styleClass="content-section" wrapText="true" AnchorPane.topAnchor="20.0">
 					<font>
@@ -63,20 +63,20 @@
 		</AnchorPane>
 	</left>
 	<center>
-		<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
+		<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="loginCenterPaneStyle">
 			<children>
 				<Label layoutX="107.0" layoutY="92.0" text="Registration Login" AnchorPane.leftAnchor="107.0" AnchorPane.topAnchor="92.0">
 					<font>
 						<Font size="23.0" />
 					</font>
 				</Label>
-				<TextField fx:id="userId" layoutX="106.0" layoutY="151.0" prefHeight="39.0" prefWidth="221.0" promptText="Username" AnchorPane.leftAnchor="106.0" />
-				<PasswordField fx:id="password" layoutX="106.0" layoutY="206.0" prefHeight="39.0" prefWidth="221.0" promptText="Password" AnchorPane.leftAnchor="106.0" />
-				<Button fx:id="submit" alignment="CENTER" layoutX="246.0" layoutY="260.0" mnemonicParsing="false" onAction="#validateCredentials" prefHeight="30.0" prefWidth="81.0" text="Submit" />
-				<Button fx:id="getOTP" layoutX="106.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" prefHeight="30.0" prefWidth="89.0" text="Get OTP" />
-				<Button fx:id="resend" layoutX="108.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" prefHeight="30.0" prefWidth="105.0" text="Resend OTP" visible="false" />
-				<Label fx:id="otpValidity" layoutX="106.0" layoutY="310.0" prefHeight="18.0" prefWidth="136.0" text="otp_validity_in_mins" />
-				<Label fx:id="fingerprint" layoutX="107.0" layoutY="121.0" prefHeight="27.0" prefWidth="127.0" text="with fingerprint" />
+				<TextField fx:id="userId" layoutX="106.0" layoutY="151.0" styleClass="loginFieldStyle" promptText="Username" AnchorPane.leftAnchor="106.0" />
+				<PasswordField fx:id="password" layoutX="106.0" layoutY="206.0" styleClass="loginFieldStyle" promptText="Password" AnchorPane.leftAnchor="106.0" />
+				<Button fx:id="submit" alignment="CENTER" layoutX="246.0" layoutY="260.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="Submit" />
+				<Button fx:id="getOTP" layoutX="106.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginOtpStyle" text="Get OTP" />
+				<Button fx:id="resend" layoutX="108.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginResendOtpStyle" text="Resend OTP" visible="false" />
+				<Label fx:id="otpValidity" layoutX="106.0" layoutY="310.0" styleClass="loginOtpValidStyle" text="otp_validity_in_mins" />
+				<Label fx:id="fingerprint" layoutX="107.0" layoutY="121.0" styleClass="loginfpStyle" text="with fingerprint" />
 				<ImageView fx:id="fingerImage" fitHeight="99.0" fitWidth="92.0" layoutX="107.0" layoutY="205.0" pickOnBounds="true" preserveRatio="true" visible="false">
 					<image>
 						<Image url="@../images/fingerprint.jpg" />
