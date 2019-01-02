@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineUserMappingErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -27,6 +28,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * Implementation class for user machine mapping service
  * 
  * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  * @see RegistrationCenterMachineUserService
  *
@@ -78,20 +80,29 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		return MapperUtils.map(registrationCenterUserMachine, RegistrationCenterMachineUserID.class);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserService#
+	 * deleteRegistrationCentersMachineUserMapping(java.lang.String,
+	 * java.lang.String, java.lang.String)
+	 */
 	@Override
 	public RegistrationCenterMachineUserID deleteRegistrationCentersMachineUserMapping(String regCenterId,
 			String machineId, String userId) {
 		RegistrationCenterMachineUserID registrationCenterMachineUserID = null;
 		try {
 
-			RegistrationCenterUserMachine registrationCenterUserMachine = registrationCenterMachineUserRepository
+			Optional<RegistrationCenterUserMachine> registrationCenterUserMachine = registrationCenterMachineUserRepository
 					.findAllNondeletedMappings(regCenterId, machineId, userId);
-			if (registrationCenterUserMachine == null) {
+			if (!registrationCenterUserMachine.isPresent()) {
 				throw new RequestException(
-						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorCode(),
-						RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DATA_NOT_FOUND.getErrorMessage());
+						RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_NOT_FOUND
+								.getErrorCode(),
+						RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_NOT_FOUND
+								.getErrorMessage());
 			} else {
-				RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine;
+				RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine.get();
 				centerUserMachine = MetaDataUtils.setDeleteMetaData(centerUserMachine);
 				RegistrationCenterUserMachineHistory history = MapperUtils.map(centerUserMachine,
 						RegistrationCenterUserMachineHistory.class);
@@ -109,9 +120,10 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorCode(),
-					RegistrationCenterDeviceErrorCode.REGISTRATION_CENTER_DEVICE_DELETE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION
+							.getErrorCode(),
+					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION
+							.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return registrationCenterMachineUserID;
 	}
