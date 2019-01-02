@@ -38,6 +38,24 @@ public class IdentityIteratorUtil {
 		return Collections.emptyList();
 
 	}
+	
+	/**
+	 * Gets the metadata label value.
+	 *
+	 * @param metaDataList the meta data list
+	 * @param field the field
+	 * @return the metadata label value
+	 */
+	public String getMetadataLabelValue(List<FieldValue> metaDataList, String field) {
+		for (FieldValue metadataObjects : metaDataList) {
+			if (metadataObjects.getLabel().equalsIgnoreCase(field)) {
+				return metadataObjects.getValue();
+			}
+		}
+		return null;
+
+	}
+	
 
 	/**
 	 * Gets the field value.
