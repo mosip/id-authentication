@@ -42,10 +42,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
-	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
-			AuthType demoAuthType) {
-		return idInfoHelper.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
-	}
+//	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
+//			AuthType demoAuthType) {
+//		return idInfoHelper.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
+//	}
 
 	/**
 	 * Gets the match output.
