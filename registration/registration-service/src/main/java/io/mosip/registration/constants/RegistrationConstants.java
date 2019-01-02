@@ -490,9 +490,7 @@ public class RegistrationConstants {
 	
 	public static List<String> CITY_LIST = Arrays.asList("Delhi","Chennai","Bengaluru","Mumbai");
 
-	public static List<String> getPacketStatus() {
-		return Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
-	}
+	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	// Pre Registration
 	public static final String PRE_REGISTRATION_ID = "preId";
