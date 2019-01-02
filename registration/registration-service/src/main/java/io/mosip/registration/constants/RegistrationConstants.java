@@ -65,6 +65,8 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_SUCCESS = "success";
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
+	public static final String SUPERVISOR = "SUPERVISOR";
+	public static final String OFFICER = "OFFICER";
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";

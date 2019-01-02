@@ -571,9 +571,8 @@ public class LoginController extends BaseController implements Initializable {
 
 		LOGGER.debug("REGISTRATION - ROLES_MACHINE_MAPPING - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Validating roles and machine and center mapping");
-
 		// Checking roles
-		if (roleList.isEmpty()) {
+		if (!((roleList.contains(RegistrationConstants.SUPERVISOR) || roleList.contains(RegistrationConstants.OFFICER)))) {
 			authInfo = RegistrationConstants.ROLES_EMPTY;
 		} else if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
 			authInfo = RegistrationConstants.SUCCESS_MSG;
