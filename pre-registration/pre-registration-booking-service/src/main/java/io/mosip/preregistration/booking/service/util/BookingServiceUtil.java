@@ -353,7 +353,7 @@ public class BookingServiceUtil {
 		bookingAvailabilityRepository.save(avaEntity);
 	}
 
-	public void slotSetter(List<java.sql.Date> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
+	public void slotSetter(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
 			List<AvailibityEntity> entity) {
 		List<SlotDto> slotList = new ArrayList<>();
 		for (AvailibityEntity en : entity) {

@@ -128,13 +128,13 @@ public class BookingService {
 		LocalDate fromDate = LocalDate.now().plusDays(2);
 		AvailabilityDto availability = new AvailabilityDto();
 		try {
-			List<java.sql.Date> dateList = bookingAvailabilityRepository.findDate(regID, fromDate, endDate);
+			List<LocalDate> dateList = bookingAvailabilityRepository.findDate(regID, fromDate, endDate);
 			if (!dateList.isEmpty()) {
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
 				for (int i = 0; i < dateList.size(); i++) {
 					DateTimeDto dateTime = new DateTimeDto();
 					List<AvailibityEntity> entity = bookingAvailabilityRepository
-							.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID, dateList.get(i).toLocalDate());
+							.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID, dateList.get(i));
 					if (!entity.isEmpty()) {
 						serviceUtil.slotSetter(dateList, dateTimeList, i, dateTime, entity);
 					}
