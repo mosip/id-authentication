@@ -59,7 +59,6 @@ import io.mosip.registration.entity.mastersync.MasterMachineSpecification;
 import io.mosip.registration.entity.mastersync.MasterMachineType;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
-import io.mosip.registration.entity.mastersync.MasterRegistrationCenter;
 import io.mosip.registration.entity.mastersync.MasterTemplate;
 import io.mosip.registration.entity.mastersync.MasterTemplateFileFormat;
 import io.mosip.registration.entity.mastersync.MasterTemplateType;
