@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,8 +21,8 @@ public class HolidayDto {
 	@NotNull
 	private int id;
 
-	@NotNull
 	@Size(min = 1, max = 36)
+	@NotBlank
 	private String locationCode;
 
 	@NotNull
@@ -37,16 +38,16 @@ public class HolidayDto {
 	private String holidayMonth;
 	private String holidayYear;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	private String holidayName;
 
-	@NotNull
 	@Size(min = 1, max = 128)
+	@NotBlank
 	private String holidayDesc;
 
-	@NotNull
 	@Size(min = 1, max = 3)
+	@NotBlank
 	private String langCode;
 
 	@NotNull

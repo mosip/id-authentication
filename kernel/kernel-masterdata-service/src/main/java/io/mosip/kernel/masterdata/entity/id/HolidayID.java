@@ -32,4 +32,8 @@ public class HolidayID implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
+
+	@Column(name = "holiday_name", nullable = false, length = 64)
+	private String holidayName;
+
 }

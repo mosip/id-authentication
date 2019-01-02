@@ -178,7 +178,9 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (!machineDetailList.isEmpty()) {
-			machineDetailDtoList = mapper.mapMachineListDto(machineDetailList);
+
+			machineDetailDtoList = MapperUtils.mapAll(machineDetailList, MachineDto.class);
+
 		}
 
 		return CompletableFuture.completedFuture(machineDetailDtoList);
@@ -210,7 +212,9 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (machineTypes != null && !machineTypes.isEmpty())
-			machineTypeList = mapper.mapMachineType(machineTypes);
+
+			machineTypeList = MapperUtils.mapAll(machineTypes, MachineTypeDto.class);
+
 		return CompletableFuture.completedFuture(machineTypeList);
 
 	}
@@ -243,7 +247,9 @@ public class SyncMasterDataServiceHelper {
 		}
 
 		if (machineSpecification != null && !machineSpecification.isEmpty())
-			machineSpecificationDto = mapper.mapMachineSpecification(machineSpecification);
+
+			machineSpecificationDto = MapperUtils.mapAll(machineSpecification,MachineSpecificationDto.class);
+
 
 		return CompletableFuture.completedFuture(machineSpecificationDto);
 	}
@@ -575,7 +581,8 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (titles != null && !titles.isEmpty()) {
-			titleList = mapper.maptitles(titles);
+
+			titleList = MapperUtils.mapAll(titles,TitleDto.class);
 		}
 		return CompletableFuture.completedFuture(titleList);
 
@@ -766,7 +773,7 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty())
-			deviceSpecificationDtoList = mapper.mapDeviceSpecification(deviceSpecificationList);
+			deviceSpecificationDtoList = MapperUtils.mapAll(deviceSpecificationList,DeviceSpecificationDto.class);
 		return CompletableFuture.completedFuture(deviceSpecificationDtoList);
 
 	}

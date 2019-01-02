@@ -8,6 +8,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -15,16 +16,16 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 /**
  * The Class OSIValidatorStage.
@@ -35,17 +36,9 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
-
-	/** The log. */
-	private static Logger log = LoggerFactory.getLogger(OSIValidatorStage.class);
-
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(OSIValidatorStage.class);
+	
 
 	/** The registration status service. */
 	@Autowired
@@ -62,12 +55,15 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	/** The umc validator. */
 	@Autowired
 	UMCValidator umcValidator;
+	
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
 	}
 
@@ -102,7 +98,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			if (isValidUMC && isValidOSI) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.OSI_VALIDATION_SUCCESS);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESSFUL.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
 				description = "OSI validation successful for registration id : " + registrationId;
 			} else {
@@ -121,17 +117,17 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (DataAccessException e) {
-			log.error(PlatformErrorMessages.OSI_VALIDATION_FAILED.name(), e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.OSI_VALIDATION_FAILED.name()+e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Data voilation in reg packet : " + registrationId;
 
 		} catch (IOException | ApisResourceAccessException e) {
-			log.error(PlatformErrorMessages.OSI_VALIDATION_FAILED.name(), e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.OSI_VALIDATION_FAILED.name()+e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
-			log.error(PlatformErrorMessages.OSI_VALIDATION_FAILED.name(), ex);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.OSI_VALIDATION_FAILED.name()+ex.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {

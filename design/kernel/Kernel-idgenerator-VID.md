@@ -20,7 +20,7 @@ A virtual ID can be requested by an Indivudual against his UIN. A library should
 
 
 
-![Module Diagram](_images/kernel-VIDGenerator.jpg)
+![Module Diagram](https://raw.githubusercontent.com/mosip/mosip/DEV/design/kernel/_images/kernel-VIDGenerator.jpg?token=ApNuIHulED79AkJ4do_wI8CqZRgt2sBeks5cLy75wA%3D%3D&_sm_au_=iVVM46NP4S6jJkV5)
 
 
 

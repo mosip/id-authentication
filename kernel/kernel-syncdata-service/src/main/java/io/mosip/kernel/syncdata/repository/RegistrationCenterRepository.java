@@ -26,7 +26,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            id of the machine
 	 * @return {@link RegistrationCenter}
 	 */
-	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes from  master.registration_center r , master.reg_center_machine_device rcmd where r.id=rcmd.regcntr_id and rcmd.machine_id= ?1", nativeQuery = true)
+	@Query(value = "SELECT distinct r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes from  master.registration_center r , master.reg_center_machine_device rcmd where r.id=rcmd.regcntr_id and rcmd.machine_id= ?1", nativeQuery = true)
 	List<RegistrationCenter> findRegistrationCenterByMachineId(String machineid);
 
 	/**
@@ -38,6 +38,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            timeStamp
 	 * @return list of {@link RegistrationCenter}
 	 */
-	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes from  master.registration_center r , master.reg_center_machine_device rcmd where r.id=rcmd.regcntr_id and rcmd.machine_id= ?1 and (r.cr_dtimes > ?2 or r.upd_dtimes > ?2 or r.del_dtimes > ?2)", nativeQuery = true)
+	@Query(value = "SELECT distinct r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes from  master.registration_center r , master.reg_center_machine_device rcmd where r.id=rcmd.regcntr_id and rcmd.machine_id= ?1 and (r.cr_dtimes > ?2 or r.upd_dtimes > ?2 or r.del_dtimes > ?2)", nativeQuery = true)
 	List<RegistrationCenter> findLatestRegistrationCenterByMachineId(String machineid, LocalDateTime lastUpdated);
 }

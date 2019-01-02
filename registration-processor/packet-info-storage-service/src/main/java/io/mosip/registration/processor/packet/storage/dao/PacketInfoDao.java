@@ -232,4 +232,8 @@ public class PacketInfoDao {
 		}
 		return demographicInfoDtos;
 	}
+	
+	public List<String> getRegIdByUIN(String uin) {
+		return demographicDedupeRepository.getRegIdByUIN(uin);
+	}
 }

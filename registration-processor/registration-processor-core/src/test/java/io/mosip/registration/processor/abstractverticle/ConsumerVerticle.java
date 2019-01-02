@@ -34,7 +34,7 @@ public class ConsumerVerticle extends MosipVerticleManager {
 	}
 
 	public MosipEventBus deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), "", "");
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(),"http://104.211.212.28:51000/*/dev/DEV/ignite.xml");
 		return mosipEventBus;
 	}
 

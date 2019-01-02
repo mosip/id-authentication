@@ -1,0 +1,13 @@
+{
+	"id": "mosip.pre-registration.transliteration.transliterate",
+	"reqTime": "2018-12-24T14:10:31.900Z",
+	"ver": "1.0",
+	"request": {
+		"from_field_lang": "English",
+		"from_field_name": "Name1",
+		"from_field_value": "Kishan",
+		"to_field_lang": "Arabic",
+		"to_field_name": "Name2",
+		"to_field_value": ""
+	}
+} 

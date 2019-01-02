@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.entity;
 
 import java.io.Serializable;
@@ -16,11 +20,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Registration entity
+ * This entity class defines the database table details for PreRegistration.
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
