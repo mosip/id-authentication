@@ -50,6 +50,6 @@ public class DeviceDto extends BaseDto{
 	/**
 	 * Field for is active
 	 */
-	private boolean isActive;
+	private Boolean isActive;
 
 }

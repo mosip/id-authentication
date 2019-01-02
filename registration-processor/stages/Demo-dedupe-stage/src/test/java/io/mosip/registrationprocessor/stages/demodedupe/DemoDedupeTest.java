@@ -66,8 +66,16 @@ public class DemoDedupeTest {
 
 		List<String> fingers = new ArrayList<>();
 		fingers.add("LEFTTHUMB");
+		fingers.add("LEFTINDEX");
+		fingers.add("LEFTMIDDLE");
+		fingers.add("LEFTLITTLE");
+		fingers.add("LEFTRING");
+		fingers.add("RIGHTTHUMB");
+		fingers.add("RIGHTINDEX");
+		fingers.add("RIGHTMIDDLE");
+		fingers.add("RIGHTLITTLE");
 		fingers.add("RIGHTRING");
-
+		
 		List<String> iris = new ArrayList<>();
 		iris.add("LEFTEYE");
 		iris.add("RIGHTEYE");

@@ -16,9 +16,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
-
 
 /**
  * @author Jyoti Prakash Nayak M1030448
@@ -30,25 +28,22 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(QualityCheckerAssignmentStage.class);
-	
+
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
 	@Autowired
 	QualityCheckManager<String, QCUserDto> qualityCheckManager;
 
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
 	/**
 	 * Method to consume quality check address bus and receive the packet details
 	 * that needs to be checked for quality
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.QUALITY_CHECK_BUS);
 	}
 

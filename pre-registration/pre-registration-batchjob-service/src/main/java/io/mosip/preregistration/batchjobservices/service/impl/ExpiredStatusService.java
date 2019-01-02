@@ -18,7 +18,7 @@ import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistartionExpiredStatusRepository;
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * @author M1043008
