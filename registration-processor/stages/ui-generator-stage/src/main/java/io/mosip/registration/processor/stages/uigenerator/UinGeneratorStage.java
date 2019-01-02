@@ -1,5 +1,8 @@
 package io.mosip.registration.processor.stages.uigenerator;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.idgenerator.uin.dto.UinResponseDto;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
@@ -22,7 +26,9 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+//import io.mosip.registration.processor.stages.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.util.UinAvailabilityCheck;
+
 
 
 /**
@@ -79,13 +85,20 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	
 		InputStream packetMetaInfoStream = adapter.getFile("27847657360002520181208094032" , PacketFiles.PACKETMETAINFO.name());
-	
-			try {
-				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+		/*File file = FileUtils.getFile("C:\\Users\\M1049387\\Desktop\\DEMO DEDUPE\\27847657360002520181208094056\\uncompressed" + "\\" + "PacketMetaInfo" + ".json");
+		InputStream packetMetaInfoStream = null;
+		try {
+			packetMetaInfoStream = new FileInputStream(file);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} */
+			
+		try {
+			PacketMetaInfo packetMetaInfo;
+			
+				packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 						PacketMetaInfo.class);
 			
-		
-		try {
 			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "",
 					"", UinResponseDto.class);
 			
@@ -110,7 +123,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			} catch (UnsupportedEncodingException e1) {
+			catch (UnsupportedEncodingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
