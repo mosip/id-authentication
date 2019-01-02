@@ -1,10 +1,12 @@
 package io.mosip.registration.test.service;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +23,16 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
+import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.entity.KeyStore;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.PolicySyncRepository;
 import io.mosip.registration.service.impl.PolicySyncServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -38,7 +43,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  *
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({RegistrationAppHealthCheckUtil.class})
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
 public class PolicySyncServiceTest {
 	@Rule
 	public MockitoRule MockitoRule = MockitoJUnit.rule();
@@ -53,21 +58,23 @@ public class PolicySyncServiceTest {
 
 	@InjectMocks
 	private PolicySyncServiceImpl policySyncServiceImpl;
-	
+	// @Mock
+	// private ServiceDelegateUtil serviceDelegateUtil;
+
 	@Before
 	public void initialize() {
-		Map<String,Object> temp = new HashMap<String,Object>();
+		Map<String, Object> temp = new HashMap<String, Object>();
 		temp.put("name", "1");
 		applicationContext.setApplicationMap(temp);
 	}
-	
+
 	@Test
 	public void fetchPolicy() throws JsonParseException, JsonMappingException, IOException {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
-		
-		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);		
-		KeyStore  keyStore = new KeyStore();
-		
+
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+		KeyStore keyStore = new KeyStore();
+
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		try {
 			Date date = dateFormat.parse("2018-12-29");
@@ -81,26 +88,30 @@ public class PolicySyncServiceTest {
 
 		policySyncServiceImpl.fetchPolicy("centerId");
 
-		
-
 	}
+
 	@Test
-	public void fetch()
-	{
+	public void fetch() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
-		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(null);
+		PublicKeyResponse<String> p = new PublicKeyResponse<>();
+		p.setPublicKey("publickey");
+		p.setIssuedAt(LocalDateTime.now());
+		p.setExpiryAt(LocalDateTime.now());
+
+		// Mockito.when(serviceDelegateUtil.get(Mockito.anyString(),
+		// Mockito.any())).thenReturn(p)
+
 		policySyncServiceImpl.fetchPolicy("centerId");
-		
+
 	}
+
 	@Test
-	public void netWorkAvailable()
-	{
+	public void netWorkAvailable() {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 		policySyncServiceImpl.fetchPolicy("centerId");
-		
-		
+
 	}
 
 }

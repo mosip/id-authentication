@@ -55,7 +55,6 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
  *
  */
 @Service
-@PropertySource("spring.properties")
 public class PolicySyncServiceImpl implements PolicySyncService {
 	@Value("${policysync.service.url}")
 	private String url;
@@ -63,6 +62,11 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 	private PolicySyncDAO policySyncDAO;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PolicySyncServiceImpl.class);
+	
+	KeyStore keyStore = null;
+	ResponseDTO responseDTO = new ResponseDTO();
+	SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+
 
 	/*
 	 * (non-Javadoc)
@@ -73,10 +77,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 	public ResponseDTO fetchPolicy(String centerId) {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
-		KeyStore keyStore = null;
-		ResponseDTO responseDTO = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-
+	
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE,
 					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE);
@@ -84,10 +85,9 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 			keyStore = policySyncDAO.findByMaxExpireTime();
 
 			if (keyStore != null) {
-				System.out.println(keyStore.toString().trim());
+				
 				Date validDate = new Date(keyStore.getValidTillDtimes().getTime());
-				Date currentDate = new Date(new Timestamp(System.currentTimeMillis()).getTime());
-				long difference = ChronoUnit.DAYS.between(validDate.toInstant(), currentDate.toInstant());
+				long difference = ChronoUnit.DAYS.between(validDate.toInstant(), new Date().toInstant());
 				if (Integer.parseInt((String) ApplicationContext.getInstance().getApplicationMap().get("name")) < Math
 						.abs(difference)) {
 					successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
@@ -97,7 +97,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 				} else {
 
 					try {
-						getPublicKey(LocalDateTime.now(), centerId, responseDTO);
+						getPublicKey(LocalDateTime.now(), "1001");
 					} catch (KeyManagementException | NoSuchAlgorithmException | java.security.NoSuchAlgorithmException
 							| IOException e) {
 
@@ -110,7 +110,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 				}
 			} else {
 				try {
-					getPublicKey(LocalDateTime.now(), centerId, responseDTO);
+					getPublicKey(LocalDateTime.now(), "1001");
 				} catch (KeyManagementException | NoSuchAlgorithmException | java.security.NoSuchAlgorithmException
 						| IOException e) {
 
@@ -143,12 +143,12 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 		return response;
 	}
 
-	public void getPublicKey(LocalDateTime timeStamp, String referenceId, ResponseDTO responseDTO)
-			throws KeyManagementException, NoSuchAlgorithmException, IOException,
-			java.security.NoSuchAlgorithmException {
+	public void getPublicKey(LocalDateTime timeStamp, String referenceId)
+			throws KeyManagementException, NoSuchAlgorithmException, IOException, java.security.NoSuchAlgorithmException
+			{
 
 		KeyStore keyStore = new KeyStore();
-		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+	
 		PublicKeyResponse<String> publicKeyResponse = null;
 		turnOffSslChecking();
 		RestTemplate restTemplate = new RestTemplate();
@@ -160,12 +160,13 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 		URI uri = UriComponentsBuilder.fromUriString(url).buildAndExpand(uriVariables).toUri();
 		uri = UriComponentsBuilder.fromUri(uri).queryParam("timeStamp", timeStamp)
 				.queryParam("referenceId", referenceId.toString()).build().toUri();
-
+ System.out.println(uri);
 		ResponseEntity<PublicKeyResponse> exchange = restTemplate.exchange(uri, HttpMethod.GET, entity,
 				PublicKeyResponse.class);
 		publicKeyResponse = exchange.getBody();
 		try {
 
+			
 			keyStore.setId(UUID.randomUUID().toString());
 			keyStore.setPublicKey(((String) publicKeyResponse.getPublicKey()).getBytes());
 			keyStore.setValidFromDtimes(Timestamp.valueOf(publicKeyResponse.getIssuedAt()));
@@ -181,12 +182,14 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "synch is success");
-		} catch (NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException exception) {
+			exception.printStackTrace();
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
 					RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "error response is created");
 
 		} catch (RuntimeException exception) {
+			exception.printStackTrace();
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
 					RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
 			LOGGER.error("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());

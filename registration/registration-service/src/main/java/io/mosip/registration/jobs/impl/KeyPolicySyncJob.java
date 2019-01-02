@@ -72,7 +72,7 @@ public class KeyPolicySyncJob extends BaseJob {
 		this.responseDTO = policySyncService.fetchPolicy(centerId);
 
 		// To run the child jobs after the parent job Success
-		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
+		if (responseDTO.getSuccessResponseDTO() != null) {
 			executeChildJob(jobId, jobMap);
 		}
 
