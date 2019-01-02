@@ -6,12 +6,19 @@ import javax.validation.ConstraintValidatorContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 
+/**
+ * To validate Language codes as per ISO:639-3 standard during creation and
+ * updation of Masterdata
+ * 
+ * @author Neha
+ * @since 1.0.0
+ */
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
 
 	@Autowired
@@ -20,19 +27,20 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	/**
 	 * Environment instance
 	 */
-	@Autowired
-	private Environment env;
+	@Value("${mosip.kernel.syncdata-service-globalconfigs-url}")
+	private String globalconfigsUrl;
 
+	/**
+	 * 
+	 */
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		if (EmptyCheckUtils.isNullEmpty(value) && value.trim().length() > 3) {
 			return false;
 		} else {
 			try {
-				String url = env.getProperty("global.config.uri");
-				String json = restTemplate.getForObject(url, String.class);
-				JSONObject result = new JSONObject(json);
-				JSONArray arr = result.getJSONArray("languagesSupported");
+				JSONObject configJson = new JSONObject(restTemplate.getForObject(globalconfigsUrl, String.class));
+				JSONArray arr = configJson.getJSONArray("supportedLanguages");
 				for (int i = 0; i < arr.length(); i++) {
 					if (value.equals(arr.getString(i))) {
 						return true;
