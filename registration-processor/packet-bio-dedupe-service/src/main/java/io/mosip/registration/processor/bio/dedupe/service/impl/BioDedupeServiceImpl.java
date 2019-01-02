@@ -10,7 +10,7 @@ import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 
 @RefreshScope
 @Service
-public class BioDedupeImpl implements BioDedupeService {
+public class BioDedupeServiceImpl implements BioDedupeService {
 
 	@Override
 	public String insertBiometrics(String RegistrationId) {
