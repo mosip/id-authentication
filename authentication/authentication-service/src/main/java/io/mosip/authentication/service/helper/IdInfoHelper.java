@@ -99,6 +99,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private Map<String, String> getInfo(Map<String, List<IdentityInfoDTO>> idInfosMap, String languageForMatchType) {
 		if (idInfosMap != null && !idInfosMap.isEmpty()) {
 			return idInfosMap.entrySet().parallelStream()
+					
+					
 					.map(entry -> new SimpleEntry<String, String>(entry.getKey(),
 							Optional.ofNullable(entry.getValue()).flatMap(value -> value.stream()
 									.filter(idInfo -> checkLanguageType(languageForMatchType, idInfo.getLanguage()))
@@ -245,10 +247,10 @@ public class IdInfoHelper implements IdInfoFetcher {
 				.map((IdentityDTO identity) -> {
 					return Stream.of(matchTypes).map((MatchType matchType) -> {
 						Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(matchType, authTypes);
-						Map<String, String> infoMap = getIdentityInfo(matchType, identity);
-						if (infoMap.size() > 0 && authTypeOpt.isPresent()) {
+						if (authTypeOpt.isPresent()) {
 							AuthType demoAuthType = authTypeOpt.get();
-							if (demoAuthType.isAuthTypeEnabled(authRequestDTO, this)) {
+							if (demoAuthType.isAuthTypeEnabled(authRequestDTO, this) 
+									&& getIdentityInfo(matchType, identity).size() > 0) {
 								return contstructMatchInput(authRequestDTO, matchType, demoAuthType);
 							}
 						}
