@@ -13,7 +13,8 @@ public enum PridExceptionConstant {
 	PRID_VAL_ILLEGAL_LENGTH("KER-IDV-103", "PRID length should be 14 digit."), 
 	PRID_VAL_INVALID_DIGITS("KER-IDV-104","PRID should not contain any alphanumeric characters."), 
 	PRID_VAL_ILLEGAL_CHECKSUM("KER-IDV-105", "PRID should match checksum."), 
-	PRID_VAL_INVALID_ZERO_ONE("KER-IDV-106", "PRID should not contain Zero or One as first Digit.");
+	PRID_VAL_INVALID_ZERO_ONE("KER-IDV-106", "PRID should not contain Zero or One as first Digit."),
+	PRID_VAL_INVALID_VALUE("KER-IDV-107", "Prid length or sequence limit or repeating limit or repeating block limit should not be less than or equals to zero");
 
 	/**
 	 * This variable holds the error code.

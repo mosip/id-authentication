@@ -6,11 +6,15 @@ package io.mosip.kernel.idgenerator.prid.util;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+import org.springframework.stereotype.Component;
+
 /**
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
+
+@Component
 public class PridFilterUtils {
 
 	/**
