@@ -106,6 +106,9 @@ public class DocumentScanController extends BaseController {
 
 	@Value("${SCROLL_CHECK}")
 	public int scrollCheck;
+	
+	@Value("${DOCUMENT_SCANNER_ENABLED}")
+	private String isScannerEnabled;
 
 	@FXML
 	private void initialize() {
@@ -209,7 +212,9 @@ public class DocumentScanController extends BaseController {
 	 * This method will display Scan window to scan and upload documents
 	 */
 	private void scanWindow() {
-		scanPopUpViewController.setDocumentScan(true);
+		if ("yes".equalsIgnoreCase(isScannerEnabled)) {
+			scanPopUpViewController.setDocumentScan(true);
+		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -224,31 +229,12 @@ public class DocumentScanController extends BaseController {
 
 		try {
 
-			if (!documentScanFacade.isConnected()) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
-				return;
+			// TODO this check has to removed after when the stubbed data is no more needed
+			if ("yes".equalsIgnoreCase(isScannerEnabled)) {
+				scanFromScanner();
+			} else {
+				scanFromStubbed(popupStage);
 			}
-
-			scanPopUpViewController.getScanningMsg().setVisible(true);
-
-			BufferedImage bufferedImage = documentScanFacade.getScannedDocumentFromScanner();
-
-			if (bufferedImage == null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
-				return;
-			}
-			if (scannedPages == null) {
-				scannedPages = new ArrayList<>();
-			}
-			scannedPages.add(bufferedImage);
-
-			byte[] byteArray = documentScanFacade.getImageBytesFromBufferedImage(bufferedImage);
-			/* show the scanned page in the preview */
-			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
-
-			scanPopUpViewController.getTotalScannedPages().setText(String.valueOf(scannedPages.size()));
-
-			scanPopUpViewController.getScanningMsg().setVisible(false);
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -265,6 +251,85 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
 
+	}
+
+	private void scanFromStubbed(Stage popupStage) throws IOException {
+		byte[] byteArray = documentScanFacade.getScannedDocument();
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
+
+		if (byteArray.length > documentSize) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
+		} else {
+			if (selectedDocument != null) {
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
+
+				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
+
+				switch (selectedDocument) {
+				case RegistrationConstants.POA_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfAddress(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
+					break;
+				case RegistrationConstants.POI_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfIdentity(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
+					break;
+				case RegistrationConstants.POR_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setProofOfRelationship(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
+					break;
+				case RegistrationConstants.DOB_DOCUMENT:
+					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setDateOfBirthProof(documentDetailsDTO);
+					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
+					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
+					break;
+				default:
+				}
+
+				popupStage.close();
+
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
+			}
+		}
+	}
+
+	private void scanFromScanner() throws IOException {
+		if (!documentScanFacade.isConnected()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
+			return;
+		}
+
+		scanPopUpViewController.getScanningMsg().setVisible(true);
+
+		BufferedImage bufferedImage = documentScanFacade.getScannedDocumentFromScanner();
+
+		if (bufferedImage == null) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			return;
+		}
+		if (scannedPages == null) {
+			scannedPages = new ArrayList<>();
+		}
+		scannedPages.add(bufferedImage);
+
+		byte[] byteArray = documentScanFacade.getImageBytesFromBufferedImage(bufferedImage);
+		/* show the scanned page in the preview */
+		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
+
+		scanPopUpViewController.getTotalScannedPages().setText(String.valueOf(scannedPages.size()));
+
+		scanPopUpViewController.getScanningMsg().setVisible(false);
 	}
 
 	public void attachScannedDocument(Stage popupStage) throws IOException {
