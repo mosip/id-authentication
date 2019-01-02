@@ -59,7 +59,6 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketValidatorStage.class);
 
-
 	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
@@ -188,14 +187,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 											+ PacketFiles.DEMOGRAPHICINFO.name());
 							packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
 									packetMetaInfo.getIdentity().getMetaData());
-							MessageDTO message = new MessageDTO();
-							message.setRid(dto.getRegistrationId());
 
-							sendMessage(mosipEventBus, message);
+							object.setRid(dto.getRegistrationId());
 
 						} else {
 							object.setIsValid(Boolean.FALSE);
-
+							object.setRid(dto.getRegistrationId());
 							int retryCount = registrationStatusDto.getRetryCount() != null
 									? registrationStatusDto.getRetryCount() + 1
 									: 1;
@@ -211,24 +208,31 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 						setApplicant(packetMetaInfo.getIdentity(), registrationStatusDto);
 
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			isTransactionSuccessful = true;
-		} catch (DataAccessException e) {
-            regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()+e.getMessage());
-			object.setInternalError(Boolean.TRUE);
-			description = "Data voilation in reg packet : " + registrationId;
+						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+						isTransactionSuccessful = true;
+					} catch (DataAccessException e) {
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
+						object.setInternalError(Boolean.TRUE);
+						description = "Data voilation in reg packet : " + registrationId;
 
-		} catch (IOException exc) {
-            regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()+exc.getMessage());
-			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
+					} catch (IOException exc) {
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage());
+						object.setInternalError(Boolean.TRUE);
+						description = "Internal error occured while processing registration  id : " + registrationId;
 
-		} catch (Exception ex) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()+ex.getMessage());
-			object.setInternalError(Boolean.TRUE);
-			description = "Internal error occured while processing registration  id : " + registrationId;
-		} finally {
+					} catch (Exception ex) {
+						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage());
+						object.setInternalError(Boolean.TRUE);
+						description = "Internal error occured while processing registration  id : " + registrationId;
+					} finally {
 
+						sendMessage(mosipEventBus, object);
 						String eventId = "";
 						String eventName = "";
 						String eventType = "";
@@ -253,9 +257,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			}
 
 		} catch (TablenotAccessibleException e) {
-
-            regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e.toString());
 			object.setInternalError(Boolean.TRUE);
+			sendMessage(mosipEventBus, object);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), registrationId,
+					PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e.toString());
+
 			description = "Registration status table is not accessible for packet ";
 
 		}
