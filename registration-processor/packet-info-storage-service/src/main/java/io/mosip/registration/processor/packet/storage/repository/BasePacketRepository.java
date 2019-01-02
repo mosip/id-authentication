@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 
 /**
  * The Interface BasePacketRepository.
@@ -125,7 +125,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
 
-	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId =:uin")
+	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
 	public List<String> getRegIdByUIN(@Param("uin")String uin);
 	
 }

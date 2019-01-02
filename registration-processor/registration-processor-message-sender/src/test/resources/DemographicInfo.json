@@ -1,0 +1,184 @@
+{
+  "identity" : {
+    "firstName" : [ {
+      "language" : "en",
+      "label" : "firstName",
+      "value" : "ROUNAK"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "lastName" : [ {
+      "language" : "en",
+      "label" : "lastName",
+      "value" : "NAYAK"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "dateOfBirth" : [ {
+      "language" : "en",
+      "label" : "dateOfBirth",
+      "value" : "Mon Jul 05 00:00:00 IST 1993"
+    }, {
+      "language" : "ar",
+      "label" : "dateOfBirth",
+      "value" : "Mon Jul 05 00:00:00 IST 1993"
+    } ],
+    "gender" : [ {
+      "language" : "en",
+      "label" : "gender",
+      "value" : "Male"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "addressLine1" : [ {
+      "language" : "en",
+      "label" : "addressLine1",
+      "value" : "1"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "addressLine2" : [ {
+      "language" : "en",
+      "label" : "addressLine2",
+      "value" : "2"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "addressLine3" : [ {
+      "language" : "en",
+      "label" : "addressLine3",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "region" : [ {
+      "language" : "en",
+      "label" : "region",
+      "value" : "BTM"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "city" : [ {
+      "language" : "en",
+      "label" : "city",
+      "value" : "Bangalore"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "province" : [ {
+      "language" : "en",
+      "label" : "province",
+      "value" : "KA"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "postalCode" : [ {
+      "language" : "en",
+      "label" : "postalCode",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "emailId" : [ {
+      "language" : "en",
+      "label" : "emailId",
+      "value" : "alokranjan1106@gmail.com"
+    }, {
+      "language" : "ar",
+      "label" : "emailId",
+      "value" : "alokranjan1106@gmail.com"
+    } ],
+    "mobileNumber" : [ {
+      "language" : "en",
+      "label" : "mobileNumber",
+      "value" : "8960436520"
+    }, {
+      "language" : "ar",
+      "label" : "mobileNumber",
+      "value" : "تفاحة"
+    } ],
+    "languageCode" : [ {
+      "language" : "en",
+      "label" : "languageCode",
+      "value" : "en"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "isChild" : [ {
+      "language" : "en",
+      "label" : "isChild",
+      "value" : "false"
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "age" : [ {
+      "language" : "en",
+      "label" : "age",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "localAdministrativeAuthority" : [ {
+      "language" : "en",
+      "label" : "localAdministrativeAuthority",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "cneOrPINNumber" : [ {
+      "language" : "en",
+      "label" : "cneOrPINNumber",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "parentOrGuardianName" : [ {
+      "language" : "en",
+      "label" : "parentOrGuardianName",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ],
+    "parentOrGuardianRIDOrUIN" : [ {
+      "language" : "en",
+      "label" : "parentOrGuardianRIDOrUIN",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "تفاحة",
+      "value" : "تفاحة"
+    } ]
+  }
+}

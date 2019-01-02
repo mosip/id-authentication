@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Component
-public class Util {
+public class MessageSenderUtil {
 	
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
