@@ -731,12 +731,13 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_GENERATOR_SMS_EXCEPTION = PACKET_CREATION_EXP_CODE + "TGE-002";
 
 	// Jobs
-	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "Jobs started successfully";
-	public static final String START_SCHEDULER_ERROR_MESSAGE = "Job Not Found";
+	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "SYNC-DATA Process started successfully";
+	public static final String START_SCHEDULER_ERROR_MESSAGE = "Unable to start SYNC-DATA process";
 	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
 	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop JobScheduler";
 	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "Unable to fetch current running job details";
 	public static final String EXECUTE_JOB_ERROR_MESSAGE = "Unable to execute job";
+	public static final String BATCH_JOBS_ALREADY_STARTED = "SYNC-DATA Process already running";
 
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
