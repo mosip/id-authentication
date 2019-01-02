@@ -4,7 +4,6 @@
 package io.mosip.authentication.service.impl.indauth.facade;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,8 +79,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 	
-	private static final String VER = "1.0";
-
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(AuthFacadeImpl.class);
 
@@ -134,13 +131,12 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO;
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance(env.getProperty(DATETIME_PATTERN));
 		Map<String, List<IdentityInfoDTO>> idInfo = null;
-		//String refId = String.valueOf(idResDTO.get("registrationId"));
 		String uin = String.valueOf(idResDTO.get("uin"));
 		try {
 			idInfo = getIdEntity(idResDTO);
 
 			authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
-					.setReqTime(authRequestDTO.getReqTime());//.setVersion(VER);
+					.setReqTime(authRequestDTO.getReqTime());
 
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, uin, isAuth);
 			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -148,7 +144,6 @@ public class AuthFacadeImpl implements AuthFacade {
 			authResponseDTO = authResponseBuilder.build();
 			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
 					"authenticateApplicant status : " + authResponseDTO.getStatus());
-			//String uin = String.valueOf(idResDTO.get("uin"));
 			if (idInfo != null && uin != null) {
 				notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, isAuth);
 			}
@@ -174,43 +169,71 @@ public class AuthFacadeImpl implements AuthFacade {
 	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, String uin, boolean isAuth)
 			throws IdAuthenticationBusinessException {
+	
+		
+		List<AuthStatusInfo> authStatusList = new ArrayList<>();
+		IdType idType = null;
+
+		if (authRequestDTO.getIdvIdType().equals(IdType.UIN.getType())) {
+			idType = IdType.UIN;
+		} else {
+			idType = IdType.VID;
+		}
+		
+		processOTPAuth(authRequestDTO, uin, isAuth, authStatusList, idType);
+
+		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType);
+		
+		processBioAuth(authRequestDTO, idInfo, isAuth, authStatusList, idType);
+
+		return authStatusList;
+	}
+
+	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth,
+			List<AuthStatusInfo> authStatusList,
+			IdType idType) throws IdAuthenticationBusinessException {
 		
 		String idvId = authRequestDTO.getIdvId();
 		String idvIdType = authRequestDTO.getIdvIdType();
 		String reqTime = authRequestDTO.getReqTime();
 		String txnId = authRequestDTO.getTxnID();
-		String status = null;
-		String comment = null;
 		
-		List<AuthStatusInfo> authStatusList = new ArrayList<>();
+		String status;
+		String comment;
 		AuthStatusInfo statusInfo = null;
-		IdType idType = null;
-
-		if (idvIdType.equals(IdType.UIN.getType())) {
-			idType = IdType.UIN;
-		} else {
-			idType = IdType.VID;
-		}
-		if (authRequestDTO.getAuthType().isOtp()) {
-			AuthStatusInfo otpValidationStatus;
+		if (authRequestDTO.getAuthType().isBio()) {
+			AuthStatusInfo bioValidationStatus;
 			try {
 
-				otpValidationStatus = otpService.validateOtp(authRequestDTO, uin);
-				authStatusList.add(otpValidationStatus);
-				statusInfo = otpValidationStatus;
+				bioValidationStatus = bioAuthService.validateBioDetails(authRequestDTO, idInfo);
+				authStatusList.add(bioValidationStatus);
+				statusInfo = bioValidationStatus;
 			} finally {
+				
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				status = isStatus ? "Y" : "N";
-				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
-				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), idvIdType, idType,
-						OTP_AUTHENTICATION_REQUESTED);
 				
-				comment = isStatus ? "OTP Authenticated Success" : "OTP Authenticated Failed";
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_AUTH);
+				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
+				processBioAuthType(authRequestDTO, isAuth, idType);
+				
+				comment = isStatus ? "Bio  Authenticated Success" : "Bio  Authenticated Failed";
+				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.BIO_AUTH);
 			}
-
 		}
+	}
 
+	private void processDemoAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
+			boolean isAuth,
+			List<AuthStatusInfo> authStatusList, IdType idType)
+			throws IdAuthenticationBusinessException {
+		String idvId = authRequestDTO.getIdvId();
+		String idvIdType = authRequestDTO.getIdvIdType();
+		String reqTime = authRequestDTO.getReqTime();
+		String txnId = authRequestDTO.getTxnID();
+		
+		String status;
+		String comment;
+		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getAuthType().isPersonalIdentity() || authRequestDTO.getAuthType().isAddress()
 				|| authRequestDTO.getAuthType().isFullAddress()) {
 			AuthStatusInfo demoValidationStatus;
@@ -232,27 +255,38 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 
 		}
-		if (authRequestDTO.getAuthType().isBio()) {
-			AuthStatusInfo bioValidationStatus;
+	}
+
+	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType)
+			throws IdAuthenticationBusinessException {
+		
+		String idvId = authRequestDTO.getIdvId();
+		String idvIdType = authRequestDTO.getIdvIdType();
+		String reqTime = authRequestDTO.getReqTime();
+		String txnId = authRequestDTO.getTxnID();
+		
+		String status;
+		String comment;
+		AuthStatusInfo statusInfo = null;
+		if (authRequestDTO.getAuthType().isOtp()) {
+			AuthStatusInfo otpValidationStatus;
 			try {
 
-				bioValidationStatus = bioAuthService.validateBioDetails(authRequestDTO, idInfo);
-				authStatusList.add(bioValidationStatus);
-				statusInfo = bioValidationStatus;
+				otpValidationStatus = otpService.validateOtp(authRequestDTO, uin);
+				authStatusList.add(otpValidationStatus);
+				statusInfo = otpValidationStatus;
 			} finally {
-				
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
 				status = isStatus ? "Y" : "N";
+				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "OTP Authentication status : " + statusInfo);
+				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth), idvIdType, idType,
+						OTP_AUTHENTICATION_REQUESTED);
 				
-				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				processBioAuthType(authRequestDTO, isAuth, idType);
-				
-				comment = isStatus ? "Bio  Authenticated Success" : "Bio  Authenticated Failed";
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.BIO_AUTH);
+				comment = isStatus ? "OTP Authenticated Success" : "OTP Authenticated Failed";
+				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.OTP_AUTH);
 			}
-		}
 
-		return authStatusList;
+		}
 	}
 
 	/**
