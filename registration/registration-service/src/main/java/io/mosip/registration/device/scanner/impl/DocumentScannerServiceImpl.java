@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -42,12 +43,24 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 	@Value("${DOCUMENT_SCANNER_DPI}")
 	private int scannerDpi;
+	
+	@Value("${DOCUMENT_SCANNER_CONTRAST}")
+	private int scannerContrast;
+	
+	@Value("${DOCUMENT_SCANNER_BRIGHTNESS}")
+	private int scannerBrightness;
+	
+	@Value("${DOCUMENT_SCANNER_DEPTH}")
+	private int scannerDepth;
 
 	@Value("${DOCUMENT_SCANNER_HOST}")
 	private String scannerhost;
 
 	@Value("${DOCUMENT_SCANNER_PORT}")
 	private int scannerPort;
+	
+	@Value("${DOCUMENT_SCANNER_TIMEOUT}")
+	private long scannerTimeout;
 
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
@@ -105,6 +118,12 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	private void setScannerSettings(SaneDevice saneDevice) throws IOException, SaneException {
 		/* setting the resolution in dpi for the quality of the document */
 		saneDevice.getOption("resolution").setIntegerValue(scannerDpi);
+
+		saneDevice.getOption("brightness").setIntegerValue(scannerBrightness);
+
+		saneDevice.getOption("contrast").setIntegerValue(scannerContrast);
+
+		saneDevice.getOption("depth").setIntegerValue(scannerDepth);
 
 	}
 
@@ -169,7 +188,8 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	private List<SaneDevice> getScannerDevices() {
 		List<SaneDevice> saneDevices = null;
 		try {
-			SaneSession session = SaneSession.withRemoteSane(InetAddress.getByName(scannerhost), scannerPort);
+			SaneSession session = SaneSession.withRemoteSane(InetAddress.getByName(scannerhost), scannerTimeout,
+					TimeUnit.MILLISECONDS);
 			saneDevices = session.listDevices();
 		} catch (IOException | SaneException e) {
 			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());

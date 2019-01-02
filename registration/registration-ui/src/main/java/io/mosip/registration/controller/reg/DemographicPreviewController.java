@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -15,7 +14,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
@@ -52,8 +50,6 @@ public class DemographicPreviewController extends BaseController {
 
 	private boolean isInPane1;
 
-	@Autowired
-	private RegistrationController registrationController;
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -63,17 +59,11 @@ public class DemographicPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the REGISTRATION_PREVIEW_CONTROLLER");
-		demoRevScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
+		demoRevScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		isInPane1 = true;
 		demographicPreview.setDisable(true);
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
-	}
-
-	private void loadScreen(String screen) throws IOException {
-		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				applicationContext.getApplicationLanguageBundle());
-		getScene(createRoot);
 	}
 
 	/**
@@ -134,8 +124,8 @@ public class DemographicPreviewController extends BaseController {
 	/**
 	 * This method is used to navigate the screen to home page
 	 */
-	public void goToHomePage() {
-		registrationController.goToHomePage();
+	public void handleHomeButton() {
+		goToHomePageFromRegistration();
 	}
 
 	private AnchorPane getDemoGraphicPane1Content() {

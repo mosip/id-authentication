@@ -121,70 +121,76 @@ public class UINUpdateController extends BaseController implements Initializable
 	@FXML
 	public void submitUINUpdate(ActionEvent event) {
 		LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Updating UIN details");
-		try {
-			SelectionListDTO selectionListDTO = new SelectionListDTO();
+		if (uinId.getText().equals(RegistrationConstants.EMPTY)) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
+		} else {
 
-			if (name.isSelected()) {
-				selectionListDTO.setName(true);
-			}
-			if (age.isSelected()) {
-				selectionListDTO.setAge(true);
-			}
-			if (gender.isSelected()) {
-				selectionListDTO.setGender(true);
-			}
-			if (address.isSelected()) {
-				selectionListDTO.setAddress(true);
-			}
-			if (contactDetails.isSelected()) {
-				selectionListDTO.setContactDetails(true);
-			}
-			if (biometricException.isSelected()) {
-				selectionListDTO.setBiometricException(true);
-			}
-			if (biometricIris.isSelected()) {
-				selectionListDTO.setBiometricIris(true);
-			}
-			if (biometricFingerprint.isSelected()) {
-				selectionListDTO.setBiometricFingerprint(true);
-			}
-			if (cnieNumber.isSelected()) {
-				selectionListDTO.setCnieNumber(true);
-			}
-			if (parentOrGuardianDetails.isSelected()) {
-				selectionListDTO.setParentOrGuardianDetails(true);
-			}
-			selectionListDTO.setChild(isChild);
-			selectionListDTO.setUinId(uinId.getText());
+			try {
+				SelectionListDTO selectionListDTO = new SelectionListDTO();
 
-			registrationController.init(selectionListDTO);
-
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-					applicationContext.getApplicationLanguageBundle());
-
-			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-			} else {
-				StringBuilder errorMessage = new StringBuilder();
-				ResponseDTO responseDTO;
-				responseDTO = validateSyncStatus();
-				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						errorMessage
-								.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
-					}
-					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
-
-				} else {
-					getScene(createRoot).setRoot(createRoot);
+				if (name.isSelected()) {
+					selectionListDTO.setName(true);
 				}
+				if (age.isSelected()) {
+					selectionListDTO.setAge(true);
+				}
+				if (gender.isSelected()) {
+					selectionListDTO.setGender(true);
+				}
+				if (address.isSelected()) {
+					selectionListDTO.setAddress(true);
+				}
+				if (contactDetails.isSelected()) {
+					selectionListDTO.setContactDetails(true);
+				}
+				if (biometricException.isSelected()) {
+					selectionListDTO.setBiometricException(true);
+				}
+				if (biometricIris.isSelected()) {
+					selectionListDTO.setBiometricIris(true);
+				}
+				if (biometricFingerprint.isSelected()) {
+					selectionListDTO.setBiometricFingerprint(true);
+				}
+				if (cnieNumber.isSelected()) {
+					selectionListDTO.setCnieNumber(true);
+				}
+				if (parentOrGuardianDetails.isSelected()) {
+					selectionListDTO.setParentOrGuardianDetails(true);
+				}
+				selectionListDTO.setChild(isChild);
+				selectionListDTO.setUinId(uinId.getText());
+
+				registrationController.init(selectionListDTO);
+
+				Parent createRoot = BaseController.load(
+						getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+						applicationContext.getApplicationLanguageBundle());
+
+				if (!validateScreenAuthorization(createRoot.getId())) {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				} else {
+					StringBuilder errorMessage = new StringBuilder();
+					ResponseDTO responseDTO;
+					responseDTO = validateSyncStatus();
+					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+							errorMessage.append(
+									errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
+						}
+						generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
+
+					} else {
+						getScene(createRoot).setRoot(createRoot);
+					}
+				}
+
+			} catch (IOException ioException) {
+				LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 			}
-
-		} catch (IOException ioException) {
-			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 }

@@ -28,7 +28,7 @@
             <Font size="10.0" />
          </font>
       </Label>
-      <TextField fx:id="uinId" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="UIN">
+      <TextField fx:id="uinId" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="UIN" styleClass="uinUpdateTextFiledStyle">
          <font>
             <Font size="12.0" />
          </font>

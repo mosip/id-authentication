@@ -1,8 +1,10 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -94,9 +96,6 @@ public class BiometricPreviewController extends BaseController {
 	@Autowired
 	private RegistrationController registrationController;
 
-	@Autowired
-	private DemographicPreviewController demographicPreviewController;
-
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -106,7 +105,7 @@ public class BiometricPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
-		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
+		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
@@ -180,7 +179,12 @@ public class BiometricPreviewController extends BaseController {
 	 * This method is used to handle the edit action of registration preview screen
 	 */
 	public void handleEdit() {
-		demographicPreviewController.handleEdit();
+		try {
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI-  Preview ", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
 	}
 
 	/**
@@ -194,8 +198,8 @@ public class BiometricPreviewController extends BaseController {
 	/**
 	 * This method is used to navigate the screen to home page
 	 */
-	public void goToHomePage() {
-		registrationController.goToHomePage();
+	public void handleHomeButton() {
+		goToHomePageFromRegistration();
 	}
 
 	private String getQualityScore(Double qulaityScore) {

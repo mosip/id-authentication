@@ -395,3 +395,89 @@
 	-fx-font-weight: bold;
 	-fx-font-family: System;
 }
+
+.loginBorderPaneStyle{
+	-fx-pref-height: 530px;
+	-fx-pref-width: 808px;
+}
+
+.loginLeftPaneStyle{
+	-fx-pref-height: 326px;
+	-fx-pref-width: 285px;
+}
+
+.loginCenterPaneStyle{
+	-fx-pref-height: 500px;
+	-fx-pref-width: 500px;
+}
+
+.loginFieldStyle{
+	-fx-pref-height: 39px;
+	-fx-pref-width: 221px;
+}
+
+.loginSubmitStyle{
+	-fx-pref-height: 30px;
+	-fx-pref-width: 81px;
+}
+
+.loginOtpStyle{
+	-fx-pref-height: 30px;
+	-fx-pref-width: 89px;
+}
+
+.loginResendOtpStyle{
+	-fx-pref-height: 30px;
+	-fx-pref-width: 105px;
+}
+
+.loginOtpValidStyle{
+	-fx-pref-height: 18px;
+	-fx-pref-width: 136px;
+}
+
+.loginfpStyle{
+	-fx-pref-height: 27px;
+	-fx-pref-width: 127px;
+}
+
+.headerStyle{
+	-fx-pref-height: 10px;
+	-fx-pref-width: 10px;
+}
+
+.optionsStyle{
+	-fx-pref-height: 244px;
+	-fx-pref-width: 944px;
+}
+
+.optionsButtonStyle{
+	-fx-pref-height: 127px;
+	-fx-pref-width: 231px;
+}
+
+.reRegAnchorPane{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 625.0px;
+}
+
+.reRegToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 86.0px;
+}
+
+.reRegTable{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 250.0px;
+}
+
+.reRegRoot{
+	-fx-pref-height: 316.0px; 
+	-fx-pref-width: 900.0px;
+}
+.uinUpdateTextFiledStyle{
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+  	-fx-border-width: 0 0 1 0;	
+}

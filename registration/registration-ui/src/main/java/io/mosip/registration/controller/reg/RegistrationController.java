@@ -61,7 +61,6 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.SimplePropertiesDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import io.mosip.registration.util.kernal.RIDGenerator;
@@ -194,19 +193,19 @@ public class RegistrationController extends BaseController {
 	private TextField mobileNo;
 
 	@FXML
-	private TextField region;
+	private ComboBox<String> region;
 
 	@FXML
-	private TextField city;
+	private ComboBox<String> city;
 
 	@FXML
-	private TextField province;
+	private ComboBox<String> province;
 
 	@FXML
 	private TextField postalCode;
 
 	@FXML
-	private TextField localAdminAuthority;
+	private ComboBox<String> localAdminAuthority;
 
 	@FXML
 	private TextField cniOrPinNumber;
@@ -300,9 +299,6 @@ public class RegistrationController extends BaseController {
 	private TitledPane authenticationTitlePane;
 
 	@Autowired
-	private PreRegZipHandlingService preRegZipHandlingService;
-
-	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
 
 	@Autowired
@@ -340,7 +336,7 @@ public class RegistrationController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
-			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight() - 5);
+			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
@@ -349,7 +345,7 @@ public class RegistrationController extends BaseController {
 
 			// Create RegistrationDTO Object
 			if (getRegistrationDtoContent() == null) {
-				createRegistrationDTOObject();
+				createRegistrationDTOObject("New");
 			}
 
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
@@ -395,6 +391,10 @@ public class RegistrationController extends BaseController {
 			accord.setExpandedPane(demoGraphicTitlePane);
 			fxUtils.dateFormatter(ageDatePicker);
 			fxUtils.disableFutureDays(ageDatePicker);
+			region.getItems().addAll(RegistrationConstants.CITY_LIST);
+			city.getItems().addAll(RegistrationConstants.CITY_LIST);
+			province.getItems().addAll(RegistrationConstants.CITY_LIST);
+			localAdminAuthority.getItems().addAll(RegistrationConstants.CITY_LIST);
 
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
@@ -423,13 +423,13 @@ public class RegistrationController extends BaseController {
 			preRegistrationLabel.setText("UIN");
 
 			preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
-			
+
 			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
 
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
 			fullNameLabel.setDisable(false);
-			
+
 			dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
 
 			gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
@@ -439,27 +439,26 @@ public class RegistrationController extends BaseController {
 
 			mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			
+
 			emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			
+
 			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			
+
 			parentName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
 			uinId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
-			if(getRegistrationDtoContent().getSelectionListDTO().isChild()) {
+			if (getRegistrationDtoContent().getSelectionListDTO().isChild()) {
 				documentScanController.documentScan.setLayoutY(134.00);
-			}else {
+			} else {
 				documentScanController.documentScan.setLayoutY(25.00);
 			}
-			
-			
+
 		}
 	}
 
 	public void init(SelectionListDTO selectionListDTO) {
-		createRegistrationDTOObject();
+		createRegistrationDTOObject("Update");
 		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
 	}
 
@@ -645,9 +644,9 @@ public class RegistrationController extends BaseController {
 			} else {
 				LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
-				region.setText(locationDto.getRegion());
-				city.setText(locationDto.getCity());
-				province.setText(locationDto.getProvince());
+				region.setValue(locationDto.getRegion());
+				city.setValue(locationDto.getCity());
+				province.setValue(locationDto.getProvince());
 				postalCode.setText(locationDto.getPostalCode());
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
@@ -769,6 +768,10 @@ public class RegistrationController extends BaseController {
 					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", autoAgeDatePicker);
 				}
 				biometricTitlePane.setExpanded(true);
+				
+					toggleFingerprintCaptureVisibility(registrationDTO.getSelectionListDTO().isBiometricFingerprint());
+					toggleIrisCaptureVisibility(registrationDTO.getSelectionListDTO().isBiometricIris());
+					//togglePhotoCaptureVisibility(true);
 
 			}
 		} catch (RuntimeException runtimeException) {
@@ -787,7 +790,7 @@ public class RegistrationController extends BaseController {
 
 		return Builder.build(DemographicInfoDTO.class).with(demographicDTO -> demographicDTO.setIdentity(Builder
 				.build(Identity.class)
-				.with(identity -> identity.setFullName((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setFullName(fullName.isDisabled() ? null : (ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(name -> name.setLabel("First Name"))
 						.with(name -> name.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -798,15 +801,14 @@ public class RegistrationController extends BaseController {
 										.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setDateOfBirth(
-						Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Date Of Birth"))
+				.with(identity -> identity.setDateOfBirth(dateAnchorPane.isDisabled() ? null : Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Date Of Birth"))
 								.with(value -> value.setValue(DateUtils.formatDate(
 										Date.from((ageDatePicker.getValue() == null ? autoAgeDatePicker : ageDatePicker)
 												.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
 										"yyyy/MM/dd")))
 								.get()))
 
-				.with(identity -> identity.setAge(ageField.getText()))
+				.with(identity -> identity.setAge(ageField.isDisabled() ? null : ageField.getText()))
 				.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(genderValue -> genderValue.setLabel("Gender"))
 						.with(genderValue -> genderValue.setValues(Builder.build(LinkedList.class)
@@ -818,7 +820,7 @@ public class RegistrationController extends BaseController {
 										.with(value -> value.setValue(gender.getValue())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setAddressLine1((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setAddressLine1(addressLine1.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(addressValue -> addressValue.setLabel("Address Line 1"))
 						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -830,7 +832,7 @@ public class RegistrationController extends BaseController {
 										.with(value -> value.setValue(addressLine1LocalLanguage.getText())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setAddressLine2((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setAddressLine2(addressLine2.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(addressValue -> addressValue.setLabel("Address Line 2"))
 						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -842,7 +844,7 @@ public class RegistrationController extends BaseController {
 										.with(value -> value.setValue(addressLine2LocalLanguage.getText())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setAddressLine3((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setAddressLine3(addressLine3.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(addressValue -> addressValue.setLabel("Address Line 3"))
 						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -854,61 +856,61 @@ public class RegistrationController extends BaseController {
 										.with(value -> value.setValue(addressLine3LocalLanguage.getText())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setRegion((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setRegion(region.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(regionValue -> regionValue.setLabel("Region"))
 						.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(region.getText())).get()))
+										.with(value -> value.setValue(region.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(region.getText())).get()))
+										.with(value -> value.setValue(region.getValue())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setProvince((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setProvince(province.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(provinceValue -> provinceValue.setLabel("Province"))
 						.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(province.getText())).get()))
+										.with(value -> value.setValue(province.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(province.getText())).get()))
+										.with(value -> value.setValue(province.getValue())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setCity((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+				.with(identity -> identity.setCity(city.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
 						.with(cityValue -> cityValue.setLabel("City"))
 						.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(city.getText())).get()))
+										.with(value -> value.setValue(city.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(city.getText())).get()))
+										.with(value -> value.setValue(city.getValue())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setPostalCode(postalCode.getText()))
+				.with(identity -> identity.setPostalCode(postalCode.isDisabled() ? null : postalCode.getText()))
 
 				.with(identity -> identity
-						.setPhone(Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Land Line"))
+						.setPhone(mobileNo.isDisabled() ? null :Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Land Line"))
 								.with(value -> value.setValue(mobileNo.getText())).get()))
-				.with(identity -> identity.setEmail(
+				.with(identity -> identity.setEmail(emailId.isDisabled() ? null :
 						Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Business Email"))
 								.with(value -> value.setValue(emailId.getText())).get()))
-				.with(identity -> identity.setCnieNumber(cniOrPinNumber.getText()))
-				.with(identity -> identity.setLocalAdministrativeAuthority((ArrayPropertiesDTO) Builder
+				.with(identity -> identity.setCnieNumber(cniOrPinNumber.isDisabled() ? null :cniOrPinNumber.getText()))
+				.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled() ? null :(ArrayPropertiesDTO) Builder
 						.build(ArrayPropertiesDTO.class)
 						.with(localAdminAuthValue -> localAdminAuthValue.setLabel("Local Administrative Authority"))
 						.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+										.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+										.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO) Builder
+				.with(identity -> identity.setParentOrGuardianName(parentName.isDisabled() ? null :(ArrayPropertiesDTO) Builder
 						.build(ArrayPropertiesDTO.class).with(parentValue -> parentValue.setLabel("Parent/Guardian"))
 						.with(parentValue -> parentValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
@@ -919,7 +921,7 @@ public class RegistrationController extends BaseController {
 										.with(value -> value.setValue(parentName.getText())).get()))
 								.get()))
 						.get()))
-				.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.getText()))
+				.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.isDisabled() ? null :uinId.getText()))
 				.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
 				.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
 				.with(identity -> identity.setProofOfRelationship(demographicIdentity.getProofOfRelationship()))
@@ -1140,12 +1142,6 @@ public class RegistrationController extends BaseController {
 		return imageCaptured;
 	}
 
-	private void loadScreen(String screen) throws IOException {
-		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				applicationContext.getApplicationLanguageBundle());
-		getScene(createRoot);
-	}
-
 	/**
 	 * Validating the age field for the child/Infant check.
 	 */
@@ -1195,6 +1191,7 @@ public class RegistrationController extends BaseController {
 			fxUtils.validateOnType(postalCode, validation);
 			fxUtils.validateOnType(emailId, validation);
 			fxUtils.validateOnType(cniOrPinNumber, validation);
+			fxUtils.validateOnType(fullNameLocalLanguage, validation);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
@@ -1314,32 +1311,6 @@ public class RegistrationController extends BaseController {
 
 	/**
 	 * 
-	 * Opens the home page screen
-	 * 
-	 */
-	@Override
-	public void goToHomePage() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Going to home page");
-
-		try {
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_ISEDIT);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
-			SessionContext.getInstance().getUserContext().getUserMap()
-					.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
-			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-		}
-	}
-
-	/**
-	 * 
 	 * Validates the fields of demographic pane1
 	 * 
 	 */
@@ -1431,11 +1402,11 @@ public class RegistrationController extends BaseController {
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");
 		addressLine3.setText("Taramani");
-		region.setText("Taramani");
-		city.setText("Chennai");
-		province.setText("Tamilnadu");
+		region.setValue("Taramani");
+		city.setValue("Chennai");
+		province.setValue("Tamilnadu");
 		postalCode.setText("60011");
-		localAdminAuthority.setText("MindTree");
+		localAdminAuthority.setValue("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");
@@ -1596,7 +1567,7 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	protected void createRegistrationDTOObject() {
+	protected void createRegistrationDTOObject(String registrationCategory) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
 		// Set the RID
@@ -1627,7 +1598,7 @@ public class RegistrationController extends BaseController {
 
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
-		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
@@ -1660,5 +1631,4 @@ public class RegistrationController extends BaseController {
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
 	}
-
 }

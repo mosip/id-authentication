@@ -1,9 +1,14 @@
 package io.mosip.registration.test.jobs;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +25,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.dao.SyncJobConfigDAO;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
@@ -151,6 +157,47 @@ public class PreRegistrationPacketDeletionJobTest {
 		Mockito.when(context.getJobDetail()).thenThrow(NullPointerException.class);
 		
 	deletionJob.executeInternal(context);
+	}
+	
+	@Test
+	public void executejobRunTimeExceptionTest() {
+		ResponseDTO responseDTO=new ResponseDTO();
+		ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
+		List<ErrorResponseDTO> errorResponseDTOs=new ArrayList<>();
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		SyncJobDef syncJob = new SyncJobDef();
+		syncJob.setId("1");
+		
+		Map<String, SyncJobDef> jobMap=new HashMap<>();
+		
+		jobMap.put(syncJob.getId(), syncJob);
+		
+		syncJob.setId("2");
+		syncJob.setParentSyncJobId("1");
+		
+		
+		jobMap.put("2", syncJob);
+
+		Mockito.when(context.getJobDetail()).thenReturn(jobDetail);
+		Mockito.when(jobDetail.getJobDataMap()).thenReturn(jobDataMap);
+		Mockito.when(jobDataMap.get(Mockito.any())).thenReturn(applicationContext);
+		Mockito.when(applicationContext.getBean(SyncManager.class)).thenReturn(syncManager);
+		Mockito.when(applicationContext.getBean(JobManager.class)).thenReturn(jobManager);
+		Mockito.when(applicationContext.getBean(PreRegistrationDataSyncService.class)).thenReturn(preRegistrationDataSyncService);
+		
+		Mockito.when(jobManager.getChildJobs(Mockito.any())).thenReturn(jobMap);
+		Mockito.when(jobManager.getJobId(Mockito.any(JobExecutionContext.class))).thenReturn("1");
+		
+		
+		
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(deletionJob);
+	
+		Mockito.when(preRegistrationDataSyncService.fetchAndDeleteRecords()).thenThrow(RuntimeException.class);
+		
+		//assertEquals(responseDTO, deletionJob.executeInternal(context));
+		deletionJob.executeInternal(context);
+	
 	}
 	
 	@Test(expected = RegBaseUncheckedException.class)

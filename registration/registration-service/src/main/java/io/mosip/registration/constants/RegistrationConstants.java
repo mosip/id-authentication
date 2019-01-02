@@ -65,6 +65,8 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_SUCCESS = "success";
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
+	public static final String SUPERVISOR = "SUPERVISOR";
+	public static final String OFFICER = "OFFICER";
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
@@ -116,6 +118,9 @@ public class RegistrationConstants {
 	public static final String REG_DDC_003_2="REG_DDC_003_2";
 	public static final String REG_DDC_004_1="REG_DDC_004_1";
 	public static final String REG_DDC_004_2="REG_DDC_004_2";
+	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
+	public static final String LOCAL_LANGUAGE="LocalLanguage";
+
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
@@ -270,7 +275,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_WITHOUT_EXCEPTION_IMAGE = "WithoutExceptionImage";
 	public static final String TEMPLATE_WITH_EXCEPTION_IMAGE = "WithExceptionImage";
 	public static final String TEMPLATE_STYLE_PROPERTY = "style='visibility:hidden;'";
-	public static final String TEMPLATE_LOGTAG = "Acknowledgement Template";
+	public static final String TEMPLATE_NAME = "Acknowledgement Template";
 	public static final String TEMPLATE_DATE_LOCAL_LANG_LABEL = "DateLocalLangLabel";
 	public static final String TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL = "FullNameLocalLangLabel";
 	public static final String TEMPLATE_DOB_LOCAL_LANG_LABEL = "DOBLocalLangLabel";
@@ -485,10 +490,10 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "DoB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
+	
+	public static List<String> CITY_LIST = Arrays.asList("Delhi","Chennai","Bengaluru","Mumbai");
 
-	public static List<String> getPacketStatus() {
-		return Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
-	}
+	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	// Pre Registration
 	public static final String PRE_REGISTRATION_ID = "preId";

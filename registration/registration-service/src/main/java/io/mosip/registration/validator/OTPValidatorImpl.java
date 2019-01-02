@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.util.common.OTPManager;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * @author SaravanaKumar G
@@ -15,10 +14,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 public class OTPValidatorImpl extends AuthenticationBaseValidator {
 
 	@Autowired
-	ServiceDelegateUtil serviceDelegateUtil;
-
-	@Autowired
-	OTPManager otpManager;
+	private OTPManager otpManager;
 
 	/*
 	 * (non-Javadoc)

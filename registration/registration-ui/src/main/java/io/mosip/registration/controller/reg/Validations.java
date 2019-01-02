@@ -137,7 +137,7 @@ public class Validations extends BaseController {
 			String validationProperty[] = validationBundle.getString(id)
 					.split(RegistrationConstants.VALIDATION_SPLITTER);
 			String label = id.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY);
-			String message = id.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY);
+			label = label.replaceAll(RegistrationConstants.LOCAL_LANGUAGE, RegistrationConstants.EMPTY);
 			String regex = validationProperty[0];
 			int length = Integer.parseInt(validationProperty[1]);
 			String isMandetory = validationProperty[2];
@@ -157,7 +157,7 @@ public class Validations extends BaseController {
 						return true;
 					} else {
 						generateAlert(
-								labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_1)).concat(""+length).concat(RegistrationConstants.REG_DDC_002_2),
+								labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_2)),
 								isConsolidated, validationMessage);
 						node.requestFocus();
 						return false;
@@ -168,7 +168,7 @@ public class Validations extends BaseController {
 						return true;
 					} else {
 						generateAlert(
-								labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_1)).concat(""+length).concat(RegistrationConstants.REG_DDC_003_2),
+								labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_2)),
 								isConsolidated, validationMessage);
 						node.requestFocus();
 						return false;
@@ -177,7 +177,7 @@ public class Validations extends BaseController {
 
 			}
 			generateAlert(
-					labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_1)).concat(""+length).concat(RegistrationConstants.REG_DDC_004_2),
+					labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_1)).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_2)),
 					isConsolidated, validationMessage);
 			node.requestFocus();
 			return false;
