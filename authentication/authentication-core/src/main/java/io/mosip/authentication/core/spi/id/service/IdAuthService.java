@@ -55,7 +55,8 @@ public interface IdAuthService {
 	 * @param status      status('Y'/'N')
 	 * @param comment     comment
 	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
-			RequestType requestType);
+			RequestType requestType) throws IdAuthenticationBusinessException;
 }

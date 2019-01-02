@@ -209,9 +209,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @param status      status('Y'/'N')
 	 * @param comment     comment
 	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @throws IdAuthenticationBusinessException 
 	 */
 	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
-			RequestType requestType) {
+			RequestType requestType) throws IdAuthenticationBusinessException {
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setRefId(idvId);
@@ -227,7 +228,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 		try {
 			convertStringToDate = dateHelper.convertStringToDate(reqTime);
 		} catch (IDDataValidationException e) {
-			e.printStackTrace();
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP, e);
 		}
 
 		autnTxn.setRequestDTtimes(convertStringToDate);
