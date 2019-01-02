@@ -182,8 +182,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 				registrationStatusService.updateRegistrationStatus(entry);
 				isTransactionSuccessful = true;
 				description = registrationId + " packet successfully has been send to DFS";
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.RPR_PUM_PACKET_DELETION_INFO.getMessage());
 
 			}
 		} catch (DFSNotAccessibleException e) {

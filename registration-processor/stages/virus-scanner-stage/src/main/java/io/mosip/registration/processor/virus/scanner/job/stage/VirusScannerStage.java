@@ -21,6 +21,7 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -49,10 +50,6 @@ public class VirusScannerStage extends MosipVerticleManager {
 	@Autowired
 	private Environment env;
 
-	/** The extention. */
-	@Value("${registration.processor.packet.ext}")
-	private String extention;
-
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
@@ -69,6 +66,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The decryptor. */
+	@Autowired
 	Decryptor decryptor;
 
 	@Value("${vertx.ignite.configuration}")
@@ -117,6 +115,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		try (InputStream encryptedPacket = new FileInputStream(encryptedFile)) {
 
 			isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
+
 			if (isEncryptedFileCleaned) {
 				decryptedData = decryptor.decrypt(encryptedPacket, registrationId);
 
@@ -157,6 +156,12 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = false;
 			description = "Packet decryption failed for packet " + registrationId;
+		} catch (Exception ex) {
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
 
 			String eventId = "";
