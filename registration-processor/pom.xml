@@ -46,7 +46,7 @@
 		<!-- Data Access -->
 		<eclipselink.version>2.5.0</eclipselink.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
-		<h2.version>1.4.197</h2.version>
+		<h2.version>1.4.195</h2.version>
 		<postgresql.version>42.2.2</postgresql.version>
 
 		<!-- Lombok -->
