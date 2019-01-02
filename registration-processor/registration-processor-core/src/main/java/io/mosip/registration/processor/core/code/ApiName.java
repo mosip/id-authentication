@@ -55,6 +55,4 @@ public enum ApiName {
 	/** The uingenerator. */
 	UINGENERATOR
 	
-	
-	
 }

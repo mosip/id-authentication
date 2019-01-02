@@ -1,27 +1,20 @@
 package io.mosip.registration.processor.stages.uigenerator;
 
-import java.io.InputStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idgenerator.uin.dto.UinResponseDto;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.kernel.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 
 /**
@@ -30,6 +23,8 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  */
 @Service
 public class UinGeneratorStage extends MosipVerticleManager {
+	
+	
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinGeneratorStage.class);
@@ -61,18 +56,37 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The registration id. */
 	private String registrationId = "";
-
+	
+	UinResponseDto uinResponseDto = new UinResponseDto();
+	IdResponseDTO idResponseDTO = new IdResponseDTO();
+	IdRequestDTO idRequestDTO =  new IdRequestDTO();
+	
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		this.registrationId = object.getRid();
 		System.out.println(this.registrationId);
 
+	
+		
+		
+		
 		try {
-			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "", "", UinResponseDto.class);
-		System.out.println("our UIN   :   "+uinResponseDto.getUin());
-		
-		
-		} catch (ApisResourceAccessException e) {
+			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "",
+					"", UinResponseDto.class);
+			
+			
+			idRequestDTO.setUin(uinResponseDto.getUin());
+			idRequestDTO.setRegistrationId(object.getRid());
+			idRequestDTO.setId("mosip.id.create");
+//			idRequestDTO.setTimestamp();
+			
+			
+			IdResponseDTO idResponseDTO=	(IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
+					"", "",idRequestDTO , IdResponseDTO.class);
+			
+			
+		} 
+		catch (ApisResourceAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -93,5 +107,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		//this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
 	}
+
 
 }
