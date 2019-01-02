@@ -2,7 +2,6 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -23,13 +22,12 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -104,6 +102,12 @@ public class BaseController {
 		return fXComponents.getStage();
 	}
 
+	protected void loadScreen(String screen) throws IOException {
+		Parent createRoot = BaseController.load(getClass().getResource(screen),
+				applicationContext.getApplicationLanguageBundle());
+		getScene(createRoot);
+	}
+	
 	protected Scene getScene(Parent borderPane) {
 		
 		if (!borderPane.getId().equals("loginScreen")) {
@@ -265,17 +269,42 @@ public class BaseController {
 	 * @throws RegBaseCheckedException
 	 * 
 	 */
-	public void goToHomePage() throws RegBaseCheckedException {
+	public void goToHomePage() {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
-					RegistrationExceptionConstants.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
+		} catch (IOException | RuntimeException exception) {
+			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
+	/**
+	 * This method is used clear all the new registration related mapm values and
+	 * navigates to the home page
+	 * 
+	 * 
+	 */
+	public void goToHomePageFromRegistration() {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
+
+		clearRegistrationData();
+
+		goToHomePage();
+	}
+
+	protected void clearRegistrationData() {
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_ISEDIT);
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
+		SessionContext.getInstance().getUserContext().getUserMap()
+				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
+	}
+	
 	public static FXMLLoader loadChild(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url);
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);

@@ -137,6 +137,7 @@ public class Validations extends BaseController {
 			String validationProperty[] = validationBundle.getString(id)
 					.split(RegistrationConstants.VALIDATION_SPLITTER);
 			String label = id.replaceAll(RegistrationConstants.ON_TYPE, RegistrationConstants.EMPTY);
+			label = label.replaceAll(RegistrationConstants.LOCAL_LANGUAGE, RegistrationConstants.EMPTY);
 			String regex = validationProperty[0];
 			int length = Integer.parseInt(validationProperty[1]);
 			String isMandetory = validationProperty[2];
