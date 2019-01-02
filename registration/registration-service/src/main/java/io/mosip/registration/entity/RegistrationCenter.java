@@ -56,8 +56,6 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	private Time processStartTime;
 	@Column(name = "process_end_time")
 	private Time processEndTime;
-	@Column(name = "time_zone")
-	private String timeZone;
 	@Column(name = "holiday_loc_code")
 	private String holidayLocCode;
 	@Column(name = "lang_code")
