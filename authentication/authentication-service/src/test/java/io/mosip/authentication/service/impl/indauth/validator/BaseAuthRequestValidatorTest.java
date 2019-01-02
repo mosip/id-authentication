@@ -41,6 +41,7 @@ import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.config.IDAMappingConfig;
@@ -880,5 +881,122 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 
 		return authRequestDTO;
+	}
+	
+	@Test
+	public void testValidAuthRequest() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("personalIdentity");
+		matchInfo.setLanguage("FR");
+		matchInfo.setMatchingStrategy("E");
+		matchInfo.setMatchingThreshold(100);
+		List<MatchInfo> matList = new ArrayList<>();
+		matList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matList);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		assertFalse(errors.hasErrors());
+	}
+	
+	@Test
+	public void testValidAuthRequest2() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setAddress(true);
+		authTypeDTO.setBio(true);
+		authTypeDTO.setFullAddress(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("personalIdentity");
+		matchInfo.setLanguage("AR");
+		matchInfo.setMatchingStrategy("Q");
+		matchInfo.setMatchingThreshold(100);
+		
+		MatchInfo matchInfo1 = new MatchInfo();
+		matchInfo1.setAuthType("address");
+		matchInfo1.setLanguage("AR");
+		matchInfo1.setMatchingStrategy("A");
+		matchInfo1.setMatchingThreshold(100);
+		
+		MatchInfo matchInfo11 = new MatchInfo();
+		matchInfo11.setAuthType("personalIdentity");
+		matchInfo11.setLanguage("FR");
+		matchInfo11.setMatchingStrategy("S");
+		matchInfo11.setMatchingThreshold(100);
+		
+		MatchInfo matchInfo111 = new MatchInfo();
+		matchInfo111.setAuthType("fullAddress");
+		matchInfo111.setLanguage("AR");
+		matchInfo111.setMatchingStrategy("T");
+		matchInfo111.setMatchingThreshold(100);
+		
+		MatchInfo matchInfo1111 = new MatchInfo();
+		matchInfo1111.setAuthType("fullAddress");
+		matchInfo1111.setLanguage("FR");
+		matchInfo1111.setMatchingStrategy("T");
+		matchInfo1111.setMatchingThreshold(100);
+		
+		List<MatchInfo> matList = new ArrayList<>();
+		matList.add(matchInfo1111);
+		matList.add(matchInfo111);
+		matList.add(matchInfo1);
+		matList.add(matchInfo11);
+		matList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matList);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		assertTrue(error.hasErrors());
 	}
 }

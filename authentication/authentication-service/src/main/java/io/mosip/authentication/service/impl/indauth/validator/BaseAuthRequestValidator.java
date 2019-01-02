@@ -141,7 +141,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (baseAuthRequestDTO != null) {
 			validateId(baseAuthRequestDTO.getId(), errors);
-			// validateVer(baseAuthRequestDTO.getVer(), errors);
 		}
 	}
 
@@ -193,12 +192,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				validateFingerRequestCount(authRequestDTO, errors);
 				validateMultiFingersValue(authRequestDTO, errors);
 			}
-			if (!errors.hasErrors()) {
-//				if (!validateMultiFingers(authRequestDTO, errors)) {
-//					// throw errors
-//				}
-			}
-
 		}
 	}
 
