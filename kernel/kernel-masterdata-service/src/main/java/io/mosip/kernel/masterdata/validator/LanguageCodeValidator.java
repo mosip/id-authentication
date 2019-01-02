@@ -30,7 +30,8 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 		} else {
 			try {
 				String url = env.getProperty("global.config.uri");
-				JSONObject result = restTemplate.getForObject(url, JSONObject.class);
+				String json = restTemplate.getForObject(url, String.class);
+				JSONObject result = new JSONObject(json);
 				JSONArray arr = result.getJSONArray("languagesSupported");
 				for (int i = 0; i < arr.length(); i++) {
 					if (value.equals(arr.getString(i))) {
