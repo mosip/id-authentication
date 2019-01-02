@@ -1,5 +1,8 @@
 package io.mosip.registration.processor.stages.uigenerator;
 
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,7 +17,12 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.stages.util.UinAvailabilityCheck;
 
 
 /**
@@ -50,7 +58,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
-
+	
+	@Autowired
+	private FileSystemAdapter<InputStream, Boolean> adapter;
+	
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
@@ -67,14 +78,23 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		System.out.println(this.registrationId);
 
 	
-		
-		
+		InputStream packetMetaInfoStream = adapter.getFile("27847657360002520181208094032" , PacketFiles.PACKETMETAINFO.name());
+	
+			try {
+				PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+						PacketMetaInfo.class);
+			
 		
 		try {
 			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "",
 					"", UinResponseDto.class);
 			
+			UinAvailabilityCheck uinAvailabilityCheck = new UinAvailabilityCheck();
+			uinAvailabilityCheck.uinCheck("uin",packetMetaInfo);
 			
+			
+			
+			/*
 			idRequestDTO.setUin(uinResponseDto.getUin());
 			idRequestDTO.setRegistrationId(object.getRid());
 			idRequestDTO.setId("mosip.id.create");
@@ -82,7 +102,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			
 			
 			IdResponseDTO idResponseDTO=	(IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
-					"", "",idRequestDTO , IdResponseDTO.class);
+					"", "",idRequestDTO , IdResponseDTO.class);*/
 			
 			
 		} 
@@ -90,7 +110,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
 		return null;
 	}
 
