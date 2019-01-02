@@ -164,6 +164,8 @@ public enum PlatformErrorMessages {
 
 	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "001", "Packet Not Found in Packet Store"),
 
+	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "002", "File is Already exists in DFS location And its now Deleted from Virus scanner job"),
+
 	
 	/*****System Exception*****/
 

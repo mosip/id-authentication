@@ -4,13 +4,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
@@ -41,7 +37,6 @@ import io.mosip.registration.processor.packet.uploader.exception.DFSNotAccessibl
 import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -147,22 +142,6 @@ public class PacketUploaderJobTest {
 		packetUploaderStage.deployVerticle();
 	}
 
-	@Test
-	public void UploadingSuccessIfFileNotPresentTest() throws Exception {
-
-		listAppender.start();
-		fooLogger.addAppender(listAppender);
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("1001.zip").getFile());
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
-		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
-		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
-		Mockito.doNothing().when(adapter).unpackPacket("1001");
-		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage).containsExactly(Tuple.tuple( Level.INFO, "1001 - File Stored in File System and same has been deleted from virus scanner job."));
-		
-	}
-	
 	/**
 	 * Uploading success if file present test.
 	 *
@@ -180,7 +159,7 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(adapter).unpackPacket("1001");
 		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage).containsExactly(Tuple.tuple( Level.INFO, "1001 - File is Already exists in DFS location And its now Deleted from Virus scanner job"));
+		Assertions.assertThat(listAppender.list).extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage).containsExactly(Tuple.tuple( Level.INFO, "SESSIONID - REGISTRATIONID - 1001 - File is Already exists in DFS location And its now Deleted from Virus scanner job"));
 		
 	}
 
@@ -202,7 +181,7 @@ public class PacketUploaderJobTest {
 		packetUploaderStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR, "The Registration Status table is not accessible - null"));
+				.containsExactly(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
 
 	}
 
@@ -233,7 +212,7 @@ public class PacketUploaderJobTest {
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.containsExactly(
-						Tuple.tuple(Level.ERROR, "1001 unable to delete after sending to DFS. - {}"));
+						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 
 	}
 	@Test
@@ -242,12 +221,12 @@ public class PacketUploaderJobTest {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 		Mockito.when(filech.exists()).thenReturn(Boolean.FALSE);
-		PacketNotFoundException packetNotFoundException=new PacketNotFoundException("RPR-PUS","1001 unable to delete after sending to DFS.");
+		PacketNotFoundException packetNotFoundException=new PacketNotFoundException("1001 unable to delete after sending to DFS.");
 		Mockito.doThrow(packetNotFoundException).when(packetArchiver).archivePacket(anyString());
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.containsExactly(
-						Tuple.tuple(Level.ERROR, "RPR-PUS - RPR-PUS --> 1001 unable to delete after sending to DFS."));
+						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_PUM_PACKET_NOT_FOUND_EXCEPTIONRPR-PIS-004  --> 1001 unable to delete after sending to DFS."));
 
 	}
 
@@ -261,7 +240,7 @@ public class PacketUploaderJobTest {
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list)
         .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-		.containsExactly(Tuple.tuple( Level.ERROR, "The DFS Path set by the System is not accessible - {}")); 
+		.containsExactly(Tuple.tuple( Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_PIS_FILE_NOT_FOUND_IN_DFSnull")); 
 	}
 	
 	
@@ -273,7 +252,7 @@ public class PacketUploaderJobTest {
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.containsExactly(
-						Tuple.tuple(Level.ERROR, "The DFS Path set by the System is not accessible - null"));
+						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 	}
 
 }
