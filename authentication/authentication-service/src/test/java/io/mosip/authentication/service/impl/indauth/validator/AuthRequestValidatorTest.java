@@ -44,6 +44,7 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import java.time.temporal.ChronoUnit;
 
 /**
  * This class validates the AuthRequestValidator
@@ -220,7 +221,7 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Test(expected = ParseException.class)
+	@Test
 	public void testInvalidTimestamp() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
@@ -228,6 +229,35 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqTime("2001-07-04T12:08:56.235-0700");
 		authRequestDTO.setIdvId("5371843613598211");
 		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInvalidTimestamp2() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType("V");
+		authRequestDTO.setReqTime(Instant.now().plus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setIdvId("5371843613598211");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInvalidTimestamp3() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateRequestTimedOut", Instant.now().minus(2, ChronoUnit.DAYS).atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString(), errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInvalidTimestamp4() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateRequestTimedOut", "2001-07-04T12:08:56.235-0700" , errors);
 		assertTrue(errors.hasErrors());
 	}
 
@@ -1116,5 +1146,41 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 
 		return authRequestDTO;
+	}
+	
+	
+	@Test
+	public void testInValidAuthType() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(null);
+		authRequestDTO.setRequest(reqDTO);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 }
