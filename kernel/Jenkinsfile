@@ -13,6 +13,7 @@ node {
  containersToRun = ''
  containerNames= ''
 
+	
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
   dir(branch) {
@@ -27,7 +28,7 @@ node {
 
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
      ]]
 
     ],
@@ -44,7 +45,7 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
  }
 
 stage('---------- SonarQube Analysis --------------') {
@@ -233,8 +234,10 @@ stage('---------- SonarQube Analysis --------------') {
 def getChangedModules() {
  Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
+ println(changeLogSets)
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
+  println(entries)	 
   for (int j = 0; j < entries.length; j++) {
    def entry = entries[j]
    echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"

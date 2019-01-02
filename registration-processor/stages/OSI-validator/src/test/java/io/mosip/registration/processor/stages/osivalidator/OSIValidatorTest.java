@@ -40,6 +40,7 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 
+import org.springframework.core.env.Environment;
 /**
  * The Class OSIValidatorTest.
  *
@@ -78,6 +79,10 @@ public class OSIValidatorTest {
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
+	  @Mock 
+	  Environment env;
+
+	
 	/** The data. */
 	byte[] data = "1234567890".getBytes();
 
@@ -115,14 +120,13 @@ public class OSIValidatorTest {
 		regOsiDto.setOfficerIrisType("LEFTEYE");
 		regOsiDto.setOfficerPhotoName(null);
 		regOsiDto.setOfficerHashedPin("officerHashedPin");
-
 		regOsiDto.setSupervisorId("S1234");
 		regOsiDto.setSupervisorFingerpImageName("supervisorFingerpImageName");
 		regOsiDto.setSupervisorFingerType("LEFTINDEX");
 		regOsiDto.setSupervisorIrisImageName("supervisorIrisImageName");
 		regOsiDto.setSupervisorIrisType("LEFTEYE");
 		regOsiDto.setSupervisorPhotoName("supervisorPhotoName");
-
+		regOsiDto.setSupervisorHashedPin("supervisorHashedPin");
 		regOsiDto.setIntroducerUin(null);
 		regOsiDto.setIntroducerRegId("reg1234");
 		regOsiDto.setIntroducerTyp("Parent");
@@ -134,6 +138,9 @@ public class OSIValidatorTest {
 		registrationStatusDto.setApplicantType("Child");
 		demographicDedupeDtoList.add(demographicInfoDto);
 
+		Mockito.when(env.getProperty("fingerType"))
+           .thenReturn("LeftThumb");    
+		
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
 
@@ -287,6 +294,22 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	@Test
+	public void tesAllIntroducerFingerPrint1() throws ApisResourceAccessException, IOException {
+		regOsiDto.setIntroducerFingerpType("LEFTINDEX");
+		regOsiDto.setOfficerfingerType("LEFTRING");
+		regOsiDto.setSupervisorFingerType("RIGHTINDEX");
+		demographicInfoDto.setUin(null);
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+	
 	/**
 	 * Test invalid iris.
 	 * 
@@ -310,4 +333,6 @@ public class OSIValidatorTest {
 
 		assertTrue(isValid);
 	}
+	
+	
 }

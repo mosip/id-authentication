@@ -3,6 +3,7 @@ package io.mosip.registration.processor.stages.packet.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
@@ -25,8 +26,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataAccessException;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
@@ -46,7 +48,9 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.vertx.core.Vertx;
 
 /**
  * The Class PacketValidatorStageTest.
@@ -74,18 +78,20 @@ public class PacketValidatorStageTest {
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
-
+	private Vertx vertx;
 	/** The packet validator stage. */
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage = new PacketValidatorStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
-			return null;
+		public MosipEventBus getEventBus(Class<?> verticleName, String url) {
+			vertx = Vertx.vertx();
+
+			return new MosipEventBus(vertx) {
+			};
 		}
 
 		@Override
-		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
-				MessageBusAddress toAddress) {
+		public void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
 		}
 	};
 
@@ -107,6 +113,13 @@ public class PacketValidatorStageTest {
 	/** The identity. */
 	Identity identity = new Identity();
 
+	/** The dto. */
+	InternalRegistrationStatusDto statusDto;
+	/** The list. */
+	List<InternalRegistrationStatusDto> list;
+
+	private ListAppender<ILoggingEvent> listAppender;
+
 	/**
 	 * Sets the up.
 	 *
@@ -115,6 +128,14 @@ public class PacketValidatorStageTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		statusDto = new InternalRegistrationStatusDto();
+		statusDto.setRegistrationId("2018701130000410092018110735");
+		statusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
+		registrationStatusService.addRegistrationStatus(statusDto);
+		list = new ArrayList<InternalRegistrationStatusDto>();
+
+		listAppender = new ListAppender<>();
 
 		dto.setRid("2018701130000410092018110735");
 
@@ -188,6 +209,13 @@ public class PacketValidatorStageTest {
 				.thenReturn(packetMetaInfo);
 
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+		registrationStatusDto = new InternalRegistrationStatusDto();
+		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
+		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
+		listAppender.start();
+		list.add(registrationStatusDto);
+		// registrationStatusService.addRegistrationStatus(registrationStatusDto);
+		Mockito.when(registrationStatusService.getByStatus(anyString())).thenReturn(list);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
@@ -298,6 +326,9 @@ public class PacketValidatorStageTest {
 	 */
 	@Test
 	public void testStructuralValidationSuccessForAdult() throws Exception {
+		listAppender.start();
+
+		list.add(statusDto);
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
@@ -524,6 +555,19 @@ public class PacketValidatorStageTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString()))
 				.thenThrow(new DataAccessException("") {
 				});
+
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void getBySatusExceptionTest() throws Exception {
+
+		listAppender.start();
+
+		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
+				.getByStatus(any(String.class));
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertEquals(true, messageDto.getInternalError());

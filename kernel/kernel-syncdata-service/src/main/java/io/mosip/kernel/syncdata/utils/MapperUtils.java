@@ -19,21 +19,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.syncdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.MachineDto;
-import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
-import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
-import io.mosip.kernel.syncdata.dto.TitleDto;
 import io.mosip.kernel.syncdata.entity.BaseEntity;
-import io.mosip.kernel.syncdata.entity.DeviceSpecification;
 import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.Machine;
-import io.mosip.kernel.syncdata.entity.MachineSpecification;
-import io.mosip.kernel.syncdata.entity.MachineType;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
-import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 
 /**
@@ -75,102 +65,10 @@ public class MapperUtils {
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setIsDeleted(holiday.getIsDeleted());
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;
-	}
-
-	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
-		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
-
-		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
-			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
-			deviceSpecificationDto.setId(deviceSpecification.getId());
-			deviceSpecificationDto.setName(deviceSpecification.getName());
-			deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
-			deviceSpecificationDto.setLangCode(deviceSpecification.getLangCode());
-			deviceSpecificationDto.setBrand(deviceSpecification.getBrand());
-			deviceSpecificationDto.setDeviceTypeCode(deviceSpecification.getDeviceTypeCode());
-			deviceSpecificationDto.setModel(deviceSpecification.getModel());
-			deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion());
-			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
-			deviceSpecificationDto.setIsDeleted(deviceSpecification.getIsDeleted());
-			deviceSpecificationDtoList.add(deviceSpecificationDto);
-
-		}
-		return deviceSpecificationDtoList;
-	}
-
-	public List<MachineDto> mapMachineListDto(List<Machine> machines) {
-		List<MachineDto> machineDtoList = new ArrayList<>();
-
-		for (Machine machine : machines) {
-			MachineDto machineDto = mapMachineDto(machine);
-			machineDtoList.add(machineDto);
-		}
-		return machineDtoList;
-	}
-
-	public MachineDto mapMachineDto(Machine machine) {
-		MachineDto machineDto = new MachineDto();
-		machineDto.setName(machine.getName());
-		machineDto.setId(machine.getName());
-		machineDto.setSerialNum(machine.getSerialNum());
-		machineDto.setIsActive(machine.getIsActive());
-		machineDto.setMachineSpecId(machine.getMachineSpecId());
-		machineDto.setValidityDateTime(machine.getValidityDateTime());
-		machineDto.setIpAddress(machine.getIpAddress());
-		machineDto.setLangCode(machine.getLangCode());
-		machineDto.setIsDeleted(machine.getIsDeleted());
-		return machineDto;
-	}
-
-	public List<MachineSpecificationDto> mapMachineSpecification(List<MachineSpecification> list) {
-		List<MachineSpecificationDto> machineSpecificationList = new ArrayList<>();
-		for (MachineSpecification ms : list) {
-			MachineSpecificationDto dto = new MachineSpecificationDto();
-			dto.setId(ms.getId());
-			dto.setBrand(ms.getBrand());
-			dto.setDescription(ms.getDescription());
-			dto.setIsActive(ms.getIsActive());
-			dto.setLangCode(ms.getLangCode());
-			dto.setMachineTypeCode(ms.getMachineTypeCode());
-			dto.setMinDriverversion(ms.getMinDriverversion());
-			dto.setModel(ms.getModel());
-			dto.setName(ms.getName());
-			dto.setIsDeleted(ms.getIsDeleted());
-			machineSpecificationList.add(dto);
-		}
-		return machineSpecificationList;
-	}
-
-	public List<MachineTypeDto> mapMachineType(List<MachineType> list) {
-		List<MachineTypeDto> machines = new ArrayList<>();
-		for (MachineType mt : list) {
-			MachineTypeDto dto = new MachineTypeDto();
-			dto.setCode(mt.getCode());
-			dto.setDescription(mt.getDescription());
-			dto.setIsActive(mt.getIsActive());
-			dto.setLangCode(mt.getLangCode());
-			dto.setName(mt.getName());
-			dto.setIsDeleted(mt.getIsDeleted());
-			machines.add(dto);
-		}
-		return machines;
-	}
-
-	public List<TitleDto> maptitles(List<Title> titles) {
-		List<TitleDto> list = new ArrayList<>();
-		for (Title entity : titles) {
-			TitleDto dto = new TitleDto();
-			dto.setTitleCode(entity.getId().getCode());
-			dto.setTitleName(entity.getTitleName());
-			dto.setTitleDescription(entity.getTitleDescription());
-			dto.setIsActive(entity.getIsActive());
-			dto.setIsDeleted(entity.getIsDeleted());
-			list.add(dto);
-		}
-		return list;
 	}
 
 	private MapperUtils() {
@@ -431,6 +329,4 @@ public class MapperUtils {
 		dtf.setAccessible(false);
 		ef.setAccessible(false);
 	}
-	// ----------------------------------------------------------------------------------------------------------------------------
-
 }

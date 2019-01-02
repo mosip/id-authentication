@@ -1,13 +1,9 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -21,6 +17,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
+	
 
 /**
  * This abstract class is Vert.x implementation for MOSIP.
@@ -46,19 +43,17 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+	public MosipEventBus getEventBus(Class<?> verticleName, String clusterManagerUrl) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		List<String> addressList = new ArrayList<>();
-		addressList.add(clusterAddress);
-		TcpDiscoverySpi tcpDiscoverySpi = new TcpDiscoverySpi();
-		TcpDiscoveryVmIpFinder tcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder();
-		tcpDiscoveryVmIpFinder.setAddresses(addressList);
-		tcpDiscoverySpi.setIpFinder(tcpDiscoveryVmIpFinder);
-		IgniteConfiguration igniteConfiguration = new IgniteConfiguration();
-		igniteConfiguration.setLocalHost(localhost);
-		igniteConfiguration.setDiscoverySpi(tcpDiscoverySpi);
-		ClusterManager clusterManager = new IgniteClusterManager(igniteConfiguration);
+		URL url = null;
+		try {
+			url = new URL(clusterManagerUrl);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
 				.setHAEnabled(true);
 		Vertx.clusteredVertx(options, result -> {

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-/**
+/**	
  * The Class TransactionEntity.
  */
 @Entity
@@ -52,7 +52,7 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	@Column(name = "ref_id_type")
 	private String referenceIdType;
 
-	/** is deleted? */
+	/**  is deleted?. */
 	@Column(name = "is_deleted", length = 32)
 	private Boolean isDeleted ;
 
@@ -89,16 +89,12 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	/**
 	 * Instantiates a new transaction entity.
 	 *
-	 * @param transactionId
-	 *            the transaction id
-	 * @param registrationId
-	 *            the registration id
-	 * @param parentid
-	 *            the parentid
-	 * @param trntypecode
-	 *            the trntypecode
-	 * @param statusCode
-	 *            the status code
+	 * @param transactionId            the transaction id
+	 * @param registrationId            the registration id
+	 * @param parentid            the parentid
+	 * @param trntypecode            the trntypecode
+	 * @param statusCode            the status code
+	 * @param statusComment the status comment
 	 */
 	public TransactionEntity(String transactionId, String registrationId, String parentid, String trntypecode,
 			String statusCode, String statusComment) {
@@ -284,18 +280,38 @@ public class TransactionEntity extends BaseRegistrationEntity {
 
 	
 
+	/**
+	 * Gets the checks if is deleted.
+	 *
+	 * @return the checks if is deleted
+	 */
 	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
 
+	/**
+	 * Sets the checks if is deleted.
+	 *
+	 * @param isDeleted the new checks if is deleted
+	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
+	/**
+	 * Gets the delete date time.
+	 *
+	 * @return the delete date time
+	 */
 	public LocalDateTime getDeleteDateTime() {
 		return deleteDateTime;
 	}
 
+	/**
+	 * Sets the delete date time.
+	 *
+	 * @param deleteDateTime the new delete date time
+	 */
 	public void setDeleteDateTime(LocalDateTime deleteDateTime) {
 		this.deleteDateTime = deleteDateTime;
 	}

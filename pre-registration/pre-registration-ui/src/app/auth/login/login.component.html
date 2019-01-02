@@ -1,3 +1,38 @@
-<p>
-  login works!
-</p>
+<div class="wrapper">
+
+  <div class="form_wrapper">
+    <div class="heading">
+      <span>Quick & Easy steps</span>
+    </div>
+
+    <div class="subHeading pinkText">
+      To enroll <span class="boldText">Unique Identification Number</span>
+    </div>
+
+    <div class="form_fields_wrapper">
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-select placeholder="Select your language">
+            <mat-option *ngFor="let lang of languages" [value]="lang">{{lang}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline">
+          <input matInput [(ngModel)]="inputText" placeholder="{{inputPlaceholder}}" id="inputField" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <button mat-raised-button class="pinkBg whiteText boldText"
+        disabled="{{disableBtn}}" (click)="submit()">{{btnText}}</button>
+      </div>
+
+      <div class="pinkText boldText" id="timer">
+        <span id="minutesSpan">02</span>:<span id="secondsSpan">00</span>
+      </div>
+    </div>
+  </div>
+
+</div>

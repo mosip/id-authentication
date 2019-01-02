@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.status.dto;
 
-/**
+/**	
  * The Enum SyncTypeDto.
  *
  * @author Girish Yarru
@@ -43,7 +43,6 @@ public enum SyncTypeDto {
 	/**
 	 * Gets the value.
 	 *
-	 * @param value the value
 	 * @return the value
 	 */
 	public String getValue() {

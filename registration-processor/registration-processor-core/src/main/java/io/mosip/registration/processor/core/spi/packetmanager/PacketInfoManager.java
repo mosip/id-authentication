@@ -1,5 +1,6 @@
-package io.mosip.registration.processor.core.spi.packetmanager;
 
+package io.mosip.registration.processor.core.spi.packetmanager;
+	
 import java.io.InputStream;
 import java.util.List;
 
@@ -91,5 +92,13 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId);
+	
+	/**
+	 * Gets the applicant registration id by UIN
+	 * @param uin
+	 * @return the registration id by UIN
+	 */
+	public List<String> getRegIdByUIN(String uin);
+
 
 }

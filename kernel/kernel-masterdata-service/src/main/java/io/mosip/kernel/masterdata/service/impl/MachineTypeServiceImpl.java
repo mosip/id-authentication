@@ -50,7 +50,7 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 			renMachineType = machineTypeRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage() + "  "
+					MachineTypeErrorCode.MACHINE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

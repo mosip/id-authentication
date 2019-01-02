@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 
-/**
+/**	
  * The Class RegistrationStatusDao.
  *
  * @author Shashank Agrawal

@@ -1,9 +1,11 @@
 package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.HolidayIDDto;
+import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
+import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
-import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -17,7 +19,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 public interface HolidayService {
 
 	/**
-	 * to fetch all the holidays
+	 * To fetch all the holidays
 	 * 
 	 * @return {@linkplain HolidayResponseDto}
 	 * @throws MasterDataServiceException
@@ -28,7 +30,7 @@ public interface HolidayService {
 	HolidayResponseDto getAllHolidays();
 
 	/**
-	 * to fetch specific holiday using holiday id
+	 * To fetch specific holiday using holiday id
 	 * 
 	 * @param holidayId
 	 *            input from user
@@ -41,7 +43,7 @@ public interface HolidayService {
 	HolidayResponseDto getHolidayById(int holidayId);
 
 	/**
-	 * to fetch specific holiday using holiday id and language code
+	 * To fetch specific holiday using holiday id and language code
 	 * 
 	 * @param holidayId
 	 *            input from user
@@ -56,7 +58,7 @@ public interface HolidayService {
 	HolidayResponseDto getHolidayByIdAndLanguageCode(int holidayId, String langCode);
 
 	/**
-	 * to add a new holiday data
+	 * To add a new holiday data
 	 * 
 	 * @param holidayDto
 	 *            input values for holiday
@@ -64,5 +66,25 @@ public interface HolidayService {
 	 * @throws MasterDataServiceException
 	 *             when entered data not created
 	 */
-	public HolidayID saveHoliday(RequestDto<HolidayDto> holidayDto);
+	public HolidayIDDto saveHoliday(RequestDto<HolidayDto> holidayDto);
+
+	/**
+	 * Method to update a holiday data
+	 * 
+	 * @param holidayDto
+	 *            input values for holidays
+	 * @return primary key of entered row of holiday data
+	 * @throws MasterDataServiceException
+	 *             when entered data not updated
+	 */
+	public HolidayIDDto updateHoliday(RequestDto<HolidayUpdateDto> holidayDto);
+
+	/**
+	 * Method to delete the holidays
+	 * 
+	 * @param holidayId
+	 *            input holiday id
+	 * @return id of the holiday which been deleted
+	 */
+	public HolidayIdDeleteDto deleteHoliday(RequestDto<HolidayIdDeleteDto> holidayId);
 }

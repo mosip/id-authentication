@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -47,7 +46,7 @@
 		<!-- Data Access -->
 		<eclipselink.version>2.5.0</eclipselink.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
-		<h2.version>1.4.197</h2.version>
+		<h2.version>1.4.195</h2.version>
 		<postgresql.version>42.2.2</postgresql.version>
 
 		<!-- Lombok -->
@@ -118,7 +117,8 @@
 		<module>stages</module>
 		<module>packet-info-storage-service</module>
 		<module>quality-checker</module>
-	</modules>
+		<module>registration-processor-message-sender</module>
+  </modules>
 
 	<profiles>
 		<profile>
@@ -282,5 +282,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

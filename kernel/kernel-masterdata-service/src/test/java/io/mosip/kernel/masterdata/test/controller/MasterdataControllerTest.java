@@ -33,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
@@ -55,6 +56,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IdType;
@@ -192,16 +194,31 @@ public class MasterdataControllerTest {
 	public void setUp() {
 		mapper = new ObjectMapper();
 		biometricTypeSetup();
+
 		applicationSetup();
+
 		biometricAttributeSetup();
+
+		// TODO DeviceControllerTest
+		// TODO DeviceSpecificationControllerTest
+
 		documentCategorySetup();
+
 		documentTypeSetup();
+
 		idTypeSetup();
+
 		locationSetup();
+
+		// TODO MachineDetailControllerTest
+		// TODO MachineHistoryControllerTest
+
 		registrationCenterController();
 		blackListedWordSetUp();
 		templateSetup();
+
 		templateFileFormatSetup();
+
 	}
 
 	private void templateSetup() {
@@ -248,8 +265,7 @@ public class MasterdataControllerTest {
 
 		Holiday holiday = new Holiday();
 		holiday.setId(1);
-		holiday.setHolidayId(new HolidayID("KAR", date, "ENG"));
-		holiday.setHolidayName("Diwali");
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG","Diwali"));
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
@@ -268,7 +284,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyLevel(0);
 		locationDto.setHierarchyName(null);
 		locationDto.setParentLocCode(null);
-		locationDto.setLanguageCode("HIN");
+		locationDto.setLangCode("HIN");
 
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
@@ -277,7 +293,7 @@ public class MasterdataControllerTest {
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("STATE");
 		locationDto.setParentLocCode("IND");
-		locationDto.setLanguageCode("KAN");
+		locationDto.setLangCode("KAN");
 		locationDto.setIsActive(true);
 
 		locationDto.setIsActive(true);
@@ -413,7 +429,7 @@ public class MasterdataControllerTest {
 
 	}
 
-	// -------------------------------BiometricTypeControllerTest--------------------------//
+	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeResponseDto);
@@ -448,9 +464,8 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
-						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n"
-						+ "    \"isActive\": true,\n" + "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n"
-						+ "  }\n" + "}"))
+						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
+						+ "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 
@@ -711,6 +726,92 @@ public class MasterdataControllerTest {
 				.content(LOCATION_JSON_EXPECTED_POST))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
+
+
+	@Test
+	public void testUpdateLocationDetails() throws Exception {
+		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST)).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testUpdateLocationDetailsException() throws Exception {
+		Mockito.when(locationService.updateLocationDetails(Mockito.any()))
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/locations").contentType(MediaType.APPLICATION_JSON)
+				.content(LOCATION_JSON_EXPECTED_POST))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+	}
+	
+	@Test
+	public void getImmediateChildrenTest() throws Exception {
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenReturn(locationResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isOk());
+		
+	}
+	
+	@Test
+	public void getImmediateChildrenServiceExceptionTest() throws Exception {
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isInternalServerError());
+		
+	}
+	
+	@Test
+	public void getImmediateChildrenDataNotFoundExceptionTest() throws Exception {
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataNotFoundException("111111","data not found"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isNotFound());
+		
+	}
+	@Test
+	public void testDeleteLocationDetails() throws Exception {
+		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString()))
+				.thenReturn(new CodeResponseDto());
+		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/locations/KAR").contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+	
+
+	/**
+	 * 
+	 * @author M1043226
+	 * @since 1.0.0
+	 *
+	 */
+	@Test
+	public void getLocationDataByHierarchyNameSuccessTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenReturn(locationResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/state"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+
+	@Test
+	public void dataNotfoundExceptionTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenThrow(new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage()));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
+
+	}
+
+	@Test
+	public void masterDataServiceExceptionTest() throws Exception {
+
+		Mockito.when(locationService.getLocationDataByHierarchyName(Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage()));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/locationhierarchy/123"))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
+	}
+
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test

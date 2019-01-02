@@ -13,12 +13,12 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterUserMappingHistoryE
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
+import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
@@ -59,14 +59,13 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 		try {
 			registrationCenterUserMachines = registrationCenterUserMachineHistoryRepository
-					.findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-							new RegistrationCenterMachineUserID(registrationCenterId, userId, machineId), lDateAndTime);
+					.findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(registrationCenterId, userId, machineId, lDateAndTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
 							.getErrorCode(),
 					RegistrationCenterUserMappingHistoryErrorCode.REGISTRATION_CENTER_USER_MACHINE_MAPPING_HISTORY_FETCH_EXCEPTION
-							.getErrorMessage());
+							.getErrorMessage()+ExceptionUtils.parseException(dataAccessLayerException));
 		}
 		if (registrationCenterUserMachines == null || registrationCenterUserMachines.isEmpty()) {
 			throw new DataNotFoundException(

@@ -20,7 +20,7 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: '/'+projectToBuild +'/.*'],
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
       [$class: 'SparseCheckoutPath', path: '/'+projectToBuild + '/']
      ]]
@@ -90,6 +90,6 @@ stage('-----------Docker image push and cleanup-----------') {
 
 
 }
- 
+
 
 }

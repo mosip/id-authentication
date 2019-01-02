@@ -91,7 +91,7 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		long duration = Duration.between(requestTime, responseTime).toMillis();
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " 
 		+ duration
-		+ ". Time difference between request and response in Seconds: " + (((double) duration / 1000) % 60));
+		+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000));
 	}
 	
 }

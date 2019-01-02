@@ -161,7 +161,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			response.setErr(errors);
 		}
 
-		response.setTimestamp(DateUtils.getDefaultUTCCurrentDateTimeString());
+		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response", "uin")));

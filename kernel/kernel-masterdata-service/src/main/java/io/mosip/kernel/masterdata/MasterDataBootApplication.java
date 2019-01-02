@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * related to master data
  * 
  * @author Dharmesh Khandelwal
- * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */

@@ -88,13 +88,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The Constant LOG_FORMATTER. */
 	public static final String LOG_FORMATTER = "{} - {}";
 
+	/** The Constant DEMOGRAPHIC_APPLICANT. */
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
+	/** The Constant TABLE_NOT_ACCESSIBLE. */
 	private static final String TABLE_NOT_ACCESSIBLE = "TABLE IS NOT ACCESSIBLE.";
 
 	/** The applicant document repository. */
@@ -125,6 +129,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicInfoJsonEntity, String> demographicJsonRepository;
 
+	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
@@ -148,26 +153,41 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The packet info dao. */
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
+	/** The filesystem ceph adapter impl. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
+	/** The utility. */
 	@Autowired
 	private Utilities utility;
 
+	/** The reg processor identity json. */
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	/** The meta data. */
 	private List<FieldValue> metaData;
+
+	/** The reg id. */
 	private String regId;
+
+	/** The pre reg id. */
 	private String preRegId;
 
+	/** The demographic identity. */
 	private JSONObject demographicIdentity = null;
+
+	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
+
+	/** The Constant LABEL. */
 	private static final String LABEL = "label";
+
+	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
 	/*
@@ -218,6 +238,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/**
+	 * Save exception biometric datas.
+	 *
+	 * @param exceptionBiometrics the exception biometrics
+	 */
 	private void saveExceptionBiometricDatas(List<BiometricExceptionDto> exceptionBiometrics) {
 		for (BiometricExceptionDto exp : exceptionBiometrics) {
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
@@ -228,6 +253,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getPacketsforQCUser(java.lang.String)
+	 */
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
 
@@ -259,8 +287,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save bio metric data.
 	 *
-	 * @param bioMetricData
-	 *            the bio metric data
+	 * @param applicant the applicant
 	 */
 	private void saveApplicantBioMetricDatas(Applicant applicant) {
 		saveIris(applicant.getLeftEye());
@@ -347,9 +374,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save osi data.
 	 *
-	 * @param osiData
-	 *            the osi data
-	 * @param introducer
+	 * @param osiData            the osi data
+	 * @param introducer the introducer
 	 */
 	private void saveOsiData(List<FieldValue> osiData, Introducer introducer) {
 		if (osiData != null) {
@@ -362,9 +388,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save photo graph.
 	 *
-	 * @param photoGraphData
-	 *            the photo graph data
-	 * @param exceptionPhotographData
+	 * @param photoGraphData            the photo graph data
+	 * @param exceptionPhotographData the exception photograph data
 	 */
 	private void savePhotoGraph(Photograph photoGraphData, Photograph exceptionPhotographData) {
 		ApplicantPhotographEntity applicantPhotographEntity = PacketInfoMapper
@@ -415,6 +440,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/**
+	 * Map json node to java object.
+	 *
+	 * @param <T> the generic type
+	 * @param genericType the generic type
+	 * @param demographicJsonNode the demographic json node
+	 * @return the t[]
+	 */
 	@SuppressWarnings("unchecked")
 	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
@@ -460,6 +493,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/**
+	 * Gets the json values.
+	 *
+	 * @param identityKey the identity key
+	 * @return the json values
+	 */
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
 		if (demographicIdentity != null)
@@ -470,6 +509,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/**
+	 * Gets the identity keys and fetch values from JSON.
+	 *
+	 * @param demographicJsonString the demographic json string
+	 * @return the identity keys and fetch values from JSON
+	 */
 	private IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
@@ -514,6 +559,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/**
+	 * Gets the registration id.
+	 *
+	 * @param metaData the meta data
+	 * @return the registration id
+	 */
 	private void getRegistrationId(List<FieldValue> metaData) {
 		for (int i = 0; i < metaData.size(); i++) {
 			if ("registrationId".equals(metaData.get(i).getLabel())) {
@@ -528,6 +579,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/**
+	 * Save individual demographic dedupe.
+	 *
+	 * @param demographicJsonBytes the demographic json bytes
+	 */
 	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes) {
 
 		String getJsonStringFromBytes = new String(demographicJsonBytes);
@@ -560,6 +616,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveDemographicInfoJson(java.io.InputStream, java.util.List)
+	 */
 	@Override
 	public void saveDemographicInfoJson(InputStream demographicJsonStream, List<FieldValue> metaData) {
 		DemographicInfoJson demoJson = new DemographicInfoJson();
@@ -604,30 +663,51 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getOsi(java.lang.String)
+	 */
 	@Override
 	public RegOsiDto getOsi(String regid) {
 		return packetInfoDao.getEntitiesforRegOsi(regid);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getRegistrationCenterMachine(java.lang.String)
+	 */
 	@Override
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
 
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#findDemoById(java.lang.String)
+	 */
 	@Override
 	public List<DemographicInfoDto> findDemoById(String regId) {
 		return packetInfoDao.findDemoById(regId);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getApplicantFingerPrintImageNameById(java.lang.String)
+	 */
 	@Override
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
 		return packetInfoDao.getApplicantFingerPrintImageNameById(regId);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getApplicantIrisImageNameById(java.lang.String)
+	 */
 	@Override
 	public List<String> getApplicantIrisImageNameById(String regId) {
 		return packetInfoDao.getApplicantIrisImageNameById(regId);
 	}
+
+	@Override
+	public List<String> getRegIdByUIN(String uin) {
+		return packetInfoDao.getRegIdByUIN(uin);
+	}
+
 
 }
