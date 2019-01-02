@@ -42,24 +42,15 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Component
 public class PacketUploaderStage extends MosipVerticleManager {
 
-	/** The Constant LOGGER. */
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(PacketUploaderStage.class);
+	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketUploaderStage.class);
 
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The Constant LOGDISPLAY. */
-	private static final String LOGDISPLAY = "{} - {}";
-
 	/** The cluster url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
-
-	/** The secs. */
-	// @Value("${landingzone.scanner.stage.time.interval}")
-	private long secs = 30;
 
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
@@ -80,19 +71,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 	@Autowired
 	private PacketArchiver packetArchiver;
 
-	/** The Constant UNABLE_TO_DELETE. */
-	private static final String UNABLE_TO_DELETE = "unable to delete after sending to DFS.";
-
 	/** The env. */
 	@Autowired
 	private Environment env;
-
-	/** The Constant DFS_NOT_ACCESSIBLE. */
-	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
-
-	/** The Constant REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE. */
-	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
-			+ "is not accessible";
 
 	/** The description. */
 	private String description = "";
@@ -151,11 +132,9 @@ public class PacketUploaderStage extends MosipVerticleManager {
 
 	/**
 	 * Uploadpacket.
-	 * 
+	 *
 	 * @param dto
 	 *            the dto
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
 	 */
 	private void uploadpacket(InternalRegistrationStatusDto dto) {
 		try {
