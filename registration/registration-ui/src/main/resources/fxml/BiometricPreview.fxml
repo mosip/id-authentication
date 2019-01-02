@@ -16,7 +16,7 @@
 			<children>
 				<AnchorPane layoutX="60.0" layoutY="14.0" prefHeight="803.0" prefWidth="848.0">
 					<children>
-						<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+						<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#handleHomeButton" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@../images/Home.png" />
 							</image>

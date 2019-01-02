@@ -61,7 +61,6 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.SimplePropertiesDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import io.mosip.registration.util.kernal.RIDGenerator;
@@ -298,9 +297,6 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TitledPane authenticationTitlePane;
-
-	@Autowired
-	private PreRegZipHandlingService preRegZipHandlingService;
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
@@ -1146,12 +1142,6 @@ public class RegistrationController extends BaseController {
 		return imageCaptured;
 	}
 
-	private void loadScreen(String screen) throws IOException {
-		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				applicationContext.getApplicationLanguageBundle());
-		getScene(createRoot);
-	}
-
 	/**
 	 * Validating the age field for the child/Infant check.
 	 */
@@ -1317,36 +1307,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
-	}
-
-	/**
-	 * 
-	 * Opens the home page screen
-	 * 
-	 */
-	@Override
-	public void goToHomePage() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Going to home page");
-
-		try {
-			clearSession();
-			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-		}
-	}
-
-	protected void clearSession() {
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_ISEDIT);
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
-		SessionContext.getInstance().getUserContext().getUserMap()
-				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 	}
 
 	/**

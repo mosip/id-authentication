@@ -75,8 +75,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private TemplateService templateService;
 	@Autowired
 	private NotificationService notificationService;
-	@Autowired
-	private RegistrationController registrationController;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -258,10 +256,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 			if (button.getId().equals(print.getId())) {
 				generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
-				registrationController.goToHomePage();
+				goToHomePageFromRegistration();
 			}
 			if (button.getId().equals(newRegistration.getId())) {
-				registrationController.clearSession();
+				clearRegistrationData();
 				packetController.createPacket();
 			}
 
@@ -278,7 +276,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@FXML
 	@Override
 	public void goToHomePage() {
-		registrationController.goToHomePage();
+		goToHomePageFromRegistration();
 	}
 
 }
