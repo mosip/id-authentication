@@ -1354,10 +1354,6 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = true;
 		List<String> excludedIds = new ArrayList<String>();
 		excludedIds.add("preRegistrationId");
-		excludedIds.add("region");
-		excludedIds.add("city");
-		excludedIds.add("province");
-		excludedIds.add("localAdminAuthority");
 		excludedIds.add("virtualKeyboard");
 		validation.setChild(isChild);
 		validation.setValidationMessage();
