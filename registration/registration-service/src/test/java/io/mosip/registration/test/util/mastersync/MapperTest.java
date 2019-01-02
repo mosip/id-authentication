@@ -51,10 +51,6 @@ public class MapperTest {
 		map(null, new MasterLanguage());
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void testMapMetaDataSourceNull() {
-		setCreateMetaData(null, MasterLanguage.class);
-	}
 
 	@Test(expected = NullPointerException.class)
 	public void testMapMetaDataDestinationNull() {
