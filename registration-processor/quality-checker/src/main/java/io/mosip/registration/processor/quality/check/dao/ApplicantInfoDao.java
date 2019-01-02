@@ -123,7 +123,7 @@ public class ApplicantInfoDao {
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicInfoDto demo = new DemographicInfoDto();
 		demo.setRegId(object.getId().getRegId());
-		demo.setUin(object.getUinRefId());
+		demo.setUin(object.getUin());
 		demo.setLangCode(object.getId().getLangCode());
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
