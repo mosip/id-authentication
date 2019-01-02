@@ -28,7 +28,7 @@ public class RegistrationCenterMachineUserID implements Serializable {
 	/**
 	 *  Center Id
 	 */
-	@Column(name = "regcntr_id", nullable = false, length = 36)
+	@Column(name = "regcntr_id", nullable = false, length = 10)
 	private String cntrId;
 
 	/**

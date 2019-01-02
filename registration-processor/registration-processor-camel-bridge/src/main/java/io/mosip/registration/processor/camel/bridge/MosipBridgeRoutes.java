@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.camel.bridge;
-
+	
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
@@ -9,15 +9,15 @@ import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 
 /**
- * This class specifies the routes for MOSIP stages
- * 
+ * This class specifies the routes for MOSIP stages.
+ *
  * @author Mukul Puspam
  * @author Pranav Kumar
  * @since 0.0.1
- *
  */
 public class MosipBridgeRoutes extends RouteBuilder {
 
+	/** The message DTO validator. */
 	private static Processor messageDTOValidator = new MessageDTOValidator();
 
 	/*

@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.status.code;
 
-/**
+/**	
  * The transaction type codes.
  */
 public enum TransactionTypeCode {

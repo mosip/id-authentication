@@ -22,12 +22,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * The controller class for Manual Adjudication
- * 
+ * The controller class for Manual Adjudication.
+ *
  * @author Shuchita
  * @author Pranav Kumar
  * @since 0.0.1
- *
  */
 @RestController
 @RequestMapping("/v0.1/registration-processor/manual-verification")
@@ -35,9 +34,16 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin
 public class ManualVerificationController {
 	
+	/** The manual adjudication service. */
 	@Autowired
 	private ManualVerificationService manualAdjudicationService;
 
+	/**
+	 * Assign applicant.
+	 *
+	 * @param userDto the user dto
+	 * @return the response entity
+	 */
 	@PostMapping(path = "/assignment", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponse(code = 200, message = "status successfully updated")
 
@@ -46,6 +52,12 @@ public class ManualVerificationController {
 		return ResponseEntity.status(HttpStatus.OK).body(manualVerificationDTO);
 	}
 	
+	/**
+	 * Update packet status.
+	 *
+	 * @param manualVerificationDTO the manual verification DTO
+	 * @return the response entity
+	 */
 	@PostMapping(path = "/decision", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponse(code = 200, message = "status successfully updated")
 	public ResponseEntity<ManualVerificationDTO> updatePacketStatus(@RequestBody(required = true) ManualVerificationDTO manualVerificationDTO) {
@@ -53,6 +65,12 @@ public class ManualVerificationController {
 		return ResponseEntity.status(HttpStatus.OK).body(updatedManualVerificationDTO);
 	}
 
+	/**
+	 * Gets the applicant biometric.
+	 *
+	 * @param dto the dto
+	 * @return the applicant biometric
+	 */
 	@PostMapping(value = "/applicantBiometric")
 	@ApiResponses({ @ApiResponse(code = 200, message = "file fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
@@ -62,6 +80,12 @@ public class ManualVerificationController {
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 	
+	/**
+	 * Gets the applicant demographic.
+	 *
+	 * @param packetInfoRequestDto the packet info request dto
+	 * @return the applicant demographic
+	 */
 	@PostMapping(value = "/applicantDemographic", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),
@@ -71,6 +95,12 @@ public class ManualVerificationController {
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 
+	/**
+	 * Gets the packet info.
+	 *
+	 * @param packetInfoRequestDto the packet info request dto
+	 * @return the packet info
+	 */
 	@PostMapping(value = "/packetInfo")
 	@ApiResponses({ @ApiResponse(code = 200, message = "data fetching successful"),
 			@ApiResponse(code = 400, message = "Invalid file requested"),

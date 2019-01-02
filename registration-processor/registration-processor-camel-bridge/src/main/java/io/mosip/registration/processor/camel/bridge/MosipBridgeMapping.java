@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.camel.bridge;
-
+	
 import org.apache.camel.CamelContext;
 
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;

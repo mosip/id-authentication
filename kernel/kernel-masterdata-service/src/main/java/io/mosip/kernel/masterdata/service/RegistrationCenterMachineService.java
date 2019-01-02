@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDto;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
@@ -29,4 +30,15 @@ public interface RegistrationCenterMachineService {
 	 */
 	public ResponseRrgistrationCenterMachineDto createRegistrationCenterAndMachine(
 			RequestDto<RegistrationCenterMachineDto> requestDto);
+
+	/**
+	 * Delete the mapping of registration center and machine
+	 * 
+	 * @param regCenterId
+	 *            Registration center id to be deleted
+	 * @param machineId
+	 *            MachineId id to be deleted
+	 * @return {@link RegistrationCenterMachineID}
+	 */
+	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId);
 }

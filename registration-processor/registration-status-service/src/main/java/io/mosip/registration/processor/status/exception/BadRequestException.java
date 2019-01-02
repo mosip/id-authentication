@@ -6,8 +6,11 @@ public class BadRequestException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new bad request exception.
+	 */
 	public BadRequestException() {
-		super();
+		super();	
 	}
 
 	public BadRequestException(String message) {

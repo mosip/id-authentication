@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.util;
-
+	
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -13,28 +13,29 @@ import com.google.gson.JsonSyntaxException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
- * This class provides JSON utilites
- * 
+ * This class provides JSON utilites.
+ *
  * @author Pranav Kumar
  * @since 0.0.1
  */
 public class JsonUtil {
 
+	/**
+	 * Instantiates a new json util.
+	 */
 	private JsonUtil() {
 
 	}
 
 	/**
-	 * This method converts InputStream to JavaObject
-	 * 
-	 * @param stream
-	 *            The stream that needs to be converted
-	 * @param clazz
-	 *            The class to which conversion is required
+	 * This method converts InputStream to JavaObject.
+	 *
+	 * @param stream            The stream that needs to be converted
+	 * @param clazz            The class to which conversion is required
 	 * @return The converted Java object
-	 * @throws JsonSyntaxException
-	 * @throws JsonIOException
-	 * @throws UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @throws JsonSyntaxException the json syntax exception
+	 * @throws JsonIOException the json IO exception
 	 */
 	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz)
 			throws UnsupportedEncodingException {

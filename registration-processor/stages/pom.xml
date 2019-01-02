@@ -21,9 +21,10 @@
 		<module>quality-matchness-checker-stage</module>
 		<module>OSI-validator</module>
 		<module>virus-scanner-stage</module>
+		<module>packet-uploader-stage</module>
 		<module>Demo-dedupe-stage</module>
-		<module>manual-verification-stage</module>
-    <module>bio-dedupe-stage</module>
-  </modules>
+	    <module>manual-verification-stage</module>
+        <module>bio-dedupe-stage</module>
+    </modules>
 
 </project>

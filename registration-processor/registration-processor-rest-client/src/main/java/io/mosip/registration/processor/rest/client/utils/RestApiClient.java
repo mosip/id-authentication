@@ -34,6 +34,7 @@ public class RestApiClient {
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(RestApiClient.class);
 
+	/** The builder. */
 	@Autowired
 	RestTemplateBuilder builder;
 
@@ -65,16 +66,11 @@ public class RestApiClient {
 	/**
 	 * Post api.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param uri
-	 *            the uri
-	 * @param requestType
-	 *            the request type
-	 * @param responseClass
-	 *            the response class
+	 * @param <T>            the generic type
+	 * @param uri            the uri
+	 * @param requestType            the request type
+	 * @param responseClass            the response class
 	 * @return the t
-	 * @throws Exception
 	 */
 	public <T> T postApi(String uri, T requestType, Class<?> responseClass) {
 
@@ -83,7 +79,7 @@ public class RestApiClient {
 			System.out.println("Your URl is to change ::   " + uri);
 			restTemplate = getRestTemplate();
 
-			T result = (T) restTemplate.postForObject(uri, requestType, responseClass);
+			T result = (T) restTemplate.postForObject("https://integ.mosip.io/identity/auth/internal", requestType, responseClass);
 			return result;
 		} catch (Exception e) {
 
@@ -92,6 +88,12 @@ public class RestApiClient {
 		return null;
 	}
 
+	/**
+	 * Gets the rest template.
+	 *
+	 * @return the rest template
+	 * @throws Exception the exception
+	 */
 	public static RestTemplate getRestTemplate() throws Exception {
 		SSLContext sslContext = SSLContext.getInstance("SSL");
 		// set up a TrustManager that trusts everything

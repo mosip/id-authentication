@@ -26,5 +26,6 @@ public class DeviceTypeDto extends BaseDto{
 	private String name;
 
 	private String description;
+	
 	private Boolean isActive;
 }

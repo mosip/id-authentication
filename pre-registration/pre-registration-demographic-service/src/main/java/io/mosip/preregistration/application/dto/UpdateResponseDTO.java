@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -11,7 +15,8 @@ import lombok.Setter;
 /**
  * Update Response DTO
  * 
- * @author M1046462
+ * @author Ravi C Balaji
+ * @since 1.0.0
  *
  */
 @Getter
@@ -25,10 +30,19 @@ public class UpdateResponseDTO<T> implements Serializable {
 	/** The error details. */
 	private List<ExceptionJSONInfoDTO> err;
 
+	/**
+	 * Response status
+	 */
 	private String status;
 
+	/**
+	 * Response Date Time
+	 */
 	private Date resTime;
 
+	/**
+	 * Response Object
+	 */
 	private T response;
 
 }

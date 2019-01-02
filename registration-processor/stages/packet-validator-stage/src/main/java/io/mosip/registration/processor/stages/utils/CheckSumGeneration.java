@@ -1,17 +1,18 @@
 package io.mosip.registration.processor.stages.utils;
-
+	
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+
 
 /**
  * The Class CheckSumGeneration.
@@ -24,9 +25,9 @@ public class CheckSumGeneration {
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
-	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
-
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(CheckSumGeneration.class);
+	
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
@@ -43,10 +44,8 @@ public class CheckSumGeneration {
 	/**
 	 * Generate packet info hash.
 	 *
-	 * @param sequence
-	 *            the sequence
-	 * @param registrationId
-	 *            the registration id
+	 * @param hashSequence the hash sequence
+	 * @param registrationId            the registration id
 	 * @return the byte[]
 	 */
 	public byte[] generateIdentityHash(List<FieldValueArray> hashSequence, String registrationId) {
@@ -90,7 +89,8 @@ public class CheckSumGeneration {
 						+ personType + FILE_SEPARATOR + file.toUpperCase());
 				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
-				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),StatusMessage.INPUTSTREAM_NOT_READABLE,e.getMessage());
+
 			}
 			generateHash(filebyte);
 
@@ -100,10 +100,8 @@ public class CheckSumGeneration {
 	/**
 	 * Generate demographic hash.
 	 *
-	 * @param demographicSequence
-	 *            the demographic sequence
-	 * @param registrationId
-	 *            the registration id
+	 * @param fieldValueArray the field value array
+	 * @param registrationId            the registration id
 	 */
 	private void generateDemographicHash(FieldValueArray fieldValueArray, String registrationId) {
 		List<String> hashOrder = fieldValueArray.getValue();
@@ -121,7 +119,8 @@ public class CheckSumGeneration {
 				}
 				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
-				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),StatusMessage.INPUTSTREAM_NOT_READABLE,e.getMessage());
+
 			}
 
 			generateHash(filebyte);
