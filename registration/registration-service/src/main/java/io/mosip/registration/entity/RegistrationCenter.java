@@ -46,22 +46,16 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	private String locationCode;
 	@Column(name = "contact_phone")
 	private String contactPhone;
-	@Column(name = "contact_person")
-	private String contactPerson;
 	@Column(name = "number_of_kiosks")
 	private Integer numberOfKiosks;
 	@Column(name = "working_hours")
 	private String workingHours;
 	@Column(name = "per_kiosk_process_time")
 	private Time perKioskProcessTime;
-	@Column(name = "center_start_time")
-	private Time centerStartTime;
-	@Column(name = "center_end_time")
-	private Time centerEndTime;
-	@Column(name = "lunch_start_time")
-	private Time lunchStartTime;
-	@Column(name = "lunch_end_time")
-	private Time lunchEndTime;
+	@Column(name = "process_start_time")
+	private Time processStartTime;
+	@Column(name = "process_end_time")
+	private Time processEndTime;
 	@Column(name = "time_zone")
 	private String timeZone;
 	@Column(name = "holiday_loc_code")
