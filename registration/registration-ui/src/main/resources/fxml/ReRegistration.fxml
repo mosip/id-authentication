@@ -8,14 +8,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="reRegistrationRootPane" prefHeight="316.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
+<AnchorPane fx:id="reRegistrationRootPane" styleClass="reRegRoot" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.ReRegistrationController">
    <children>
-      <AnchorPane fx:id="pendingActionRegistrationRootSubPane" prefHeight="316.0" prefWidth="900.0">
+      <AnchorPane fx:id="pendingActionRegistrationRootSubPane" styleClass="reRegRoot">
          <children>
-            <AnchorPane fx:id="imageAnchorPane" layoutX="268.0" layoutY="10.0" prefHeight="278.0" prefWidth="625.0">
+            <AnchorPane fx:id="imageAnchorPane" layoutX="268.0" layoutY="10.0" styleClass="reRegAnchorPane" >
                <children>
                   <ImageView fx:id="imageView" fitHeight="272.0" fitWidth="613.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
-                  <ToggleButton fx:id="informedBtn" layoutX="445.0" layoutY="4.0" mnemonicParsing="false" onAction="#informedToUser" prefHeight="30.0" prefWidth="86.0" text="Informed">
+                  <ToggleButton fx:id="informedBtn" layoutX="445.0" layoutY="4.0" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="Informed">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -23,14 +23,14 @@
                         <ToggleGroup fx:id="informedStatus" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="notInformedBtn" layoutX="537.0" layoutY="4.0" mnemonicParsing="false" onAction="#notInformedToUser" prefHeight="30.0" prefWidth="86.0" text="Can't Informed" toggleGroup="$informedStatus">
+                  <ToggleButton fx:id="notInformedBtn" layoutX="537.0" layoutY="4.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="Can't Informed" toggleGroup="$informedStatus">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </ToggleButton>
                </children>
             </AnchorPane>
-            <TableView fx:id="table" layoutX="14.0" layoutY="10.0" prefHeight="278.0" prefWidth="250.0">
+            <TableView fx:id="table" layoutX="14.0" layoutY="10.0" styleClass="reRegTable">
                <columns>
                   <TableColumn fx:id="id" prefWidth="250.0" text="Registration ID" />
                   <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="Registrtion ID" visible="false" />

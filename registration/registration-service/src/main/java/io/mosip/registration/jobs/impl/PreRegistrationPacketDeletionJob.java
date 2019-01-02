@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.LinkedList;
 
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -78,14 +77,27 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 			throw baseUncheckedException;
 		}
 
-		this.triggerPoint = (context != null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
+		this.triggerPoint = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM ;
 
 		if (preRegistrationDataSyncService == null) {
 			preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
 		}
+		
+		
+		try {
+			// Run the Parent JOB always first
+			this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
+			
+		}
+		catch(RuntimeException exception) {
+			LOGGER.error("PRE_REGISTRATION_PACKET_DELETION_JOB", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
+			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
+			LinkedList<ErrorResponseDTO> list=new  LinkedList<>();
+			list.add(errorResponseDTO);
+			responseDTO.setErrorResponseDTOs(list);
 
-		// Run the Parent JOB always first
-		this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
+		}
 
 		// To run the child jobs after the parent job Success
 		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
