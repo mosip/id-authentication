@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -56,14 +55,8 @@ public abstract class IdAuthValidator implements Validator {
 	/** The Constant MUA_CODE. */
 	private static final String MUA_CODE = "muaCode";
 
-	/** The Constant VER. */
-	private static final String VER = "ver";
-
 	/** The Constant ID. */
 	private static final String ID = "id";
-
-	/** The Constant verPattern. */
-	private static final Pattern verPattern = Pattern.compile("^\\d+(\\.\\d{1,1})?$");
 
 	/** The Constant A_Z0_9_10. */
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
@@ -79,9 +72,6 @@ public abstract class IdAuthValidator implements Validator {
 	@Autowired
 	private VidValidatorImpl vidValidator;
 
-	@Autowired
-	private Environment env;
-
 	/**
 	 * Validate id - check whether id is null or not.
 	 *
@@ -89,7 +79,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	public void validateId(String id, Errors errors) {
-		if (Objects.isNull(id)) {
+		if (Objects.isNull(id) || id.isEmpty()) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -107,7 +97,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors          the errors
 	 */
 	public void validateIdvId(String id, String idType, Errors errors) {
-		if (Objects.isNull(id)) {
+		if (Objects.isNull(id) || id.isEmpty()) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -115,30 +105,6 @@ public abstract class IdAuthValidator implements Validator {
 			validateIdtypeUinVid(id, idType, errors);
 		}
 	}
-
-	/**
-	 * Validate ver - check whether version is one digit with one fraction.
-	 *
-	 * @param ver    the ver
-	 * @param errors the errors
-	 */
-	// public void validateVer(String ver, Errors errors) {
-	// if (Objects.isNull(ver)) {
-	// mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
-	// MISSING_INPUT_PARAMETER + VER);
-	// errors.rejectValue(VER,
-	// IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new
-	// Object[] {VER},
-	// IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-	// } else if (!verPattern.matcher(ver).matches()) {
-	// mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
-	// "INVALID_INPUT_PARAMETER - ver - value -> " + ver);
-	// errors.rejectValue(VER,
-	// IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new
-	// Object[] {VER},
-	// IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-	// }
-	// }
 
 	/**
 	 * Validate mua code - check whether it is of length 10 and alphanumeric.
