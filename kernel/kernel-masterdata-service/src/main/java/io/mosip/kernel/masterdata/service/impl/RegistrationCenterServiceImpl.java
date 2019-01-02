@@ -87,10 +87,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		Objects.requireNonNull(langCode);
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
-		} catch (DataAccessException dataAccessException) {
+		} catch (DataAccessException|DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(dataAccessException));
 		}
 		if (registrationCenter == null) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -105,7 +105,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				if (holidayLocationCode != null)
 					holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode,
 							year);
-			} catch (DataAccessException dataAccessException) {
+			} catch (DataAccessException|DataAccessLayerException dataAccessException) {
 				throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 
@@ -136,7 +136,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		if (centers.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -168,7 +169,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		if (registrationCentersList.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -198,7 +200,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		if (registrationCenter == null) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -261,7 +264,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
+					ExceptionUtils.parseException(e));
 		}
 		if (registrationCentersList.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -288,7 +292,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			Float.parseFloat(registrationCenterDto.getRequest().getLongitude());
 		} catch (NullPointerException | NumberFormatException latLongException) {
 			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage() + " "
+					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(latLongException));
 		}
 		RegistrationCenter entity = new RegistrationCenter();

@@ -42,7 +42,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		try {
 			attributes = biometricAttributeRepository
 					.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(biometricTypeCode, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "

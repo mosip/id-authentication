@@ -52,32 +52,6 @@ public class AuditExceptionTest {
 	}
 	
 	@Test
-	public void auditInvalidFormatExceptionTest() throws Exception {
-
-		String json = "{\r\n" + 
-				"  \"eventId\": \"string\",\r\n" + 
-				"  \"eventName\": \"string\",\r\n" + 
-				"  \"eventType\": \"string\",\r\n" + 
-				"  \"actionTimeStamp\": \"2018-09-10T\",\r\n" + 
-				"  \"hostName\": \"string\",\r\n" + 
-				"  \"hostIp\": \"string\",\r\n" + 
-				"  \"applicationId\": \"string\",\r\n" + 
-				"  \"applicationName\": \"string\",\r\n" + 
-				"  \"sessionUserId\": \"string\",\r\n" + 
-				"  \"sessionUserName\": \"string\",\r\n" + 
-				"  \"id\": \"string\",\r\n" + 
-				"  \"idType\": \"string\",\r\n" + 
-				"  \"createdBy\": \"string\",\r\n" + 
-				"  \"moduleName\": \"string\",\r\n" + 
-				"  \"moduleId\": \"string\",\r\n" + 
-				"  \"description\": \"string\"\r\n" + 
-				"}";
-		mockMvc.perform(post("/v1.0/audits").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.errors[0].errorCode", is("KER-AUD-002")));
-	}
-	
-	@Test
 	public void auditConstraintExceptionTest() throws Exception {
 
 		String json = "{\r\n" + 

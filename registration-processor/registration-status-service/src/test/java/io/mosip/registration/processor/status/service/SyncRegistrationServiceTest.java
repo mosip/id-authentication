@@ -33,7 +33,7 @@ import io.mosip.registration.processor.status.service.impl.SyncRegistrationServi
 /**
  * The Class SyncRegistrationServiceTest.
  * 
- * @author M1047487
+ * @author Ranjitha Siddegowda
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SyncRegistrationServiceTest {
@@ -213,6 +213,26 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto11.setStatusComment("NEW");
 		syncRegistrationDto11.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		syncRegistrationDto11.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+		
+		SyncRegistrationDto syncRegistrationDto12 = new SyncRegistrationDto();
+		syncRegistrationDto12.setRegistrationId("12345678901234567890123456799");
+		syncRegistrationDto12.setLangCode("eng");
+		syncRegistrationDto12.setIsActive(true);
+		syncRegistrationDto12.setIsDeleted(false);
+		syncRegistrationDto12.setParentRegistrationId("22345678901234567890123456799");
+		syncRegistrationDto12.setStatusComment("NEW");
+		syncRegistrationDto12.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto12.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
+
+		SyncRegistrationDto syncRegistrationDto13 = new SyncRegistrationDto();
+		syncRegistrationDto13.setRegistrationId("1234567890123456789012345ABCD");
+		syncRegistrationDto13.setLangCode("eng");
+		syncRegistrationDto13.setIsActive(true);
+		syncRegistrationDto13.setIsDeleted(false);
+		syncRegistrationDto13.setParentRegistrationId("22345678901234567890123456799");
+		syncRegistrationDto13.setStatusComment("NEW");
+		syncRegistrationDto13.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto13.setSyncType(SyncTypeDto.DEACTIVATE_UIN.getValue());
 
 		entities.add(syncRegistrationDto);
 		entities.add(syncRegistrationDto1);
@@ -226,6 +246,8 @@ public class SyncRegistrationServiceTest {
 		entities.add(syncRegistrationDto9);
 		entities.add(syncRegistrationDto10);
 		entities.add(syncRegistrationDto11);
+		entities.add(syncRegistrationDto12);
+		entities.add(syncRegistrationDto13);
 
 		syncResponseDto = new SyncResponseDto();
 		syncResponseDto.setRegistrationId(syncRegistrationDto.getRegistrationId());
@@ -309,6 +331,30 @@ public class SyncRegistrationServiceTest {
 	public void getSyncRegistrationIdFailureTest() {
 		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(), RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
 		Mockito.when(ridValidator.validateId(ArgumentMatchers.any())).thenThrow(exp);
+		syncRegistrationService.sync(entities);
+	}
+	
+	/**
+	 * Gets the sync rid in valid length failure test.
+	 *
+	 * @return the sync rid in valid length failure test
+	 */
+	@Test
+	public void getSyncRidInValidLengthFailureTest() {
+		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(), RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
+		Mockito.when(ridValidator.validateId("123456789012345678")).thenThrow(exp);
+		syncRegistrationService.sync(entities);
+	}
+	
+	/**
+	 * Gets the sync rid in valid time stamp failure test.
+	 *
+	 * @return the sync rid in valid time stamp failure test
+	 */
+	@Test
+	public void getSyncRidInValidTimeStampFailureTest() {
+		InvalidIDException exp = new InvalidIDException(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode(), RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorMessage());
+		Mockito.when(ridValidator.validateId("12345678901234567890123456799")).thenThrow(exp);
 		syncRegistrationService.sync(entities);
 	}
 

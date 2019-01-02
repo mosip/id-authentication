@@ -484,21 +484,7 @@ public class RegistrationConstants {
 	public static final String POR_DOCUMENT = "PoR";
 	public static final String DOB_DOCUMENT = "DoB";
 
-	public static List<String> getPoaDocumentList() {
-		return Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-	}
-
-	// public static List<String> getPoiDocumentList() {
-	// return Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-	// }
-	//
-	// public static List<String> getPorDocumentList() {
-	// return Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-	// }
-	//
-	// public static List<String> getDobDocumentList() {
-	// return Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-	// }
+	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
 
 	public static List<String> getPacketStatus() {
 		return Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");

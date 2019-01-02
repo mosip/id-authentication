@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
-import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserHistoryID;
 
 /**
  * Repository class for user machine mapping
@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
  */
 @Repository
 public interface RegistrationCenterUserMachineHistoryRepository
-		extends BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserID> {
+		extends BaseRepository<RegistrationCenterUserMachineHistory, RegistrationCenterMachineUserHistoryID> {
 	/**
 	 * This method trigger query to fetch registration centers based on center
 	 * id,user id,machine id and effective date
@@ -30,7 +30,7 @@ public interface RegistrationCenterUserMachineHistoryRepository
 	 *            effective time as provided by user
 	 * @return List of {@link RegistrationCenterUserMachineHistory} fetched by query
 	 */
-	@Query("FROM RegistrationCenterUserMachineHistory WHERE id =?1 and effectivetimes <=?2 and (isDeleted is null or isDeleted =false)")
-	List<RegistrationCenterUserMachineHistory> findByIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
-			RegistrationCenterMachineUserID id, LocalDateTime effectivetimes);
+	@Query("FROM RegistrationCenterUserMachineHistory WHERE cntrId =?1 and usrId=?2 and machineId=?3 and effectivetimes <=?4 and (isDeleted is null or isDeleted =false)")
+	List<RegistrationCenterUserMachineHistory> findByCntrIdAndUsrIdAndMachineIdAndEffectivetimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
+			String cntrId,String usrId,String machineId,LocalDateTime effectivetimes);
 }

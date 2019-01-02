@@ -63,4 +63,27 @@ public interface DeviceService {
 	 */
 	public IdResponseDto createDevice(RequestDto<DeviceDto> deviceRequestDto);
 
+	/**
+	 * This method is used to update an existing Device to master data
+	 * 
+	 * @param deviceRequestDto
+	 *            Device DTO to update data
+	 * @return IdResponseDto Device ID which is successfully updated
+	 *         {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while updating Device
+	 */
+	public IdResponseDto updateDevice(RequestDto<DeviceDto> deviceRequestDto);
+
+	/**
+	 * This method is used to delete an existing Device of master data
+	 * 
+	 * @param id
+	 *            Device id to delete data
+	 * @return IdResponseDto Device ID which is successfully deleted
+	 *         {@link IdResponseDto}
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while deleting Device
+	 */
+	public IdResponseDto deleteDevice(String id);
 }

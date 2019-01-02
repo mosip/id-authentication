@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -52,4 +53,23 @@ public interface DocumentCategoryService {
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	/**
+	 * Method to update Document Category based on data provided.
+	 * 
+	 * @param category
+	 *            the request dto.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	/**
+	 * Method to delete Document Category based on id provided.
+	 * 
+	 * @param code
+	 *            the document category code.
+	 * 
+	 * @return {@link CodeResponseDto}
+	 */
+	public CodeResponseDto deleteDocumentCategory(String code);
 }

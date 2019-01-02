@@ -528,10 +528,10 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
 
-			poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			poiDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			porDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			dobDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
+			poaDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
+			poiDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
+			porDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
+			dobDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
