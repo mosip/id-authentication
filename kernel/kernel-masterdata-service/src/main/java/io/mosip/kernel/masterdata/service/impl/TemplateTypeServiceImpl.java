@@ -42,7 +42,7 @@ public class TemplateTypeServiceImpl implements TemplateTypeService {
 
 		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage() + "  "
+					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 

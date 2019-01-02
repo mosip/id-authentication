@@ -48,7 +48,7 @@ public class StatusMessage {
 	/** The Constant PACKET_IS_ON_HOLD. */
 	public static final String PACKET_IS_ON_HOLD = "Packet is on hold as Parent UIN is not yet generated";
 
-	/** The Constant MACHINE_ID_NOT_FOUND. */
+    /** The Constant MACHINE_ID_NOT_FOUND. */
 	public static final String MACHINE_ID_NOT_FOUND = "The Machine ID was not found in Master DB for Registration ID";
 
 	/** The Constant MACHINE_NOT_ACTIVE. */

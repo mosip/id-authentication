@@ -2,6 +2,9 @@ export class DemoLabels {
   constructor(
     public fullName: string,
     public dateOfBirth: string,
+    public date: string,
+    public month: string,
+    public year: string,
     public gender: string,
     public addressLine1: string,
     public addressLine2: string,

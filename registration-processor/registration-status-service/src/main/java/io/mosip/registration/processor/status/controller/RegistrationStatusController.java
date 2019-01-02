@@ -27,7 +27,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
 /**
  * The Class RegistrationStatusController.
  */
@@ -41,6 +40,7 @@ public class RegistrationStatusController {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The sync registration service. */
 	@Autowired
 	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
@@ -64,8 +64,7 @@ public class RegistrationStatusController {
 	/**
 	 * Sync registration ids.
 	 *
-	 * @param syncRegistrationDto
-	 *            the sync registration dto
+	 * @param syncRegistrationList the sync registration list
 	 * @return the response entity
 	 */
 	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

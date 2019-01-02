@@ -5,8 +5,8 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileReader;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +16,14 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.exception.ParseException;
+import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
@@ -41,6 +43,9 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 @SpringBootTest
 public class DemographicServiceUtilTest {
 
+	/**
+	 * Autowired reference for $link{DemographicServiceUtil}
+	 */
 	@Autowired
 	private DemographicServiceUtil demographicServiceUtil;
 
@@ -51,6 +56,9 @@ public class DemographicServiceUtilTest {
 	private JSONObject jsonObject;
 	private JSONParser parser = null;
 
+	/**
+	 * @throws Exception on Any Exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 		requestId = "mosip.preregistration";
@@ -114,12 +122,21 @@ public class DemographicServiceUtilTest {
 		Mockito.when(demographicServiceUtil.checkStatusForDeletion(Mockito.anyString()))
 				.thenThrow(OperationNotAllowedException.class);
 	}
-	
+
 	@Test(expected = ParseException.class)
-	public void dateSetterTest1(){
+	public void dateSetterTest1() {
 		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put("FromDate", "2018-10-17");
-		String format ="YYYY-MM-DD";
-		Mockito.when(demographicServiceUtil.dateSetter(dateMap,format)).thenThrow(ParseException.class);
+		dateMap.put(RequestCodes.fromDate.toString(), "2018-10-10");
+		String format = "yyyy-MM-dd HH:mm:ss";
+		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
 	}
+
+	@Test(expected = UnsupportedEncodingException.class)
+	public void dateSetterEncodingTest() throws UnsupportedEncodingException {
+		Map<String, String> dateMap = new HashMap<>();
+		dateMap.put(RequestCodes.fromDate.toString(), URLEncoder.encode(ArgumentMatchers.anyString(), "UTF"));
+		String format = "yyyy-MM-dd HH:mm:ss";
+		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
+	}
+
 }

@@ -2,12 +2,8 @@
  * 
  */
 package io.mosip.registration.processor.status.dto;
-
+	
 import java.io.Serializable;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -189,8 +185,7 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the sync type dto.
 	 *
-	 * @param String
-	 *            the new sync type dto
+	 * @param syncTypeDto the new sync type
 	 */
 	public void setSyncType(String syncTypeDto) {
 		this.syncType = syncTypeDto;

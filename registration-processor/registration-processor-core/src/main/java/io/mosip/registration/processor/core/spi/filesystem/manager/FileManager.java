@@ -7,38 +7,33 @@ import java.io.IOException;
  * The Interface FileManager.
  *
  * @author Mukul Puspam
- * @param <D>
- *            the generic type
- * @param <F>
- *            the generic type
+ *
+ * @param <T>
+ *            Directory path
+ * @param <U>
+ *            Return type of operations
+ * @param <V>
+ *            Input file
  */
 public interface FileManager<D, F> {
 
 	/**
 	 * Copy.
 	 *
-	 * @param fileName
-	 *            the file name
-	 * @param sourceWorkingDirectory
-	 *            the source working directory
-	 * @param destinationWorkingDirectory
-	 *            the destination working directory
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param fileName the file name
+	 * @param sourceWorkingDirectory the source working directory
+	 * @param destinationWorkingDirectory the destination working directory
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void copy(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory) throws IOException;
 
 	/**
 	 * stores file to the specific directory in VM.
 	 *
-	 * @param fileName
-	 *            the file name
-	 * @param file
-	 *            file to be stored
-	 * @param workingDirectory
-	 *            working directory
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param fileName the file name
+	 * @param file            file to be stored
+	 * @param workingDirectory            working directory
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void put(String fileName, F file, D workingDirectory) throws IOException;
 

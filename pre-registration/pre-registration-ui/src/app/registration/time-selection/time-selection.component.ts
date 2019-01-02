@@ -33,7 +33,7 @@ export class TimeSelectionComponent implements OnInit {
     this.names = this.sharedService.getNameList();
     this.sharedService.resetNameList();
     console.log('in onInit', this.names);
-    this.getSlotsforCenter(this.registrationCenter.id);
+    this.getSlotsforCenter(1);
   }
 
   public scrollRight(): void {

@@ -2,11 +2,14 @@ package io.mosip.registration.processor.virus.scanner.job.decrypter.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 
-public class PacketDecryptionFailureException extends BaseCheckedException {
+/**
+ * PacketDecryptionFailureException class.
+ *
+ * @author Jyoti Prakash Nayak
+ */
+public class PacketDecryptionFailureException extends BaseCheckedException{
 
-	/**
-	 * Serializable version Id
-	 */
+	/** Serializable version Id. */
 	private static final long serialVersionUID = 1L;
 
 	/**

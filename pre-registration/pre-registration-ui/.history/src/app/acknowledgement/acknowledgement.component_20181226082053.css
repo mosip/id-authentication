@@ -1,0 +1,10 @@
+mat-card{
+    width: 100%;
+    height: 70%;
+    box-sizing: border-box;
+    border:1;
+  }
+
+  .row{
+    display:flex
+  }

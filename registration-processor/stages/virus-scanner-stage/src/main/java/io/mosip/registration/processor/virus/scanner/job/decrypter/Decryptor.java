@@ -17,20 +17,31 @@ import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.constant.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
 
+/**
+ * Decryptor class for packet decryption.
+ *
+ * @author Jyoti Prakash Nayak
+ */
 @Component
 public class Decryptor {
+
+	/** The session key. */
 	private byte[] sessionKey;
+
+	/** The encrypted data. */
 	private byte[] encryptedData;
+
+	/** The private key. */
 	@Value("${registration.processor.private.key.location}")
 	private String privateKey;
 
 	/**
-	 * random method for decryption
-	 * 
-	 * @param encryptedPacket
-	 * @param registrationId
+	 * random method for decryption.
+	 *
+	 * @param encryptedPacket the encrypted packet
+	 * @param registrationId the registration id
 	 * @return decrypted packet data in InputStream
-	 * @throws PacketDecryptionFailureException
+	 * @throws PacketDecryptionFailureException the packet decryption failure exception
 	 */
 	public InputStream decrypt(InputStream encryptedPacket, String registrationId)
 			throws PacketDecryptionFailureException {
@@ -62,12 +73,11 @@ public class Decryptor {
 	}
 
 	/**
-	 * Method to read private key from private key file
-	 * 
-	 * @param registrationId
-	 *            registarion id of the packet
+	 * Method to read private key from private key file.
+	 *
+	 * @param registrationId            registarion id of the packet
 	 * @return private key
-	 * @throws PacketDecryptionFailureException
+	 * @throws PacketDecryptionFailureException the packet decryption failure exception
 	 */
 	private byte[] readPrivatekey(String registrationId) throws PacketDecryptionFailureException {
 		FileInputStream fileInputStream = null;
@@ -89,10 +99,9 @@ public class Decryptor {
 
 	/**
 	 * Method to separate encrypted data and encrypted AES session key in encrypted
-	 * packet
-	 * 
-	 * @param encryptedDataWithKey
-	 *            encrypted packet containing encrypted data and encrypted AES
+	 * packet.
+	 *
+	 * @param encryptedDataWithKey            encrypted packet containing encrypted data and encrypted AES
 	 *            session key
 	 */
 	private void splitKeyEncryptedData(final byte[] encryptedDataWithKey) {

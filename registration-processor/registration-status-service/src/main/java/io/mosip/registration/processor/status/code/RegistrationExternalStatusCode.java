@@ -1,7 +1,13 @@
 package io.mosip.registration.processor.status.code;
 
+/**
+ * The Enum RegistrationExternalStatusCode.
+ */
 public enum RegistrationExternalStatusCode {
 
-	PROCESSING, REREGISTER, PROCESSED
+	/** The processing. */
+	PROCESSING, /** The reregister. */
+ REREGISTER, /** The processed. */
+ PROCESSED
 
 }

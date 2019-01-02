@@ -1,14 +1,20 @@
 package io.mosip.registration.processor.stages.osivalidator;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -19,7 +25,6 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -38,9 +43,8 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.mosip.registration.processor.status.service.TransactionService;
+import io.mosip.registration.processor.status.service.TransactionService;	
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OSIValidator.
  */
@@ -53,6 +57,7 @@ public class OSIValidator {
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
+
 	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
@@ -72,6 +77,10 @@ public class OSIValidator {
 	/** The transcation status service. */
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
+
+	/** The env. */
+	@Autowired
+	private Environment env;
 
 	/** The message. */
 	private String message = null;
@@ -100,39 +109,28 @@ public class OSIValidator {
 	/**
 	 * Checks if is valid OSI.
 	 *
-	 * @param registrationId
-	 *            the registration id
+	 * @param registrationId the registration id
 	 * @return true, if is valid OSI
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
-
 		boolean isValidOsi = false;
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
-
 		if ((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))
 				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
-
 		return isValidOsi;
-
 	}
 
 	/**
 	 * Checks if is valid operator.
 	 *
-	 * @param regOsi
-	 *            the reg osi
-	 * @param registrationId
-	 *            the registration id
+	 * @param regOsi the reg osi
+	 * @param registrationId the registration id
 	 * @return true, if is valid operator
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
@@ -141,7 +139,6 @@ public class OSIValidator {
 		if (uin == null)
 			return true;
 		else {
-
 			String fingerPrint = regOsi.getOfficerFingerpImageName();
 			String fingerPrintType = regOsi.getOfficerfingerType();
 			String iris = regOsi.getOfficerIrisImageName();
@@ -149,8 +146,6 @@ public class OSIValidator {
 			String face = regOsi.getOfficerPhotoName();
 			String pin = regOsi.getOfficerHashedPin();
 			if(checkBiometricNull(fingerPrint,iris,face,pin)) {
-
-				//if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
 				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 				return false;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
@@ -158,10 +153,8 @@ public class OSIValidator {
 					&& (validatePin(uin, pin))) {
 				return true;
 			}
-
 		}
-
-		//registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
 		return true;
 	}
 
@@ -181,15 +174,11 @@ public class OSIValidator {
 	/**
 	 * Checks if is valid supervisor.
 	 *
-	 * @param regOsi
-	 *            the reg osi
-	 * @param registrationId
-	 *            the registration id
+	 * @param regOsi the reg osi
+	 * @param registrationId the registration id
 	 * @return true, if is valid supervisor
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
@@ -205,7 +194,6 @@ public class OSIValidator {
 			String face = regOsi.getSupervisorPhotoName();
 			String pin = regOsi.getSupervisorHashedPin();
 			if(checkBiometricNull(fingerPrint,iris,face,pin)) {
-				//if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
 				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 				return false;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
@@ -213,25 +201,20 @@ public class OSIValidator {
 					&& (validatePin(uin, pin))) {
 				return true;
 			}
-
 		}
-
-		//registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
+		registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR + message);
 		return true;
 	}
+
 
 	/**
 	 * Checks if is valid introducer.
 	 *
-	 * @param regOsi
-	 *            the reg osi
-	 * @param registrationId
-	 *            the registration id
+	 * @param regOsi the reg osi
+	 * @param registrationId the registration id
 	 * @return true, if is valid introducer
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean isValidIntroducer(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
@@ -239,14 +222,12 @@ public class OSIValidator {
 		if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.name())
 				&& registrationStatusDto.getApplicantType().equalsIgnoreCase(ApplicantType.CHILD.name())
 				&& regOsi.getIntroducerTyp().equalsIgnoreCase(IntroducerType.PARENT.name())) {
-
 			String introducerUin = regOsi.getIntroducerUin();
 			String introducerRid = regOsi.getIntroducerRegId();
 			if (introducerUin == null && introducerRid == null) {
 				registrationStatusDto.setStatusComment(StatusMessage.PARENT_UIN_AND_RID_NOT_IN_PACKET + registrationId);
 				return false;
 			}
-
 			if (introducerUin == null && validateIntroducerRid(introducerRid, registrationId)) {
 
 				introducerUin = getIntroducerUIN(introducerRid);
@@ -262,106 +243,95 @@ public class OSIValidator {
 			} else {
 				return false;
 			}
-
 		}
 		return true;
-
 	}
+
 
 	/**
 	 * Validate fingerprint.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param fingerprint
-	 *            the fingerprint
-	 * @param type
-	 *            the type
-	 * @param registrationId
-	 *            the registration id
+	 * @param uin the uin
+	 * @param fingerprint the fingerprint
+	 * @param type the type
+	 * @param registrationId the registration id
 	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean validateFingerprint(String uin, String fingerprint, String type, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		if (fingerprint == null)
 			return true;
-
 		else {
 			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
 				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
 				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
-
 				setAuthDto();
 				identityInfoDTO.setValue(new String(fingerPrintByte));
 				List<IdentityInfoDTO> biometricData = new ArrayList<>();
 				biometricData.add(identityInfoDTO);
-
 				//authTypeDTO.setFingerPrint(true);
-				switch (type.toUpperCase()) {
-				case JsonConstant.LEFTTHUMB:
-					identityDTO.setLeftThumb(biometricData);
-					break;
-				case JsonConstant.LEFTINDEX:
-					identityDTO.setLeftIndex(biometricData);
-					break;
-				case JsonConstant.LEFTMIDDLE:
-					identityDTO.setLeftMiddle(biometricData);
-					break;
-				case JsonConstant.LEFTLITTLE:
-					identityDTO.setLeftLittle(biometricData);
-					break;
-				case JsonConstant.LEFTRING:
-					identityDTO.setLeftRing(biometricData);
-					break;
-				case JsonConstant.RIGHTTHUMB:
-					identityDTO.setRightThumb(biometricData);
-					break;
-				case JsonConstant.RIGHTINDEX:
-					identityDTO.setRightIndex(biometricData);
-					break;
-				case JsonConstant.RIGHTMIDDLE:
-					identityDTO.setRightMiddle(biometricData);
-					break;
-				case JsonConstant.RIGHTLITTLE:
-					identityDTO.setRightLittle(biometricData);
-					break;
-				case JsonConstant.RIGHTRING:
-					identityDTO.setRightRing(biometricData);
-					break;
-				default:
-					break;
-				}
-
-
+				setFingerBiometric(biometricData,type.toUpperCase());
 				if (validateBiometric(uin))
 					return true;
 			}
 		}
 		message = StatusMessage.FINGER_PRINT;
 		return false;
-
 	}
+
+
+	/**
+	 * Sets the finger biometric dto.
+	 *
+	 * @param obj the obj
+	 * @param fieldName the field name
+	 * @param value the value
+	 */
+	private void setFingerBiometricDto(IdentityDTO obj, String fieldName, Object value){
+		PropertyDescriptor pd;
+		try {
+			pd = new PropertyDescriptor(fieldName, obj.getClass());
+			pd.getWriteMethod().invoke(obj, value);
+		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * Sets the finger biometric.
+	 *
+	 * @param biometricData the biometric data
+	 * @param type the type
+	 */
+	void setFingerBiometric(List<IdentityInfoDTO> biometricData,String type) {
+		String finger=null;
+		String[] fingerType=env.getProperty("fingerType").split(",");
+		List<String> list=new ArrayList<>(Arrays.asList(fingerType));
+		finger= type;
+		Iterator<String> it = list.iterator(); 
+		while (it.hasNext()) {
+			if(it.next().equalsIgnoreCase(type)) {
+				finger= it.next();
+				break;
+			}
+		}
+		this.setFingerBiometricDto(identityDTO, finger, biometricData);
+	}
+
 
 	/**
 	 * Validate iris.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param iris
-	 *            the iris
-	 * @param type
-	 *            the type
-	 * @param registrationId
-	 *            the registration id
+	 * @param uin the uin
+	 * @param iris the iris
+	 * @param type the type
+	 * @param registrationId the registration id
 	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean validateIris(String uin, String iris, String type, String registrationId)
 			throws IOException, ApisResourceAccessException {
@@ -381,81 +351,67 @@ public class OSIValidator {
 				} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(type.toUpperCase())) {
 					identityDTO.setRightEye(biometricData);
 				}
-
 				if (validateBiometric(uin))
 					return true;
 			}
 		}
 		message = StatusMessage.IRIS;
 		return false;
-
 	}
+
 
 	/**
 	 * Validate face.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param face
-	 *            the face
-	 * @param registrationId
-	 *            the registration id
+	 * @param uin the uin
+	 * @param face the face
+	 * @param registrationId the registration id
 	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	private boolean validateFace(String uin, String face, String registrationId)
 			throws IOException, ApisResourceAccessException {
 		if (face == null)
 			return true;
-
 		else {
 			if (adapter.checkFileExistence(registrationId, face.toUpperCase())) {
 				setAuthDto();
 				InputStream faceFile = adapter.getFile(registrationId, face.toUpperCase());
 				byte[] faceByte = IOUtils.toByteArray(faceFile);
-
 				identityInfoDTO.setValue(new String(faceByte));
 				List<IdentityInfoDTO> biometricData = new ArrayList<>();
 				biometricData.add(identityInfoDTO);
 				// authTypeDTO.setFace(true);
 				identityDTO.setFace(biometricData);
-
-
 				if (validateBiometric(uin))
 					return true;
 			}
 		}
 		message = StatusMessage.FACE;
 		return false;
-
 	}
+
 
 	/**
 	 * Validate UIN.
 	 *
-	 * @param uin
-	 *            the uin
+	 * @param uin the uin
 	 * @return true, if successful
 	 */
 	private boolean validateUIN(String uin) {
 		// todo To call IAM rest API for UNI validation
 		return true;
-
 	}
+
 
 	/**
 	 * Validate pin.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param pin
-	 *            the pin
+	 * @param uin the uin
+	 * @param pin the pin
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	boolean validatePin(String uin, String pin) throws ApisResourceAccessException {
 		if (pin == null)
@@ -468,22 +424,20 @@ public class OSIValidator {
 		List<PinInfo> pinList = new ArrayList<>();
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
-
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
-
 		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))
 			isValidPin = true;
-
 		return isValidPin;
 	}
+
 
 	/**
 	 * Validate biometric.
 	 *
-	 * @param uin            the uin
+	 * @param uin the uin
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException             the apis resource access exception
+	 * @throws ApisResourceAccessException the apis resource access exception
 	 */
 	boolean validateBiometric(String uin)
 			throws ApisResourceAccessException {
@@ -492,12 +446,12 @@ public class OSIValidator {
 		authRequestDTO.setAuthType(authTypeDTO);
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
-
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
 				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
 	}
+
 
 	/**
 	 * Sets the auth dto.
@@ -519,29 +473,19 @@ public class OSIValidator {
 		//authTypeDTO.setFace(false);
 		//authTypeDTO.setFingerPrint(false);
 		//authTypeDTO.setIris(false);
-
-
-
 	}
+
 
 
 	/**
 	 * Validate introducer.
 	 *
-	 * @param regOsi
-	 *            the reg osi
-	 * @param registrationId
-	 *            the registration id
-	 * @param introducerUin
-	 *            the introducer uin
+	 * @param regOsi the reg osi
+	 * @param registrationId the registration id
+	 * @param introducerUin the introducer uin
 	 * @return true, if successful
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 *             	
-	 *              check if any one of biometric is provided
-
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private boolean validateIntroducer(RegOsiDto regOsi, String registrationId, String introducerUin)
 			throws ApisResourceAccessException, IOException {
@@ -578,13 +522,12 @@ public class OSIValidator {
 
 	}
 
+
 	/**
 	 * Validate introducer rid.
 	 *
-	 * @param introducerRid
-	 *            the introducer rid
-	 * @param registrationId
-	 *            the registration id
+	 * @param introducerRid the introducer rid
+	 * @param registrationId the registration id
 	 * @return true, if successful
 	 */
 	private boolean validateIntroducerRid(String introducerRid, String registrationId) {
@@ -606,11 +549,12 @@ public class OSIValidator {
 		}
 	}
 
+
 	/**
-	 * Gets the uin.
+	 * Gets the introducer UIN.
 	 *
 	 * @param intoducerRid the intoducer rid
-	 * @return the uin
+	 * @return the introducer UIN
 	 */
 	private String getIntroducerUIN(String intoducerRid) {
 		List<DemographicInfoDto> demographicDedupeDtoList = packetInfoManager.findDemoById(intoducerRid);

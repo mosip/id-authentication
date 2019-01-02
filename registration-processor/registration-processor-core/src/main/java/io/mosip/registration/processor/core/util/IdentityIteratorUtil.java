@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.util;
-
+	
 import java.util.Collections;
 import java.util.List;
 
@@ -42,10 +42,8 @@ public class IdentityIteratorUtil {
 	/**
 	 * Gets the field value.
 	 *
-	 * @param metaData
-	 *            the meta data
-	 * @param label
-	 *            the label
+	 * @param data the data
+	 * @param label            the label
 	 * @return the field value
 	 */
 	public String getFieldValue(List<FieldValue> data, String label) {

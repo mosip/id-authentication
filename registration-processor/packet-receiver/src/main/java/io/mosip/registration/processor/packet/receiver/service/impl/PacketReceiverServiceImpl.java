@@ -157,6 +157,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		return storageFlag;
 	}
 
+
+	boolean fileExists(MultipartFile file, String fileOriginalName){
+		return file.getOriginalFilename() != null && !file.isEmpty() && fileOriginalName != null;
+	}
+
 	/**
 	 * Gets the file extension.
 	 *

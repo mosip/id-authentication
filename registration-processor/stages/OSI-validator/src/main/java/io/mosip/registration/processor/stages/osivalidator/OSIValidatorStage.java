@@ -38,7 +38,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	private static final String USER = "MOSIP_SYSTEM";
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(OSIValidatorStage.class);
-	
+
 
 	/** The registration status service. */
 	@Autowired

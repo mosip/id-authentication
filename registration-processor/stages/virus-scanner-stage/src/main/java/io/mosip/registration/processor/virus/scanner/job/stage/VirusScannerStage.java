@@ -51,23 +51,22 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private Environment env;
 
 	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The virus scanner service. */
 	@Autowired
-	VirusScanner<Boolean, String> virusScannerService;
+	private VirusScanner<Boolean, String> virusScannerService;
 
 	/** The file manager. */
 	@Autowired
-	FileManager<DirectoryPathDto, InputStream> fileManager;
+	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	/** The registration status service. */
 	@Autowired
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The decryptor. */
-	@Autowired
-	Decryptor decryptor;
+	private Decryptor decryptor;
 
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
