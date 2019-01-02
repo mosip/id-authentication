@@ -1201,6 +1201,7 @@ public class RegistrationController extends BaseController {
 			fxUtils.validateOnType(postalCode, validation);
 			fxUtils.validateOnType(emailId, validation);
 			fxUtils.validateOnType(cniOrPinNumber, validation);
+			fxUtils.validateOnType(fullNameLocalLanguage, validation);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
