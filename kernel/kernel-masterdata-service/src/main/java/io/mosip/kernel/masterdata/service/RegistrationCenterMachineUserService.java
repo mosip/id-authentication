@@ -25,6 +25,8 @@ public interface RegistrationCenterMachineUserService {
 	 */
 	RegistrationCenterMachineUserID createRegistrationCentersMachineUserMapping(
 			RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto);
+	
+	RegistrationCenterMachineUserID deleteRegistrationCentersMachineUserMapping(String regCenterId,String machineId,String userId);
 
 	
 
