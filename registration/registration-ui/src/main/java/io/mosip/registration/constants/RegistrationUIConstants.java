@@ -150,5 +150,7 @@ public class RegistrationUIConstants {
 			.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
 	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
 	public static final String IRIS_QUALITY_SCORE_ERROR = bundle.getString("IRIS_QUALITY_SCORE_ERROR");
-
+	
+	//UIN update
+	public static final String UPDATE_UIN_VALIDATION_ALERT = bundle.getString("UPDATE_UIN_VALIDATION_ALERT");
 }

@@ -475,3 +475,9 @@
 	-fx-pref-height: 316.0px; 
 	-fx-pref-width: 900.0px;
 }
+.uinUpdateTextFiledStyle{
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+  	-fx-border-width: 0 0 1 0;	
+}

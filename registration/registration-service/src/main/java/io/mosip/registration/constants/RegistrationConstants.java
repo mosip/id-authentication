@@ -118,6 +118,8 @@ public class RegistrationConstants {
 	public static final String REG_DDC_003_2="REG_DDC_003_2";
 	public static final String REG_DDC_004_1="REG_DDC_004_1";
 	public static final String REG_DDC_004_2="REG_DDC_004_2";
+	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
+
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";

@@ -50,6 +50,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -94,6 +95,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@FXML
 	private WebView webView;
+
+	@FXML
+	private Button newRegistration;
+
+	@FXML
+	private Button print;
 
 	@Autowired
 	private Environment environment;
@@ -239,6 +246,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
+			Button button = (Button) event.getSource();
 			String seperator = "/";
 			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
 					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
@@ -251,8 +259,15 @@ public class AckReceiptController extends BaseController implements Initializabl
 			LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
 
-			generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
-			registrationController.goToHomePage();
+			if (button.getId().equals(print.getId())) {
+				generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
+				registrationController.goToHomePage();
+			}
+			if (button.getId().equals(newRegistration.getId())) {
+				registrationController.clearSession();
+				packetController.createPacket();
+			}
+
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
 		}
@@ -261,11 +276,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private void generateNotificationAlert(String alertMessage) {
 		/* Generate Alert */
 		generateAlert(RegistrationConstants.ALERT_ERROR, alertMessage);
-	}
-
-	@FXML
-	public void goToNewRegistrationPage() {
-		packetController.createPacket();
 	}
 
 	@FXML
