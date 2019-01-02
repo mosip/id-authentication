@@ -291,8 +291,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			throws IdRepoAppException {
 		try {
 			ObjectNode identityObject = (ObjectNode) convertToObject(identity, ObjectNode.class);
-			return docList.stream().filter(doc -> identityObject.get(IDENTITY).has(doc.getDocType())).map(doc -> {
-				JsonNode docType = identityObject.get(IDENTITY).get(doc.getDocType());
+			return docList.stream().filter(doc -> identityObject.has(doc.getDocType())).map(doc -> {
+				JsonNode docType = identityObject.get(doc.getDocType());
 				String fileName = docType.get(VALUE).asText() + "." + docType.get(FORMAT).asText();
 				try {
 					if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
@@ -483,14 +483,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			}
 
 			if (!Objects.equals(mapper.writeValueAsString(request.getRequest()), new String(dbUinData.getUinData()))) {
-				Map<String, Map<String, List<Map<String, String>>>> requestData = convertToMap(request.getRequest());
-				Map<String, Map<String, List<Map<String, String>>>> dbData = (Map<String, Map<String, List<Map<String, String>>>>) convertToObject(
+				Map<String, List<Map<String, String>>> requestData = convertToMap(request.getRequest());
+				Map<String, List<Map<String, String>>> dbData = (Map<String, List<Map<String, String>>>) convertToObject(
 						dbUinData.getUinData(), Map.class);
 				MapDifference<String, List<Map<String, String>>> mapDifference = Maps
-						.difference(requestData.get(IDENTITY), dbData.get(IDENTITY));
-				mapDifference.entriesOnlyOnLeft().forEach((key, value) -> dbData.get(IDENTITY).put(key, value));
+						.difference(requestData, dbData);
+				mapDifference.entriesOnlyOnLeft().forEach((key, value) -> dbData.put(key, value));
 				mapDifference.entriesDiffering()
-						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData.get(IDENTITY)
+						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData
 								.put(key, findDifference(value.leftValue(), value.rightValue())));
 
 				uinObject = updateIdentityInfo(dbUinData, convertToBytes(dbData));
@@ -717,7 +717,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	private Map<String, Map<String, List<Map<String, String>>>> convertToMap(Object identity)
+	private Map<String, List<Map<String, String>>> convertToMap(Object identity)
 			throws IdRepoAppException {
 		try {
 			return mapper.readValue(mapper.writeValueAsBytes(identity),
