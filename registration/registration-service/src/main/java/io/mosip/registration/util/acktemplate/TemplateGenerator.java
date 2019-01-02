@@ -1,5 +1,9 @@
 package io.mosip.registration.util.acktemplate;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_TEMPLATE_GENERATOR;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -35,18 +38,15 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_TEMPLATE_GENERATOR;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import io.mosip.registration.service.BaseService;
 
 /**
  * Generates Velocity Template for the creation of acknowledgement
@@ -54,7 +54,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
  * @author Himaja Dhanyamraju
  *
  */
-public class TemplateGenerator {
+public class TemplateGenerator extends BaseService {
 
 	/**
 	 * Instance of {@link Logger}
@@ -71,10 +71,12 @@ public class TemplateGenerator {
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
-	 * @throws RegBaseCheckedException 
+	 * @throws RegBaseCheckedException
 	 */
-	public Writer generateTemplate(String templateText, RegistrationDTO registration,
-			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
+	public ResponseDTO generateTemplate(String templateText, RegistrationDTO registration,
+			TemplateManagerBuilder templateManagerBuilder) {
+
+		ResponseDTO response = new ResponseDTO();
 
 		try {
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, RegistrationConstants.APPLICATION_NAME,
@@ -84,6 +86,7 @@ public class TemplateGenerator {
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> templateValues = new HashMap<>();
+			ByteArrayOutputStream byteArrayOutputStream = null;
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
@@ -101,7 +104,7 @@ public class TemplateGenerator {
 						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB,
-						DateUtils.formatDate(DateUtils.parse(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 			}
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER, getDemographicValueInPlatformLanguage(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender().getValues()));
@@ -180,7 +183,7 @@ public class TemplateGenerator {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 						.getDateOfBirthProof().getValue());
 			}
-			
+
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList.toString());
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME, registration.getOsiDataDTO().getOperatorID());
 
@@ -218,19 +221,30 @@ public class TemplateGenerator {
 			try {
 				BufferedImage handsImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				byteArrayOutputStream = new ByteArrayOutputStream();
 				ImageIO.write(handsImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
 				byte[] handsImageBytes = byteArrayOutputStream.toByteArray();
 				String handsImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(handsImageBytes, false));
 				templateValues.put(RegistrationConstants.TEMPLATE_HANDS_IMAGE_SOURCE,
 						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + handsImageEncodedBytes);
 			} catch (IOException ioException) {
+				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			} finally {
+				if (byteArrayOutputStream != null) {
+					try {
+						byteArrayOutputStream.close();
+					} catch (IOException exception) {
+						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+								null);
+						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+					}
+				}
 			}
 			try {
 				BufferedImage qrCodeImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_QRCODE_IMAGE_PATH));
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				byteArrayOutputStream = new ByteArrayOutputStream();
 				ImageIO.write(qrCodeImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
 				byte[] qrCodeImageBytes = byteArrayOutputStream.toByteArray();
 				String qrCodeImageEncodedBytes = StringUtils
@@ -238,7 +252,18 @@ public class TemplateGenerator {
 				templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
 						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + qrCodeImageEncodedBytes);
 			} catch (IOException ioException) {
+				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			} finally {
+				if (byteArrayOutputStream != null) {
+					try {
+						byteArrayOutputStream.close();
+					} catch (IOException exception) {
+						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
+								null);
+						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+					}
+				}
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
@@ -337,19 +362,23 @@ public class TemplateGenerator {
 				String defaultEncoding = null;
 				IOUtils.copy(inputStream, writer, defaultEncoding);
 			} catch (IOException ioException) {
+				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
 				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 			}
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
 
-			return writer;
+			Map<String, Object> responseMap = new HashMap<>();
+			responseMap.put(RegistrationConstants.TEMPLATE_NAME, writer);
+			setSuccessResponse(response, RegistrationConstants.SUCCESS, responseMap);
 		} catch (ParseException parseException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorCode(),
-					RegistrationExceptionConstants.REG_PACKET_DATE_PARSER_CODE.getErrorMessage(), parseException);
+			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, parseException.getMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-					runtimeException.getMessage(), runtimeException);
+			setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+			LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 		}
+		return response;
 	}
 
 	/**
@@ -360,7 +389,7 @@ public class TemplateGenerator {
 	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
-	 * @throws RegBaseCheckedException 
+	 * @throws RegBaseCheckedException
 	 */
 	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration,
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
@@ -386,7 +415,7 @@ public class TemplateGenerator {
 						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
-						DateUtils.formatDate(DateUtils.parse(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
+						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 			}
 			values.put(RegistrationConstants.TEMPLATE_GENDER, getDemographicValueInLocalLanguage(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender().getValues()));
@@ -407,7 +436,7 @@ public class TemplateGenerator {
 			values.put(RegistrationConstants.TEMPLATE_MOBILE,
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getPhone().getValue());
 			String email = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail().getValue();
-			if (email == null || email == RegistrationConstants.EMPTY) {
+			if (email == null || email.isEmpty()) {
 				values.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_EMAIL, email);

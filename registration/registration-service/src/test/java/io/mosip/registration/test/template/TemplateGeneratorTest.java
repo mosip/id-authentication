@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
@@ -31,6 +30,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
@@ -77,8 +77,8 @@ public class TemplateGeneratorTest {
 				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH)))
 						.thenReturn(image);
 		when(applicationContext.getLocalLanguageProperty()).thenReturn(dummyResourceBundle);
-		Writer writer = templateGenerator.generateTemplate("sample text", registrationDTO, template);
-		assertNotNull(writer);
+		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);
+		assertNotNull(response.getSuccessResponseDTO());
 	}
 
 	@Test

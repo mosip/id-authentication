@@ -274,7 +274,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_WITHOUT_EXCEPTION_IMAGE = "WithoutExceptionImage";
 	public static final String TEMPLATE_WITH_EXCEPTION_IMAGE = "WithExceptionImage";
 	public static final String TEMPLATE_STYLE_PROPERTY = "style='visibility:hidden;'";
-	public static final String TEMPLATE_LOGTAG = "Acknowledgement Template";
+	public static final String TEMPLATE_NAME = "Acknowledgement Template";
 	public static final String TEMPLATE_DATE_LOCAL_LANG_LABEL = "DateLocalLangLabel";
 	public static final String TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL = "FullNameLocalLangLabel";
 	public static final String TEMPLATE_DOB_LOCAL_LANG_LABEL = "DOBLocalLangLabel";

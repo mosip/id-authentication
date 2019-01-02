@@ -1,7 +1,6 @@
 package io.mosip.registration.controller.reg;
 
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
-import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
@@ -115,13 +114,13 @@ public class AckReceiptController extends BaseController implements Initializabl
 		this.registrationData = registrationData;
 	}
 
+	public void setStringWriter(Writer stringWriter) {
+		this.stringWriter = stringWriter;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
-			stringWriter = templateGenerator.generateTemplate(ackTemplateText, getRegistrationData(),
-					templateManagerBuilder);
-
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				// get the mode of communication
@@ -193,9 +192,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		WebEngine engine = webView.getEngine();
 		engine.loadContent(stringWriter.toString());
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
-		pause.setOnFinished(e -> {
-			saveRegistrationData();
-		});
+		pause.setOnFinished(e -> saveRegistrationData());
 		pause.play();
 	}
 
