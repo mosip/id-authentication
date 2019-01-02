@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -9,8 +13,11 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author M1046129
- *
+ * This DTO class is used to define the values for request parameters when
+ * performing deletion operarion.
+ * 
+ * @author Tapaswini Behera
+ * @since 1.0.0
  */
 @Getter
 @Setter

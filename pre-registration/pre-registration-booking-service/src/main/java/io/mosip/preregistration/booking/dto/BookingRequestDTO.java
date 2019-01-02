@@ -2,6 +2,7 @@ package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,13 +20,16 @@ public class BookingRequestDTO implements Serializable{
 	/**
 	 * pre-Registration Id
 	 */
-	private String pre_registration_id;
+	@ApiModelProperty(value = "Pre-Registration ID", position = 1)
+	private String preRegistrationId;
 	/**
 	 * Old Booking Details
 	 */
+	@ApiModelProperty(value = "Old Booking Data", position = 2)
 	private BookingRegistrationDTO oldBookingDetails;
 	/**
 	 * New Booking Details
 	 */
+	@ApiModelProperty(value = "New Booking Data", position = 3)
 	private BookingRegistrationDTO newBookingDetails;
 }

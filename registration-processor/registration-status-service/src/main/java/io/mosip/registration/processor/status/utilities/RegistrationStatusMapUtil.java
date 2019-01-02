@@ -39,11 +39,11 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_FAILED, RegistrationExternalStatusCode.REREGISTER);
-		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.VIRUS_SCAN_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 
 		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_FAILED, RegistrationExternalStatusCode.REREGISTER);
 
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS,
@@ -51,18 +51,18 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED,
 				RegistrationExternalStatusCode.REREGISTER);
 
-		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_FAILED, RegistrationExternalStatusCode.REREGISTER);
 
-		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESSFUL,
+		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESS,
 				RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_DEMO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_DEMO_POTENTIAL_MATCH, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_DEMO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 
-		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
+		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_BIO_DEDUPE_FAILED, RegistrationExternalStatusCode.PROCESSING);
 

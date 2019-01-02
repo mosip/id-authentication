@@ -21,7 +21,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEnt
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-	
+
 /**
  * The Class PacketInfoDao.
  */
@@ -31,7 +31,7 @@ public class PacketInfoDao {
 	/** The qcuser reg repositary. */
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
-	
+
 	/** The reg center machine repository. */
 	@Autowired
 	private BasePacketRepository<RegCenterMachineEntity, RegCenterMachinePKEntity> regCenterMachineRepository;
@@ -49,19 +49,19 @@ public class PacketInfoDao {
 
 	/** The Constant SELECT. */
 	private static final String SELECT = " SELECT ";
-	
+
 	/** The Constant FROM. */
 	private static final String FROM = " FROM  ";
-	
+
 	/** The Constant EMPTY_STRING. */
 	private static final String EMPTY_STRING = " ";
-	
+
 	/** The Constant WHERE. */
 	private static final String WHERE = " WHERE ";
-	
+
 	/** The Constant AND. */
 	private static final String AND = " AND ";
-	
+
 	/** The Constant IS_NOT_NULL. */
 	private static final String IS_NOT_NULL = " IS NOT NULL ";
 
@@ -328,5 +328,9 @@ public class PacketInfoDao {
 			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
 		}
 		return demographicInfoDtos;
+	}
+
+	public List<String> getRegIdByUIN(String uin) {
+		return demographicDedupeRepository.getRegIdByUIN(uin);
 	}
 }

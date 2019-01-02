@@ -171,22 +171,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The meta data. */
 	private List<FieldValue> metaData;
-	
+
 	/** The reg id. */
 	private String regId;
-	
+
 	/** The pre reg id. */
 	private String preRegId;
 
 	/** The demographic identity. */
 	private JSONObject demographicIdentity = null;
-	
+
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
-	
+
 	/** The Constant LABEL. */
 	private static final String LABEL = "label";
-	
+
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
@@ -703,5 +703,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<String> getApplicantIrisImageNameById(String regId) {
 		return packetInfoDao.getApplicantIrisImageNameById(regId);
 	}
+
+	@Override
+	public List<String> getRegIdByUIN(String uin) {
+		return packetInfoDao.getRegIdByUIN(uin);
+	}
+
 
 }

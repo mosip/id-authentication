@@ -1,14 +1,13 @@
 package io.mosip.registration.processor.camel.bridge;
-	
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
-
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 /**
  * The Class MosipCamelBridge.
  * 
@@ -17,8 +16,9 @@ import io.vertx.core.logging.LoggerFactory;
  */
 public class MosipCamelBridge extends AbstractVerticle {
 
-	/** The log. */
-	static Logger log = LoggerFactory.getLogger(MosipCamelBridge.class);
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipCamelBridge.class);
+
 
 	/**
 	 * The main method.
@@ -38,7 +38,7 @@ public class MosipCamelBridge extends AbstractVerticle {
 	public void start() throws Exception {
 
 		vertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(),
-				message -> log.error("ERROR while doing operation >> " + message.body()));
+				message -> regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"ERROR while doing operation >> : ",message.body().toString()));
 
 		CamelContext camelContext = new DefaultCamelContext();
 

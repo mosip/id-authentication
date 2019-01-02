@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
@@ -16,8 +17,11 @@ import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
+import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
+import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -44,6 +48,12 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineHistoryRepository machineHistoryRepository;
 
+	@Autowired
+	MachineSpecificationRepository machineSpecificationRepository;
+
+	@Autowired
+	MachineTypeRepository machineTypeRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -57,9 +67,9 @@ public class MachineServiceImpl implements MachineService {
 		MachineResponseDto machineResponseIdDto = new MachineResponseDto();
 		try {
 			machineList = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(id, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
@@ -88,9 +98,9 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			machineList = machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
@@ -117,9 +127,9 @@ public class MachineServiceImpl implements MachineService {
 		List<MachineDto> machineDtoList = null;
 		try {
 			machineList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + "  "
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
@@ -141,6 +151,7 @@ public class MachineServiceImpl implements MachineService {
 	 * kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
+	@Transactional
 	public IdResponseDto createMachine(RequestDto<MachineDto> machine) {
 		Machine crtMachine = null;
 		Machine entity = MetaDataUtils.setCreateMetaData(machine.getRequest(), Machine.class);
@@ -152,12 +163,92 @@ public class MachineServiceImpl implements MachineService {
 			machineHistoryRepository.create(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(crtMachine, idResponseDto);
 
 		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#updateMachine(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
+		Machine updMachine = null;
+		try {
+			Machine renmachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId());
+
+			if (renmachine != null) {
+				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
+				updMachine = machineRepository.update(renmachine);
+				MachineHistory machineHistory = new MachineHistory();
+				MapperUtils.map(updMachine, machineHistory);
+				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
+
+				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
+				machineHistoryRepository.create(machineHistory);
+			} else {
+				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(updMachine, idResponseDto);
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#deleteMachine(java.lang.
+	 * String)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto deleteMachine(String id) {
+		Machine delMachine = null;
+		try {
+			Machine renMachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
+			if (renMachine != null) {
+				
+						MetaDataUtils.setDeleteMetaData(renMachine);
+						delMachine = machineRepository.update(renMachine);
+
+						MachineHistory machineHistory = new MachineHistory();
+						MapperUtils.map(delMachine, machineHistory);
+						MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+
+						machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
+						machineHistoryRepository.create(machineHistory);
+					} else {
+						throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+					}
+				
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(delMachine, idResponseDto);
+		return idResponseDto;
+
 	}
 
 }

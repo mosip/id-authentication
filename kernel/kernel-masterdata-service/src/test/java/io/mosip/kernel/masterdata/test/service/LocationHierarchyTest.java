@@ -90,5 +90,7 @@ public class LocationHierarchyTest {
 
 		Whitebox.invokeMethod(hierarchyImplSpy, "getParentList", "KAR", "KAN");
 	}
+	
+	
 }
 

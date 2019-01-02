@@ -15,8 +15,8 @@ public class StatusMessage {
 	
 	
 	/** The Constant MANUAL_VERFICATION_SUCCESS. */
-	public static final String MANUAL_VERFICATION_PACKET_APPROVED = "MANUAL_VERFICATION_PACKET_APPROVED";
+	public static final String MANUAL_VERFICATION_PACKET_APPROVED = "Packet approved for manual verification";
 	
 	/** The Constant MANUAL_VERFICATION_REJECTED. */
-	public static final String MANUAL_VERFICATION_PACKET_REJECTED = "MANUAL_VERFICATION_PACKET_REJECTED";
+	public static final String MANUAL_VERFICATION_PACKET_REJECTED = "Packet rejected for manual verification";
 }

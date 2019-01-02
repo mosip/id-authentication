@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.exception.util;
-	
+
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -38,18 +38,47 @@ public enum PlatformErrorMessages {
 	RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "002",
 			"Transaction table is not accessible"),
 
-	/** The rpr pis registration table not accessible. */
+	RPR_RGS_INVALID_SYNCTYPE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "003",
+			"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"),
+
+	RPR_RGS_INVALID_LANGUAGECODE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "004",
+			"Language Code must be of three character"),
+
+	RPR_RGS_INVALID_REGID_PARENTREGID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "005",
+			"RegistrationId and Parent RegistrationId cannot be same"),
+
+	RPR_RGS_EMPTY_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "006",
+			"RegistrationId cannot be null"),
+
+	RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "007",
+			"Invalid Time Stamp Found in RegistrationId"),
+
+	RPR_RGS_INVALID_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "008",
+			"RegistrationId Must Be Numeric Only"),
+
+	RPR_RGS_INVALID_REGISTRATIONID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "009",
+			"RegistrationId Length Must Be 29"),
+
+	RPR_RGS_INVALID_PRID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "010",
+			"Invalid Time Stamp Found in Parent RegistrationId"),
+
+	RPR_RGS_INVALID_PRID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "011",
+			"Parent RegistrationId Must Be Numeric Only"),
+
+	RPR_RGS_INVALID_PRID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "012",
+			"Parent RegistrationId Length Must Be 29"),
+
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
-			"The Registration Table is not accessible"), 
+			"The Registration Table is not accessible"),
  /** The rpr pis identity not found. */
  RPR_PIS_IDENTITY_NOT_FOUND(
 					PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "002",
-					"Identity field not found in DemographicInfo Json"), 
+					"Identity field not found in DemographicInfo Json"),
  /** The rpr pis unable to insert data. */
  RPR_PIS_UNABLE_TO_INSERT_DATA(
 							PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003",
-							"Unable to insert data in db for registration Id :"), 
+							"Unable to insert data in db for registration Id :"),
  /** The rpr pis file not found in dfs. */
  RPR_PIS_FILE_NOT_FOUND_IN_DFS(
 									PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
@@ -164,38 +193,50 @@ public enum PlatformErrorMessages {
 	/** The rpr mvs no assigned record. */
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004", "No Assigned Record Found"),
 
+	//Registration processor Message sender Exception error code
+	RPR_TEM_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
+
+	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "The Processing of Template Failed "),
+
+	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template Generation failed"),
+
+	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "Phone number was not found"),
+
+	RPR_EML_EMAILID_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Email Id was not found"),
+
+	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003", "The Configuration and Language code not found"),
 
 	/** ***System Exception****. */
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Unexpected exception"),
-	
+
 	/** The rpr sys bad gateway. */
 	RPR_SYS_BAD_GATEWAY(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "002", "Bad Gateway"),
-	
+
 	/** The rpr sys service unavailable. */
 	RPR_SYS_SERVICE_UNAVAILABLE(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "003", "Service Unavailable"),
-	
+
 	/** The rpr sys server error. */
 	RPR_SYS_SERVER_ERROR(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "004", "Internal Server Error"),
-	
+
 	/** The rpr sys timeout exception. */
 	RPR_SYS_TIMEOUT_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "005", "Timeout Error"),
 
 	/** The rpr sys identity json mapping exception. */
 	RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "006","Error while mapping Identity Json"),
-	
+
 	/** The rpr sys instantiation exception. */
 	RPR_SYS_INSTANTIATION_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "007","Error while creating object of JsonValue class"),
-	
+
 	/** The rpr sys no such field exception. */
 	RPR_SYS_NO_SUCH_FIELD_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "008","Could not find the field"),
-	
+
 	/** The rpr sys json parsing exception. */
 	RPR_SYS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "009","Error while parsing Json"),
-	
+
 	/** The rpr sys unable to convert stream to bytes. */
 	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010","Error while converting inputstream to bytes"),
-	
+
 	/** The rpr sys parsing date exception. */
 	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011","Error while parsing date ");
 
@@ -237,3 +278,4 @@ public enum PlatformErrorMessages {
 	}
 
 }
+

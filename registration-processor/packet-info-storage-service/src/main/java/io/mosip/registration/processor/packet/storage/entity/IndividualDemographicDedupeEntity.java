@@ -22,12 +22,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "individual_demographic_dedup", schema = "regprc")
 public class IndividualDemographicDedupeEntity extends BasePacketEntity<IndividualDemographicDedupePKEntity>
 		implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The uin ref id. */
-	@Column(name = "uin_ref_id")
+    /** The uin ref id. */
+	@Column(name = "uin")
 	private String uinRefId;
 
 	/** The name. */
