@@ -1981,6 +1981,35 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void deleteRegistrationCenterUserMachineMappingTest() throws Exception {
+		when(registrationCenterMachineUserRepository.findAllNondeletedMappings(Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Optional.of(registrationCenterUserMachine));
+		when(registrationCenterUserMachineHistoryRepository.create(Mockito.any()))
+				.thenReturn(registrationCenterUserMachineHistory);
+		when(registrationCenterMachineUserRepository.update(Mockito.any())).thenReturn(registrationCenterUserMachine);
+		mockMvc.perform(delete("/v1.0/registrationmachineusermappings/REG001/MAC001/QC001")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void deleteRegistrationCenterUserMachineMappingDataNotFoundExceptionTest() throws Exception {
+		when(registrationCenterMachineUserRepository.findAllNondeletedMappings(Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Optional.empty());
+		mockMvc.perform(delete("/v1.0/registrationmachineusermappings/REG001/MAC001/QC001"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void deleteRegistrationCenterUserMachineMappingDataAccessLayerExceptionTest() throws Exception {
+		when(registrationCenterMachineUserRepository.findAllNondeletedMappings(Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(registrationCenterMachineUserRepository.create(Mockito.any())).thenReturn(registrationCenterUserMachine);
+		when(registrationCenterUserMachineHistoryRepository.create(Mockito.any()))
+				.thenReturn(registrationCenterUserMachineHistory);
+		mockMvc.perform(delete("/v1.0/registrationmachineusermappings/REG001/MAC001/QC001"))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
 	public void createRegistrationCentersMachineUserMappingTest() throws Exception {
 		RequestDto<RegistrationCenterUserMachineMappingDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");

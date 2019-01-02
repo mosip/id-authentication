@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
  * Entity class for User and Registration mappings
  * 
  * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
