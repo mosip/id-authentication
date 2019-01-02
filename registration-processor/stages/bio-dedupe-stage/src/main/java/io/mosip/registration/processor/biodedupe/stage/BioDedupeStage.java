@@ -55,6 +55,17 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		object.setMessageBusAddress(MessageBusAddress.BIODEDUPE_BUS_IN);
+		object.setInternalError(Boolean.FALSE);
+		String description = "";
+		boolean isTransactionSuccessful = false;
+
+		String registrationId = object.getRid();
+
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+				.getRegistrationStatus(registrationId);
+		// BioDedupeService.insertBiometrics(RegistrationId) to insert the applicant
+		// biometric in Abis
 
 		return null;
 	}
