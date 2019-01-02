@@ -6,9 +6,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -85,6 +85,8 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Connec
  */
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
+
+	private static final String RETRIEVE_IDENTITY = "retrieveIdentity";
 
 	private static final String ENTITY = "entity";
 
@@ -246,6 +248,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			String uinRefId = UUID.randomUUID().toString().replace("-", "").substring(0, 28);
 
 			if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
+				identityInfo = mapper.writeValueAsBytes(mapper.readValue(identityInfo, ObjectNode.class).get(IDENTITY));
 				if (Objects.nonNull(documents) && !documents.isEmpty()) {
 					if (storeDocuments(uin, uinRefId, identityInfo, documents).entrySet().stream()
 							.anyMatch(entry -> !(boolean) entry.getValue())) {
@@ -265,6 +268,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			}
 		} catch (DataAccessException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} catch (IOException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST, e);
 		}
 	}
 
@@ -384,32 +389,32 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			Uin uinObject = retrieveIdentityByUin(uin);
 
 			if (filter.contains(DEMO)) {
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, "retrieveIdentity", "filter - demo",
-						"docs documents  --> " + documents);
+				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
+						"filter - demo");
 				return constructIdResponse(this.id.get(READ), uinObject, null);
 			} else if (filter.equalsIgnoreCase(BIO)) {
 				getFiles(uin, documents, BIOMETRICS);
 				uinObject.setUinData("".getBytes());
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, "retrieveIdentity", "filter - bio",
+				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - bio",
 						"bio documents  --> " + documents);
 				return constructIdResponse(this.id.get(READ), uinObject, documents);
 			} else if (filter.equalsIgnoreCase(DOCS)) {
 				getFiles(uin, documents, DOCUMENTS);
 				uinObject.setUinData("".getBytes());
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, "retrieveIdentity", "filter - docs",
+				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - docs",
 						"docs documents  --> " + documents);
 				return constructIdResponse(this.id.get(READ), uinObject, documents);
 			} else {
 				getFiles(uin, documents, BIOMETRICS);
 				getFiles(uin, documents, DOCUMENTS);
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, "retrieveIdentity", "filter - all",
+				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - all",
 						"docs documents  --> " + documents);
 				return constructIdResponse(this.id.get(READ), uinObject, documents);
 			}
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, this.id.get(READ));
 		} catch (IdRepoAppUncheckedException e) {
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 		}
 	}
 
@@ -425,22 +430,26 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @return the files
 	 */
 	private void getFiles(String uin, List<Documents> documents, String filter) {
-		connection.getConnection().listObjectsV2(uin).getObjectSummaries().stream()
-				.peek(objectSummary -> mosipLogger.info(ID_REPO_SERVICE_IMPL, "retrieveIdentity", "getFiles",
-						"peek1 key -> " + objectSummary.getKey()))
-				.filter(objectSummary -> StringUtils.startsWithIgnoreCase(objectSummary.getKey(), filter))
-				.peek(objectSummary -> mosipLogger.info(ID_REPO_SERVICE_IMPL, "retrieveIdentity", "getFiles",
-						"peek2 key -> " + objectSummary.getKey()))
-				.forEach(objectSummary -> {
-					try {
-						documents.add(new Documents(StringUtils.split(objectSummary.getKey(), '/')[1],
-								CryptoUtil.encodeBase64(IOUtils.toByteArray((InputStream) connection.getConnection()
-										.getObject(new GetObjectRequest(uin, objectSummary.getKey()))
-										.getObjectContent()))));
-					} catch (IOException e) {
-						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
-					}
-				});
+		try {
+			connection.getConnection().listObjectsV2(uin).getObjectSummaries().stream()
+					.peek(objectSummary -> mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "getFiles",
+							"peek1 key -> " + objectSummary.getKey()))
+					.filter(objectSummary -> StringUtils.startsWithIgnoreCase(objectSummary.getKey(), filter))
+					.peek(objectSummary -> mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "getFiles",
+							"peek2 key -> " + objectSummary.getKey()))
+					.forEach(objectSummary -> {
+						try {
+							documents.add(new Documents(StringUtils.split(objectSummary.getKey(), '/')[1],
+									CryptoUtil.encodeBase64(IOUtils.toByteArray((InputStream) connection.getConnection()
+											.getObject(new GetObjectRequest(uin, objectSummary.getKey()))
+											.getObjectContent()))));
+						} catch (IOException e) {
+							throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
+						}
+					});
+		} catch (IdRepoAppUncheckedException | SdkClientException e) {
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
+		}
 	}
 
 	/**
@@ -629,7 +638,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				response.setEntity(linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null))
 						.toUri().toString());
 				mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-						SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERR)));
+						SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERR, DOCUMENTS.toLowerCase().substring(0, 9))));
 			} else {
 				if (Objects.isNull(documents)) {
 					ignoredProperties.add(ENTITY);
@@ -746,7 +755,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @return the string
 	 */
 	private String hash(byte[] identityInfo) {
-		return CryptoUtil.encodeBase64(HMACUtils.generateHash(CryptoUtil.encodeBase64(identityInfo).getBytes()));
+		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
 	}
 
 }

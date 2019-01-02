@@ -1,25 +1,28 @@
 package io.mosip.kernel.idrepo.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Uin.
  *
@@ -28,12 +31,30 @@ import lombok.Setter;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(schema = "idrepo")
 public class Uin {
-	
+
+	public Uin(String uinRefId, String uin, byte[] uinData, String uinDataHash, String regId, String statusCode,
+			String langCode, String createdBy, LocalDateTime createdDateTime, String updatedBy,
+			LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+		this.uinRefId = uinRefId;
+		this.uin = uin;
+		this.uinData = uinData.clone();
+		this.uinDataHash = uinDataHash;
+		this.regId = regId;
+		this.statusCode = statusCode;
+		this.langCode = langCode;
+		this.createdBy = createdBy;
+		this.createdDateTime = createdDateTime;
+		this.updatedBy = updatedBy;
+		this.updatedDateTime = updatedDateTime;
+		this.isDeleted = isDeleted;
+		this.deletedDateTime = deletedDateTime;
+	}
+
 	/** The uin ref id. */
 	@Id
+	@Column(insertable = false, updatable = false, nullable = false)
 	private String uinRefId;
 
 	/** The uin. */
@@ -81,6 +102,16 @@ public class Uin {
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@JoinColumn(name = "uinRefId", referencedColumnName = "uinRefId", insertable = false, updatable = false, nullable = false)
+	private List<UinBiometric> biometrics;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@JoinColumn(name = "uinRefId", referencedColumnName = "uinRefId", insertable = false, updatable = false, nullable = false)
+	private List<UinDocument> documents;
 
 	/**
 	 * Gets the uin data.

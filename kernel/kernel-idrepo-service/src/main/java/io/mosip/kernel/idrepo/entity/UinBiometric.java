@@ -28,8 +28,6 @@ public class UinBiometric {
 	
 	/** The uin ref id. */
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
 	private String uinRefId;
 	
 	/** The bio file id. */

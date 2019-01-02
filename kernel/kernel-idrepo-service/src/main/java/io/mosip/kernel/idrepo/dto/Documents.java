@@ -2,6 +2,7 @@ package io.mosip.kernel.idrepo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class Documents.
@@ -13,6 +14,7 @@ import lombok.Data;
  * Instantiates a new documents.
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Documents {
 

@@ -2,7 +2,12 @@ package io.mosip.demo.authentication.service.impl.indauth.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.text.translate.AggregateTranslator;
+import org.apache.commons.text.translate.EntityArrays;
+import org.apache.commons.text.translate.LookupTranslator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -16,16 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableMap;
+
 import io.mosip.kernel.core.util.CryptoUtil;
 
 @RestController
 public class CEPH {
-	
+
 	@Bean(name = "multipartResolver")
 	public CommonsMultipartResolver multipartResolver() {
-	    CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-	    multipartResolver.setMaxUploadSize(100000);
-	    return multipartResolver;
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+		multipartResolver.setMaxUploadSize(100000);
+		return multipartResolver;
 	}
 
 	@PostMapping(value = "/encodeFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -47,20 +56,20 @@ public class CEPH {
 				.contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
 	}
 
-	// @GetMapping("/ceph")
-	// public String result() throws IOException,
-	// io.mosip.kernel.core.exception.IOException {
-	// PathMatchingResourcePatternResolver resolver = new
-	// PathMatchingResourcePatternResolver(
-	// getClass().getClassLoader());
-	// Resource resources = resolver.getResource("classpath:testfile");
-	// System.err.println(IOUtils.toString(resources.getInputStream(), "UTF-8"));
-	// System.err.println(util.getConnection().doesBucketExistV2("1234567890"));
-	// System.err.println(
-	// util.getConnection().putObject("1234567890", "doc/testfile",
-	// resources.getInputStream(), null));
-	// System.err.println(ceph.checkFileExistence("1234567890", "doc/testfile"));
-	// System.err.println(util.getConnection().listObjectsV2("524013657059").getObjectSummaries().get(0).getKey());
-	// return ceph.checkFileExistence("1234567890", "doc/testfile").toString();
-	// }
+	@PostMapping(path = "/jsonCompress", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public String jsonCompress(@RequestBody ObjectNode json) {
+		ImmutableMap<CharSequence, CharSequence> map = ImmutableMap.<CharSequence, CharSequence>of("\"", "\\\"", "\\",
+				"\\\\");
+		AggregateTranslator escaper = new AggregateTranslator(new LookupTranslator(map),
+				new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE));
+		return escaper.translate(json.toString());
+	}
+
+	@PostMapping(path = "/jsonDecompress", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public String jsonDecompress(@RequestBody String json) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+				mapper.readValue(StringEscapeUtils.unescapeJava(json).getBytes(Charset.forName("UTF-16")), ObjectNode.class));
+	}
+
 }
