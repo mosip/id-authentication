@@ -19,10 +19,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class for Holiday table
  * 
  * @author Abhishek Kumar
- * @author Sidhant Agarwal
  * @version 1.0.0
  * @since 24-10-2018
  */
@@ -40,14 +38,12 @@ public class Holiday extends BaseEntity implements Serializable {
 	@AttributeOverrides({
 			@AttributeOverride(name = "locationCode", column = @Column(name = "location_code", nullable = false, length = 36)),
 			@AttributeOverride(name = "holidayDate", column = @Column(name = "holiday_date", nullable = false)),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)),
+			@AttributeOverride(name = "holidayName", column = @Column(name = "holiday_name", nullable = false, length = 64)) })
 	private HolidayID holidayId;
 
 	@Column(name = "id", unique = true, nullable = false)
 	private int id;
-
-	@Column(name = "holiday_name", nullable = false, length = 64)
-	private String holidayName;
 
 	@Column(name = "holiday_desc", length = 128)
 	private String holidayDesc;

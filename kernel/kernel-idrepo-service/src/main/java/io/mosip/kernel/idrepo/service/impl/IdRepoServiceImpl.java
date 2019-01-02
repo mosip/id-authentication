@@ -438,7 +438,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 		idResponse.setId(id);
 
-		idResponse.setTimestamp(DateUtils.getDefaultUTCCurrentDateTimeString());
+		idResponse.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
 
 		idResponse.setRegistrationId(uin.getUinRefId());
 

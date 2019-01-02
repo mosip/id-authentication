@@ -93,6 +93,23 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
+		
+		
+		
+			try {
+				/** Clear scheduler Before Starting */
+				schedulerFactoryBean.getScheduler().clear();
+			} catch (SchedulerException e) {
+			
+				/** Error Response */
+				setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,null);
+				return responseDTO;
+			
+			}
+		
+		
+		
+	
 		Map<String, Object> jobDataAsMap = new HashMap<>();
 		jobDataAsMap.put("applicationContext", applicationContext);
 		jobDataAsMap.putAll(SYNC_JOB_MAP);
@@ -100,13 +117,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		JobDataMap jobDataMap =new JobDataMap(jobDataAsMap);		
 
 		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
-			String currentJob = null;
 			try {
 				if (syncJob.getParentSyncJobId() == null) {
 
 					BaseJob baseJob = null;
-					currentJob = syncJob.getName();
-
+					
 					// Get Job instance through application context
 					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
 
@@ -126,7 +141,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, exception.getMessage());
 				
-				setErrorResponse(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,null);
+				/** Error Response */
+				setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,null);
 			} 
 		});
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

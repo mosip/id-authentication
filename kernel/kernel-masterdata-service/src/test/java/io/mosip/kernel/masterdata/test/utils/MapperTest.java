@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.test.utils;
 import static io.mosip.kernel.masterdata.utils.MapperUtils.map;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setCreateMetaData;
 import static io.mosip.kernel.masterdata.utils.MetaDataUtils.setUpdateMetaData;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * 
@@ -71,6 +73,18 @@ public class MapperTest {
 		RegistrationCenterDeviceDto newRcdDto = map(rcd, RegistrationCenterDeviceDto.class);
 
 		assertTrue(newRcdDto != null);
+
+	}
+
+	@Test
+	public void testCopyEntities() {
+		LanguageDto d1 = new LanguageDto();
+		LanguageDto d2 = new LanguageDto();
+		d1.setCode("HIN");
+
+		MapperUtils.setBaseFieldValue(d1, d2);
+
+		assertNull(d2.getCode());
 
 	}
 

@@ -18,11 +18,11 @@ export class DataStorageService {
   // https://pre-reg-df354.firebaseio.com/applications.json
   // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
-  LANGUAGE_CODE = 'ENG';
-  DISTANCE = 2000;
-
   AVAILABILITY_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/book';
+  TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
+  LANGUAGE_CODE = 'ENG';
+  DISTANCE = 2000;
 
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
@@ -38,6 +38,17 @@ export class DataStorageService {
       responseType: 'json',
       params: new HttpParams().append('preRegId', preRegId)
     });
+  }
+
+  getTransliteration(request) {
+    const obj = {
+      id: 'mosip.pre-registration.transliteration.transliterate',
+      reqTime: '2018-12-24T14:10:31.900Z',
+      ver: '1.0',
+      request: request
+    };
+
+    return this.httpClient.post(this.TRANSLITERATION_URL, obj);
   }
 
   getUserDocuments(preRegId) {

@@ -25,4 +25,5 @@ export class HeaderComponent implements OnInit {
   onLogout() {
     console.log('Logging out');
   }
+
 }

@@ -1,0 +1,36 @@
+info{
+display: inline-block;
+
+}
+
+qrcode{
+display: inline-block;
+}
+
+mat-card{
+    width: 100%;
+    height: 70%;
+    box-sizing: border-box;
+    border:1;
+  }
+
+  .row__{
+    display:flex;
+  }
+  .row__ span{
+    flex : 1;
+  }
+
+  .row__ div{
+    flex : 1;
+  }
+
+  .row__ button{
+    flex : 1;
+  }
+
+  .button-row__{
+    display:flex;
+    justify-content : flex-end;
+  }
+  

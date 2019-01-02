@@ -260,4 +260,32 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	public Boolean isPacketPresent(String registrationId) {
 		return this.getPacket(registrationId) != null;
 	}
+
+	/**
+	 * This method stores a document in DFS
+	 * 
+	 * @param enrolmentId
+	 *            The enrolment ID for the document
+	 * @param key
+	 *            The key for the document
+	 * @param document
+	 *            document as InputStream
+	 * @return True if document is stored
+	 */
+	@Override
+	public Boolean storeDocument(String enrolmentId, String key, InputStream document) {
+		try {
+			if (!conn.doesBucketExistV2(enrolmentId)) {
+				conn.createBucket(enrolmentId);
+			}
+			this.conn.putObject(enrolmentId, key, document, null);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, key, SUCCESS_UPLOAD_MESSAGE);
+		} catch (AmazonS3Exception e) {
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
+			ExceptionHandler.exceptionHandler(e);
+		} catch (SdkClientException e) {
+			ExceptionHandler.exceptionHandler(e);
+		}
+		return true;
+	} 
 }

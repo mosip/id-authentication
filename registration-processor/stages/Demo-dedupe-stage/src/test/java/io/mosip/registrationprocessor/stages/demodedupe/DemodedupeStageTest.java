@@ -59,7 +59,7 @@ public class DemodedupeStageTest {
 	@InjectMocks
 	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
 		@Override
-		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+		public MosipEventBus getEventBus(Class<?> clazz, String abc) {
 			return null;
 		}
 

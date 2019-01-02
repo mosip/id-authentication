@@ -1,0 +1,24 @@
+mat-card{
+    width: 100%;
+    height: 70%;
+    box-sizing: border-box;
+    border:1;
+  }
+
+  .row{
+    display:flex;
+  }
+
+  .row div{
+    flex : 1;
+  }
+
+  .row button{
+    flex : 1;
+  }
+
+  .button-row{
+    display:flex;
+    justify-content : flex-end;
+  }
+  

@@ -96,6 +96,7 @@ public class ScanPopUpViewController extends BaseController {
 				totalScannedPages.setVisible(false);
 				saveBtn.setVisible(false);
 				scannedPagesLabel.setVisible(false);
+				scanningMsg.setVisible(false);
 			}
 			LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
