@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
  * The Class KycAuthFilter.
