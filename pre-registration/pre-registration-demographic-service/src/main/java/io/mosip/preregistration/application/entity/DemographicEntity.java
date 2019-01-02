@@ -6,6 +6,7 @@ package io.mosip.preregistration.application.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -75,7 +76,7 @@ public class DemographicEntity implements Serializable {
 
 	/** The create date time. */
 	@Column(name = "cr_dtimes")
-	private Timestamp createDateTime;
+	private LocalDateTime createDateTime;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -83,7 +84,7 @@ public class DemographicEntity implements Serializable {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	private Timestamp updateDateTime;
+	private LocalDateTime updateDateTime;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -91,6 +92,6 @@ public class DemographicEntity implements Serializable {
 
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	private Timestamp deletedDateTime;
+	private LocalDateTime deletedDateTime;
 
 }

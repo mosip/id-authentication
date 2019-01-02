@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,11 +52,11 @@ import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
-import io.mosip.preregistration.application.dto.MainRequestDTO;
 import io.mosip.preregistration.application.dto.DocumentDeleteDTO;
+import io.mosip.preregistration.application.dto.MainListResponseDTO;
+import io.mosip.preregistration.application.dto.MainRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.MainListResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -137,7 +138,7 @@ public class DemographicServiceTest {
 	boolean requestValidatorFlag = false;
 	Map<String, String> requestMap = new HashMap<>();
 	Map<String, String> requiredRequestMap = new HashMap<>();
-	Timestamp times = null;
+	LocalDateTime times = null;
 	BookingRegistrationDTO bookingRegistrationDTO;
 	MainListResponseDTO<CreateDemographicDTO> responseDTO = null;
 
@@ -181,7 +182,7 @@ public class DemographicServiceTest {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = dateFormat.parse("17/12/2018");
 		long time = date.getTime();
-		times = new Timestamp(time);
+		times = LocalDateTime.now();
 		preRegistrationEntity.setCreateDateTime(times);
 		preRegistrationEntity.setCreatedBy("9988905444");
 		preRegistrationEntity.setStatusCode("Pending_Appointment");
@@ -248,7 +249,7 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
 		createPreRegistrationDTO.setPreRegistrationId("");
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(times);
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		createPreRegistrationDTO.setStatusCode("Pending_Appointment");
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		List<CreateDemographicDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
@@ -273,7 +274,7 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setDemographicDetails(jsonObject);
 		createPreRegistrationDTO.setPreRegistrationId("");
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(times);
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
@@ -289,9 +290,9 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
 		createPreRegistrationDTO.setPreRegistrationId("1234");
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(times);
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		createPreRegistrationDTO.setUpdatedBy("9988905444");
-		createPreRegistrationDTO.setUpdatedDateTime(times);
+		createPreRegistrationDTO.setUpdatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		MainListResponseDTO<CreateDemographicDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
 		assertEquals("1234", res.getResponse().get(0).getPreRegistrationId());
@@ -311,9 +312,9 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
 		createPreRegistrationDTO.setPreRegistrationId("1234");
 		createPreRegistrationDTO.setUpdatedBy("9988905444");
-		createPreRegistrationDTO.setUpdatedDateTime(times);
+		createPreRegistrationDTO.setUpdatedDateTime(serviceUtil.getLocalDateString(times));
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(times);
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
@@ -534,9 +535,9 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
 		createPreRegistrationDTO.setPreRegistrationId("1234");
 		createPreRegistrationDTO.setUpdatedBy("9988905444");
-		createPreRegistrationDTO.setUpdatedDateTime(times);
+		createPreRegistrationDTO.setUpdatedDateTime(serviceUtil.getLocalDateString(times));
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(times);
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
@@ -549,9 +550,9 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setDemographicDetails(jsonTestObject);
 		createPreRegistrationDTO.setPreRegistrationId("1234");
 		createPreRegistrationDTO.setUpdatedBy("9988905444");
-		createPreRegistrationDTO.setUpdatedDateTime(times);
+		createPreRegistrationDTO.setUpdatedDateTime(serviceUtil.getLocalDateString(times));
 		createPreRegistrationDTO.setCreatedBy("9988905444");
-		createPreRegistrationDTO.setCreatedDateTime(times);
+		createPreRegistrationDTO.setCreatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
