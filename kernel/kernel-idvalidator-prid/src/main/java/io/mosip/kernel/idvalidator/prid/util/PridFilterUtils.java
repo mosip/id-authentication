@@ -15,7 +15,7 @@ public class PridFilterUtils {
 	private static final String SEQ_DEC = "9876543210";
 
 	/**
-	 * Compiled regex pattern of {@link #repeatingRegEx}
+	 * Compiled regex pattern for 
 	 */
 	private Pattern repeatingPattern = null;
 
