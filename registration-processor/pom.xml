@@ -119,6 +119,7 @@
 		<module>quality-checker</module>
 		<module>registration-processor-message-sender</module>
         <module>packet-bio-dedupe-service</module>
+        <module>registration-processor-abis</module>
     </modules>
 
 	<profiles>
