@@ -63,7 +63,7 @@ public class DemographicPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the REGISTRATION_PREVIEW_CONTROLLER");
-		demoRevScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
+		demoRevScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		isInPane1 = true;
 		demographicPreview.setDisable(true);
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());

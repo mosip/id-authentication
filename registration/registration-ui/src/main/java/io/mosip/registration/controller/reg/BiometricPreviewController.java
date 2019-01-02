@@ -106,7 +106,7 @@ public class BiometricPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
-		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight()-5);
+		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
