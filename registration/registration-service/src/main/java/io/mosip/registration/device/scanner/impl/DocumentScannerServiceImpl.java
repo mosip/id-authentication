@@ -42,6 +42,15 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 	@Value("${DOCUMENT_SCANNER_DPI}")
 	private int scannerDpi;
+	
+	@Value("${DOCUMENT_SCANNER_CONTRAST}")
+	private int scannerContrast;
+	
+	@Value("${DOCUMENT_SCANNER_BRIGHTNESS}")
+	private int scannerBrightness;
+	
+	@Value("${DOCUMENT_SCANNER_DEPTH}")
+	private int scannerDepth;
 
 	@Value("${DOCUMENT_SCANNER_HOST}")
 	private String scannerhost;
@@ -105,6 +114,12 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	private void setScannerSettings(SaneDevice saneDevice) throws IOException, SaneException {
 		/* setting the resolution in dpi for the quality of the document */
 		saneDevice.getOption("resolution").setIntegerValue(scannerDpi);
+
+		saneDevice.getOption("brightness").setIntegerValue(scannerBrightness);
+
+		saneDevice.getOption("contrast").setIntegerValue(scannerContrast);
+
+		saneDevice.getOption("depth").setIntegerValue(scannerDepth);
 
 	}
 
