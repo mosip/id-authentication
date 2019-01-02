@@ -86,6 +86,9 @@ public enum RegistrationStatusCode {
     MANUAL_ADJUDICATION_SUCCESS,
 
     /** The manual adjudication failed. */
-    MANUAL_ADJUDICATION_FAILED
+    MANUAL_ADJUDICATION_FAILED,
+
+    /** The virus scan success. */
+    VIRUS_SCAN_SUCCESSFUL
 
 }

@@ -81,5 +81,4 @@ public class StatusMessage {
 	/** The Constant PARENT_UIN_NOT_FOUND_IN_TABLE. */
 	public static final String PARENT_UIN_NOT_FOUND_IN_TABLE = "The UIN of Parent is not present in individual_demographic_dedup for Packet";
 
-
 }
