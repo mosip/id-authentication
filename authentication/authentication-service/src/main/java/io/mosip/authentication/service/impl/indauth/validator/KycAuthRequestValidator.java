@@ -32,6 +32,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthRequestValidator.class);
 
+	/** The Constant AuthRequest. */
 	private static final String AUTH_REQUEST = "authRequest";
 
 	/** The Constant INVALID_INPUT_PARAMETER. */
@@ -46,14 +47,19 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
+	/** The Constant Consent Request. */
 	private static final String CONSENT_REQ = "consentReq";
 
+	/** The Constant Access Level. */
 	private static final String ACCESS_LEVEL = "ekyc.mua.accesslevel.";
 
+	/** The Constant Invalid Auth Request. */
 	private static final String INVALID_AUTH_REQUEST = "Invalid Auth Request";
 
+	/** The Constant eKycAuthType. */
 	private static final String AUTH_TYPE = "eKycAuthType";
 
+	/** The Constant Missing Input Parameter. */
 	private static final String MISSING_INPUT_PARAMETER = "Missing Input Parameter";
 
 	/** The env. */
@@ -65,6 +71,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
 
+	/**
+	 * Validates the KycAuthRequest
+	 */
 	@Override
 	public void validate(Object target, Errors errors) {
 		super.validate(target, errors);
@@ -105,6 +114,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
+	 * Validates the KycAuthrequest against the MUACode on the request
 	 * 
 	 * @param errors
 	 * @param kycAuthRequestDTO
@@ -123,6 +133,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
+	 * Validates the KycAuthrequest against the Authtype on the request
 	 * 
 	 * @param errors
 	 * @param kycAuthRequestDTO
@@ -149,6 +160,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
+	 * Validates the ConsentRequest on KycAuthrequest
 	 * 
 	 * @param kycAuthRequestDTO
 	 * @param errors

@@ -5,10 +5,13 @@ import java.util.Map;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 public enum FullAddressMatchingStrategy implements MatchingStrategy {
 
@@ -43,6 +46,15 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 
 	private final MatchingStrategyType matchStrategyType;
 
+	/** The mosipLogger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(FullAddressMatchingStrategy.class);
+
+	/** The Constant DEFAULT_SESSION_ID. */
+	private static final String DEFAULT_SESSION_ID = "sessionId";
+
+	/** The Constant AGE Matching strategy. */
+	private static final String TYPE = "FullAddressMatchingStrategy";
+
 	/**
 	 * Constructor for Full Address Matching Strategy
 	 * 
@@ -59,13 +71,22 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 		if (object instanceof LanguageType) {
 			LanguageType langType = ((LanguageType) object);
 			if (langType.equals(LanguageType.PRIMARY_LANG)) {
+				logError(IdAuthenticationErrorConstants.FAD_PRI_MISMATCH);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAD_PRI_MISMATCH);
 			} else {
+				logError(IdAuthenticationErrorConstants.FAD_SEC_MISMATCH);
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.FAD_SEC_MISMATCH);
 			}
 		} else {
+			logError(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 		}
+	}
+
+	private static void logError(IdAuthenticationErrorConstants idAuthenticationErrorConstants) {
+		mosipLogger.error(DEFAULT_SESSION_ID, TYPE,
+				"Inside FullAddressMatchingStrategy Strategy" + idAuthenticationErrorConstants.getErrorCode(),
+				idAuthenticationErrorConstants.getErrorMessage());
 	}
 
 	@Override
