@@ -46,6 +46,15 @@ public enum ApiName {
 	SMSNOTIFIER,
 	
 	/** The email notifier. */ 
-	EMAILNOTIFIER
+	EMAILNOTIFIER,
+	
+	/** The idrepository. */
+	IDREPOSITORY,
+	
+	
+	/** The uingenerator. */
+	UINGENERATOR
+	
+	
 	
 }
