@@ -25,7 +25,6 @@ import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
-import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
