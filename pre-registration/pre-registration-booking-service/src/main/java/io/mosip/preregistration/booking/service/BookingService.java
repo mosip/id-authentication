@@ -228,6 +228,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		} 
 		return responseDTO;
 	}
@@ -254,6 +256,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 
 		return responseDto;
@@ -282,7 +286,9 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		} 
+		} catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
+		}
 		return dto;
 
 	}
@@ -317,6 +323,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 		return responseDto;
 	}

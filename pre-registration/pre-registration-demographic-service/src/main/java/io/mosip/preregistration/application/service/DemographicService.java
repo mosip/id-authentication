@@ -277,6 +277,7 @@ public class DemographicService {
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
 							deleteDto.setPrId(demographicEntity.getPreRegistrationId());
+							deleteDto.setDeletedBy(demographicEntity.getCreatedBy());
 							deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 							deleteList.add(deleteDto);
 						} else {

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 
 import lombok.Getter;
@@ -29,7 +30,9 @@ public class RegistrationBookingEntity implements Serializable {
 	private static final long serialVersionUID = 7886669943207769620L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(generator="system-uuid" )
+	@GenericGenerator(name="system-uuid", strategy = "uuid" )
+	@Column(name = "id" ,columnDefinition = "BINARY(8)")
 	private String id;
 	
 	@Embedded
