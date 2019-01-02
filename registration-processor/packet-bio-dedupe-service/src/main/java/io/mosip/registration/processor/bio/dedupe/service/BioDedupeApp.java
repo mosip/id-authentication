@@ -1,4 +1,4 @@
-package org.packet.bio.dedupe.service;
+package io.mosip.registration.processor.bio.dedupe.service;
 
 /**
  * Hello world!

@@ -1,4 +1,4 @@
-package org.packet.bio.dedupe.service.impl;
+package io.mosip.registration.processor.bio.dedupe.service.impl;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +16,8 @@ public class BioDedupeImpl implements BioDedupeService {
 	public String insertBiometrics(String RegistrationId) {
 
 		String InsertStatus = "failure";
+
+		// AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 
 		String requestId = UUIDgenerator();
 		String referenceId = UUIDgenerator();
