@@ -48,7 +48,7 @@ public class InternalAuthFilter extends BaseAuthFilter {
 			requestBody.replace(REQUEST,
 					decode((String) requestBody.get(REQUEST)));
 			if(null != requestBody.get(REQUEST)) {
-				Map<String, Object> request = keyManager.requestData(requestBody, env, decryptor, mapper);
+				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
 				requestBody.replace(REQUEST, request);				
 			}
 			return requestBody;
