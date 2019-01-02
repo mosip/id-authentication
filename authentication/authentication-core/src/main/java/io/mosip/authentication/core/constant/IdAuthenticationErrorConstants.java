@@ -108,7 +108,6 @@ public enum IdAuthenticationErrorConstants {
 	
 	// OTP Generation
 	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first.");
-	;
 
 	private final String errorCode;
 	private final String errorMessage;
