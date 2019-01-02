@@ -12,13 +12,12 @@ public final class TokenIdGeneratorConstant {
 	}
 
 	/**
-	 * The string field 
+	 * The string field
 	 */
 	public static final String ZERO_TO_NINE = "0123456789";
 	/**
 	 * The string field 2
 	 */
 	public static final String DIGITS_WITHOUT_ZERO_OR_ONE = "23456789";
-	
 
 }

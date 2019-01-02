@@ -22,17 +22,19 @@ import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
  */
 @Component
 public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
+
+	/**
+	 * Field to hold TokenIdFilterUtils object
+	 */
+	@Autowired
+	private TokenIdFilterUtils tokenIdFilterUtils;
+
 	/**
 	 * Field that takes Integer.This field decides the length of the tokenId. It is
 	 * read from the properties file.
 	 */
 	@Value("${mosip.kernel.tokenid.length}")
 	private Integer tokenIdLength;
-	
-	@Autowired
-	private TokenIdFilterUtils tokenIdFilterUtils;
-
-
 
 	private int generatedIdLength;
 
@@ -54,6 +56,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 		return generateTokenId();
 
 	}
+
 	/**
 	 * Method generates RandomId. It also validates that the token is generated
 	 * based on the rules {@link TokenIdFilterUtils}.If it is not validated then
