@@ -137,13 +137,15 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.INFO, "1000 - File is successfully scanned."));
+				.containsExactly(
+						Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is successfully scanned."));
 
 	}
 
@@ -158,7 +160,7 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.INFO, "1000 - File is infected."));
+				.containsExactly(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
 
 	}
 
@@ -177,7 +179,7 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.INFO, "1000 - File is infected."));
+				.containsExactly(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
 
 	}
 
@@ -210,7 +212,8 @@ public class VirusScannerStageTest {
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR, "The Virus Scan for the Packet Failed - {}"));
+				.containsExactly(Tuple.tuple(Level.ERROR,
+						"SESSIONID - REGISTRATIONID - 1000 - The Virus Scan for the Packet Failed null"));
 
 	}
 }
