@@ -67,11 +67,11 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant DEMOGRAPHIC_BUS_OUT. */
 	public static final MessageBusAddress DEMOGRAPHIC_BUS_OUT = new MessageBusAddress("demographic-bus-out");
 
-	/** The Constant BIOMETRIC_BUS_IN. */
-	public static final MessageBusAddress BIOMETRIC_BUS_IN = new MessageBusAddress("biometric-bus-in");
+	/** The Constant BIODEDUPE_BUS_IN. */
+	public static final MessageBusAddress BIODEDUPE_BUS_IN = new MessageBusAddress("biodedupe-bus-in");
 
-	/** The Constant BIOMETRIC_BUS_OUT. */
-	public static final MessageBusAddress BIOMETRIC_BUS_OUT = new MessageBusAddress("biometric-bus-out");
+	/** The Constant BIODEDUPE_BUS_OUT. */
+	public static final MessageBusAddress BIODEDUPE_BUS_OUT = new MessageBusAddress("biodedupe-bus-out");
 
 	/** The Constant FAILURE_BUS. */
 	public static final MessageBusAddress FAILURE_BUS = new MessageBusAddress("failure-bus");
@@ -82,13 +82,13 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant ERROR. */
 	public static final MessageBusAddress ERROR = new MessageBusAddress("error");
 	public static final MessageBusAddress QUALITY_CHECK_BUS = new MessageBusAddress("quality_check_bus");
-	
+
 	/** The Constant VIRUS_SCAN_BUS. */
 	public static final MessageBusAddress VIRUS_SCAN_BUS_IN = new MessageBusAddress("virus-scanner-stage");
-	
+
 	/** The Constant FTP_SCAN_BUS. */
 	public static final MessageBusAddress FTP_SCAN_BUS_OUT = new MessageBusAddress("ftp-scanner-stage");
-	
+
 	/** The Constant LANDING_ZONE_BUS. */
 	public static final MessageBusAddress LANDING_ZONE_BUS_OUT = new MessageBusAddress("landing-zone-scanner-stage");
 
@@ -100,7 +100,7 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant DEMODEDUPE_BUS_IN. */
 	public static final MessageBusAddress DEMODEDUPE_BUS_IN = new MessageBusAddress("demodedupe-bus-in");
-	
+
 	/** The Constant DEMODEDUPE_BUS_OUT. */
 	public static final MessageBusAddress DEMODEDUPE_BUS_OUT = new MessageBusAddress("demodedupe-bus-out");
 

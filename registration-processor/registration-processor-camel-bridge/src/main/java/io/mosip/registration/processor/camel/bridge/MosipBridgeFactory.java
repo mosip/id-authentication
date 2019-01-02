@@ -38,12 +38,13 @@ public class MosipBridgeFactory {
 	 */
 	public static void getEventBus() {
 
-		String configServerUri = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "vertx.ignite.configuration");
+		String configServerUri = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties",
+				"vertx.ignite.configuration");
 		URL url = null;
 		try {
 			url = new URL(configServerUri);
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
+
 			e1.printStackTrace();
 		}
 		ClusterManager clusterManager = new IgniteClusterManager(url);

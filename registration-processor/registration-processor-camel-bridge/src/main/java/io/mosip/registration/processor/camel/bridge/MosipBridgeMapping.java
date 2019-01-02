@@ -40,8 +40,11 @@ public class MosipBridgeMapping {
 						.toVertx(MessageBusAddress.OSI_BUS_IN.getAddress()))
 				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_IN))
 						.toVertx(MessageBusAddress.DEMODEDUPE_BUS_IN.getAddress()))
-				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.UIN_GENERATION_BUS_IN))
-						.toVertx(MessageBusAddress.UIN_GENERATION_BUS_IN.getAddress()))
+				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.BIODEDUPE_BUS_IN))
+						.toVertx(MessageBusAddress.BIODEDUPE_BUS_IN.getAddress()))
+				.addInboundMapping(
+						InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.UIN_GENERATION_BUS_IN))
+								.toVertx(MessageBusAddress.UIN_GENERATION_BUS_IN.getAddress()))
 
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.BATCH_BUS.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN)))
@@ -51,6 +54,8 @@ public class MosipBridgeMapping {
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.OSI_BUS_OUT)))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.DEMODEDUPE_BUS_OUT.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMODEDUPE_BUS_OUT)))
+				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.BIODEDUPE_BUS_OUT))
+						.toVertx(MessageBusAddress.BIODEDUPE_BUS_OUT.getAddress()))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.RETRY_BUS.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.MANUAL_VERIFICATION_BUS.getAddress())
