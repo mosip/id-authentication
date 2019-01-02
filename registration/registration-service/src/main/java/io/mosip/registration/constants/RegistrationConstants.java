@@ -487,6 +487,8 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "DoB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
+	
+	public static List<String> CITY_LIST = Arrays.asList("Delhi","Chennai","Bengaluru","Mumbai");
 
 	public static List<String> getPacketStatus() {
 		return Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");

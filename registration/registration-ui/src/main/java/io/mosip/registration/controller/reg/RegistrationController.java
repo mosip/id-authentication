@@ -194,19 +194,19 @@ public class RegistrationController extends BaseController {
 	private TextField mobileNo;
 
 	@FXML
-	private TextField region;
+	private ComboBox<String> region;
 
 	@FXML
-	private TextField city;
+	private ComboBox<String> city;
 
 	@FXML
-	private TextField province;
+	private ComboBox<String> province;
 
 	@FXML
 	private TextField postalCode;
 
 	@FXML
-	private TextField localAdminAuthority;
+	private ComboBox<String> localAdminAuthority;
 
 	@FXML
 	private TextField cniOrPinNumber;
@@ -395,6 +395,10 @@ public class RegistrationController extends BaseController {
 			accord.setExpandedPane(demoGraphicTitlePane);
 			fxUtils.dateFormatter(ageDatePicker);
 			fxUtils.disableFutureDays(ageDatePicker);
+			region.getItems().addAll(RegistrationConstants.CITY_LIST);
+			city.getItems().addAll(RegistrationConstants.CITY_LIST);
+			province.getItems().addAll(RegistrationConstants.CITY_LIST);
+			localAdminAuthority.getItems().addAll(RegistrationConstants.CITY_LIST);
 
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
@@ -645,9 +649,9 @@ public class RegistrationController extends BaseController {
 			} else {
 				LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
-				region.setText(locationDto.getRegion());
-				city.setText(locationDto.getCity());
-				province.setText(locationDto.getProvince());
+				region.setValue(locationDto.getRegion());
+				city.setValue(locationDto.getCity());
+				province.setValue(locationDto.getProvince());
 				postalCode.setText(locationDto.getPostalCode());
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
@@ -859,10 +863,10 @@ public class RegistrationController extends BaseController {
 						.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(region.getText())).get()))
+										.with(value -> value.setValue(region.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(region.getText())).get()))
+										.with(value -> value.setValue(region.getValue())).get()))
 								.get()))
 						.get()))
 				.with(identity -> identity.setProvince((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
@@ -870,10 +874,10 @@ public class RegistrationController extends BaseController {
 						.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(province.getText())).get()))
+										.with(value -> value.setValue(province.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(province.getText())).get()))
+										.with(value -> value.setValue(province.getValue())).get()))
 								.get()))
 						.get()))
 				.with(identity -> identity.setCity((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
@@ -881,10 +885,10 @@ public class RegistrationController extends BaseController {
 						.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(city.getText())).get()))
+										.with(value -> value.setValue(city.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(city.getText())).get()))
+										.with(value -> value.setValue(city.getValue())).get()))
 								.get()))
 						.get()))
 				.with(identity -> identity.setPostalCode(postalCode.getText()))
@@ -902,10 +906,10 @@ public class RegistrationController extends BaseController {
 						.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
-										.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+										.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(localLanguageCode))
-										.with(value -> value.setValue(localAdminAuthority.getText())).get()))
+										.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
 								.get()))
 						.get()))
 				.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO) Builder
@@ -1431,11 +1435,11 @@ public class RegistrationController extends BaseController {
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");
 		addressLine3.setText("Taramani");
-		region.setText("Taramani");
-		city.setText("Chennai");
-		province.setText("Tamilnadu");
+		region.setValue("Taramani");
+		city.setValue("Chennai");
+		province.setValue("Tamilnadu");
 		postalCode.setText("60011");
-		localAdminAuthority.setText("MindTree");
+		localAdminAuthority.setValue("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");

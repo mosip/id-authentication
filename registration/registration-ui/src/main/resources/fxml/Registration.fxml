@@ -95,15 +95,15 @@
                                        <Label layoutX="17.0" layoutY="112.0" text="%addressLine3" />
                                        <TextField fx:id="addressLine3" layoutX="14.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
                                        <Label layoutX="17.0" layoutY="170.0" text="%region" />
-                                       <TextField fx:id="region" layoutX="14.0" layoutY="185.0" prefHeight="30.0" prefWidth="151.0" />
+                                       <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" />
                                        <Label layoutX="180.0" layoutY="170.0" text="%city" />
-                                       <TextField fx:id="city" layoutX="180.0" layoutY="185.0" prefHeight="30.0" prefWidth="155.0" />
-                                       <Label layoutX="17.0" layoutY="220.0" text="%province" />
-                                       <TextField fx:id="province" layoutX="14.0" layoutY="232.0" prefHeight="30.0" prefWidth="153.0" />
-                                       <Label layoutX="180.0" layoutY="220.0" text="%postalCode" />
-                                       <TextField fx:id="postalCode" layoutX="180.0" layoutY="232.0" prefHeight="30.0" prefWidth="155.0" />
-                                       <Label layoutX="17.0" layoutY="270.0" text="%localAdminAuthority" />
-                                       <TextField fx:id="localAdminAuthority" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
+                                       <ComboBox fx:id="city" layoutX="180.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0"  />
+                                       <Label layoutX="17.0" layoutY="218.0" text="%province" />
+                                       <ComboBox fx:id="province" layoutX="17.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                       <Label layoutX="180.0" layoutY="218.0" text="%localAdminAuthority" />
+                                       <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                       <Label layoutX="17.0" layoutY="270.0" text="%postalCode" />
+                                       <TextField fx:id="postalCode" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
                                        <Label fx:id="addressLine1LocalLanguagelabel" layoutX="410.0" layoutY="13.0" text="" />
                                        <TextField fx:id="addressLine1LocalLanguage" layoutX="410.0" layoutY="27.0" prefHeight="30.0" prefWidth="320.0" />
                                        <Label fx:id="addressLine2LocalLanguagelabel" layoutX="410.0" layoutY="62.0" text="" />
