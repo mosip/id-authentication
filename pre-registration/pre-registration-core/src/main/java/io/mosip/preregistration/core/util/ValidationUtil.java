@@ -13,6 +13,7 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 public class ValidationUtil {
 	private ValidationUtil() {
 	}
+
 	public static boolean emailValidator(String loginId) {
 		String emailExpression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
 		Pattern pattern = Pattern.compile(emailExpression, Pattern.CASE_INSENSITIVE);
@@ -75,13 +76,24 @@ public class ValidationUtil {
 					|| requestMap.get(RequestCodes.FROM_DATE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 						ErrorMessages.INVALID_DATE.toString());
-			} else if (key.equals(RequestCodes.TO_DATE) && (requestMap.get(RequestCodes.TO_DATE) == null
+			}
+
+			else if (key.equals(RequestCodes.TO_DATE) && (requestMap.get(RequestCodes.TO_DATE) == null
 					|| requestMap.get(RequestCodes.TO_DATE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 						ErrorMessages.INVALID_DATE.toString());
 			}
+
 		}
 		return true;
 	}
 
+	public static boolean isvalidPreRegId(String preRegId) {
+		if (preRegId.matches("[0-9]+") && preRegId.length() == 14) {
+			return true;
+		}else {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
+					ErrorMessages.INVALID_PRE_REGISTRATION_ID.toString());
+		}
+	}
 }

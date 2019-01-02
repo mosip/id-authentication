@@ -1,9 +1,9 @@
 package io.mosip.preregistration.booking.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +14,6 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 @Transactional
 public interface RegistrationBookingRepository extends BaseRepository<RegistrationBookingEntity, String> {
 
-	public static final String existsQry = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.status_code = ?2";
-
-	public static final String findByPreIdQry = "SELECT r from RegistrationBookingEntity r WHERE r.bookingPK.preregistrationId = ?1";
 
 	
 	/**
@@ -24,10 +21,9 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @param statusCode
 	 * @return true or false
 	 */
-	@Query(existsQry)
 	public boolean existsByPreIdandStatusCode(String preregistrationId, String statusCode);
 
-	@Query(findByPreIdQry)
-	public RegistrationBookingEntity findByPreId(String preregistrationId);
-
+	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode);
+	
+	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndStatusCode(@Param("regcntr_id")String registrationCenterId, @Param("status_code")String statusCode);
 }

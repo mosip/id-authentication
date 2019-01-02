@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
@@ -35,7 +36,7 @@ public class Template extends BaseEntity implements Serializable {
 
 	@Id
 	private String id;
-	
+
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
 
@@ -62,23 +63,22 @@ public class Template extends BaseEntity implements Serializable {
 
 	@Column(name = "template_typ_code", length = 36)
 	private String templateTypeCode;
-	
-	
-	@ManyToOne
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "module_id", referencedColumnName = "id", insertable = false, updatable = false) })
 	private ModuleDetail moduleDetail;
-	
-	@ManyToOne
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "file_format_code", referencedColumnName = "code", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+			@JoinColumn(name = "file_format_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private TemplateFileFormat templateFileFormat;
-	
-	@ManyToOne
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({
-		@JoinColumn(name = "template_typ_code", referencedColumnName = "code", insertable = false, updatable = false),
-		@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
+			@JoinColumn(name = "template_typ_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private TemplateType templateType;
 
 }

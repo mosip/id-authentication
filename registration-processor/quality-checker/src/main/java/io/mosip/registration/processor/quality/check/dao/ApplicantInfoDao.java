@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.quality.check.dao;
-
+	
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +18,9 @@ import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationI
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
+/**
+ * The Class ApplicantInfoDao.
+ */
 @Component
 public class ApplicantInfoDao {
 	/** The registration information. */
@@ -49,11 +52,19 @@ public class ApplicantInfoDao {
 	/** The Constant ISDELETED_COLON. */
 	public static final String ISDELETED_COLON = ".isDeleted=:";
 
+	/** The qcuser reg repositary. */
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
+	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
+	/**
+	 * Gets the packetsfor QC user.
+	 *
+	 * @param qcuserId the qcuser id
+	 * @return the packetsfor QC user
+	 */
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
 		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
 		ApplicantInfoDto applicantInfoDto = new ApplicantInfoDto();
@@ -87,6 +98,12 @@ public class ApplicantInfoDao {
 
 
 
+	/**
+	 * Convert entity to photograph dto.
+	 *
+	 * @param object the object
+	 * @return the photograph dto
+	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
 		PhotographDto photographDto = new PhotographDto();
 
@@ -112,12 +129,15 @@ public class ApplicantInfoDao {
 	 * fingerprintData = new FingerprintData();
 	 * fingerprintData.setExceptionFingerprints(null);
 	 * fingerprintData.setFingerprints(null);
-	 *
+	 * 
 	 * bioData.setFingerprintData(fingerprintData);
-	 *
+	 * 
 	 * IrisData irisData = new IrisData(); irisData.setExceptionIris(null);
 	 * irisData.setIris(null); irisData.setNumRetry(0);
 	 * bioData.setIrisData(irisData); return bioData; }
+	 *
+	 * @param object the object
+	 * @return the demographic info dto
 	 */
 
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
@@ -134,16 +154,35 @@ public class ApplicantInfoDao {
 		return demo;
 	}
 
+	/**
+	 * Save.
+	 *
+	 * @param qcUserRegistrationIdEntity the qc user registration id entity
+	 * @return the qcuser registration id entity
+	 */
 	public QcuserRegistrationIdEntity save(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
 
 		return qcuserRegRepositary.save(qcUserRegistrationIdEntity);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param qcUserRegistrationIdEntity the qc user registration id entity
+	 * @return the qcuser registration id entity
+	 */
 	public QcuserRegistrationIdEntity update(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
 
 		return qcuserRegRepositary.save(qcUserRegistrationIdEntity);
 	}
 
+	/**
+	 * Find by id.
+	 *
+	 * @param qcUserId the qc user id
+	 * @param regId the reg id
+	 * @return the qcuser registration id entity
+	 */
 	public QcuserRegistrationIdEntity findById(String qcUserId, String regId) {
 		Map<String, Object> params = new HashMap<>();
 		String className = QcuserRegistrationIdEntity.class.getSimpleName();

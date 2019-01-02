@@ -22,6 +22,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -57,7 +58,10 @@ public class DemoDedupeTest {
 
 	@Mock
 	RegistrationProcessorRestClientService<Object> restClientService;
-
+	
+	@Mock 
+	  Environment env;
+	
 	@InjectMocks
 	private DemoDedupe demoDedupe;
 
@@ -79,7 +83,8 @@ public class DemoDedupeTest {
 		List<String> iris = new ArrayList<>();
 		iris.add("LEFTEYE");
 		iris.add("RIGHTEYE");
-
+		Mockito.when(env.getProperty("fingerType"))
+        .thenReturn("LeftThumb");    
 		Mockito.when(packetInfoManager.getApplicantFingerPrintImageNameById(anyString())).thenReturn(fingers);
 		Mockito.when(packetInfoManager.getApplicantIrisImageNameById(anyString())).thenReturn(iris);
 
@@ -115,8 +120,8 @@ public class DemoDedupeTest {
 
 	@Test
 	public void testDemodedupeEmpty() {
+		
 		String regId = "1234567890";
-
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);

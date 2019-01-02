@@ -13,6 +13,7 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -89,6 +90,10 @@ public class SwaggerConfig {
 		}
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+				.tags(new Tag("GenderType", "Operations related to gender type"))
+				.tags(new Tag("RegistrationCenterUserMachine", "Operations related to registration center,user,machine"))
+				.tags(new Tag("RegistrationCenterUserMachineHistory", "Operations related to registration center,user,machine history"))
+				.groupName(TITLE)
 				.select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
 				.build();
 

@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.code;
-
+	
 /**
  * The Enum EventType.
  * 

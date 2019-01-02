@@ -74,5 +74,10 @@ As per the ID defination specification the demographic detail captured from indi
 -   Handle exceptions in using custom Exception handler and send correct
     response to client.
 
-Class and Sequence Diagram:
-![Registration Sequence diagram](_images/registration-new-registration.png)
+
+**Class Diagram:**
+![New Registration Class Diagram](_images/registration-new-reg-class-dig.png)
+
+
+**Sequence Diagram:**
+![New Registration Sequence Diagram](_images/registration-new-reg-seq-dig.png)

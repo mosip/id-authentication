@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
+import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
@@ -36,11 +37,14 @@ public class PacketReceiverControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
+	PacketReceiverStage packetReceiverStage;
+
+	@MockBean
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService;
 
 	@MockBean
 	private SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
-	
+
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private MockMultipartFile mockMultipartFile, duplicateFile, invalidPacket;
@@ -98,7 +102,7 @@ public class PacketReceiverControllerTest {
 				.multipart("/v0.1/registration-processor/packet-receiver/registrationpackets").file(this.duplicateFile))
 				.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void packetNotSyncSuccessTest() throws Exception {
 
@@ -110,7 +114,7 @@ public class PacketReceiverControllerTest {
 						.file(this.mockMultipartFile))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void packetNotSyncFailureTest() throws Exception {
 
@@ -118,8 +122,9 @@ public class PacketReceiverControllerTest {
 
 		Mockito.when(packetReceiverService.storePacket(this.mockMultipartFile)).thenReturn(false);
 		Mockito.when(syncRegistrationService.isPresent("0000")).thenReturn(false);
-		this.mockMvc.perform(MockMvcRequestBuilders
-				.multipart("/v0.1/registration-processor/packet-receiver/registrationpackets").file(this.mockMultipartFile))
+		this.mockMvc.perform(
+				MockMvcRequestBuilders.multipart("/v0.1/registration-processor/packet-receiver/registrationpackets")
+						.file(this.mockMultipartFile))
 				.andExpect(status().isBadRequest());
 	}
 

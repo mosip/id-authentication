@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.dto;
 
 import java.io.Serializable;
-
+	
 /**
  * The Class ExceptionJSONInfo.
  */

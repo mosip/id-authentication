@@ -46,6 +46,7 @@ public class MapperUtils {
 		super();
 	}
 
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private static final String SOURCE_NULL_MESSAGE = "source should not be null";
 	private static final String DESTINATION_NULL_MESSAGE = "destination should not be null";
 
@@ -63,7 +64,7 @@ public class MapperUtils {
 	 * @return a {@link LocalDateTime} of given pattern
 	 */
 	public static LocalDateTime parseToLocalDateTime(String dateTime) {
-		return LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
 	}
 
 	/*
@@ -234,6 +235,46 @@ public class MapperUtils {
 
 	}
 
+	/**
+	 * Map values from {@link BaseEntity} class source object to destination or vice
+	 * versa and this method will be used to map {@link BaseEntity} values from
+	 * entity to entity. Like when both <code>source</code> and
+	 * <code>destination</code> are object which extends {@link BaseEntity}.
+	 * 
+	 * @param source
+	 *            which value is going to be mapped
+	 * @param destination
+	 *            where values is going to be mapped
+	 */
+	public static <S, D> void setBaseFieldValue(S source, D destination) {
+		Objects.requireNonNull(source, SOURCE_NULL_MESSAGE);
+		Objects.requireNonNull(destination, DESTINATION_NULL_MESSAGE);
+		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
+		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
+		// object
+		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
+		String objectClassName = Object.class.getName();// object class fully qualified name
+
+		// if source is an entity
+		if (sourceSupername.equals(baseEntityClassName) && !destinationSupername.equals(baseEntityClassName)) {
+			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else if (destinationSupername.equals(baseEntityClassName) && !sourceSupername.equals(baseEntityClassName)) {
+			// if destination is an entity
+			Field[] sourceFields = source.getClass().getDeclaredFields();
+			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+			mapFieldValues(source, destination, sourceFields, destinationFields);
+		} else {
+			if (!sourceSupername.equals(objectClassName) && !destinationSupername.equals(objectClassName)) {
+				Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
+				Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
+				mapFieldValues(source, destination, sourceFields, destinationFields);
+			}
+		}
+
+	}
+
 	/*
 	 * #############Private method used for mapping################################
 	 */
@@ -253,7 +294,7 @@ public class MapperUtils {
 	 */
 	private static <S, D> void mapValues(S source, D destination)
 			throws IllegalAccessException, InstantiationException {
-		mapFieldValues(source, destination);// this method simply map values if field name and type are same
+		    mapFieldValues(source, destination);// this method simply map values if field name and type are same
 
 		if (source.getClass().isAnnotationPresent(Entity.class)) {
 			mapEntityToDto(source, destination);
@@ -334,38 +375,6 @@ public class MapperUtils {
 	}
 
 	/**
-	 * Map values from {@link BaseEntity} class source object to destination or vice
-	 * versa.
-	 * 
-	 * @param source
-	 *            which value is going to be mapped
-	 * @param destination
-	 *            where values is going to be mapped
-	 */
-	private static <S, D> void setBaseFieldValue(S source, D destination) {
-
-		String sourceSupername = source.getClass().getSuperclass().getName();// super class of source object
-		String destinationSupername = destination.getClass().getSuperclass().getName();// super class of destination
-																						// object
-		String baseEntityClassName = BaseEntity.class.getName();// base entity fully qualified name
-
-		// if source is an entity
-		if (sourceSupername.equals(baseEntityClassName)) {
-			Field[] sourceFields = source.getClass().getSuperclass().getDeclaredFields();
-			Field[] destinationFields = destination.getClass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
-			return;
-		}
-		// if destination is an entity
-		if (destinationSupername.equals(baseEntityClassName)) {
-			Field[] sourceFields = source.getClass().getDeclaredFields();
-			Field[] destinationFields = destination.getClass().getSuperclass().getDeclaredFields();
-			mapFieldValues(source, destination, sourceFields, destinationFields);
-		}
-
-	}
-
-	/**
 	 * Map values from source field to destination.
 	 * 
 	 * @param source
@@ -404,7 +413,7 @@ public class MapperUtils {
 					}
 				}
 			}
-		} catch ( IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 
 			throw new DataAccessLayerException("KER-MSD-993", "Exception raised while mapping values form "
 					+ source.getClass().getName() + " to " + destination.getClass().getName(), e);
@@ -446,13 +455,14 @@ public class MapperUtils {
 			HolidayDto dto = new HolidayDto();
 			dto.setId(holiday.getId());
 			dto.setHolidayDate(date);
-			dto.setHolidayName(holiday.getHolidayName());
+			dto.setHolidayName(holidayId.getHolidayName());
 			dto.setLangCode(holidayId.getLangCode());
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
 			dto.setIsActive(holiday.getIsActive());
 			dto.setLocationCode(holidayId.getLocationCode());
+			dto.setHolidayDesc(holiday.getHolidayDesc());
 			holidayDtos.add(dto);
 		});
 		return holidayDtos;
@@ -503,5 +513,6 @@ public class MapperUtils {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-
+	
+	
 }

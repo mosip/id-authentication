@@ -1,9 +1,12 @@
 package io.mosip.registration.processor.rest.client.audit.builder;
 
-import java.time.LocalDateTime;import org.slf4j.Logger;
+import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -11,7 +14,6 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.ServerUtil;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
-
 
 /**
  * The Class AuditRequestBuilder.

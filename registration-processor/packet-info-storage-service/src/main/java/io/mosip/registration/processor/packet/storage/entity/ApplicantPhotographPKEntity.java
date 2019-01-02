@@ -1,9 +1,10 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
+	
 /**
  * The primary key class for the applicant_photograph database table.
  * 
@@ -45,6 +46,9 @@ public class ApplicantPhotographPKEntity implements Serializable {
 		this.regId = regId;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -53,6 +57,9 @@ public class ApplicantPhotographPKEntity implements Serializable {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
