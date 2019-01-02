@@ -83,7 +83,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -128,7 +128,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -162,7 +162,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -202,7 +202,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		
@@ -244,7 +244,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		
 		
@@ -286,7 +286,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(false);
@@ -327,7 +327,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -369,7 +369,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -421,7 +421,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		rcdtos.add(rcdto);
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -460,7 +460,7 @@ public class UMCValidatorTest {
 		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
 		
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -503,7 +503,7 @@ public class UMCValidatorTest {
 		rcdtos.add(rcdto);
 		
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);
@@ -546,7 +546,7 @@ public class UMCValidatorTest {
 		rcdtos.add(rcdto);
 		
 		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCenters(rcdtos);
+		regrepdto.setRegistrationCentersHistory(rcdtos);
 		
 		MachineHistoryDto mcdto=new MachineHistoryDto();
 		mcdto.setIsActive(true);

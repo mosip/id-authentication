@@ -15,7 +15,7 @@ import io.mosip.registration.processor.virus.scanner.job.stage.VirusScannerStage
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.virus.scanner.job",
 		"io.mosip.registration.processor.core", "io.mosip.registration.processor.status",
 		"io.mosip.registration.processor.packet.manager", "io.mosip.kernel.virusscanner.clamav",
-		"io.mosip.registration.processor.filesystem.ceph.adapter.impl", "io.mosip.registration.processor.rest.client" })
+		"io.mosip.registration.processor.rest.client" })
 public class VirusScannerJobApplication {
 
 	/** The virus scanner stage. */

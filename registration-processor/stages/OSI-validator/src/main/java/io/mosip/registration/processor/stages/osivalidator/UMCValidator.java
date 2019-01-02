@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -42,7 +43,7 @@ public class UMCValidator {
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
 	/** The registration status dto. */
-	private InternalRegistrationStatusDto registrationStatusDto;
+	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 	/** The primary languagecode. */
 	@Value("${primary.language}")
@@ -75,9 +76,9 @@ public class UMCValidator {
 		
 		RegistrationCenterResponseDto rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.
 				getApi(ApiName.CENTERHISTORY,pathsegments,"","",RegistrationCenterResponseDto.class);
-
+		
 		List<RegistrationCenterDto> dtos=new ArrayList<>();
-		if(rcpdto !=null)dtos=rcpdto.getRegistrationCenters();
+		if(rcpdto !=null)dtos=rcpdto.getRegistrationCentersHistory();
 		
 		if (dtos ==null  ||dtos.isEmpty()) {
 			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
@@ -252,10 +253,10 @@ public class UMCValidator {
 		}
 
 		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode,
-				rcmDto.getPacketCreationDate().toString(), rcmDto.getLatitude(), rcmDto.getLongitude())
+				DateUtils.formatToISOString(rcmDto.getPacketCreationDate()), rcmDto.getLatitude(), rcmDto.getLongitude())
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode,
-						rcmDto.getPacketCreationDate().toString())
-				&& isValidUMCmapping(rcmDto.getPacketCreationDate().toString(), rcmDto.getRegcntrId(),
+						DateUtils.formatToISOString(rcmDto.getPacketCreationDate()))
+				&& isValidUMCmapping(DateUtils.formatToISOString(rcmDto.getPacketCreationDate()), rcmDto.getRegcntrId(),
 						rcmDto.getMachineId(), regOsi.getSupervisorId(), regOsi.getOfficerId())) {
 			umc = true;
 		}

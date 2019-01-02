@@ -32,10 +32,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(FileManagerImpl.class);
-    /** The extention. */
+	/** The extention. */
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
-    /** The path. */
+	/** The path. */
 	@Value("${registration.processor.FTP_ZONE}")
 	private String path;
 
@@ -97,16 +97,19 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				if (fileExistsInSource) {
 					delete(srcFolderLoc, fileName);
 				} else {
-					throw new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
+					throw new FileNotFoundInSourceException(
+							PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 				}
 			} else {
-				throw new FileNotFoundInDestinationException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
+				throw new FileNotFoundInDestinationException(
+						PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
 
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new FilePathNotAccessibleException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
+			throw new FilePathNotAccessibleException(
+					PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
 
@@ -115,10 +118,13 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	/**
 	 * Delete a file from directory.
 	 *
-	 * @param destinationDirectory the destination directory
-	 * @param fileName            the file name
+	 * @param destinationDirectory
+	 *            the destination directory
+	 * @param fileName
+	 *            the file name
 	 * @return the object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private void delete(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 
@@ -131,15 +137,20 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	/**
 	 * Get the file name with extension.
 	 *
-	 * @param fileName the file name
+	 * @param fileName
+	 *            the file name
 	 * @return the file name
 	 */
 	private String getFileName(String fileName) {
 		return fileName + extention;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#copy(java.lang.String, java.lang.Object, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#copy(
+	 * java.lang.String, java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void copy(String fileName, DirectoryPathDto sourceWorkingDirectory,
@@ -188,23 +199,29 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				if (fileExistsInSource) {
 					delete(srcFolderLoc, childFolderName + File.separator + fileName);
 				} else {
-					throw new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
+					throw new FileNotFoundInSourceException(
+							PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 				}
 			} else {
-				throw new FileNotFoundInDestinationException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
+				throw new FileNotFoundInDestinationException(
+						PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
 
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new FilePathNotAccessibleException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
+			throw new FilePathNotAccessibleException(
+					PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#deletePacket(java.lang.Object, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#
+	 * deletePacket(java.lang.Object, java.lang.String)
 	 */
 	@Override
 	public void deletePacket(DirectoryPathDto workingDirectory, String fileName) throws IOException {
@@ -212,9 +229,24 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		if (isFilePresent) {
 			delete(workingDirectory, fileName);
 		} else {
-			throw new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
+			throw new FileNotFoundInSourceException(
+					PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#
+	 * deleteFolder(java.lang.Object, java.lang.String)
+	 */
+	@Override
+	public void deleteFolder(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
+		File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
+
+		FileUtils.forceDelete(filePath);
+
 	}
 
 }

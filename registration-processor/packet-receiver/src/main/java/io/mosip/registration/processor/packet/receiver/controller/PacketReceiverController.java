@@ -31,7 +31,8 @@ public class PacketReceiverController {
 	/**
 	 * Packet.
 	 *
-	 * @param file the file
+	 * @param file
+	 *            the file
 	 * @return the response entity
 	 */
 	@PostMapping(path = "/registrationpackets", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,7 +42,7 @@ public class PacketReceiverController {
 	public ResponseEntity<RegistrationStatusCode> packet(
 			@RequestParam(value = "file", required = true) MultipartFile file) {
 		if (packetHandlerService.storePacket(file)) {
-			return ResponseEntity.ok().body(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE);
+			return ResponseEntity.ok().body(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN);
 		} else {
 			return ResponseEntity.badRequest().body(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED);
 		}
