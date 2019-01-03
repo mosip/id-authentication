@@ -65,7 +65,6 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 
 **Class Diagram**
 
-![Demo dedupe class diagram](_images/bio-dedupe-class-diagram.png)
 
 **Sequence Diagram**
 
