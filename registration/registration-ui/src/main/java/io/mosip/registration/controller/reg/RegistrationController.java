@@ -1106,6 +1106,7 @@ public class RegistrationController extends BaseController {
 		pane2PrevBtn.setVisible(false);
 		autoFillBtn.setVisible(false);
 		fetchBtn.setVisible(false);
+		documentScanController.setPreviewContent();
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane1Content", demoGraphicPane1);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane2Content", demoGraphicPane2);
 	}

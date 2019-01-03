@@ -129,7 +129,7 @@ public class DocumentScanController extends BaseController {
 		}
 	}
 
-	private void setPreviewContent() {
+	public void setPreviewContent() {
 		poaScanBtn.setVisible(false);
 		poiScanBtn.setVisible(false);
 		porScanBtn.setVisible(false);
