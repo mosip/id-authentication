@@ -1,4 +1,4 @@
-package org.registration.processor.abis;
+package io.mosip.registration.processor.abis;
 
 import org.springframework.boot.SpringApplication;
 
