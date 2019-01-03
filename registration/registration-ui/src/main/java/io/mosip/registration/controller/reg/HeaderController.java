@@ -252,13 +252,28 @@ public class HeaderController extends BaseController {
 		}
 	}
 
+	/**
+	 * This method is to trigger the Pre registration sync service
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
-		// preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
+		ResponseDTO responseDTO = preRegistrationDataSyncService
+				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+		if (responseDTO.getSuccessResponseDTO() != null) {
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
+
+			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+
+		}
 	}
 
-	
-	
 	public void eodProcess() {
 		packetHandlerController.approvePacket();
 	}
