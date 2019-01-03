@@ -87,7 +87,7 @@ public class DocumentScannerServiceImplTest {
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDpi", 300);
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerhost", "192.168.43.253");
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerPort", 6566);
-		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDocType", "jpg");
+		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerImgType", "jpg");
 	}
 
 }
