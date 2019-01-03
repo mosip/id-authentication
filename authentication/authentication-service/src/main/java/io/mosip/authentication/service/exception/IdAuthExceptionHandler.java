@@ -163,7 +163,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Method to handle {@link IdUsageException} and customize the response.
+     * Method to handle and customize the response.
      *
      * @param ex
      *            Exception
