@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
@@ -55,6 +57,7 @@ import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -71,6 +74,7 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
@@ -84,6 +88,7 @@ import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
@@ -142,6 +147,14 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private BlacklistedWordsService blacklistedWordsService;
+
+	@Autowired
+	private RegistrationCenterService registrationCenterService;
+
+	private RegistrationCenter registrationCenter;
+
+	@MockBean
+	private RegistrationCenterRepository registrationCenterRepository;
 
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
@@ -272,6 +285,8 @@ public class MasterDataServiceTest {
 		templateFileFormatSetup();
 
 		documentTypeSetup();
+
+		registrationCenterSetup();
 
 	}
 
@@ -570,6 +585,15 @@ public class MasterDataServiceTest {
 		templateFileFormatDto.setLangCode("ENG");
 
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
+	}
+
+	private void registrationCenterSetup() {
+		registrationCenter = new RegistrationCenter();
+		registrationCenter.setId("1");
+		registrationCenter.setName("bangalore");
+		registrationCenter.setLatitude("12.9180722");
+		registrationCenter.setLongitude("77.5028792");
+		registrationCenter.setLanguageCode("ENG");
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
@@ -1439,6 +1463,13 @@ public class MasterDataServiceTest {
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
+	
+	// ----------------------------------
+	@Test(expected = RequestException.class)
+	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() {
+		registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime("RCI100", "DI001",
+				"2018-12-11T11:18:261.033Z");
+	}
 
 	// -------------------------------------DeviceHistroyTest------------------------------------------
 	@Test(expected = RequestException.class)
@@ -1446,11 +1477,108 @@ public class MasterDataServiceTest {
 		deviceHistoryService.getDeviceHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
 
-	// ----------------------------------
-	@Test(expected = RequestException.class)
-	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() {
-		registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime("RCI100", "DI001",
-				"2018-12-11T11:18:261.033Z");
+	// ---------------------RegistrationCenterIntegrationTest-validatetimestamp----------------//
+
+	@Test
+	public void getStatusOfWorkingHoursRejectedTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(true);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		LocalTime startTime = LocalTime.of(10, 00, 000);
+		LocalTime endTime = LocalTime.of(18, 00, 000);
+		registrationCenter.setCenterStartTime(startTime);
+		registrationCenter.setCenterEndTime(endTime);
+		/*
+		 * mockMvc.perform(get(
+		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+		 * .andExpect(status().isOk());
+		 */
+
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
+				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
+
 	}
+
+	@Test
+	public void getStatusOfWorkingHoursTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		LocalTime startTime = LocalTime.of(10, 00, 000);
+		LocalTime endTime = LocalTime.of(18, 00, 000);
+		registrationCenter.setCenterStartTime(startTime);
+		registrationCenter.setCenterEndTime(endTime);
+
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
+				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+		/*
+		 * mockMvc.perform(get(
+		 * "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+		 * .andExpect(status().isOk());
+		 */
+
+		Assert.assertEquals("Accepted", resgistrationCenterStatusResponseDto.getStatus());
+
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void getStatusOfWorkingHoursServiceExceptionTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+
+		registrationCenterService.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void getStatusOfWorkingHoursDataNotFoundExceptionTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
+
+		registrationCenterService.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+	}
+	
+	@Test(expected=DataNotFoundException.class)
+	public void getStatusOfWorkingHoursDataNotFoundTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		
+		registrationCenterService
+				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+		}
+	
+	@Test
+	public void getStatusOfWorkingHoursRejectedWorkingHourTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+		LocalTime startTime = LocalTime.of(10, 00, 000);
+		LocalTime endTime = LocalTime.of(15, 00, 000);
+		registrationCenter.setCenterStartTime(startTime);
+		registrationCenter.setCenterEndTime(endTime);
+
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
+				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
+		
+	}
+	
+	
+	
+	
 
 }
