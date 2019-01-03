@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -25,9 +27,10 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 				Date reqInfoDate = getDateFormat().parse((String) reqInfo);
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DOB_MISMATCH, e);
 				/** The match function. */
 				// FIXME
-				return 0;
+//				return 0;
 			}
 		}
 		return 0;

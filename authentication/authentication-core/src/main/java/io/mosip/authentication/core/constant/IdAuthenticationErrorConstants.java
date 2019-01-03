@@ -16,18 +16,23 @@ public enum IdAuthenticationErrorConstants {
 			"A0106"),
 	OTP_REQUEST_FLOODED("IDA-OTA-003", "Innumerous OTP requests received"),
 	OTP_GENERATION_FAILED("IDA-OTA-004", "Could not generate/send OTP"),
-	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"), INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
+	EXPIRED_OTP("IDA-OTA-005", "OTP has expired", "A0107"), 
+	INVALID_OTP("IDA-OTA-006", "OTP is invalid", "A0108"),
 	INVALID_TXN_ID("IDA-OTA-007", "Input txnID does not match txnID of OTP Request", "A0109"),
 	OTP_NOT_PRESENT("IDA-OTA-008", "Missing OTP value", "A0110"),
-	REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
+	//REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
+	BLOCKED_OTP_TO_GENERATE("IDA-OTA-010", "Could not generate OTP as UIN is locked "),
+	BLOCKED_OTP_TO_VALIDATE("IDA-OTA-011", "UIN locked due to exceeding no of invalid OTP trials"),
 
 	// To be discussed with BA
 	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "A0101"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "A0102"),
-	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
+	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
+	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
 																											// referenced
-	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
+	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), 
+	AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
 	MISSING_INPUT_PARAMETER("IDA-IDV-003", "Missing Input Parameter - %s"),
@@ -62,16 +67,47 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_AUTH_REQUEST("IDA-RQV-101", "Invalid Auth Request"), UNKNOWN_ERROR("IDA-MLC-101", "Unknown error occured"),
 
 	// Demo Validation
+	NAMEPRI_MISMATCH("IDA-DEA-001", "Demographic data – Name in primary language(pi) did not match", "A0111"),
+	NAMESEC_MISMATCH("IDA-DEA-002", "Demographic data – Name in secondary language(pi) did not match", "A0112"),
+	FAD_PRI_MISMATCH("IDA-DEA-011", "Demographic data – Address in primary language(fad) did not match", "A0123"),
+	FAD_SEC_MISMATCH("IDA-DEA-012", "Demographic data – Address in secondary language(fad) did not match", "A0124"),
+	ADDR_PRI_MISMATCH("IDA-DEA-013", "Demographic data – Address Line Items in primary language (ad) did not match",
+			"A0126"),
+	ADDR_SEC_MISMATCH("IDA-DEA-028", "Demographic data – Address Line Items in secondary language (ad) did not match",
+			"A0127"),
+	MISSING_PI("IDA-DEA-003", "Required Identity(pi) attribute is missing", "A0114"),
+	MISSING_AD("IDA-DEA-014", "Required Address(ad) attribute is missing", "A0128"),
+	MISSING_FAD("IDA-DEA-015", "Required Full Address(fad) attribute is missing", "A0129"),
+	INVALID_MATCHINGTHRESHOLD_PI_PRI("IDA-DEA-007", "Invalid mtPri (Pi)", "A0118"),
+	INVALID_MATCHINGTHRESHOLD_PI_SEC("IDA-DEA-008", "Invalid mtSec (Pi)", "A0119"),
+	INVALID_MATCHINGSTRATEGY_PI_PRI("IDA-DEA-009", "Invalid msPri (Pi)", "A0120"),
+	INVALID_MATCHINGSTRATEGY_PI_SEC("IDA-DEA-010", "Invalid msSec (Pi)", "A0121"),
+	INVALID_MATCHINGTHRESHOLD_FAD_PRI("IDA-DEA-016", "Invalid mtPri (fad)", "A0130"),
+	INVALID_MATCHINGTHRESHOLD_FAD_SEC("IDA-DEA-017", "Invalid mtSec (fad)", "A0131"),
+	INVALID_MATCHINGSTRATEGY_FAD_PRI("IDA-DEA-018", "Invalid msPri (fad)", "A0132"),
+	INVALID_MATCHINGSTRATEGY_FAD_SEC("IDA-DEA-019", "Invalid msSec (fad)", "A0133"),
 	INVALID_FULL_ADDRESS_REQUEST("IDA-DEA-015", "Required Full Address(fad) attribute is missing"),
 	INVALID_ADDRESS_REQUEST("IDA-DEA-014", "Required Address(ad) attribute is missing"),
+	GENDER_MISMATCH("IDA-DEA-025", "Demographic data – Gender(pi) did not match", "A0139"),
+	EMAIL_MISMATCH("IDA-DEA-027", "Demographic data – email(pi) did not match", "A0141"),
 	DOB_TYPE_MISMATCH("IDA-DEA-033", "Demographic data – DOB Type (pi) did not match", "A0142"),
 	AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
 	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present"),
+	PHONE_MISMATCH("IDA-DEA-026", "Demographic data – Phone(pi) did not match", "A0140"),
+	AGE_MISMATCH("IDA-DEA-028", "Demographic data – Age(pi) did not match", "A0141"),
+	DOB_MISMATCH("IDA-DEA-023", "Demographic data – DOB(pi) did not match", "A0137"),
 
 	// Bio validation
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request.", "A0145"),
 	FINGER_EXCEEDING("IDA-BIA-006", "Number of fgerMin / fgerImg should not exceed 10."),
-	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data");
+	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
+	FGRMIN_MISMATCH("IDA-BIA-001", "Biometric data – fgerMin did not match", "A0143"),
+	FGRIMG_MISMATCH("IDA-BIA-002", "Biometric data – fgerImg did not match", "A0144"),
+	INVALID_SIGNATURE("IDA-TSA-001", "Digital signature verification failed"),
+	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature"),
+	
+	// OTP Generation
+	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first.");
 
 	private final String errorCode;
 	private final String errorMessage;
