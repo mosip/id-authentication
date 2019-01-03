@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.code;
 
-
 /**
  * The Enum ApiName.
  * 
@@ -8,37 +7,36 @@ package io.mosip.registration.processor.core.code;
  */
 public enum ApiName {
 
-
 	/** The auth. */
 	AUTH,
-	
+
 	/** The authinternal. */
 	AUTHINTERNAL,
-	
+
 	/** The master data. */
 	MASTER,
-	
+
 	/** The iam. */
-	IAM, 
-	
+	IAM,
+
 	/** The audit. */
 	AUDIT,
-	
+
 	/** The ida. */
 	IDA,
-	
+
 	/** The regstatus. */
 	REGSTATUS,
-	
+
 	/** The regsync. */
 	REGSYNC,
-	
+
 	/** The machine history. */
 	MACHINEHISTORY,
-	
+
 	/** The center history. */
 	CENTERHISTORY,
-	
+
 	/** The center-machine-user history. */
 	CENTERUSERMACHINEHISTORY,
 
@@ -46,6 +44,12 @@ public enum ApiName {
 	SMSNOTIFIER,
 
 	/** The email notifier. */
-	EMAILNOTIFIER
+	EMAILNOTIFIER,
+
+	/** The biodedupeinsert. */
+	BIODEDUPEINSERT,
+
+	/** The biodedupepotential. */
+	BIODEDUPEPOTENTIAL
 
 }
