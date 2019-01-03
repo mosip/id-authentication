@@ -22,7 +22,7 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
 /**
  * The builder class of AuthResponseDTO.
  *
- * @authour Loganathan Sekar
+ * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
 	
@@ -46,7 +46,8 @@ public class AuthResponseBuilder {
 
 	/**
 	 * Instantiates a new auth response builder.
-	 * @param dateTimePattern 
+	 *
+	 * @param dateTimePattern the date time pattern
 	 */
 	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
@@ -179,6 +180,12 @@ public class AuthResponseBuilder {
 		}
 	}
 
+	/**
+	 * New instance.
+	 *
+	 * @param dateTimePattern the date time pattern
+	 * @return the auth response builder
+	 */
 	public static AuthResponseBuilder newInstance(String dateTimePattern) {
 		return new AuthResponseBuilder(dateTimePattern);
 	}

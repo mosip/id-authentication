@@ -201,7 +201,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	/**
 	 * Store entry in Auth_txn table for all authentications.
-	 * 
+	 *
 	 * @param idvId       idvId
 	 * @param idvIdType   idvIdType(D/V)
 	 * @param reqTime     reqTime
@@ -209,7 +209,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @param status      status('Y'/'N')
 	 * @param comment     comment
 	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException {

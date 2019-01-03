@@ -90,14 +90,11 @@ public class AuthController {
 	/**
 	 * authenticateRequest - method to authenticate request.
 	 *
-	 * @param authrequestdto
-	 *            - Authenticate Request
-	 * @param errors
-	 *            the errors
+	 * @param authrequestdto            - Authenticate Request
+	 * @param errors            the errors
 	 * @return AuthResponseDTO
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
-	 * @throws IdAuthenticationDaoException
+	 * @throws IdAuthenticationAppException             the id authentication app exception
+	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
 
 	@PostMapping(path = "/v1.0/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -124,14 +121,14 @@ public class AuthController {
 	}
 
 	/**
-	 * 
-	 * Controller Method to auhtentication for eKyc-Details
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 * @throws IdAuthenticationAppException
-	 * @throws IdAuthenticationDaoException
-	 * 
-	 * 
+	 * Controller Method to auhtentication for eKyc-Details.
+	 *
+	 * @param kycAuthRequestDTO the kyc auth request DTO
+	 * @param errors the errors
+	 * @return the kyc auth response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
 	@PostMapping(path = "/v1.0/ekyc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)

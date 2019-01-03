@@ -161,7 +161,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param idInfo         list of identityInfoDto request
-	 * @param refId          the ref id
+	 * @param uin the uin
+	 * @param isAuth the is auth
 	 * @return the list
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -222,6 +223,17 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 	}
 
+	/**
+	 * Process demo auth.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfo the id info
+	 * @param uin the uin
+	 * @param isAuth the is auth
+	 * @param authStatusList the auth status list
+	 * @param idType the id type
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void processDemoAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin,
 			boolean isAuth,
 			List<AuthStatusInfo> authStatusList, IdType idType)
@@ -257,6 +269,16 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 	}
 
+	/**
+	 * Process OTP auth.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param uin the uin
+	 * @param isAuth the is auth
+	 * @param authStatusList the auth status list
+	 * @param idType the id type
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void processOTPAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth, List<AuthStatusInfo> authStatusList, IdType idType)
 			throws IdAuthenticationBusinessException {
 		
@@ -318,10 +340,19 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 	}
 
+	/**
+	 * Gets the audit event.
+	 *
+	 * @param isAuth the is auth
+	 * @return the audit event
+	 */
 	private AuditEvents getAuditEvent(boolean isAuth) {
 		return isAuth ? AuditEvents.AUTH_REQUEST_RESPONSE : AuditEvents.INTERNAL_REQUEST_RESPONSE;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.facade.AuthFacade#authenticateTsp(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
+	 */
 	@Override
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
 
@@ -341,11 +372,12 @@ public class AuthFacadeImpl implements AuthFacade {
 	}
 
 	/**
-	 * 
-	 * Process the KycAuthRequestDTO to integrate with KycService
-	 * 
+	 * Process the KycAuthRequestDTO to integrate with KycService.
+	 *
 	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
-	 * 
+	 * @param authResponseDTO the auth response DTO
+	 * @return the kyc auth response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
@@ -402,13 +434,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Gets the demo entity.
 	 *
-	 * @param uniqueId the unique id
+	 * @param idResponseDTO the id response DTO
 	 * @return the demo entity
-	 * @throws IdAuthenticationBusinessException
-	 * @throws IdAuthenticationDaoException
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, List<IdentityInfoDTO>> getIdEntity(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException {
