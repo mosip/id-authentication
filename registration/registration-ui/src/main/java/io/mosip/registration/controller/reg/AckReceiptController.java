@@ -272,11 +272,4 @@ public class AckReceiptController extends BaseController implements Initializabl
 		/* Generate Alert */
 		generateAlert(RegistrationConstants.ALERT_ERROR, alertMessage);
 	}
-
-	@FXML
-	@Override
-	public void goToHomePage() {
-		goToHomePageFromRegistration();
-	}
-
 }

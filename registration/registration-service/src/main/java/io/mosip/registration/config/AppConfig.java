@@ -23,6 +23,7 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
@@ -90,9 +91,15 @@ public class AppConfig {
 		return new TemplateManagerBuilderImpl();
 	}
 
-	@Bean
-	public IdValidator<String> getIdValidator() {
+	@Bean(name="preRegIdValidator")
+	public IdValidator<String> getPreRegIdValidator() {
 		return new PridValidatorImpl();
+	}
+	
+
+	@Bean(name="uinValidator")
+	public IdValidator<String> getUINValidator() {
+		return new UinValidatorImpl();
 	}
 	
 	

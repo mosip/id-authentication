@@ -10,9 +10,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -68,6 +72,10 @@ public class UINUpdateController extends BaseController implements Initializable
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
 
+	@Autowired
+	@Qualifier(value = "uinValidator")
+	private IdValidator<String> uinValidatorImpl;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		switchedOn = new SimpleBooleanProperty(false);
@@ -84,6 +92,9 @@ public class UINUpdateController extends BaseController implements Initializable
 					RegistrationConstants.APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
+			//TODO : remove this stub afterwards
+			uinId.setText("426789089018");
+			
 			toggleLabel1.setId("toggleLabel1");
 			toggleLabel2.setId("toggleLabel2");
 			switchedOn.addListener(new ChangeListener<Boolean>() {
@@ -121,76 +132,83 @@ public class UINUpdateController extends BaseController implements Initializable
 	@FXML
 	public void submitUINUpdate(ActionEvent event) {
 		LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Updating UIN details");
-		if (uinId.getText().equals(RegistrationConstants.EMPTY)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
-		} else {
+		try {
 
-			try {
-				SelectionListDTO selectionListDTO = new SelectionListDTO();
+			if (StringUtils.isEmpty(uinId.getText())) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
+			} else {
 
-				if (name.isSelected()) {
-					selectionListDTO.setName(true);
-				}
-				if (age.isSelected()) {
-					selectionListDTO.setAge(true);
-				}
-				if (gender.isSelected()) {
-					selectionListDTO.setGender(true);
-				}
-				if (address.isSelected()) {
-					selectionListDTO.setAddress(true);
-				}
-				if (contactDetails.isSelected()) {
-					selectionListDTO.setContactDetails(true);
-				}
-				if (biometricException.isSelected()) {
-					selectionListDTO.setBiometricException(true);
-				}
-				if (biometricIris.isSelected()) {
-					selectionListDTO.setBiometricIris(true);
-				}
-				if (biometricFingerprint.isSelected()) {
-					selectionListDTO.setBiometricFingerprint(true);
-				}
-				if (cnieNumber.isSelected()) {
-					selectionListDTO.setCnieNumber(true);
-				}
-				if (parentOrGuardianDetails.isSelected()) {
-					selectionListDTO.setParentOrGuardianDetails(true);
-				}
-				selectionListDTO.setChild(isChild);
-				selectionListDTO.setUinId(uinId.getText());
+				if (uinValidatorImpl.validateId(uinId.getText())) {
 
-				registrationController.init(selectionListDTO);
+					SelectionListDTO selectionListDTO = new SelectionListDTO();
 
-				Parent createRoot = BaseController.load(
-						getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-						applicationContext.getApplicationLanguageBundle());
+					if (name.isSelected()) {
+						selectionListDTO.setName(true);
+					}
+					if (age.isSelected()) {
+						selectionListDTO.setAge(true);
+					}
+					if (gender.isSelected()) {
+						selectionListDTO.setGender(true);
+					}
+					if (address.isSelected()) {
+						selectionListDTO.setAddress(true);
+					}
+					if (contactDetails.isSelected()) {
+						selectionListDTO.setContactDetails(true);
+					}
+					if (biometricException.isSelected()) {
+						selectionListDTO.setBiometricException(true);
+					}
+					if (biometricIris.isSelected()) {
+						selectionListDTO.setBiometricIris(true);
+					}
+					if (biometricFingerprint.isSelected()) {
+						selectionListDTO.setBiometricFingerprint(true);
+					}
+					if (cnieNumber.isSelected()) {
+						selectionListDTO.setCnieNumber(true);
+					}
+					if (parentOrGuardianDetails.isSelected()) {
+						selectionListDTO.setParentOrGuardianDetails(true);
+					}
+					selectionListDTO.setChild(isChild);
+					selectionListDTO.setUinId(uinId.getText());
 
-				if (!validateScreenAuthorization(createRoot.getId())) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-				} else {
-					StringBuilder errorMessage = new StringBuilder();
-					ResponseDTO responseDTO;
-					responseDTO = validateSyncStatus();
-					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(
-									errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
-						}
-						generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
+					registrationController.init(selectionListDTO);
 
+					Parent createRoot = BaseController.load(
+							getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+							applicationContext.getApplicationLanguageBundle());
+
+					if (!validateScreenAuthorization(createRoot.getId())) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 					} else {
-						getScene(createRoot).setRoot(createRoot);
+						StringBuilder errorMessage = new StringBuilder();
+						ResponseDTO responseDTO;
+						responseDTO = validateSyncStatus();
+						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+								errorMessage.append(
+										errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
+							}
+							generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
+
+						} else {
+							getScene(createRoot).setRoot(createRoot);
+						}
 					}
 				}
-
-			} catch (IOException ioException) {
-				LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 			}
+		} catch (InvalidIDException invalidIdException) {
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, invalidIdException.getMessage());
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, "Please enter a valid UIN.");
+		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 }

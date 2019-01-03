@@ -12,7 +12,7 @@
   <content>
     <AnchorPane id="ackScreen-anchor-pane" minHeight="0.0" minWidth="0.0" prefHeight="707.0" prefWidth="957.0">
          <children>
-            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="33.0" layoutY="15.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="33.0" layoutY="15.0" onMouseClicked="#goToHomePageFromRegistration" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/Home.png" />
                </image>

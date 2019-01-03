@@ -248,7 +248,7 @@ public class AuthenticationController extends BaseController {
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType);
 
 		if (userAuthenticationTypeList.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTH_ERROR_MSG);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
 		} else {
 			loadNextScreen();
 		}
@@ -265,6 +265,7 @@ public class AuthenticationController extends BaseController {
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
 		if (!userAuthenticationTypeList.isEmpty()) {
+			authCount++;
 			String authenticationType = String
 					.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
@@ -273,7 +274,7 @@ public class AuthenticationController extends BaseController {
 		} else {
 			if (!isSupervisor) {
 				if (toogleBioException != null && toogleBioException.booleanValue()) {
-					authCount++;
+					authCount=0;
 					isSupervisor = true;
 					getAuthenticationModes(ProcessNames.EXCEPTION.getType());
 				} else {
@@ -281,7 +282,7 @@ public class AuthenticationController extends BaseController {
 				}
 			} else {
 				if (isEODAuthentication) {
-
+					
 					baseController.updateAuthenticationStatus();
 				} else {
 					submitRegistration();
