@@ -407,12 +407,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	private void getFiles(String uin, List<Documents> documents, String filter) {
 		try {
+			if (connection.getConnection().doesBucketExistV2(uin)) {
 			connection.getConnection().listObjectsV2(uin).getObjectSummaries().stream()
-					.peek(objectSummary -> mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "getFiles",
+					.peek(objectSummary -> System.err.println(ID_REPO_SERVICE_IMPL + RETRIEVE_IDENTITY + " getFiles " +  
 							"peek1 key -> " + objectSummary.getKey()))
 					.filter(objectSummary -> StringUtils.startsWithIgnoreCase(objectSummary.getKey(), filter))
-					.peek(objectSummary -> mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "getFiles",
-							"peek2 key -> " + objectSummary.getKey()))
+					.peek(objectSummary -> System.err.println(ID_REPO_SERVICE_IMPL + RETRIEVE_IDENTITY + " getFiles after filter " +  
+							"peek1 key -> " + objectSummary.getKey()))
 					.forEach(objectSummary -> {
 						try {
 							documents.add(new Documents(StringUtils.split(objectSummary.getKey(), '/')[1],
@@ -423,6 +424,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 							throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 						}
 					});
+			}
 		} catch (IdRepoAppUncheckedException | SdkClientException e) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 		}
