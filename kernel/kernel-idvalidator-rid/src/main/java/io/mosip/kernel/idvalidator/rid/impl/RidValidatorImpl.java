@@ -15,6 +15,7 @@ import io.mosip.kernel.idvalidator.rid.constant.RidPropertyConstant;
  * This class validate RID given in string format.
  * 
  * @author Ritesh Sinha
+ * @author Abhishek Kumar
  * @since 1.0.0
  *
  */

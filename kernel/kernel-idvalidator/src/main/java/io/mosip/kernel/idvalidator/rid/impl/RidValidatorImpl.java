@@ -104,4 +104,17 @@ public class RidValidatorImpl implements RidValidator<String> {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean validateId(String id, String centerId, String machineId, int centerIdLength, int machineIdLength,
+			int timeStampLength) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean validateId(String id, int centerIdLength, int machineIdLength, int timeStampLength) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

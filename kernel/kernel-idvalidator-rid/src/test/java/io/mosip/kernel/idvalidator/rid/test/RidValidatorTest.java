@@ -21,66 +21,70 @@ public class RidValidatorTest {
 
 	String centerId = "27847";
 
-	String dongleId = "65736";
+	String machineId = "65736";
+
+	int centerIdLength = 5;
+	int machineIdLength = 5;
+	int timeStampLength = 14;
 
 	@Test
 	public void validRidTest() {
 		String rid = "27847657360002520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid, centerId, dongleId), is(true));
+		assertThat(ridValidatorImpl.validateId(rid, centerId, machineId), is(true));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidCenterIdInRidTest() {
 		String rid = "27846657360002520181208183050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidDongleIdInRidTest() {
 		String rid = "27847657340002520181208183050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidMonthInTimestampOfRidTest() {
 		String rid = "27847657360002520181308183050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidDateInTimestampOfRidTest() {
 		String rid = "27847657360002520181232183050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidHourInTimestampOfRidTest() {
 		String rid = "27847657360002520181208253050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidMinuteInTimestampOfRidTest() {
 		String rid = "27847657360002520181208187050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidSecondIntimestampOfRidTest() {
 		String rid = "27847657360002520181208183070";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidTest() {
 		String rid = "278476573600A2520181208183050";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void lengthOfRidTest() {
 		String rid = "2784765736000252018120818305";
-		ridValidatorImpl.validateId(rid, centerId, dongleId);
+		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
@@ -117,5 +121,25 @@ public class RidValidatorTest {
 	public void nonNumericRidTest() {
 		String rid = "278476573600A2520181208183050";
 		assertThat(ridValidatorImpl.validateId(rid), is(false));
+	}
+
+	@Test
+	public void validRidCenterIdMachineIdWithCustomLengthTest() {
+		String rid = "27847657360002520181208183050";
+		assertThat(
+				ridValidatorImpl.validateId(rid, centerId, machineId, centerIdLength, machineIdLength, timeStampLength),
+				is(true));
+	}
+
+	@Test
+	public void validRidWithCustomLengthTest() {
+		String rid = "27847657360002520181208183050";
+		assertThat(ridValidatorImpl.validateId(rid, centerIdLength, machineIdLength, timeStampLength), is(true));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void validRidWithInvalidCustomLengthTest() {
+		String rid = "27847657360002520181208183050";
+		assertThat(ridValidatorImpl.validateId(rid, -1, machineIdLength, timeStampLength), is(false));
 	}
 }
