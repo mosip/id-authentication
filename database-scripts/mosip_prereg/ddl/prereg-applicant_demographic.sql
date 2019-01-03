@@ -19,6 +19,7 @@ create schema if not exists prereg
 
 		status_code 	character varying(36) not null ,	-- master.status_list.code
 		lang_code  		character varying(3) not null ,		-- master.language.code
+		consumed 		boolean not null,
 		
 		cr_appuser_id 	character varying (64) not null, 
 
