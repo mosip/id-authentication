@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.mosip.authentication.service.repository.AutnTxnRepository;
 import lombok.Data;
 
 /**

@@ -32,31 +32,18 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	@Autowired
 	public Environment environment;
 
+	/** The id info helper. */
 	@Autowired
 	public IdInfoHelper idInfoHelper;
 
 	/**
-	 * Construct match input.
-	 *
-	 * @param listMatchInputs the list match inputs
-	 * @param identitydto the identitydto
-	 * @param demoEntity the demo entity
-	 * @return the list
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 */
-//	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
-//			AuthType demoAuthType) {
-//		return idInfoHelper.contstructMatchInput(authRequestDTO, demoMatchType, demoAuthType);
-//	}
-
-	/**
 	 * Gets the match output.
 	 *
-	 * @param listMatchInput the list match input
+	 * @param listMatchInputs the list match inputs
 	 * @param identitydto    the demo DTO
 	 * @param demoEntity     the demo entity
 	 * @return the match output
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
 			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {

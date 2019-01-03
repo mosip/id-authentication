@@ -28,7 +28,9 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * @author Arun Bose The Enum DemoMatchType.
+ * The Enum DemoMatchType.
+ *
+ * @author Arun Bose
  */
 
 public enum DemoMatchType implements MatchType {
@@ -226,10 +228,8 @@ public enum DemoMatchType implements MatchType {
 	}
 	
 	
-	/**
-	 * 
-	 *
-	 * @return 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getLanguageType()
 	 */
 	public LanguageType getLanguageType() {
 		return langType;

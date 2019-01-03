@@ -92,8 +92,6 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @param id              the id
 	 * @param idType          the id type
-	 * @param idFieldName     the id field name
-	 * @param idTypeFieldName the id type field name
 	 * @param errors          the errors
 	 */
 	public void validateIdvId(String id, String idType, Errors errors) {
@@ -151,7 +149,6 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @param reqTime the req time
 	 * @param errors  the errors
-	 * @throws ParseException
 	 */
 	protected void validateReqTime(String reqTime, Errors errors) {
 

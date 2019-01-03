@@ -44,8 +44,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class IDAExceptionHandler - ControllerAdvice to handle
- * {@link IdUsageException}, Spring MVC Exceptions as defined in
+ * The Class IDAExceptionHandler - Spring MVC Exceptions as defined in
  * {@link ResponseEntityExceptionHandler} and any other Exceptions occurs and
  * returns custom exception response {@link AuthResponseDTO}.
  *
