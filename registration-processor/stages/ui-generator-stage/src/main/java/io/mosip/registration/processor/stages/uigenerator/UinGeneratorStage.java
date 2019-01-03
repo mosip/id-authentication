@@ -84,7 +84,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		System.out.println(this.registrationId);
 
 	
-		InputStream packetMetaInfoStream = adapter.getFile("27847657360002520181208094032" , PacketFiles.PACKETMETAINFO.name());
+		//InputStream packetMetaInfoStream = adapter.getFile("27847657360002520181208094032" , PacketFiles.PACKETMETAINFO.name());
 		/*File file = FileUtils.getFile("C:\\Users\\M1049387\\Desktop\\DEMO DEDUPE\\27847657360002520181208094056\\uncompressed" + "\\" + "PacketMetaInfo" + ".json");
 		InputStream packetMetaInfoStream = null;
 		try {
@@ -94,16 +94,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		} */
 			
 		try {
-			PacketMetaInfo packetMetaInfo;
+			/*PacketMetaInfo packetMetaInfo;
 			
 				packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-						PacketMetaInfo.class);
+						PacketMetaInfo.class);*/
 			
-			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "",
-					"", UinResponseDto.class);
-			
+			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
+			System.out.println("UIN GENERATION HAPPENING:    "+uinResponseDto.getUin());
 			UinAvailabilityCheck uinAvailabilityCheck = new UinAvailabilityCheck();
-			uinAvailabilityCheck.uinCheck("uin",packetMetaInfo);
+			uinAvailabilityCheck.uinCheck("27847657360002520181208094036",adapter);
 			
 			
 			
@@ -123,14 +122,32 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			catch (UnsupportedEncodingException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
 		
 		return null;
 	}
 
+	
+	
+	private IdResponseDTO sendIdRepoWithUin(boolean uinAvailable,UinResponseDto uinResponseDto) {
+		
+		
+		
+		
+		return idResponseDTO;
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Deploy verticle.
 	 */
