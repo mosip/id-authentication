@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
+import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
+import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,4 +33,14 @@ public class AbisController {
 		
 	}
 	
+	
+	@PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "identify duplicate biometric data of an Individual", response = IdentityResponceDto.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "unique biometric data"),
+			@ApiResponse(code = 400, message = "duplicate biometric data") })
+	public ResponseEntity<IdentityResponceDto> identity(@RequestBody(required = true) IdentityRequestDto identityRequestDto) {
+		
+		return null;
+		
+	}
 }
