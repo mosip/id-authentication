@@ -67,5 +67,3 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 
 
 **Sequence Diagram**
-
-![Bio dedupe sequence diagram](_images/bio_dedupe_seq_diagram.png)
