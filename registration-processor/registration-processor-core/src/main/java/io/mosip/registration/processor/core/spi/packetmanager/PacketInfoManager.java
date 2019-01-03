@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface PacketInfoManager.
  *
@@ -113,5 +113,13 @@ public interface PacketInfoManager<T, /** D, M, */
 	 *            the registration id
 	 */
 	public void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId);
+
+	/**
+	 * Save abis ref.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 */
+	public void saveAbisRef(RegAbisRefDto regAbisRefDto);
 
 }

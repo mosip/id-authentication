@@ -28,6 +28,7 @@ import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -46,6 +47,8 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionE
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefPkEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
@@ -62,10 +65,10 @@ public class PacketInfoMapper {
 
 	/** The Constant REGISTRATION_ID. */
 	private static final String REGISTRATION_ID = "registrationId";
-	
+
 	/** The Constant PRE_REGISTRATION_ID. */
 	private static final String PRE_REGISTRATION_ID = "preRegistrationId";
-	
+
 	/** The languages. */
 	private static StringBuilder languages = new StringBuilder();
 
@@ -194,8 +197,10 @@ public class PacketInfoMapper {
 	/**
 	 * Convert biometric exc to biometric exc entity.
 	 *
-	 * @param exception the exception
-	 * @param metaData            the meta data
+	 * @param exception
+	 *            the exception
+	 * @param metaData
+	 *            the meta data
 	 * @return the biometric exception entity
 	 */
 	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricExceptionDto exception,
@@ -229,9 +234,12 @@ public class PacketInfoMapper {
 	/**
 	 * Convert photo graph data to photo graph entity.
 	 *
-	 * @param photoGraphData            the photo graph data
-	 * @param exceptionPhotographData the exception photograph data
-	 * @param metaData            the meta data
+	 * @param photoGraphData
+	 *            the photo graph data
+	 * @param exceptionPhotographData
+	 *            the exception photograph data
+	 * @param metaData
+	 *            the meta data
 	 * @return the applicant photograph entity
 	 */
 	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData,
@@ -272,9 +280,12 @@ public class PacketInfoMapper {
 	/**
 	 * Convert osi data to osi entity.
 	 *
-	 * @param osiData            the osi data
-	 * @param introducer            the meta data
-	 * @param metaData the meta data
+	 * @param osiData
+	 *            the osi data
+	 * @param introducer
+	 *            the meta data
+	 * @param metaData
+	 *            the meta data
 	 * @return the reg osi entity
 	 */
 	public static RegOsiEntity convertOsiDataToEntity(List<FieldValue> osiData, Introducer introducer,
@@ -334,10 +345,25 @@ public class PacketInfoMapper {
 		return regOsiEntity;
 	}
 
+	public static RegAbisRefEntity convertRegAbisRefToEntity(RegAbisRefDto regAbisRefDto) {
+
+		RegAbisRefEntity regAbisRefEntity = new RegAbisRefEntity();
+
+		RegAbisRefPkEntity regAbisRefPkEntity = new RegAbisRefPkEntity();
+
+		regAbisRefPkEntity.setRegId(regAbisRefDto.getReg_id());
+		regAbisRefEntity.setAbisRefId(regAbisRefDto.getAbis_ref_id());
+		regAbisRefEntity.setId(regAbisRefPkEntity);
+		regAbisRefEntity.setIsActive(true);
+
+		return regAbisRefEntity;
+	}
+
 	/**
 	 * Convert reg center machine to entity.
 	 *
-	 * @param metaData the meta data
+	 * @param metaData
+	 *            the meta data
 	 * @return the reg center machine entity
 	 */
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
@@ -367,8 +393,10 @@ public class PacketInfoMapper {
 	/**
 	 * Gets the json values.
 	 *
-	 * @param jsonNode the json node
-	 * @param language the language
+	 * @param jsonNode
+	 *            the json node
+	 * @param language
+	 *            the language
 	 * @return the json values
 	 */
 	private static String getJsonValues(JsonValue[] jsonNode, String language) {
@@ -387,7 +415,8 @@ public class PacketInfoMapper {
 	/**
 	 * Gets the languages.
 	 *
-	 * @param jsonNode the json node
+	 * @param jsonNode
+	 *            the json node
 	 * @return the languages
 	 */
 	private static String[] getLanguages(JsonValue[] jsonNode) {
@@ -405,8 +434,10 @@ public class PacketInfoMapper {
 	/**
 	 * Gets the name.
 	 *
-	 * @param jsonValueList the json value list
-	 * @param language the language
+	 * @param jsonValueList
+	 *            the json value list
+	 * @param language
+	 *            the language
 	 * @return the name
 	 */
 	private static String getName(List<JsonValue[]> jsonValueList, String language) {
@@ -427,8 +458,10 @@ public class PacketInfoMapper {
 	/**
 	 * Conver demographic dedupe dto to entity.
 	 *
-	 * @param demoDto the demo dto
-	 * @param regId the reg id
+	 * @param demoDto
+	 *            the demo dto
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
@@ -493,7 +526,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert demographic info json to entity.
 	 *
-	 * @param infoJson the info json
+	 * @param infoJson
+	 *            the info json
 	 * @return the applicant demographic info json entity
 	 */
 	public static ApplicantDemographicInfoJsonEntity convertDemographicInfoJsonToEntity(DemographicInfoJson infoJson) {
