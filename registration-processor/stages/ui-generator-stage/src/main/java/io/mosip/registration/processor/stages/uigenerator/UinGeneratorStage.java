@@ -1,33 +1,22 @@
 package io.mosip.registration.processor.stages.uigenerator;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.idgenerator.uin.dto.UinResponseDto;
-import io.mosip.kernel.idrepo.dto.IdRequestDTO;
-import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-//import io.mosip.registration.processor.stages.dto.UinResponseDto;
-import io.mosip.registration.processor.stages.util.UinAvailabilityCheck;
+import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
+import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.stages.uingenerator.util.UinAvailabilityCheck;
 
 
 
@@ -76,7 +65,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	
 	UinResponseDto uinResponseDto = new UinResponseDto();
 	IdResponseDTO idResponseDTO = new IdResponseDTO();
-	IdRequestDTO idRequestDTO =  new IdRequestDTO();
+	
 	
 	@Override
 	public MessageDTO process(MessageDTO object) {
@@ -84,20 +73,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		System.out.println(this.registrationId);
 
 	
-		//InputStream packetMetaInfoStream = adapter.getFile("27847657360002520181208094032" , PacketFiles.PACKETMETAINFO.name());
-		/*File file = FileUtils.getFile("C:\\Users\\M1049387\\Desktop\\DEMO DEDUPE\\27847657360002520181208094056\\uncompressed" + "\\" + "PacketMetaInfo" + ".json");
-		InputStream packetMetaInfoStream = null;
 		try {
-			packetMetaInfoStream = new FileInputStream(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} */
-			
-		try {
-			/*PacketMetaInfo packetMetaInfo;
-			
-				packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-						PacketMetaInfo.class);*/
 			
 			UinResponseDto uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
 			System.out.println("UIN GENERATION HAPPENING:    "+uinResponseDto.getUin());
@@ -105,17 +81,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			uinAvailabilityCheck.uinCheck("27847657360002520181208094036",adapter);
 			
 			
-			
-			/*
-			idRequestDTO.setUin(uinResponseDto.getUin());
-			idRequestDTO.setRegistrationId(object.getRid());
-			idRequestDTO.setId("mosip.id.create");
-//			idRequestDTO.setTimestamp();
-			
-			
-			IdResponseDTO idResponseDTO=	(IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY,
-					"", "",idRequestDTO , IdResponseDTO.class);*/
-			
+		
 			
 		} 
 		catch (ApisResourceAccessException e) {

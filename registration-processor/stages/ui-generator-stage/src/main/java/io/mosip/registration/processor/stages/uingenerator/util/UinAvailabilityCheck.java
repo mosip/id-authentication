@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.stages.util;
+package io.mosip.registration.processor.stages.uingenerator.util;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

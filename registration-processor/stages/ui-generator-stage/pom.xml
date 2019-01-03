@@ -53,20 +53,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-uin</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idrepo-service</artifactId>
-			<version>${kernel.core.version}</version>
-		</dependency>
-
-
-
-		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
