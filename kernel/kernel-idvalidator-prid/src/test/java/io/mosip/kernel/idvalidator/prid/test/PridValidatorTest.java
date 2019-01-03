@@ -9,13 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
-
+import io.mosip.kernel.core.idvalidator.spi.PridValidator;
 
 /**
  * Test class for pridValidatorImpl class
  * 
  * @author M1037462
+ * @author Abhishek Kumar
  * 
  * @since 1.0.0
  */
@@ -25,7 +25,7 @@ import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 public class PridValidatorTest {
 
 	@Autowired
-	private IdValidator<String> pridValidatorImpl;
+	private PridValidator<String> pridValidatorImpl;
 
 	@Test(expected = InvalidIDException.class)
 	public void nullTest() {
@@ -79,11 +79,11 @@ public class PridValidatorTest {
 		pridValidatorImpl.validateId(id);
 	}
 
-//	@Test(expected = InvalidIDException.class)
-//	public void repeatingNumberTest() {
-//		String id = "75122251226317";
-//		pridValidatorImpl.validateId(id);
-//	}
+	// @Test(expected = InvalidIDException.class)
+	// public void repeatingNumberTest() {
+	// String id = "75122251226317";
+	// pridValidatorImpl.validateId(id);
+	// }
 
 	@Test
 	public void ValidIdTest() {
@@ -92,4 +92,22 @@ public class PridValidatorTest {
 		assertEquals(true, pridValidatorImpl.validateId(id));
 	}
 
+	@Test
+	public void ValidIdWithParamsTest() {
+		String id = "75124301328620";
+		assertEquals(true, pridValidatorImpl.validateId(id, 14, 3, 2, 2));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void ValidIdWithParamsTestInvalid() {
+		String id = "75124301328620";
+		assertEquals(true, pridValidatorImpl.validateId(id, -1, 3, 2, 2));
+	}
+	
+	@Test(expected = InvalidIDException.class)
+	public void ChecksumTestF() {
+		String id = "5371843613598205";
+		pridValidatorImpl.validateId(id);
+	} 
+	
 }
