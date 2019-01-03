@@ -16,3 +16,6 @@ alter table regprc.individual_demographic_dedup add constraint fk_idemogd_reg fo
 alter table regprc.reg_manual_verification add constraint fk_rmnlver_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
 alter table regprc.reg_osi add constraint fk_regosi_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
 alter table regprc.reg_center_machine add constraint fk_rcntrm_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
+
+alter table regprc.reg_abisref add constraint fk_regref_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
+alter table regprc.reg_uin add constraint fk_reguin_reg foreign key (reg_id) references regprc.registration(id) on delete no action on update no action ;
