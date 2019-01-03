@@ -43,23 +43,24 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 	5. Call the bio-dedupe-service rest api to get the biometric file.
 	6. There can be multiple biometric type for example fingerprint/iris/face.
 	7. Inside <BIR> there would be a test tag which will have value either "UNIQUE" or "DUPLICATE". Check the below example for Face. The test tag TestFace tells us weather its unique or duplicate. We need to check all the biometrics present inside the file and see if all are unique or not.
-```XML
-<BIR>
-	<TestFace xmlns="testschema">Unique</TestFace>
-        <BIRInfo>
-            <Integrity>false</Integrity>
-        </BIRInfo>
-        <BDBInfo>
-            <FormatOwner>257</FormatOwner>
-            <FormatType>8</FormatType>
-            <Type>Face</Type>
-            <Level>Raw</Level>
-            <Purpose>Enroll</Purpose>
-            <Quality>90</Quality>
-        </BDBInfo>
-        <BDB>VGVzdA==</BDB>
-    </BIR>
-```
+	```XML
+	<BIR>
+		<TestFace xmlns="testschema">Unique</TestFace>
+		<BIRInfo>
+		    <Integrity>false</Integrity>
+		</BIRInfo>
+		<BDBInfo>
+		    <FormatOwner>257</FormatOwner>
+		    <FormatType>8</FormatType>
+		    <Type>Face</Type>
+		    <Level>Raw</Level>
+		    <Purpose>Enroll</Purpose>
+		    <Quality>90</Quality>
+		</BDBInfo>
+		<BDB>VGVzdA==</BDB>
+	    </BIR>
+	```
+
 	8. Make dedupe successful if all of the biometric type has test tag as "UNIQUE"
 	9. Fail the check even if any of the biometric type has test tag as "DUPLICATE". Create a mocked list of potential duplicates and always return the mocked list whenever duplicate is found.
 
