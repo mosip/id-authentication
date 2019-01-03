@@ -6,9 +6,9 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
- * 
- * @author Arun Bose The code {@IdAuthService} validates UIN
- * 
+ * The Interface IdAuthService.
+ *
+ * @author Arun Bose
  */
 
 public interface IdAuthService {

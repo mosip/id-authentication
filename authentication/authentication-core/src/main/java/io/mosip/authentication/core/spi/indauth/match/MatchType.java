@@ -16,7 +16,7 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 /**
  * Base interface for the match type.
  *
- * @authour Loganathan Sekar
+ * @author Loganathan Sekar
  */
 public interface MatchType {
 
