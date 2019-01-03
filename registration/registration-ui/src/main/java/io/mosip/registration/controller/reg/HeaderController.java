@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;

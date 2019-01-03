@@ -4,20 +4,12 @@ import java.util.Timer;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.context.ApplicationContext;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 @Component
 public class FXComponents {
-	
-	/**
-	 * Instance of {@link Logger}
-	 */
-	private static final Logger LOGGER = AppConfig.getLogger(ApplicationContext.class);
-	
+		
 	private Stage stage;
 	private Scene scene;
 	private Timer timer;

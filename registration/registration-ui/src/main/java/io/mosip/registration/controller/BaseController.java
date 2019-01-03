@@ -22,7 +22,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ResponseDTO;

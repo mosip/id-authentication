@@ -20,7 +20,7 @@ public class DaoConfig extends HibernateDaoConfig{
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL).concat(environment.getProperty("bootKey")));
+		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL).concat(environment.getProperty("bootPwd").concat("=").concat(environment.getProperty("bootKey"))));
 		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
 		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 		return dataSource;
