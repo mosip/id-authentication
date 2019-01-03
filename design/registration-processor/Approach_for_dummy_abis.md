@@ -60,6 +60,7 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
         <BDB>VGVzdA==</BDB>
     </BIR>
 ```
+
 	8. Make dedupe successful if all of the biometric type has test tag as "UNIQUE"
 	9. Fail the check even if any of the biometric type has test tag as "DUPLICATE". Create a mocked list of potential duplicates and always return the mocked list whenever duplicate is found.
 
