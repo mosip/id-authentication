@@ -131,10 +131,6 @@ public class BookingServiceUtil {
 					holidaylist.add(holiday.getHolidayDate());
 				}
 			}
-			if (holidaylist.isEmpty()) {
-				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.toString(),
-						ErrorMessages.HOLIDAY_MASTER_DATA_NOT_FOUND.toString());
-			}
 		} catch (HttpClientErrorException e) {
 			throw new RestCallException(ErrorCodes.PRG_BOOK_002.toString(), "HTTP_CLIENT_EXCEPTION");
 		}

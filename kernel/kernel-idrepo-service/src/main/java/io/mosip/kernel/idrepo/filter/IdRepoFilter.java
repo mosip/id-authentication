@@ -39,18 +39,28 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoFilter.class);
 	
+	/** The path matcher. */
 	AntPathMatcher pathMatcher = new AntPathMatcher();
 
+	/**
+	 * Allowed end points.
+	 *
+	 * @return the string[] allowed endpoints
+	 */
 	private String[] allowedEndPoints() {
 		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
 				"/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
 				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html" };
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.springframework.web.filter.OncePerRequestFilter#shouldNotFilter(javax.servlet.http.HttpServletRequest)
+	 */
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		return Arrays.stream(allowedEndPoints()).anyMatch(p -> pathMatcher.match(p, request.getPathInfo()));
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.web.filter.OncePerRequestFilter#doFilterInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain)
@@ -61,7 +71,7 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		
 		Instant requestTime = Instant.now();
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getServletPath());
+		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(request);
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Request body : \n" 
 		+ IOUtils.toString(requestWrapper.getInputStream(), Charset.defaultCharset()));
@@ -81,7 +91,7 @@ public class IdRepoFilter extends OncePerRequestFilter  {
 		long duration = Duration.between(requestTime, responseTime).toMillis();
 		mosipLogger.info(SESSION_ID, ID_REPO, ID_REPO_FILTER, "Time taken to respond in ms: " 
 		+ duration
-		+ ". Time difference between request and response in Seconds: " + (((double) duration / 1000) % 60));
+		+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000));
 	}
 	
 }

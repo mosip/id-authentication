@@ -80,13 +80,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>filesystem-adapter-ceph</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-crypto-jce</artifactId>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

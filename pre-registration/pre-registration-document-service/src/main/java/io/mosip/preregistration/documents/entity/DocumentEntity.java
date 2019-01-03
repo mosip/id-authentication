@@ -54,7 +54,7 @@ public class DocumentEntity implements Serializable {
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_document_id_seq")
 	@Id @GeneratedValue(generator="system-uuid" )
 	@GenericGenerator(name="system-uuid", strategy = "uuid" )
-	@Column(name = "id" ,columnDefinition = "BINARY(8)")
+	@Column(name = "id")
 	private String documentId;
 
 	/**
