@@ -48,8 +48,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
 		// chk
-		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService.postApi(ApiName.AUTHINTERNAL,
-				"", "", abisInsertRequestDto, AbisInsertResponceDto.class);
+		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService
+				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponceDto.class);
 
 		return authResponseDTO.getReturnValue();
 
