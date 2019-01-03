@@ -74,10 +74,15 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	@Override
 	public boolean onSave(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 		try {
+
 			if (entity instanceof Uin) {
 				Uin uinEntity = (Uin) entity;
-				uinEntity.setUinData(
-						encryptDecryptIdentity(CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt"));
+				byte[] encryptedData = encryptDecryptIdentity(
+						CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt");
+				uinEntity.setUinData(encryptedData);
+				List<Object> propertyNamesList = Arrays.asList(propertyNames);
+				int indexOfData = propertyNamesList.indexOf("uinData");
+				state[indexOfData] = encryptedData;
 				return super.onSave(uinEntity, id, state, propertyNames, types);
 			}
 			if (entity instanceof UinHistory) {
@@ -112,6 +117,12 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
+	}
+
+	@Override
+	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
+			String[] propertyNames, Type[] types) {
+		return false;
 	}
 
 	/**
