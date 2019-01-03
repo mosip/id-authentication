@@ -287,9 +287,16 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * 
 	 * @param id
 	 *            The input id to validate
+	 * 
+	 * @param sequenceLimit
+	 *            sequence in prid to limit
+	 * @param repeatingLimit
+	 *            repeating limit
+	 * @param repeatingBlockLimit
+	 *            repeating block limit
 	 * @return true if the input id is valid
 	 */
-	public boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
+	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
 				|| regexFilter(id, repeatingBlockpattern));
