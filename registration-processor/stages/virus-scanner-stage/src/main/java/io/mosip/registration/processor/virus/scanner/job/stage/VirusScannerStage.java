@@ -66,6 +66,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The decryptor. */
+	@Autowired
 	private Decryptor decryptor;
 
 	@Value("${vertx.ignite.configuration}")
