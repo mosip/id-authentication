@@ -300,14 +300,17 @@ public enum DemoMatchType implements MatchType {
 	}
 	
 	/**
-	 * 
+	 * Gets the logger.
 	 *
-	 * @return 
+	 * @return the logger
 	 */
 	private static Logger getLogger() {
 		return mosipLogger;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchType#getCategory()
+	 */
 	@Override
 	public Category getCategory() {
 		return Category.DEMO;

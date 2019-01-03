@@ -14,13 +14,11 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -124,13 +122,6 @@ public enum BioMatchType implements MatchType {
 
 				return multifingerMap;
 			});
-	
-	
-	
-	
-
-	/** The mosipLogger. */
-	private static final Logger mosipLogger = IdaLogger.getLogger(BioMatchType.class);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
@@ -224,10 +215,6 @@ public enum BioMatchType implements MatchType {
 	@Override
 	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
-	}
-
-	private static Logger getLogger() {
-		return mosipLogger;
 	}
 
 	@Override
