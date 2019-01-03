@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -44,6 +45,6 @@ public class IdTypeDto {
 	/**
 	 * The idtype is active or not.
 	 */
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 }

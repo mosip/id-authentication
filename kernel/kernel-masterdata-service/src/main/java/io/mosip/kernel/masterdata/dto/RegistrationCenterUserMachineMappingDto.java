@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -43,7 +44,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	/**
 	 * Is active for request
 	 */
-	@NotBlank
+	@NotNull
 	@ApiModelProperty(notes = "mapping is active or not", required = true)
 	private Boolean isActive;
 }

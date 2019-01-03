@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -38,7 +39,7 @@ public class GenderTypeDto {
 	private String langCode;
 
 	@ApiModelProperty(notes = "Row is active or not", required = true)
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
@@ -46,6 +47,6 @@ public class RegistrationCenterTypeDto {
 	/**
 	 * activeness of the registration center type.
 	 */
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 }

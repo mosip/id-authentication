@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -52,7 +53,7 @@ public class BiometricAttributeDto {
 	/**
 	 * Field for the status of data.
 	 */
-	@NotBlank
+	@NotNull
 	@ApiModelProperty(value = "BiometricAttribute isActive status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 

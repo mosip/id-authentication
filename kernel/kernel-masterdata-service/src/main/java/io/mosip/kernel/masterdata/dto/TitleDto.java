@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -27,7 +28,7 @@ public class TitleDto {
 	@Size(min = 1, max = 128)
 	private String titleDescription;
 
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 
 	@NotBlank

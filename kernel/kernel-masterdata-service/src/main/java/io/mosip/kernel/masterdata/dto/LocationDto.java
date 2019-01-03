@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -27,7 +28,7 @@ public class LocationDto {
 	@NotBlank
 	private String name;
 
-	@NotBlank
+	@NotNull
 	private int hierarchyLevel;
 
 	
@@ -45,7 +46,7 @@ public class LocationDto {
 	@NotEmpty
 	private String langCode;
 
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 
 }

@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -17,14 +18,14 @@ import lombok.Data;
 @Data
 public class HolidayDto {
 
-	@NotBlank
+	@NotNull
 	private int id;
 
 	@Size(min = 1, max = 36)
 	@NotBlank
 	private String locationCode;
 
-	@NotBlank
+	@NotNull
 	private LocalDate holidayDate;
 	/**
 	 * Holiday day is day of week as integer value, week start from Monday , Monday
@@ -49,7 +50,7 @@ public class HolidayDto {
 	@NotBlank
 	private String langCode;
 
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -37,7 +38,7 @@ public class MachineTypeDto {
 	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
 
-	@NotBlank
+	@NotNull
 	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 

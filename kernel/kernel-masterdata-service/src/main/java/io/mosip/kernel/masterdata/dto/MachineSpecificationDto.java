@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -55,7 +56,7 @@ public class MachineSpecificationDto {
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 
-	@NotBlank
+	@NotNull
 	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 

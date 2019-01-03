@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalTime;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -83,7 +84,7 @@ public class RegistrationCenterDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchEndTime;
 
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 
 }

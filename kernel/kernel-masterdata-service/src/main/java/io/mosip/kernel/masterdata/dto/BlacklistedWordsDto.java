@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -21,6 +22,6 @@ public class BlacklistedWordsDto {
 	private String langCode;
 	@Size(min = 1, max = 256)
 	private String description;
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 }

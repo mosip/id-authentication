@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -26,6 +27,6 @@ public class RegistrationCenterMachineDeviceDto {
 	@Size(min = 1, max = 36)
 	private String deviceId;
 
-	@NotBlank
+	@NotNull
 	private Boolean isActive;
 }
