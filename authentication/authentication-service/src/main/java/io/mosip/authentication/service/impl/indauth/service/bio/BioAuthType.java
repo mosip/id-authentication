@@ -6,16 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
@@ -27,7 +24,8 @@ import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFinge
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 
 /**
- * 
+ * The Enum BioAuthType.
+ *
  * @author Dinesh Karuppiah.T
  */
 
@@ -89,21 +87,35 @@ public enum BioAuthType implements AuthType {
 	},
 	IRIS_IMG("irisImg", Collections.emptySet(), "Iris", 1),
 	FACE_IMG("faceImg", Collections.emptySet(), "Face", 1);
+	
+	/** The type. */
 	private String type;
 
-	/**  */
+	/** The associated match types. */
 	private Set<MatchType> associatedMatchTypes;
 
 	
 
+	/** The display name. */
 	private String displayName;
 
+	/** The mantra fingerprint provider. */
 	private static MantraFingerprintProvider mantraFingerprintProvider = new MantraFingerprintProvider();
 
+	/** The cogent fingerprint provider. */
 	private static CogentFingerprintProvider cogentFingerprintProvider = new CogentFingerprintProvider();
 
+	/** The count. */
 	private int count;
 
+	/**
+	 * Instantiates a new bio auth type.
+	 *
+	 * @param type the type
+	 * @param associatedMatchTypes the associated match types
+	 * @param displayName the display name
+	 * @param count the count
+	 */
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes,
 			String displayName, int count) {
 		this.type = type;
@@ -113,42 +125,72 @@ public enum BioAuthType implements AuthType {
 		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
+	/**
+	 * Gets the FP values count in identity.
+	 *
+	 * @param reqDTO the req DTO
+	 * @param helper the helper
+	 * @return the FP values count in identity
+	 */
 	private Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 		Long count = (long) helper.getIdentityInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity()).size();
 		return count;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getDisplayName()
+	 */
 	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getType()
+	 */
 	@Override
 	public String getType() {
 		return type;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#isAssociatedMatchType(io.mosip.authentication.core.spi.indauth.match.MatchType)
+	 */
 	@Override
 	public boolean isAssociatedMatchType(MatchType matchType) {
 		return associatedMatchTypes.contains(matchType);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#isAuthTypeEnabled(io.mosip.authentication.core.dto.indauth.AuthRequestDTO, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
+	 */
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
 		return  authReq.getAuthType().isBio() && getFPValuesCountInIdentity(authReq, helper) == getCount();
 	}
 
 
+	/**
+	 * Gets the count.
+	 *
+	 * @return the count
+	 */
 	private int getCount() {
 		return count;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchingStrategy(io.mosip.authentication.core.dto.indauth.AuthRequestDTO, java.util.function.Function)
+	 */
 	@Override
 	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq,
 			Function<LanguageType, String> languageInfoFetcher) {
 		return Optional.of(MatchingStrategyType.PARTIAL.getType());
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchingThreshold(io.mosip.authentication.core.dto.indauth.AuthRequestDTO, java.util.function.Function, org.springframework.core.env.Environment)
+	 */
 	@Override
 	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
 			Function<LanguageType, String> languageInfoFetcher, Environment environment) {
@@ -163,6 +205,9 @@ public enum BioAuthType implements AuthType {
 		return Optional.ofNullable(threshold);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getAssociatedMatchTypes()
+	 */
 	@Override
 	public Set<MatchType> getAssociatedMatchTypes() {
 		return Collections.unmodifiableSet(associatedMatchTypes);
@@ -171,18 +216,24 @@ public enum BioAuthType implements AuthType {
 	/**
 	 * Sets the of.
 	 *
-	 * @param supportedMatchTypes
+	 * @param supportedMatchTypes the supported match types
 	 * @return the sets the
 	 */
 	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
 		return Stream.of(supportedMatchTypes).collect(Collectors.toSet());
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getLangType()
+	 */
 	@Override
 	public LanguageType getLangType() {
 		return LanguageType.PRIMARY_LANG;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
+	 */
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
 		return Optional.ofNullable(authRequestDTO.getBioInfo()).flatMap(
@@ -190,6 +241,12 @@ public enum BioAuthType implements AuthType {
 				.isPresent();
 	}
 
+	/**
+	 * Gets the finger print provider.
+	 *
+	 * @param bioinfovalue the bioinfovalue
+	 * @return the finger print provider
+	 */
 	private static FingerprintProvider getFingerPrintProvider(BioInfo bioinfovalue) {
 		FingerprintProvider provider = null;
 		if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("mantra")) {

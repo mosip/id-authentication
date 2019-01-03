@@ -13,7 +13,6 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
@@ -39,8 +38,11 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct match input.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param listMatchInputs the list match inputs
+	 * @param identitydto the identitydto
+	 * @param demoEntity the demo entity
 	 * @return the list
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 //	public MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
 //			AuthType demoAuthType) {
@@ -88,7 +90,6 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct match input.
 	 *
-	 * @param idInfoHelper   TODO
 	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
