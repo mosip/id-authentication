@@ -4,6 +4,7 @@ package io.mosip.kernel.masterdata.test.integration;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -879,6 +880,7 @@ public class MasterdataIntegrationTest {
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLanguageCode("ENG");
+		registrationCenter.setHolidayLocationCode("KAR");
 		registrationCenters.add(registrationCenter);
 
 		Location location = new Location();
@@ -4002,6 +4004,42 @@ public class MasterdataIntegrationTest {
 				get("/v1.0/deviceshistories/{id}/{langcode}/{effdatetimes}", "1000", "ENG", "2018-01-01T10:10:30.956Z"))
 				.andExpect(status().isInternalServerError());
 	}
+
+	// -------------------------------RegistrationCenterControllerTest--------------------------
+		@Test
+		public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
+			Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
+					.thenReturn(registrationCenter);
+			Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
+					.thenReturn(holidays);
+			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+					"REG_CR_001", 2018)).andExpect(status().isOk());
+		}
+
+		@Test
+		public void testGetRegistraionCenterHolidaysNoRegCenterFound() throws Exception {
+			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+					"REG_CR_001", 2017)).andExpect(status().isNotFound());
+		}
+
+		@Test
+		public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
+			Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
+					.thenThrow(DataRetrievalFailureException.class);
+			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+					"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
+		}
+
+		@Test
+		public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
+			Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
+					.thenReturn(registrationCenter);
+			
+			Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
+					.thenThrow(DataRetrievalFailureException.class);
+			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+					"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
+		}
 
 	// -------------------Registration center device history-----------
 	@Test

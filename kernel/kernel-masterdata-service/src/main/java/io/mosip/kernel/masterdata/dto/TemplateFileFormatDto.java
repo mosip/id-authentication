@@ -11,18 +11,18 @@ import lombok.Data;
 @Data
 @ApiModel(value = "TemplateFileFormat", description = "TemplateFileFormat resource representation")
 public class TemplateFileFormatDto {
-	
-	@NotNull
+
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
-	
+
 	@Size(min = 0, max = 256)
 	@ApiModelProperty(value = "TemplateFileFormat description", required = false, dataType = "java.lang.String")
 	private String description;
-	
+
+	@NotBlank
 	@ValidLangCode
-	@NotNull
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;

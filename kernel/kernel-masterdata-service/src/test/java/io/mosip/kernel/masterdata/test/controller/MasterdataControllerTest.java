@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.test.controller;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +52,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -77,6 +76,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 
@@ -169,6 +169,9 @@ public class MasterdataControllerTest {
 	private HolidayRepository holidayRepository;
 	@MockBean
 	private RegistrationCenterRepository registrationCenterRepository;
+
+	@MockBean
+	private RegistrationCenterService registrationCenterService;
 
 	private RegistrationCenter registrationCenter;
 	private List<Holiday> holidays;
@@ -265,7 +268,7 @@ public class MasterdataControllerTest {
 
 		Holiday holiday = new Holiday();
 		holiday.setId(1);
-		holiday.setHolidayId(new HolidayID("KAR", date, "ENG","Diwali"));
+		holiday.setHolidayId(new HolidayID("KAR", date, "ENG", "Diwali"));
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");
@@ -307,8 +310,7 @@ public class MasterdataControllerTest {
 		locationHierarchyResponseDto.setLocations(locationHierarchyDtos);
 		locationCodeDto = new PostLocationCodeResponseDto();
 		locationCodeDto.setCode("TN");
-		locationCodeDto.setIsActive(true);
-		locationCodeDto.setParentLocCode("IND");
+		locationCodeDto.setLangCode("ENG");
 		RequestDto<LocationDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.create.location");
 		requestDto.setVer("1.0.0");
@@ -727,7 +729,6 @@ public class MasterdataControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
-
 	@Test
 	public void testUpdateLocationDetails() throws Exception {
 		Mockito.when(locationService.updateLocationDetails(Mockito.any())).thenReturn(locationCodeDto);
@@ -743,43 +744,42 @@ public class MasterdataControllerTest {
 				.content(LOCATION_JSON_EXPECTED_POST))
 				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void getImmediateChildrenTest() throws Exception {
-		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenReturn(locationResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isOk());
-		
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locationResponseDto);
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+
 	}
-	
+
 	@Test
 	public void getImmediateChildrenServiceExceptionTest() throws Exception {
-		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new MasterDataServiceException("1111111", "Error from database"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isInternalServerError());
-		
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR"))
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
 	}
-	
+
 	@Test
 	public void getImmediateChildrenDataNotFoundExceptionTest() throws Exception {
-		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenThrow(new DataNotFoundException("111111","data not found"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR")).andExpect(MockMvcResultMatchers.status().isNotFound());
-		
+		Mockito.when(locationService.getImmediateChildrenByLocCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new DataNotFoundException("111111", "data not found"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/v1.0/locations/immediatechildren/ENG/KAR"))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
+
 	}
+
 	@Test
 	public void testDeleteLocationDetails() throws Exception {
-		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString()))
-				.thenReturn(new CodeResponseDto());
+		Mockito.when(locationService.deleteLocationDetials(Mockito.anyString())).thenReturn(new CodeResponseDto());
 		mockMvc.perform(MockMvcRequestBuilders.delete("/v1.0/locations/KAR").contentType(MediaType.APPLICATION_JSON))
-		.andExpect(MockMvcResultMatchers.status().isOk());
+				.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
-	
 
-	/**
-	 * 
-	 * @author M1043226
-	 * @since 1.0.0
-	 *
-	 */
 	@Test
 	public void getLocationDataByHierarchyNameSuccessTest() throws Exception {
 
@@ -812,41 +812,44 @@ public class MasterdataControllerTest {
 
 	}
 
-
-	// -------------------------------RegistrationCenterControllerTest--------------------------
-	@Test
-	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
-				.thenReturn(holidays);
-		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2018)).andExpect(status().isOk());
-	}
-
-	@Test
-	public void testGetRegistraionCenterHolidaysNoRegCenterFound() throws Exception {
-		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2017)).andExpect(status().isNotFound());
-	}
-
-	@Test
-	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
-	}
-
-	@Test
-	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
-				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
-	}
+	/*
+	 * //
+	 * -------------------------------RegistrationCenterControllerTest--------------
+	 * ------------
+	 * 
+	 * @Test public void testGetRegistraionCenterHolidaysSuccess() throws Exception
+	 * {
+	 * Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString()
+	 * , anyString())) .thenReturn(registrationCenter);
+	 * Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString
+	 * (), anyString(), anyInt())) .thenReturn(holidays); mockMvc.perform(get(
+	 * "/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}",
+	 * "ENG", "REG_CR_001", 2018)).andExpect(status().isOk()); }
+	 * 
+	 * @Test public void testGetRegistraionCenterHolidaysNoRegCenterFound() throws
+	 * Exception { mockMvc.perform(get(
+	 * "/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}",
+	 * "ENG", "REG_CR_001", 2017)).andExpect(status().isNotFound()); }
+	 * 
+	 * @Test public void
+	 * testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws
+	 * Exception {
+	 * Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString()
+	 * , anyString())) .thenThrow(DataRetrievalFailureException.class);
+	 * mockMvc.perform(get(
+	 * "/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}",
+	 * "ENG", "REG_CR_001", 2017)).andExpect(status().isInternalServerError()); }
+	 * 
+	 * @Test public void testGetRegistraionCenterHolidaysHolidayFetchException()
+	 * throws Exception {
+	 * Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString()
+	 * , anyString())) .thenReturn(registrationCenter);
+	 * Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString
+	 * (), anyString(), anyInt())) .thenThrow(DataRetrievalFailureException.class);
+	 * mockMvc.perform(get(
+	 * "/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}",
+	 * "ENG", "REG_CR_001", 2018)).andExpect(status().isInternalServerError()); }
+	 */
 
 	// -------------------------------TemplateControllerTest--------------------------
 	@Test
@@ -930,4 +933,47 @@ public class MasterdataControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(str);
 		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
 	}
+
+	// --------------------------Registration
+	// center-validatetimeStamp------------------//
+
+	@Test
+	public void validateTimestampWithRegistrationCenter() throws Exception {
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
+		resgistrationCenterStatusResponseDto.setStatus("Accepted");
+		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(resgistrationCenterStatusResponseDto);
+		
+		 mockMvc.perform(get(
+				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				 .andExpect(status().isOk());
+		
+	}
+	
+	@Test
+	public void validateTimestampWithRegistrationCenterMasterDataExceptionTest() throws Exception {
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
+		resgistrationCenterStatusResponseDto.setStatus("Accepted");
+		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(new MasterDataServiceException("11111","Database exception"));
+		
+		 mockMvc.perform(get(
+				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				 .andExpect(status().isInternalServerError());
+		
+	}
+	
+	@Test
+	public void validateTimestampWithRegistrationCenterDataNotFoundExceptionTest() throws Exception {
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
+		resgistrationCenterStatusResponseDto.setStatus("Accepted");
+		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(new DataNotFoundException("11111","Data not found exception"));
+		
+		 mockMvc.perform(get(
+				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				 .andExpect(status().isNotFound());
+		
+	}
+
 }
