@@ -1,5 +1,6 @@
 package io.mosip.registration.test.authentication;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +52,16 @@ public class AuthenticationServiceTest {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(true);
 		assertTrue(authenticationService.authValidator("Fingerprint", authenticationValidatorDTO));
+	}
+	
+	@Test
+	public void getFPValidatorNegativeTest() {
+		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
+		authenticationBaseValidators.add(fingerprintValidator);
+		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(false);
+		assertFalse(authenticationService.authValidator("otp", authenticationValidatorDTO));
 	}
 
 }
