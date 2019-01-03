@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +30,7 @@ public class ReasonCategoryDto {
 	@Size(min = 1, max = 3)
 	private String langCode;
 
-	
+
 	private Boolean isActive;
 
 	private List<ReasonListDto> reasonList = new ArrayList<>();
