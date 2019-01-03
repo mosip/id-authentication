@@ -62,8 +62,8 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 	@Value("${DOCUMENT_SCANNER_TIMEOUT}")
 	private long scannerTimeout;
 
-	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
-	private String scannerDocType;
+	@Value("${DOCUMENT_SCANNER_IMGTYPE}")
+	private String scannerImgType;
 
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScannerServiceImpl.class);
 
@@ -139,7 +139,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 		byte[] imageInByte;
 
 		ByteArrayOutputStream imagebyteArray = new ByteArrayOutputStream();
-		ImageIO.write(bufferedImage, scannerDocType, imagebyteArray);
+		ImageIO.write(bufferedImage, scannerImgType, imagebyteArray);
 		imagebyteArray.flush();
 		imageInByte = imagebyteArray.toByteArray();
 		imagebyteArray.close();

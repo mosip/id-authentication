@@ -53,12 +53,21 @@ public class DocumentScanFacade {
 
 	}
 
-	public byte[] getSingleImageFromList(List<BufferedImage> bufferedImages) throws IOException {
+	public byte[] asImage(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
 
 		return documentScannerService.asImage(bufferedImages);
+
+	}
+
+	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
+
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+
+		return documentScannerService.asPDF(bufferedImages);
 
 	}
 

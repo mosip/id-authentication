@@ -109,6 +109,9 @@ public class DocumentScanController extends BaseController {
 	
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;
+	
+	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
+	private String scannerDocType;
 
 	@FXML
 	private void initialize() {
@@ -343,8 +346,16 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
 			return;
 		}
-		byte[] byteArray = documentScanFacade.getSingleImageFromList(scannedPages);
-
+		byte[] byteArray;
+		if (!"pdf".equalsIgnoreCase(scannerDocType)) {
+			byteArray = documentScanFacade.asImage(scannedPages);
+		} else {
+			byteArray = documentScanFacade.asPDF(scannedPages);
+		}
+		if (byteArray == null) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
+			return;
+		}
 		if (byteArray.length > documentSize) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
@@ -402,7 +413,7 @@ public class DocumentScanController extends BaseController {
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setCategory(document);
-		documentDetailsDTO.setFormat(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
+		documentDetailsDTO.setFormat(scannerDocType);
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
