@@ -313,8 +313,9 @@ public class OSIValidator {
 		finger= type;
 		Iterator<String> it = list.iterator(); 
 		while (it.hasNext()) {
-			if(it.next().equalsIgnoreCase(type)) {
-				finger= it.next();
+			String ftype=it.next();
+			if(ftype.equalsIgnoreCase(type)) {
+				finger= ftype;
 				break;
 			}
 		}

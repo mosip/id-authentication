@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
@@ -40,11 +41,13 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class IdRepoController {
-	
+
+	private static final String ALL = "all";
+
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
-	
+
 	/** The id repo service. */
 	@Autowired
 	private IdRepoService<IdRequestDTO, IdResponseDTO, Uin> idRepoService;
@@ -95,16 +98,22 @@ public class IdRepoController {
 	 *
 	 * @param uin
 	 *            the uin
+	 * @param filter
+	 *            the filter
 	 * @return the response entity
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
 	@GetMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin) throws IdRepoAppException {
+	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
+			@RequestParam(required = false) String filter) throws IdRepoAppException {
 		try {
 			if (!Objects.isNull(uin)) {
+				if (Objects.isNull(filter)) {
+					filter = ALL;
+				}
 				uinValidatorImpl.validateId(uin);
-				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin), HttpStatus.OK);
+				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, filter), HttpStatus.OK);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
 			}
@@ -116,6 +125,8 @@ public class IdRepoController {
 	/**
 	 * Update identity.
 	 *
+	 * @param uin
+	 *            the uin
 	 * @param request
 	 *            the request
 	 * @param errors
