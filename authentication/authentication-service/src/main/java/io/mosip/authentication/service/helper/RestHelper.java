@@ -123,7 +123,6 @@ public class RestHelper {
 	 *
 	 * @param request the request
 	 * @return the supplier
-	 * @throws RestServiceException the rest service exception
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {

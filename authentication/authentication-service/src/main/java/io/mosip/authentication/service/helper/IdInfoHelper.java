@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package io.mosip.authentication.service.helper;
 
 import java.util.AbstractMap.SimpleEntry;
@@ -41,7 +44,8 @@ import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * 
+ * The Class IdInfoHelper.
+ *
  * @author Dinesh Karuppiah.T
  */
 
@@ -54,12 +58,19 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
 
+	/** The Constant PRIMARY_LANG_CODE. */
 	private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
+	
+	/** The Constant SECONDARY_LANG_CODE. */
 	private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
 
+	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
 	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
+	
+	/** The Constant DEFAULT_MATCH_VALUE. */
 	public static final String DEFAULT_MATCH_VALUE = "demo.default.match.value";
 
+	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 
@@ -67,7 +78,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private Environment environment;
 
-	/** The environment. */
+	/**
+	 *  The environment.
+	 *
+	 * @param languageCode the language code
+	 * @return the language name
+	 */
 
 	public Optional<String> getLanguageName(String languageCode) {
 		String languagName = null;
@@ -83,6 +99,9 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return Optional.ofNullable(languagName);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getLanguageCode(io.mosip.authentication.core.dto.indauth.LanguageType)
+	 */
 	public String getLanguageCode(LanguageType langType) {
 		if (langType == LanguageType.PRIMARY_LANG) {
 			return environment.getProperty(PRIMARY_LANG_CODE);
@@ -91,11 +110,21 @@ public class IdInfoHelper implements IdInfoFetcher {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIdentityInfo(io.mosip.authentication.core.spi.indauth.match.MatchType, io.mosip.authentication.core.dto.indauth.IdentityDTO)
+	 */
 	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity) {
 		String language = getLanguageCode(matchType.getLanguageType());
 		return getInfo(matchType.getIdentityInfoFunction().apply(identity), language);
 	}
 
+	/**
+	 * Gets the info.
+	 *
+	 * @param idInfosMap the id infos map
+	 * @param languageForMatchType the language for match type
+	 * @return the info
+	 */
 	private Map<String, String> getInfo(Map<String, List<IdentityInfoDTO>> idInfosMap, String languageForMatchType) {
 		if (idInfosMap != null && !idInfosMap.isEmpty()) {
 			return idInfosMap.entrySet().parallelStream()
@@ -111,6 +140,14 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return Collections.emptyMap();
 	}
 
+	/**
+	 * Gets the identity value.
+	 *
+	 * @param name the name
+	 * @param languageForMatchType the language for match type
+	 * @param demoInfo the demo info
+	 * @return the identity value
+	 */
 	private Stream<String> getIdentityValue(String name, String languageForMatchType,
 			Map<String, List<IdentityInfoDTO>> demoInfo) {
 		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
@@ -123,6 +160,13 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return Stream.empty();
 	}
 
+	/**
+	 * Check language type.
+	 *
+	 * @param languageForMatchType the language for match type
+	 * @param languageFromReq the language from req
+	 * @return true, if successful
+	 */
 	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
 		if (languageFromReq == null || languageFromReq.isEmpty()) {
 			return getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
@@ -131,6 +175,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 		}
 	}
 
+	/**
+	 * Gets the id mapping value.
+	 *
+	 * @param idMapping the id mapping
+	 * @return the id mapping value
+	 */
 	public List<String> getIdMappingValue(IdMapping idMapping) {
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
 		List<String> fullMapping = new ArrayList<>();
@@ -146,11 +196,26 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return fullMapping;
 	}
 
+	/**
+	 * Gets the entity info as string.
+	 *
+	 * @param matchType the match type
+	 * @param demoEntity the demo entity
+	 * @return the entity info as string
+	 */
 	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
 		Map<String, String> entityInfoMap = getEntityInfoMap(matchType, demoEntity);
 		return concatValues(entityInfoMap.values().toArray(new String[entityInfoMap.size()]));
 	}
 
+	/**
+	 * Gets the identity values map.
+	 *
+	 * @param propertyNames the property names
+	 * @param languageCode the language code
+	 * @param demoEntity the demo entity
+	 * @return the identity values map
+	 */
 	private Map<String, String> getIdentityValuesMap(List<String> propertyNames, String languageCode,
 			Map<String, List<IdentityInfoDTO>> demoEntity) {
 		return propertyNames.stream()
@@ -159,6 +224,13 @@ public class IdInfoHelper implements IdInfoFetcher {
 						(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
 
+	/**
+	 * Gets the entity info map.
+	 *
+	 * @param matchType the match type
+	 * @param demoEntity the demo entity
+	 * @return the entity info map
+	 */
 	public Map<String, String> getEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
 		String languageCode = getLanguageCode(matchType.getLanguageType()).toLowerCase();
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
@@ -170,11 +242,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Match demo data.
 	 *
-	 * @param demoDTO             the demo DTO
+	 * @param identityDTO the identity DTO
 	 * @param identityEntity      the demo entity
-	 * @param locationInfoFetcher
-	 * @param matchInput          the match input
+	 * @param listMatchInputs the list match inputs
 	 * @return the list
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public List<MatchOutput> matchIdentityData(IdentityDTO identityDTO,
 			Map<String, List<IdentityInfoDTO>> identityEntity, Collection<MatchInput> listMatchInputs)
@@ -196,7 +268,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param demoEntity  the demo entity
 	 * @param input       the input
 	 * @return the match output
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private MatchOutput matchType(IdentityDTO identityDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
 			MatchInput input) throws IdAuthenticationBusinessException {
@@ -234,11 +306,9 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Construct match input.
 	 *
-	 * @param idInfoHelper        TODO
-	 * @param demoAuthServiceImpl TODO
 	 * @param authRequestDTO      the auth request DTO
-	 * @param matchTypes
-	 * @param authTypes
+	 * @param authTypes the auth types
+	 * @param matchTypes the match types
 	 * @return the list
 	 */
 	public List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO, AuthType[] authTypes,
@@ -263,7 +333,6 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Construct match input.
 	 *
-	 * @param demoAuthServiceImpl TODO
 	 * @param authRequestDTO      the auth request DTO
 	 * @param matchType           TODO
 	 * @param authType            TODO
@@ -293,6 +362,15 @@ public class IdInfoHelper implements IdInfoFetcher {
 		}
 	}
 
+	/**
+	 * Builds the status info.
+	 *
+	 * @param demoMatched the demo matched
+	 * @param listMatchInputs the list match inputs
+	 * @param listMatchOutputs the list match outputs
+	 * @param authTypes the auth types
+	 * @return the auth status info
+	 */
 	public AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,
 			List<MatchOutput> listMatchOutputs, AuthType[] authTypes) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
@@ -306,6 +384,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return statusInfoBuilder.build();
 	}
 
+	/**
+	 * Builds the usage data bits.
+	 *
+	 * @param listMatchOutputs the list match outputs
+	 * @param statusInfoBuilder the status info builder
+	 */
 	private void buildUsageDataBits(List<MatchOutput> listMatchOutputs, AuthStatusInfoBuilder statusInfoBuilder) {
 		listMatchOutputs.forEach((MatchOutput matchOutput) -> {
 			if (matchOutput.isMatched()) {
@@ -314,6 +398,13 @@ public class IdInfoHelper implements IdInfoFetcher {
 		});
 	}
 
+	/**
+	 * Builds the match infos.
+	 *
+	 * @param listMatchInputs the list match inputs
+	 * @param statusInfoBuilder the status info builder
+	 * @param authTypes the auth types
+	 */
 	public void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder,
 			AuthType[] authTypes) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
@@ -339,6 +430,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 		});
 	}
 
+	/**
+	 * Concat values.
+	 *
+	 * @param values the values
+	 * @return the string
+	 */
 	public static String concatValues(String... values) {
 		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < values.length; i++) {

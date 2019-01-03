@@ -9,13 +9,14 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 /**
- * The builder class of AuthStatusInfo
- * 
- * @authour Loganathan Sekar
+ * The builder class of AuthStatusInfo.
+ *
+ * @author Loganathan Sekar
  */
 
 public class AuthStatusInfoBuilder {
 
+	/** The built. */
 	private boolean built;
 
 	/** The auth status info. */
@@ -52,9 +53,10 @@ public class AuthStatusInfoBuilder {
 	/**
 	 * Adds the message info.
 	 *
-	 * @param matchInfoType     the match info type
-	 * @param msType            the ms type
+	 * @param authType the auth type
+	 * @param matchingStrategy the matching strategy
 	 * @param matchingThreshold the mt
+	 * @param language the language
 	 * @return the auth status info builder
 	 */
 	public AuthStatusInfoBuilder addMessageInfo(String authType, String matchingStrategy, Integer matchingThreshold,
@@ -110,6 +112,9 @@ public class AuthStatusInfoBuilder {
 		return authStatusInfo;
 	}
 
+	/**
+	 * Assert not built.
+	 */
 	private void assertNotBuilt() {
 		if (built) {
 			throw new IllegalStateException();

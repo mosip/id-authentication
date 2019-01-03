@@ -116,6 +116,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	@Autowired
 	protected Environment env;
 
+	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
 
@@ -147,9 +148,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Validate Biometric details i.e validating fingers,iris,face and device
 	 * information.
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	protected void validateBioDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 
@@ -178,10 +179,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * Validate fingers.
-	 * 
-	 * @param authRequestDTO
-	 * @param bioInfo
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param bioInfo the bio info
+	 * @param errors the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 		if ((isAvailableBioType(bioInfo, BioType.FGRMIN) && isDuplicateBioType(authRequestDTO, BioType.FGRMIN))
@@ -197,10 +198,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * Validate Iris.
-	 * 
-	 * @param authRequestDTO
-	 * @param bioInfo
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param bioInfo the bio info
+	 * @param errors the errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 		if (isAvailableBioType(bioInfo, BioType.IRISIMG) && isDuplicateBioType(authRequestDTO, BioType.IRISIMG)) {
@@ -215,10 +216,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * Validate Face.
-	 * 
-	 * @param authRequestDTO
-	 * @param bioInfo
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param bioInfo the bio info
+	 * @param errors the errors
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 
@@ -230,9 +231,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate atleast one finger request should be available for Bio.
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 
@@ -251,9 +252,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate atleast one Iris request should be available for Bio.
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 		@SuppressWarnings("unchecked")
@@ -268,9 +269,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate atleast one Face request should be available for Bio.
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	private void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 		boolean isFaceRequestAvailable = authRequestDTO.getRequest() != null
@@ -285,10 +286,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * check any IdentityInfoDto data available or not.
-	 * 
-	 * @param authRequestDTO
-	 * @param functions
-	 * @return
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param functions the functions
+	 * @return true, if successful
 	 */
 	@SuppressWarnings("unchecked")
 	boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
@@ -300,10 +301,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * If DemoAuthType is Bio, then validate bioinfo is available or not.
-	 * 
-	 * @param bioInfoList
-	 * @param bioType
-	 * @return
+	 *
+	 * @param bioInfoList the bio info list
+	 * @param bioType the bio type
+	 * @return true, if is available bio type
 	 */
 	private boolean isAvailableBioType(List<BioInfo> bioInfoList, BioType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
@@ -312,9 +313,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * If DemoAuthType is Bio, then validate device information is available or not.
-	 * 
-	 * @param deviceInfoList
-	 * @return
+	 *
+	 * @param deviceInfoList the device info list
+	 * @return true, if is contain device info
 	 */
 	private boolean isContainDeviceInfo(List<BioInfo> deviceInfoList) {
 
@@ -324,10 +325,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * If DemoAuthType is Bio, then check same bio request type should not be
 	 * requested again.
-	 * 
-	 * @param authRequestDTO
-	 * @param bioType
-	 * @return
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param bioType the bio type
+	 * @return true, if is duplicate bio type
 	 */
 	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioType bioType) {
 		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
@@ -344,9 +345,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * If DemoAuthType is Bio, Then check duplicate request of finger and number
 	 * finger of request should not exceed to 10.
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
@@ -372,6 +373,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
+	/**
+	 * Validate multi fingers value.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
+	 */
 	private void validateMultiFingersValue(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
 		List<Supplier<List<IdentityInfoDTO>>> listOfFingerprint = Stream.<Supplier<List<IdentityInfoDTO>>>of(
@@ -391,12 +398,24 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
+	/**
+	 * Gets the id info count.
+	 *
+	 * @param list the list
+	 * @return the id info count
+	 */
 	private Long getIdInfoCount(List<IdentityInfoDTO> list) {
 		return Optional.ofNullable(list).map(List::parallelStream)
 				.map(stream -> stream.filter(lt -> lt.getValue() != null && !lt.getValue().isEmpty()).count())
 				.orElse((long) 0);
 	}
 
+	/**
+	 * Check is duplicate.
+	 *
+	 * @param list the list
+	 * @return true, if successful
+	 */
 	private boolean checkIsDuplicate(List<IdentityInfoDTO> list) {
 		return Optional.ofNullable(list).map(List::parallelStream).map(stream -> stream.filter((IdentityInfoDTO lt) -> {
 			return lt.getValue() != null && !lt.getValue().isEmpty();
@@ -408,8 +427,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * validate Iris request count. left and right eye should not exceed 1 and total
 	 * iris should not exceed 2.
-	 * 
-	 * @param authRequestDTO
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
@@ -863,8 +883,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate email id.
-	 * 
+	 *
 	 * @param authRequest authRequest
+	 * @param errors the errors
 	 */
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
 
@@ -885,8 +906,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate phone number.
-	 * 
+	 *
 	 * @param authRequest authRequest
+	 * @param errors the errors
 	 */
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
 
