@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +9,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.commons.collections.map.HashedMap;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;

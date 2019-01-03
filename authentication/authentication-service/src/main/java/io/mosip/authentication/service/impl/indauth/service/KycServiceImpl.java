@@ -98,17 +98,19 @@ public class KycServiceImpl implements KycService {
 		KycInfo kycInfo = new KycInfo();
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
 				isSecLangInfoRequired);
-		kycInfo.setIdentity(filteredIdentityInfo);
-		Object maskedUin = uin;
-		Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
-		Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
-		if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
-			maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
+		if (null != filteredIdentityInfo) {
+			kycInfo.setIdentity(filteredIdentityInfo);
+			Object maskedUin = uin;
+			Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
+			Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
+			if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
+				maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
+			}
+			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+			String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
+			kycInfo.setEPrint(ePrintInfo);
+			kycInfo.setIdvId(maskedUin.toString());
 		}
-		Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-		String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
-		kycInfo.setEPrint(ePrintInfo);
-		kycInfo.setIdvId(maskedUin.toString());
 		return kycInfo;
 	}
 
@@ -138,7 +140,7 @@ public class KycServiceImpl implements KycService {
 		identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
-	if (!isSecLangInfoRequired) {
+	if (!isSecLangInfoRequired && null != identityInfo) {
 	    String primaryLanguage = env.getProperty("mosip.primary.lang-code");
 	    identityInfo = identityInfo.entrySet().stream()
 		    .collect(Collectors.toMap(Map.Entry::getKey,
