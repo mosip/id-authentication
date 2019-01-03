@@ -21,7 +21,7 @@ public class TemplateFileFormatDto {
 	@ApiModelProperty(value = "TemplateFileFormat description", required = false, dataType = "java.lang.String")
 	private String description;
 	
-	// @ValidLangCode
+	@ValidLangCode
 	@NotNull
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
