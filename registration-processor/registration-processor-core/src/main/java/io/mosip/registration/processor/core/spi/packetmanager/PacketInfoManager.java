@@ -1,14 +1,16 @@
 
 package io.mosip.registration.processor.core.spi.packetmanager;
-	
+
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface PacketInfoManager.
  *
@@ -92,8 +94,24 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId);
-	
+
+	/**
+	 * Gets the reg id by UIN.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @return the reg id by UIN
+	 */
 	public List<String> getRegIdByUIN(String uin);
 
+	/**
+	 * Save manual adjudication data.
+	 *
+	 * @param uniqueMatchedRefIds
+	 *            the unique matched ref ids
+	 * @param registrationId
+	 *            the registration id
+	 */
+	public void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId);
 
 }
