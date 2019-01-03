@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
  * Entity class for User and Registration mappings
  * 
  * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -48,33 +49,19 @@ public class RegistrationCenterUserMachine extends BaseEntity implements Seriali
 			@AttributeOverride(name = "cntrId", column = @Column(name = "regcntr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "usrId", column = @Column(name = "usr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)) })
-
-	/**
-	 * Center Id
-	 */
 	private String cntrId;
-
-	/**
-	 * User Id
-	 */
 	private String usrId;
-
-	/**
-	 * Machine Id
-	 */
 	private String machineId;
 
-	
-	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cntrId", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "regcntr_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private RegistrationCenter registrationCenter;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "usrId", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "usr_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private UserDetails userDetails;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "machineId", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "machine_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Machine machine;
 }

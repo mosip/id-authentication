@@ -89,6 +89,7 @@ import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -182,7 +183,8 @@ public class MasterDataServiceTest {
 
 	@Autowired
 	private LanguageService languageService;
-
+	@Autowired
+	private RegistrationCenterDeviceHistoryService registrationCenterDeviceHistoryService;
 	@MockBean
 	private LanguageRepository languageRepository;
 
@@ -1460,6 +1462,13 @@ public class MasterDataServiceTest {
 	@Test(expected = RequestException.class)
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
+	}
+	
+	// ----------------------------------
+	@Test(expected = RequestException.class)
+	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() {
+		registrationCenterDeviceHistoryService.getRegCenterDeviceHisByregCenterIdDevIdEffDTime("RCI100", "DI001",
+				"2018-12-11T11:18:261.033Z");
 	}
 
 	// -------------------------------------DeviceHistroyTest------------------------------------------
