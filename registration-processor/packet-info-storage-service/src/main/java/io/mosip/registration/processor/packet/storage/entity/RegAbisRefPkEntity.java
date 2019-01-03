@@ -16,10 +16,6 @@ public class RegAbisRefPkEntity implements Serializable {
 	@Column(name = "reg_id")
 	private String regId;
 
-	/** The usr id. */
-	@Column(name = "abis_ref_id")
-	private String abisRefId;
-
 	public RegAbisRefPkEntity() {
 		super();
 
@@ -33,19 +29,10 @@ public class RegAbisRefPkEntity implements Serializable {
 		this.regId = regId;
 	}
 
-	public String getAbisRefId() {
-		return abisRefId;
-	}
-
-	public void setAbisRefId(String abisRefId) {
-		this.abisRefId = abisRefId;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((abisRefId == null) ? 0 : abisRefId.hashCode());
 		result = prime * result + ((regId == null) ? 0 : regId.hashCode());
 		return result;
 	}
@@ -59,11 +46,6 @@ public class RegAbisRefPkEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		RegAbisRefPkEntity other = (RegAbisRefPkEntity) obj;
-		if (abisRefId == null) {
-			if (other.abisRefId != null)
-				return false;
-		} else if (!abisRefId.equals(other.abisRefId))
-			return false;
 		if (regId == null) {
 			if (other.regId != null)
 				return false;

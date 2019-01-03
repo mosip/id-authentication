@@ -19,6 +19,9 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "abis_ref_id")
+	private String abisRefId;
+
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive = true;
 
