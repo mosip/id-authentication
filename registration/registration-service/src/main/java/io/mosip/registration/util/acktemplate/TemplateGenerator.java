@@ -159,13 +159,13 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			String email = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getEmail().getValue();
-			if (email == null || email == RegistrationConstants.EMPTY) {
+			if (email == null || email.isEmpty()) {
 				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_EMAIL, email);
 			}
 
-			StringBuffer documentsList = new StringBuffer();
+			StringBuilder documentsList = new StringBuilder();
 			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfIdentity() != null) {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 						.getProofOfIdentity().getValue()).append(", ");
