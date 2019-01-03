@@ -8,9 +8,10 @@ package io.mosip.kernel.ridgenerator.constant;
  *
  */
 public enum RidGeneratorExceptionConstant {
-	MOSIP_EMPTY_INPUT_ERROR_CODE("KER-RIG-002", "Empty input entered"), 
-	MOSIP_INPUT_LENGTH_ERROR_CODE("KER-RIG-003","input length is not sufficient"),
-	MOSIP_NULL_VALUE_ERROR_CODE("KER-RIG-001", "Null value entered");
+	EMPTY_INPUT_ERROR_CODE("KER-RIG-002", "Empty input entered"), 
+	INPUT_LENGTH_ERROR_CODE("KER-RIG-003","input length is not sufficient"),
+	NULL_VALUE_ERROR_CODE("KER-RIG-001", "Null value entered"),
+	CENTERIDLENGTH_AND_MACHINEIDLENGTH_VALUE_ERROR_CODE("KER-RIG-004", "Centre id length or machine id length should be greater than zero");
 
 	/**
 	 * The errorCode.
