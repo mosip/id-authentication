@@ -30,6 +30,8 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Value("${mosip.kernel.syncdata-service-globalconfigs-url}")
 	private String globalconfigsUrl;
 
+	@Value("${supportedLanguages}")
+	private String supportedLanguages;
 	/**
 	 * 
 	 */
@@ -39,15 +41,16 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 			return false;
 		} else {
 			try {
-				JSONObject configJson = new JSONObject(restTemplate.getForObject(globalconfigsUrl, String.class));
-				JSONArray arr = configJson.getJSONArray("supportedLanguages");
+				String jsonString = restTemplate.getForObject(globalconfigsUrl, String.class);
+				JSONObject configJson = new JSONObject(jsonString);
+				JSONArray arr = configJson.getJSONArray(supportedLanguages);
 				for (int i = 0; i < arr.length(); i++) {
 					if (value.equals(arr.getString(i))) {
 						return true;
 					}
 				}
 			} catch (Exception e) {
-				throw new MasterDataServiceException("KER-MSD-1001", "LanguageCodeValidator error");
+				throw new MasterDataServiceException("KER-MSD-1001", "LanguageCodeValidator error" + " "+ e.getMessage());
 			}
 			return false;
 		}
