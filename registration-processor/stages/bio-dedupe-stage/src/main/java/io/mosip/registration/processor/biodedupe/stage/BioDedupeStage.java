@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -35,8 +36,9 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
- * @author M1022006
+ * The Class BioDedupeStage.
  *
+ * @author M1022006
  */
 @RefreshScope
 @Service
@@ -51,6 +53,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The cluster manager url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
@@ -58,17 +61,29 @@ public class BioDedupeStage extends MosipVerticleManager {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The bio dedupe service. */
 	@Autowired
 	private BioDedupeService bioDedupeService;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIODEDUPE_BUS_IN, MessageBusAddress.BIODEDUPE_BUS_OUT);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.BIODEDUPE_BUS_IN);
@@ -85,7 +100,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 			if (insertionResult.equalsIgnoreCase(ResponseStatusCode.SUCCESS.name())) {
 				List<String> matchedRegIds = bioDedupeService.performDedupe(registrationId);
 				if (matchedRegIds != null && !matchedRegIds.isEmpty()) {
-
+					packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
 				} else {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);
@@ -101,6 +116,12 @@ public class BioDedupeStage extends MosipVerticleManager {
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
+
+		} catch (DataAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			description = "Data voilation in reg packet : " + registrationId;
 
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -119,7 +140,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 					registrationId);
 
 		}
-		return null;
+		return object;
 	}
 
 }

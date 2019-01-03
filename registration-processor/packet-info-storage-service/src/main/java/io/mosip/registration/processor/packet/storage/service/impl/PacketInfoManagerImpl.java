@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
@@ -775,7 +774,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveManualAdjudicationData(java.util.Set, java.lang.String)
 	 */
 	@Override
-	public void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId) {
 		boolean isTransactionSuccessful = false;
 
 		try {
