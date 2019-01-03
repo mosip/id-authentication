@@ -27,11 +27,11 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
 @Component
 public class RidGeneratorImpl implements RidGenerator<String> {
 
-	@Value("${mosip.kernel.rid.centerid.length}")
+	@Value("${mosip.kernel.rid.centerid-length:-1}")
 	private int centerIdLength;
 
-	@Value("${mosip.kernel.rid.dongleid.length}")
-	private int dongleIdLength;
+	@Value("${mosip.kernel.rid.machineid-length:-1}")
+	private int machineIdLength;
 
 	@Autowired
 	RidRepository ridRepository;
@@ -39,17 +39,31 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.core.spi.idgenerator.MosipEidGenerator#eidGeneration(java.
-	 * lang.String, java.lang.String)
+	 * @see io.mosip.kernel.core.idgenerator.spi.RidGenerator#generateId(java.lang.
+	 * String, java.lang.String)
 	 */
 	@Override
-	public String generateId(String centreId, String dongleId) {
-		validateInput(centreId, dongleId);
+	public String generateId(String centreId, String machineId) {
+		validateInput(centreId, machineId, centerIdLength, machineIdLength);
 
-		String randomDigitRid = sequenceNumberGenerator(dongleId);
+		String randomDigitRid = sequenceNumberGenerator(machineId);
 
-		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, dongleId);
+		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, machineId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.idgenerator.spi.RidGenerator#generateId(java.lang.
+	 * String, java.lang.String, int, int)
+	 */
+	@Override
+	public String generateId(String centreId, String machineId, int centerIdLength, int machineIdLength) {
+		validateInput(centreId, machineId, centerIdLength, machineIdLength);
+
+		String randomDigitRid = sequenceNumberGenerator(machineId);
+
+		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, machineId);
 	}
 
 	/**
@@ -57,25 +71,32 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * 
 	 * @param centreId
 	 *            input by user
-	 * @param dongleId
+	 * @param machineId
 	 *            input by user
 	 */
-	private void validateInput(String centreId, String dongleId) {
+	private void validateInput(String centreId, String machineId, int centerIdLength, int machineIdLength) {
 
-		if (centreId == null || dongleId == null) {
-
-			throw new NullValueException(RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
-					RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
+		if (centerIdLength <= 0 || machineIdLength <= 0) {
+			throw new InputLengthException(
+					RidGeneratorExceptionConstant.CENTERIDLENGTH_AND_MACHINEIDLENGTH_VALUE_ERROR_CODE.getErrorCode(),
+					RidGeneratorExceptionConstant.CENTERIDLENGTH_AND_MACHINEIDLENGTH_VALUE_ERROR_CODE
+							.getErrorMessage());
 		}
-		if (centreId.isEmpty() || dongleId.isEmpty()) {
 
-			throw new EmptyInputException(RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
-					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
+		if (centreId == null || machineId == null) {
+
+			throw new NullValueException(RidGeneratorExceptionConstant.NULL_VALUE_ERROR_CODE.getErrorCode(),
+					RidGeneratorExceptionConstant.NULL_VALUE_ERROR_CODE.getErrorMessage());
 		}
-		if (centreId.length() != centerIdLength || dongleId.length() != dongleIdLength) {
+		if (centreId.isEmpty() || machineId.isEmpty()) {
 
-			throw new InputLengthException(RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
-					RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
+			throw new EmptyInputException(RidGeneratorExceptionConstant.EMPTY_INPUT_ERROR_CODE.getErrorCode(),
+					RidGeneratorExceptionConstant.EMPTY_INPUT_ERROR_CODE.getErrorMessage());
+		}
+		if (centreId.length() != centerIdLength || machineId.length() != machineIdLength) {
+
+			throw new InputLengthException(RidGeneratorExceptionConstant.INPUT_LENGTH_ERROR_CODE.getErrorCode(),
+					RidGeneratorExceptionConstant.INPUT_LENGTH_ERROR_CODE.getErrorMessage());
 		}
 
 	}
@@ -85,17 +106,17 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * 
 	 * @return generated five digit random number
 	 */
-	private String sequenceNumberGenerator(String dongleId) {
+	private String sequenceNumberGenerator(String machineId) {
 
 		final int initialValue = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
 
-		Rid entity = ridRepository.findById(Rid.class, dongleId);
+		Rid entity = ridRepository.findById(Rid.class, machineId);
 
 		if (entity == null || entity.getSequenceId() == Integer
 				.parseInt(RidGeneratorPropertyConstant.SEQUENCE_END_VALUE.getProperty())) {
 
 			entity = new Rid();
-			entity.setDongleId(dongleId);
+			entity.setDongleId(machineId);
 			entity.setSequenceId(initialValue);
 
 		} else {

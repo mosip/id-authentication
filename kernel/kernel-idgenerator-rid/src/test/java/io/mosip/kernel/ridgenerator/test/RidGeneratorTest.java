@@ -82,4 +82,22 @@ public class RidGeneratorTest {
 		assertThat(ridGeneratorImpl.generateId("1234", "23432"), isA(String.class));
 	}
 
+	@Test
+	public void generateIdTest() {
+		Rid entity = new Rid();
+		entity.setDongleId("23432");
+		entity.setSequenceId(00001);
+		when(repository.findById(Rid.class, "23432")).thenReturn(entity);
+		assertThat(ridGeneratorImpl.generateId("1234", "23432", 4, 5), isA(String.class));
+	}
+
+	@Test(expected = InputLengthException.class)
+	public void generateIdInvalidCenterIdLengthTest() {
+		Rid entity = new Rid();
+		entity.setDongleId("23432");
+		entity.setSequenceId(00001);
+		when(repository.findById(Rid.class, "23432")).thenReturn(entity);
+		assertThat(ridGeneratorImpl.generateId("1234", "23432", 0, 5), isA(String.class));
+	}
+
 }
