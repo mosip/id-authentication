@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,10 @@ import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 
 @RefreshScope
 @Service
@@ -23,6 +26,12 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> restClientService;
 
+	@Autowired
+	PacketInfoManagerImpl packetInfoManagerImpl;
+
+	@Value("${registration.processor.abis.url}")
+	String url;
+
 	@Override
 	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
 
@@ -31,12 +40,13 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
-		// chk
+		abisInsertRequestDto.setReferenceURL(url + registrationId);
 
-		abisInsertRequestDto.setReferenceURL("https://mosip.io/biometric/" + registrationId);
+		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
+		regAbisRefDto.setAbis_ref_id(referenceId);
+		regAbisRefDto.setReg_id(registrationId);
 
-		// add the reqId and RefId to DB
-
+		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
 		// chk
 		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService.postApi(ApiName.AUTHINTERNAL,
 				"", "", abisInsertRequestDto, AbisInsertResponceDto.class);
