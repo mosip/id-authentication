@@ -334,28 +334,33 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
 			if (isTrue) {
-				resgistrationCenterStatusResponseDto.setStatus("Rejected");
+				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
+			} else {
+				RegistrationCenter registrationCenter = registrationCenterRepository.findById(RegistrationCenter.class,
+						id);
+				if (registrationCenter == null) {
+					throw new DataNotFoundException(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 				}
-			RegistrationCenter registrationCenter = registrationCenterRepository.findById(RegistrationCenter.class, id);
-			if (registrationCenter == null) {
-				throw new DataNotFoundException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-			}
 
-			LocalTime startTime = registrationCenter.getCenterStartTime();
-			LocalTime endTime = registrationCenter.getCenterEndTime();
-			if (startTime != null && endTime != null) {
-				LocalTime locatime = localDateTime.toLocalTime();
-				boolean isAfterStartTime = locatime.isAfter(startTime);
-				boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
-				if (isAfterStartTime && isBeforeEndTime) {
-					resgistrationCenterStatusResponseDto.setStatus("Accepted");
-				}else {
-					resgistrationCenterStatusResponseDto.setStatus("Rejected");
+				LocalTime startTime = registrationCenter.getCenterStartTime();
+				LocalTime endTime = registrationCenter.getCenterEndTime();
+				if (startTime != null && endTime != null) {
+					LocalTime locatime = localDateTime.toLocalTime();
+					boolean isAfterStartTime = locatime.isAfter(startTime);
+					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
+					if (isAfterStartTime && isBeforeEndTime) {
+						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
+					} else {
+						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
+					}
+
+				} else {
+					throw new DataNotFoundException(
+							RegistrationCenterErrorCode.DATA_TO_BE_VALIDATED_WITH_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.DATA_TO_BE_VALIDATED_WITH_NOT_FOUND.getErrorMessage());
 				}
-				
-
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(

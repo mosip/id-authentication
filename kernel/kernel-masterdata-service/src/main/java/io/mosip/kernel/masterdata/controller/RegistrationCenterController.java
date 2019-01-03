@@ -146,6 +146,13 @@ public class RegistrationCenterController {
 
 	}
 	
+	/**
+	 * Check whether the time stamp sent for the given registration center id is not a holiday and 
+	 * is in between working hours.
+	 * @param regId
+	 * @param timeStamp
+	 * @return RegistrationCenterStatusResponseDto
+	 */
 	@GetMapping("/v1.0/registrationcenters/validate/{id}/{timestamp}")
 	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId ,@PathVariable("timestamp") String timeStamp) {
 		return registrationCenterService.validateTimestampWithRegistrationCenter(regId, timeStamp);
