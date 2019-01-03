@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -27,28 +27,28 @@ public class MachineDto {
 	/**
 	 * Field for machine id
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 10)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 	/**
 	 * Field for machine name
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 	/**
 	 * Field for machine serial number
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "serialNum", required = true, dataType = "java.lang.String")
 	private String serialNum;
 	/**
 	 * Field for machine mac address
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "macAddress", required = true, dataType = "java.lang.String")
 	private String macAddress;
@@ -62,21 +62,21 @@ public class MachineDto {
 	/**
 	 * Field for machine specification Id
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "machineSpecId", required = true, dataType = "java.lang.String")
 	private String machineSpecId;
 	/**
 	 * Field for language code
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 	/**
 	 * Field for is active
 	 */
-	@NotNull
+	@NotBlank
 	private Boolean isActive;
 	/**
 	 * Field for is validity of the Device

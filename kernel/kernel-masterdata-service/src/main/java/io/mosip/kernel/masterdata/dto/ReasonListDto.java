@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -29,7 +28,7 @@ public class ReasonListDto {
 	@Size(min = 1, max = 3)
 	private String langCode;
 
-	@NotNull
+	@NotBlank
 	private Boolean isActive;
 
 }

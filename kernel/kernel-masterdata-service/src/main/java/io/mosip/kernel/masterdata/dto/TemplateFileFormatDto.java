@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
@@ -12,7 +12,7 @@ import lombok.Data;
 @ApiModel(value = "TemplateFileFormat", description = "TemplateFileFormat resource representation")
 public class TemplateFileFormatDto {
 	
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
@@ -22,12 +22,12 @@ public class TemplateFileFormatDto {
 	private String description;
 	
 	@ValidLangCode
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;
 	
-	@NotNull
+	@NotBlank
 	@ApiModelProperty(value = "TemplateFileFormat isActive status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 }

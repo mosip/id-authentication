@@ -3,7 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalDateTime;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -25,7 +25,7 @@ public class RequestDto<T> {
 	private String ver;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime timestamp;
-	@NotNull
+	@NotBlank
 	@Valid
 	private T request;
 

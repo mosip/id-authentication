@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import io.swagger.annotations.ApiModel;
@@ -23,22 +23,22 @@ import lombok.NoArgsConstructor;
 public class GenderTypeDto {
 
 	@ApiModelProperty(notes = "Code of gender ", example = "GC001", required = true)
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 16)
 	private String code;
 
 	@ApiModelProperty(notes = "Name of the Gender", example = "Male", required = true)
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	private String genderName;
 
 	@ApiModelProperty(notes = "Language Code", example = "ENG", required = true)
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	private String langCode;
 
 	@ApiModelProperty(notes = "Row is active or not", required = true)
-	@NotNull
+	@NotBlank
 	private Boolean isActive;
 
 }
