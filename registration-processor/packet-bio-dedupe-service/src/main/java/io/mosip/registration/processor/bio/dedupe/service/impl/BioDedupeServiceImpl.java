@@ -31,10 +31,13 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
+		// chk
+
 		abisInsertRequestDto.setReferenceURL("https://mosip.io/biometric/" + registrationId);
 
 		// add the reqId and RefId to DB
 
+		// chk
 		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService.postApi(ApiName.AUTHINTERNAL,
 				"", "", abisInsertRequestDto, AbisInsertResponceDto.class);
 
