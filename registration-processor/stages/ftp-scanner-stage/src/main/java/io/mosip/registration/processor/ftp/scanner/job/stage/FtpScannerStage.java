@@ -30,37 +30,50 @@ import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDe
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
+/**
+ * The Class FtpScannerStage.
+ */
 @Component
 public class FtpScannerStage extends MosipVerticleManager {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FtpScannerStage.class);
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
-
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 	
+/** The secs. */
 //	@Value("${landingzone.scanner.stage.time.interval}")
 	private int secs = 30;
 
+	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	@Autowired
 	protected PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 	
+	/** The message dto. */
 	@Autowired
 	private MessageDTO messageDto;
 
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
+
+	/** The Constant FTP_NOT_ACCESSIBLE. */
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
+
+	/** The Constant FILE_NOT_ACCESSIBLE. */
 	private static final String FILE_NOT_ACCESSIBLE = "The File Path is not accessible";
+
+	/** The Constant DUPLICATE_UPLOAD. */
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 	
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		mosipEventBus.getEventbus().setPeriodic(secs  * 1000, msg -> {
 			this.process(messageDto);
 		});
@@ -110,8 +123,8 @@ public class FtpScannerStage extends MosipVerticleManager {
 
 	/**
 	 * Delete empty folder from FTP zone after all the files are copied.
-	 * 
-	 * @param filepath
+	 *
+	 * @param filepath the filepath
 	 */
 	public void deleteFolder(String filepath) {
 		try {

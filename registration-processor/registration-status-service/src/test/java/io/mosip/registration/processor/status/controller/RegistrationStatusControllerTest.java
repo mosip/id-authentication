@@ -27,9 +27,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
@@ -53,7 +55,7 @@ public class RegistrationStatusControllerTest {
 
 	/** The sync registration service. */
 	@MockBean
-	SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
+	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
 	/** The sync registration dto. */
 	@MockBean
@@ -75,9 +77,16 @@ public class RegistrationStatusControllerTest {
 
 	/** The list. */
 	private List<SyncRegistrationDto> list;
+	
+	/** The SyncResponseDtoList. */
+	private List<SyncResponseDto> syncResponseDtoList;
 
 	/** The array to json. */
 	private String arrayToJson;
+	
+	/** The ridValidator. */
+	@MockBean
+	private RidValidator<String> ridValidator;
 
 	/**
 	 * Sets the up.
@@ -115,11 +124,18 @@ public class RegistrationStatusControllerTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		arrayToJson = objectMapper.writeValueAsString(list);
-
-	
+		
+		SyncResponseDto syncResponseDto = new SyncResponseDto();
+		
+		syncResponseDto.setRegistrationId("1001");
+		syncResponseDto.setParentRegistrationId("12334");
+		syncResponseDto.setMessage("Registartion Id's are successfully synched in Sync table");
+		syncResponseDto.setStatus("Success");
+		
+		syncResponseDtoList = new ArrayList<>();
+		syncResponseDtoList.add(syncResponseDto);
 
 		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
-
 	}
 
 	/**
@@ -155,7 +171,8 @@ public class RegistrationStatusControllerTest {
 	@Test
 	public void syncRegistrationControllerSuccessTest() throws Exception {
 
-		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(list);
+		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
+		
 		this.mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
 	}
@@ -168,7 +185,7 @@ public class RegistrationStatusControllerTest {
 	@Test
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
-		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(list);
+		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(syncResponseDtoList);
 		this.mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}

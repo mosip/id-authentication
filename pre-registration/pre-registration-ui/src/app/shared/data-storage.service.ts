@@ -9,18 +9,20 @@ import { BookingModelRequest } from './booking-request.model';
 export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
-  SEND_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/documents';
-  GET_FILE_URL = 'http://integ.mosip.io/int-document/v0.1/pre-registration/getDocument';
-  BASE_URL2 = 'http://integ.mosip.io/int-demographic/v0.1/pre-registration/applicationData';
-  BASE_URL = 'http://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
+  SEND_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/documents';
+  DELETE_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/deleteDocument';
+  GET_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/getDocument';
+  BASE_URL2 = 'https://integ.mosip.io/int-demographic/v0.1/pre-registration/applicationData';
+  BASE_URL = 'https://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
   // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
-  MASTER_DATA_URL = 'http://integ.mosip.io/masterdata/v1.0/';
+  // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
+  MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
+  AVAILABILITY_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/availability';
+  BOOKING_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/book';
+  TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
-
-  AVAILABILITY_URL = 'http://integ.mosip.io/int-booking/v0.1/pre-registration/booking/availability';
-  BOOKING_URL = 'http://integ.mosip.io/int-booking/v0.1/pre-registration/booking/book';
 
   getUsers(value) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
@@ -36,6 +38,17 @@ export class DataStorageService {
       responseType: 'json',
       params: new HttpParams().append('preRegId', preRegId)
     });
+  }
+
+  getTransliteration(request) {
+    const obj = {
+      id: 'mosip.pre-registration.transliteration.transliterate',
+      reqTime: '2018-12-24T14:10:31.900Z',
+      ver: '1.0',
+      request: request
+    };
+
+    return this.httpClient.post(this.TRANSLITERATION_URL, obj);
   }
 
   getUserDocuments(preRegId) {
@@ -144,5 +157,13 @@ export class DataStorageService {
         params: new HttpParams().append('locationCode', locationCode).append('langCode', langCode)
       })
       .subscribe(res => console.log(res));
+  }
+
+  deleteFile(documentId) {
+    return this.httpClient.delete(this.DELETE_FILE_URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('documentId', documentId)
+    });
   }
 }

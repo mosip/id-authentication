@@ -1,15 +1,12 @@
 package io.mosip.kernel.masterdata.dto;
 
-
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Data transfer object class for Language.
@@ -19,14 +16,13 @@ import lombok.NoArgsConstructor;
  */
 @Data
 
-
 @ApiModel(value = "Language", description = "Language resource representation")
 public class LanguageDto {
 
 	/**
 	 * Field for language code
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String code;
@@ -34,7 +30,7 @@ public class LanguageDto {
 	/**
 	 * Field for language name
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "Language Name", required = true, dataType = "java.lang.String")
 	private String name;
@@ -59,11 +55,5 @@ public class LanguageDto {
 	@NotNull
 	@ApiModelProperty(value = "Language isActive status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
-
-//	@NotNull
-//	private LocalTime lunchStartTime;
-	
-//	@NotNull
-//	private LocalDateTime createdDateTime;
 
 }

@@ -15,8 +15,10 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -24,7 +26,6 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 /**
  *
  * @author Bal Vikash Sharma
- * @Version 1.0.0
  */
 @Service
 public class LanguageServiceImpl implements LanguageService {
@@ -34,18 +35,6 @@ public class LanguageServiceImpl implements LanguageService {
 	 */
 	@Autowired
 	private LanguageRepository languageRepository;
-
-	/**
-	 * Helper class to map objects.
-	 */
-	@Autowired
-	private MapperUtils mapperUtil;
-
-	/**
-	 * Helper class to map dto to entity.
-	 */
-	@Autowired
-	private MetaDataUtils metaDataUtils;
 
 	/**
 	 * (non-Javadoc)
@@ -60,13 +49,13 @@ public class LanguageServiceImpl implements LanguageService {
 
 		try {
 			languages = languageRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
-		} catch (DataAccessException dataAccessException) {
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage(), dataAccessException);
+					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(dataAccessException), dataAccessException);
 		}
 
 		if (languages != null && !languages.isEmpty()) {
-			languageDtos = mapperUtil.mapAll(languages, LanguageDto.class);
+			languageDtos = MapperUtils.mapAll(languages, LanguageDto.class);
 		} else {
 			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
@@ -84,14 +73,72 @@ public class LanguageServiceImpl implements LanguageService {
 	public CodeResponseDto saveLanguage(RequestDto<LanguageDto> requestDto) {
 
 		try {
-			Language language = metaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
+			Language language = MetaDataUtils.setCreateMetaData(requestDto.getRequest(), Language.class);
 			Language savedLanguage = languageRepository.create(language);
-			return mapperUtil.map(savedLanguage, CodeResponseDto.class);
-		} catch (DataAccessLayerException e) {
+			return MapperUtils.map(savedLanguage, CodeResponseDto.class);
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
-					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage() + ": "
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LanguageService#updateLanguage(io.mosip.
+	 * kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public CodeResponseDto updateLanguage(RequestDto<LanguageDto> requestDto) {
+		LanguageDto languageDto = requestDto.getRequest();
+		CodeResponseDto code = new CodeResponseDto();
+		try {
+			Language language = languageRepository.findLanguageById(languageDto.getCode());
+			if (!EmptyCheckUtils.isNullEmpty(language)) {
+				MetaDataUtils.setUpdateMetaData(languageDto, language, false);
+				languageRepository.update(language);
+				code.setCode(language.getCode());
+			} else {
+				throw new RequestException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+						LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		return code;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LanguageService#deleteLanguage(java.lang.
+	 * String)
+	 */
+	@Override
+	public CodeResponseDto deleteLanguage(String code) {
+		CodeResponseDto response = new CodeResponseDto();
+		try {
+			Language language = languageRepository.findLanguageById(code);
+			if (!EmptyCheckUtils.isNullEmpty(language)) {
+				MetaDataUtils.setDeleteMetaData(language);
+				languageRepository.update(language);
+				response.setCode(language.getCode());
+			} else {
+				throw new RequestException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+						LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+
+		return response;
 	}
 
 }

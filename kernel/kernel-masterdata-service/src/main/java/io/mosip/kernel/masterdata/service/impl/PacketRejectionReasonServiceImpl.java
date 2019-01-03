@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
 import io.mosip.kernel.masterdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
@@ -20,7 +20,6 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.CodeLangCodeAndRsnCatCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.masterdata.repository.ReasonListRepository;
 import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
@@ -30,42 +29,28 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * 
- * @author Srinivasan 
  * 
- * This class implements PacketRejectionReasonService has all
- *         the logics to store and retrieve data from database
- *         {@link ReasonCategoryRepository} and {@link ReasonListRepository}
+ * This class implements PacketRejectionReasonService has all the logics to
+ * store and retrieve data from database {@link ReasonCategoryRepository} and
+ * {@link ReasonListRepository}
+ * 
+ * @author Srinivasan
  *
  */
 @Service
 public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonService {
 
-	/** 
+	/**
 	 * reason repository instance
 	 */
 	@Autowired
-	ReasonCategoryRepository reasonRepository;
- 
+	private ReasonCategoryRepository reasonRepository;
+
 	/**
 	 * reason list repository instance
 	 */
 	@Autowired
-	ReasonListRepository reasonListRepository;
-
-	/**
-	 * objetMapperUtil instance
-	 */
-	@Autowired
-	MapperUtils objectMapperUtil;
-
-	/**
-	 * metadataUtil instance
-	 */
-	@Autowired
-	MetaDataUtils metaDataUtils;
-
-	@Autowired
-	DataMapper dataMapper;
+	private ReasonListRepository reasonListRepository;
 
 	/**
 	 * Method fetches all the reasons from Database irrespective of code or
@@ -79,14 +64,14 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull();
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
-			reasonCategoryDtos = objectMapperUtil.reasonConverter(reasonCategories);
+			reasonCategoryDtos = MapperUtils.reasonConverter(reasonCategories);
 
 		} else {
 			throw new DataNotFoundException(
@@ -111,18 +96,18 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByCodeAndLangCode(categoryCode, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
 
-			reasonCategoryDtos = objectMapperUtil.reasonConverter(reasonCategories);
+			reasonCategoryDtos = MapperUtils.reasonConverter(reasonCategories);
 
 		} else {
-			throw new RequestException(PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
+			throw new DataNotFoundException(PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 		}
 		reasonResponseDto.setReasonCategories(reasonCategoryDtos);
@@ -134,8 +119,9 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * Method creates Reason Category data based on the request sent. {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public CodeAndLanguageCodeID createReasonCategories(RequestDto<PostReasonCategoryDto> reasonRequestDto) {
-		ReasonCategory reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
+		ReasonCategory reasonCategories = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(),
 				ReasonCategory.class);
 
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
@@ -145,17 +131,17 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			resultantReasonCategory = reasonRepository.create(reasonCategories);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 
 			throw new MasterDataServiceException(
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_INSERT_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_CATEGORY_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
-		
-		objectMapperUtil.mapNew(resultantReasonCategory, codeAndLanguageCodeId);
 
-		//dataMapper.map(resultantReasonCategory, codeAndLanguageCodeId, true, null, null, true);
+		MapperUtils.map(resultantReasonCategory, codeAndLanguageCodeId);
+
+		
 
 		return codeAndLanguageCodeId;
 
@@ -166,8 +152,9 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public CodeLangCodeAndRsnCatCodeID createReasonList(RequestDto<ReasonListDto> reasonRequestDto) {
-		ReasonList reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
+		ReasonList reasonList = MetaDataUtils.setCreateMetaData(reasonRequestDto.getRequest(), ReasonList.class);
 
 		CodeLangCodeAndRsnCatCodeID codeLangCodeAndRsnCatCodeId = new CodeLangCodeAndRsnCatCodeID();
 		ReasonList resultantReasonList;
@@ -176,15 +163,15 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 
 			resultantReasonList = reasonListRepository.create(reasonList);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage() + " "
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_LIST_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 
-		//dataMapper.map(resultantReasonList, codeLangCodeAndRsnCatCodeId, true, null, null, true);
-		objectMapperUtil.mapNew(resultantReasonList, codeLangCodeAndRsnCatCodeId);
+		
+		MapperUtils.map(resultantReasonList, codeLangCodeAndRsnCatCodeId);
 
 		return codeLangCodeAndRsnCatCodeId;
 

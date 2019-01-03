@@ -60,6 +60,8 @@ public interface MappingConfig {
 
 	public List<String> getRightThumb();
 	
+	public List<String>  getFingerprint();
+	
 	public List<String> getFace();
 
 }

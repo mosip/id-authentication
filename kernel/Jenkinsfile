@@ -1,4 +1,5 @@
 node {
+
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
@@ -8,11 +9,13 @@ node {
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
  targetDeploymentServer = 'kernel-dev-server'
+ updatedServices = []
+ updatedDockerImages = []
  containersToRun = ''
- containerNames= ''
+ containersNames = ''
+
 
  stage('------- Checkout --------') {
-  // Checkout only Kernel Module
   dir(branch) {
    checkout([$class: 'GitSCM',
     branches: [
@@ -22,18 +25,28 @@ node {
      [url: 'https://github.com/mosip/mosip', credentialsId: '4c9741a2-4c15-4aad-a13d-3a1206u05321']
     ],
     extensions: [
-
+     /*
+     Using PathRestriction Class and adding Kernel in includedRegions so that the build will be triggered
+     only if tehre is any change in Kernel Module
+     */
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
+     /*
+     Checkout only Kernel Module through sparse checkout class
+     */
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+      [$class: 'SparseCheckoutPath', path: '/' + projectToBuild + '/']
      ]]
 
     ],
    ])
   }
+
  }
 
  stage('--------- Artifactory configuration ----------------') {
+  /*
+  JFrog artifactory configuration
+  */
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
   rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
   rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
@@ -41,7 +54,7 @@ node {
   buildInfo.env.capture = true
  }
 
- stage('---------- mvn-clean-install ---------------') {
+ stage('---------- mvn-clean-install and push to artifactory  ---------------') {
   rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  }
 
@@ -53,59 +66,154 @@ stage('---------- SonarQube Analysis --------------') {
  }
 
  stage('----------- Publish build info -------------') {
+  /*
+  Publishing build info to Artifcatory (JFrog)
+  */
   server.publishBuildInfo buildInfo
  }
 
- stage('-----------Docker image push and cleanup-----------') {
+ stage('------ Docker Images : Push & Cleanup -------') {
+  /*
+   Building Docker images of the services which have to be run inside a Docker Container and pushing the
+   images to Docker Registry.
+   This stage will build either all the Services (modules) present or only modules that have been changed
+   since last build according to the build parameter provided.
+  */
   dir(branch) {
-   sh "find . -name 'Dockerfile'> directoryDockerFiles"
+	  
+   /*
+     Checking if there is any Dockerfile present to build, if not, returning from this stage
+   */
+   sh "find . -name 'Dockerfile'> testdirectoryDockerFiles"
+   testlocationOfDockerFiles = readFile("testdirectoryDockerFiles").split("\\r?\\n");
+   sh "rm -f testdirectoryDockerFiles"
+   if (testlocationOfDockerFiles[0].equals("")) {
+      echo "tested:::: no docker files present, returning"
+      return;
+     }
+   /*
+   Finding location of all the Dockerfiles present in module
+   */
+   sh "dirname `find . -name 'Dockerfile'`> directoryDockerFiles"
    locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
    sh "rm -f directoryDockerFiles"
-   showChangeLogs();
-   for (int j = 0; j < changedModules.size(); j++) {
+   /*
+   If build paramerter is passed as Build All (All submodules have to be built)
+   */
+   if ("${env.BUIILD_OPTION}" == "Build All") {
+    echo "BUILD_OPTION is set to Build All."
+    echo "Building all submodules."
     for (int i = 0; i < locationOfDockerFiles.size(); i++) {
-     if(locationOfDockerFiles[i].equals("")){
-     break;
+     if (locationOfDockerFiles[i].equals("")) {
+      break;
      }
      def currentModule = locationOfDockerFiles[i]
-     sh "basename `dirname $currentModule` > parentDirectoryName"
-     parentDirectoryName = readFile('parentDirectoryName').trim()
-     sh "rm -f parentDirectoryName"
-     sh "dirname $currentModule > parentDirectoryPath"
-     parentDirectoryPath = readFile('parentDirectoryPath').trim()
-     sh "rm -f parentDirectoryPath"
-
-     parentDirectoryPathForamtted = parentDirectoryPath.substring(2);
-     if (changedModules[j].contains(parentDirectoryPathForamtted)) {
-     echo "Updating changed images list"
-     containersToRun=containersToRun+" "+registryName+'/'+parentDirectoryName
-     containerNames=containerNames+" "+parentDirectoryName
-      echo parentDirectoryPathForamtted + " will be built"
-      docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+     /*
+     Getting name of the module to be built
+     */
+     sh "basename $currentModule > moduleName"
+     moduleName = readFile('moduleName').trim()
+     sh "rm -f moduleName"
+     /*
+     Getting path of the module to be built
+     */
+     modulePath = locationOfDockerFiles[i].substring(2);
+     updatedServices.add(moduleName)
+     updatedDockerImages.add(registryName + '/' + moduleName + ":$BUILD_NUMBER")
+     /*
+     Updating containersToRun List
+     */
+     containersToRun = containersToRun + " " + registryName + '/' + moduleName
+     /*
+     Updating containersName List
+     */
+     containersNames = containersNames + " " + moduleName
+     echo moduleName + " will be built"
+     /*
+     Pushing the module image with tag as buildnumber and tag as latest to docker registry
+     */
+     docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = moduleName + ":$BUILD_NUMBER"
+      newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
       newApp.push()
       newApp.push 'latest'
-      }
-      sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-      sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
-      sh "docker rmi $registryName/$parentDirectoryName"
-
+     }
+     /*
+     Removing local images
+     */
+     sh "docker rmi $moduleName:$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName"
     }
+   } 
+   else {
+    /*
+     If build paramerter is passed as Build Changes (Only changed submodules have to be built)
+    */   
+    echo "BUILD_OPTION is set to Build Changed."
+    echo "Building only changed submodules."
+    changedModulesLocation = getChangedModulesPaths();
+    for (int i = 0; i < changedModulesLocation.size(); i++) {
+     def currentModule = changedModulesLocation[i]
+     /*
+     Getting name of the module to be built
+     */
+     sh "basename $currentModule > moduleName"
+     moduleName = readFile('moduleName').trim()
+     sh "rm -f moduleName"
+     /*
+     Getting path of the module to be built
+     */
+     modulePath = changedModulesLocation[i].substring(2);
+     updatedServices.add(moduleName)
+     updatedDockerImages.add(registryName + '/' + moduleName + ":$BUILD_NUMBER")
+     /*
+     Updating containersToRun List
+     */
+     containersToRun = containersToRun + " " + registryName + '/' + moduleName
+     /*
+     Updating containersName List
+     */
+     containersNames = containersNames + " " + moduleName
+     echo moduleName + " will be built"
+     /*
+     Pushing the module image with tag as buildnumber and tag as latest to docker registry
+     */
+     docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = moduleName + ":$BUILD_NUMBER"
+      newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      newApp.push()
+      newApp.push 'latest'
+     }
+     /*
+     Removing local images
+     */
+     sh "docker rmi $moduleName:$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName"
     }
-
-
    }
 
+    /*
+     Removing all untagged images
+     */
+    sh "docker rmi \$(docker images | awk '/<none>/ {print \$3}') || true"
+
   }
+
+
  }
- 
+  
+
   stage('----deploy in dev----')
  {
+     /*
+     All the Deployment steps that have to be performed in deployment server are written in this command string
+     */
 	  command = """
  		INDEX=0
 		containersToRunShell=(${containersToRun})
-		containerNamesShell=(${containerNames})
+		containersNamesShell=(${containersNames})
 		
  		for i in "\${containersToRunShell[@]}"
 			do
@@ -116,36 +224,36 @@ stage('---------- SonarQube Analysis --------------') {
 			  echo Container will expose services on \$portExposedFormatted 
 			  volumeMounted="\$(docker inspect --format='{{range \$p, \$conf := .Config.Volumes}} {{ \$p }} {{end}}' \$i)"
 			  portExposedFormatted="\$(echo \$portExposed| xargs)"
-			 if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]})" ]; then
-			  docker rename \${containerNamesShell[\$INDEX]} \${containerNamesShell[\$INDEX]}-backup && docker stop \${containerNamesShell[\$INDEX]}-backup
+			 if [ "\$(docker ps -a | grep \${containersNamesShell[\$INDEX]})" ]; then
+			  docker rename \${containersNamesShell[\$INDEX]} \${containersNamesShell[\$INDEX]}-backup && docker stop \${containersNamesShell[\$INDEX]}-backup
 			 fi
 			  if [ "\$volumeMounted" = "" ]; then 
 					echo "No volume to mount" 
-					 docker run -d -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
+					 docker run -d -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containersNamesShell[\$INDEX]}" \$i
 					  if [ \$? -eq 0 ]; then
-						echo Container Started - \${containerNamesShell[\$INDEX]}
-						if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
-							echo Removing Backed up container - \${containerNamesShell[\$INDEX]}-backup
-							docker rm \${containerNamesShell[\$INDEX]}-backup
+						echo Container Started - \${containersNamesShell[\$INDEX]}
+						if [ "\$(docker ps -a | grep \${containersNamesShell[\$INDEX]}-backup)" ]; then
+							echo Removing Backed up container - \${containersNamesShell[\$INDEX]}-backup
+							docker rm \${containersNamesShell[\$INDEX]}-backup
 						fi
 					  else
 						echo Error - Cannot start new container, rollbacking to previous container
-						docker start \${containerNamesShell[\$INDEX]}-backup && docker rename \${containerNamesShell[\$INDEX]}-backup \${containerNamesShell[\$INDEX]}
+						docker start \${containersNamesShell[\$INDEX]}-backup && docker rename \${containersNamesShell[\$INDEX]}-backup \${containersNamesShell[\$INDEX]}
 					  fi
 			  else
 					echo "Volume to me mounted : \$volumeMounted" 
 					currentDirectory=\$(echo \$(pwd))
 					volumeMountedFormatted="\$(echo \$volumeMounted| xargs)"
-					 docker run -d -v \$currentDirectory\$volumeMountedFormatted:\$volumeMountedFormatted -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containerNamesShell[\$INDEX]}" \$i
+					 docker run -d -v \$currentDirectory\$volumeMountedFormatted:\$volumeMountedFormatted -e active_profile_env=dev -p \$portExposedFormatted:\$portExposedFormatted --name "\${containersNamesShell[\$INDEX]}" \$i
 					  if [ \$? -eq 0 ]; then
-						echo Container Started - \${containerNamesShell[\$INDEX]}
-						if [ "\$(docker ps -a | grep \${containerNamesShell[\$INDEX]}-backup)" ]; then
-							echo Removing Backed up container - \${containerNamesShell[\$INDEX]}-backup
-							docker rm \${containerNamesShell[\$INDEX]}-backup
+						echo Container Started - \${containersNamesShell[\$INDEX]}
+						if [ "\$(docker ps -a | grep \${containersNamesShell[\$INDEX]}-backup)" ]; then
+							echo Removing Backed up container - \${containersNamesShell[\$INDEX]}-backup
+							docker rm \${containersNamesShell[\$INDEX]}-backup
 						fi
 					  else
 						echo Error - Cannot start new container, rollbacking to previous container
-						docker start \${containerNamesShell[\$INDEX]}-backup && docker rename \${containerNamesShell[\$INDEX]}-backup \${containerNamesShell[\$INDEX]}
+						docker start \${containersNamesShell[\$INDEX]}-backup && docker rename \${containersNamesShell[\$INDEX]}-backup \${containersNamesShell[\$INDEX]}
 					  fi					
 			  fi;
 			  let INDEX=\${INDEX}+1
@@ -157,29 +265,58 @@ stage('---------- SonarQube Analysis --------------') {
 			fi
             echo Deployment process completed
     """
-  sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
+    /*
+    Using sshPublisher class to publish this command over to the deployement server
+    */
+        sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
     }
-
 }
 
-
+/*This function will return paths all the Submodules which have been changed and 
+ which will be deployed as a service*/
 @NonCPS
-def showChangeLogs() {
+def getChangedModulesPaths() {
+ Set modifiedModulePaths = [] as TreeSet
+
+ /*
+ ChangeSets until last build
+ */
  def changeLogSets = currentBuild.changeSets
- changedModules = []
+
+ /*
+ A treeSet to store paths of all the files that have been changed until last build
+ */
+ Set affectedPaths = [] as TreeSet
  for (int i = 0; i < changeLogSets.size(); i++) {
-  def entries = changeLogSets[i].items
+  def entries = changeLogSets[i].items 
   for (int j = 0; j < entries.length; j++) {
    def entry = entries[j]
    echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
-   def paths = new ArrayList(entry.affectedPaths)
-   for (int k = 0; k < paths.size(); k++) {
-    def path = paths[k]
-    if (path.startsWith(projectToBuild)) {
-     changedModules.add(path);
-    }
-
+   affectedPaths.addAll(entry.affectedPaths);
    }
   }
- }
+for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+        /*
+        If there is no Dockerfile present in the Services
+        */
+        if(locationOfDockerFiles[i].equals("")){
+        	break;
+        }
+	/*
+        Checking if the paths affected belong to modules that have to be deployed
+        */
+		if(affectedPaths.any{it.startsWith(locationOfDockerFiles[i].substring(2))}){
+			modifiedModulePaths.add(locationOfDockerFiles[i])
+            /*
+            Removing affected paths that belong to same module (Because we have already taken
+            into consideration this module)
+            */
+			affectedPaths.removeAll{it.startsWith(locationOfDockerFiles[i].substring(2))}
+		}
+		
+		
+	
+  }
+	echo "paths of modules to be built ::::::::::::>" + modifiedModulePaths
+ 	return modifiedModulePaths
 }

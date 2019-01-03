@@ -7,6 +7,8 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
@@ -18,8 +20,6 @@ import lombok.Data;
  */
 
 @Data
-
-
 public class MachineHistoryDto {
 
 	/**
@@ -45,7 +45,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field for machine specific id
 	 */
-	private String mspecId;
+	private String machineSpecId;
 	/**
 	 * Field for language code
 	 */
@@ -56,40 +56,12 @@ public class MachineHistoryDto {
 	private Boolean isActive;
 
 	/**
-	 * Field to hold creator name
-	 */
-	private String createdBy;
-
-	/**
-	 * Field to hold created date and time
-	 */
-	private LocalDateTime createdDateTime;
-
-	/**
-	 * Field to hold updater name
-	 */
-	private String updatedBy;
-
-	/**
-	 * Field to hold updated date and time
-	 */
-	private LocalDateTime updatedDateTime;
-
-	/**
-	 * Field to hold is deleted
-	 */
-	private Boolean isDeleted;
-
-	/**
-	 * Field to hold deleted date and time
-	 */
-	private LocalDateTime deletedDateTime;
-
-	/**
 	 * Field to hold Effective Date and time
 	 */
-	private LocalDateTime effectDtimes;
-	
-	private LocalDateTime valEndDtimes;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private LocalDateTime effectDateTime;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private LocalDateTime validityDateTime;
 
 }

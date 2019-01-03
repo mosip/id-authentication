@@ -1,7 +1,7 @@
 package io.mosip.registration.util.rsa.keygenerator.impl;
 
-import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_ERROR_CODE;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 
 import java.io.File;
 import java.security.KeyPair;
@@ -12,8 +12,8 @@ import java.security.PublicKey;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;

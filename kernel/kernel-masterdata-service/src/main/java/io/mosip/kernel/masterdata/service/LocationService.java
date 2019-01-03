@@ -1,15 +1,17 @@
 package io.mosip.kernel.masterdata.service;
 
-
-import io.mosip.kernel.masterdata.dto.LocationCodeDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 
 /**
  * Interface class from which various implementation can be performed
+ * 
  * @author Srinivasan
+ * @author Tapaswini
  *
  */
 public interface LocationService {
@@ -17,21 +19,60 @@ public interface LocationService {
 	/**
 	 * this method will fetch LocationHierarchyDetails
 	 * 
-	 * @param locationHierarchyDTO
-	 * @return
+	 * @param langCode
+	 *            - language code
+	 * @return LocationHierarchyResponseDto -location response
 	 */
 	public LocationHierarchyResponseDto getLocationDetails(String langCode);
+
+	/**
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
+	 * @return location response dto
+	 */
+	public LocationResponseDto getLocationHierarchyByLangCode(String locCode, String langCode);
+
+	/**
+	 * 
+	 * @param locationRequestDto - location request object
+	 * @return {@link PostLocationCodeResponseDto}
+	 */
+	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
+
+	/**
+	 * 
+	 * @param hierarchyName
+	 *            - hierarchyName
+	 * @return location response dto
+	 */
+	public LocationResponseDto getLocationDataByHierarchyName(String hierarchyName);
+
+	/**
+	 * 
+	 * @param locationRequestDto - location request DTO
+	 * @return {@link PostLocationCodeResponseDto}
+	 */
+	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto);
 	
 	/**
 	 * 
-	 * @param locationHierarchyDto
-	 * @return
+	 * @param locationCode - location code
+	 * @return {@link CodeResponseDto}
 	 */
-	public LocationResponseDto getLocationHierarchyByLangCode(String locCode,String langCode);
+	public CodeResponseDto deleteLocationDetials(String locationCode);
 	
 	/**
 	 * 
-	 * @return 
+	 * @param locCode
+	 *            - location code
+	 * @param langCode
+	 *            - language code
+	 * @return location response dto
 	 */
-	public LocationCodeDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
+	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode);
+	
+
 }

@@ -38,6 +38,7 @@ import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
@@ -67,6 +68,9 @@ public class KycAuthRequestValidatorTest {
 	KycAuthRequestValidator KycAuthRequestValidator;
 
 	@InjectMocks
+	IdInfoHelper idInfoHelper;
+
+	@InjectMocks
 	AuthRequestValidator authRequestValidator;
 
 	@Mock
@@ -88,6 +92,10 @@ public class KycAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
+		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
+
 	}
 
 	@Test
@@ -106,14 +114,14 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -167,10 +175,10 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("23456789012344");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -208,15 +216,15 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -257,14 +265,14 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -323,14 +331,14 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");
@@ -382,14 +390,14 @@ public class KycAuthRequestValidatorTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
 		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
+		// authRequestDTO.setVer("1.1");
 		authRequestDTO.setMuaCode("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		authRequestDTO.setReqHmac("zdskfkdsnj");

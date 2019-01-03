@@ -14,8 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.IdTypeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * This controller class provides id types master data operations.
@@ -25,9 +30,10 @@ import io.mosip.kernel.masterdata.service.IdTypeService;
  *
  */
 @RestController
+@Api(tags = { "IdType" })
 public class IdTypeController {
 	/**
-	 * Autowire reference to IdService.
+	 * Autowired reference to IdService.
 	 */
 	@Autowired
 	IdTypeService idService;
@@ -41,6 +47,12 @@ public class IdTypeController {
 	 * @return the list of id types.
 	 */
 	@GetMapping("/v1.0/idtypes/{langcode}")
+	@ApiOperation(value = "Service to fetch id types based on language code.", notes = "Fetch IdTypes based on Language Code.", response = IdTypeResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When idtypes successfully fetched.", response = IdTypeResponseDto.class),
+			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
+			@ApiResponse(code = 404, message = "When no idtypes found."),
+			@ApiResponse(code = 500, message = "Error occured while fetching id types.") })
 	public IdTypeResponseDto getIdTypesByLanguageCode(@Valid @PathVariable("langcode") String langCode) {
 		return idService.getIdTypesByLanguageCode(langCode);
 	}
@@ -53,6 +65,11 @@ public class IdTypeController {
 	 * @return the response.
 	 */
 	@PostMapping("/v1.0/idtypes")
+	@ApiOperation(value = "Service to create id type.", notes = "Create Id Type.", response = CodeAndLanguageCodeID.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When id type successfully created.", response = CodeResponseDto.class),
+			@ApiResponse(code = 400, message = "When input request has null or invalid values."),
+			@ApiResponse(code = 500, message = "Error occured while creating id type.") })
 	public ResponseEntity<CodeAndLanguageCodeID> createIdType(
 			@Valid @RequestBody RequestDto<IdTypeDto> idTypeRequestDto) {
 		return new ResponseEntity<>(idService.createIdType(idTypeRequestDto), HttpStatus.CREATED);

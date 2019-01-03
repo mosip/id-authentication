@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,25 +27,26 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.dao.RegistrationAppLoginDAO;
+import io.mosip.registration.constants.Components;
+import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
-import io.mosip.registration.dto.OtpGeneratorRequestDto;
-import io.mosip.registration.dto.OtpGeneratorResponseDto;
-import io.mosip.registration.dto.OtpValidatorResponseDto;
+import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpGeneratorResponseDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.entity.RegistrationAppLoginMethod;
-import io.mosip.registration.entity.RegistrationAppLoginMethodId;
+import io.mosip.registration.entity.RegistrationAppAuthenticationMethod;
+import io.mosip.registration.entity.RegistrationAppAuthenticationMethodId;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationScreenAuthorization;
 import io.mosip.registration.entity.RegistrationScreenAuthorizationId;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.repositories.RegistrationAppLoginRepository;
+import io.mosip.registration.repositories.RegistrationAppAuthenticationRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
@@ -64,10 +68,10 @@ public class LoginServiceTest {
 	private LoginServiceImpl loginServiceImpl;
 
 	@Mock
-	private RegistrationAppLoginRepository registrationAppLoginRepository;
+	private RegistrationAppAuthenticationRepository registrationAppLoginRepository;
 
 	@Mock
-	private RegistrationAppLoginDAO registrationAppLoginDAO;
+	private RegistrationAppAuthenticationDAO registrationAppLoginDAO;
 
 	@Mock
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
@@ -87,32 +91,35 @@ public class LoginServiceTest {
 	@Mock
 	private RegistrationScreenAuthorizationDAO registrationScreenAuthorizationDAO;
 	
+	private ApplicationContext applicationContext = ApplicationContext.getInstance();
+	
+	@Before
+	public void initialize() throws IOException, URISyntaxException {
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		applicationContext.setApplicationMessagesBundle();
+	}
+	
 	@Test
 	public void getModesOfLoginTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
-		RegistrationAppLoginMethod registrationAppLoginMethod = new RegistrationAppLoginMethod();
-		RegistrationAppLoginMethodId registrationAppLoginMethodID = new RegistrationAppLoginMethodId();
+		RegistrationAppAuthenticationMethod registrationAppLoginMethod = new RegistrationAppAuthenticationMethod();
+		RegistrationAppAuthenticationMethodId registrationAppLoginMethodID = new RegistrationAppAuthenticationMethodId();
 		registrationAppLoginMethodID.setLoginMethod("PWD");
 		registrationAppLoginMethod.setMethodSeq(1);
-		registrationAppLoginMethod.setRegistrationAppLoginMethodId(registrationAppLoginMethodID);
-		List<RegistrationAppLoginMethod> loginList = new ArrayList<RegistrationAppLoginMethod>();
+		registrationAppLoginMethod.setregistrationAppAuthenticationMethodId(registrationAppLoginMethodID);
+		List<RegistrationAppAuthenticationMethod> loginList = new ArrayList<RegistrationAppAuthenticationMethod>();
 		loginList.add(registrationAppLoginMethod);
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueOrderByMethodSeq()).thenReturn(loginList);
-		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
-		Mockito.when(registrationAppLoginDAO.getModesOfLogin()).thenReturn(modes);
-		assertEquals(modes,loginServiceImpl.getModesOfLogin());
+		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq("LOGIN")).thenReturn(loginList);
+		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getregistrationAppAuthenticationMethodId().getLoginMethod()));
+		Mockito.when(registrationAppLoginDAO.getModesOfLogin("LOGIN")).thenReturn(modes);
+		assertEquals(modes,loginServiceImpl.getModesOfLogin("LOGIN"));
 	}
 
 	@Test
 	public void getUserDetailTest() {
-
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
@@ -128,9 +135,6 @@ public class LoginServiceTest {
 	@Test
 	public void getRegistrationCenterDetailsTest() {
 
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-
 		RegistrationCenter registrationCenter = new RegistrationCenter();
 
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
@@ -145,9 +149,6 @@ public class LoginServiceTest {
 
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
-
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
 		RegistrationScreenAuthorization registrationScreenAuthorization = new RegistrationScreenAuthorization();
 		RegistrationScreenAuthorizationId registrationScreenAuthorizationId = new RegistrationScreenAuthorizationId();
@@ -172,33 +173,33 @@ public class LoginServiceTest {
 
 	@Test
 	public void getOTPSuccessResponseTest() throws ClassNotFoundException, RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
-		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("yash");
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-		otpGeneratorResponseDto.setOtp("09876");
-		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDto.class)))
-				.thenReturn(otpGeneratorResponseDto);
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("yash");
+		OtpGeneratorResponseDTO otpGeneratorResponseDTO = new OtpGeneratorResponseDTO();
+		otpGeneratorResponseDTO.setOtp("09876");
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
+				.thenReturn(otpGeneratorResponseDTO);
 
-		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDto.getKey()).getSuccessResponseDTO());
+		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDTO.getKey()).getSuccessResponseDTO());
 
 	}
 
 	@Test
 	public void getOTPFailureResponseTest() throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
-		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setKey("ya");
-		OtpGeneratorResponseDto otpGeneratorResponseDto = null;
-		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDto.class)))
-				.thenReturn(otpGeneratorResponseDto);
+		OtpGeneratorRequestDTO otpGeneratorRequestDTO = new OtpGeneratorRequestDTO();
+		otpGeneratorRequestDTO.setKey("ya");
+		OtpGeneratorResponseDTO otpGeneratorResponseDTO = null;
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDTO.class)))
+				.thenReturn(otpGeneratorResponseDTO);
 
-		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDto.getKey()).getErrorResponseDTOs());
+		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDTO.getKey()).getErrorResponseDTOs());
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void validateOTPSuccessTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
-		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
+		OtpValidatorResponseDTO otpGeneratorRequestDto = new OtpValidatorResponseDTO();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("true");
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(otpGeneratorRequestDto);
@@ -209,7 +210,7 @@ public class LoginServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void validateOTPFailureTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
-		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
+		OtpValidatorResponseDTO otpGeneratorRequestDto = new OtpValidatorResponseDTO();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("false");
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(otpGeneratorRequestDto);
@@ -220,7 +221,7 @@ public class LoginServiceTest {
 
 	@Test
 	public void updateLoginParamsTest() {
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
 		

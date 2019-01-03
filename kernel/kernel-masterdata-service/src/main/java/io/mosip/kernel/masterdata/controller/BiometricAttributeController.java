@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricAttributeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -30,10 +31,17 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
+@Api(tags = { "BiometricAttribute" })
 public class BiometricAttributeController {
 	/**
 	 * biometric attribute controller with api to get list of biometric attributes
 	 * best on biometric code type and language code.
+	 * 
+	 * @param langCode
+	 *            input from user
+	 * @param biometricTypeCode
+	 *            input from user
+	 * @return {@link BiometricAttributeResponseDto}
 	 * 
 	 */
 	@Autowired
@@ -52,7 +60,7 @@ public class BiometricAttributeController {
 	 * Service to create Biometric Attribute in table.
 	 * 
 	 * @param biometricAttribute
-	 *            input from user Biometric Attribute DTO
+	 *            Input from user Biometric Attribute DTO
 	 * @return {@link BioTypeCodeAndLangCodeAndAttributeCode}
 	 */
 	@PostMapping("/v1.0/biometricattributes")

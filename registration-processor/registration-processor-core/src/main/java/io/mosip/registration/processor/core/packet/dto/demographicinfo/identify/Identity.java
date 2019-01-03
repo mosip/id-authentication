@@ -1,35 +1,27 @@
 package io.mosip.registration.processor.core.packet.dto.demographicinfo.identify;
-
+	
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+/**
+ * Instantiates a new identity.
+ */
 @Data
 @Component
 public class Identity {
-    private String middleName;
+	
+	/** The name. */
+	private IdentityJsonValues name;
+	
+	/** The gender. */
+	private IdentityJsonValues gender;
 
-    private String lastName;
+	/** The dob. */
+	private IdentityJsonValues dob;
+	
+	/** The pheonitic name. */
+	private IdentityJsonValues pheoniticName;
 
-    private String dob;
 
-    private String addressLine6;
-
-    private String gender;
-
-    private String addressLine5;
-
-    private String addressLine4;
-
-    private String fullName;
-
-    private String addressLine3;
-
-    private String firstName;
-
-    private String addressLine2;
-
-    private String addressLine1;
-    
-    private String pincode;
 }

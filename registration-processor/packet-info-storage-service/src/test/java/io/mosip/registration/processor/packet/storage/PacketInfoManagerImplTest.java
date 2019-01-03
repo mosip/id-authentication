@@ -10,9 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -37,9 +40,10 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -107,7 +111,7 @@ public class PacketInfoManagerImplTest {
 	private PacketInfoDao packetInfoDao;
 
 	@Mock
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	private Identity identity;
 	private ApplicantDocumentEntity applicantDocumentEntity;
@@ -116,6 +120,7 @@ public class PacketInfoManagerImplTest {
 	private DataAccessLayerException exp;
 	private InputStream demographicJsonStream;
 	private File demographicJsonFile;
+	private static final String CONFIG_SERVER_URL = "http://104.211.212.28:51000/registration-processor/default/DEV/";
 
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
@@ -465,14 +470,13 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 		exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", new Exception());
-		ClassLoader classLoader = getClass().getClassLoader(); 
+		ClassLoader classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("DemographicInfo.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
 
-		Mockito.when(utility.getConfigServerFileStorageURL())
-				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
+		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
+		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentityNew.json");
 	}
 
 	@Test
@@ -523,7 +527,7 @@ public class PacketInfoManagerImplTest {
 	}
 
 	@Test(expected = UnableToInsertData.class)
-	public void demographicDedupeUnableToInsertDataTest1() {
+	public void demographicDedupeUnableToInsertDataTest() {
 
 		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
@@ -536,7 +540,7 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(utility.getConfigServerFileStorageURL())
 				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
+		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentityNew.json");
 		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
 	}
 
@@ -549,12 +553,10 @@ public class PacketInfoManagerImplTest {
 		photographDto.setPreRegId("PEN1345T");
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
-
-		DemographicDedupeDto demoDto = new DemographicDedupeDto();
-		List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+		DemographicInfoDto demoDto = new DemographicInfoDto();
+		List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
-		demoDto.setPreRegId("PEN1345T");
-		demoDto.setFirstName("firstName");
+		demoDto.setName("firstName+LastName");
 		demoDto.setLangCode("ar");
 		demoDedupeList.add(demoDto);
 		applicantInfoDto.setDemoDedupeList(demoDedupeList);
@@ -583,7 +585,7 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
 
 	}
-	
+
 	@Test
 	public void getOsiTest() {
 		RegOsiDto regOsi = new RegOsiDto();
@@ -591,9 +593,106 @@ public class PacketInfoManagerImplTest {
 		regOsi.setPreregId("PET431");
 		regOsi.setIsActive(true);
 		Mockito.when(packetInfoDao.getEntitiesforRegOsi(ArgumentMatchers.anyString())).thenReturn(regOsi);
-		
-		 RegOsiDto regOsiDto = packetInfoManagerImpl.getOsi("2018782130000224092018121229");
-		 
-		 assertEquals("verifing regOsi dto", "2018782130000224092018121229",regOsiDto.getRegId());
+
+		RegOsiDto regOsiDto = packetInfoManagerImpl.getOsi("2018782130000224092018121229");
+
+		assertEquals("verifing regOsi dto", "2018782130000224092018121229", regOsiDto.getRegId());
 	}
+
+	@Test
+	public void findDemoByIdTest() throws ParseException {
+		List<DemographicInfoDto> depdupeList = new ArrayList<>();
+		String dob = "Thu Jan 01 00:00:00 IST 2015";
+		Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
+		DemographicInfoDto uinDto = new DemographicInfoDto();
+		uinDto.setRegId("2018782130000103122018105604");
+		uinDto.setGenderCode("mâle");
+		uinDto.setLangCode("fr");
+		uinDto.setName("IbrahimAli");
+		uinDto.setPhoneticName("I165");
+		uinDto.setUin("1234567");
+		uinDto.setDob(date);
+
+		DemographicInfoDto uinDto1 = new DemographicInfoDto();
+		uinDto1.setRegId("2018782130000103122018105604");
+		uinDto1.setGenderCode("الذكر");
+		uinDto1.setLangCode("ar");
+		uinDto1.setName("ابراهيمعلي");
+		uinDto1.setPhoneticName("A165");
+		uinDto1.setUin("1234567");
+		uinDto1.setDob(date);
+
+		depdupeList.add(uinDto);
+		depdupeList.add(uinDto1);
+
+		Mockito.when(packetInfoDao.findDemoById(ArgumentMatchers.anyString())).thenReturn(depdupeList);
+
+		List<DemographicInfoDto> result = packetInfoManagerImpl.findDemoById("2018782130000103122018100224");
+
+		assertEquals(
+				"Fetching all dedupe records from db based on id. Verifing id, expected id is 2018782130000103122018105604",
+				"2018782130000103122018105604", result.iterator().next().getRegId());
+
+	}
+
+	@Test
+	public void getRegistrationCenterMachineTest() {
+		RegistrationCenterMachineDto regCenterMachineDto = new RegistrationCenterMachineDto();
+		regCenterMachineDto.setIsActive(true);
+		regCenterMachineDto.setLatitude("12.9716° N");
+		regCenterMachineDto.setLongitude("77.5946° E");
+		regCenterMachineDto.setMachineId("123");
+		regCenterMachineDto.setRegId("2018782130000103122018100224");
+
+		Mockito.when(packetInfoDao.getRegistrationCenterMachine(ArgumentMatchers.anyString()))
+				.thenReturn(regCenterMachineDto);
+		RegistrationCenterMachineDto resultDto = packetInfoManagerImpl
+				.getRegistrationCenterMachine("2018782130000103122018100224");
+		assertEquals(
+				"Fetching regCenterMachine records from db . verifing first record,expected id is 2018782130000103122018100224",
+				"2018782130000103122018100224", resultDto.getRegId());
+	}
+
+	@Test
+	public void getApplicantFingerPrintImageNameByIdTest() {
+		List<String> applicantFingerPrintImages = new ArrayList<>();
+		applicantFingerPrintImages.add("LeftThumb");
+		applicantFingerPrintImages.add("RightThumb");
+
+		Mockito.when(packetInfoDao.getApplicantFingerPrintImageNameById(ArgumentMatchers.anyString()))
+				.thenReturn(applicantFingerPrintImages);
+
+		List<String> resultList = packetInfoManagerImpl
+				.getApplicantFingerPrintImageNameById("2018782130000103122018100224");
+		assertEquals(
+				"Fetching applicant finger print images from db. verifing image name of first record, expected value is LeftThumb",
+				"LeftThumb", resultList.get(0));
+
+	}
+
+	@Test
+	public void getApplicantIrisImageNameByIdTest() {
+		List<String> applicantIrisImageList = new ArrayList<>();
+		applicantIrisImageList.add("LeftEye");
+		applicantIrisImageList.add("RightEye");
+
+		Mockito.when(packetInfoDao.getApplicantIrisImageNameById(ArgumentMatchers.anyString()))
+				.thenReturn(applicantIrisImageList);
+		List<String> resultList = packetInfoManagerImpl.getApplicantIrisImageNameById("2018782130000103122018100224");
+		assertEquals(
+				"Fetching applicant iris images from db. verifing image name of first record, expected value is LeftEye",
+				"LeftEye", resultList.get(0));
+	}
+	
+	@Test
+	public void testGetRegIdbyUIN() {
+		String uin = "123456789";
+		List<String> regIdlist = new ArrayList<>();
+		regIdlist.add("27847657360002520181208094056");
+		Mockito.when(packetInfoDao.getRegIdByUIN(uin)).thenReturn(regIdlist);
+		
+		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
+		assertEquals("27847657360002520181208094056", ridList.get(0));
+	}
+
 }

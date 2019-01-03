@@ -58,7 +58,7 @@ public class OTPController {
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException
 	 */
-	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/v1.0/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException {
 

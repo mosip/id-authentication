@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -17,27 +18,30 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 public interface DocumentCategoryService {
 
 	/**
-	 * To fetch all Document Category
+	 * Method to fetch all Document category details
 	 * 
-	 * @return {@linkplain DocumentCategoryDto}
+	 * @return DocumentCategoryDTO list
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategory();
 
 	/**
-	 * To fetch all Document Category using language code
+	 * Method to fetch all Document category details based on language code
 	 * 
 	 * @param langCode
-	 *            the language code
-	 * @return {@linkplain DocumentCategoryDto}
+	 *            The language code
+	 * 
+	 * @return DocumentCategoryDTO list
 	 */
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(String langCode);
 
 	/**
-	 * To fetch Document Category using id and language code
+	 * Method to fetch A Document category details based on id and language code
 	 * 
 	 * @param code
+	 *            The Id of Document Category
 	 * @param langCode
-	 * @return {@linkplain DocumentCategoryDto}
+	 *            The language code
+	 * @return DocumentCategoryDTO
 	 */
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(String code, String langCode);
 
@@ -49,4 +53,23 @@ public interface DocumentCategoryService {
 	 * @return {@linkplain CodeAndLanguageCodeID}
 	 */
 	public CodeAndLanguageCodeID createDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	/**
+	 * Method to update Document Category based on data provided.
+	 * 
+	 * @param category
+	 *            the request dto.
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	public CodeAndLanguageCodeID updateDocumentCategory(RequestDto<DocumentCategoryDto> category);
+
+	/**
+	 * Method to delete Document Category based on id provided.
+	 * 
+	 * @param code
+	 *            the document category code.
+	 * 
+	 * @return {@link CodeResponseDto}
+	 */
+	public CodeResponseDto deleteDocumentCategory(String code);
 }

@@ -1,8 +1,9 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * DTO class for fetching titles from masterdata
@@ -13,11 +14,24 @@ import lombok.NoArgsConstructor;
  */
 @Data
 
-
 public class TitleDto {
-	private String titleCode;
+
+	@NotNull
+	@Size(min = 1, max = 16)
+	private String code;
+
+	@NotNull
+	@Size(min = 1, max = 64)
 	private String titleName;
+
+	@Size(min = 1, max = 128)
 	private String titleDescription;
+
+	@NotNull
 	private Boolean isActive;
+
+	@NotNull
+	@Size(min = 1, max = 3)
+	private String langCode;
 
 }

@@ -88,7 +88,26 @@ Generate PDF take processed template as file, output file path and output file n
         pdfGenerator.generate(templatePath,outpuFilePath,outputFileName);
        
  ```
-
+ 
+Usage4:
+ 
+Input processed Template as inputStream, resource file path  and generate OutputStream containing the resulting PDF.
+ 
+ ```
+@Autowired
+ PDFGenerator pdfGenerator;
+ 
+      ClassLoader classLoader = getClass().getClassLoader();
+		String inputFile = classLoader.getResource("responsive.html").getFile();
+		File file = new File(inputFile);
+		if (file.getParentFile().isDirectory()) {
+			file = file.getParentFile();
+		}
+		String resourceLoc = file.getAbsolutePath();
+		InputStream is = new FileInputStream(inputFile);
+		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(is, resourceLoc);
+  
+ ```
 
 
 

@@ -95,7 +95,7 @@ public class OTPFacadeImplTest {
 	@Mock
 	private IdInfoHelper demoHelper;
 
-	@InjectMocks
+	@Mock
 	NotificationServiceImpl  notificationService;
 
 	@InjectMocks
@@ -120,8 +120,11 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		ReflectionTestUtils.setField(demoHelper, "environment", env);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
-		ReflectionTestUtils.setField(otpFacadeImpl, "notificationService", notificationService);
-
+		ReflectionTestUtils.setField(otpFacadeImpl, "notificationService", notificationService); 
+		ReflectionTestUtils.setField(otpFacadeImpl, "otpService", otpService);
+		//ReflectionTestUtils.setField(otpService, "otpManager", otpManager);
+		//ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
+		//ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		
 	}
 
@@ -139,10 +142,10 @@ public class OTPFacadeImplTest {
 		String unqueId = otpRequestDto.getIdvId();
 		String txnID = otpRequestDto.getTxnID();
 		String productid = "IDA";
-		String refId = "8765";
+		String uin = "8765";
 		String otp = "987654";
 		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
-		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -155,11 +158,11 @@ public class OTPFacadeImplTest {
 		idInfo.put("phone", list);
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn(name);
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn(name);
 
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
 
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
 
 		Optional<String> uinOpt = Optional.of("426789089018");
 		
@@ -172,6 +175,53 @@ public class OTPFacadeImplTest {
 	}
 	
 	@Test
+	public void testGenerateOTPSuccess() throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+
+		String date = null;
+		String time = null;
+		String language = "fr";
+		String mobileNumber = "7697698650";
+		String emailId = "abc@abc.com";
+		String name = "mosip";
+
+		String uin = otpRequestDto.getIdvId();
+		String txnID = otpRequestDto.getTxnID();
+		String productid = "IDA";
+		String otp = "987654";
+		Map<String, Object> repoDetails = repoDetails();
+		repoDetails.put("uin", uin);
+		Mockito.when(idAuthService.getIdRepoByUinNumber(uin)).thenReturn(repoDetails);
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
+		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
+
+		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
+		list.add(new IdentityInfoDTO(language, name));
+		list.add(new IdentityInfoDTO(language, emailId));
+		list.add(new IdentityInfoDTO(language, mobileNumber));
+		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
+		idInfo.put("name", list);
+		idInfo.put("email", list);
+		idInfo.put("phone", list);
+
+		Mockito.when(idAuthService.processIdType("D", uin)).thenReturn(repoDetails);
+		Mockito.when(idInfoService.getIdInfo(repoDetails)).thenReturn(idInfo);
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn(name);
+
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(emailId);
+
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn(mobileNumber);
+
+		Optional<String> uinOpt = Optional.of("426789089018");
+		
+		
+		ReflectionTestUtils.setField(dateHelper, "env", env);
+		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
+
+
+		otpFacadeImpl.generateOtp(otpRequestDto);
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testOTPGeneration() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "74834738743");
@@ -185,15 +235,17 @@ public class OTPFacadeImplTest {
 		Mockito.when(idAuthService.processIdType(otpRequestDto.getIdvIdType(), otpRequestDto.getIdvId()))
 		.thenReturn(idRepo);
 		String otpKey = "IDA_MTIzNDU2Nzg5MA==_2345678901234_2345678901234";
+		
 		Mockito.when(otpManager.generateOTP(otpKey)).thenReturn("123456");
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn("123456");
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("abc@test.com");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn("1234567890");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("abc@test.com");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("1234567890");
 		
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getEmail", idInfo);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getMobileNumber", idInfo);
 		otpFacadeImpl.generateOtp(otpRequestDto);
+		
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -209,11 +261,11 @@ public class OTPFacadeImplTest {
 		String unqueId = otpRequestDto.getIdvId();
 		String txnID = otpRequestDto.getTxnID();
 		String productid = "IDA";
-		String refId = "8765";
+		String uin = "8765";
 		String otp = null;
 
 		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
-		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
@@ -236,14 +288,6 @@ public class OTPFacadeImplTest {
 		otpRequestDto.getReqTime();
 	}
 
-	@Test
-	public void testSaveAutnTxn() {
-		String refId = "8765";
-		String status = "Y";
-		String comment = "OTP_GENERATED";
-		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "saveAutnTxn", otpRequestDto, status, comment, refId);
-	}
 
 	
 	@Test
@@ -295,7 +339,7 @@ public class OTPFacadeImplTest {
 		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTxnID("2345678901234");
 		otpRequestDto.setIdvId("2345678901234");
-		otpRequestDto.setVer("1.0");
+		//otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
 	}

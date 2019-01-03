@@ -2,13 +2,16 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +23,11 @@ import lombok.NoArgsConstructor;
  * 
  * Entity for Machine Details
  * 
+ * @author Megha Tanga
+ * @since 1.0.0
+ *
  */
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
@@ -38,7 +45,7 @@ public class Machine extends BaseEntity implements Serializable {
 	 * Field for machine ID
 	 */
 	@Id
-	@Column(name = "id", unique = true, nullable = false, length = 36)
+	@Column(name = "id", unique = true, nullable = false, length = 10)
 	private String id;
 
 	/**
@@ -75,15 +82,19 @@ public class Machine extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
+
 	/**
 	 * Field for validity end Date and Time for machine
 	 */
-	@Column(name="validity_end_dtimes")
+	@Column(name = "validity_end_dtimes")
 	private LocalDateTime validityDateTime;
-	
-	@ManyToOne
-	@JoinColumns({@JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false) })
 	private MachineSpecification machineSpecification;
+	
+	
+    @OneToMany(mappedBy="machineId",fetch = FetchType.LAZY)
+	private List<RegistrationCenterUserMachine> registrationCenterUserMachines;
 
 }

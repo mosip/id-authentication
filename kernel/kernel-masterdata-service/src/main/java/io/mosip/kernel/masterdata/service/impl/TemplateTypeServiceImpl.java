@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -25,30 +26,28 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 @Service
 public class TemplateTypeServiceImpl implements TemplateTypeService {
 
-	@Autowired
-	private MetaDataUtils metaUtils;
-
-	@Autowired
-	private MapperUtils objectMapperUtil;
 
 	@Autowired
 	private TemplateTypeRepository templateTypeRepository;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateTypeService#createTemplateType(io.mosip.kernel.masterdata.dto.TemplateTypeDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID createTemplateType(TemplateTypeDto tempalteType) {
-		TemplateType entity = metaUtils.setCreateMetaData(tempalteType, TemplateType.class);
+		TemplateType entity = MetaDataUtils.setCreateMetaData(tempalteType, TemplateType.class);
 		TemplateType templateType;
 		try {
 			templateType = templateTypeRepository.create(entity);
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException  | DataAccessException   e) {
 			throw new MasterDataServiceException(TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorCode(),
-					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage() + "  "
+					TemplateTypeErrorCode.TEMPLATE_TYPE_INSERT_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
 		}
 
 		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		objectMapperUtil.mapNew(templateType, codeLangCodeId);
+		MapperUtils.map(templateType, codeLangCodeId);
 
 		return codeLangCodeId;
 	}

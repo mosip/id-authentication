@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.quality.check.dao;
-
+	
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
@@ -18,6 +18,9 @@ import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationI
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
+/**
+ * The Class ApplicantInfoDao.
+ */
 @Component
 public class ApplicantInfoDao {
 	/** The registration information. */
@@ -49,11 +52,19 @@ public class ApplicantInfoDao {
 	/** The Constant ISDELETED_COLON. */
 	public static final String ISDELETED_COLON = ".isDeleted=:";
 
+	/** The qcuser reg repositary. */
 	@Autowired
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
+	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
+	/**
+	 * Gets the packetsfor QC user.
+	 *
+	 * @param qcuserId the qcuser id
+	 * @return the packetsfor QC user
+	 */
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
 		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
 		ApplicantInfoDto applicantInfoDto = new ApplicantInfoDto();
@@ -64,7 +75,7 @@ public class ApplicantInfoDao {
 				String regId = assignedPacket.getId().getRegId();
 				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
 			});
-			List<DemographicDedupeDto> demoDedupeList = new ArrayList<>();
+			List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
@@ -87,6 +98,12 @@ public class ApplicantInfoDao {
 
 
 
+	/**
+	 * Convert entity to photograph dto.
+	 *
+	 * @param object the object
+	 * @return the photograph dto
+	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
 		PhotographDto photographDto = new PhotographDto();
 
@@ -112,45 +129,60 @@ public class ApplicantInfoDao {
 	 * fingerprintData = new FingerprintData();
 	 * fingerprintData.setExceptionFingerprints(null);
 	 * fingerprintData.setFingerprints(null);
-	 *
+	 * 
 	 * bioData.setFingerprintData(fingerprintData);
-	 *
+	 * 
 	 * IrisData irisData = new IrisData(); irisData.setExceptionIris(null);
 	 * irisData.setIris(null); irisData.setNumRetry(0);
 	 * bioData.setIrisData(irisData); return bioData; }
+	 *
+	 * @param object the object
+	 * @return the demographic info dto
 	 */
 
-	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
-		DemographicDedupeDto demo = new DemographicDedupeDto();
-		demo.setRegId(object.getId().getRefId());
-		demo.setPreRegId(object.getId().getRefId());
+	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
+		DemographicInfoDto demo = new DemographicInfoDto();
+		demo.setRegId(object.getId().getRegId());
+		demo.setUin(object.getUin());
 		demo.setLangCode(object.getId().getLangCode());
-		demo.setFirstName(object.getFirstName());
-		demo.setMiddleName(object.getMiddleName());
-		demo.setLastName(object.getLastName());
-		demo.setFullName(object.getFullName());
-		demo.setGenderCode(object.getGenderCode());
+		demo.setName(object.getName());
+		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-		demo.setAddrLine1(object.getAddrLine1());
-		demo.setAddrLine2(object.getAddrLine2());
-		demo.setAddrLine3(object.getAddrLine3());
-		demo.setAddrLine4(object.getAddrLine4());
-		demo.setAddrLine5(object.getAddrLine5());
-		demo.setAddrLine6(object.getAddrLine6());
-		demo.setZipCode(object.getZipCode());
+		demo.setPhoneticName(object.getPhoneticName());
+
+
 		return demo;
 	}
 
+	/**
+	 * Save.
+	 *
+	 * @param qcUserRegistrationIdEntity the qc user registration id entity
+	 * @return the qcuser registration id entity
+	 */
 	public QcuserRegistrationIdEntity save(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
 
 		return qcuserRegRepositary.save(qcUserRegistrationIdEntity);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param qcUserRegistrationIdEntity the qc user registration id entity
+	 * @return the qcuser registration id entity
+	 */
 	public QcuserRegistrationIdEntity update(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
 
 		return qcuserRegRepositary.save(qcUserRegistrationIdEntity);
 	}
 
+	/**
+	 * Find by id.
+	 *
+	 * @param qcUserId the qc user id
+	 * @param regId the reg id
+	 * @return the qcuser registration id entity
+	 */
 	public QcuserRegistrationIdEntity findById(String qcUserId, String regId) {
 		Map<String, Object> params = new HashMap<>();
 		String className = QcuserRegistrationIdEntity.class.getSimpleName();

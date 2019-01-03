@@ -16,9 +16,11 @@
  */
 package io.mosip.kernel.core.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -28,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -48,11 +51,24 @@ import io.mosip.kernel.core.util.constant.DateUtilConstants;
  */
 public final class DateUtils {
 
+	/**
+	 * Default UTC TimeZone.
+	 */
+	private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
+	/**
+	 * Default UTC ZoneId.
+	 */
+	private static final ZoneId UTC_ZONE_ID = ZoneId.of("UTC");
+	/**
+	 * Default UTC pattern.
+	 */
+	private static final String UTC_DATETIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
 	private static final Map<String, String> AVAILABLE_DATE_FORMATS = new HashMap<String, String>() {
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 		{
 			put("^\\d{8}$", "yyyyMMdd");
@@ -80,19 +96,6 @@ public final class DateUtils {
 			put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMMM yyyy HH:mm:ss");
 		}
 	};
-
-	/**
-	 * Default UTC TimeZone.
-	 */
-	private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
-	/**
-	 * Default UTC ZoneId.
-	 */
-	private static final ZoneId UTC_ZONE_ID = ZoneId.of("UTC");
-	/**
-	 * Default UTC pattern.
-	 */
-	private static final String DEFAULT_UTC_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
 	private DateUtils() {
 
@@ -594,8 +597,152 @@ public final class DateUtils {
 	// ---------------------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * This method returns LocalDateTime object for given utcDateTime string and
-	 * pattern string.
+	 * Converts java.time.LocalDateTime to UTC string in default ISO pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
+	 * 
+	 * @param localDateTime
+	 *            java.time.LocalDateTime
+	 * 
+	 * @return a date String
+	 */
+
+	public static String toISOString(LocalDateTime localDateTime) {
+		ZonedDateTime zonedtime = localDateTime.atZone(ZoneId.systemDefault());
+		ZonedDateTime converted = zonedtime.withZoneSameInstant(ZoneOffset.UTC);
+		return converted.toString();
+	}
+
+	/**
+	 * Converts java.util.Date to UTC string in default ISO pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
+	 * 
+	 * @param date
+	 *            java.util.Date
+	 * 
+	 * @return a date String
+	 */
+	public static String toISOString(Date date) {
+		DateFormat df = new SimpleDateFormat(UTC_DATETIME_PATTERN);
+		df.setTimeZone(UTC_TIME_ZONE);
+		return df.format(date);
+	}
+
+	/**
+	 * Formats java.time.LocalDateTime to UTC string in default ISO pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> ignoring zone offset.
+	 * 
+	 * @param localDateTime
+	 *            java.time.LocalDateTime
+	 * 
+	 * @return a date String
+	 */
+
+	public static String formatToISOString(LocalDateTime localDateTime) {
+		return localDateTime.format(DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+	}
+
+	/**
+	 * Provides current UTC java.time.LocalDateTime.
+	 * 
+	 * @return LocalDateTime
+	 * 
+	 * @see java.time.LocalDateTime
+	 */
+	public static LocalDateTime getUTCCurrentDateTime() {
+		return ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
+	}
+
+	/**
+	 * Provides UTC Current DateTime string in default ISO pattern -
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
+	 * 
+	 * @return a date String
+	 */
+	public static String getUTCCurrentDateTimeString() {
+		return OffsetDateTime.now().toInstant().toString();
+	}
+
+	/**
+	 * Provides UTC Current DateTime string in given pattern.
+	 * 
+	 * @param pattern
+	 *            is of type String
+	 * 
+	 * @return date String
+	 */
+	public static String getUTCCurrentDateTimeString(String pattern) {
+		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(pattern));
+	}
+
+	/**
+	 * Provides current DateTime string with system zone offset and in default ISO
+	 * pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</b>.
+	 * 
+	 * @return a date String
+	 */
+	public static String getCurrentDateTimeString() {
+		return OffsetDateTime.now().toString();
+	}
+
+	/**
+	 * Converts UTC string to java.time.LocalDateTime ignoring zone offset.
+	 * 
+	 * @param utcDateTime
+	 *            is of type String
+	 * 
+	 * @return a LocalDateTime
+	 * 
+	 * @throws java.time.format.DateTimeParseException
+	 *             if not able to parse the utcDateTime string for the pattern.
+	 * 
+	 * 
+	 * @see java.time.LocalDateTime
+	 */
+	public static LocalDateTime convertUTCToLocalDateTime(String utcDateTime) {
+		return ZonedDateTime.parse(utcDateTime).toLocalDateTime();
+	}
+
+	/**
+	 * Parses UTC string to java.time.LocalDateTime adjusted for system time zone.
+	 * 
+	 * @param utcDateTime
+	 *            is of type String
+	 * 
+	 * @return a LocalDateTime
+	 * 
+	 * 
+	 * @see java.time.LocalDateTime
+	 */
+	public static LocalDateTime parseUTCToLocalDateTime(String utcDateTime) {
+		OffsetDateTime odt = OffsetDateTime.parse(utcDateTime);
+		return odt.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	/**
+	 * Parses UTC string of pattern <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b> or
+	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> to java.time.LocalDateTime.
+	 * 
+	 * @param dateTime
+	 *            is of type String
+	 * 
+	 * @return a LocalDateTime
+	 * 
+	 * @throws java.time.format.DateTimeParseException
+	 *             if not able to parse the utcDateTime string for the pattern
+	 * 
+	 * @see java.time.LocalDateTime
+	 */
+	public static LocalDateTime parseToLocalDateTime(String dateTime) {
+		try {
+			return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(UTC_DATETIME_PATTERN));
+		} catch (Exception e) {
+			return LocalDateTime.parse(dateTime);
+		}
+
+	}
+
+	/**
+	 * Parses UTC string of given pattern to java.time.LocalDateTime.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -606,7 +753,7 @@ public final class DateUtils {
 	 * @return LocalDateTime
 	 * 
 	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             if can not able to parse the utcDateTime string for the pattern.
+	 *             if not able to parse the utcDateTime string for the pattern.
 	 * 
 	 * @see io.mosip.kernel.core.exception.ParseException
 	 * 
@@ -614,7 +761,7 @@ public final class DateUtils {
 	 */
 	public static LocalDateTime parseUTCToLocalDateTime(String utcDateTime, String pattern) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		simpleDateFormat.setTimeZone(DateUtils.UTC_TIME_ZONE);
+		simpleDateFormat.setTimeZone(UTC_TIME_ZONE);
 		try {
 			return simpleDateFormat.parse(utcDateTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		} catch (ParseException e) {
@@ -626,20 +773,51 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method returns LocalDateTime without UTC for given Date object with UTC.
+	 * Parses Date to java.time.LocalDateTime adjusted for system time zone.
 	 * 
 	 * @param date
-	 *            if of type Date
+	 *            is of type String
 	 * 
-	 * @return java.time.LocalDateTime
+	 * @return a LocalDateTime
+	 * 
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
-	public static LocalDateTime parseUTCToLocalDateTime(Date date) {
-		return date.toInstant().atZone(DateUtils.UTC_ZONE_ID).toLocalDateTime();
+	public static LocalDateTime parseDateToLocalDateTime(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 	/**
-	 * This method parse UTC dateTime string to java.lang.Date for given string
-	 * pattern.
+	 * Parses given UTC string of ISO pattern <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b> to
+	 * java.util.Date.
+	 * 
+	 * @param utcDateTime
+	 *            is of type String
+	 * 
+	 * @return a Date
+	 * 
+	 * @throws io.mosip.kernel.core.exception.ParseException
+	 *             if not able to parse the <code>utcDateTime</code> string in given
+	 *             Default utcDateTime pattern -
+	 *             <b>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</b>.
+	 * 
+	 * @see io.mosip.kernel.core.exception.ParseException
+	 */
+	public static Date parseUTCToDate(String utcDateTime) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(UTC_DATETIME_PATTERN);
+		simpleDateFormat.setTimeZone(UTC_TIME_ZONE);
+		try {
+			return simpleDateFormat.parse(utcDateTime);
+		} catch (ParseException e) {
+			throw new io.mosip.kernel.core.exception.ParseException(
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
+		}
+
+	}
+
+	/**
+	 * Parses UTC string of given pattern to java.util.Date.
 	 * 
 	 * @param utcDateTime
 	 *            is of type String
@@ -650,14 +828,13 @@ public final class DateUtils {
 	 * @return a Date
 	 * 
 	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             if can not able to parse the dateTime string in given string
-	 *             pattern.
+	 *             if not able to parse the dateTime string in given string pattern.
 	 * 
 	 * @see io.mosip.kernel.core.exception.ParseException
 	 */
 	public static Date parseUTCToDate(String utcDateTime, String pattern) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		simpleDateFormat.setTimeZone(DateUtils.UTC_TIME_ZONE);
+		simpleDateFormat.setTimeZone(UTC_TIME_ZONE);
 		try {
 			return simpleDateFormat.parse(utcDateTime);
 		} catch (ParseException e) {
@@ -668,8 +845,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method return java.lang.Date for given dateTime string, pattern and
-	 * timeZone.
+	 * Parses date string of given pattern and TimeZone to java.util.Date.
 	 * 
 	 * @param dateTime
 	 *            is of type String
@@ -683,8 +859,7 @@ public final class DateUtils {
 	 * @return a Date
 	 * 
 	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             if can not able to parse the dateTime string in given string
-	 *             pattern.
+	 *             if not able to parse the dateTime string in given string pattern.
 	 * 
 	 * @see io.mosip.kernel.core.exception.ParseException
 	 * 
@@ -703,102 +878,43 @@ public final class DateUtils {
 	}
 
 	/**
-	 * This method return a date string of current UTC date for given pattern
-	 * provided by the user.
+	 * Parses date string of given pattern to java.util.Date.
 	 * 
+	 * @param dateString
+	 *            The date string.
 	 * @param pattern
-	 *            is of type String
-	 * 
-	 * @return date String
-	 */
-	public static String getUTCCurrentDateTimeString(String pattern) {
-		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(pattern));
-	}
-
-	/**
-	 * This method return a current UTC java.time.LocalDateTime.
-	 * 
-	 * @return LocalDateTime
-	 * 
-	 * @see java.time.LocalDateTime
-	 */
-	public static LocalDateTime getUTCCurrentDateTime() {
-		return ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
-	}
-
-	/**
-	 * This method return a date string of current UTC date for given Default
-	 * utcDateTime pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
-	 * 
-	 * @return a date String
-	 */
-	public static String getDefaultUTCCurrentDateTimeString() {
-		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(DateUtils.DEFAULT_UTC_PATTERN));
-	}
-
-	/**
-	 * This method return a current UTC java.time.LocalDateTime for
-	 * <code>utcDateTime</code> String with given Default utcDateTime pattern -
-	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
-	 * 
-	 * @param utcDateTime
-	 *            is of type String
-	 * 
-	 * @return a LocalDateTime
-	 * 
+	 *            The date format pattern which should respect the SimpleDateFormat
+	 *            rules.
+	 * @return The parsed date object.
 	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             if can not able to parse the <code>utcDateTime</code> string in
-	 *             given Default utcDateTime pattern -
-	 *             <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
-	 * 
-	 * @see io.mosip.kernel.core.exception.ParseException
-	 * 
-	 * @see java.time.LocalDateTime
+	 *             If the given date string or its actual date is invalid based on
+	 *             the given date format pattern.
+	 * @throws io.mosip.kernel.core.exception.NullPointerException
+	 *             If <code>dateString</code> or <code>dateFormat</code> is null.
+	 * @see SimpleDateFormat
 	 */
-	public static LocalDateTime parseDefaultUTCToLocalDateTime(String utcDateTime) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.DEFAULT_UTC_PATTERN);
-		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	public static Date parseToDate(String dateString, String pattern) throws ParseException {
+		if (Objects.isNull(dateString) || Objects.isNull(pattern)) {
+			throw new io.mosip.kernel.core.exception.NullPointerException(
+					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
+					new NullPointerException("dateString or dateFormat is null"));
+		}
 		try {
-			return simpleDateFormat.parse(utcDateTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		} catch (ParseException e) {
+
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+			simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
+			return simpleDateFormat.parse(dateString);
+
+		} catch (Exception e) {
 			throw new io.mosip.kernel.core.exception.ParseException(
 					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
-
 	}
 
 	/**
-	 * This method parse given <code>utcDateTime</code> String to java.util.Date
-	 * with Default utcDateTime pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
-	 * 
-	 * @param utcDateTime
-	 *            is of type String
-	 * 
-	 * @return a Date
-	 * 
-	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             if can not able to parse the <code>utcDateTime</code> string in
-	 *             given Default utcDateTime pattern -
-	 *             <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
-	 * 
-	 * @see io.mosip.kernel.core.exception.ParseException
-	 */
-	public static Date parseDefaultUTCToDate(String utcDateTime) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.DEFAULT_UTC_PATTERN);
-		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		try {
-			return simpleDateFormat.parse(utcDateTime);
-		} catch (ParseException e) {
-			throw new io.mosip.kernel.core.exception.ParseException(
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
-		}
-
-	}
-
-	/**
-	 * Parse the given date string to date object and return a date instance based
+	 * Parses the given date string to date object and return a date instance based
 	 * on the given date string. This makes use of the
 	 * {@link DateUtils#determineDateFormat(String)} to determine the
 	 * SimpleDateFormat pattern to be used for parsing.
@@ -813,6 +929,7 @@ public final class DateUtils {
 	 * @throws io.mosip.kernel.core.exception.NullPointerException
 	 *             If <code>dateString</code> is null.
 	 */
+	@Deprecated
 	public static Date parse(String dateString) throws ParseException {
 		if (Objects.isNull(dateString)) {
 			throw new io.mosip.kernel.core.exception.NullPointerException(
@@ -828,7 +945,7 @@ public final class DateUtils {
 						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
 						new ParseException("Unknown date format.", 0));
 			}
-			return parse(dateString, dateFormat);
+			return parseToDate(dateString, dateFormat);
 		} catch (Exception e) {
 			throw new io.mosip.kernel.core.exception.ParseException(
 					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
@@ -837,44 +954,7 @@ public final class DateUtils {
 	}
 
 	/**
-	 * Validate the actual date of the given date string based on the given date
-	 * format pattern and return a date instance based on the given date string.
-	 * 
-	 * @param dateString
-	 *            The date string.
-	 * @param dateFormat
-	 *            The date format pattern which should respect the SimpleDateFormat
-	 *            rules.
-	 * @return The parsed date object.
-	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             If the given date string or its actual date is invalid based on
-	 *             the given date format pattern.
-	 * @throws io.mosip.kernel.core.exception.NullPointerException
-	 *             If <code>dateString</code> or <code>dateFormat</code> is null.
-	 * @see SimpleDateFormat
-	 */
-	public static Date parse(String dateString, String dateFormat) throws ParseException {
-		if (Objects.isNull(dateString) || Objects.isNull(dateFormat)) {
-			throw new io.mosip.kernel.core.exception.NullPointerException(
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
-					new NullPointerException("dateString or dateFormat is null"));
-		}
-		try {
-
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-			simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
-			return simpleDateFormat.parse(dateString);
-
-		} catch (Exception e) {
-			throw new io.mosip.kernel.core.exception.ParseException(
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
-	}
-
-	/**
-	 * Determine SimpleDateFormat pattern matching with the given date string.
+	 * Determines SimpleDateFormat pattern matching with the given date string.
 	 * Returns null if format is unknown.
 	 * 
 	 * @param dateString
@@ -882,10 +962,11 @@ public final class DateUtils {
 	 * @return The matching SimpleDateFormat pattern, or null if format is unknown.
 	 * @see SimpleDateFormat
 	 */
-	public static String determineDateFormat(String dateString) {
-		for (String regexp : AVAILABLE_DATE_FORMATS.keySet()) {
+	private static String determineDateFormat(String dateString) {
+		for (Entry<String, String> entry : AVAILABLE_DATE_FORMATS.entrySet()) {
+			String regexp = entry.getKey();
 			if (dateString.toLowerCase().matches(regexp)) {
-				return AVAILABLE_DATE_FORMATS.get(regexp);
+				return entry.getValue();
 			}
 		}
 		return null; // Unknown format.

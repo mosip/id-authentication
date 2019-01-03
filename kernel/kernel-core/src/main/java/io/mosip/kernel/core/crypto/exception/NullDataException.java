@@ -23,8 +23,9 @@ public class NullDataException extends BaseUncheckedException {
 
 	/**
 	 * Constructor with errorCode and errorMessage
+	 * 
 	 * @param errorCode
-	 *            The errorcode for this exception
+	 *            The error code for this exception
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */

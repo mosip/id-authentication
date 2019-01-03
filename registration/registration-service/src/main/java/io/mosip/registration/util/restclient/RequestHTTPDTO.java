@@ -17,6 +17,8 @@ public class RequestHTTPDTO {
 	private Class<?> clazz;
 	private URI uri;
 	private SimpleClientHttpRequestFactory simpleClientHttpRequestFactory;
+	
+	private boolean isPregRegSync;
 
 	public HttpMethod getHttpMethod() {
 		return httpMethod;
@@ -56,6 +58,14 @@ public class RequestHTTPDTO {
 
 	public void setSimpleClientHttpRequestFactory(SimpleClientHttpRequestFactory simpleClientHttpRequestFactory) {
 		this.simpleClientHttpRequestFactory = simpleClientHttpRequestFactory;
+	}
+
+	public boolean isPregRegSync() {
+		return isPregRegSync;
+	}
+
+	public void setPregRegSync(boolean isPregRegSync) {
+		this.isPregRegSync = isPregRegSync;
 	}	
 
 }

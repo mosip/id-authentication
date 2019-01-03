@@ -9,9 +9,12 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum RegistrationCenterErrorCode {
-	REGISTRATION_CENTER_FETCH_EXCEPTION("KER-MSD-041",
-			"Error occured while fetching Registration Centers"), REGISTRATION_CENTER_NOT_FOUND("KER-MSD-042",
-					"Registration Center not found"), DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format");
+	REGISTRATION_CENTER_FETCH_EXCEPTION("KER-MSD-041", "Error occured while fetching Registration Centers"),
+
+	REGISTRATION_CENTER_NOT_FOUND("KER-MSD-042", "Registration Center not found"),
+
+	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043",
+			"Invalid date format");
 
 	private final String errorCode;
 	private final String errorMessage;

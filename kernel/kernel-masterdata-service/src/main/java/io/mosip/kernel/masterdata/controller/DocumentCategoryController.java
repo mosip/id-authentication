@@ -5,17 +5,24 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * Controller class to fetch or create document categories.
@@ -25,7 +32,9 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
  * @since 1.0.0
  *
  */
+@CrossOrigin
 @RestController
+@Api(tags = { "DocumentCategory" })
 public class DocumentCategoryController {
 
 	@Autowired
@@ -44,7 +53,10 @@ public class DocumentCategoryController {
 	/**
 	 * API to fetch all Document categories details based on language code
 	 * 
-	 * @return All Document categories of a specific language
+	 * @param langCode
+	 *            the language code
+	 * 
+	 * @return {@link DocumentCategoryResponseDto}
 	 */
 	@GetMapping("/v1.0/documentcategories/{langcode}")
 	public DocumentCategoryResponseDto getAllDocumentCategoryByLaguageCode(@PathVariable("langcode") String langCode) {
@@ -52,9 +64,13 @@ public class DocumentCategoryController {
 	}
 
 	/**
-	 * API to fetch A Document category details using id and language code
+	 * API to fetch all Document categories details based on code and language code
 	 * 
-	 * @return A Document category
+	 * @param code
+	 *            the code
+	 * @param langCode
+	 *            the language code
+	 * @return {@link DocumentCategoryResponseDto}
 	 */
 	@GetMapping("/v1.0/documentcategories/{code}/{langcode}")
 	public DocumentCategoryResponseDto getDocumentCategoryByCodeAndLangCode(@PathVariable("code") String code,
@@ -63,17 +79,46 @@ public class DocumentCategoryController {
 	}
 
 	/**
-	 * API to create document category
+	 * API to create Document category
 	 * 
 	 * @param category
-	 *            The request DocumentCategory Dto.
+	 *            is of type {@link DocumentCategoryDto}
 	 * 
-	 * @return {@link ResponseEntity<CodeAndLanguageCodeID>}
+	 * @return {@link CodeAndLanguageCodeID}
 	 */
 	@PostMapping("/v1.0/documentcategories")
+	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
-			@Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
+			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
 		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
+	}
 
+	/**
+	 * Api to update Document category.
+	 * 
+	 * @param category
+	 *            is of type {@link DocumentCategoryDto}
+	 * @return {@link CodeAndLanguageCodeID}
+	 */
+	@PutMapping("/v1.0/documentcategories")
+	@ApiOperation(value = "Service to update document category", notes = "Update document category and return composite id", response = CodeAndLanguageCodeID.class)
+	public ResponseEntity<CodeAndLanguageCodeID> updateDocumentCategory(
+			@ApiParam("Document category DTO to update") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
+		return new ResponseEntity<>(documentCategoryService.updateDocumentCategory(category), HttpStatus.OK);
+	}
+
+	/**
+	 * Api to delete Document Category.
+	 * 
+	 * @param code
+	 *            the document category code.
+	 * @param langCode
+	 *            the document category language code.
+	 * @return the code.
+	 */
+	@DeleteMapping("/v1.0/documentcategories/{code}")
+	@ApiOperation(value = "Service to delete document category", notes = "Delete document category and return composite id", response = CodeAndLanguageCodeID.class)
+	public ResponseEntity<CodeResponseDto> deleteDocumentCategory(@PathVariable("code") String code) {
+		return new ResponseEntity<>(documentCategoryService.deleteDocumentCategory(code), HttpStatus.OK);
 	}
 }

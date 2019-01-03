@@ -22,7 +22,8 @@ import { BookingModelRequest } from 'src/app/shared/booking-request.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashBoardComponent implements OnInit {
-  userFiles: FileModel[];
+  userFile: FileModel;
+  userFiles: any[] = [];
   tempFiles;
   disableModifyDataButton = true;
   disableModifyAppointmentButton = true;
@@ -56,6 +57,7 @@ export class DashBoardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    sessionStorage.clear();
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -66,13 +68,16 @@ export class DashBoardComponent implements OnInit {
     this.regService.flushUsers();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
-        console.log(applicants);
-        console.log(applicants['response'][0]['bookingRegistrationDTO']);
+        console.log('applicant', applicants);
         if (applicants['response'] !== null) {
+          sessionStorage.setItem('newApplicant', 'false');
           for (let index = 0; index < applicants['response'].length; index++) {
             const bookingRegistrationDTO = applicants['response'][index]['bookingRegistrationDTO'];
             let appointmentDateTime = '-';
-            if (bookingRegistrationDTO !== null) {
+            if (
+              bookingRegistrationDTO !== null &&
+              applicants['response'][index]['statusCode'].toLowerCase() === 'booked'
+            ) {
               const date = applicants['response'][index].bookingRegistrationDTO.reg_date;
               const fromTime = applicants['response'][index].bookingRegistrationDTO.time_slot_from;
               const toTime = applicants['response'][index].bookingRegistrationDTO.time_slot_to;
@@ -88,9 +93,15 @@ export class DashBoardComponent implements OnInit {
             this.users.push(applicant);
           }
         }
-        this.isFetched = true;
       },
       error => {
+        console.log('error', error.error.err.errorCode);
+        if ((error.error.err.errorCode = 'PRG_PAM_APP_005')) {
+          sessionStorage.setItem('newApplicant', 'true');
+          this.onNewApplication();
+        } else {
+          this.router.navigate(['error']);
+        }
         this.isFetched = true;
       },
       () => {
@@ -115,16 +126,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    const data = {
-      case: 'APPLICANTS'
-    };
-    const dialogRef = this.openDialog(data, `250px`);
-    dialogRef.afterClosed().subscribe(numberOfApplicant => {
-      if (numberOfApplicant != null) {
-        this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
-        this.isNewApplication = true;
-      }
-    });
+    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.isNewApplication = true;
   }
 
   openDialog(data, width) {
@@ -156,7 +159,6 @@ export class DashBoardComponent implements OnInit {
     }
     let dialogRef = this.openDialog(data, `350px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
-      console.log(selectedOption, element);
       if (selectedOption && Number(selectedOption) === 1) {
         const body = {
           case: 'CONFIRMATION',
@@ -168,10 +170,8 @@ export class DashBoardComponent implements OnInit {
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            console.log(confirm);
             this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
               response => {
-                console.log(response);
                 const message = {
                   case: 'MESSAGE',
                   title: 'Success',
@@ -212,11 +212,9 @@ export class DashBoardComponent implements OnInit {
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
-            console.log(confirm);
             element.regDto.pre_registration_id = element.applicationID;
             this.dataStorageService.cancelAppointment(new BookingModelRequest(element.regDto)).subscribe(
               response => {
-                console.log(response);
                 const message = {
                   case: 'MESSAGE',
                   title: 'Success',
@@ -225,6 +223,7 @@ export class DashBoardComponent implements OnInit {
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
                 this.dataSource.data[index].status = 'Pending_Appointment';
+                this.dataSource.data[index].appointmentDateTime = '-';
                 this.dataSource._updateChangeSubscription();
               },
               error => {
@@ -255,10 +254,8 @@ export class DashBoardComponent implements OnInit {
       this.fetchedDetails = false;
       this.disableModifyDataButton = true;
       const preId = this.selection.selected[0].applicationID;
-      console.log('preid', preId);
       this.dataStorageService.getUserDocuments(preId).subscribe(response => {
-        this.tempFiles = response;
-        this.setUserFiles(this.tempFiles);
+        this.setUserFiles(response);
       });
       console.log('user files 2', this.userFiles);
 
@@ -266,16 +263,18 @@ export class DashBoardComponent implements OnInit {
         response => {
           this.disableModifyDataButton = true;
           const identity = this.createIdentityJSON(response['response'][0].demographicDetails.identity);
+          console.log('user model before', new UserModel(preId, identity, this.userFiles));
           this.regService.addUser(new UserModel(preId, identity, this.userFiles));
         },
         error => {
           this.disableModifyDataButton = false;
           this.fetchedDetails = true;
-          console.log(error);
+          console.log('error', error);
         },
         () => {
           this.fetchedDetails = true;
-          this.router.navigate(['demographic', '1'], { relativeTo: this.route });
+          // this.router.navigate(['demographic', '1'], { relativeTo: this.route });
+          this.router.navigate(['pre-registration', this.loginId, 'demographic']);
         }
       );
     } else {
@@ -295,10 +294,12 @@ export class DashBoardComponent implements OnInit {
         const preId = this.selection.selected[index].applicationID;
         const fullName = this.selection.selected[index].name;
         const regDto = this.selection.selected[index].regDto;
+        const status = this.selection.selected[index].status;
         this.sharedService.addNameList({
           fullName: fullName,
           preRegId: preId,
-          regDto: regDto
+          regDto: regDto,
+          status: status
         });
       }
       this.router.navigate(['pick-center'], { relativeTo: this.route });
@@ -324,7 +325,6 @@ export class DashBoardComponent implements OnInit {
       [new AttributeModel(obj.region[0].language, obj.region[0].label, obj.region[0].value)],
       [new AttributeModel(obj.province[0].language, obj.province[0].label, obj.province[0].value)],
       [new AttributeModel(obj.city[0].language, obj.city[0].label, obj.city[0].value)],
-      [new AttributeModel(obj.postalcode[0].language, obj.postalcode[0].label, obj.postalcode[0].value)],
       [
         new AttributeModel(
           obj.localAdministrativeAuthority[0].language,
@@ -332,17 +332,19 @@ export class DashBoardComponent implements OnInit {
           obj.localAdministrativeAuthority[0].value
         )
       ],
-      [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
+      [new AttributeModel(obj.postalcode[0].language, obj.postalcode[0].label, obj.postalcode[0].value)],
       [new AttributeModel(obj.mobileNumber[0].language, obj.mobileNumber[0].label, obj.mobileNumber[0].value)],
-      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)],
-      [new AttributeModel(obj.age[0].language, obj.age[0].label, obj.age[0].value)]
+      [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
+      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)]
     );
 
     return identity;
   }
 
   setUserFiles(response) {
-    this.userFiles = response.response;
-    console.log('user Files', this.userFiles);
+    console.log('user files fetched', response);
+
+    this.userFile = response.response;
+    this.userFiles.push(this.userFile);
   }
 }

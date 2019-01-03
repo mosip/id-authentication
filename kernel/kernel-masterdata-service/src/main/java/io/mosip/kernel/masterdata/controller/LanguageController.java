@@ -5,8 +5,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,15 +25,14 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * This class provide services to MOSIP system to do CRUD operations on
- * Languages.
+ * This class provide services to system to do CRUD operations on Languages.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 @RestController
 @RequestMapping("/v1.0/languages")
-@Api(tags = { "languages" })
+@Api(tags = { "Language" })
 public class LanguageController {
 
 	/**
@@ -57,6 +59,28 @@ public class LanguageController {
 			@ApiResponse(code = 500, message = "While creating Language any error occured") })
 	public ResponseEntity<CodeResponseDto> saveLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
 		return new ResponseEntity<>(languageService.saveLanguage(language), HttpStatus.CREATED);
+	}
+
+	@PutMapping
+	@ApiOperation(value = "Service to update Language", notes = "Update Language and return Language code", response = CodeResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Language successfully updated", response = CodeResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Language found"),
+			@ApiResponse(code = 500, message = "While updating Language any error occured") })
+	public ResponseEntity<CodeResponseDto> updateLanguage(@Valid @RequestBody RequestDto<LanguageDto> language) {
+		return new ResponseEntity<>(languageService.updateLanguage(language), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{code}")
+	@ApiOperation(value = "Service to delete Language", notes = "Delete Language and return Language code", response = CodeResponseDto.class)
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Language successfully deleted", response = CodeResponseDto.class),
+			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
+			@ApiResponse(code = 404, message = "When No Language found"),
+			@ApiResponse(code = 500, message = "While deleting Language any error occured") })
+	public ResponseEntity<CodeResponseDto> deleteLanguage(@PathVariable("code") String code) {
+		return new ResponseEntity<>(languageService.deleteLanguage(code), HttpStatus.OK);
 	}
 
 }

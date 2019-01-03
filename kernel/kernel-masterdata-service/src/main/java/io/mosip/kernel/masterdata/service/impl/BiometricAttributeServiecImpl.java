@@ -31,12 +31,10 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 public class BiometricAttributeServiecImpl implements BiometricAttributeService {
 	@Autowired
 	private BiometricAttributeRepository biometricAttributeRepository;
-	@Autowired
-	private MapperUtils mapperUtil;
 
-	@Autowired
-	private MetaDataUtils metaUtils;
-
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.BiometricAttributeService#getBiometricAttribute(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode) {
 		List<BiometricAttributeDto> attributesDto = null;
@@ -44,14 +42,14 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		try {
 			attributes = biometricAttributeRepository
 					.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(biometricTypeCode, langCode);
-		} catch (DataAccessException e) {
+		} catch (DataAccessException|DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
 		if (attributes != null && !attributes.isEmpty()) {
-			attributesDto = mapperUtil.mapAll(attributes, BiometricAttributeDto.class);
+			attributesDto = MapperUtils.mapAll(attributes, BiometricAttributeDto.class);
 		} else {
 			throw new DataNotFoundException(
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -60,12 +58,15 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		return attributesDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.BiometricAttributeService#createBiometricAttribute(io.mosip.kernel.masterdata.dto.BiometricAttributeDto)
+	 */
 	@Override
 	public CodeAndLanguageCodeID createBiometricAttribute(BiometricAttributeDto biometricAttribute) {
-		BiometricAttribute entity = metaUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);
+		BiometricAttribute entity = MetaDataUtils.setCreateMetaData(biometricAttribute, BiometricAttribute.class);
 		try {
 			entity = biometricAttributeRepository.create(entity);
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorCode(),
 					BiometricAttributeErrorCode.BIOMETRICATTRIBUTE_INSERT_EXCEPTION.getErrorMessage() + " "
@@ -73,7 +74,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		}
 		CodeAndLanguageCodeID codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 
-		mapperUtil.mapNew(entity, codeAndLanguageCodeId);
+		MapperUtils.map(entity, codeAndLanguageCodeId);
 
 		return codeAndLanguageCodeId;
 	}

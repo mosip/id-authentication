@@ -3,22 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { RegistrationService } from '../registration.service';
 import { DataStorageService } from '../../shared/data-storage.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-
-interface Applicant {
-  name: string;
-  files: ApplicantFiles[];
-  preId: string;
-}
-
-interface ApplicantFiles {
-  doc_cat_code: string;
-  doc_file_format: string;
-  doc_id: string;
-  doc_name: string;
-  doc_typ_code: string;
-  multipartFile: any;
-  prereg_id: string;
-}
+import { UserModel } from '../demographic/user.model';
+import { FileModel } from '../demographic/file.model';
 
 @Component({
   selector: 'app-file-upload',
@@ -26,27 +12,14 @@ interface ApplicantFiles {
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
-  applicantFile: ApplicantFiles = {
-    doc_cat_code: 'POR',
-    doc_file_format: 'application/pdf',
-    doc_id: '160',
-    doc_name: 'ieltsreadinganswersheet.pdf',
-    doc_typ_code: 'address',
-    multipartFile: '',
-    prereg_id: '35079431854826'
-  };
-  applicantName;
+  applicantPreRegId;
+  userFiles: FileModel = new FileModel();
+  formData = new FormData();
+  user: UserModel = new UserModel();
+  users: UserModel[] = [];
+
   documentType;
   loginId;
-  applicant: Applicant = {
-    name: '',
-    files: [this.applicantFile],
-    preId: ''
-  };
-  uploadedFile;
-  numberOfApplicants = 0;
-  fileType;
-  fileName = [];
   documentIndex;
   LOD = [
     {
@@ -121,21 +94,13 @@ export class FileUploadComponent implements OnInit {
     }
   };
 
-  POAFileName = '';
-  POIFileName = '';
-  POBFileName = '';
-  PORFileName = '';
-
   browseDisabled = true;
 
   // disabled = true;
 
   documents = ['Document type POA', 'Document type POI', 'Document type POB', 'Document type POR'];
 
-  fileToUpload: File = null;
-  DataSent = false;
-  applicants: Applicant[] = [];
-  step = 1;
+  step = 0;
 
   constructor(
     private registration: RegistrationService,
@@ -144,92 +109,117 @@ export class FileUploadComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  setStep(applicant, step) {
-    this.step = step + 1;
-    this.applicantName = applicant.name;
-  }
-
-  nextStep() {
-    this.step++;
-    this.router.navigate(['../pick-center'], { relativeTo: this.route });
-  }
-
-  prevStep() {
-    this.step--;
-  }
-
   ngOnInit() {
+    // console.log('users length', this.registration.getUsers().length);
+    if (this.registration.getUsers().length > 0) {
+      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
+      this.users[0].files.push([]);
+    }
+    // else {
+    //   this.users[0] = this.user;
+    //   this.users[0].files[0] = [[]];
+    // }
+    console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
-    this.registration.getUsers().forEach(element => {
-      this.applicant.name = element.identity.FullName[0].value;
-      this.applicant.preId = element.preRegId;
-      this.applicants.push(this.applicant);
-      console.log('element', element);
-    });
+    // this.users.forEach(element => {
+    //   let i = 0;
+    //   this.applicant.name = element.identity.FullName[0].value;
+    //   this.applicant.preId = element.preRegId;
+    //   element.files.forEach(fileElement => {
+    //     this.applicant.files[i] = fileElement;
+    //   });
+    //   this.applicants.push(this.applicant);
+    //   i++;
+    // });
   }
 
   handleFileInput(event) {
-    const files = event.target.files;
-    console.log(event.target.value);
-    this.uploadedFile = event.target.value;
-    console.log('files', event.target.files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
-    this.JsonString.request.prereg_id = this.applicant.preId;
-    this.JsonString.request.doc_cat_code = this.documentType;
-    this.JsonString.request.doc_file_format = files[0].type;
-    this.JsonString.request.upload_by = this.loginId;
-    const formData = new FormData();
-    formData.append('JsonString', JSON.stringify(this.JsonString));
-    formData.append('file', files.item(0));
-    console.log('formData', formData);
-    this.dataStroage.sendFile(formData).subscribe(response => {
-      console.log(response);
-    });
-    this.browseDisabled = false;
-    for (const app of this.applicants) {
-      if (app.name === this.applicantName) {
-        app.files[this.documentIndex] = files.item(0);
-      }
+    console.log('event', event.target.files);
+    if (event.target.files[0].type === 'application/pdf') {
+      this.setJsonString(event);
+      this.sendFile(event);
+      this.browseDisabled = false;
+    } else {
+      alert('Wrong file type, please upload again');
     }
   }
 
-  handleFileDrop(fileList) {
-    console.log(fileList, 'event from drag and drop');
-    const files = fileList;
-    const formData = new FormData();
-    formData.append('JsonString', JSON.stringify(this.JsonString));
-    formData.append('file', files.item(0));
-    this.dataStroage.sendFile(formData).subscribe(response => {
-      console.log(response);
-    });
-    for (const app of this.applicants) {
-      if (app.name === this.applicantName) {
-        app.files[this.documentIndex] = files[0];
-      }
-    }
-  }
+  handleFileDrop(fileList) {}
 
   selectChange(event, index: number) {
-    console.log('event from select :', event);
-    this.fileType = event.source._id;
-
+    console.log('select change');
     this.documentType = event.source.placeholder;
     this.browseDisabled = false;
     this.documentIndex = index;
   }
 
   openedChange(event, index: number) {
-    console.log('event from select :', event);
+    console.log('open change');
     this.browseDisabled = false;
     this.documentIndex = index;
   }
 
-  onFilesChange(fileList: FileList) {
-    console.log(fileList);
-  }
+  onFilesChange(fileList: FileList) {}
 
   removeFile(applicantIndex, fileIndex) {
+    console.log(applicantIndex, ' ; ', fileIndex);
+
+    this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
+      console.log(res);
+      this.users[applicantIndex].files[0][fileIndex] = '';
+    });
     // this.applicants[applicantIndex].files[fileIndex] = '';
+  }
+
+  setJsonString(event) {
+    this.JsonString.request.doc_cat_code = this.documentType;
+    this.JsonString.request.prereg_id = this.user.preRegId;
+    this.JsonString.request.doc_file_format = event.target.files[0].type;
+    this.JsonString.request.upload_by = this.loginId;
+    console.log('Json String', this.JsonString);
+  }
+
+  sendFile(event): any {
+    this.formData.append('JsonString', JSON.stringify(this.JsonString));
+    this.formData.append('file', event.target.files.item(0));
+    this.dataStroage.sendFile(this.formData).subscribe(response => {
+      console.log('file upload response', response);
+      this.updateUsers(response, event);
+    });
+    this.formData = new FormData();
+  }
+
+  updateUsers(fileResponse, event) {
+    console.log('fileResponse from Update Users method', fileResponse);
+    this.userFiles.doc_cat_code = this.documentType;
+    this.userFiles.doc_file_format = event.target.files[0].type;
+    this.userFiles.doc_id = fileResponse.response[0].documnetId;
+    this.userFiles.doc_name = event.target.files[0].name;
+    this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
+    this.userFiles.multipartFile = event.target.files[0];
+    this.userFiles.prereg_id = this.users[0].preRegId;
+    console.log('step:', this.step);
+
+    console.log('users befor update', this.users);
+    this.users.forEach(element => {
+      if (element.files[0]) {
+        this.users[this.step].files[0][this.documentIndex] = this.userFiles;
+        // element.files[0][this.documentIndex] = this.userFiles;
+      } else {
+        this.users[this.step].files[0].push(this.userFiles);
+      }
+    });
+    this.userFiles = new FileModel();
+    this.registration.updateUser(this.step, this.users[this.step]);
+    console.log('userFiles updaated', this.users);
+  }
+
+  openFile() {
+    console.log('open file called', this.users[0].files[0][0].multipartFile);
+    const file = new Blob(this.users[0].files[0][0].multipartFile, { type: 'application/pdf' });
+    const fileUrl = URL.createObjectURL(file);
+    window.open(fileUrl);
   }
 }

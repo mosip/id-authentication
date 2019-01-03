@@ -1,8 +1,10 @@
 package io.mosip.kernel.masterdata.dto;
 
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 /**
  * Dto for response to user for user machine mappings
  * 
@@ -10,8 +12,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 @Data
-
-
 public class RegistrationCenterUserMachineMappingHistoryDto {
 
 	/**
@@ -30,5 +30,9 @@ public class RegistrationCenterUserMachineMappingHistoryDto {
 	private String usrId;
 	
 	private Boolean isActive;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private LocalDateTime effectivetimes;
+	
 
 }

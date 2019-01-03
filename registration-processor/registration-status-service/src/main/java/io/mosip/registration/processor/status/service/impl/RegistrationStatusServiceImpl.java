@@ -6,16 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
@@ -28,14 +30,16 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
+	
 
 /**
  * The Class RegistrationStatusServiceImpl.
  */
 @Component
 public class RegistrationStatusServiceImpl
-		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
+	/** The threshhold time. */
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
 	private int threshholdTime;
@@ -48,9 +52,6 @@ public class RegistrationStatusServiceImpl
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
 
-	/** The Constant COULD_NOT_GET. */
-	private static final String COULD_NOT_GET = "Could not get Information from table";
-
 	/** The event id. */
 	private String eventId = "";
 
@@ -60,12 +61,12 @@ public class RegistrationStatusServiceImpl
 	/** The event type. */
 	private String eventType = "";
 
+	/** The description. */
 	String description = "";
 
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
-
 
 	/*
 	 * (non-Javadoc)
@@ -82,7 +83,8 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -92,7 +94,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Get registration status by registration id is successful"
-					: "Get registration status by registration id is unsuccessful";
+							: "Get registration status by registration id is unsuccessful";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
@@ -115,7 +117,8 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(entities);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -125,7 +128,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Find files by threshold time and statuscode is successful"
-					: "Find files by threshold time and statuscode is unsuccessful";
+							: "Find files by threshold time and statuscode is unsuccessful";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
@@ -155,8 +158,9 @@ public class RegistrationStatusServiceImpl
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
-		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -166,7 +170,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Registration status added successfully"
-					: "Failure in adding registration status to registration table";
+							: "Failure in adding registration status to registration table";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
@@ -199,8 +203,9 @@ public class RegistrationStatusServiceImpl
 				transactionDto.setReferenceIdType("updated registration record");
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
-		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -210,7 +215,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Updated registration status successfully"
-					: "Updated registration status unsuccessfully";
+							: "Updated registration status unsuccessfully";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
@@ -234,7 +239,8 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -244,7 +250,7 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Get list of registration status by status successfully"
-					: "Get list of registration status by status unsuccessfully";
+							: "Get list of registration status by status unsuccessfully";
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
@@ -269,7 +275,8 @@ public class RegistrationStatusServiceImpl
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -277,16 +284,20 @@ public class RegistrationStatusServiceImpl
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful
-					? "Get list of registration status by registration id successfully"
+			description = isTransactionSuccessful ? "Get list of registration status by registration id successfully"
 					: "Get list of registration status by registration id unsuccessfully";
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}
 
-	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(
-			List<RegistrationStatusEntity> entities) {
+	/**
+	 * Convert entity list to dto list and get external status.
+	 *
+	 * @param entities the entities
+	 * @return the list
+	 */
+	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(List<RegistrationStatusEntity> entities) {
 		List<RegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
 			for (RegistrationStatusEntity entity : entities) {
@@ -297,6 +308,12 @@ public class RegistrationStatusServiceImpl
 		return list;
 	}
 
+	/**
+	 * Convert entity to dto and get external status.
+	 *
+	 * @param entity the entity
+	 * @return the registration status dto
+	 */
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
@@ -308,6 +325,12 @@ public class RegistrationStatusServiceImpl
 		return registrationStatusDto;
 	}
 
+	/**
+	 * Convert entity list to dto list.
+	 *
+	 * @param entities the entities
+	 * @return the list
+	 */
 	private List<InternalRegistrationStatusDto> convertEntityListToDtoList(List<RegistrationStatusEntity> entities) {
 		List<InternalRegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
@@ -319,6 +342,12 @@ public class RegistrationStatusServiceImpl
 		return list;
 	}
 
+	/**
+	 * Convert entity to dto.
+	 *
+	 * @param entity the entity
+	 * @return the internal registration status dto
+	 */
 	private InternalRegistrationStatusDto convertEntityToDto(RegistrationStatusEntity entity) {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
@@ -336,9 +365,16 @@ public class RegistrationStatusServiceImpl
 		registrationStatusDto.setIsDeleted(entity.isDeleted());
 		registrationStatusDto.setDeletedDateTime(entity.getDeletedDateTime());
 		registrationStatusDto.setRetryCount(entity.getRetryCount());
+		registrationStatusDto.setApplicantType(entity.getApplicantType());
 		return registrationStatusDto;
 	}
 
+	/**
+	 * Convert dto to entity.
+	 *
+	 * @param dto the dto
+	 * @return the registration status entity
+	 */
 	private RegistrationStatusEntity convertDtoToEntity(InternalRegistrationStatusDto dto) {
 		RegistrationStatusEntity registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setId(dto.getRegistrationId());
@@ -356,6 +392,7 @@ public class RegistrationStatusServiceImpl
 		registrationStatusEntity.setIsDeleted(dto.isDeleted());
 		registrationStatusEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		registrationStatusEntity.setRetryCount(dto.getRetryCount());
+		registrationStatusEntity.setApplicantType(dto.getApplicantType());
 		return registrationStatusEntity;
 	}
 

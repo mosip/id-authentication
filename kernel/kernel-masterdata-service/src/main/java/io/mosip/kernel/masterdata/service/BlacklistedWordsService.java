@@ -20,6 +20,7 @@ public interface BlacklistedWordsService {
 	 * method to fetch all blacklisted words by language code
 	 * 
 	 * @param langCode
+	 *            language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
 	BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode);
@@ -35,8 +36,28 @@ public interface BlacklistedWordsService {
 	 * Method to add blacklisted words.
 	 * 
 	 * @param blackListedWordsRequestDto
-	 *            the request dto of blackliisted word to be added.
+	 *            the request dto of blacklisted word to be added.
 	 * @return the response.
 	 */
 	public WordAndLanguageCodeID createBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto);
+
+	/**
+	 * Method to update blacklisted words.
+	 * 
+	 * @param blackListedWordsRequestDto
+	 *            the request dto of blacklisted word to be updated.
+	 * @return the response.
+	 */
+	public WordAndLanguageCodeID updateBlackListedWord(RequestDto<BlacklistedWordsDto> blackListedWordsRequestDto);
+
+	/**
+	 * Method to delete blacklisted words.
+	 * 
+	 * @param blackListedWord
+	 *            the word to be deleted.
+	 * @return the response.
+	 */
+	
+	public String deleteBlackListedWord(String blackListedWord);
+
 }
