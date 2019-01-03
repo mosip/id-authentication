@@ -147,6 +147,7 @@
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
+		<module>kernel-idvalidator-tokenid</module>
 	</modules>
 
 	<dependencies>

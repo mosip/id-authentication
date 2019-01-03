@@ -11,8 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.kernel.*")
-public class VidValidatorBootApplication {
+public class TokenIdValidatorBootApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(VidValidatorBootApplication.class, args);
+		SpringApplication.run(TokenIdValidatorBootApplication.class, args);
 	}
 }

@@ -7,9 +7,9 @@
 		<artifactId>kernel-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>kernel-idvalidator-vid</artifactId>
+	<artifactId>kernel-idvalidator-tokenid</artifactId>
 	<name>kernel-idvalidator-vid</name>
-	<description>kernel-idvalidator-vid</description>
+	<description>kernel-idvalidator-tokenid</description>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>

@@ -19,7 +19,7 @@ import io.mosip.kernel.core.idvalidator.spi.IdValidator;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class VidValidatorTest {
+public class TokenIdValidatorTest {
 	
 	@Autowired
 	private IdValidator<String> vidValidatorImpl;
