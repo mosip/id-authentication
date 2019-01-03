@@ -1,11 +1,9 @@
 package io.mosip.authentication.core.spi.id.service;
 
 import java.util.Map;
-import java.util.Optional;
 
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 
 /**
  * 
@@ -16,20 +14,20 @@ import io.mosip.authentication.core.exception.IdValidationFailedException;
 public interface IdAuthService {
 
 	/**
-	 * validates the UIN
-	 * 
-	 * @param UIN
-	 * @return
-	 * @throws IdValidationFailedException
+	 * validates the UIN.
+	 *
+	 * @param uin the uin
+	 * @return the id repo by uin number
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	Map<String, Object> getIdRepoByUinNumber(String uin) throws IdAuthenticationBusinessException;
 
 	/**
-	 * validates the VID
-	 * 
-	 * @param VID
-	 * @return
-	 * @throws IdValidationFailedException
+	 * validates the VID.
+	 *
+	 * @param vid the vid
+	 * @return the id repo by vid number
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException;
 
@@ -47,7 +45,7 @@ public interface IdAuthService {
 
 	/**
 	 * Store entry in Auth_txn table for all authentications.
-	 * 
+	 *
 	 * @param idvId       idvId
 	 * @param idvIdType   idvIdType(D/V)
 	 * @param reqTime     reqTime
@@ -55,7 +53,7 @@ public interface IdAuthService {
 	 * @param status      status('Y'/'N')
 	 * @param comment     comment
 	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException;

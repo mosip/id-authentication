@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * @author Arun Bose Instantiates a new match input.
+ * The Class MatchInput.
  *
- * @param demoMatchType     the demo match type
- * @param matchStrategyType the match strategy type
- * @param matchValue        the match value
+ * @author Arun Bose Instantiates a new match input.
  */
 @Data
 @AllArgsConstructor

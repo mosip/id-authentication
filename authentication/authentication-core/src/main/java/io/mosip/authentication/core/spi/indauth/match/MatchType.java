@@ -14,8 +14,8 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 
 /**
- * Base interface for the match type
- * 
+ * Base interface for the match type.
+ *
  * @authour Loganathan Sekar
  */
 public interface MatchType {

@@ -26,16 +26,11 @@ public final class TextMatcherUtil {
 	 * both phonetic strings are greater than or equal to the given threshold, then
 	 * the result is true, else false.
 	 *
-	 * 
-	 * @param inputString
-	 *            the input string
-	 * @param storedString
-	 *            the stored string
-	 * @param threshold
-	 *            the threshold
-	 * @param language
-	 *            the language
+	 * @param inputString            the input string
+	 * @param storedString            the stored string
+	 * @param language            the language
 	 * @return true, if successful
+	 * @throws EncoderException the encoder exception
 	 */
 	public static Integer phoneticsMatch(String inputString, String storedString, String language)
 			throws EncoderException {

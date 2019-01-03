@@ -16,9 +16,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface OTPAuthService {
 
 	/**
-	 * 
+	 * Validate otp.
+	 *
 	 * @param authreqdto AuthRequestDTO
-	 * @param txnId      txnId
+	 * @param uin the uin
 	 * @return AuthStatusInfo
 	 * @throws IdAuthenticationBusinessException exception
 	 */
