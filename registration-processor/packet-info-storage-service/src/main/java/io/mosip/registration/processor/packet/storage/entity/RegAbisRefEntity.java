@@ -14,7 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  * The Class RegAbisRefEntity.
  */
 @Entity
-@Table(name = "regid_abisrefid", schema = "regprc")
+@Table(name = "reg_abisref", schema = "regprc")
 public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -38,11 +38,11 @@ public class RegAbisRefEntity extends BasePacketEntity<RegAbisRefPkEntity> imple
 	private LocalDateTime crDtimes;
 
 	/** The updated by. */
-	@Column(name = "cr_by", nullable = false)
+	@Column(name = "upd_by", nullable = false)
 	private String updatedBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimes. */
-	@Column(name = "cr_dtimes", nullable = false, updatable = false)
+	@Column(name = "upd_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime updateDtimes;
 
