@@ -37,6 +37,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -58,6 +59,7 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionE
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
@@ -127,6 +129,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The reg osi repository. */
 	@Autowired
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
+
+	@Autowired
+	private BasePacketRepository<RegAbisRefEntity, String> RegAbisRefRepository;
 
 	/** The applicant demographic repository. */
 	@Autowired
@@ -816,6 +821,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
+		}
+	}
+
+	@Override
+	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
+		if (regAbisRefDto != null) {
+			RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
+			RegAbisRefRepository.save(regAbisRefEntity);
+			LOGGER.info(LOG_FORMATTER, regAbisRefEntity.getId(), "Registration ABIS Reference Date saved");
 		}
 	}
 
