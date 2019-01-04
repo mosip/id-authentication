@@ -25,7 +25,7 @@ The key non-functional requirements are
 **Assumptions**
 - Security mechanism is out of scope.
 - Negative scenarios are out of scope as its dummy implementation.
-- No 
+- No message queue implementation for dummy abis.
 
 
 **Solution**
