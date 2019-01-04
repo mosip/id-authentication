@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.abis.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +14,7 @@ import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
 import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.abis.service.impl.AbisServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,6 +26,9 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Abis")
 public class AbisController {
 
+	@Autowired
+	private AbisServiceImpl abisServiceImpl;
+	
 	@PostMapping(path = "/insert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "insert biometric data of an Individual", response = AbisInsertResponceDto.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Biometric data inserted successfully"),
@@ -40,7 +46,9 @@ public class AbisController {
 			@ApiResponse(code = 400, message = "duplicate biometric data") })
 	public ResponseEntity<IdentityResponceDto> identity(@RequestBody(required = true) IdentityRequestDto identityRequestDto) {
 		
-		return null;
+		IdentityResponceDto identityResponceDto= abisServiceImpl.deDupeCheck(identityRequestDto);
 		
+		
+		return ResponseEntity.status(HttpStatus.OK).body(identityResponceDto);
 	}
 }
