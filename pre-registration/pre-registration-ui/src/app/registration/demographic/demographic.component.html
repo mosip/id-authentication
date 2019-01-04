@@ -14,7 +14,7 @@
               maxlength="50"
               placeholder="{{ demo.fullName }}"
               formControlName="fullName"
-              (focusout)="onTransliteration(fullName.value, t_fullName)"
+              (change)="onTransliteration(fullName, t_fullName)"
             />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!fullName.invalid">Full Name is required</mat-error>
@@ -81,9 +81,9 @@
 
           <div class="user__gender">
             Gender
-            <!-- (change)="onGenderChange()" -->
             <mat-button-toggle-group
               formControlName="gender"
+              (change)="onGenderChange()"
               appearance="legacy"
               name="fontStyle"
               aria-label="Font Style"
@@ -106,8 +106,8 @@
               maxlength="50"
               placeholder="{{ demo.addressLine1 }}"
               formControlName="addressLine1"
-              (focusout)="onGenderChange()"
-              (focusout)="onTransliteration(addressLine1.value, t_addressLine1)"
+              (change)="onGenderChange()"
+              (change)="onTransliteration(addressLine1, t_addressLine1)"
             />
             <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
@@ -119,7 +119,7 @@
               maxlength="50"
               placeholder="{{ demo.addressLine2 }}"
               formControlName="addressLine2"
-              (focusout)="onTransliteration(addressLine2.value, t_addressLine2)"
+              (change)="onTransliteration(addressLine2, t_addressLine2)"
             />
             <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
           </mat-form-field>
@@ -130,17 +130,24 @@
               maxlength="50"
               placeholder="{{ demo.addressLine3 }}"
               formControlName="addressLine3"
-              (focusout)="onTransliteration(addressLine3.value, t_addressLine3)"
+              (change)="onTransliteration(addressLine3, t_addressLine3)"
             />
             <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
           </mat-form-field>
 
           <div class="user__dropdown">
             <mat-form-field>
-              <mat-select placeholder="{{ demo.region }}" formControlName="region" #region>
-                <mat-option value="option">Region1</mat-option>
-                <mat-option value="option2">Region2</mat-option>
-                <mat-option value="option3">Region3</mat-option>
+              <mat-select
+                #regiontest
+                (selectionChange)="setLocation($event, userForm.get('region'))"
+                (selectionChange)="onLocationSelect($event.value, provinces)"
+                placeholder="{{ demo.region }}"
+                formControlName="region"
+                #region
+              >
+                <mat-option *ngFor="let region of regions" [value]="region.locationCode">{{
+                  region.locationName
+                }}</mat-option>
               </mat-select>
               <mat-error *ngIf="!region.invalid">Please select region</mat-error>
             </mat-form-field>
@@ -148,20 +155,30 @@
 
           <div class="user__dropdown">
             <mat-form-field>
-              <mat-select placeholder="{{ demo.province }}" formControlName="province" #province>
-                <mat-option value="option1">Province1</mat-option>
-                <mat-option value="option2">Province2</mat-option>
-                <mat-option value="option3">Province3</mat-option>
+              <mat-select
+                (selectionChange)="onLocationSelect($event.value, cities)"
+                (selectionChange)="setLocation($event, userForm.get('province'))"
+                placeholder="{{ demo.province }}"
+                formControlName="province"
+                #province
+              >
+                <mat-option *ngFor="let province of provinces" [value]="province.locationCode">{{
+                  province.locationName
+                }}</mat-option>
               </mat-select>
               <mat-error *ngIf="!province.invalid">Please select province</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
             <mat-form-field>
-              <mat-select placeholder="{{ demo.city }}" formControlName="city" #city>
-                <mat-option value="option1">City1</mat-option>
-                <mat-option value="option2">City2</mat-option>
-                <mat-option value="option3">City3</mat-option>
+              <mat-select
+                (selectionChange)="onLocationSelect($event.value, localAdministrativeAuthorities)"
+                (selectionChange)="setLocation($event, userForm.get('city'))"
+                placeholder="{{ demo.city }}"
+                formControlName="city"
+                #city
+              >
+                <mat-option *ngFor="let city of cities" [value]="city.locationCode">{{ city.locationName }}</mat-option>
               </mat-select>
               <mat-error *ngIf="!city.invalid">Please select city</mat-error>
             </mat-form-field>
@@ -169,13 +186,16 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
+                (selectionChange)="setLocation($event, userForm.get('localAdministrativeAuthority'))"
                 placeholder="{{ demo.localAdministrativeAuthority }}"
                 formControlName="localAdministrativeAuthority"
                 #authority
               >
-                <mat-option value="option1">LAA1</mat-option>
-                <mat-option value="option2">LAA2</mat-option>
-                <mat-option value="option3">LAA3</mat-option>
+                <mat-option
+                  *ngFor="let localAdministrativeAuthoritie of localAdministrativeAuthorities"
+                  [value]="localAdministrativeAuthoritie.locationCode"
+                  >{{ localAdministrativeAuthoritie.locationName }}</mat-option
+                >
               </mat-select>
               <mat-error *ngIf="!authority.invalid">Please select localAdministrativeAuthority</mat-error>
             </mat-form-field>
@@ -233,18 +253,18 @@
         </form>
       </div>
       <div class="user__container">
-        <form #f="ngForm" class="user__form">
+        <form [formGroup]="transUserForm" class="user__form">
           <h6>Language - Arabic</h6>
           <mat-form-field>
             <input
               matInput
               maxlength="50"
               placeholder="{{ demo1.fullName }}"
-              ngModel
+              formControlName="t_fullName"
               name="t_fullName"
               #t_fullName
-              (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_fullName)"
             />
+            <!-- (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_fullName)" -->
             <mat-hint align="end">{{ t_fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!t_fullName.invalid">Full Name is required</mat-error>
           </mat-form-field>
@@ -253,27 +273,27 @@
             <div class="user__date">
               <mat-form-field>
                 <input
-                  [disabled]="true"
-                  [ngModel]="userForm.get('date').value"
-                  name="t_date"
+                  readonly
+                  [value]="userForm.get('date').value"
+                  formControlName="t_date"
                   matInput
                   placeholder="{{ demo1.date }}"
                 />
               </mat-form-field>
               <mat-form-field>
                 <input
-                  [disabled]="true"
-                  [ngModel]="userForm.get('month').value"
-                  name="t_month"
+                  readonly
+                  [value]="userForm.get('month').value"
+                  formControlName="t_month"
                   matInput
                   placeholder="{{ demo1.month }}"
                 />
               </mat-form-field>
               <mat-form-field>
                 <input
-                  [disabled]="true"
-                  [ngModel]="userForm.get('year').value"
-                  name="t_year"
+                  readonly
+                  [value]="userForm.get('year').value"
+                  formControlName="t_year"
                   matInput
                   placeholder="{{ demo1.year }}"
                 />
@@ -284,11 +304,10 @@
             <div class="user__age">
               <mat-form-field>
                 <input
-                  [disabled]="true"
-                  [ngModel]="userForm.get('age').value"
+                  readonly
+                  [value]="userForm.get('age').value"
                   matInput
-                  tabindex="-1"
-                  name="t_age"
+                  formControlName="t_age"
                   placeholder="{{ demo1.age }}"
                 />
               </mat-form-field>
@@ -329,11 +348,10 @@
           <div class="user__gender">
             Gender
             <mat-button-toggle-group
-              [disabled]="true"
               appearance="legacy"
               aria-label="Font Style"
-              [ngModel]="userForm.get('gender').value"
-              name="t_gender"
+              [value]="userForm.get('gender').value"
+              formControlName="t_gender"
             >
               <mat-button-toggle value="male">Male</mat-button-toggle>
               <mat-button-toggle value="female">Female</mat-button-toggle>
@@ -350,38 +368,40 @@
             <input
               matInput
               #t_addressLine1
+              name="t_addressLine1"
               maxlength="50"
               placeholder="{{ demo1.addressLine1 }}"
-              ngModel
-              name="t_addressLine1"
-              (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_addressLine1)"
+              formControlName="t_addressLine1"
             />
+            <!-- (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_addressLine1)" -->
             <mat-hint align="end">{{ t_addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
           </mat-form-field>
           <mat-form-field>
             <input
+              formControlName="t_addressLine2"
               matInput
               #t_addressLine2
+              name="t_addressLine2"
               maxlength="50"
               placeholder="{{ demo1.addressLine2 }}"
-              ngModel
-              name="t_addressLine2"
             />
             <mat-hint align="end">{{ t_addressLine2.value.length }} / 50</mat-hint>
           </mat-form-field>
           <mat-form-field>
             <input
+              formControlName="t_addressLine3"
+              name="t_addressLine3"
               matInput
               #t_addressLine3
               maxlength="50"
               placeholder="{{ demo1.addressLine3 }}"
-              ngModel
-              name="t_addressLine3"
             />
             <mat-hint align="end">{{ t_addressLine3.value.length }} / 50</mat-hint>
           </mat-form-field>
+        </form>
 
+        <form #f="ngForm" class="user__form">
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
@@ -390,9 +410,12 @@
                 [disabled]="true"
                 placeholder="{{ demo1.region }}"
               >
-                <mat-option value="option">Region1</mat-option>
-                <mat-option value="option2">Region2</mat-option>
-                <mat-option value="option3">Region3</mat-option>
+                <mat-option *ngFor="let region of transRegions" [value]="region.locationCode">{{
+                  region.locationName
+                }}</mat-option>
+                <!-- <mat-option value="region1">trans_Region1</mat-option>
+                <mat-option value="region2">trans_Region2</mat-option>
+                <mat-option value="region3">trans_Region3</mat-option> -->
               </mat-select>
             </mat-form-field>
           </div>
@@ -405,9 +428,9 @@
                 [ngModel]="userForm.get('province').value"
                 name="t_province"
               >
-                <mat-option value="option1">Province1</mat-option>
-                <mat-option value="option2">Province2</mat-option>
-                <mat-option value="option3">Province3</mat-option>
+                <mat-option value="BLR">trans_Province1</mat-option>
+                <mat-option value="TN">trans_Province2</mat-option>
+                <mat-option value="province3">trans_Province3</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -419,9 +442,9 @@
                 [ngModel]="userForm.get('city').value"
                 name="t_city"
               >
-                <mat-option value="option1">City1</mat-option>
-                <mat-option value="option2">City2</mat-option>
-                <mat-option value="option3">City3</mat-option>
+                <mat-option value="BLR">trans_City1</mat-option>
+                <mat-option value="TN">trans_City2</mat-option>
+                <mat-option value="city3">trans_City3</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -433,9 +456,9 @@
                 [ngModel]="userForm.get('localAdministrativeAuthority').value"
                 name="t_localAdministrativeAuthority"
               >
-                <mat-option value="option1">LAA1</mat-option>
-                <mat-option value="option2">LAA2</mat-option>
-                <mat-option value="option3">LAA3</mat-option>
+                <mat-option value="BLR">trans_LAA1</mat-option>
+                <mat-option value="TN">trans_LAA2</mat-option>
+                <mat-option value="LAA3">trans_LAA3</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -494,9 +517,9 @@
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">Back</button>
     <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
       <!-- <div *ngIf="dataUploadComplete">Continue</div>
-      <div *ngIf="!dataUploadComplete" class="pgbar">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </div> -->Continue
+          <div *ngIf="!dataUploadComplete" class="pgbar">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </div> -->Continue
     </button>
   </div>
 </div>

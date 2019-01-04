@@ -55,6 +55,7 @@ export class CenterSelectionComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.getLocation();
   }
 
   setStep(index: number) {

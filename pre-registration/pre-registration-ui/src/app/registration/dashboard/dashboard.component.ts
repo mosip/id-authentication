@@ -1,20 +1,21 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
-import { MatTableDataSource } from '@angular/material/table';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DialougComponent } from '../../shared/dialoug/dialoug.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatCheckboxChange } from '@angular/material';
 
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationService } from '../registration.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { Applicant } from './dashboard.modal';
-import { UserModel } from '../demographic/user.model';
-import { AttributeModel } from '../demographic/attribute.model';
-import { IdentityModel } from '../demographic/identity.model';
-import { FileModel } from '../demographic/file.model';
+import { UserModel } from '../demographic/modal/user.modal';
+import { AttributeModel } from '../demographic/modal/attribute.modal';
+import { IdentityModel } from '../demographic/modal/identity.modal';
+import { FileModel } from '../demographic/modal/file.model';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
+import { RequestModel } from '../demographic/modal/request.modal';
+import { DemoIdentityModel } from '../demographic/modal/demo.identity.modal';
+import * as appConstants from '../../app.constants';
 
 @Component({
   selector: 'app-registration',
@@ -27,21 +28,12 @@ export class DashBoardComponent implements OnInit {
   tempFiles;
   disableModifyDataButton = true;
   disableModifyAppointmentButton = true;
-  numSelected: number;
-  numRows: number;
+  // numRows: number;
+  // numSelected: number;
   fetchedDetails = true;
   modify = false;
   users: Applicant[] = [];
-  // = [
-  //   { applicationID: '1', name: 'Shashank', appointmentDateTime: '1.0079', status: 'Pending' },
-  //   { applicationID: '2', name: 'Helium', appointmentDateTime: '4.0026', status: 'He' },
-  //   { applicationID: '10', name: 'Neon', appointmentDateTime: '20.1797', status: 'Ne' },
-  // ];
-
-  displayedColumns: string[] = ['select', 'appId', 'name', 'dateTime', 'status', 'operation'];
-  dataSource = new MatTableDataSource<Applicant>(this.users);
-  selection = new SelectionModel<Applicant>(true, []);
-
+  selectedUsers: Applicant[] = [];
   isNewApplication = false;
   loginId = '';
   isFetched = false;
@@ -52,8 +44,7 @@ export class DashBoardComponent implements OnInit {
     public dialog: MatDialog,
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
-    private sharedService: SharedService,
-    private changeDetectorRefs: ChangeDetectorRef
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -76,7 +67,7 @@ export class DashBoardComponent implements OnInit {
             let appointmentDateTime = '-';
             if (
               bookingRegistrationDTO !== null &&
-              applicants['response'][index]['statusCode'].toLowerCase() === 'booked'
+              applicants['response'][index]['statusCode'].toLowerCase() === appConstants.APPLICATION_STATUS_CODES.booked
             ) {
               const date = applicants['response'][index].bookingRegistrationDTO.reg_date;
               const fromTime = applicants['response'][index].bookingRegistrationDTO.time_slot_from;
@@ -95,8 +86,12 @@ export class DashBoardComponent implements OnInit {
         }
       },
       error => {
-        console.log('error', error.error.err.errorCode);
-        if ((error.error.err.errorCode = 'PRG_PAM_APP_005')) {
+        console.log(error);
+        // if (error.status < 400) {
+        //   console.log('error');
+        //   return this.router.navigate(['error']);
+        // } else
+        if (error.error.err && error.error.err.errorCode === 'PRG_PAM_APP_005') {
           sessionStorage.setItem('newApplicant', 'true');
           this.onNewApplication();
         } else {
@@ -108,21 +103,6 @@ export class DashBoardComponent implements OnInit {
         this.isFetched = true;
       }
     );
-  }
-
-  /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
-    this.numSelected = this.selection.selected.length;
-    this.numRows = this.dataSource.data.length;
-    return this.numSelected === this.numRows;
-  }
-
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  masterToggle() {
-    this.isAllSelected() ? this.selection.clear() : this.dataSource.data.forEach(row => this.selection.select(row));
-    if (this.isAllSelected()) {
-      this.disableModifyDataButton = true;
-    }
   }
 
   onNewApplication() {
@@ -180,7 +160,7 @@ export class DashBoardComponent implements OnInit {
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
                 this.users.splice(index, 1);
-                this.dataSource._updateChangeSubscription();
+                // this.dataSource._updateChangeSubscription();
               },
               error => {
                 console.log(error);
@@ -222,9 +202,9 @@ export class DashBoardComponent implements OnInit {
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
-                this.dataSource.data[index].status = 'Pending_Appointment';
-                this.dataSource.data[index].appointmentDateTime = '-';
-                this.dataSource._updateChangeSubscription();
+                // this.dataSource.data[index].status = 'Pending_Appointment';
+                // this.dataSource.data[index].appointmentDateTime = '-';
+                // this.dataSource._updateChangeSubscription();
               },
               error => {
                 console.log(error);
@@ -249,102 +229,260 @@ export class DashBoardComponent implements OnInit {
     });
   }
 
-  onModifyData(flag: boolean) {
-    if (flag && this.selection.selected.length === 1) {
-      this.fetchedDetails = false;
-      this.disableModifyDataButton = true;
-      const preId = this.selection.selected[0].applicationID;
-      this.dataStorageService.getUserDocuments(preId).subscribe(response => {
+  onModifyInformation(preId: string) {
+    this.disableModifyDataButton = true;
+    this.dataStorageService.getUserDocuments(preId).subscribe(
+      response => {
         this.setUserFiles(response);
-      });
-      console.log('user files 2', this.userFiles);
-
-      this.dataStorageService.getUser(preId).subscribe(
-        response => {
-          this.disableModifyDataButton = true;
-          const identity = this.createIdentityJSON(response['response'][0].demographicDetails.identity);
-          console.log('user model before', new UserModel(preId, identity, this.userFiles));
-          this.regService.addUser(new UserModel(preId, identity, this.userFiles));
-        },
-        error => {
-          this.disableModifyDataButton = false;
-          this.fetchedDetails = true;
-          console.log('error', error);
-        },
-        () => {
-          this.fetchedDetails = true;
-          // this.router.navigate(['demographic', '1'], { relativeTo: this.route });
-          this.router.navigate(['pre-registration', this.loginId, 'demographic']);
-        }
-      );
-    } else {
-      this.numSelected = this.selection.selected.length;
-      if (this.numSelected > 1 || this.numSelected === 0) {
-        this.disableModifyDataButton = true;
-      } else {
-        this.disableModifyDataButton = false;
+      },
+      error => {},
+      () => {
+        this.dataStorageService.getUser(preId).subscribe(
+          response => {
+            const request = this.createRequestJSON(response['response'][0]);
+            this.disableModifyDataButton = true;
+            this.regService.addUser(new UserModel(preId, request, this.userFiles));
+          },
+          error => {
+            console.log('error', error);
+            this.disableModifyDataButton = false;
+            this.fetchedDetails = true;
+            return this.router.navigate(['error']);
+          },
+          () => {
+            this.fetchedDetails = true;
+            this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+          }
+        );
       }
-    }
-    this.modify = false;
+    );
   }
 
-  onModifyAppointment(flag: boolean) {
-    if (flag) {
-      for (let index = 0; index < this.numSelected; index++) {
-        const preId = this.selection.selected[index].applicationID;
-        const fullName = this.selection.selected[index].name;
-        const regDto = this.selection.selected[index].regDto;
-        const status = this.selection.selected[index].status;
-        this.sharedService.addNameList({
-          fullName: fullName,
-          preRegId: preId,
-          regDto: regDto,
-          status: status
-        });
-      }
-      this.router.navigate(['pick-center'], { relativeTo: this.route });
-    }
-    this.numSelected = this.selection.selected.length;
-    if (this.numSelected === 0) {
-      this.disableModifyAppointmentButton = true;
+  onSelectUser(user: Applicant, event?: MatCheckboxChange) {
+    if (!event && user) {
+      this.selectedUsers.length = 0;
+      this.selectedUsers.push(user);
+    } else if (event && event.checked) {
+      this.selectedUsers.push(user);
     } else {
+      this.selectedUsers.splice(this.selectedUsers.indexOf(user));
+    }
+
+    if (this.selectedUsers.length > 0) {
       this.disableModifyAppointmentButton = false;
+    } else {
+      this.disableModifyAppointmentButton = true;
     }
+    console.log(this.selectedUsers);
   }
 
-  private createIdentityJSON(obj) {
-    console.log('obj', obj);
-
+  onModifyMultipleAppointment() {
+    for (let index = 0; index < this.selectedUsers.length; index++) {
+      const preId = this.selectedUsers[index].applicationID;
+      const fullName = this.selectedUsers[index].name;
+      const regDto = this.selectedUsers[index].regDto;
+      const status = this.selectedUsers[index].status;
+      this.sharedService.addNameList({
+        fullName: fullName,
+        preRegId: preId,
+        regDto: regDto,
+        status: status
+      });
+    }
+    this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
+  }
+  private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(
-      [new AttributeModel(obj.FullName[0].language, obj.FullName[0].label, obj.FullName[0].value)],
-      [new AttributeModel(obj.dateOfBirth[0].language, obj.dateOfBirth[0].label, obj.dateOfBirth[0].value)],
-      [new AttributeModel(obj.gender[0].language, obj.gender[0].label, obj.gender[0].value)],
-      [new AttributeModel(obj.addressLine1[0].language, obj.addressLine1[0].label, obj.addressLine1[0].value)],
-      [new AttributeModel(obj.addressLine2[0].language, obj.addressLine2[0].label, obj.addressLine2[0].value)],
-      [new AttributeModel(obj.addressLine3[0].language, obj.addressLine3[0].label, obj.addressLine3[0].value)],
-      [new AttributeModel(obj.region[0].language, obj.region[0].label, obj.region[0].value)],
-      [new AttributeModel(obj.province[0].language, obj.province[0].label, obj.province[0].value)],
-      [new AttributeModel(obj.city[0].language, obj.city[0].label, obj.city[0].value)],
       [
         new AttributeModel(
-          obj.localAdministrativeAuthority[0].language,
-          obj.localAdministrativeAuthority[0].label,
-          obj.localAdministrativeAuthority[0].value
+          identityModal.fullName[0].language,
+          identityModal.fullName[0].label,
+          identityModal.fullName[0].value
+        ),
+        new AttributeModel(
+          identityModal.fullName[1].language,
+          identityModal.fullName[1].label,
+          identityModal.fullName[1].value
         )
       ],
-      [new AttributeModel(obj.postalcode[0].language, obj.postalcode[0].label, obj.postalcode[0].value)],
-      [new AttributeModel(obj.mobileNumber[0].language, obj.mobileNumber[0].label, obj.mobileNumber[0].value)],
-      [new AttributeModel(obj.emailId[0].language, obj.emailId[0].label, obj.emailId[0].value)],
-      [new AttributeModel(obj.CNEOrPINNumber[0].language, obj.CNEOrPINNumber[0].label, obj.CNEOrPINNumber[0].value)]
+      [
+        new AttributeModel(
+          identityModal.dateOfBirth[0].language,
+          identityModal.dateOfBirth[0].label,
+          identityModal.dateOfBirth[0].value
+        ),
+        new AttributeModel(
+          identityModal.dateOfBirth[1].language,
+          identityModal.dateOfBirth[1].label,
+          identityModal.dateOfBirth[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.gender[0].language,
+          identityModal.gender[0].label,
+          identityModal.gender[0].value
+        ),
+        new AttributeModel(
+          identityModal.gender[1].language,
+          identityModal.gender[1].label,
+          identityModal.gender[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.addressLine1[0].language,
+          identityModal.addressLine1[0].label,
+          identityModal.addressLine1[0].value
+        ),
+        new AttributeModel(
+          identityModal.addressLine1[1].language,
+          identityModal.addressLine1[1].label,
+          identityModal.addressLine1[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.addressLine2[0].language,
+          identityModal.addressLine2[0].label,
+          identityModal.addressLine2[0].value
+        ),
+        new AttributeModel(
+          identityModal.addressLine2[1].language,
+          identityModal.addressLine2[1].label,
+          identityModal.addressLine2[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.addressLine3[0].language,
+          identityModal.addressLine3[0].label,
+          identityModal.addressLine3[0].value
+        ),
+        new AttributeModel(
+          identityModal.addressLine3[1].language,
+          identityModal.addressLine3[1].label,
+          identityModal.addressLine3[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.region[0].language,
+          identityModal.region[0].label,
+          identityModal.region[0].value
+        ),
+        new AttributeModel(
+          identityModal.region[1].language,
+          identityModal.region[1].label,
+          identityModal.region[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.province[0].language,
+          identityModal.province[0].label,
+          identityModal.province[0].value
+        ),
+        new AttributeModel(
+          identityModal.province[1].language,
+          identityModal.province[1].label,
+          identityModal.province[1].value
+        )
+      ],
+      [
+        new AttributeModel(identityModal.city[0].language, identityModal.city[0].label, identityModal.city[0].value),
+        new AttributeModel(identityModal.city[1].language, identityModal.city[1].label, identityModal.city[1].value)
+      ],
+      [
+        new AttributeModel(
+          identityModal.localAdministrativeAuthority[0].language,
+          identityModal.localAdministrativeAuthority[0].label,
+          identityModal.localAdministrativeAuthority[0].value
+        ),
+        new AttributeModel(
+          identityModal.localAdministrativeAuthority[1].language,
+          identityModal.localAdministrativeAuthority[1].label,
+          identityModal.localAdministrativeAuthority[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.postalcode[0].language,
+          identityModal.postalcode[0].label,
+          identityModal.postalcode[0].value
+        ),
+        new AttributeModel(
+          identityModal.postalcode[1].language,
+          identityModal.postalcode[1].label,
+          identityModal.postalcode[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.mobileNumber[0].language,
+          identityModal.mobileNumber[0].label,
+          identityModal.mobileNumber[0].value
+        ),
+        new AttributeModel(
+          identityModal.mobileNumber[1].language,
+          identityModal.mobileNumber[1].label,
+          identityModal.mobileNumber[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.emailId[0].language,
+          identityModal.emailId[0].label,
+          identityModal.emailId[0].value
+        ),
+        new AttributeModel(
+          identityModal.emailId[1].language,
+          identityModal.emailId[1].label,
+          identityModal.emailId[1].value
+        )
+      ],
+      [
+        new AttributeModel(
+          identityModal.CNEOrPINNumber[0].language,
+          identityModal.CNEOrPINNumber[0].label,
+          identityModal.CNEOrPINNumber[0].value
+        ),
+        new AttributeModel(
+          identityModal.CNEOrPINNumber[1].language,
+          identityModal.CNEOrPINNumber[1].label,
+          identityModal.CNEOrPINNumber[1].value
+        )
+      ]
     );
 
     return identity;
   }
 
+  private createRequestJSON(requestModal: RequestModel) {
+    const identity = this.createIdentityJSON(requestModal.demographicDetails.identity);
+    const req: RequestModel = {
+      preRegistrationId: requestModal.preRegistrationId,
+      createdBy: requestModal.createdBy,
+      createdDateTime: requestModal.createdDateTime,
+      updatedBy: this.loginId,
+      updatedDateTime: '',
+      statusCode: requestModal.statusCode,
+      langCode: requestModal.langCode,
+      demographicDetails: new DemoIdentityModel(identity)
+    };
+    return req;
+  }
+
   setUserFiles(response) {
     console.log('user files fetched', response);
-
     this.userFile = response.response;
     this.userFiles.push(this.userFile);
+    console.log('user files after pushing', this.userFiles);
+  }
+
+  getColor(value: string) {
+    if (value === appConstants.APPLICATION_STATUS_CODES.pending) return 'orange';
+    if (value === appConstants.APPLICATION_STATUS_CODES.booked) return 'green';
+    if (value === appConstants.APPLICATION_STATUS_CODES.expired) return 'red';
   }
 }

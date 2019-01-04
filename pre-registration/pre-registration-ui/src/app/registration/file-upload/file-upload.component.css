@@ -16,7 +16,15 @@
   height: 50%;
 }
 .browseInput {
-  height: 10%;
+  width: 60%;
+  background: none;
+  border: 1px solid rgba(253, 81, 140, 1);
+  color: rgba(253, 81, 140, 1);
+}
+
+.browseInput[disabled] {
+  border: 1px solid rgba(253, 81, 140, 0.35);
+  color: rgba(253, 81, 140, 0.35);
 }
 .documentWrapper {
   width: 100%;
@@ -93,6 +101,7 @@ mat-select:focus {
 }
 
 .file-upload__body__document-type {
+  padding: 10px 0px;
 }
 
 .file-upload__body__document-browse {
@@ -116,4 +125,41 @@ mat-select:focus {
   font-size: 1.5em;
   right: 0px;
   text-align: right;
+}
+.file-upload__button {
+  height: 42px;
+  width: 25%;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.user__buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.user__btn {
+  /* padding: 0px 53px;
+  border: 1px solid red;
+  margin: 5px; */
+  background-color: #ff4081;
+  border: none;
+  color: white;
+  padding: 0.8rem 4rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.user__btn:disabled,
+.user__btn:active {
+  border: 1px solid gray;
+  background-color: white;
+  color: #ff4081;
+  cursor: default;
 }

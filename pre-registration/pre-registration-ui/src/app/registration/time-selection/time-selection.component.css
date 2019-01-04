@@ -1,17 +1,210 @@
 .time-selection__title-card {
-    color: #ff0066;
+    color: #ff4081;
     font-size: 20px;
+    margin: 20px;
+    height: 30px;
+    padding-top: -10px;
+}
+
+.time-selection__title-card-text {
+    margin: -15px 0 0 -25px;
+}
+
+.time-selection__arrow-text {
+    margin: 20px 10px 0 10px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.time-selection__date-card {
     margin: 20px;
 }
 
-/* .sizing {
-    border: 1px solid #000;
-    border-radius: 10px;
+.time-selection__tile-date-text {
+    margin: 15px 0 15px 0;
+    font-size: 10px;
+}
+
+.time-selection__tile-availability-text {
+    margin: 15px 0 15px 0;
+    font-weight: 500;
+}
+
+.time-selection__slots-div {
+    display: flex;
+    margin: 0 20px 20px 20px;
+}
+
+.time-seelection__slot-groups-div {
+    display: flex;
+    margin: 20px 0 0 20px;
+}
+
+.time-seelection__slot-groups-div p{
+    margin: 0 40px 5px 20px;
+    font-weight: 500;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.time-seelection__slot-groups-div-selected {
+    color: blue !important;
+}
+
+.time-selection__time-slots-container {
+    border-top: 1px solid #ff4081;
+    margin-right: 20px;
+    width: 74%;
+}
+
+.time-selection__names-container {
+    width: 25%;
+    padding: 0;
+}
+
+.time-selection__time-slots-container div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.time-selection__name-list-header {
+    height: 55px;
+    width: 100%;
+    background-color: rgb(94, 169, 240);
+    padding: 5px 0 5px 20px;
+    word-wrap: break-word;
+    color: white;
+}
+
+.time-selection__names-header-date-text {
+    font-size: 12px;
+}
+
+.time-selection__names-header-time-text {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.time-selection__names-header-day-text {
+    font-size: 9px;
+}
+
+.time-selection__name-list {
+    padding: 5px;
+    list-style: none;
+}
+
+.time-selection__name-list-item {
+    padding: 15px 0 15px 10px;
+    height: 50px;
+    width: 100%;
+    font-size: 15px;
+}
+
+.name-delete-button {
+    font-size: 12px;
+    margin-left: 50px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.time-selection__button-container {
+    width: 100%;
+    height: 70px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding-top: 10px;
+}
+
+.user__btn {
+    /* padding: 0px 53px;
+    border: 1px solid red;
+    margin: 5px; */
+    background-color: #ff4081;
+    border: none;
+    color: white;
+    padding: 0.8rem 4rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  .button-placer {
+      margin-left: 50%;
+  }
+
+  .button-right {
+      float: right;
+  }
+  
+  .user__btn:disabled,
+  .user__btn:active {
+    border: 1px solid gray;
+    background-color: white;
+    color: #ff4081;
+  }
+
+.card {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100px;
+    width:150px;
+    margin: 20px;
+    padding: 10px;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.card-content {
+    padding: 15px 15px 30px 15px;
+}
+
+.card-time-text {
+    font-size: 20px;
+    font-weight: 100;
+}
+
+.card-slot-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: blue;
+}
+
+.card-slot-text-span-number {
+    font-size: 30px !important;
+    margin-left: 40px;
+    font-weight: 300;
+}
+
+.card-slot-text-span-image {
+    float: right;
+    margin-left: 10px;
+}
+
+.card-slot-text-selected {
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+}
+
+
+.sizing {
+    height: 100px;
+    width: 100px;
     display: inline-block;
     margin: 0 15px 0 15px;
-    text-align: center;
+    text-align: left;
     cursor: pointer;
+    background-color: #eee;
     padding: 2px 20px 2px 20px;
+    border: 1px solid #eee;
+    padding: 2px;
+    box-shadow: 1px #eee;
   }
 
   .middle {
@@ -28,13 +221,13 @@
   }
   
   .left-button{
-      margin-top: 15px;
+      margin-top: 35px;
       float: left;
       cursor: pointer;
   }
 
   .right-button {
-      margin-top: 15px;
+      margin-top: 35px;
       float: right;
       cursor: pointer;
   }
@@ -46,9 +239,13 @@
   }
 
   .selected {
-      background-color: #8080ff;
-      color: white;
-      opacity: 0.8;
+      border: 1px solid #ff4081;
+  }
+
+  .selected-card {
+      padding: 15px;
+      background-color: #ff4081 !important;
+      color: white !important;
   }
 
   .sizing-card {
@@ -124,22 +321,21 @@
         margin: 0;
         overflow: scroll;
     }
-  }
 
-  .list {
-      list-style-type: none;
-      margin: 0 0 0 -30px;
-  }
+    .time-selection__name-list-header {
+        height: 150px;
+        padding: 5px;
+    }
 
-  .list-container {
-    overflow-y: auto;
-    max-height: 100px;
-  }
+    .time-selection__name-list-item {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
 
-  .close-button-sizing {
-      color: red;
-      margin-left: 4px;
-      font-size: 12px;
+    .time-selection__time-slots-container {
+        width: 100%;
+    }
+
   }
 
   @media screen and (min-width: 767px) and (max-width: 991px) {
@@ -162,4 +358,4 @@
       .middle {
           width: 85%;
       }
-  } */
+  }

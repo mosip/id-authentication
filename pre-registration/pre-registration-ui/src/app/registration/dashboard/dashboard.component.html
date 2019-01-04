@@ -1,7 +1,4 @@
-<div class="spinner" *ngIf="!isFetched"><mat-spinner></mat-spinner></div>
-
-<div *ngIf="!isNewApplication && isFetched">
-  <div class="modifydata">
+<!-- <div class="modifydata">
     <mat-icon class="icon" style="cursor: pointer;" routerLink="/">home</mat-icon>
     <button class="addButtonPlacer" mat-raised-button (click)="onNewApplication()">
       <mat-icon>add_circle_outline</mat-icon>Application
@@ -23,10 +20,10 @@
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr> -->
 
-    <!-- Checkbox Column -->
-    <ng-container matColumnDef="select">
+<!-- Checkbox Column -->
+<!-- <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">
         <mat-checkbox
           (change)="$event ? masterToggle() : null"
@@ -79,27 +76,84 @@
       </td>
     </ng-container>
   </table>
-</div>
+</div> -->
 
-<!-- CARD VIEW -->
-
-<div *ngIf="!isNewApplication && isFetched">
-  <div *ngFor="let user of users">
-    <ul>
-      <li>
-        <div class="card-wrapper">
-          <div class="row1">
-            <input type="checkbox" /> <span class="field2">ApplicationID : {{ user.applicationID }}</span>
+<div class="dashboard-body">
+  <div class="heading-row">
+    <div class="heading"><p>UID Status</p></div>
+    <span class="spacer"></span>
+    <div class="buttons">
+      <span
+        ><button
+          mat-button
+          [disabled]="disableModifyAppointmentButton"
+          class="modify-app-btn"
+          (click)="onModifyMultipleAppointment()"
+        >
+          <img src="assets\Book_Modify Appointment.png" class="modify-app-img" />Book/Modify Appointment
+        </button></span
+      >
+      <span
+        ><button mat-button class="create-app-btn" (click)="onNewApplication()">
+          <img src="assets\Create new application.png" class="create-app-img" />Create New Application
+        </button></span
+      >
+    </div>
+  </div>
+  <div class="spinner" *ngIf="!isFetched"><mat-spinner [diameter]="50"></mat-spinner></div>
+  <div *ngIf="!isNewApplication && isFetched">
+    <div class="card-container">
+      <div class="card-component" *ngFor="let user of users">
+        <mat-card>
+          <div class="card-header">
+            <span class="checkbox"
+              ><mat-checkbox (change)="onSelectUser(user, $event)">Application ID</mat-checkbox></span
+            >
+            <span class="checkbox"
+              ><strong>{{ user.applicationID }}</strong></span
+            >
+            <button mat-icon-button><img src="assets\view.png" class="view-img" /></button>
+            <span class="spacer"></span>
+            <button mat-icon-button><img src="assets\delete.png" class="delete-img" /></button>
           </div>
-          <div class="row2">
-            <span class="field2">Name : {{ user.name }}</span> <span class="field3">Status : {{ user.status }}</span>
-          </div>
-          <div class="row3">
-            <span class="field4">AppointmentDateTime : {{ user.appointmentDateTime }}</span>
-          </div>
-          <span class="edit"> <mat-icon (click)="onDelete(user)">delete</mat-icon> </span>
-        </div>
-      </li>
-    </ul>
+          <mat-card-content>
+            <div class="card-content">
+              <table>
+                <tr>
+                  <td>Name</td>
+                  <td class="application-value">{{ user.name }}</td>
+                </tr>
+                <br />
+                <tr>
+                  <td>Appointment Date</td>
+                  <td class="application-value">{{ user.appointmentDateTime }}</td>
+                </tr>
+                <br />
+                <tr>
+                  <td>Status</td>
+                  <td id="status" [ngStyle]="{ color: getColor(user.status) }">{{ user.status }}</td>
+                </tr>
+              </table>
+            </div>
+          </mat-card-content>
+          <mat-card-footer>
+            <mat-card-actions>
+              <button mat-button class="footer-btn" (click)="onModifyInformation(user.applicationID)">
+                <img src="assets\Modify information_grey.png" class="modifyinfo-btn-img" />Modify Information
+              </button>
+              <button
+                mat-button
+                class="footer-btn"
+                (click)="onSelectUser(user)"
+                (click)="onModifyMultipleAppointment()"
+              >
+                <img src="assets\book_modify appointment_grey.png" class="modifyapp-btn-img" />Modify Appointment
+              </button>
+              <button mat-icon-button><img src="assets\download.png" class="download-btn-img" /></button>
+            </mat-card-actions>
+          </mat-card-footer>
+        </mat-card>
+      </div>
+    </div>
   </div>
 </div>

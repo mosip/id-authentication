@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserModel } from './demographic/user.model';
+import { UserModel } from './demographic/modal/user.modal';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -23,6 +23,8 @@ export class RegistrationService {
 
   addUser(user: UserModel) {
     this.users.push(user);
+    console.log('users after being pushed', this.users);
+
     this.usersChanged.next(this.users.slice());
   }
 

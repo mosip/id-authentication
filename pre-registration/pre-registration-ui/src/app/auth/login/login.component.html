@@ -2,6 +2,7 @@
 
   <div class="form_wrapper">
     <div class="heading">
+      <p>{{ 'HELLO' | translate }}</p>
       <span>Quick & Easy steps</span>
     </div>
 
@@ -12,21 +13,37 @@
     <div class="form_fields_wrapper">
       <div>
         <mat-form-field appearance="outline">
-          <mat-select placeholder="Select your language">
+          <mat-select [(ngModel)]="selectedLanguage" (selectionChange)="changeLanguage()" placeholder="Select your language">
             <mat-option *ngFor="let lang of languages" [value]="lang">{{lang}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
 
-      <div>
+      <div *ngIf="showContactDetails">
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="inputText" placeholder="{{inputPlaceholder}}" id="inputField" />
+          <input matInput [(ngModel)]="inputContactDetails" placeholder="{{inputPlaceholderContact}}" id="inputFieldContact" />
         </mat-form-field>
       </div>
 
-      <div>
+      <div *ngIf="showOTP">
+        <mat-form-field appearance="outline">
+          <input matInput [(ngModel)]="inputOTP" placeholder="{{inputPlaceholderOTP}}" id="inputFieldOTP" (input)="showVerifyBtn()" />
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="showSendOTP">
         <button mat-raised-button class="pinkBg whiteText boldText"
-        disabled="{{disableBtn}}" (click)="submit()">{{btnText}}</button>
+        disabled="{{disableBtn}}" (click)="submit()">Send OTP</button>
+      </div>
+
+      <div *ngIf="showVerify">
+        <button mat-raised-button class="pinkBg whiteText boldText"
+        disabled="{{disableBtn}}" (click)="submit()">Verify</button>
+      </div>
+
+      <div *ngIf="showResend">
+        <button mat-raised-button class="pinkBg whiteText boldText"
+        disabled="{{disableBtn}}" (click)="submit()">Resend</button>
       </div>
 
       <div class="pinkText boldText" id="timer">

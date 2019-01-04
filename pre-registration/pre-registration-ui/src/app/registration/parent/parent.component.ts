@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-parent',
@@ -10,16 +10,25 @@ export class ParentComponent implements OnInit {
 
   componentName: string;
 
-  constructor(private route: ActivatedRoute) {
-    console.log(route);
+  constructor(private router: Router) {
   }
 
   ngOnInit() {
   }
 
   onActivate($event) {
-    console.log($event);
-    this.componentName = $event.route === undefined ? 'AcknowledgementComponent' : $event.route.component.name;
+    const route_parts = this.router.url.split('/');
+    if (route_parts[route_parts.length - 1] === 'demographic') {
+      this.componentName = 'DemographicComponent';
+    } else if (route_parts[route_parts.length - 1] === 'file-upload') {
+      this.componentName = 'FileUploadComponent';
+    } else if (route_parts[route_parts.length - 1] === 'pick-center') {
+      this.componentName = 'CenterSelectionComponent';
+    } else if (route_parts[route_parts.length - 1] === 'pick-time') {
+      this.componentName = 'TimeSelectionComponent';
+    } else if (route_parts[route_parts.length - 1] === 'acknowledgement') {
+      this.componentName = 'AcknowledgementComponent';
+    }
   }
 
 }

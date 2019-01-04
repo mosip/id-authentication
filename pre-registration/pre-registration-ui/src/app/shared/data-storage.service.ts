@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+
 import { Applicant } from '../registration/dashboard/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
+import * as appConstants from './../app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -9,17 +11,16 @@ import { BookingModelRequest } from './booking-request.model';
 export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
-  SEND_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/documents';
-  DELETE_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/deleteDocument';
-  GET_FILE_URL = 'https://integ.mosip.io/int-document/v0.1/pre-registration/getDocument';
-  BASE_URL2 = 'https://integ.mosip.io/int-demographic/v0.1/pre-registration/applicationData';
-  BASE_URL = 'https://integ.mosip.io/int-demographic/v0.1/pre-registration/applications';
+  SEND_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/documents';
+  DELETE_FILE_URL = 'https://integ.mosip.io/document/v0.1/pre-registration/deleteDocument';
+  GET_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/getDocument';
+  BASE_URL2 = 'https://integ.mosip.io/demographic/v0.1/pre-registration/applicationData';
+  BASE_URL = 'https://integ.mosip.io/demographic/v0.1/pre-registration/applications';
   // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
-  // https://pre-reg-df354.firebaseio.com/applications.json
-  // MASTER_DATA_URL = 'https://localhost:8086/masterdata/v1.0/';
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
-  AVAILABILITY_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/availability';
-  BOOKING_URL = 'https://integ.mosip.io/int-booking/v0.1/pre-registration/booking/book';
+  AVAILABILITY_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/availability';
+  BOOKING_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/book';
+  LOCATION_URL = 'https://integ.mosip.io/masterdata/';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
@@ -28,7 +29,7 @@ export class DataStorageService {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('userId', value)
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
     });
   }
 
@@ -36,15 +37,15 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL2, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('preRegId', preRegId)
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
     });
   }
 
   getTransliteration(request) {
     const obj = {
-      id: 'mosip.pre-registration.transliteration.transliterate',
-      reqTime: '2018-12-24T14:10:31.900Z',
-      ver: '1.0',
+      id: appConstants.TRANSLITERATION_ID,
+      reqTime: '2019-01-02T11:01:31.211Z',
+      ver: appConstants.VERSION,
       request: request
     };
 
@@ -61,9 +62,9 @@ export class DataStorageService {
 
   addUser(identity: any) {
     const obj = {
-      id: 'mosip.pre-registration.demographic.create',
-      ver: '1.0',
-      reqTime: '2018-10-17T07:22:57.086+0000',
+      id: appConstants.NEW_USER_ID,
+      ver: appConstants.VERSION,
+      reqTime: '2019-01-02T11:01:31.211Z',
       request: identity
     };
     console.log('data being sent', obj);
@@ -80,7 +81,7 @@ export class DataStorageService {
     return this.httpClient.delete(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('preId', preId)
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.deleteUser, preId)
     });
   }
 
@@ -140,24 +141,27 @@ export class DataStorageService {
   }
 
   getLocationMetadataHirearchy(value: string) {
-    const URL = 'http://a2ml29862:8080/v0.1/pre-registration/locations/location';
-    return this.httpClient.get(URL, {
-      observe: 'body',
-      responseType: 'json',
-      params: new HttpParams().append('hierarchyName', value)
+    return this.httpClient.get(this.LOCATION_URL + appConstants.LOCATION_APPEND_URL, {
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
     });
   }
 
-  getLocationList(locationCode: string, langCode: string) {
-    const URL = 'https://integ.mosip.io/masterdata/v1.0/locations/';
-    return this.httpClient
-      .get(URL, {
-        observe: 'body',
-        responseType: 'json',
-        params: new HttpParams().append('locationCode', locationCode).append('langCode', langCode)
-      })
-      .subscribe(res => console.log(res));
+  getLocationImmediateHierearchy(lang: string, location: string) {
+    return this.httpClient.get(
+      this.LOCATION_URL + appConstants.LOCATION_IMMEDIATE_CHILDREN_APPEND_URL + location + '/' + lang
+    );
   }
+
+  // getLocationList(locationCode: string, langCode: string) {
+  //   const URL = 'https://integ.mosip.io/masterdata/v1.0/locations/';
+  //   return this.httpClient
+  //     .get(URL, {
+  //       observe: 'body',
+  //       responseType: 'json',
+  //       params: new HttpParams().append('locationCode', locationCode).append('langCode', langCode)
+  //     })
+  //     .subscribe(res => console.log(res));
+  // }
 
   deleteFile(documentId) {
     return this.httpClient.delete(this.DELETE_FILE_URL, {

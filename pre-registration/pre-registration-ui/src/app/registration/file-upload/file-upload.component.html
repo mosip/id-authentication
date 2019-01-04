@@ -81,18 +81,29 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;" />
-      <input
-        class="browseInput"
-        value="{{ i != documentIndex ? 'Select Document Type' : 'Browse' }}"
-        type="button"
-        onclick="document.getElementById('file').click();"
-        [disabled]="browseDisabled"
-      />
+      <span class="file-upload__button">
+        <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;" />
+        <input
+          class="browseInput"
+          value="Browse"
+          type="button"
+          onclick="document.getElementById('file').click();"
+          [disabled]="i != documentIndex ? true : false || !users[0].files[0][documentIndex] ? false : true"
+        />
+      </span>
       <div class="file-upload__body__document-name" *ngIf="users[0].files[0][i]">
         <span>{{ users[0].files[0][i].doc_name }}</span>
         <span> <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, i)">close</mat-icon> </span>
       </div>
     </div>
   </div>
+</div>
+<div class="user__buttons">
+  <button class="user__btn" type="button" (click)="onBack()">Back</button>
+  <button class="user__btn" type="button" (click)="onNext()">
+    <!-- <div *ngIf="dataUploadComplete">Continue</div>
+          <div *ngIf="!dataUploadComplete" class="pgbar">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </div> -->Continue
+  </button>
 </div>

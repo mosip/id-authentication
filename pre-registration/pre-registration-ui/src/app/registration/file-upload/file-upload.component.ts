@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { RegistrationService } from '../registration.service';
 import { DataStorageService } from '../../shared/data-storage.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { UserModel } from '../demographic/user.model';
-import { FileModel } from '../demographic/file.model';
+import { UserModel } from '../demographic/modal/user.modal';
+import { FileModel } from '../demographic/modal/file.model';
+import * as appConstants from '../../app.constants';
 
 @Component({
   selector: 'app-file-upload',
@@ -79,20 +80,22 @@ export class FileUploadComponent implements OnInit {
       ]
     }
   ];
-  JsonString = {
-    id: 'mosip.pre-registration.document.upload',
-    ver: '1.0',
-    reqTime: '2018-10-17T07:22:57.086+0000',
-    request: {
-      prereg_id: '21398510941906',
-      doc_cat_code: 'POA',
-      doc_typ_code: 'address',
-      doc_file_format: 'pdf',
-      status_code: 'Pending-Appoinment',
-      upload_by: '9217148168',
-      upload_DateTime: '2018-10-17T07:22:57.086+0000'
-    }
-  };
+  // JsonString = {
+  //   id: 'mosip.pre-registration.document.upload',
+  //   ver: '1.0',
+  //   reqTime: '2019-01-02T11:01:31.211Z',
+  //   request: {
+  //     prereg_id: '21398510941906',
+  //     doc_cat_code: 'POA',
+  //     doc_typ_code: 'address',
+  //     doc_file_format: 'pdf',
+  //     status_code: 'Pending-Appoinment',
+  //     upload_by: '9217148168',
+  //     upload_DateTime: '2019-01-02T11:01:31.211Z'
+  //   }
+  // };
+
+  JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
 
   browseDisabled = true;
 
@@ -113,7 +116,9 @@ export class FileUploadComponent implements OnInit {
     // console.log('users length', this.registration.getUsers().length);
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
-      this.users[0].files.push([]);
+      if (!this.users[0].files[0]) {
+        this.users[0].files[0] = [];
+      }
     }
     // else {
     //   this.users[0] = this.user;
@@ -175,15 +180,15 @@ export class FileUploadComponent implements OnInit {
 
   setJsonString(event) {
     this.JsonString.request.doc_cat_code = this.documentType;
-    this.JsonString.request.prereg_id = this.user.preRegId;
+    this.JsonString.request.pre_registartion_id = this.users[0].preRegId;
     this.JsonString.request.doc_file_format = event.target.files[0].type;
     this.JsonString.request.upload_by = this.loginId;
     console.log('Json String', this.JsonString);
   }
 
-  sendFile(event): any {
-    this.formData.append('JsonString', JSON.stringify(this.JsonString));
-    this.formData.append('file', event.target.files.item(0));
+  sendFile(event) {
+    this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.JsonString));
+    this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
     this.dataStroage.sendFile(this.formData).subscribe(response => {
       console.log('file upload response', response);
       this.updateUsers(response, event);
@@ -221,5 +226,13 @@ export class FileUploadComponent implements OnInit {
     const file = new Blob(this.users[0].files[0][0].multipartFile, { type: 'application/pdf' });
     const fileUrl = URL.createObjectURL(file);
     window.open(fileUrl);
+  }
+
+  onBack() {
+    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+  }
+  onNext() {
+    // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
+    this.router.navigate(['../pick-center'], { relativeTo: this.route });
   }
 }
