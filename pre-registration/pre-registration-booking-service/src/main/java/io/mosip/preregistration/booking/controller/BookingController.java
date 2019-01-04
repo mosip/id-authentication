@@ -53,7 +53,7 @@ public class BookingController {
 	 * 
 	 * @return
 	 */
-	@GetMapping(path = "/masterSync", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/masterSynchronization", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })

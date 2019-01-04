@@ -29,7 +29,7 @@ public class BatchServiceController {
 	@Autowired
 	private ExpiredStatusService expiredStatusService;
 	
-	@GetMapping(path="/updateConsumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="/state/ConsumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseDto<String>> demographicStatusUpdate(){
 		
 		ResponseDto<String> response=batchJobService.demographicConsumedStatus();
@@ -45,7 +45,7 @@ public class BatchServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}*/
 	
-	@GetMapping(path="/expiredAppointments",produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path="state/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseDto<String>> expiredAppointments(){
 		
 		ResponseDto<String> response=expiredStatusService.bookedPreIds();
