@@ -10,3 +10,4 @@ VOLUME /home/ftp1/VIRUS_SCAN/encrypted /home/ftp1/ARCHIVE_PACKET_LOCATION  /home
 COPY ./target/packet-uploader-stage-*.jar packet-uploader-stage.jar
 
 CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","packet-uploader-stage.jar"]
+
