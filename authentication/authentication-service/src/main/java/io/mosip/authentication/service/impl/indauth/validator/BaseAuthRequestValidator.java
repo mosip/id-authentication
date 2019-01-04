@@ -220,9 +220,29 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
 				validateIrisRequestCount(authRequestDTO, errors);
+				validateMultiIrisValue(authRequestDTO, errors);
 			}
 
 		}
+	}
+
+	private void validateMultiIrisValue(AuthRequestDTO authRequestDTO, Errors errors) {
+		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
+		List<Supplier<List<IdentityInfoDTO>>> listOfIris = Stream
+				.<Supplier<List<IdentityInfoDTO>>>of(identity::getLeftEye, identity::getRightEye)
+				.collect(Collectors.toList());
+
+		List<IdentityInfoDTO> idendityInfoList = listOfIris.stream().map(Supplier::get).filter(Objects::nonNull)
+				.flatMap(list -> list.stream()).collect(Collectors.toList());
+
+		boolean isDuplicateIrisValue = checkIsDuplicate(idendityInfoList);
+
+		if (isDuplicateIrisValue) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Duplicate IRIS in request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_IRIS.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DUPLICATE_IRIS.getErrorMessage(), REQUEST));
+		}
+
 	}
 
 	/**
@@ -316,9 +336,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	@SuppressWarnings("unchecked")
 	boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
 			Function<IdentityDTO, List<IdentityInfoDTO>>... functions) {
-		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions)
-				.anyMatch(func -> Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(func).filter(list -> !list.isEmpty()).isPresent());
+		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions).anyMatch(func -> Optional
+				.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(func)
+				.filter(list -> list != null && !list.isEmpty()
+						&& list.stream().allMatch(idDto -> idDto.getValue() != null && !idDto.getValue().isEmpty()))
+				.isPresent());
 	}
 
 	/**
@@ -480,8 +502,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (leftEyeCount > 1 || rightEyeCount > 1) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IRIS }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorCode(),
+					new Object[] { IRIS }, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorMessage());
 		}
 
 	}

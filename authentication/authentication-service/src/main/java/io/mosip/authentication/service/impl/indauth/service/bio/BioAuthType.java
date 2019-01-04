@@ -79,10 +79,23 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction< Map<String, String>,  Map<String, String>, Double> func = getFingerPrintProvider(bioinfovalue)::matchMultiImage;
+						BiFunction< Map<String, String>,  Map<String, String>, Double> func = getFingerPrintProvider(bioinfovalue)::matchMultiMinutae;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
 					});
 			return valueMap;
+		}
+		@Override
+		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
+				Function<LanguageType, String> languageInfoFetcher, Environment environment) {
+
+			String bioType = getType();
+			Integer threshold = null;
+			String key = bioType.toLowerCase().concat(".multi.default.match.value");
+			String property = environment.getProperty(key);
+			if (property != null && !property.isEmpty()) {
+				threshold = Integer.parseInt(property);
+			}
+			return Optional.ofNullable(threshold);
 		}
 	},
 	IRIS_COMP_IMG("irisImg",
