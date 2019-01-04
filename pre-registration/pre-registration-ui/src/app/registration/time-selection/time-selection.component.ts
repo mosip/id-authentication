@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SharedService } from 'src/app/shared/shared.service';
 import { NameList } from '../demographic/modal/name-list.modal';
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
-import { TranslateService } from '@ngx-translate/core';
 import * as constants from '../../app.constants';
 
 @Component({
@@ -15,7 +14,7 @@ import * as constants from '../../app.constants';
 export class TimeSelectionComponent implements OnInit {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
-  @Input() registrationCenter: any;
+  registrationCenter = 1;
   selectedCard = 0;
   selectedTile = 0;
   limit = [];
@@ -33,18 +32,14 @@ export class TimeSelectionComponent implements OnInit {
   constructor(
     private sharedService: SharedService,
     private dialog: MatDialog,
-    private dataService: DataStorageService,
-    private translate: TranslateService
+    private dataService: DataStorageService
   ) {}
 
   ngOnInit() {
-    if (localStorage.getItem('langCode')) {
-      this.translate.use(localStorage.getItem('langCode'));
-    }
-    this.names = constants.nameList;
+    this.names = [...constants.nameList];
  //   this.sharedService.resetNameList();
     console.log('in onInit', this.names);
-    this.getSlotsforCenter(1);
+    this.getSlotsforCenter(this.registrationCenter);
   }
 
   public scrollRight(): void {
@@ -84,36 +79,6 @@ export class TimeSelectionComponent implements OnInit {
     this.deletedNames.splice(index, 1);
   }
 
-  // openDialog() {
-  //   const dialogRef = this.dialog
-  //     .open(DialougComponent, {
-  //       width: '400px',
-  //       data: {
-  //         case: 'SLOTS',
-  //         title: 'Select names for the Slot',
-  //         names: this.deletedNames
-  //       }
-  //     })
-  //     .afterClosed()
-  //     .subscribe(addedList => {
-  //       addedList.forEach(item => {
-  //         // tslint:disable-next-line:max-line-length
-  //         if (
-  //           this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.length <
-  //           this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].availability
-  //         ) {
-  //           this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(item);
-  //         } else {
-  //           this.deletedNames.push(item);
-  //         }
-  //       });
-  //       if (this.deletedNames.length === 0) {
-  //         this.showAddButton = false;
-  //         this.enableBookButton = true;
-  //       }
-  //     });
-  // }
-
   formatJson(centerDetails: any) {
     centerDetails.forEach(element => {
       let sumAvailability = 0;
@@ -146,8 +111,8 @@ export class TimeSelectionComponent implements OnInit {
         this.availabilityData.push(element);
       }
       console.log(this.availabilityData);
-      this.placeNamesInSlots();
     });
+    this.placeNamesInSlots();
   }
 
   placeNamesInSlots() {

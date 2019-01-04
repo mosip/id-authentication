@@ -14,6 +14,7 @@ export const PARAMS_KEYS = {
   locationHierarchyName: 'hierarchyName'
 };
 
+// to be removed in future.
 export const nameList = [
   {
     fullName: 'Agnitra Banerjee',

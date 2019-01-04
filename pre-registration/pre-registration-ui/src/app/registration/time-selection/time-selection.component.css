@@ -33,6 +33,7 @@
 .time-selection__slots-div {
     display: flex;
     margin: 0 20px 20px 20px;
+    padding-bottom: 80px;
 }
 
 .time-seelection__slot-groups-div {
@@ -243,59 +244,57 @@
   }
 
   .selected-card {
-      padding: 15px;
-      background-color: #ff4081 !important;
-      color: white !important;
-  }
+    padding: 15px;
+    background-color: #ff4081 !important;
+    color: white !important;
+}
 
-  .sizing-card {
-    width: 200px;
-    height: 200px;
-    border: 1px solid #000;
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  .middle-card {
-    float: left;
-    width: 90%;
-    overflow: hidden;
-    white-space: nowrap;
-    margin: 0 30px 0 30px;
+.center-selection__button-container {
+    width: 100%;
+    height: 70px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding-top: 10px;
     display: flex;
+}
+.spacer {
+    flex: 1 1 auto;
   }
-
-  .container-card {
-    margin: 50px 0 0 0;
-    display: flex;
+  .user-back-btn{
+    color: #FD518C;
+    background-color: white;
+    font-family: Roboto;
+    margin-right: 30px;
+    border: 1px solid #FD518C;
+    opacity:100%;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 0;
+}
+  .user-book_later-btn{
+      color: #FD518C;
+      background-color: white;
+      font-family: Roboto;
+      margin-right: 30px;
+      border: 1px solid #FD518C;
+      opacity:100%;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      border-radius: 0;
   }
-  
-  .left-button-card {
-      margin-top: 120px;
-      float: left;
-      cursor: pointer;
-  }
-
-  .right-button-card {
-      margin-top: 120px;
-      float: right;
-      cursor: pointer;
-  }
-
-  .add-button-container{
-      position: absolute;
-      top: 0;
-      right: 0;
-  }
-
-  .mat-fab {
-    height: 35px;
-    width: 35px;
-  }
-
-  .add-icon {
-      top: -11px;
-      position: relative;
+  .user-continue-btn {
+    background-color: #ff4081;
+    border-radius: 0;
+    color: white;
+    opacity:100%;
+    font-family: Roboto;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    
   }
 
   @media(max-width: 500px) {
@@ -314,14 +313,7 @@
       .sizing{
           margin: 0 5px 0 5px;
       }
-      .container-card {
-        margin-top: 30px;
-    }
-      .middle-card {
-        margin: 0;
-        overflow: scroll;
-    }
-
+      
     .time-selection__name-list-header {
         height: 150px;
         padding: 5px;
@@ -334,6 +326,20 @@
 
     .time-selection__time-slots-container {
         width: 100%;
+    }
+
+    .time-selection__slots-div {
+        flex-wrap: wrap;
+    }
+
+    .time-selection__names-container {
+        display: flex;
+        flex-wrap: wrap;
+        width: 60%;
+    }
+
+    .time-selection__name-list-header {
+        height: 50px;
     }
 
   }
