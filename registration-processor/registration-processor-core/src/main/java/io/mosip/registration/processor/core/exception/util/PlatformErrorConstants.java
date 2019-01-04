@@ -48,10 +48,13 @@ public final class PlatformErrorConstants {
 	/** The Constant RPR_SYSTEM_EXCEPTION. */
 	public static final String RPR_SYSTEM_EXCEPTION = RPR_REGISTRATION_PROCESSOR_PREFIX + "SYS-";
 
+	/** The Constant RPR_MESSAGE_SENDER_TEMPLATE. */
 	public static final String RPR_MESSAGE_SENDER_TEMPLATE = RPR_REGISTRATION_PROCESSOR_PREFIX + "TEM-";
 
+	/** The Constant RPR_PACKET_UPLOADER_MODULE. */
 	public static final String RPR_PACKET_UPLOADER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PUM-";
 
+	/** The Constant RPR_BIO_DEDUPE_SERVICE_MODULE. */
 	public static final String RPR_BIO_DEDUPE_SERVICE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDD-";
 
 	/**
