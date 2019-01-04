@@ -1,7 +1,7 @@
 -- object: idrepo.uin_biometric | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin_biometric CASCADE;
 CREATE TABLE idrepo.uin_biometric(
-	uin_ref_id character varying(28) NOT NULL,
+	uin_ref_id character varying(36) NOT NULL,
 	bio_file_id character varying(128) NOT NULL,
 	biometric_file_name character varying(128),
 	biometric_file_hash character varying(64) NOT NULL,

@@ -1,7 +1,7 @@
 -- object: idrepo.uin_h | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin_h CASCADE;
 CREATE TABLE idrepo.uin_h(
-	uin_ref_id character varying(28) NOT NULL,
+	uin_ref_id character varying(36) NOT NULL,
 	eff_dtimes timestamp NOT NULL,
 	uin character varying(28) NOT NULL,
 	uin_data bytea NOT NULL,

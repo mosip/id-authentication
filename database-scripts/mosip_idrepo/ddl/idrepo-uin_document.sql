@@ -1,7 +1,7 @@
 -- object: idrepo.uin_document | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin_document CASCADE;
 CREATE TABLE idrepo.uin_document(
-	uin_ref_id character varying(28) NOT NULL,
+	uin_ref_id character varying(36) NOT NULL,
 	doccat_code character varying(36) NOT NULL,
 	doctyp_code character varying(36) NOT NULL,
 	doc_id character varying(128),
