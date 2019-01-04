@@ -245,12 +245,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			String uinRefId = UUID.randomUUID().toString().replace("-", "").substring(0, 28);
 
 			if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
-
+				identityInfo = convertToBytes(mapper.readValue(identityInfo, ObjectNode.class).get(IDENTITY));
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now()));
 
-				identityInfo = mapper.writeValueAsBytes(mapper.readValue(identityInfo, ObjectNode.class).get(IDENTITY));
 				if (Objects.nonNull(documents) && !documents.isEmpty()) {
 					ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
 					if (documents.stream().filter(doc -> identityObject.has(doc.getDocType())).anyMatch(doc -> {
