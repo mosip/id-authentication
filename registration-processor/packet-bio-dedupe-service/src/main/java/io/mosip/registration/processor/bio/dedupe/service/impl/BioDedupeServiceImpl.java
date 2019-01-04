@@ -1,25 +1,34 @@
 package io.mosip.registration.processor.bio.dedupe.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
 import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PacketStructure;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -27,7 +36,11 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 @RefreshScope
 @Service
 public class BioDedupeServiceImpl implements BioDedupeService {
+
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeServiceImpl.class);
+
 	private AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
+
 	private IdentityRequestDto identityRequestDto = new IdentityRequestDto();
 
 	/** The rest client service. */
@@ -48,6 +61,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	@Value("${registration.processor.abis.threshold}")
 	private Integer threshold;
+
+	@Autowired
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	@Override
 	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
@@ -126,6 +142,21 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	private String uuidGenerator() {
 		return UUID.randomUUID().toString();
+	}
+
+	@Override
+	public byte[] getFile(String registrationId) {
+		byte[] file = null;
+
+		// To do provide CBEF file name
+		InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId, PacketStructure.PACKETMETAINFO);
+		try {
+			file = IOUtils.toByteArray(fileInStream);
+		} catch (IOException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());
+		}
+		return file;
 	}
 
 }

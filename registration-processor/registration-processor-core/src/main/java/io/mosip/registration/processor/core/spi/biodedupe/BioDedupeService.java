@@ -6,8 +6,10 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 
 public interface BioDedupeService {
 
-	public String insertBiometrics(String RegistrationId) throws ApisResourceAccessException;
+	public String insertBiometrics(String registrationId) throws ApisResourceAccessException;
 
-	public List<String> performDedupe(String RegistrationId) throws ApisResourceAccessException;
+	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException;
+
+	public byte[] getFile(String registrationId);
 
 }
