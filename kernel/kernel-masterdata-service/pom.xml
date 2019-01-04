@@ -89,9 +89,28 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.6</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>ma.glasnost.orika</groupId>
+			<artifactId>orika-core</artifactId>
+			<version>${datamapper.orika}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 	</dependencies>
-		<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -103,7 +122,7 @@
 				<executions>
 					<execution>
 						<goals>
-						    <goal>build-info</goal>
+							<goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
 					</execution>

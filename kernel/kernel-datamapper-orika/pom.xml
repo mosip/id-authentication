@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
 			<artifactId>orika-core</artifactId>
-			<version>1.4.6</version>
+			<version>${datamapper.orika}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>

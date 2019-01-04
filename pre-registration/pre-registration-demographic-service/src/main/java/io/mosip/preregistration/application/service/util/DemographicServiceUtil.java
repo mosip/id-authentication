@@ -221,8 +221,8 @@ public class DemographicServiceUtil {
 	 * 				pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
-	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {
-		Map<String, Timestamp> timeStampMap = new HashMap<>();
+	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
+		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
 		try {
 
 			Date fromDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.fromDate.toString()), "UTF-8"),
@@ -242,8 +242,8 @@ public class DemographicServiceUtil {
 				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.toDate.toString()), "UTF-8"),
 						format);
 			}
-			timeStampMap.put(RequestCodes.fromDate.toString(), new Timestamp(fromDate.getTime()));
-			timeStampMap.put(RequestCodes.toDate.toString(), new Timestamp(toDate.getTime()));
+			localDateTimeMap.put(RequestCodes.fromDate.toString(), DateUtils.parseDateToLocalDateTime(fromDate));
+			localDateTimeMap.put(RequestCodes.toDate.toString(), DateUtils.parseDateToLocalDateTime(toDate));
 
 		} catch (java.text.ParseException e) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
@@ -252,7 +252,7 @@ public class DemographicServiceUtil {
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), e.getCause());
 		}
-		return timeStampMap;
+		return localDateTimeMap;
 	}
 	
 	public String getCurrentResponseTime() {

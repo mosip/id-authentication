@@ -9,6 +9,7 @@ import java.time.DateTimeException;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
+import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
@@ -40,7 +41,9 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof DataAccessLayerException) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), ex.getCause());
-
+		}else if(ex instanceof BookingDataNotFoundException) {
+			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
+					ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 		}
 	}
 

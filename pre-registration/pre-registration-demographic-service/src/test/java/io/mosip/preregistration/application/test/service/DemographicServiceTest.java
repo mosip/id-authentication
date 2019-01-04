@@ -592,8 +592,8 @@ public class DemographicServiceTest {
 
 			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
-					new Timestamp(myToDate.getTime()))).thenReturn(details);
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
+					DateUtils.parseDateToLocalDateTime(myToDate))).thenReturn(details);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (java.io.UnsupportedEncodingException e) {
@@ -623,7 +623,7 @@ public class DemographicServiceTest {
 		Date myFromDate;
 		try {
 			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()), null))
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate), null))
 					.thenReturn(details);
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -659,8 +659,8 @@ public class DemographicServiceTest {
 
 		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
-		Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
-				new Timestamp(myToDate.getTime()))).thenThrow(exception);
+		Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
+				DateUtils.parseDateToLocalDateTime(myToDate))).thenThrow(exception);
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}
@@ -692,8 +692,8 @@ public class DemographicServiceTest {
 
 		myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
-		Mockito.when(demographicRepository.findBycreateDateTimeBetween(new Timestamp(myFromDate.getTime()),
-				new Timestamp(myToDate.getTime()))).thenThrow(exception);
+		Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
+				DateUtils.parseDateToLocalDateTime(myToDate))).thenThrow(exception);
 		preRegistrationService.getPreRegistrationByDate(fromDate, toDate);
 
 	}

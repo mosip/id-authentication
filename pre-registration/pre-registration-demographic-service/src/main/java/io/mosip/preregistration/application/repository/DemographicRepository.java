@@ -5,6 +5,7 @@
 package io.mosip.preregistration.application.repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -60,6 +61,6 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	 * @param end pass endTime
 	 * @return list of preregistration data between start and end date
 	 */
-	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
+	public List<DemographicEntity> findBycreateDateTimeBetween(LocalDateTime start, LocalDateTime end);
 
 }

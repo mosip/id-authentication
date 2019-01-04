@@ -32,7 +32,7 @@ public class RegistrationBookingEntity implements Serializable {
 	@Id
 	@GeneratedValue(generator="system-uuid" )
 	@GenericGenerator(name="system-uuid", strategy = "uuid" )
-	@Column(name = "id" ,columnDefinition = "BINARY(8)")
+	@Column(name = "id")
 	private String id;
 	
 	@Embedded
