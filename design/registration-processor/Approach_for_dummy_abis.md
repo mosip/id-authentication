@@ -38,7 +38,7 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 - IDENTIFY
 	1. Expose rest endpoint for identify.
 	2. When identify is being called the dummy abis needs the CBEFF biometric file to find out if its duplicate.
-	3. The bio-dedupe-service will have a rest endpoint exposed to get the biometric of the applicant. The url format would be - https://url/<registrationId>
+	3. The bio-dedupe-service will have a rest endpoint exposed to get the biometric of the applicant. The url format would be - https://url/registrationId>
 	4. The reference Id will be present in the request. However to get the CBEFF file first we need to get the corresponding registration Id. Get the registration id.
 	5. Call the bio-dedupe-service rest api to get the biometric file.
 	6. There can be multiple biometric type for example fingerprint/iris/face.
