@@ -128,7 +128,7 @@ public class BookingControllerTest {
 	public void saveAvailability() throws Exception {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		Mockito.when(service.addAvailability()).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/masterSync")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/masterSynchronization")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
