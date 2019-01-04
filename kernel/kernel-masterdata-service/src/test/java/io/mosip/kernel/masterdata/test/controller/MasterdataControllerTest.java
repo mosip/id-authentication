@@ -941,7 +941,7 @@ public class MasterdataControllerTest {
 	public void validateTimestampWithRegistrationCenter() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(resgistrationCenterStatusResponseDto);
 		
 		 mockMvc.perform(get(
@@ -954,7 +954,7 @@ public class MasterdataControllerTest {
 	public void validateTimestampWithRegistrationCenterMasterDataExceptionTest() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenThrow(new MasterDataServiceException("11111","Database exception"));
 		
 		 mockMvc.perform(get(
@@ -967,7 +967,7 @@ public class MasterdataControllerTest {
 	public void validateTimestampWithRegistrationCenterDataNotFoundExceptionTest() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenThrow(new DataNotFoundException("11111","Data not found exception"));
 		
 		 mockMvc.perform(get(

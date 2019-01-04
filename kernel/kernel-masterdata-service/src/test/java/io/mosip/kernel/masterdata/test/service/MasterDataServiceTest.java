@@ -1496,7 +1496,7 @@ public class MasterDataServiceTest {
 		 */
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
 
@@ -1514,7 +1514,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setCenterEndTime(endTime);
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		/*
 		 * mockMvc.perform(get(
@@ -1533,7 +1533,7 @@ public class MasterDataServiceTest {
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
 				.thenReturn(registrationCenter);
 
-		registrationCenterService.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 	}
 
@@ -1543,7 +1543,7 @@ public class MasterDataServiceTest {
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
 
-		registrationCenterService.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 	}
 	
@@ -1555,7 +1555,7 @@ public class MasterDataServiceTest {
 				.thenReturn(registrationCenter);
 		
 		registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		}
 	
@@ -1571,7 +1571,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setCenterEndTime(endTime);
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
 		
