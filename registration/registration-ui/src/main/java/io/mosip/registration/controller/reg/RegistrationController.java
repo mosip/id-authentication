@@ -1665,7 +1665,7 @@ public class RegistrationController extends BaseController {
 	private void addRegions() {
 		try {
 			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),
-					AppConfig.getApplicationProperty("mos"));
+					AppConfig.getApplicationProperty("application_language_master"));
 			region.getItems().addAll(
 					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
 		} catch (RuntimeException runtimeException) {
