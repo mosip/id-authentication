@@ -27,6 +27,7 @@ public class HolidayUpdateDto {
 
 	@NotNull
 	private LocalDate holidayDate;
+	
 	@NotBlank
 	@Size(min = 1, max = 64)
 	private String holidayName;

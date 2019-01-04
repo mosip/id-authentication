@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,15 +16,15 @@ import lombok.Data;
 
 public class ValidDocumentDto {
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	private String docTypeCode;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	private String docCategoryCode;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	private String langCode;
 
