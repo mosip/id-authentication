@@ -13,7 +13,8 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 
 /**
- * @author M1043008
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @Repository("preRegistartionExpiredStatusRepository")

@@ -1,4 +1,4 @@
-package io.mosip.preregistration.datasync.entity;
+package io.mosip.preregistration.batchjobservices.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -8,25 +8,30 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @author M1046129 - Jagadishwari
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
+ * The persistent class Processed PreReg List database table.
  */
+@Component
 @Entity
-@Table(name = "processed_prereg_list", schema = "prereg")
+@Table(name = "processed_prereg_list")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProcessedPreRegEntity implements Serializable {
-
+public class ProcessedPreRegEntity implements Serializable{
+	
 	/**
-	 * 
+	 * The constant serialVersionUID
 	 */
-	private static final long serialVersionUID = -239434336226779852L;
+	private static final long serialVersionUID = 6401286049521632681L;
 
 	/**
 	 * The PreRegistration Id.
@@ -100,5 +105,4 @@ public class ProcessedPreRegEntity implements Serializable {
 	 */
 	@Column(name = "del_dtimes")
 	private LocalDateTime delTime;
-
 }

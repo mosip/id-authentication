@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
-import io.mosip.preregistration.batchjobservices.service.ArchivingConsumedStatusService;
 import io.mosip.preregistration.batchjobservices.service.BatchJobService;
 import io.mosip.preregistration.batchjobservices.service.impl.ExpiredStatusService;
 import io.swagger.annotations.Api;
@@ -24,8 +23,8 @@ public class BatchServiceController {
 	@Autowired
 	private BatchJobService batchJobService;
 	
-	@Autowired
-	private ArchivingConsumedStatusService archivingConsumedStatusService;
+	/*@Autowired
+	private ArchivingConsumedStatusService archivingConsumedStatusService;*/
 	
 	@Autowired
 	private ExpiredStatusService expiredStatusService;
@@ -38,13 +37,13 @@ public class BatchServiceController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@GetMapping(path="/archivingConsumedPreId",produces=MediaType.APPLICATION_JSON_VALUE)
+	/*@GetMapping(path="/archivingConsumedPreId",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseDto<String>>  archivingConsumedStatus(){
 		
 		ResponseDto<String> response=archivingConsumedStatusService.archivingConsumed();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
-	}
+	}*/
 	
 	@GetMapping(path="/expiredAppointments",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseDto<String>> expiredAppointments(){
