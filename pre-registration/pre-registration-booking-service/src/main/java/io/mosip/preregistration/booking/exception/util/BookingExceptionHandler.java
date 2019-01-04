@@ -14,10 +14,12 @@ import io.mosip.preregistration.booking.dto.MainResponseDTO;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
+import io.mosip.preregistration.booking.exception.AppointmentBookingFailedException;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeBookedException;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentReBookingFailedException;
 import io.mosip.preregistration.booking.exception.AvailabilityTableNotAccessableException;
+import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDateNotSeletectedException;
 import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
@@ -33,6 +35,7 @@ import io.mosip.preregistration.booking.exception.MasterDataNotAvailableExceptio
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
  * Exception Handler
@@ -301,6 +304,41 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(AvailablityNotFoundException.class)
+	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+
+		MainResponseDTO responseDto = new MainResponseDTO();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(TablenotAccessibleException.class)
+	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TablenotAccessibleException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+
+		MainResponseDTO responseDto = new MainResponseDTO();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+	@SuppressWarnings({ "rawtypes" })
+	@ExceptionHandler(AppointmentBookingFailedException.class)
+	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+
+		MainResponseDTO responseDto = new MainResponseDTO();
+		responseDto.setStatus(false);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+	}
+	
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
