@@ -10,6 +10,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
+import io.vertx.camel.CamelBridgeOptions;
 import io.vertx.core.AbstractVerticle;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 
@@ -51,10 +52,9 @@ public class MosipCamelBridge extends AbstractVerticle {
 		InputStream is = MosipCamelBridge.class.getClassLoader().getResourceAsStream("camel-routes.xml");
 		RoutesDefinition routes = camelContext.loadRoutesDefinition(is);
 		camelContext.addRouteDefinitions(routes.getRoutes());
-		camelContext.addRoutes(new MosipBridgeRoutes());
 		camelContext.start();
 
-		CamelBridge.create(vertx, new MosipBridgeMapping().getMapping(camelContext)).start();
+		CamelBridge.create(vertx, new CamelBridgeOptions(camelContext)).start();
 	}
 
 }

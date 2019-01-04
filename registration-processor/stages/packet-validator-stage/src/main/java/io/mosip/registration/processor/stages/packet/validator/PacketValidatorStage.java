@@ -118,7 +118,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	 *            the message
 	 */
 	public void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
-		this.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT, message);
+		this.send(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_OUT, message);
 	}
 
 	/*
@@ -135,7 +135,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 		try {
 
-			object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
+			object.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.FALSE);
 

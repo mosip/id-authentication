@@ -90,7 +90,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMODEDUPE_BUS_IN, MessageBusAddress.DEMODEDUPE_BUS_OUT);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN, MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
 	}
 
 	/* (non-Javadoc)
@@ -99,7 +99,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
-		object.setMessageBusAddress(MessageBusAddress.DEMODEDUPE_BUS_IN);
+		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
 		object.setInternalError(Boolean.FALSE);
 		String description = "";
 		boolean isTransactionSuccessful = false;
