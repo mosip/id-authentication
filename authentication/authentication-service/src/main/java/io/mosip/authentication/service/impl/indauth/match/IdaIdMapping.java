@@ -40,12 +40,11 @@ public enum IdaIdMapping implements IdMapping{
 	RIGHTMIDDLE("rightMiddle", MappingConfig::getRightMiddle),
 	RIGHTRING("rightRing", MappingConfig::getRightRing), 
 	RIGHTTHUMB("rightThumb", MappingConfig::getRightThumb),
-	LEFTEYE("leftEye", MappingConfig::getLeftEye),
-	RIGHTEYE("rightEye", MappingConfig::getRightEye),
 	FINGERPRINT("fingerprint", MappingConfig::getFingerprint),
 	IRIS("iris", MappingConfig::getIris),
-
-	FACE("iris", MappingConfig::getIris),
+	RIGHTEYE("righteye", MappingConfig::getRightEye),
+	LEFTEYE("lefteye", MappingConfig::getLeftEye),
+	FACE("FACE", MappingConfig::getFace),
 	 
 	 
 	;

@@ -24,7 +24,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	 * MosipFingerprintProvider#scoreCalculator(byte[], byte[])
 	 */
 	@Override
-	public double scoreCalculator(byte[] isoImage1, byte[] isoImage2) {
+	public double matchScoreCalculator(byte[] isoImage1, byte[] isoImage2) {
 		try {
 			FingerprintTemplate template1 = new FingerprintTemplate().convert(isoImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().convert(isoImage2);
@@ -44,7 +44,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	 * MosipFingerprintProvider#scoreCalculator(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public double scoreCalculator(String fingerImage1, String fingerImage2) {
+	public double matchScoreCalculator(String fingerImage1, String fingerImage2) {
 		try {
 			FingerprintTemplate template1 = new FingerprintTemplate().deserialize(fingerImage1);
 			FingerprintTemplate template2 = new FingerprintTemplate().deserialize(fingerImage2);
@@ -62,13 +62,13 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 		byte[] decodeEntityInfo = decodeValue(entityInfo);
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(decodedrefInfo);
 		FingerprintTemplate template2 = new FingerprintTemplate().convert(decodeEntityInfo);
-		return this.scoreCalculator(template1.serialize(), template2.serialize());
+		return this.matchScoreCalculator(template1.serialize(), template2.serialize());
 	}
 
 	public double matchImage(String reqInfo, String entityInfo) {
 		byte[] decodedrefInfo = decodeValue(reqInfo);
 		byte[] decodeEntityInfo = decodeValue(entityInfo);
-		return this.scoreCalculator(decodedrefInfo, decodeEntityInfo);
+		return this.matchScoreCalculator(decodedrefInfo, decodeEntityInfo);
 	}
 
 	static byte[] decodeValue(String value) {

@@ -11,6 +11,7 @@ import MFS100.MFS100Event;
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MantraFingerprintProvider - Provider class for Mantra fingerprint
  * devices.
@@ -97,5 +98,14 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	@Override
 	public void OnPreview(FingerData arg0) {
 		// need to be implemented
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#createMinutiae(byte[])
+	 */
+	@Override
+	public String createMinutiae(byte[] inputImage) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
