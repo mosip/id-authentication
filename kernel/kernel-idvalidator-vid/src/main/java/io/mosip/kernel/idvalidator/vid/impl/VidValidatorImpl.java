@@ -84,7 +84,7 @@ public class VidValidatorImpl implements VidValidator<String> {
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
 	@PostConstruct
-	private void VidValidatorImplPostConstruct() {
+	private void vidValidatorImplPostConstruct() {
 		numaricRegEx = "\\d{" + vidLength + "}";
 		/**
 		 * Regex for matching repeating digits like 11, 1x1, 1xx1, 1xxx1, etc.<br/>
