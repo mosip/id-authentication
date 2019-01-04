@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.exception.util;
-	
+
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -50,7 +50,9 @@ public final class PlatformErrorConstants {
 
 	public static final String RPR_MESSAGE_SENDER_TEMPLATE = RPR_REGISTRATION_PROCESSOR_PREFIX + "TEM-";
 
-	public static final String RER_PACKET_UPLOADER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ARC-";
+	public static final String RPR_PACKET_UPLOADER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PUM-";
+
+	public static final String RPR_BIO_DEDUPE_SERVICE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDD-";
 
 	/**
 	 * Instantiates a new RPR platform error codes.
