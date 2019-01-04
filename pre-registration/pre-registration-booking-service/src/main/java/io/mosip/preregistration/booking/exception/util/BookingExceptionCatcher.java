@@ -9,14 +9,19 @@ import java.time.DateTimeException;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
+import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentBookingFailedException;
+import io.mosip.preregistration.booking.exception.AppointmentCannotBeBookedException;
+import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AppointmentReBookingFailedException;
+import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingDateNotSeletectedException;
 import io.mosip.preregistration.booking.exception.BookingPreIdNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
+import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
@@ -72,7 +77,23 @@ public class BookingExceptionCatcher {
 		}  else if (ex instanceof BookingDateNotSeletectedException) {
 			throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
 					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+		} else if (ex instanceof AppointmentCannotBeBookedException) {
+			throw new AppointmentCannotBeBookedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+		} else if (ex instanceof CancelAppointmentFailedException) {
+			throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+		}else if (ex instanceof AvailablityNotFoundException) {
+			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+		}else if (ex instanceof AppointmentAlreadyCanceledException) {
+			throw new AppointmentAlreadyCanceledException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+		}else if (ex instanceof AppointmentCannotBeCanceledException) {
+			throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
 		}
+		
 
 	}
 
