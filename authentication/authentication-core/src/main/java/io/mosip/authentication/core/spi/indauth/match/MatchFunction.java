@@ -12,6 +12,16 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 @FunctionalInterface
 public interface MatchFunction {
 
+	/**
+	 * Match Function
+	 * 
+	 * @param reqValues
+	 * @param entityValues
+	 * @param matchProperties
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+
 	int match(Object reqValues, Object entityValues, Map<String, Object> matchProperties)
 			throws IdAuthenticationBusinessException;
 

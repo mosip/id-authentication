@@ -10,6 +10,11 @@ import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.service.factory.IDAMappingFactory;
 import lombok.Data;
 
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
+
 @Configuration
 @PropertySource(value = "classpath:ida-mapping.json", factory = IDAMappingFactory.class)
 @ConfigurationProperties

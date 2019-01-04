@@ -12,10 +12,27 @@ import java.util.stream.Stream;
 
 public interface IdMapping {
 
+	/**
+	 * Method to get ID name
+	 * 
+	 * @return
+	 */
 	public String getIdname();
 
+	/**
+	 * Method to get Mapping Function
+	 * 
+	 * @return
+	 */
 	public Function<MappingConfig, List<String>> getMappingFunction();
-	
+
+	/**
+	 * Method to get ID Mapping
+	 * 
+	 * @param name
+	 * @param values
+	 * @return
+	 */
 	public static Optional<IdMapping> getIdMapping(String name, IdMapping[] values) {
 		return Stream.of(values).filter(m -> m.getIdname().equals(name)).findAny();
 	}
