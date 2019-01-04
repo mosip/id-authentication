@@ -77,7 +77,6 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import lombok.Cleanup;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PacketInfoManagerImpl.
  *
@@ -130,6 +129,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
+	/** The Reg abis ref repository. */
 	@Autowired
 	private BasePacketRepository<RegAbisRefEntity, String> RegAbisRefRepository;
 
@@ -202,6 +202,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
+	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
 
 	/*
@@ -824,6 +825,37 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getReferenceIdByRid(java.lang.String)
+	 */
+	@Override
+	public List<String> getReferenceIdByRid(String rid) {
+		return RegAbisRefRepository.getReferenceIdByRid(rid);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getRidByReferenceId(java.lang.String)
+	 */
+	@Override
+	public List<String> getRidByReferenceId(String refId) {
+		return RegAbisRefRepository.getRidByReferenceId(refId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * saveAbisRef(io.mosip.registration.processor.core.packet.dto.RegAbisRefDto)
+	 */
 	@Override
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
 		if (regAbisRefDto != null) {

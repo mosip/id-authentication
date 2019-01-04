@@ -8,6 +8,6 @@ public interface BioDedupeService {
 
 	public String insertBiometrics(String RegistrationId) throws ApisResourceAccessException;
 
-	public List<String> performDedupe(String RegistrationId);
+	public List<String> performDedupe(String RegistrationId) throws ApisResourceAccessException;
 
 }

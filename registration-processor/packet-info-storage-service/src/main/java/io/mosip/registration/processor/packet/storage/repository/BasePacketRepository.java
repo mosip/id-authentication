@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 
 /**
@@ -125,7 +124,30 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
 
+	/**
+	 * Gets the reg id by UIN.
+	 *
+	 * @param uin the uin
+	 * @return the reg id by UIN
+	 */
 	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId =:uin")
 	public List<String> getRegIdByUIN(@Param("uin")String uin);
 	
+	/**
+	 * Gets the reference id by rid.
+	 *
+	 * @param rid the rid
+	 * @return the reference id by rid
+	 */
+	@Query("SELECT abis.abisRefId FROM RegAbisRefEntity abis WHERE abis.id.regId =:rid")
+	public List<String> getReferenceIdByRid(@Param("rid")String rid);
+	
+	/**
+	 * Gets the rid by reference id.
+	 *
+	 * @param refId the ref id
+	 * @return the rid by reference id
+	 */
+	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
+	public List<String> getRidByReferenceId(@Param("refId")String refId);
 }

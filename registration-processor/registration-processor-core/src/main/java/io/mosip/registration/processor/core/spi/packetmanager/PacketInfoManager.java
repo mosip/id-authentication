@@ -116,9 +116,24 @@ public interface PacketInfoManager<T, /** D, M, */
 	/**
 	 * Save abis ref.
 	 *
-	 * @param registrationId
-	 *            the registration id
+	 * @param regAbisRefDto the reg abis ref dto
 	 */
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto);
+	
+	/**
+	 * Gets the reference id by rid.
+	 *
+	 * @param rid the rid
+	 * @return the reference id by rid
+	 */
+	public List<String> getReferenceIdByRid(String rid);
+	
+	/**
+	 * Gets the rid by reference id.
+	 *
+	 * @param refId the ref id
+	 * @return the rid by reference id
+	 */
+	public List<String> getRidByReferenceId(String refId);
 
 }
