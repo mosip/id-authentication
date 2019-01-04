@@ -54,7 +54,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	@Value("${registration.processor.abis.url}")
+	@Value("${registration.processor.biometric.reference.url}")
 	private String url;
 
 	@Value("${registration.processor.abis.maxResults}")
