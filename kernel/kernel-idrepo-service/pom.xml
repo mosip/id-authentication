@@ -104,7 +104,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<properties>
-		<aws.javasdk.version>1.11.368</aws.javasdk.version>
-	</properties>
 </project>
