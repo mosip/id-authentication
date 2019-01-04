@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyString;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,10 @@ import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
+import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
+import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
+import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.bio.dedupe.service.impl.BioDedupeServiceImpl;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -47,18 +52,73 @@ public class BioDedupeServiceImplTest {
 
 	private IdentityResponceDto identifyResponse = new IdentityResponceDto();
 
-	@Test
-	public void insertBiometricsTest() throws ApisResourceAccessException {
+	String registrationId = "1000";
 
+	@Before
+	public void setup() throws ApisResourceAccessException {
 		Mockito.doNothing().when(packetInfoManager).saveAbisRef(any());
 
-		abisInsertResponceDto.setReturnValue("success");
+		abisInsertResponceDto.setReturnValue("2");
+
+	}
+
+	@Test
+	public void insertBiometricsSuccessTest() throws ApisResourceAccessException {
+
+		abisInsertResponceDto.setReturnValue("1");
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(abisInsertResponceDto);
 
-		String registrationId = "1000";
 		String authResponse = bioDedupeService.insertBiometrics(registrationId);
 		assertTrue(authResponse.equals("success"));
+
+	}
+
+	@Test(expected = ABISInternalError.class)
+	public void insertBiometricsABISInternalErrorFailureTest() throws ApisResourceAccessException {
+
+		abisInsertResponceDto.setFailureReason(1);
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(abisInsertResponceDto);
+
+		String authResponse = bioDedupeService.insertBiometrics(registrationId);
+		assertTrue(authResponse.equals("2"));
+
+	}
+
+	@Test(expected = ABISAbortException.class)
+	public void insertBiometricsABISAbortExceptionFailureTest() throws ApisResourceAccessException {
+
+		abisInsertResponceDto.setFailureReason(2);
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(abisInsertResponceDto);
+
+		String authResponse = bioDedupeService.insertBiometrics(registrationId);
+		assertTrue(authResponse.equals("2"));
+
+	}
+
+	@Test(expected = UnexceptedError.class)
+	public void insertBiometricsUnexceptedErrorFailureTest() throws ApisResourceAccessException {
+
+		abisInsertResponceDto.setFailureReason(3);
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(abisInsertResponceDto);
+
+		String authResponse = bioDedupeService.insertBiometrics(registrationId);
+		assertTrue(authResponse.equals("2"));
+
+	}
+
+	@Test(expected = UnableToServeRequestABISException.class)
+	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest() throws ApisResourceAccessException {
+
+		abisInsertResponceDto.setFailureReason(4);
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(abisInsertResponceDto);
+
+		String authResponse = bioDedupeService.insertBiometrics(registrationId);
+		assertTrue(authResponse.equals("2"));
 
 	}
 
@@ -103,7 +163,7 @@ public class BioDedupeServiceImplTest {
 		List<String> ridList = new ArrayList<>();
 		ridList.add(rid);
 		ridList.add(rid);
-		
+
 		List<DemographicInfoDto> demoList = new ArrayList<>();
 		DemographicInfoDto demo1 = new DemographicInfoDto();
 		demo1.setUin("123456789");
