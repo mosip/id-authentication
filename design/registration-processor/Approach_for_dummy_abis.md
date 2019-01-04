@@ -66,5 +66,8 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 
 **Class Diagram**
 
+![Dummy abis class diagram](_images/dummyabis_class_diagram.png)
 
 **Sequence Diagram**
+
+![Dummy abis sequence diagram](_images/dummyabis_seq_diagram.png)
