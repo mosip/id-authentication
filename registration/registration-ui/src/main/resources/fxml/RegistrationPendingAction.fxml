@@ -12,7 +12,7 @@
    <children>
       <AnchorPane fx:id="pendingActionRegistrationRootSubPane" prefHeight="288.0" prefWidth="900.0">
          <children>
-            <AnchorPane fx:id="pendingActionImageAnchorPane" layoutX="268.0" layoutY="10.0" prefHeight="278.0" prefWidth="404.0">
+            <AnchorPane fx:id="pendingActionImageAnchorPane" layoutX="268.0" layoutY="10.0" prefHeight="278.0" prefWidth="404.0" styleClass="imageAnchorPaneStyle">
                <children>
                   <ImageView fx:id="pendingActionImageView" fitHeight="272.0" fitWidth="396.0" layoutX="2.0" layoutY="4.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
                </children>

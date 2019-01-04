@@ -1,7 +1,5 @@
 package io.mosip.registration.dto.mastersync;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 /**
  * Response dto for Biometric Type Detail
  * 
@@ -9,9 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @since 1.0.0
  *
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class BiometricTypeDto {
 
+public class BiometricTypeDto extends MasterSyncBaseDto {
+
+	
 	private String code;
 
 	private String name;
@@ -19,6 +18,8 @@ public class BiometricTypeDto {
 	private String description;
 
 	private String langCode;
+
+	private Boolean isActive;
 
 	/**
 	 * @return the code
@@ -75,5 +76,21 @@ public class BiometricTypeDto {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	
 
 }

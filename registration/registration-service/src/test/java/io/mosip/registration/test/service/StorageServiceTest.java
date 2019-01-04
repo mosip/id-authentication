@@ -36,11 +36,11 @@ public class StorageServiceTest {
 	
 	@Test
 	public void testLocalStorage() throws RegBaseCheckedException {
-		Assert.assertNotNull(storageService.storeToDisk("1234567890123", "demo".getBytes(), "Image".getBytes()));		
+		Assert.assertNotNull(storageService.storeToDisk("1234567890123", "demo".getBytes()));		
 	}
 	
 	@Test(expected=RegBaseUncheckedException.class)
 	public void testIOException() throws RegBaseCheckedException {
-		storageService.storeToDisk(null, "packet.zip".getBytes(), "ackReceipt".getBytes());
+		storageService.storeToDisk(null, "packet.zip".getBytes());
 	}
 }
