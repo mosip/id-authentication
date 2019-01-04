@@ -45,7 +45,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	private AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 
-	private IdentityRequestDto identityRequestDto = new IdentityRequestDto();
+	private IdentityRequestDto identifyRequestDto = new IdentityRequestDto();
 
 	/** The rest client service. */
 	@Autowired
@@ -58,10 +58,10 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	private String url;
 
 	@Value("${registration.processor.abis.maxResults}")
-	private String maxResults;
+	private Integer maxResults;
 
 	@Value("${registration.processor.abis.targetFPIR}")
-	private String targetFPIR;
+	private Integer targetFPIR;
 
 	@Value("${registration.processor.abis.threshold}")
 	private Integer threshold;
@@ -129,22 +129,22 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		String referenceId = packetInfoManager.getReferenceIdByRid(registrationId).get(0);
 
-		identityRequestDto.setId("Identify");
-		identityRequestDto.setVer("1.0");
-		identityRequestDto.setRequestId(requestId);
-		identityRequestDto.setReferenceId(referenceId);
+		identifyRequestDto.setId("Identify");
+		identifyRequestDto.setVer("1.0");
+		identifyRequestDto.setRequestId(requestId);
+		identifyRequestDto.setReferenceId(referenceId);
 
 		String timeStamp = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L);
-		identityRequestDto.setTimestamp(timeStamp);
-		identityRequestDto.setMaxResults(maxResults);
-		identityRequestDto.setTargetFPIR(targetFPIR);
+		identifyRequestDto.setTimestamp(timeStamp);
+		identifyRequestDto.setMaxResults(maxResults);
+		identifyRequestDto.setTargetFPIR(targetFPIR);
 
 		// call Identify Api to get duplicate ids
 		IdentityResponceDto responsedto = (IdentityResponceDto) restClientService.postApi(ApiName.BIODEDUPEPOTENTIAL,
-				"", "", identityRequestDto, IdentityResponceDto.class);
+				"", "", identifyRequestDto, IdentityResponceDto.class);
 
-		if (responsedto.getReturnValue() == "2") {
-			throwException(responsedto.getfailureReason(), referenceId, requestId);
+		if (responsedto.getReturnValue() == 2) {
+			throwException(responsedto.getFailureReason(), referenceId, requestId);
 		}
 
 		CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
