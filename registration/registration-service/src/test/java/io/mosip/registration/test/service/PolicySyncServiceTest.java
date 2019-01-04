@@ -59,7 +59,7 @@ public class PolicySyncServiceTest {
 	@Before
 	public void initialize() {
 		Map<String, Object> temp = new HashMap<String, Object>();
-		temp.put("name", "1");
+		temp.put("KEY_POLICY_SYNC_THRESHOLD_VALUE", "1");
 		applicationContext.setApplicationMap(temp);
 	}
 
@@ -117,5 +117,5 @@ public class PolicySyncServiceTest {
 		policySyncServiceImpl.fetchPolicy("centerId");
 
 	}
-
+  
 }
