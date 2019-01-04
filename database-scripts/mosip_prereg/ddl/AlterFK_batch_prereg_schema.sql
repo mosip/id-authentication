@@ -24,3 +24,7 @@ ALTER TABLE prereg.batch_step_execution_context ADD CONSTRAINT step_exec_ctx_fk 
         REFERENCES prereg.batch_step_execution (step_execution_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION;
+		
+CREATE SEQUENCE prereg.batch_step_execution_seq;
+CREATE SEQUENCE prereg.batch_job_execution_seq;
+CREATE SEQUENCE prereg.batch_job_seq;
