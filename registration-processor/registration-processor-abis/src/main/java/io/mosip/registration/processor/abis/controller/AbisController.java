@@ -35,7 +35,13 @@ public class AbisController {
 			@ApiResponse(code = 400, message = "Uable to insert biometric data") })
 	public ResponseEntity<AbisInsertResponceDto> insert(@RequestBody(required = true) AbisInsertRequestDto abisInsertRequestDto) {
 		
-		return null;
+		AbisInsertResponceDto abisInsertResponceDto = abisServiceImpl.insert(abisInsertRequestDto);
+		if(abisInsertRequestDto.getId().equals("insert")) {
+			return ResponseEntity.status(HttpStatus.OK).body(abisInsertResponceDto);
+		}
+		abisInsertResponceDto.setFailureReason(2);
+		abisInsertResponceDto.setReturnValue("2");
+		 return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(abisInsertResponceDto);
 		
 	}
 	
@@ -48,7 +54,12 @@ public class AbisController {
 		
 		IdentityResponceDto identityResponceDto= abisServiceImpl.deDupeCheck(identityRequestDto);
 		
-		
+		if(identityRequestDto.getId().equals("identify")) {
 		return ResponseEntity.status(HttpStatus.OK).body(identityResponceDto);
+		}
+		identityResponceDto.setCandidateList(null);
+		identityResponceDto.setReturnValue(2);
+		identityResponceDto.setFailureReason(1);
+		return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(identityResponceDto);
 	}
 }

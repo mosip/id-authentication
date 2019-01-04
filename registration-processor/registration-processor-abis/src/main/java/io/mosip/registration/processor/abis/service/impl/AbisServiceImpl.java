@@ -2,6 +2,8 @@ package io.mosip.registration.processor.abis.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
+import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
@@ -24,9 +26,21 @@ public class AbisServiceImpl {
 		identityResponceDto.setCandidateList(cd);
 		identityResponceDto.setId("identity");
 		identityResponceDto.setRequestId("80bd41f8-31b2-46ac-ac9c-3534fc1b220e");
-		identityResponceDto.setReturnValue("1");
+		identityResponceDto.setReturnValue(1);
 		identityResponceDto.setTimestamp("1539777717");
 		return identityResponceDto;
 		
 	}
+	
+	public AbisInsertResponceDto insert(AbisInsertRequestDto abisInsertRequestDto) {
+		AbisInsertResponceDto abisInsertResponceDto=new AbisInsertResponceDto();
+		abisInsertResponceDto.setFailureReason(1);
+		abisInsertResponceDto.setId("insert");
+		abisInsertResponceDto.setTimestamp("1539777717");
+		abisInsertResponceDto.setReturnValue("1");
+		abisInsertResponceDto.setRequestId("01234567-89AB-CDEF-0123-456789ABCDEF");
+		return abisInsertResponceDto;
+		
+	}
+	
 }
