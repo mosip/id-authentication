@@ -3,11 +3,11 @@ package io.mosip.registration.dto.mastersync;
 /**
  * Response Dto for Template details
  * 
- * @author Neha
+ * @author Sreekar Chukka
  * @since 1.0.0
  */
 
-public class TemplateDto {
+public class TemplateDto extends MasterSyncBaseDto{
 
 	private String id;
 
@@ -28,6 +28,8 @@ public class TemplateDto {
 	private String templateTypeCode;
 
 	private String langCode;
+	
+	private Boolean isActive;
 
 	/**
 	 * @return the id
@@ -168,8 +170,20 @@ public class TemplateDto {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-	
-	
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 	
 	
 }

@@ -52,8 +52,10 @@ public class MasterSyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (null != context) {
+			if (context != null) {
 				this.jobId = loadContext(context);
+				masterSyncService = applicationContext.getBean(MasterSyncService.class);
+
 			}
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
@@ -68,7 +70,7 @@ public class MasterSyncJob extends BaseJob {
 		this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
 
 		// To run the child jobs after the parent job Success
-		if (responseDTO.getSuccessResponseDTO() != null && context != null) {
+		if (responseDTO.getSuccessResponseDTO() != null) {
 			executeChildJob(jobId, jobMap);
 		}
 

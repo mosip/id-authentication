@@ -29,7 +29,6 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
@@ -58,8 +57,6 @@ public class SyncStatusValidatorServiceTest {
 	@Mock
 	private AuditFactory auditFactory;
 	
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
-
 	@BeforeClass
 	public static void beforeClass() {
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
@@ -79,8 +76,6 @@ public class SyncStatusValidatorServiceTest {
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		
-		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test

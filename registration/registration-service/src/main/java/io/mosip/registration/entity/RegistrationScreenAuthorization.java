@@ -20,6 +20,8 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	@EmbeddedId
 	private RegistrationScreenAuthorizationId registrationScreenAuthorizationId;
 
+	@Column(name = "lang_code")
+	private String langCode;
 	@Column(name = "is_permitted")
 	private Boolean isPermitted;
 	@Column(name = "is_deleted")
