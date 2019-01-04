@@ -23,7 +23,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
@@ -35,8 +34,6 @@ import springfox.documentation.annotations.ApiIgnore;
  * The {@code AuthController} used to handle all the authentication requests.
  *
  * @author Arun Bose
- * 
- * 
  * @author Prem Kumar
  */
 @RestController
@@ -59,13 +56,6 @@ public class AuthController {
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
-
-	
-	/** The internal Auth Request Validator */
-	@Autowired
-	private InternalAuthRequestValidator internalAuthRequestValidator;
-
-	
 
 	/**
 	 *
@@ -90,13 +80,16 @@ public class AuthController {
 	/**
 	 * authenticateRequest - method to authenticate request.
 	 *
-	 * @param authrequestdto            - Authenticate Request
-	 * @param errors            the errors
+	 * @param authrequestdto
+	 *            - Authenticate Request
+	 * @param errors
+	 *            the errors
 	 * @return AuthResponseDTO
-	 * @throws IdAuthenticationAppException             the id authentication app exception
-	 * @throws IdAuthenticationDaoException the id authentication dao exception
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 * @throws IdAuthenticationDaoException
+	 *             the id authentication dao exception
 	 */
-
 	@PostMapping(path = "/v1.0/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
@@ -108,7 +101,7 @@ public class AuthController {
 		try {
 			DataValidationUtil.validate(errors);
 
-			authResponsedto = authFacade.authenticateApplicant(authrequestdto,true);
+			authResponsedto = authFacade.authenticateApplicant(authrequestdto, true);
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
@@ -123,12 +116,17 @@ public class AuthController {
 	/**
 	 * Controller Method to auhtentication for eKyc-Details.
 	 *
-	 * @param kycAuthRequestDTO the kyc auth request DTO
-	 * @param errors the errors
+	 * @param kycAuthRequestDTO
+	 *            the kyc auth request DTO
+	 * @param errors
+	 *            the errors
 	 * @return the kyc auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
-	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IdAuthenticationDaoException the id authentication dao exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 * @throws IdAuthenticationDaoException
+	 *             the id authentication dao exception
 	 */
 	@PostMapping(path = "/v1.0/ekyc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
@@ -160,7 +158,5 @@ public class AuthController {
 
 		return kycAuthResponseDTO;
 	}
-
-
 
 }
