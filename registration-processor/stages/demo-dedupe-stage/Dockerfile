@@ -6,4 +6,4 @@ ENV active_profile_env=${active_profile}
 
 COPY ./target/demo-dedupe-stage-*.jar demo-dedupe-stage.jar
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","Demo-dedupe-stage.jar"]
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","demo-dedupe-stage.jar"]
