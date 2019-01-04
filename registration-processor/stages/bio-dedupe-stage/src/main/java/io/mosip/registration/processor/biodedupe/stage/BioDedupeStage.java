@@ -12,6 +12,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
+import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
+import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
+import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.biodedupe.stage.utils.StatusMessage;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -117,15 +121,44 @@ public class BioDedupeStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 
+		} catch (ABISInternalError e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + e.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			description = "ABIS Internal error occured while processing registration  id  : " + registrationId;
+
+		}
+
+		catch (ABISAbortException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + e.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			description = "ABIS Abort Exception occured while processing registration  id : " + registrationId;
+
+		} catch (UnexceptedError e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + e.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			description = "Unexcepted Error occured while processing registration  id : " + registrationId;
+
+		} catch (UnableToServeRequestABISException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + e.getMessage());
+			object.setInternalError(Boolean.TRUE);
+			description = "Unable To Serve Request ABIS Exception occured while processing registration  id : "
+					+ registrationId;
+
 		} catch (DataAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Data voilation in reg packet : " + registrationId;
 
-		} catch (ApisResourceAccessException e) {
+		}
+
+		catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
