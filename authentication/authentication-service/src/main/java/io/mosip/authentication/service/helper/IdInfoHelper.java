@@ -168,7 +168,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @return true, if successful
 	 */
 	private boolean checkLanguageType(String languageForMatchType, String languageFromReq) {
-		if (languageFromReq == null || languageFromReq.isEmpty()) {
+		if (languageFromReq == null || languageFromReq.isEmpty() || languageFromReq.equalsIgnoreCase("null")) {
 			return getLanguageCode(LanguageType.PRIMARY_LANG).equalsIgnoreCase(languageForMatchType);
 		} else {
 			return languageForMatchType.equalsIgnoreCase(languageFromReq);

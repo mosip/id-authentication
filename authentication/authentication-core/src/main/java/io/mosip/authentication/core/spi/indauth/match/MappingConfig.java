@@ -219,5 +219,10 @@ public interface MappingConfig {
 	 * @return
 	 */
 	public List<String> getFace();
+	
+	
+	public List<String> getLeftEye();
+	
+	public List<String> getRightEye();
 
 }

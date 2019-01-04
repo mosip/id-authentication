@@ -1,17 +1,18 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -27,6 +28,7 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * 
@@ -65,48 +67,87 @@ public class IdRepoServiceImpl implements IdRepoService {
 			response.put("uin", uin);
 		} catch (RestServiceException e) {
 			logger.error(SESSION_ID, ID_REPO_SERVICE, e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 		return response;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
+	@SuppressWarnings("unchecked")
 	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException {
 
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			String value = mapper.writeValueAsString(idResponseDTO);
-			Map<String, Object> outputMap = mapper.readValue(value, new TypeReference<Map>() {
-			});
+		return idResponseDTO.entrySet().stream()
+				.filter(entry -> entry.getKey().equals("response") && entry.getValue() instanceof Map)
+				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
+					if (entry.getKey().equals("identity") && entry.getValue() instanceof Map) {
+						return getIdentityValues((Map<String, Object>) entry.getValue()).entrySet().stream();
+					} else if (entry.getKey().equals("documents") && entry.getValue() instanceof List) {
+						return (getDocumentValues((List<Map<String, Object>>) entry.getValue())).entrySet().stream();
+					} else {
+						return Stream.empty();
+					}
+				}).collect(Collectors.toMap(Entry<String, Object>::getKey, entry -> {
+					Object val = entry.getValue();
+					if (val instanceof List) {
+						List<Map> arrayList = (List) val;
+						return arrayList.stream().filter(elem -> elem instanceof Map)
+								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
+									IdentityInfoDTO idInfo = new IdentityInfoDTO();
+									idInfo.setLanguage(String.valueOf(map1.get("language")));
+									idInfo.setValue(String.valueOf(map1.get("value")));
+									return idInfo;
+								}).collect(Collectors.toList());
 
-			return outputMap.entrySet().parallelStream()
-					.filter(entry -> entry.getKey().equals("response") && entry.getValue() instanceof Map)
-					.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
-					.filter(entry -> entry.getKey().equals("identity") && entry.getValue() instanceof Map)
-					.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
-					.filter(entry -> entry.getKey().equals("identity") && entry.getValue() instanceof Map)
-					.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream())
-					.collect(Collectors.toMap(Entry<String, Object>::getKey, entry -> {
-						Object val = entry.getValue();
-						if (val instanceof List) {
-							List<Map> arrayList = (List) val;
-							return arrayList.stream().filter(elem -> elem instanceof Map)
-									.map(elem -> (Map<String, Object>) elem).map(map1 -> {
-										IdentityInfoDTO idInfo = new IdentityInfoDTO();
-										idInfo.setLanguage(String.valueOf(map1.get("language")));
-										idInfo.setValue(String.valueOf(map1.get("value")));
-										return idInfo;
-									}).collect(Collectors.toList());
+					}
+					return Collections.emptyList();
+				}));
 
-						}
-						return Collections.emptyList();
-					}));
-		} catch (IOException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+	}
+
+	private Map<String, Object> getIdentityValues(Map<String, Object> map) {
+		return map.entrySet().stream().filter(entry -> entry.getValue() instanceof Map)
+				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+					List<Map<String, Object>> idValuesList = ((Map<String, Object>) entry.getValue()).entrySet()
+							.stream()
+							.filter(entry1 -> "values".equals(entry1.getKey()) && entry1.getValue() instanceof List)
+							.flatMap(entry1 -> ((List<Map<String, Object>>) entry1.getValue()).stream())
+							.collect(Collectors.toList());
+
+					return idValuesList;
+				}));
+
+	}
+
+	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
+		return value.stream().filter(map -> "individualBiometrics".equals(map.get("docType")))
+				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("docValue"))
+				.map(entry -> (Map<String, Object>) decodeToMap(entry.getValue()))
+				.flatMap(map -> map.entrySet().stream())
+				.collect(Collectors.toMap(Entry<String, Object>::getKey, entry -> {
+					Object val = entry.getValue();
+					if (val instanceof List) {
+						return (List<Map<String, Object>>) (List) val;
+
+					}
+					return Collections.emptyList();
+				}));
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> decodeToMap(Object value) {
+		if (value instanceof String) {
+			try {
+				byte[] decodeBase64 = CryptoUtil.decodeBase64((String) value);
+				ObjectMapper mapper = new ObjectMapper();
+				return mapper.readValue(decodeBase64, Map.class);
+			} catch (IOException e) {
+				logger.error(SESSION_ID, ID_REPO_SERVICE, e.getMessage(), e.getLocalizedMessage());
+				return Collections.emptyMap();
+			}
+		} else {
+			return Collections.emptyMap();
 		}
 
 	}
