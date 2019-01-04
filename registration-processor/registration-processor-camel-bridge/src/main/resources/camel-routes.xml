@@ -1,0 +1,21 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+	<route id="">
+		<from uri="vertx:verticle1.address.out" />
+		<log message="test ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<!-- <simple>${bodyAs(String)} contains '"isValid":true'</simple> -->
+				<process ref="camelProcessor"></process>
+				<xpath>$isValid=true</xpath>
+				<to uri="vertx:valid.address.in"/>
+			</when>
+			<when>
+			<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+			<to uri="vertx:retry.address.in" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error.address.in" />
+			</otherwise>
+		</choice>
+	</route>
+</routes>

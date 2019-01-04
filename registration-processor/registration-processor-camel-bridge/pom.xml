@@ -34,11 +34,11 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-ignite</artifactId>
 			<version>${vertx.version}</version>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-unit</artifactId>
@@ -46,22 +46,32 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-         <groupId>io.vertx</groupId>
-         <artifactId>vertx-config-spring-config-server</artifactId>
-          <version>3.5.4</version>
-        </dependency>
-        <dependency>
-         <groupId>io.vertx</groupId>
-         <artifactId>vertx-config</artifactId>
-         <version>3.5.4</version>
-         </dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config-spring-config-server</artifactId>
+			<version>3.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config</artifactId>
+			<version>3.5.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-vertx -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-vertx</artifactId>
+			<version>${camel.vertx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-		        <version>${h2.version}</version>
+				<version>${h2.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
