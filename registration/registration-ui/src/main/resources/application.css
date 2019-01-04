@@ -76,6 +76,25 @@
 	-fx-background-insets: 0,0 0 1 0;
   	-fx-border-width: 0 0 1 0;	
 }	
+#anchor-pane-acknowledgement {
+	-fx-border-style: solid inside;
+	-fx-border-width: 1;
+	-fx-border-insets: 5;
+	-fx-border-radius: 5;
+	-fx-border-color: #A9A9A9;
+}
+
+#ackScreen > .viewport {
+	-fx-background-color: white;
+}
+
+#ackScreen-anchor-pane{
+	-fx-border-style: solid inside;
+	-fx-border-width: 1;
+	-fx-border-insets: 5;
+	-fx-border-radius: 5;
+	-fx-border-color: #A9A9A9;
+}
 
 #anchor-pane-registration{
 	-fx-background-color: white;
@@ -87,10 +106,23 @@
   	
 }
 
-#anchor-pane-registration .button{
+#anchor-pane-registration .button {
 	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 10, 0, 0, 0);
 }
 
+#anchor-pane-acknowledgement .button{
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-weight: bold
+}
+
+#anchor-pane-acknowledgement .button:pressed {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}
 
 #homeReg{
 	-fx-font-size:15px;
@@ -148,7 +180,7 @@
 }
 
 #mainBox{
-	-fx-border-width: 1.0;
+	-fx-border-width: 0;
 	-fx-border-color: black;
 }
 
@@ -181,37 +213,33 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0 0 1 0;
 }
-#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane,#fingerPrintScanAnchorPane{
+.imageAnchorPaneStyle{
 	-fx-background-color:#ffffff;
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
 }
-#onHoldPane, #rejectionPane,#authenticationRoot,#fingerPrintScanRoot{
+.rootPaneStyle{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
+.labelAnchorPanebgColor{
 	-fx-background-color:#808080;
 }
-#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane,#fingerPrintCapturePane,#fingerPrintScanRootSubPane{
-	-fx-background-color:#ffffff;
-}
-#pendingApprovalAnchorPane,#pendingActionAnchorPane,#approvalReportAnchorPane,#approveRegistrationRoot,#reRegisterAnchorPane{
+.anchorPanebgColor{
 	-fx-background-color:#ffffff;
 	-fx-alignment: center ;
-	-fx-padding: 0 0 0 0;
 }
-#onHoldComboBox, #rejectionComboBox, #deviceCmbBox{
+.comboboxStyle{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0 0 1 0;
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-
-#exitButton, #rejectionExit, #authExit,#authenticationExit,#fingerPrintScanExit{
-	 -fx-border-color: transparent;
-     -fx-padding: 4 0 4 0;
-     -fx-text-fill: black;
+.exitButtonStyle{
+	-fx-border-color: transparent;
+    -fx-padding: 4 0 4 0;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
 }
 #table,#pendingActionTable{
 	-fx-text-fill: black;
@@ -227,12 +255,13 @@
   -fx-border-color: #dcdcdc;
   -fx-font-weight: bold;
 }
-#pendingApprovalTitledPane,#pendingActionTitledPane,#approvalReportTitledPane,#reRegisterTitledPane{
-	 -fx-background-color:#ffffff; 
+.titledPaneStyle{
+	-fx-background-color:#ffffff; 
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-padding: 0 0 0.5em 0;
 }
+
 #table .scroll-bar:vertical > .increment-button,
 #table .scroll-bar:vertical > .decrement-button {
     -fx-background-color: null;
@@ -301,15 +330,21 @@
 
 .headerPane {
 	-fx-background-color:#808080;
+	-fx-pref-height: 54px;
+	-fx-pref-width: 483px;
 }
 
 .paneRoot {
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
+	-fx-pref-height: 359px;
+	-fx-pref-width: 477px;
 }
 
 .subPane {
 	-fx-background-color:#ffffff;
+	-fx-pref-height: 307px;
+	-fx-pref-width: 483px;
 }
 
 #submit, #rejectionSubmit,#submitBtn{
@@ -336,6 +371,8 @@
 	-fx-background-color:#ffffff;
 	-fx-border-width: 1.0;
 	-fx-border-color: black;
+	-fx-pref-height: 238px;
+	-fx-pref-width: 349px;
 }
 
 .exit {
@@ -351,4 +388,96 @@
 
 #bioPreviewGridId{
 	-fx-background-color: white;
+}
+
+.scanPopupHeader {
+	-fx-font-size: 18px;
+	-fx-font-weight: bold;
+	-fx-font-family: System;
+}
+
+.loginBorderPaneStyle{
+	-fx-pref-height: 530px;
+	-fx-pref-width: 808px;
+}
+
+.loginLeftPaneStyle{
+	-fx-pref-height: 326px;
+	-fx-pref-width: 285px;
+}
+
+.loginCenterPaneStyle{
+	-fx-pref-height: 500px;
+	-fx-pref-width: 500px;
+}
+
+.loginFieldStyle{
+	-fx-pref-height: 39px;
+	-fx-pref-width: 221px;
+}
+
+.loginSubmitStyle{
+	-fx-pref-height: 30px;
+	-fx-pref-width: 81px;
+}
+
+.loginOtpStyle{
+	-fx-pref-height: 30px;
+	-fx-pref-width: 89px;
+}
+
+.loginResendOtpStyle{
+	-fx-pref-height: 30px;
+	-fx-pref-width: 105px;
+}
+
+.loginOtpValidStyle{
+	-fx-pref-height: 18px;
+	-fx-pref-width: 136px;
+}
+
+.loginfpStyle{
+	-fx-pref-height: 27px;
+	-fx-pref-width: 127px;
+}
+
+.headerStyle{
+	-fx-pref-height: 10px;
+	-fx-pref-width: 10px;
+}
+
+.optionsStyle{
+	-fx-pref-height: 244px;
+	-fx-pref-width: 944px;
+}
+
+.optionsButtonStyle{
+	-fx-pref-height: 127px;
+	-fx-pref-width: 231px;
+}
+
+.reRegAnchorPane{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 625.0px;
+}
+
+.reRegToggle{
+	-fx-pref-height: 30.0px; 
+	-fx-pref-width: 86.0px;
+}
+
+.reRegTable{
+	-fx-pref-height: 278.0px; 
+	-fx-pref-width: 250.0px;
+}
+
+.reRegRoot{
+	-fx-pref-height: 316.0px; 
+	-fx-pref-width: 900.0px;
+}
+.uinUpdateTextFiledStyle{
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+  	-fx-border-width: 0 0 1 0;	
 }

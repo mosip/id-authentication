@@ -38,13 +38,13 @@ public class CreateDemographicDTO implements Serializable {
 	private String createdBy;
 
 	/** The create date time. */
-	private Date createdDateTime;
+	private String createdDateTime;
 
 	/** The updated by. */
 	private String updatedBy;
 
 	/** The update date time. */
-	private Date updatedDateTime;
+	private String updatedDateTime;
 
 	/**
 	 * status code

@@ -6,7 +6,7 @@
 		<artifactId>stages</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>Demo-dedupe-stage</artifactId>
+	<artifactId>demo-dedupe-stage</artifactId>
 
   <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -30,7 +30,7 @@
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>1.4.195</version>
+				<version>${h2.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -38,12 +38,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>

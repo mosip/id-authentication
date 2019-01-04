@@ -266,7 +266,7 @@ public class FingerprintFacade {
 		userFingerprintDetails.forEach(fingerPrintTemplateEach -> {
 			if (fingerprintProvider.scoreCalculator(minutiae,
 					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {
-				fingerprintDetailsDTO.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode());
+				fingerprintDetailsDTO.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode()+".jpg");
 			}
 		});
 		return userFingerprintDetails.stream()

@@ -46,7 +46,7 @@ public class RegistrationUserDetailDAOTest {
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
 
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue("mosip"))
+		Mockito.when(registrationUserDetailRepository.findByIdIgnoreCaseAndIsActiveTrue("mosip"))
 				.thenReturn(registrationUserDetailList);
 		assertTrue(!registrationUserDetailList.isEmpty());
 		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));
@@ -59,7 +59,7 @@ public class RegistrationUserDetailDAOTest {
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
 
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue("mosip"))
+		Mockito.when(registrationUserDetailRepository.findByIdIgnoreCaseAndIsActiveTrue("mosip"))
 				.thenReturn(registrationUserDetailList);
 		assertFalse(registrationUserDetailList.isEmpty());
 		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));

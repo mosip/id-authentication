@@ -3,6 +3,7 @@ package io.mosip.authentication.core.spi.id.service;
 import java.util.Map;
 import java.util.Optional;
 
+import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 
@@ -43,4 +44,19 @@ public interface IdAuthService {
 	 *                                           exception
 	 */
 	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException;
+
+	/**
+	 * Store entry in Auth_txn table for all authentications.
+	 * 
+	 * @param idvId       idvId
+	 * @param idvIdType   idvIdType(D/V)
+	 * @param reqTime     reqTime
+	 * @param txnId       txnId
+	 * @param status      status('Y'/'N')
+	 * @param comment     comment
+	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @throws IdAuthenticationBusinessException 
+	 */
+	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
+			RequestType requestType) throws IdAuthenticationBusinessException;
 }

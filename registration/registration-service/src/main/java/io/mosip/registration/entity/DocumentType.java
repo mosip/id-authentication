@@ -10,9 +10,9 @@ import javax.persistence.Table;
 public class DocumentType extends MasterCommonFields {
 	@EmbeddedId
 	private GenericId genericId;
-	@Column(name = "name", length = 64, nullable = false)
+	@Column(name = "name")
 	private String name;
-	@Column(name = "descr", length = 128, nullable = true)
+	@Column(name = "descr")
 	private String description;
 
 	/**

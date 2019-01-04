@@ -16,11 +16,11 @@ import javax.persistence.Embeddable;
 public class RegCentreMachineDeviceId implements Serializable {
 
 	private static final long serialVersionUID = -1247474923778950226L;
-	@Column(name = "regcntr_id", length = 36)
+	@Column(name = "regcntr_id")
 	private String regCentreId;
-	@Column(name = "machine_id", length = 36)
+	@Column(name = "machine_id")
 	private String machineId;
-	@Column(name = "device_id", length = 36)
+	@Column(name = "device_id")
 	private String deviceId;
 
 	/**

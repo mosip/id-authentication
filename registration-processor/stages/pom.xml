@@ -18,14 +18,12 @@
 		<module>packet-validator-stage</module>
 		<module>retry-stage</module>
 		<module>failover-stage</module>
-		<module>quality-matchness-checker-stage</module>
-		<module>OSI-validator</module>
-		<module>landingzone-scanner-stage</module>
+        	<module>osi-validator-stage</module>
 		<module>virus-scanner-stage</module>
-		<module>packet-decrypter-stage</module>
-		<module>Demo-dedupe-stage</module>
-		<module>manual-verification-stage</module>
-    	<module>ui-generator-stage</module>
-  </modules>
+		<module>packet-uploader-stage</module>
+		<module>demo-dedupe-stage</module>
+	    <module>manual-verification-stage</module>
+        <module>ui-generator-stage</module>
+	</modules>
 
 </project>

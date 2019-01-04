@@ -16,6 +16,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import javafx.collections.FXCollections;
@@ -24,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 /**
@@ -67,6 +69,11 @@ public class RejectionController extends BaseController implements Initializable
 	/** The rej reg data. */
 	private RegistrationApprovalDTO rejRegData;
 
+	/** The rejection table. */
+	private TableView<RegistrationApprovalDTO> regRejectionTable;
+
+	private String controllerName;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -78,7 +85,9 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-		rejectionComboBox.setItems(FXCollections.observableArrayList(String.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.REJECTION_COMMENTS)).split(",")));
+		rejectionComboBox.setItems(FXCollections.observableArrayList(String.valueOf(
+				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.REJECTION_COMMENTS))
+				.split(",")));
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
@@ -91,15 +100,18 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param mapList
 	 * @param table
 	 */
-	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList) {
+	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList,
+			TableView<RegistrationApprovalDTO> table, String controller) {
 		rejRegData = regData;
 		rejPrimarystage = stage;
 		rejectionmapList = mapList;
+		regRejectionTable = table;
+		controllerName = controller;
 	}
 
 	/**
-	 * {@code updatePacketStatus} is for updating packet status to
-	 * reject
+	 * {@code updatePacketStatus} is for updating packet status to reject
+	 * 
 	 * 
 	 * @param event
 	 */
@@ -122,8 +134,17 @@ public class RejectionController extends BaseController implements Initializable
 
 		rejectionSubmit.disableProperty().set(true);
 		rejPrimarystage.close();
-		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Packet updation as rejection has been ended");
+
+		if (controllerName.equals("RegistrationApprovalController")) {
+
+			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
+					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
+					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),RegistrationConstants.REJECTED);
+			regRejectionTable.getItems().set(regRejectionTable.getSelectionModel().getSelectedIndex(), approvalDTO);
+
+			LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Packet updation as rejection has been ended");
+		}
 	}
 
 	/**

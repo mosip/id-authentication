@@ -22,9 +22,11 @@ public interface AuthFacade {
 	 * Authenticate applicant.
 	 *
 	 * @param authRequest the auth request
+	 * @param request the flag for InternalAuthRequest or AuthRequest 
 	 * @return the auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
+	 * @throws IdAuthenticationDaoException the Id authentication Dao Exception
 	 */
 	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest, boolean request)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;

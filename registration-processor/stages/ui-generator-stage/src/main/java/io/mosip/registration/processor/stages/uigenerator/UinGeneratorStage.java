@@ -69,7 +69,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
-
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
@@ -98,13 +97,13 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			System.out.println("UIN GENERATION HAPPENING:    "+uinResponseDto.getUin());
 			UinAvailabilityCheck uinAvailabilityCheck = new UinAvailabilityCheck();
 			uinAvailabilityCheck.uinCheck("27847657360002520181208094036",adapter);
-
+			
+			//call idrepo method
+			//if response is succesfull from idrepo service update uin in demo dedupe table.
 			demographicDedupeRepository.updateUinWrtRegistraionId("27847657360002520181208094036", uinResponseDto.getUin());
-
-
-
-
-
+		
+			//after succesfully updation of UIn in reg processor DB call trigger function for  triggerring  sms and email to particualr UIN holder
+	
 		} 
 		catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage()+e.getMessage());
@@ -115,12 +114,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		}finally {
+			
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 
@@ -139,10 +138,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 
 		return idResponseDTO;
-
-
-
-
 	}
 
 

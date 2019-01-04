@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.Initialization;
@@ -21,7 +21,6 @@ import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
@@ -79,6 +78,8 @@ public class HeaderController extends BaseController {
 	@Autowired
 	MasterSyncService masterSyncService;
 
+	@Autowired
+	PacketHandlerController packetHandlerController;
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -128,7 +129,7 @@ public class HeaderController extends BaseController {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_LOGOUT_PAGE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
 		}
 	}
 
@@ -149,7 +150,7 @@ public class HeaderController extends BaseController {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_HOME_PAGE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
@@ -164,7 +165,7 @@ public class HeaderController extends BaseController {
 				.load(getClass().getResource(RegistrationConstants.USER_MACHINE_MAPPING));
 
 		if (!validateScreenAuthorization(onBoardRoot.getId())) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 		} else {
 			VBox pane = (VBox) menu.getParent().getParent().getParent();
 			Object parent = pane.getChildren().get(0);
@@ -176,40 +177,20 @@ public class HeaderController extends BaseController {
 	}
 
 	/**
-	 * Sync master data.
+	 * Sync  data through batch jobs.
 	 *
 	 * @param event the event
-	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
-	public void syncMasterData(ActionEvent event) throws RegBaseCheckedException {
+	public void syncData(ActionEvent event)  {
 
-		ResponseDTO masterResponse = null;
+		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
 
-		String errorMessage = "";
-
-		try {
-
-			LOGGER.debug("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, "Syncing master data");
-
-			masterResponse = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
-
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, masterResponse.getSuccessResponseDTO().getMessage());
-
-		} catch (RuntimeException exception) {
-
-			LOGGER.error("REGISTRATION - SYNC MASTER DATA - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, exception.getMessage());
-
-			if (null != masterResponse) {
-				List<ErrorResponseDTO> errorMsgList = masterResponse.getErrorResponseDTOs();
-
-				for (ErrorResponseDTO errorResponseDTO : errorMsgList) {
-					errorMessage = errorResponseDTO.getMessage();
-				}
-			}
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
+		if (responseDTO.getErrorResponseDTOs() != null) {
+			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+		} else if (responseDTO.getSuccessResponseDTO() != null) {
+			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
 		}
 	}
 
@@ -222,7 +203,7 @@ public class HeaderController extends BaseController {
 					.load(getClass().getResource(RegistrationConstants.SYNC_STATUS));
 
 			if (!validateScreenAuthorization(syncServerClientRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				VBox pane = (VBox) (menu.getParent().getParent().getParent());
 				for (int index = pane.getChildren().size() - 1; index > 0; index--) {
@@ -251,7 +232,7 @@ public class HeaderController extends BaseController {
 					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
 
 			if (!validateScreenAuthorization(onBoardRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				VBox pane = (VBox) menu.getParent().getParent().getParent();
 				Object parent = pane.getChildren().get(0);
@@ -264,30 +245,40 @@ public class HeaderController extends BaseController {
 					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
 							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");
 		}
 	}
 
+	/**
+	 * This method is to trigger the Pre registration sync service
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
-		// preRegistrationDataSyncService.getPreRegistrationIds("syncJobId");
-	}
+		ResponseDTO responseDTO = preRegistrationDataSyncService
+				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-	@FXML
-	public void syncInitializer(ActionEvent event) {
-		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
-
-		if (responseDTO.getErrorResponseDTOs() != null) {
-			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
-		} else if (responseDTO.getSuccessResponseDTO() != null) {
+		if (responseDTO.getSuccessResponseDTO() != null) {
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
-		}
 
+		} else if (responseDTO.getErrorResponseDTOs() != null) {
+
+			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
+
+		}
 	}
 
+	public void eodProcess() {
+		packetHandlerController.approvePacket();
+	}
+
+	public void uploadPacketToServer() {
+		packetHandlerController.uploadPacket();
+	}
 }

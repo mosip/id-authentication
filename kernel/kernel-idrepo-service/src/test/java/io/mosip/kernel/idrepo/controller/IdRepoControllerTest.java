@@ -12,10 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,8 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
-import io.mosip.kernel.idrepo.controller.IdRepoController;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
@@ -104,8 +100,8 @@ public class IdRepoControllerTest {
 	public void testRetrieveIdentity() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
-		when(idRepoService.retrieveIdentity(any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234");
+		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
+		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo");
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
@@ -120,8 +116,8 @@ public class IdRepoControllerTest {
 	public void testRetrieveIdentityInvalidUin() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		when(idRepoService.retrieveIdentity(any())).thenReturn(response);
-		controller.retrieveIdentity("1234");
+		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
+		controller.retrieveIdentity("1234", "demo");
 	}
 
 	/**
@@ -132,7 +128,7 @@ public class IdRepoControllerTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityNullId() throws IdRepoAppException {
-		controller.retrieveIdentity(null);
+		controller.retrieveIdentity(null, null);
 	}
 
 	/**

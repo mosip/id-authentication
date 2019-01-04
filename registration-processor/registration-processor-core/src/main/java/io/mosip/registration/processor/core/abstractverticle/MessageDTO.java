@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
-import java.io.Serializable;
+import java.io.Serializable;	
 
 /**
  * This class contains parameters for communication between MOSIP stages.

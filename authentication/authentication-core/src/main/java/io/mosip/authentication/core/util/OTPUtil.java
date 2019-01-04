@@ -16,13 +16,13 @@ public final class OTPUtil {
 	 * Generate key.
 	 * 
 	 * @param productId productId
-	 * @param refId     refId
+	 * @param uin     uin
 	 * @param txnId     txnId
 	 * @param auaCode   auaCode
 	 * @return generated key.
 	 */
-	public static String generateKey(String productId, String refId, String txnId, String auaCode) {
-		return productId.concat("_").concat(Base64.getEncoder().encodeToString(refId.getBytes())).concat("_")
+	public static String generateKey(String productId, String uin, String txnId, String auaCode) {
+		return productId.concat("_").concat(Base64.getEncoder().encodeToString(uin.getBytes())).concat("_")
 				.concat(txnId).concat("_").concat(auaCode);
 	}
 }

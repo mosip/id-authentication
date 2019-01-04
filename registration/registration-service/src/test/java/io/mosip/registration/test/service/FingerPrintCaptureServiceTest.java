@@ -15,10 +15,10 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.AuthenticationValidatorImplementation;
-import io.mosip.registration.validator.FingerprintValidator;
+import io.mosip.registration.validator.AuthenticationBaseValidator;
+import io.mosip.registration.validator.FingerprintValidatorImpl;
 
 public class FingerPrintCaptureServiceTest {
 
@@ -29,7 +29,7 @@ public class FingerPrintCaptureServiceTest {
 	private AuthenticationService authenticationValidatorFactory;
 
 	@Mock
-	private FingerprintValidator fingerprintValidator;
+	private FingerprintValidatorImpl fingerprintValidator;
 
 	@InjectMocks
 	private FingerPrintCaptureServiceImpl fingerPrintCaptureServiceImpl;
@@ -40,10 +40,9 @@ public class FingerPrintCaptureServiceTest {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId("abcd");
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-		AuthenticationValidatorImplementation authenticationValidatorImplementation = fingerprintValidator;
-		Mockito.when(authenticationValidatorFactory.getValidator("Fingerprint"))
-				.thenReturn(authenticationValidatorImplementation);
-		authenticationValidatorImplementation.setFingerPrintType("multiple");
+		AuthenticationBaseValidator authenticationValidatorImplementation = fingerprintValidator;
+		Mockito.when(authenticationValidatorFactory.authValidator(Mockito.anyString(), Mockito.anyObject()))
+				.thenReturn(true);
 		Mockito.when(authenticationValidatorImplementation.validate(Mockito.any(AuthenticationValidatorDTO.class)))
 				.thenReturn(true);
 		assertEquals(true, fingerPrintCaptureServiceImpl.validateFingerprint(fingerprintDetailsDTOs));

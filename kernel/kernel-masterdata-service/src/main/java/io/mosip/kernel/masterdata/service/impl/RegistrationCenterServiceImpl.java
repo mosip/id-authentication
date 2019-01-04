@@ -1,5 +1,8 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +21,7 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -87,10 +91,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		Objects.requireNonNull(langCode);
 		try {
 			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
-		} catch (DataAccessException|DataAccessLayerException dataAccessException) {
+		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+ExceptionUtils.parseException(dataAccessException));
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(dataAccessException));
 		}
 		if (registrationCenter == null) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -105,7 +110,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				if (holidayLocationCode != null)
 					holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode,
 							year);
-			} catch (DataAccessException|DataAccessLayerException dataAccessException) {
+			} catch (DataAccessException | DataAccessLayerException dataAccessException) {
 				throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 
@@ -136,8 +141,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		if (centers.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -169,8 +174,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		if (registrationCentersList.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -200,8 +205,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		if (registrationCenter == null) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -264,8 +269,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(e));
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
 		}
 		if (registrationCentersList.isEmpty()) {
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -313,5 +318,57 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(registrationCenter.getId());
 		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ResgistrationCenterStatusResponseDto validateTimestampWithRegistrationCenter(String id, String timestamp) {
+		LocalDateTime localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
+		LocalDate localDate = localDateTime.toLocalDate();
+		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
+		try {
+			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
+			if (isTrue) {
+				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
+			} else {
+				RegistrationCenter registrationCenter = registrationCenterRepository.findById(RegistrationCenter.class,
+						id);
+				if (registrationCenter == null) {
+					throw new DataNotFoundException(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+				}
+
+				LocalTime startTime = registrationCenter.getCenterStartTime();
+				LocalTime endTime = registrationCenter.getCenterEndTime();
+				if (startTime != null && endTime != null) {
+					LocalTime locatime = localDateTime.toLocalTime();
+					boolean isAfterStartTime = locatime.isAfter(startTime);
+					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
+					if (isAfterStartTime && isBeforeEndTime) {
+						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
+					} else {
+						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
+					}
+
+				} else {
+					throw new DataNotFoundException(
+							RegistrationCenterErrorCode.DATA_TO_BE_VALIDATED_WITH_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.DATA_TO_BE_VALIDATED_WITH_NOT_FOUND.getErrorMessage());
+				}
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+
+		return resgistrationCenterStatusResponseDto;
 	}
 }

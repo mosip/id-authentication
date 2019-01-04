@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -124,7 +125,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			}
 
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException
-				| HttpClientErrorException exception) {
+				| HttpClientErrorException | ResourceAccessException exception) {
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,

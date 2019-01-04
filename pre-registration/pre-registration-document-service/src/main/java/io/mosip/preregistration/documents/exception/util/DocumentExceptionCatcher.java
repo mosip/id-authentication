@@ -86,7 +86,9 @@ public class DocumentExceptionCatcher {
 		} else if (ex instanceof DocumentNotValidException) {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
 					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
-
+		} else if (ex instanceof ConnectionUnavailableException) {
+			throw new ConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
+					ErrorMessages.CONNECTION_UNAVAILABLE.toString());
 		} else if (ex instanceof DocumentSizeExceedException) {
 			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
 					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());

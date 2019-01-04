@@ -1,5 +1,8 @@
 package io.mosip.registration.processor.core.constant;
-
+	
+/**
+ * The Class PacketFileConstant.
+ */
 public class PacketFileConstant {
 
 	/** The Constant FILE_SEPARATOR. */
@@ -17,6 +20,9 @@ public class PacketFileConstant {
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
 
+	/**
+	 * Instantiates a new packet file constant.
+	 */
 	private PacketFileConstant() {
 
 	}

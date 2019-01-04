@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.camel.bridge;
 
-import java.util.concurrent.ExecutionException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -19,17 +18,12 @@ public class MosipCamelBridge extends AbstractVerticle {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipCamelBridge.class);
-	
-	
+
+
 	/**
 	 * The main method.
 	 *
-	 * @param args
-	 *            the arguments
-	 * @throws InterruptedException
-	 *             the interrupted exception
-	 * @throws ExecutionException
-	 *             the execution exception
+	 * @param args            the arguments
 	 */
 	public static void main(String[] args) {
 		MosipBridgeFactory.getEventBus();

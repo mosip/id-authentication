@@ -21,12 +21,12 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.validator.FingerprintValidator;
+import io.mosip.registration.validator.FingerprintValidatorImpl;
 
 public class FingerprintValidatorTest {
 
 	@InjectMocks
-	FingerprintValidator fingerprintValidator;
+	FingerprintValidatorImpl fingerprintValidator;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -63,9 +63,6 @@ public class FingerprintValidatorTest {
 
 	@Test
 	public void validateSingleTest() {
-		fingerprintValidator.setFingerPrintType("single");
-
-		assertThat(fingerprintValidator.getFingerPrintType(), is("single")); 
 		UserBiometric userBiometric = new UserBiometric();
 		userBiometric.setQualityScore(91);
 		userBiometric.setBioMinutia("bioMinutia");
@@ -74,19 +71,19 @@ public class FingerprintValidatorTest {
 
 		when(registrationUserDetailDAO.getUserSpecificFingerprintDetails("mosip")).thenReturn(userBiometrics);
 		when(fingerprintFacade.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics)).thenReturn(true);
-
+		authenticationValidatorDTO.setAuthValidationType("single");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
 	}
 	
 	@Test
 	public void validateMultipleTest() {
-		fingerprintValidator.setFingerPrintType("multiple");
+		authenticationValidatorDTO.setAuthValidationType("multiple");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
 	}
 	
 	@Test
 	public void validateTest() {
-		fingerprintValidator.setFingerPrintType("");
+		authenticationValidatorDTO.setAuthValidationType("");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(false));
 	}
 }

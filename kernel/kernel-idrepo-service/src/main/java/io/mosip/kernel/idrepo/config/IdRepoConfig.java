@@ -5,9 +5,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -19,6 +19,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.hibernate.Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
@@ -52,6 +53,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @EnableTransactionManagement
 public class IdRepoConfig implements WebMvcConfigurer {
 
+	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoConfig.class);
 
 	/** The mapper. */
@@ -61,9 +63,16 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	/** The interceptor. */
+	@Autowired
+	private Interceptor interceptor;
 
 	/** The db. */
 	private Map<String, Map<String, String>> db;
+	
+	/** The doc attributes. */
+	private List<String> docAttributes;
 
 	/** The status. */
 	private List<String> status;
@@ -129,6 +138,24 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
+	 * Gets the doc attributes.
+	 *
+	 * @return the doc attributes
+	 */
+	public List<String> getDocAttributes() {
+		return docAttributes;
+	}
+
+	/**
+	 * Sets the doc attributes.
+	 *
+	 * @param docAttributes the new doc attributes
+	 */
+	public void setDocAttributes(List<String> docAttributes) {
+		this.docAttributes = docAttributes;
+	}
+
+	/**
 	 * Setup.
 	 */
 	@PostConstruct
@@ -151,7 +178,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue()))));
 		return resolver;
 	}
-
+	
 	/**
 	 * Rest template.
 	 *
@@ -183,6 +210,16 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public List<String> status() {
 		return Collections.unmodifiableList(status);
 	}
+	
+	/**
+	 * Doc attributes.
+	 *
+	 * @return the list
+	 */
+	@Bean
+	public List<String> docAttributes() {
+		return docAttributes;
+	}
 
 	/**
 	 * Entity manager factory.
@@ -199,10 +236,12 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 		JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		em.setJpaVendorAdapter(vendorAdapter);
-		em.setJpaProperties(additionalProperties());
+		em.setJpaPropertyMap(additionalProperties());
 
 		return em;
 	}
+	
+
 
 	/**
 	 * Transaction manager.
@@ -217,19 +256,20 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		transactionManager.setEntityManagerFactory(emf);
 		return transactionManager;
 	}
-
+	
 	/**
 	 * Additional properties.
 	 *
 	 * @return the properties
 	 */
-	Properties additionalProperties() {
-		Properties properties = new Properties();
-		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
-		properties.setProperty("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
-		properties.setProperty("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
+	private Map<String, Object> additionalProperties() {
+		Map<String, Object> jpaProperties = new HashMap<>();
+		jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
+		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());
+		jpaProperties.put("hibernate.physical_naming_strategy", SpringPhysicalNamingStrategy.class.getName());
+		jpaProperties.put("hibernate.ejb.interceptor", interceptor);
 
-		return properties;
+		return jpaProperties;
 	}
 
 	/**
@@ -248,6 +288,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return driverManagerDataSource;
 	}
 
+	/** The unquestioning trust manager. */
 	private TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
 		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 			return null;
@@ -267,6 +308,9 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	} };
 
+	/**
+	 * Turn off ssl checking.
+	 */
 	public void turnOffSslChecking() {
 		try {
 			final SSLContext sslContext = SSLContext.getInstance("TLSv1.2");

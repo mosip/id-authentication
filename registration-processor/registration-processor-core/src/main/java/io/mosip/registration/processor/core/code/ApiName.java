@@ -16,7 +16,7 @@ public enum ApiName {
 	AUTHINTERNAL,
 	
 	/** The master data. */
-	MASTER, 
+	MASTER,
 	
 	/** The iam. */
 	IAM, 
@@ -41,17 +41,17 @@ public enum ApiName {
 	
 	/** The center-machine-user history. */
 	CENTERUSERMACHINEHISTORY,
-	
+
 	/** The sms notifier. */
 	SMSNOTIFIER,
 	
 	/** The email notifier. */ 
 	EMAILNOTIFIER,
-	
+
 	/** The idrepository. */
 	IDREPOSITORY,
-	
-	
+
+
 	/** The uingenerator. */
 	UINGENERATOR
 	

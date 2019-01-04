@@ -13,5 +13,8 @@
 		"mobilenumberlength":10,
 		"restrictedNumbers":[
 			"8732","321","65"
+		],
+		"supportedLanguages":[
+			"eng","ara","deu"
 		]
 }
