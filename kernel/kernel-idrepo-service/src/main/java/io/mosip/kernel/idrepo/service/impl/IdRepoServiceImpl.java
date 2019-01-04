@@ -73,7 +73,7 @@ import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
+import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 
 /**
  * The Class IdRepoServiceImpl.
@@ -203,7 +203,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 	/** The connection. */
 	@Autowired
-	private ConnectionUtil connection;
+	private DFSConnectionUtil connection;
 
 	/*
 	 * (non-Javadoc)
