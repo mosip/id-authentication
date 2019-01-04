@@ -52,12 +52,15 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Override
 	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
 
+		String insertStatus = "failure";
 		String requestId = uuidGenerator();
 		String referenceId = uuidGenerator();
 
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
 		abisInsertRequestDto.setReferenceURL(url + registrationId);
+		String timeStamp = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L);
+		abisInsertRequestDto.setTimestamp(timeStamp);
 
 		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
 		regAbisRefDto.setAbis_ref_id(referenceId);
@@ -68,7 +71,10 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService
 				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponceDto.class);
 
-		return authResponseDTO.getReturnValue();
+		if (authResponseDTO.getReturnValue() == "1")
+			insertStatus = "success";
+
+		return insertStatus;
 
 	}
 
@@ -85,7 +91,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		identityRequestDto.setVer("1.0");
 		identityRequestDto.setRequestId(requestId);
 		identityRequestDto.setReferenceId(referenceId);
-		
+
 		String timeStamp = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L);
 		identityRequestDto.setTimestamp(timeStamp);
 		identityRequestDto.setMaxResults(maxResults);
