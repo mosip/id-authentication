@@ -1,10 +1,10 @@
-**Design - User to Machine Mapping **
+**Design - On board User Mapping **
 
 **Background**
 ==============
 
-After successful login by the Admin person, user can onboard the new
-users along with their bio-metric to the machine, which is tagged to a
+The user can able to self on board to the registered machine.
+Users along with their bio-metric to the machine, which is tagged to a
 particular Registration center. Through admin portal all the users,
 machines and devices are configured. But mapping of the users and their
 Bio-metric information to a particular machine would happen through this
@@ -23,16 +23,20 @@ The key **requirements** are
 
 User Mapping:
 
-> On login successful of the user, we show off "New Registration"
-> screen. There exists the "Menu", which lists the options/ features. On
-> clicking the "User Mapping" link, it should land up in "User Mapping
-> Screen". This consist of list of users available at that registration
-> center. A table with User name, User ID, User Role is shown off. On
-> clicking the particular user, his/her details should appear below.
->
-> Capture the selected user's 10 finger print along with the IRIS detail
-> and validate against the server. If valid then store the respective
-> detail into the local system.
+The default username/password screen will be displayed to the user for login. 
+After provided username/password, the validation will be validated agsint the master data locally and also validating the machine mapping informaiton. 
+If the mahcine mapping to the particular user name is not mapped then it will call the OTP service to generate the OTP to the registered mobile number of the user.
+After successful authentication of the OTP, the scrren rediects to the Onboard User mapping by providing the bio-metric[Fingerprint/Iris/Photo] information. 
+
+After provided the bio-metirc information, the same information will be validate agsint the server and get the success count. The success count which we got form the server and the configured threshould success count will be matched, if more then the user on biarded will be considered as Done.
+screen. There exists the "Menu", which lists the options/ features. On
+clicking the "Upate User Bio-Metirc" link, it should land up in "On Board User
+Screen". This consist of captruing of the Bio-MEtric informaiton.
+center. A table with User name, User ID, User Role is shown off. On
+
+Capture the selected user's 10 finger print along with the IRIS detail
+and validate against the server. If valid then store the respective
+detail into the local system.
 
 -   Super admin -- can map or unmap himself or other RO / RS.
 
