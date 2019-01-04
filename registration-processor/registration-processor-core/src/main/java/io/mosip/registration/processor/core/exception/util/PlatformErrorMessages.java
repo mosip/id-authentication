@@ -230,15 +230,17 @@ public enum PlatformErrorMessages {
 	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "002",
 			"File is Already exists in DFS location And its now Deleted from Virus scanner job"),
 
-	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001", "Internal Error in ABIS"),
+	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
+			"ABIS for the Reference ID and Request ID threw an Internal Error"),
 
-	RPR_BDD_ABIS_ABORT(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "002", "Abort in ABIS"),
+	RPR_BDD_ABIS_ABORT(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "002",
+			"ABIS for the Reference ID and Request ID was Abort"),
 
 	RPR_BDD_UNEXCEPTED_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "003",
-			"Unexpected error - Unable to access biometric data"),
+			"ABIS for the Reference ID and Request ID was Not able to Access Biometric Data"),
 
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
-			"Unable to serve the request in ABIS"),
+			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
 
 	/***** System Exception *****/
 

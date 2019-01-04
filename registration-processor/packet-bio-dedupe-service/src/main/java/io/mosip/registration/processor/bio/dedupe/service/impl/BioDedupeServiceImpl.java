@@ -19,6 +19,10 @@ import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
 import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
+import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
+import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
+import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -89,8 +93,30 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		if (authResponseDTO.getReturnValue() == "1")
 			insertStatus = "success";
+		else
+			throwException(authResponseDTO.getFailureReason(), referenceId, requestId);
 
 		return insertStatus;
+
+	}
+
+	private void throwException(int failureReason, String referenceId, String requestId) {
+
+		if (failureReason == 1)
+			throw new ABISInternalError(
+					PlatformErrorMessages.RPR_BDD_ABIS_INTERNAL_ERROR.getMessage() + referenceId + " " + requestId);
+
+		else if (failureReason == 2)
+			throw new ABISAbortException(
+					PlatformErrorMessages.RPR_BDD_ABIS_ABORT.getMessage() + referenceId + " " + requestId);
+
+		else if (failureReason == 3)
+			throw new UnexceptedError(
+					PlatformErrorMessages.RPR_BDD_UNEXCEPTED_ERROR.getMessage() + referenceId + " " + requestId);
+
+		else if (failureReason == 4)
+			throw new UnableToServeRequestABISException(
+					PlatformErrorMessages.RPR_BDD_UNABLE_TO_SERVE_REQUEST.getMessage() + referenceId + " " + requestId);
 
 	}
 
@@ -118,7 +144,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 				"", "", identityRequestDto, IdentityResponceDto.class);
 
 		if (responsedto.getReturnValue() == "2") {
-			// throw exception with failure reasons
+			throwException(responsedto.getfailureReason(), referenceId, requestId);
 		}
 
 		CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
