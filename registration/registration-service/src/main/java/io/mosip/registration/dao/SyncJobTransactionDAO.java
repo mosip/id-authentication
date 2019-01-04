@@ -1,5 +1,7 @@
 package io.mosip.registration.dao;
 
+import java.util.List;
+
 import io.mosip.registration.entity.SyncTransaction;
 
 /**
@@ -19,5 +21,11 @@ public interface SyncJobTransactionDAO {
 	 * @return
 	 */
 	SyncTransaction save(SyncTransaction syncTransaction);
+	
+	/**
+	 * Get All sync Transaction
+	 * @return list of sync transaction
+	 */
+	List<SyncTransaction> getAll();
 
 }

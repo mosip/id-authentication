@@ -85,4 +85,11 @@ public interface SyncJobDAO {
 	 * @return SyncControl data
 	 */
 	public SyncControl findBySyncJobId(String syncJobId);
+	
+	/**
+	 * Get all sync control records
+	 * 
+	 * @return list of syncControl
+	 */
+	public List<SyncControl> findAll();
 }

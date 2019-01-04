@@ -3,6 +3,8 @@ package io.mosip.registration.dao.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +42,16 @@ public class JobTransactionDAOImpl implements SyncJobTransactionDAO {
 				"saving sync details to databse started");
 		return syncTranscRepository.save(syncTransaction);
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobTransactionDAO#getAll()
+	 */
+	@Override
+	public List<SyncTransaction> getAll() {
+		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"saving sync details to databse started");
+		return syncTranscRepository.findAll();
 	}
 
 

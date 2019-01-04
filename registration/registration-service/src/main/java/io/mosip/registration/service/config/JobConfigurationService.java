@@ -36,7 +36,7 @@ public interface JobConfigurationService {
 	 * 
 	 * @return responseDTO for stop jobs
 	 */
-	ResponseDTO stopScheduler(boolean shutdown);
+	ResponseDTO stopScheduler();
 
 	/**
 	 * To fetch the details of currently running job details
@@ -56,5 +56,19 @@ public interface JobConfigurationService {
 	 * @return responseDTO for execute job
 	 */
 	ResponseDTO executeJob(ApplicationContext applicationContext, String jobId);
+	
+	/**
+	 * Get Last Completed Sync Jobs from Sync Control
+	 * 
+	 * @return responseDTO for last completedJobs
+	 */
+	ResponseDTO getLastCompletedSyncJobs();
+	
+	/**
+	 * Get history of Sync Jobs from Sync Transaction
+	 * 
+	 * @return responseDTO for last transaction of each syncJob
+	 */
+	ResponseDTO getSyncJobsTransaction();
 
 }

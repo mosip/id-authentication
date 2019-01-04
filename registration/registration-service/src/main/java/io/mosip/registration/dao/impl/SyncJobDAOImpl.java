@@ -111,5 +111,15 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 				"Fetching the sync details from databse started");
 		return syncStatusRepository.findBySyncJobId(syncJobId);		
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobDAO#findAll()
+	 */
+	@Override
+	public List<SyncControl> findAll() {
+		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching the list of sync details from databse started");
+		return syncStatusRepository.findAll();	
+	}
 
 }

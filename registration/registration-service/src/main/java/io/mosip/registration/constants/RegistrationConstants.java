@@ -50,6 +50,7 @@ public class RegistrationConstants {
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
 	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
 	public static final String UIN_UPDATE = "/fxml/UINUpdate.fxml";
+	public static final String SYNC_DATA = "/fxml/SyncDataProcess.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -725,11 +726,16 @@ public class RegistrationConstants {
 	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "SYNC-DATA Process started successfully";
 	public static final String START_SCHEDULER_ERROR_MESSAGE = "Unable to start SYNC-DATA process";
 	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
-	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop JobScheduler";
+	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop SYNC-DATA Process";
 	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "Unable to fetch current running job details";
 	public static final String EXECUTE_JOB_ERROR_MESSAGE = "Unable to execute job";
-	public static final String BATCH_JOBS_ALREADY_STARTED = "SYNC-DATA Process already running";
-
+	public static final String SYNC_DATA_PROCESS_ALREADY_STARTED = "SYNC-DATA Process already running";
+	public static final String SYNC_DATA_PROCESS_ALREADY_STOPPED = "SYNC-DATA Process not running to stop";
+	public static final String SYNC_DATA_DTO = "SYNC-DATA DTO";
+	public static final String JOB_RUNNING = "RUNNING";
+	public static final String JOB_COMPLETED = "COMPLETED";
+	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
+	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
 	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";

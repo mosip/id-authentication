@@ -117,13 +117,13 @@ public class JobConfigurationServiceTest {
 		
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		doNothing().when(scheduler).shutdown();
-		jobConfigurationService.stopScheduler(true);
+		jobConfigurationService.stopScheduler();
 	}
 	
 	@Test
 	public void stopJobsExceptionTest() throws SchedulerException {
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
-		jobConfigurationService.stopScheduler(true);
+		jobConfigurationService.stopScheduler();
 	}
 
 	@Test

@@ -252,4 +252,18 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByClientStatusCodeAndServerStatusCode(status[0], status[1]);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegistrationDAO#getRegistrationsToBeDeleted(java.sql.Timestamp, java.lang.String)
+	 */
+	@Override
+	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes, String clientStatus) {
+		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on crDtime and status");
+
+		return registrationRepository.findByCrDtimeBeforeAndClientStatusCodeNot(crDtimes, clientStatus);
+
+	}
+
+	
 }

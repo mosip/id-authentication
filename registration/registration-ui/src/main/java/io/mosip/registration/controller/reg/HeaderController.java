@@ -80,6 +80,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
+
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -116,6 +117,9 @@ public class HeaderController extends BaseController {
 
 			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
+
+			/** Stop Sync-Data Process */
+			jobConfigurationService.stopScheduler();
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
@@ -157,7 +161,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event is an action event
+	 * @param event
+	 *            is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser(ActionEvent event) throws IOException {
@@ -177,21 +182,30 @@ public class HeaderController extends BaseController {
 	}
 
 	/**
-	 * Sync  data through batch jobs.
+	 * Sync data through batch jobs.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
-	public void syncData(ActionEvent event)  {
+	public void syncData(ActionEvent event) {
 
-		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
+		AnchorPane syncData;
+		try {
+			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
 
-		if (responseDTO.getErrorResponseDTOs() != null) {
-			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
-		} else if (responseDTO.getSuccessResponseDTO() != null) {
-			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
+			VBox pane = (VBox) menu.getParent().getParent().getParent();
+			Object parent = pane.getChildren().get(0);
+			pane.getChildren().clear();
+			pane.getChildren().add((Node) parent);
+			pane.getChildren().add(syncData);
+
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
+			ioException.printStackTrace();
+
 		}
+
 	}
 
 	/**
@@ -221,7 +235,8 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent is an action event
+	 * @param actionEvent
+	 *            is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
