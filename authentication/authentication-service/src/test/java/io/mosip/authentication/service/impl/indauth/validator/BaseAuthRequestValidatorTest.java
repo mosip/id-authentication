@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -47,6 +46,8 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.integration.IdTemplateManager;
+import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
+import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
@@ -925,7 +926,8 @@ public class BaseAuthRequestValidatorTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 
-		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString())).thenReturn(false);
+		Mockito.when(emailValidatorImpl.validateEmail(Mockito.anyString()))
+				.thenThrow(new InvalideEmailException("", ""));
 
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateEmail", authRequestDTO, error);
 		assertTrue(error.hasErrors());
@@ -971,7 +973,8 @@ public class BaseAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = getAuthRequestDTO();
 		authRequestDTO.setRequest(phoneRequest);
 
-		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString())).thenReturn(false);
+		Mockito.when(phoneValidatorImpl.validatePhone(Mockito.anyString()))
+				.thenThrow(new InvalidPhoneNumberException("", ""));
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePhone", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 
