@@ -132,7 +132,7 @@ public class BaseController {
 	 */
 	public static <T> T load(URL url) throws IOException {
 		clearDeviceOnboardingContext();
-		FXMLLoader loader = new FXMLLoader(url);
+		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}

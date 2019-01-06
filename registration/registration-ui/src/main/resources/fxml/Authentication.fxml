@@ -13,23 +13,23 @@
          <children>
             <AnchorPane fx:id="fingerprintBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
                <children>
-                  <Label fx:id="fingerPrintLabel" layoutX="132.0" layoutY="38.0" text="RO Fingerprint Authentication" />
+                  <Label fx:id="fingerPrintLabel" layoutX="132.0" layoutY="38.0" text="%rofingerprintauthentication" />
                   <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="140.0" layoutY="152.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/fingerprint.jpg" />
                      </image>
                   </ImageView>
-                  <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="RegbuttonStyle" text="Scan" />
-                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" prefHeight="39.0" prefWidth="308.0" promptText="Username" />
+                  <Button layoutX="270.0" layoutY="224.0" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="RegbuttonStyle" text="%scan" />
+                  <TextField fx:id="fpUserId" layoutX="86.0" layoutY="89.0" prefHeight="39.0" prefWidth="308.0" promptText="%username" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="otpBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0" visible="false">
                <children>
-                  <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="Get OTP" />
-                  <Label fx:id="otpLabel" layoutX="126.0" layoutY="38.0" text="Registration Officer Verification" />
-                  <Button layoutX="294.0" layoutY="197.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="RegbuttonStyle" text="Submit" />
-                  <TextField fx:id="otpUserId" layoutX="106.0" layoutY="88.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
-                  <TextField fx:id="otp" layoutX="106.0" layoutY="139.0" prefHeight="39.0" prefWidth="269.0" promptText="Enter OTP" />
+                  <Button layoutX="106.0" layoutY="197.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" />
+                  <Label fx:id="otpLabel" layoutX="126.0" layoutY="38.0" text="%registrationofficerverification" />
+                  <Button layoutX="294.0" layoutY="197.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="RegbuttonStyle" text="%submit" />
+                  <TextField fx:id="otpUserId" layoutX="106.0" layoutY="88.0" prefHeight="39.0" prefWidth="269.0" promptText="%username" />
+                  <TextField fx:id="otp" layoutX="106.0" layoutY="139.0" prefHeight="39.0" prefWidth="269.0" promptText="%enterotp" />
                   <Label fx:id="otpValidity" layoutX="106.0" layoutY="248.0">
                      <font>
                         <Font size="10.0" />
@@ -39,22 +39,22 @@
             </AnchorPane>
             <AnchorPane fx:id="pwdBasedLogin" layoutY="1.0" prefHeight="300.0" prefWidth="480.0">
                <children>
-                  <Button layoutX="200.0" layoutY="206.0" mnemonicParsing="false" onAction="#validatePwd" styleClass="RegbuttonStyle" text="Submit" />
-                  <TextField fx:id="username" layoutX="106.0" layoutY="95.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
-                  <Label fx:id="passwdLabel" layoutX="126.0" layoutY="47.0" text="Registration Officer Verification" />
-                  <PasswordField fx:id="password" layoutX="106.0" layoutY="150.0" prefHeight="39.0" prefWidth="269.0" promptText="Password" />
+                  <Button layoutX="200.0" layoutY="206.0" mnemonicParsing="false" onAction="#validatePwd" styleClass="RegbuttonStyle" text="%submit" />
+                  <TextField fx:id="username" layoutX="106.0" layoutY="95.0" prefHeight="39.0" prefWidth="269.0" promptText="%username" />
+                  <Label fx:id="passwdLabel" layoutX="126.0" layoutY="47.0" text="%registrationofficerverification" />
+                  <PasswordField fx:id="password" layoutX="106.0" layoutY="150.0" prefHeight="39.0" prefWidth="269.0" promptText="%password" />
                </children>
             </AnchorPane>
          </children>
       </AnchorPane>
       <AnchorPane fx:id="authenticateRootPane" layoutY="-1.0" prefHeight="54.0" prefWidth="483.0" styleClass="labelAnchorPanebgColor">
          <children>
-            <Label layoutX="131.0" layoutY="14.0" text="Supervisor Authentication">
+            <Label layoutX="131.0" layoutY="14.0" text="%supervisorauthentication">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="X" styleClass="exitButtonStyle"/>
+            <Hyperlink fx:id="authenticationExit" layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="%x" styleClass="exitButtonStyle"/>
          </children>
       </AnchorPane>
    </children>

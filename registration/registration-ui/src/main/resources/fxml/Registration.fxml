@@ -23,7 +23,7 @@
                			<Image url="@../images/Home.png" />
             			 </image>
                      </ImageView>
-                     <Text id="homeReg" fx:id="paneLabel" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
+                     <Text id="homeReg" fx:id="paneLabel" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
                      <ImageView fx:id="headerImage" fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                      	<image>
                			<Image url="@../images/Pre-Registration.png" />
@@ -40,12 +40,12 @@
                             </children>
                       </AnchorPane>
                       <fx:include source="DocumentScan.fxml" />
-                      <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="389.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="Next" />
-                  	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="Previous" />
+                      <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="389.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
+                  	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
                            <AnchorPane id="biometricException" layoutX="50.0" layoutY="370.0">
                               <children>
                             <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="9.1" />
-                            <Label text="Biometric Exception" />
+                            <Label text="%biometricexception" />
                             <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="140.0" prefHeight="15.0" prefWidth="9.0" />
                               </children>
                            </AnchorPane>
@@ -76,7 +76,7 @@
                                     </children>
                                  </AnchorPane>
                                  <Label fx:id="genderLabel" layoutX="47.0" layoutY="175.0" text="%gender" />
-                                 <ComboBox fx:id="gender" layoutX="45.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="Select">
+                                 <ComboBox fx:id="gender" layoutX="45.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="%select">
                                     <items>
                                        <FXCollections fx:factory="observableArrayList">
                                           <String fx:value="Male" />
@@ -140,7 +140,7 @@
                     						<Image url="@../images/CopyAddress.png" />
                                       </image>
                                    </ImageView>
-                                   <Label fx:id="copyAddressLabel" layoutX="352.0" layoutY="240.0" text="Copy Address" visible="false" />
+                                   <Label fx:id="copyAddressLabel" layoutX="352.0" layoutY="240.0" text="%copyaddress" visible="false" />
                                  <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
                                  <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                                     <Button fx:id="nextBtn" layoutX="668.0" layoutY="652.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
@@ -154,7 +154,7 @@
                            </AnchorPane>
                         </content>
                         </TitledPane>
-                     <TitledPane fx:id="biometricTitlePane" text="Applicant Biometrics">
+                     <TitledPane fx:id="biometricTitlePane" text="%applicantbiometrics">
                         <content>
                            <AnchorPane id="demographicPane" fx:id="fingerPrintCapturePane" prefHeight="85.0" prefWidth="417.0">
                               <children>
@@ -162,26 +162,26 @@
                               <fx:include fx:id="irisCapture" source="IrisCapture.fxml" visible="false" />
                                  <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">
                                     <children>
-                                       <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="Capture" />
+                                       <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="%capture" />
                                        <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" />
-                                       <Label layoutX="172.0" layoutY="328.0" text="Applicant Image" />
-                                       <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
-                                       <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
+                                       <Label layoutX="172.0" layoutY="328.0" text="%applicantimage" />
+                                       <Label layoutX="537.0" layoutY="328.0" text="%exceptionimage" />
+                                       <Label layoutX="115.0" layoutY="390.0" text="%threshold">
                                           <font>
                                              <Font size="16.0" />
                                           </font>
                                        </Label>
-                                       <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :">
+                                       <Label layoutX="488.0" layoutY="390.0" text="%threshold">
                                           <font>
                                              <Font size="16.0" />
                                           </font>
                                        </Label>
-                                       <Label layoutX="115.0" layoutY="363.0" text="Quality Percentage     :">
+                                       <Label layoutX="115.0" layoutY="363.0" text="%quality">
                                           <font>
                                              <Font size="16.0" />
                                           </font>
                                        </Label>
-                                       <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :">
+                                       <Label layoutX="488.0" layoutY="363.0" text="%quality">
                                           <font>
                                              <Font size="16.0" />
                                           </font>
@@ -214,9 +214,9 @@
                                              </ImageView>
                                           </children>
                                        </HBox>
-                                       <Label layoutX="104.0" layoutY="54.0" text="Image" />
-                                       <Button fx:id="biometricPrevBtn" layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="RegbuttonStyle" text="Previous" />
-                                       <Button fx:id="saveBiometricDetailsBtn" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="RegbuttonStyle" text="Next" />
+                                       <Label layoutX="104.0" layoutY="54.0" text="%image" />
+                                       <Button fx:id="biometricPrevBtn" layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="RegbuttonStyle" text="%previous" />
+                                       <Button fx:id="saveBiometricDetailsBtn" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="RegbuttonStyle" text="%next" />
                                     </children>
                                  </AnchorPane>
                                  <Line endX="840.0" startX="10.0" />
@@ -224,7 +224,7 @@
                            </AnchorPane>
                         </content>
                      </TitledPane>
-                     <TitledPane fx:id="authenticationTitlePane" disable="true" text="Operator Authentication">
+                     <TitledPane fx:id="authenticationTitlePane" disable="true" text="%operatorauthentication">
                        <content>
                          <fx:include fx:id="operatorAuthentication" source="OperatorAuthentication.fxml" />
                        </content>
