@@ -30,10 +30,12 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -307,5 +309,31 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		return reasonListResponse;
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#getAllBlackListedWords(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<BlacklistedWordsDto> getAllBlackListedWords(String langCode) {
+
+		List<BlacklistedWordsDto> blackWords = new ArrayList<>();
+		List<MasterBlacklistedWords> blackListedWords = masterSyncDao.getBlackListedWords(langCode);
+
+		blackListedWords.forEach(blackList -> {
+
+			BlacklistedWordsDto words = new BlacklistedWordsDto();
+			words.setDescription(blackList.getDescription());
+			words.setLangCode(blackList.getLangCode());
+			words.setWord(blackList.getWord());
+			blackWords.add(words);
+
+		});
+
+		return blackWords;
 	}
 }
