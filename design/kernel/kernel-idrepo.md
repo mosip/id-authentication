@@ -18,10 +18,12 @@ Identity Repository service can be used internally by products to create, read a
 -	Read Identity Information associated with a valid UIN
 -	Check status of UIN for validating a UIN    
 
+#####1.2.1. Functional Flow Diagram - Create ID - 
 ![Functional Flow Diagram - Create ID](_images/kernel-idrepo-createid-fd.PNG)      
 
 
-![Functional Flow Diagram - Create ID](_images/kernel-idrepo-getidentity-fd.PNG) 
+#####1.2.2. Functional Flow Diagram - Retrieve ID - 
+![Functional Flow Diagram - Retrieve ID](_images/kernel-idrepo-getidentity-fd.PNG) 
 
 
 ***1.3. Key Non-Functional Requirements -***   
