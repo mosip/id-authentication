@@ -369,13 +369,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				return constructIdResponse(this.id.get(READ), uinObject, null);
 			} else if (filter.equalsIgnoreCase(BIO)) {
 				getFiles(uin, documents, BIOMETRICS);
-				uinObject.setUinData("".getBytes());
 				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - bio",
 						"bio documents  --> " + documents);
 				return constructIdResponse(this.id.get(READ), uinObject, documents);
 			} else if (filter.equalsIgnoreCase(DOCS)) {
 				getFiles(uin, documents, DOCUMENTS);
-				uinObject.setUinData("".getBytes());
 				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - docs",
 						"docs documents  --> " + documents);
 				return constructIdResponse(this.id.get(READ), uinObject, documents);
@@ -407,22 +405,25 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private void getFiles(String uin, List<Documents> documents, String filter) {
 		try {
 			if (connection.getConnection().doesBucketExistV2(uin)) {
-			connection.getConnection().listObjectsV2(uin).getObjectSummaries().stream()
-					.peek(objectSummary -> System.err.println(ID_REPO_SERVICE_IMPL + RETRIEVE_IDENTITY + " getFiles " +  
-							"peek1 key -> " + objectSummary.getKey()))
-					.filter(objectSummary -> StringUtils.startsWithIgnoreCase(objectSummary.getKey(), filter))
-					.peek(objectSummary -> System.err.println(ID_REPO_SERVICE_IMPL + RETRIEVE_IDENTITY + " getFiles after filter " +  
-							"peek1 key -> " + objectSummary.getKey()))
-					.forEach(objectSummary -> {
-						try {
-							documents.add(new Documents(StringUtils.split(objectSummary.getKey(), '/')[1],
-									CryptoUtil.encodeBase64(IOUtils.toByteArray((InputStream) connection.getConnection()
-											.getObject(new GetObjectRequest(uin, objectSummary.getKey()))
-											.getObjectContent()))));
-						} catch (IOException e) {
-							throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
-						}
-					});
+				connection.getConnection().listObjectsV2(uin).getObjectSummaries().stream()
+						.peek(objectSummary -> mosipLogger.debug(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, " getFiles ",
+								"peek1 key -> " + objectSummary.getKey()))
+						.filter(objectSummary -> StringUtils.startsWithIgnoreCase(objectSummary.getKey(), filter))
+						.peek(objectSummary -> mosipLogger.debug(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
+								" getFiles after filter ", "peek2 key -> " + objectSummary.getKey()))
+						.forEach(objectSummary -> {
+							try {
+								documents
+										.add(new Documents(StringUtils.split(objectSummary.getKey(), '/')[1],
+												CryptoUtil.encodeBase64(IOUtils.toByteArray((InputStream) connection
+														.getConnection()
+														.getObject(new GetObjectRequest(uin, objectSummary.getKey()))
+														.getObjectContent()))));
+							} catch (IOException e) {
+								throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR,
+										e);
+							}
+						});
 			}
 		} catch (IdRepoAppUncheckedException | SdkClientException e) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
