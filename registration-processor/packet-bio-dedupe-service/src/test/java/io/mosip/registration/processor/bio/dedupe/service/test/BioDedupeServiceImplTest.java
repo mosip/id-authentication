@@ -18,10 +18,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
-import io.mosip.registration.processor.abis.dto.CandidateListDto;
-import io.mosip.registration.processor.abis.dto.CandidatesDto;
-import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertResponceDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidateListDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidatesDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.IdentityResponceDto;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
 import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;

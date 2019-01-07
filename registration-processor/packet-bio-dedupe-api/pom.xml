@@ -55,6 +55,10 @@
 			<artifactId>packet-bio-dedupe-service</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
   </dependencies>
   <build>
 		<plugins>

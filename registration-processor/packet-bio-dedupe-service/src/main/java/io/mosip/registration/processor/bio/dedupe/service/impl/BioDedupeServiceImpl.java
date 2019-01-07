@@ -14,11 +14,11 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
-import io.mosip.registration.processor.abis.dto.CandidatesDto;
-import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
-import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertRequestDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.AbisInsertResponceDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.CandidatesDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.IdentityRequestDto;
+import io.mosip.registration.processor.bio.dedupe.abis.dto.IdentityResponceDto;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
 import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
