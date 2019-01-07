@@ -12,7 +12,10 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.registration.processor.core.constant.IdType;
+import io.mosip.registration.processor.core.dto.config.GlobalConfig;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
@@ -22,6 +25,7 @@ import io.mosip.registration.processor.message.sender.exception.ConfigurationNot
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
  * The Class TriggerNotificationForUIN.
@@ -31,8 +35,8 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 public class TriggerNotificationForUIN {
 
 	/** The notification types. */
-	@Value("${registration.processor.notification.type}")
-	private String notificationTypes;
+	@Value("${registration.processor.globalconfigjson}")
+	private String getGlobalConfigJson;
 
 	/** The notification emails. */
 	@Value("${registration.processor.notification.emails}")
@@ -45,6 +49,9 @@ public class TriggerNotificationForUIN {
 	/** The service. */
 	@Autowired
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
+	
+	@Autowired
+	private Utilities utility;
 
 	/** The Constant SMS_TEMPLATE_CODE. */
 	private static final String SMS_TEMPLATE_CODE = "SMS_TEMP_FOR_UIN_GEN";
@@ -73,6 +80,13 @@ public class TriggerNotificationForUIN {
 		Map<String, Object> attributes = new HashMap<>();
 		String[] ccEMailList = null;
 		try {
+			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+					getGlobalConfigJson);
+			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+			System.out.println("getGlobalConfigJson notification"+getGlobalConfigJson);
+			GlobalConfig jsonObject = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, GlobalConfig.class);
+			String notificationTypes= jsonObject.getNotificationtype();
+			System.out.println("Debug notification"+notificationTypes);
 			if (notificationTypes.isEmpty()) {
 				throw new ConfigurationNotFoundException(
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());

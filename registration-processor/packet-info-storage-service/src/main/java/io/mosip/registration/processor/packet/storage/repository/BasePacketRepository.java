@@ -131,7 +131,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	public void updateUinWrtRegistraionId(@Param("regId") String regId,@Param("uin") String uin);
 
 
-	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId =:uin")
+	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
 	public List<String> getRegIdByUIN(@Param("uin")String uin);
 	
 }
