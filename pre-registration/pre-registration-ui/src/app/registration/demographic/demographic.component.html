@@ -1,7 +1,7 @@
 <div>
   <div class="wrapper">
     <div class="user">
-      <header> {{'demographic.title'|translate}}</header>
+      <header>{{ 'demographic.title' | translate }}</header>
       <hr />
       <div class="user__container">
         <form [formGroup]="userForm" class="user__form">
@@ -11,8 +11,9 @@
             <input
               matInput
               #fullName
-              maxlength="50"
-              placeholder="{{'demographic.label_name'| translate}}"
+              maxlength="
+              50"
+              placeholder="{{ 'demographic.label_name' | translate }}"
               formControlName="fullName"
               (change)="onTransliteration(fullName, t_fullName)"
             />
@@ -33,19 +34,19 @@
               </mat-form-field>
             </div>
 
-            <div class="user__pref">{{'demographic.text_or'| translate}}</div>
+            <div class="user__pref">{{ 'demographic.text_or' | translate }}</div>
             <div class="user__age">
               <mat-form-field>
                 <input
                   matInput
                   tabindex="-1"
                   formControlName="age"
-                  placeholder="{{'demographic.label_age' | translate}}"
+                  placeholder="{{ 'demographic.label_age' | translate }}"
                   #age
                   (focusout)="onAgeChange()"
                 />
               </mat-form-field>
-              <span>{{'demographic.text_years' | translate}}</span>
+              <span>{{ 'demographic.text_years' | translate }}</span>
             </div>
           </div>
           <div
@@ -80,7 +81,7 @@
           </div>
 
           <div class="user__gender">
-            {{'demographic.text_gender'| translate}}
+            {{ 'demographic.text_gender' | translate }}
             <mat-button-toggle-group
               formControlName="gender"
               (change)="onGenderChange()"
@@ -88,8 +89,8 @@
               name="fontStyle"
               aria-label="Font Style"
             >
-              <mat-button-toggle value="male">{{'demographic.button_male' | translate}}</mat-button-toggle>
-              <mat-button-toggle value="female">{{'demographic.button_female' | translate}}</mat-button-toggle>
+              <mat-button-toggle value="male">{{ 'demographic.button_male' | translate }}</mat-button-toggle>
+              <mat-button-toggle value="female">{{ 'demographic.button_female' | translate }}</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <div
@@ -104,7 +105,7 @@
               matInput
               #addressLine1
               maxlength="50"
-              placeholder="{{ 'demographic.label_address1' | translate}}"
+              placeholder="{{ 'demographic.label_address1' | translate }}"
               formControlName="addressLine1"
               (change)="onGenderChange()"
               (change)="onTransliteration(addressLine1, t_addressLine1)"
@@ -117,7 +118,7 @@
               matInput
               #addressLine2
               maxlength="50"
-              placeholder="{{ 'demographic.label_address2' | translate}}"
+              placeholder="{{ 'demographic.label_address2' | translate }}"
               formControlName="addressLine2"
               (change)="onTransliteration(addressLine2, t_addressLine2)"
             />
@@ -128,7 +129,7 @@
               matInput
               #addressLine3
               maxlength="50"
-              placeholder="{{ 'demographic.label_address3' | translate}}"
+              placeholder="{{ 'demographic.label_address3' | translate }}"
               formControlName="addressLine3"
               (change)="onTransliteration(addressLine3, t_addressLine3)"
             />
@@ -141,7 +142,7 @@
                 (selectionChange)="
                   onLocationSelect($event, regions, provinces, selectedRegion, transRegions, transSelectedRegion)
                 "
-                placeholder="{{ 'demographic.label_region'| translate }}"
+                placeholder="{{ 'demographic.label_region' | translate }}"
                 formControlName="region"
                 #region
               >
@@ -159,7 +160,7 @@
                 (selectionChange)="
                   onLocationSelect($event, provinces, cities, selectedProvince, transProvinces, transSelectedProvince)
                 "
-                placeholder="{{'demographic.label_province' | translate}}"
+                placeholder="{{ 'demographic.label_province' | translate }}"
                 formControlName="province"
                 #province
               >
@@ -195,8 +196,17 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="setLocation($event, userForm.get('localAdministrativeAuthority'))"
-                placeholder="{{ 'demographic.label_local_ administrative_authority' | translate}}"
+                (selectionChange)="
+                  onLocationSelect(
+                    $event,
+                    localAdministrativeAuthorities,
+                    null,
+                    selectedLAA,
+                    transLocalAdministrativeAuthorities,
+                    transSelectedLAA
+                  )
+                "
+                placeholder="{{ 'demographic.label_local_ administrative_authority' | translate }}"
                 formControlName="localAdministrativeAuthority"
                 #authority
               >
@@ -216,7 +226,7 @@
                 type="text"
                 #postalCode
                 maxlength="5"
-                placeholder="{{ 'demographic.label_postalCode' | translate}}"
+                placeholder="{{ 'demographic.label_postalCode' | translate }}"
                 formControlName="postalCode"
                 #postalCode
               />
@@ -240,7 +250,13 @@
           </div>
           <div class="user__dropdown">
             <mat-form-field>
-              <input #email maxlength="50" matInput placeholder="{{ 'demographic.label_email_id' | translate }}" formControlName="email" />
+              <input
+                #email
+                maxlength="50"
+                matInput
+                placeholder="{{ 'demographic.label_email_id' | translate }}"
+                formControlName="email"
+              />
               <mat-hint align="end">{{ email.value.length }} / 50</mat-hint>
               <mat-error *ngIf="!email.invalid">Please enter valid email id</mat-error>
             </mat-form-field>
@@ -273,7 +289,6 @@
               name="t_fullName"
               #t_fullName
             />
-            <!-- (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_fullName)" -->
             <mat-hint align="end">{{ t_fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!t_fullName.invalid">Full Name is required</mat-error>
           </mat-form-field>
@@ -382,7 +397,6 @@
               placeholder="{{ demo1.addressLine1 }}"
               formControlName="t_addressLine1"
             />
-            <!-- (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_addressLine1)" -->
             <mat-hint align="end">{{ t_addressLine1.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
           </mat-form-field>
@@ -434,7 +448,7 @@
                 [ngModel]="userForm.get('province').value"
                 name="t_province"
               >
-              <mat-option *ngFor="let province of transProvinces" [value]="province.locationCode">{{
+                <mat-option *ngFor="let province of transProvinces" [value]="province.locationCode">{{
                   province.locationName
                 }}</mat-option>
               </mat-select>
@@ -448,7 +462,7 @@
                 [ngModel]="userForm.get('city').value"
                 name="t_city"
               >
-              <mat-option *ngFor="let city of transCities" [value]="city.locationCode">{{
+                <mat-option *ngFor="let city of transCities" [value]="city.locationCode">{{
                   city.locationName
                 }}</mat-option>
               </mat-select>
@@ -462,7 +476,7 @@
                 [ngModel]="userForm.get('localAdministrativeAuthority').value"
                 name="t_localAdministrativeAuthority"
               >
-              <mat-option *ngFor="let LAA of transLocalAdministrativeAuthorities" [value]="LAA.locationCode">{{
+                <mat-option *ngFor="let LAA of transLocalAdministrativeAuthorities" [value]="LAA.locationCode">{{
                   LAA.locationName
                 }}</mat-option>
               </mat-select>
@@ -520,7 +534,11 @@
     </div>
   </div>
   <div class="user__buttons">
-    <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">{{'demographic.action_back'| translate}}</button>
-    <button class="user__btn" type="button" [disabled]="!dataUploadComplete || !userForm.valid" (click)="onSubmit() ">{{'demographic.action_continue'| translate}}</button>
+    <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">
+      {{ 'demographic.action_back' | translate }}
+    </button>
+    <button class="user__btn" type="button" [disabled]="!dataUploadComplete || !userForm.valid" (click)="onSubmit()">
+      {{ 'demographic.action_continue' | translate }}
+    </button>
   </div>
 </div>

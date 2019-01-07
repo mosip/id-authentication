@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgForm, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm, FormBuilder } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
@@ -13,8 +13,8 @@ import { RequestModel } from './modal/request.modal';
 import { DemoIdentityModel } from './modal/demo.identity.modal';
 import { UserModel } from './modal/user.modal';
 import { SharedService } from 'src/app/shared/shared.service';
-import Utils from 'src/app/app.util';
 import * as appConstants from '../../app.constants';
+import Utils from 'src/app/app.util';
 
 export interface DropDown {
   locationCode: string;
@@ -47,7 +47,7 @@ export class DemographicComponent implements OnInit {
   loginId = '';
   user: UserModel;
 
-  uppermostLocationHierarchy;
+  uppermostLocationHierarchy: any;
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -90,26 +90,7 @@ export class DemographicComponent implements OnInit {
   ];
 
   //Need to be removed after translation
-  demo = new DemoLabels(
-    'Full Name',
-    'dob',
-    'dd',
-    'mm',
-    'yyyy',
-    'gender',
-    'Address Line 1',
-    'Address Line 2',
-    'Address Line 3',
-    'Region',
-    'Province',
-    'City',
-    'Postal Code',
-    'Local Administrative Authority',
-    'Email Id',
-    'Mobile Number',
-    'CNE/PIN Number',
-    'Age'
-  );
+  demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
   demo1 = new DemoLabels(
     't_Full Name',
@@ -135,6 +116,7 @@ export class DemographicComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService
