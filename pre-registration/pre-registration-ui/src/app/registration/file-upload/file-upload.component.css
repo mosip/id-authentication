@@ -16,7 +16,7 @@
   height: 50%;
 }
 .browseInput {
-  width: 60%;
+  width: 30%;
   background: none;
   border: 1px solid rgba(253, 81, 140, 1);
   color: rgba(253, 81, 140, 1);
@@ -98,13 +98,25 @@ mat-select:focus {
 .file-upload__body {
   padding: 20px 25px 10px 25px;
   font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.file-upload__body__1 {
+  width: 75%;
+}
+
+.file-upload__body__2 {
+  width: 25%;
+}
+
+.file-upload__message {
+  padding: 20px 25px 10px 25px;
+  font-size: 12px;
 }
 
 .file-upload__body__document-type {
   padding: 10px 0px;
-}
-
-.file-upload__body__document-browse {
 }
 
 .file-upload__body__document-name {
@@ -127,8 +139,8 @@ mat-select:focus {
   text-align: right;
 }
 .file-upload__button {
-  height: 42px;
-  width: 25%;
+  height: 32px;
+  width: 50%;
   display: inline-flex;
   justify-content: center;
 }
@@ -162,4 +174,7 @@ mat-select:focus {
   background-color: white;
   color: #ff4081;
   cursor: default;
+}
+.file-upload__input {
+  width: 33%;
 }
