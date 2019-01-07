@@ -60,6 +60,38 @@ public class BioDedupeServiceImplTest {
 
 		abisInsertResponceDto.setReturnValue("2");
 
+		ReflectionTestUtils.setField(bioDedupeService, "maxResults", 30);
+		ReflectionTestUtils.setField(bioDedupeService, "targetFPIR", 30);
+		ReflectionTestUtils.setField(bioDedupeService, "threshold", 60);
+
+		String refId = "01234567-89AB-CDEF-0123-456789ABCDEF";
+		List<String> refIdList = new ArrayList<>();
+		refIdList.add(refId);
+		Mockito.when(packetInfoManager.getReferenceIdByRid(anyString())).thenReturn(refIdList);
+
+		CandidatesDto candidate1 = new CandidatesDto();
+		candidate1.setReferenceId("01234567-89AB-CDEF-0123-456789ABCDEG");
+		candidate1.setScaledScore("70");
+
+		CandidatesDto candidate2 = new CandidatesDto();
+		candidate2.setReferenceId("01234567-89AB-CDEF-0123-456789ABCDEH");
+		candidate2.setScaledScore("80");
+
+		CandidatesDto[] candidateArray = new CandidatesDto[2];
+		candidateArray[0] = candidate1;
+		candidateArray[1] = candidate2;
+
+		CandidateListDto candidateList = new CandidateListDto();
+		candidateList.setCandidates(candidateArray);
+
+		identifyResponse.setCandidateList(candidateList);
+
+		List<DemographicInfoDto> demoList = new ArrayList<>();
+		DemographicInfoDto demo1 = new DemographicInfoDto();
+		demo1.setUin("123456789");
+		demoList.add(demo1);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demoList);
+
 	}
 
 	@Test
@@ -125,37 +157,11 @@ public class BioDedupeServiceImplTest {
 	@Test
 	public void testPerformDedupeSuccess() throws ApisResourceAccessException {
 
-		ReflectionTestUtils.setField(bioDedupeService, "maxResults", "30");
-		ReflectionTestUtils.setField(bioDedupeService, "targetFPIR", "30");
-		ReflectionTestUtils.setField(bioDedupeService, "threshold", 60);
-
-		String refId = "01234567-89AB-CDEF-0123-456789ABCDEF";
-		List<String> refIdList = new ArrayList<>();
-		refIdList.add(refId);
-		Mockito.when(packetInfoManager.getReferenceIdByRid(anyString())).thenReturn(refIdList);
-
-		CandidatesDto candidate1 = new CandidatesDto();
-		candidate1.setReferenceId("01234567-89AB-CDEF-0123-456789ABCDEG");
-		candidate1.setScaledScore("70");
-
-		CandidatesDto candidate2 = new CandidatesDto();
-		candidate2.setReferenceId("01234567-89AB-CDEF-0123-456789ABCDEH");
-		candidate2.setScaledScore("80");
-
-		CandidatesDto[] candidateArray = new CandidatesDto[2];
-		candidateArray[0] = candidate1;
-		candidateArray[1] = candidate2;
-
-		CandidateListDto candidateList = new CandidateListDto();
-		candidateList.setCandidates(candidateArray);
-
-		identifyResponse.setCandidateList(candidateList);
 		identifyResponse.setReturnValue(1);
-
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(identifyResponse);
-
 		String rid = "27847657360002520181208094056";
+
 		List<String> list = new ArrayList<>();
 		list.add(rid);
 		Mockito.when(packetInfoManager.getRidByReferenceId(anyString())).thenReturn(list);
@@ -173,6 +179,54 @@ public class BioDedupeServiceImplTest {
 		List<String> duplicates = bioDedupeService.performDedupe(rid);
 
 		assertEquals(ridList, duplicates);
+	}
+
+	@Test(expected = ABISInternalError.class)
+	public void testPerformDedupeFailure() throws ApisResourceAccessException {
+
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(identifyResponse);
+		String rid = "27847657360002520181208094056";
+		identifyResponse.setReturnValue(2);
+		identifyResponse.setFailureReason(1);
+
+		bioDedupeService.performDedupe(rid);
+	}
+
+	@Test(expected = ABISAbortException.class)
+	public void testDedupeAbisAbortException() throws ApisResourceAccessException {
+
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(identifyResponse);
+		String rid = "27847657360002520181208094056";
+		identifyResponse.setReturnValue(2);
+		identifyResponse.setFailureReason(2);
+
+		bioDedupeService.performDedupe(rid);
+	}
+
+	@Test(expected = UnexceptedError.class)
+	public void testDedupeUnexpectedError() throws ApisResourceAccessException {
+
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(identifyResponse);
+		String rid = "27847657360002520181208094056";
+		identifyResponse.setReturnValue(2);
+		identifyResponse.setFailureReason(3);
+
+		bioDedupeService.performDedupe(rid);
+	}
+
+	@Test(expected = UnableToServeRequestABISException.class)
+	public void testDedupeUnableToServeRequestABISException() throws ApisResourceAccessException {
+
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(identifyResponse);
+		String rid = "27847657360002520181208094056";
+		identifyResponse.setReturnValue(2);
+		identifyResponse.setFailureReason(4);
+
+		bioDedupeService.performDedupe(rid);
 	}
 
 }
