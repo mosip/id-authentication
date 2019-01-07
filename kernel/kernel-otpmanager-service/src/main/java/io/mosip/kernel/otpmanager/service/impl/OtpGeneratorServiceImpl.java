@@ -2,18 +2,18 @@ package io.mosip.kernel.otpmanager.service.impl;
 
 import java.time.LocalDateTime;
 
-import org.kamranzafar.otp.provider.TOTPProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
-import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
 import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
+import io.mosip.kernel.otpmanager.util.OtpProvider;
 
 /**
  * This class provides the implementation for the methods of OtpGeneratorService
@@ -31,17 +31,17 @@ public class OtpGeneratorServiceImpl implements OtpGenerator<OtpGeneratorRequest
 	@Autowired
 	private OtpRepository otpRepository;
 
+	@Autowired
+	OtpProvider otpProvider;
+
 	@Value("${mosip.kernel.otp.key-freeze-time}")
 	String keyFreezeTime;
 
 	@Value("${mosip.kernel.otp.default-length}")
-	String otpLength;
+	int otpLength;
 
 	@Value("${mosip.kernel.otp.authentication-code}")
 	String authenticationCode;
-
-	@Value("${mosip.kernel.otp.shared-key}")
-	String shareKey;
 
 	/*
 	 * (non-Javadoc)
@@ -69,8 +69,7 @@ public class OtpGeneratorServiceImpl implements OtpGenerator<OtpGeneratorRequest
 			response.setOtp(OtpStatusConstants.SET_AS_NULL_IN_STRING.getProperty());
 			response.setStatus(OtpStatusConstants.BLOCKED_USER.getProperty());
 		} else {
-			generatedOtp = TOTPProvider.generateTOTP(shareKey, String.valueOf(System.currentTimeMillis()), otpLength,
-					authenticationCode);
+			generatedOtp = otpProvider.computeOtp(otpDto.getKey(), otpLength, authenticationCode);
 			OtpEntity otp = new OtpEntity();
 			otp.setId(otpDto.getKey());
 			otp.setValidationRetryCount(0);
