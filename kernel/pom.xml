@@ -143,7 +143,7 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
 
-		<module>kernel-tspidgenerator-service</module>
+		<module>kernel-idgenerator-tspid</module>
 	</modules>
 
 	<dependencies>

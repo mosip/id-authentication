@@ -5,14 +5,13 @@ import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
 import io.mosip.kernel.core.util.MathUtils;
 import io.mosip.kernel.idgenerator.tsp.constant.TspIdExceptionConstant;
 import io.mosip.kernel.idgenerator.tsp.constant.TspIdPropertyConstant;
-import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
 import io.mosip.kernel.idgenerator.tsp.exception.TspIdServiceException;
 import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
@@ -24,8 +23,8 @@ import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
  * @since 1.0.0
  *
  */
-@Service
-public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO> {
+@Component
+public class TspIdGeneratorServiceImpl implements TspIdGenerator<String> {
 
 	/**
 	 * Length of TspId.
@@ -45,9 +44,9 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 	 * @see io.mosip.kernel.core.idgenerator.spi.TspIdGenerator#generateId()
 	 */
 	@Override
-	public TspResponseDTO generateId() {
+	public String generateId() {
 
-		final long initialValue = MathUtils.getPow(Integer.parseInt(TspIdPropertyConstant.ID_BASE.getProperty()),
+		final int initialValue = MathUtils.getPow(Integer.parseInt(TspIdPropertyConstant.ID_BASE.getProperty()),
 				tspIdLength - 1);
 
 		Tsp entity = null;
@@ -66,7 +65,7 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 			entity.setTspId(initialValue);
 
 		} else {
-			long lastGeneratedId = entity.getTspId();
+			int lastGeneratedId = entity.getTspId();
 			entity = new Tsp();
 			entity.setTspId(lastGeneratedId + 1);
 		}
@@ -83,10 +82,7 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<TspResponseDTO>
 					TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
 
-		TspResponseDTO tspDto = new TspResponseDTO();
-		tspDto.setTspId(entity.getTspId());
-
-		return tspDto;
+		return String.valueOf(entity.getTspId());
 
 	}
 

@@ -26,7 +26,7 @@ public class Tsp {
 	 */
 	@Id
 	@Column(name = "tsp_id", nullable = false)
-	private long tspId;
+	private int tspId;
 
 	/**
 	 * Created time for TSPID.

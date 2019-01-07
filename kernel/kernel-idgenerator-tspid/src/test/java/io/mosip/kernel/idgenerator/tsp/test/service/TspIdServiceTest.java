@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.TspIdGenerator;
-import io.mosip.kernel.idgenerator.tsp.dto.TspResponseDTO;
 import io.mosip.kernel.idgenerator.tsp.entity.Tsp;
 import io.mosip.kernel.idgenerator.tsp.exception.TspIdServiceException;
 import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
@@ -24,7 +23,7 @@ import io.mosip.kernel.idgenerator.tsp.repository.TspRepository;
 public class TspIdServiceTest {
 
 	@Autowired
-	TspIdGenerator<TspResponseDTO> service;
+	TspIdGenerator<String> service;
 
 	@MockBean
 	TspRepository tspRepository;
@@ -35,7 +34,7 @@ public class TspIdServiceTest {
 		entity.setTspId(1000);
 		when(tspRepository.findMaxTspId()).thenReturn(null);
 		when(tspRepository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateId().getTspId(), is(1000L));
+		assertThat(service.generateId(), is("1000"));
 	}
 
 	@Test
@@ -46,7 +45,7 @@ public class TspIdServiceTest {
 		entityResponse.setTspId(1001);
 		when(tspRepository.findMaxTspId()).thenReturn(entity);
 		when(tspRepository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateId().getTspId(), is(1001L));
+		assertThat(service.generateId(), is("1001"));
 	}
 
 	@Test(expected = TspIdServiceException.class)
@@ -59,6 +58,21 @@ public class TspIdServiceTest {
 	@Test(expected = TspIdServiceException.class)
 	public void generateIdInsertExceptionTest() {
 		when(tspRepository.findMaxTspId()).thenReturn(null);
+		when(tspRepository.save(Mockito.any()))
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		service.generateId();
+	}
+
+	@Test(expected=TspIdServiceException.class)
+	public void TspIdServiceFetchExceptionTest() throws Exception {
+
+		when(tspRepository.findMaxTspId())
+				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		service.generateId();
+	}
+
+	@Test(expected=TspIdServiceException.class)
+	public void TspIdServiceInsertExceptionTest() throws Exception {
 		when(tspRepository.save(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateId();
