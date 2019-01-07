@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class Gender extends MasterCommonFields {
 	@EmbeddedId
 	private GenericId genericId;
-	@Column(name = "name", length = 64, nullable = false)
+	@Column(name = "name")
 	private String name;
 
 	/**

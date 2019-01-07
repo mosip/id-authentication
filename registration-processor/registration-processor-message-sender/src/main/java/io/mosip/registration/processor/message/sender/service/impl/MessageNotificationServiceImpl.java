@@ -14,6 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -40,18 +42,17 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.exception.ConfigurationNotFoundException;
+import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
-import io.mosip.registration.processor.message.sender.utility.Util;
+import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
-import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
@@ -67,52 +68,83 @@ import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 public class MessageNotificationServiceImpl
 		implements MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> {
 
+	/** The demographic identity. */
 	private JSONObject demographicIdentity = null;
+
+	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
+
+	/** The Constant LABEL. */
 	private static final String LABEL = "label";
+
+	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
+	/** The Constant UIN. */
 	private static final String UIN = "UIN";
-	private static final String PRIMARY_LANGUAGE = "primary.language";
+
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
-	private String langCode;
+
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(MessageNotificationServiceImpl.class);
 
+	/** The primary language. */
+	@Value("${primary.language}")
+	private String langCode;
+
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/** The template generator. */
 	@Autowired
 	private TemplateGenerator templateGenerator;
 
+	/** The utility. */
 	@Autowired
-	private Util utility;
+	private MessageSenderUtil utility;
 
+	/** The reg processor template json. */
 	@Autowired
 	private RegistrationProcessorNotificationTemplate regProcessorTemplateJson;
 
+	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The resclient. */
 	@Autowired
 	private RestApiClient resclient;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The sms dto. */
 	private SmsRequestDto smsDto = new SmsRequestDto();
 
-	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, String idType,
-			Map<String, Object> attributes) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.message.sender.
+	 * MessageNotificationService#sendSmsNotification(java.lang.String,
+	 * java.lang.String, io.mosip.registration.processor.core.constant.IdType,
+	 * java.util.Map)
+	 */
+	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, IdType idType,
+			Map<String, Object> attributes) throws ApisResourceAccessException, IOException {
 		SmsResponseDto response = null;
 
 		try {
-			langCode = getPrimaryLanguage();
+
 			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
 
-			String artifact = templateGenerator.templateGenerator(templateTypeCode, attributes, langCode);
+			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			if (templatejson.getPhoneNumber()[0].getValue().isEmpty()) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
@@ -127,29 +159,36 @@ public class MessageNotificationServiceImpl
 			LOGGER.error("Template was not found for this templateTypeCode and langCode");
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
-		} catch (ApisResourceAccessException e) {
-			LOGGER.error("Sms can not be sent due to some technical error", e);
-		} catch (Exception e) {
-			LOGGER.error("Sms can not be sent due to some internal error", e);
 		}
-
 		return response;
 	}
 
-	public ResponseDto sendEmailNotification(String templateTypeCode, String id, String idType,
-			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.message.sender.
+	 * MessageNotificationService#sendEmailNotification(java.lang.String,
+	 * java.lang.String, io.mosip.registration.processor.core.constant.IdType,
+	 * java.util.Map, java.lang.String[], java.lang.String, java.lang.Object)
+	 */
+	public ResponseDto sendEmailNotification(String templateTypeCode, String id, IdType idType,
+			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment)
+			throws IOException, ApisResourceAccessException {
 		ResponseDto response = null;
 
 		try {
-			langCode = getPrimaryLanguage();
+
 			NotificationTemplate template = getTemplateJson(id, idType, attributes);
 
-			String artifact = templateGenerator.templateGenerator(templateTypeCode, attributes, langCode);
+			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
+
+			if (template.getEmailID()[0].getValue().isEmpty()) {
+				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
+			}
 
 			String[] mailTo = new String[template.getEmailID().length];
 			for (int i = 0; i < mailTo.length; i++) {
-				if (langCode.contains(template.getEmailID()[i].getLanguage()))
-					mailTo[i] = template.getEmailID()[i].getValue();
+				mailTo[i] = template.getEmailID()[i].getValue();
 			}
 
 			response = sendEmail(mailTo, mailCc, subject, artifact, attachment);
@@ -158,13 +197,26 @@ public class MessageNotificationServiceImpl
 			LOGGER.error("Template was not found for this templateTypeCode and langCode");
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
-		} catch (Exception e) {
-			LOGGER.error("Sms can not be sent due to some internal error", e);
 		}
 
 		return response;
 	}
 
+	/**
+	 * Send email.
+	 *
+	 * @param mailTo
+	 *            the mail to
+	 * @param mailCc
+	 *            the mail cc
+	 * @param subject
+	 *            the subject
+	 * @param artifact
+	 *            the artifact
+	 * @param attachment
+	 *            the attachment
+	 * @return the response dto
+	 */
 	private ResponseDto sendEmail(String[] mailTo, String[] mailCc, String subject, String artifact,
 			MultipartFile[] attachment) {
 
@@ -195,10 +247,23 @@ public class MessageNotificationServiceImpl
 		return (ResponseDto) response;
 	}
 
-	private NotificationTemplate getTemplateJson(String id, String idType, Map<String, Object> attributes)
+	/**
+	 * Gets the template json.
+	 *
+	 * @param id
+	 *            the id
+	 * @param idType
+	 *            the id type
+	 * @param attributes
+	 *            the attributes
+	 * @return the template json
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private NotificationTemplate getTemplateJson(String id, IdType idType, Map<String, Object> attributes)
 			throws IOException {
 		InputStream demographicInfoStream;
-		if (idType.equalsIgnoreCase(UIN)) {
+		if (idType.toString().equalsIgnoreCase(UIN)) {
 			// get registration id using UIN
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
 		}
@@ -223,12 +288,21 @@ public class MessageNotificationServiceImpl
 		return templatejson;
 	}
 
-	private NotificationTemplate getKeysandValues(String demographicJsonString) {
+	/**
+	 * Gets the keysand values.
+	 *
+	 * @param demographicJsonString
+	 *            the demographic json string
+	 * @return the keysand values
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private NotificationTemplate getKeysandValues(String demographicJsonString) throws IOException {
 		NotificationTemplate template = new NotificationTemplate();
 
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String templateJsonString = Util.getJson(utility.getConfigServerFileStorageURL(),
+			String templateJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorTemplateJson());
 
 			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();
@@ -247,10 +321,6 @@ public class MessageNotificationServiceImpl
 			template.setEmailID(getJsonValues(regProcessorTemplateJson.getEmailID()));
 			template.setPhoneNumber(getJsonValues(regProcessorTemplateJson.getPhoneNumber()));
 
-		} catch (IOException e) {
-			LOGGER.error("Error while mapping Identity Json ", e);
-			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
-					e);
 		} catch (ParseException e) {
 			LOGGER.error("Error while parsing Json file", e);
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
@@ -259,6 +329,13 @@ public class MessageNotificationServiceImpl
 		return template;
 	}
 
+	/**
+	 * Gets the json values.
+	 *
+	 * @param identityKey
+	 *            the identity key
+	 * @return the json values
+	 */
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
 		if (demographicIdentity != null)
@@ -269,6 +346,17 @@ public class MessageNotificationServiceImpl
 				: null;
 	}
 
+	/**
+	 * Map json node to java object.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param genericType
+	 *            the generic type
+	 * @param demographicJsonNode
+	 *            the demographic json node
+	 * @return the t[]
+	 */
 	@SuppressWarnings("unchecked")
 	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
@@ -309,14 +397,6 @@ public class MessageNotificationServiceImpl
 		}
 
 		return javaObject;
-	}
-
-	private String getPrimaryLanguage() {
-		langCode = env.getProperty(PRIMARY_LANGUAGE);
-		if (langCode.isEmpty()) {
-			throw new ConfigurationNotFoundException(PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
-		}
-		return langCode;
 	}
 
 }

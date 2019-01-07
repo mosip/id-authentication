@@ -296,164 +296,66 @@ export class DashBoardComponent implements OnInit {
   private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(
       [
-        new AttributeModel(
-          identityModal.fullName[0].language,
-          identityModal.fullName[0].label,
-          identityModal.fullName[0].value
-        ),
-        new AttributeModel(
-          identityModal.fullName[1].language,
-          identityModal.fullName[1].label,
-          identityModal.fullName[1].value
-        )
+        new AttributeModel(identityModal.fullName[0].language, identityModal.fullName[0].value),
+        new AttributeModel(identityModal.fullName[1].language, identityModal.fullName[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.dateOfBirth[0].language,
-          identityModal.dateOfBirth[0].label,
-          identityModal.dateOfBirth[0].value
-        ),
-        new AttributeModel(
-          identityModal.dateOfBirth[1].language,
-          identityModal.dateOfBirth[1].label,
-          identityModal.dateOfBirth[1].value
-        )
+        new AttributeModel(identityModal.dateOfBirth[0].language, identityModal.dateOfBirth[0].value),
+        new AttributeModel(identityModal.dateOfBirth[1].language, identityModal.dateOfBirth[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.gender[0].language,
-          identityModal.gender[0].label,
-          identityModal.gender[0].value
-        ),
-        new AttributeModel(
-          identityModal.gender[1].language,
-          identityModal.gender[1].label,
-          identityModal.gender[1].value
-        )
+        new AttributeModel(identityModal.gender[0].language, identityModal.gender[0].value),
+        new AttributeModel(identityModal.gender[1].language, identityModal.gender[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.addressLine1[0].language,
-          identityModal.addressLine1[0].label,
-          identityModal.addressLine1[0].value
-        ),
-        new AttributeModel(
-          identityModal.addressLine1[1].language,
-          identityModal.addressLine1[1].label,
-          identityModal.addressLine1[1].value
-        )
+        new AttributeModel(identityModal.addressLine1[0].language, identityModal.addressLine1[0].value),
+        new AttributeModel(identityModal.addressLine1[1].language, identityModal.addressLine1[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.addressLine2[0].language,
-          identityModal.addressLine2[0].label,
-          identityModal.addressLine2[0].value
-        ),
-        new AttributeModel(
-          identityModal.addressLine2[1].language,
-          identityModal.addressLine2[1].label,
-          identityModal.addressLine2[1].value
-        )
+        new AttributeModel(identityModal.addressLine2[0].language, identityModal.addressLine2[0].value),
+        new AttributeModel(identityModal.addressLine2[1].language, identityModal.addressLine2[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.addressLine3[0].language,
-          identityModal.addressLine3[0].label,
-          identityModal.addressLine3[0].value
-        ),
-        new AttributeModel(
-          identityModal.addressLine3[1].language,
-          identityModal.addressLine3[1].label,
-          identityModal.addressLine3[1].value
-        )
+        new AttributeModel(identityModal.addressLine3[0].language, identityModal.addressLine3[0].value),
+        new AttributeModel(identityModal.addressLine3[1].language, identityModal.addressLine3[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.region[0].language,
-          identityModal.region[0].label,
-          identityModal.region[0].value
-        ),
-        new AttributeModel(
-          identityModal.region[1].language,
-          identityModal.region[1].label,
-          identityModal.region[1].value
-        )
+        new AttributeModel(identityModal.region[0].language, identityModal.region[0].value),
+        new AttributeModel(identityModal.region[1].language, identityModal.region[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.province[0].language,
-          identityModal.province[0].label,
-          identityModal.province[0].value
-        ),
-        new AttributeModel(
-          identityModal.province[1].language,
-          identityModal.province[1].label,
-          identityModal.province[1].value
-        )
+        new AttributeModel(identityModal.province[0].language, identityModal.province[0].value),
+        new AttributeModel(identityModal.province[1].language, identityModal.province[1].value)
       ],
       [
-        new AttributeModel(identityModal.city[0].language, identityModal.city[0].label, identityModal.city[0].value),
-        new AttributeModel(identityModal.city[1].language, identityModal.city[1].label, identityModal.city[1].value)
+        new AttributeModel(identityModal.city[0].language, identityModal.city[0].value),
+        new AttributeModel(identityModal.city[1].language, identityModal.city[1].value)
       ],
       [
         new AttributeModel(
           identityModal.localAdministrativeAuthority[0].language,
-          identityModal.localAdministrativeAuthority[0].label,
           identityModal.localAdministrativeAuthority[0].value
         ),
         new AttributeModel(
           identityModal.localAdministrativeAuthority[1].language,
-          identityModal.localAdministrativeAuthority[1].label,
           identityModal.localAdministrativeAuthority[1].value
         )
       ],
       [
-        new AttributeModel(
-          identityModal.postalcode[0].language,
-          identityModal.postalcode[0].label,
-          identityModal.postalcode[0].value
-        ),
-        new AttributeModel(
-          identityModal.postalcode[1].language,
-          identityModal.postalcode[1].label,
-          identityModal.postalcode[1].value
-        )
+        new AttributeModel(identityModal.postalcode[0].language, identityModal.postalcode[0].value),
+        new AttributeModel(identityModal.postalcode[1].language, identityModal.postalcode[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.mobileNumber[0].language,
-          identityModal.mobileNumber[0].label,
-          identityModal.mobileNumber[0].value
-        ),
-        new AttributeModel(
-          identityModal.mobileNumber[1].language,
-          identityModal.mobileNumber[1].label,
-          identityModal.mobileNumber[1].value
-        )
+        new AttributeModel(identityModal.mobileNumber[0].language, identityModal.mobileNumber[0].value),
+        new AttributeModel(identityModal.mobileNumber[1].language, identityModal.mobileNumber[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.emailId[0].language,
-          identityModal.emailId[0].label,
-          identityModal.emailId[0].value
-        ),
-        new AttributeModel(
-          identityModal.emailId[1].language,
-          identityModal.emailId[1].label,
-          identityModal.emailId[1].value
-        )
+        new AttributeModel(identityModal.emailId[0].language, identityModal.emailId[0].value),
+        new AttributeModel(identityModal.emailId[1].language, identityModal.emailId[1].value)
       ],
       [
-        new AttributeModel(
-          identityModal.CNEOrPINNumber[0].language,
-          identityModal.CNEOrPINNumber[0].label,
-          identityModal.CNEOrPINNumber[0].value
-        ),
-        new AttributeModel(
-          identityModal.CNEOrPINNumber[1].language,
-          identityModal.CNEOrPINNumber[1].label,
-          identityModal.CNEOrPINNumber[1].value
-        )
+        new AttributeModel(identityModal.CNEOrPINNumber[0].language, identityModal.CNEOrPINNumber[0].value),
+        new AttributeModel(identityModal.CNEOrPINNumber[1].language, identityModal.CNEOrPINNumber[1].value)
       ]
     );
 

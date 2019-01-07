@@ -151,7 +151,7 @@ public class PacketInfoDaoTest {
 
 	@Test
 	public void getAllDemoWithUINTest() {
-		dedupeEntity.setUinRefId("1234");
+		dedupeEntity.setUin("1234");
 		List<IndividualDemographicDedupeEntity> dedupeList = new ArrayList<>();
 		dedupeList.add(dedupeEntity);
 		Mockito.when(demographicDedupeRepository.createQuerySelect(ArgumentMatchers.any(), ArgumentMatchers.any()))

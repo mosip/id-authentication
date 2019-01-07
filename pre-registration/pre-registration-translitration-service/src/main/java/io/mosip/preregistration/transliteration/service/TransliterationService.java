@@ -20,7 +20,6 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
 import io.mosip.preregistration.transliteration.exception.MandatoryFieldRequiredException;
 import io.mosip.preregistration.transliteration.exception.util.TransliterationExceptionCatcher;
-import io.mosip.preregistration.transliteration.repository.LanguageIdRepository;
 import io.mosip.preregistration.transliteration.service.util.TransliterationServiceUtil;
 import io.mosip.preregistration.transliteration.util.PreRegistrationTransliterator;
 
@@ -37,8 +36,8 @@ public class TransliterationService {
 	/**
 	 * Autowired reference for {@link #LanguageIdRepository}
 	 */
-	@Autowired
-	private LanguageIdRepository idRepository;
+	/*@Autowired
+	private LanguageIdRepository idRepository;*/
 
 	/**
 	 * Autowired reference for {@link #translitrator}
@@ -97,10 +96,10 @@ public class TransliterationService {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO), requiredRequestMap)) {
 				TransliterationDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
-					String languageId = idRepository
-							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(), transliterationRequestDTO.getToFieldLang())
-							.getLanguageId();
-					String toFieldValue = translitrator.translitrator(languageId, transliterationRequestDTO.getFromFieldValue());
+//					String languageId = idRepository
+//							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(), transliterationRequestDTO.getToFieldLang())
+//							.getLanguageId();
+					String toFieldValue = translitrator.translitrator("Latin-Arabic", transliterationRequestDTO.getFromFieldValue());
 					responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue,transliterationRequestDTO));
 					responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
 					responseDTO.setStatus(trueStatus);

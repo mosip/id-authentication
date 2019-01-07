@@ -11,13 +11,14 @@ import io.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class DocumentDetailsDTO extends BaseDTO {
-	
+
 	@JsonIgnore
 	private byte[] document;
-	protected String documentName;
-	protected String documentCategory;
-	protected String documentOwner;
-	protected String documentType;
+	protected String value;
+	protected String category;
+	@JsonIgnore
+	protected String owner;
+	protected String format;
 
 	/**
 	 * @return the document
@@ -37,61 +38,61 @@ public class DocumentDetailsDTO extends BaseDTO {
 	/**
 	 * @return the documentName
 	 */
-	public String getDocumentName() {
-		return documentName;
+	public String getValue() {
+		return value;
 	}
 
 	/**
-	 * @param documentName
-	 *            the documentName to set
+	 * @param value
+	 *            the name of the document to set
 	 */
-	public void setDocumentName(String documentName) {
-		this.documentName = documentCategory.concat("_").concat(documentName).concat(".").concat(documentType);
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	/**
-	 * @return the documentCategory
+	 * @return the category
 	 */
-	public String getDocumentCategory() {
-		return documentCategory;
+	public String getCategory() {
+		return category;
 	}
 
 	/**
-	 * @param documentCategory
-	 *            the documentCategory to set
+	 * @param category
+	 *            the category to set
 	 */
-	public void setDocumentCategory(String documentCategory) {
-		this.documentCategory = documentCategory;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	/**
-	 * @return the documentOwner
+	 * @return the owner
 	 */
-	public String getDocumentOwner() {
-		return documentOwner;
+	public String getOwner() {
+		return owner;
 	}
 
 	/**
-	 * @param documentOwner
-	 *            the documentOwner to set
+	 * @param owner
+	 *            the owner to set
 	 */
-	public void setDocumentOwner(String documentOwner) {
-		this.documentOwner = documentOwner;
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 	/**
-	 * @return the documentType
+	 * @return the format
 	 */
-	public String getDocumentType() {
-		return documentType;
+	public String getFormat() {
+		return format;
 	}
 
 	/**
-	 * @param documentType
-	 *            the documentType to set
+	 * @param format
+	 *            the file type of the document to set
 	 */
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 }

@@ -82,15 +82,14 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					APPLICATION_ID, "Packet encrypted successfully");
 
 			// Generate Zip File Name with absolute path
-			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket,
-					registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getAcknowledgeReceipt());
+			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
 			
 			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID,
 					"Encrypted Packet and Acknowledgement Receipt saved successfully");
 
 			// Insert the Registration Details into DB
-			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemoInUserLang().getFullName());
+			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName().getValues().getFirst().getValue());
 			
 			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Encrypted Packet persisted");

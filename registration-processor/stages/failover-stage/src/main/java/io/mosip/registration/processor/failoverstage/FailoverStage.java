@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 
+
 /**
  * The Class FailoverStage.
  */
@@ -12,7 +13,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 public class FailoverStage extends MosipVerticleManager {
     /**
      * Deploy failover stage.
-     */
+     */	
 	public void deployFailoverStage() {
 		// this.getEventBus(this.getClass());
 	}

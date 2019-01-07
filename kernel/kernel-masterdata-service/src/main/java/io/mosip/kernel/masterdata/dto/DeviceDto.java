@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -27,35 +28,35 @@ public class DeviceDto {
 	/**
 	 * Field for device id
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 	/**
 	 * Field for device name
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 	/**
 	 * Field for device serial number
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "serialNum", required = true, dataType = "java.lang.String")
 	private String serialNum;
 	/**
 	 * Field for device device specification Id
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceSpecId", required = true, dataType = "java.lang.String")
 	private String deviceSpecId;
 	/**
 	 * Field for device mac address
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "macAddress", required = true, dataType = "java.lang.String")
 	private String macAddress;
@@ -69,7 +70,7 @@ public class DeviceDto {
 	/**
 	 * Field for language code
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;

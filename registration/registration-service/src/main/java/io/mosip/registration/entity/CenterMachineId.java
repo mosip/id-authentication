@@ -15,9 +15,9 @@ public class CenterMachineId implements Serializable{
 	
 	private static final long serialVersionUID = 241072783610318336L;
 
-	@Column(name = "machine_id", length = 64, nullable = false)
+	@Column(name = "machine_id")
 	private String id;
-	@Column(name = "regcntr_id", length = 32, nullable = false)
+	@Column(name = "regcntr_id")
 	private String centreId;
 	
 	public String getId() {

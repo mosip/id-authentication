@@ -52,7 +52,6 @@ import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
-import io.mosip.authentication.service.repository.UinRepository;
 
 /**
  * This code tests the AuthController
@@ -99,9 +98,6 @@ public class AuthControllerTest {
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	Errors errors = new BindException(KycAuthRequestDTO.class, "kycAuthReqDTO");
-
-	@Mock
-	private UinRepository uinRepository;
 
 	/** The Kyc Service */
 	@Mock

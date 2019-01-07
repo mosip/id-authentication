@@ -62,7 +62,7 @@ public class ValidationUtil {
 			if (key.equals(RequestCodes.USER_ID) && (requestMap.get(RequestCodes.USER_ID) == null
 					|| requestMap.get(RequestCodes.USER_ID).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
-						ErrorMessages.INVALID_REQUEST_ID.toString());
+						ErrorMessages.INVALID_REQUEST_USER_ID.toString());
 			} else if (key.equals(RequestCodes.PRE_REGISTRATION_ID)
 					&& (requestMap.get(RequestCodes.PRE_REGISTRATION_ID) == null
 							|| requestMap.get(RequestCodes.PRE_REGISTRATION_ID).equals(""))) {

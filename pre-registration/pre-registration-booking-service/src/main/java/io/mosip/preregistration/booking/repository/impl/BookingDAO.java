@@ -245,7 +245,7 @@ public class BookingDAO implements BookingAvailabilityRepository{
 	}
 
 	@Override
-	public List<Date> findDate(String regcntrId, LocalDate fromDate, LocalDate toDate) {
+	public List<LocalDate> findDate(String regcntrId, LocalDate fromDate, LocalDate toDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -12,7 +12,7 @@
 			"type": "object",
 			"additionalProperties": false,
 			"properties": {
-				"FullName": {
+				"fullName": {
 					"$ref": "#/definitions/values"
 				},
 				"dateOfBirth": {
@@ -52,9 +52,6 @@
 					"$ref": "#/definitions/values"
 				},
 				"CNEOrPINNumber": {
-					"$ref": "#/definitions/values"
-				},
-				"age": {
 					"$ref": "#/definitions/values"
 				}
 			}
