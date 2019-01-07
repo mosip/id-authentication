@@ -18,10 +18,10 @@ import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.MachineSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
+import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -43,10 +43,10 @@ public class MachineServiceImpl implements MachineService {
 	@Autowired
 	MachineRepository machineRepository;
 	/**
-	 * Field to hold Machine History Repository object
+	 * Field to hold Machine History Service object
 	 */
 	@Autowired
-	MachineHistoryRepository machineHistoryRepository;
+	MachineHistoryService machineHistoryService;
 
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
@@ -160,11 +160,10 @@ public class MachineServiceImpl implements MachineService {
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
 		try {
 			crtMachine = machineRepository.create(entity);
-			machineHistoryRepository.create(entityHistory);
+			machineHistoryService.createMachineHistory(entityHistory);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(crtMachine, idResponseDto);
@@ -184,7 +183,8 @@ public class MachineServiceImpl implements MachineService {
 	public IdResponseDto updateMachine(RequestDto<MachineDto> machine) {
 		Machine updMachine = null;
 		try {
-			Machine renmachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId());
+			Machine renmachine = machineRepository
+					.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(machine.getRequest().getId());
 
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
@@ -192,17 +192,16 @@ public class MachineServiceImpl implements MachineService {
 				MachineHistory machineHistory = new MachineHistory();
 				MapperUtils.map(updMachine, machineHistory);
 				MapperUtils.setBaseFieldValue(updMachine, machineHistory);
-
 				machineHistory.setEffectDateTime(updMachine.getUpdatedDateTime());
-				machineHistoryRepository.create(machineHistory);
+				machineHistory.setUpdatedDateTime(updMachine.getUpdatedDateTime());
+				machineHistoryService.createMachineHistory(machineHistory);
 			} else {
 				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_UPDATE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
@@ -224,25 +223,25 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			Machine renMachine = machineRepository.findMachineByIdAndIsDeletedFalseorIsDeletedIsNull(id);
 			if (renMachine != null) {
-				
-						MetaDataUtils.setDeleteMetaData(renMachine);
-						delMachine = machineRepository.update(renMachine);
 
-						MachineHistory machineHistory = new MachineHistory();
-						MapperUtils.map(delMachine, machineHistory);
-						MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+				MetaDataUtils.setDeleteMetaData(renMachine);
+				delMachine = machineRepository.update(renMachine);
 
-						machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
-						machineHistoryRepository.create(machineHistory);
-					} else {
-						throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
-								MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
-					}
-				
+				MachineHistory machineHistory = new MachineHistory();
+				MapperUtils.map(delMachine, machineHistory);
+				MapperUtils.setBaseFieldValue(delMachine, machineHistory);
+
+				machineHistory.setEffectDateTime(delMachine.getDeletedDateTime());
+				machineHistory.setDeletedDateTime(delMachine.getDeletedDateTime());
+				machineHistoryService.createMachineHistory(machineHistory);
+			} else {
+				throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_DELETE_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 
 		IdResponseDto idResponseDto = new IdResponseDto();
@@ -250,5 +249,6 @@ public class MachineServiceImpl implements MachineService {
 		return idResponseDto;
 
 	}
+
 
 }

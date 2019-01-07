@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -119,10 +120,10 @@ public interface RegistrationCenterService {
 	 * This method would validate timestamp and id whether
 	 * the given date in timestamp is a holiday. Also,checks time in the timestamp whether it is between
 	 * working hours.
-	 * @param id
-	 * @param timestamp
+	 * @param id - registration id
+	 * @param timeStamp - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
-	public ResgistrationCenterStatusResponseDto validateTimestampWithRegistrationCenter(String id,String timestamp);
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id,String timeStamp);
 
 }
