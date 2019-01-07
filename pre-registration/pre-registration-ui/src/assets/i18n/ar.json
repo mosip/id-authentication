@@ -25,7 +25,8 @@
 	"demographic": {
 		"title": "التفاصيل الديموغرافية",
 		"language": "الإنجليزية",
-		"label_name": "الاسم الكامل",
+        "label_name": "الاسم الكامل",
+        "name_required":"الإسم الكامل ضروري",
         "label_age": "عمر",
         "text_or":"أو",
 		"text_years": "سنوات",
