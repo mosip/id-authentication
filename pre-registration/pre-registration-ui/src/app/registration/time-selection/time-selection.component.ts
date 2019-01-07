@@ -163,7 +163,7 @@ export class TimeSelectionComponent implements OnInit {
             const requestObject = {
               newBookingDetails: bookingData,
               oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,
-              pre_registration_id: name.preRegId
+              preRegistrationId: name.preRegId
             };
             this.bookingDataList.push(requestObject);
           });
