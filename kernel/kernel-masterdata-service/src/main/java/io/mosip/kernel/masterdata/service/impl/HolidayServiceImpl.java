@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -229,7 +228,7 @@ public class HolidayServiceImpl implements HolidayService {
 		params.put("isActive", dto.getIsActive());
 		params.put("holidayDate", dto.getHolidayDate());
 		params.put("holidayName", dto.getHolidayName());
-		params.put("updatedBy", SecurityContextHolder.getContext().getAuthentication().getName());
+		params.put("updatedBy", MetaDataUtils.getContextUser());
 		params.put("updatedDateTime", LocalDateTime.now(ZoneId.of("UTC")));
 		params.put("locationCode", dto.getLocationCode());
 		params.put("langCode", dto.getLangCode());
