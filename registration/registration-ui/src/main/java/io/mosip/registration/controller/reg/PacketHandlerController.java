@@ -12,6 +12,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
@@ -70,6 +71,9 @@ public class PacketHandlerController extends BaseController {
 
 	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
+	@Autowired
+	private RidGenerator<String> ridGeneratorImpl;
+
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
 	 * acknowledgement form
@@ -115,6 +119,8 @@ public class PacketHandlerController extends BaseController {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
+			registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
+					RegistrationConstants.MACHINE_ID_GEN));
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
