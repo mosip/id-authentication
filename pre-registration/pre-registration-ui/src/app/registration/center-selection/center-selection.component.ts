@@ -57,7 +57,7 @@ export class CenterSelectionComponent implements OnInit {
     private registrationService: RegistrationService) { }
 
   ngOnInit() {
-    this.getLocation();
+  //  this.getLocation();
   }
 
   setStep(index: number) {
@@ -147,6 +147,16 @@ export class CenterSelectionComponent implements OnInit {
   routeNext() {
     this.registrationService.setRegCenterId('1');
     this.router.navigate(['../pick-time'], { relativeTo: this.route });
+  }
+
+  routeDashboard() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate(['dashboard', routeParams[2]]);
+  }
+
+  routeBack() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate([routeParams[1], routeParams[2], 'file-upload']);
   }
 
 }
