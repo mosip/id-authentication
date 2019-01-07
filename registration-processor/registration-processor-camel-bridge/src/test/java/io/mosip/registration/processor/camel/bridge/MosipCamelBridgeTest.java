@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.mosip.registration.processor.camel.bridge.MosipBridgeFactory;
-import io.mosip.registration.processor.camel.bridge.MosipCamelBridge;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.vertx.core.Vertx;
@@ -37,7 +36,7 @@ public class MosipCamelBridgeTest {
 		dto.setInternalError(true);
 		dto.setMessageBusAddress( MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 		
-		vertx.deployVerticle(MosipCamelBridge.class.getName(), testContext.asyncAssertSuccess());
+		vertx.deployVerticle(MosipBridgeFactory.class.getName(), testContext.asyncAssertSuccess());
 		
 	}
 	
