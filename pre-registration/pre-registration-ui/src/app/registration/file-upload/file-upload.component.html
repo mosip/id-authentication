@@ -139,7 +139,9 @@
         </div>
       </div>
     </div>
-    <div class="file-upload__body__2">{{'documents.action_view'| translate}}</div>
+    <div class="file-upload__body__2">{{'documents.action_view'| translate}}
+      <iframe width="100" height="100" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
+    </div>
   </div>
 </div>
 <div class="user__buttons">

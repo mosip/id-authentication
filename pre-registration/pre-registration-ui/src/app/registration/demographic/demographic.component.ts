@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { OnInit, ViewChild, ElementRef, Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgForm, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
@@ -47,7 +47,7 @@ export class DemographicComponent implements OnInit {
   loginId = '';
   user: UserModel;
 
-  uppermostLocationHierarchy;
+  uppermostLocationHierarchy: any;
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -90,26 +90,7 @@ export class DemographicComponent implements OnInit {
   ];
 
   //Need to be removed after translation
-  demo = new DemoLabels(
-    'Full Name',
-    'dob',
-    'dd',
-    'mm',
-    'yyyy',
-    'gender',
-    'Address Line 1',
-    'Address Line 2',
-    'Address Line 3',
-    'Region',
-    'Province',
-    'City',
-    'Postal Code',
-    'Local Administrative Authority',
-    'Email Id',
-    'Mobile Number',
-    'CNE/PIN Number',
-    'Age'
-  );
+  demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
   demo1 = new DemoLabels(
     't_Full Name',
@@ -136,6 +117,7 @@ export class DemographicComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private regService: RegistrationService,
+    // private formBuilder = FormBuilder,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService
   ) {}
@@ -217,56 +199,56 @@ export class DemographicComponent implements OnInit {
       t_addressLine3 = this.user.request.demographicDetails.identity.addressLine3[1].value;
     }
 
-    this.userForm = new FormGroup({
-      fullName: new FormControl(fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
-      gender: new FormControl(gender, Validators.required),
-      age: new FormControl(age, [
-        Validators.required,
-        Validators.max(150),
-        Validators.min(1),
-        Validators.pattern(this.numberPattern)
-      ]),
-      dob: new FormControl(dob),
-      date: new FormControl(date, [
-        Validators.required,
-        Validators.maxLength(2),
-        Validators.minLength(2),
-        Validators.pattern(this.numberPattern)
-      ]),
-      month: new FormControl(month, [
-        Validators.required,
-        Validators.maxLength(2),
-        Validators.minLength(2),
-        Validators.pattern(this.numberPattern)
-      ]),
-      year: new FormControl(year, [
-        Validators.required,
-        Validators.maxLength(4),
-        Validators.minLength(4),
-        Validators.min(this.maxDate.getFullYear() - 150),
-        Validators.pattern(this.numberPattern)
-      ]),
-      addressLine1: new FormControl(addressLine1, [Validators.required, this.noWhitespaceValidator]),
-      addressLine2: new FormControl(addressLine2),
-      addressLine3: new FormControl(addressLine3),
-      region: new FormControl(region, Validators.required),
-      province: new FormControl(province, Validators.required),
-      city: new FormControl(city, Validators.required),
-      localAdministrativeAuthority: new FormControl(localAdministrativeAuthority, Validators.required),
-      email: new FormControl(email, Validators.email),
-      postalCode: new FormControl(postalCode, [
-        Validators.required,
-        Validators.maxLength(5),
-        Validators.minLength(5),
-        Validators.pattern(this.numberPattern)
-      ]),
-      mobilePhone: new FormControl(mobilePhone, [
-        Validators.maxLength(9),
-        Validators.minLength(9),
-        Validators.pattern(this.numberPattern)
-      ]),
-      pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
-    });
+    // this.userForm = new FormGroup({
+    //   fullName: new FormControl(fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
+    //   gender: new FormControl(gender, Validators.required),
+    //   age: new FormControl(age, [
+    //     Validators.required,
+    //     Validators.max(150),
+    //     Validators.min(1),
+    //     Validators.pattern(this.numberPattern)
+    //   ]),
+    //   dob: new FormControl(dob),
+    //   date: new FormControl(date, [
+    //     Validators.required,
+    //     Validators.maxLength(2),
+    //     Validators.minLength(2),
+    //     Validators.pattern(this.numberPattern)
+    //   ]),
+    //   month: new FormControl(month, [
+    //     Validators.required,
+    //     Validators.maxLength(2),
+    //     Validators.minLength(2),
+    //     Validators.pattern(this.numberPattern)
+    //   ]),
+    //   year: new FormControl(year, [
+    //     Validators.required,
+    //     Validators.maxLength(4),
+    //     Validators.minLength(4),
+    //     Validators.min(this.maxDate.getFullYear() - 150),
+    //     Validators.pattern(this.numberPattern)
+    //   ]),
+    //   addressLine1: new FormControl(addressLine1, [Validators.required, this.noWhitespaceValidator]),
+    //   addressLine2: new FormControl(addressLine2),
+    //   addressLine3: new FormControl(addressLine3),
+    //   region: new FormControl(region, Validators.required),
+    //   province: new FormControl(province, Validators.required),
+    //   city: new FormControl(city, Validators.required),
+    //   localAdministrativeAuthority: new FormControl(localAdministrativeAuthority, Validators.required),
+    //   email: new FormControl(email, Validators.email),
+    //   postalCode: new FormControl(postalCode, [
+    //     Validators.required,
+    //     Validators.maxLength(5),
+    //     Validators.minLength(5),
+    //     Validators.pattern(this.numberPattern)
+    //   ]),
+    //   mobilePhone: new FormControl(mobilePhone, [
+    //     Validators.maxLength(9),
+    //     Validators.minLength(9),
+    //     Validators.pattern(this.numberPattern)
+    //   ]),
+    //   pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
+    // });
 
     this.transUserForm = new FormGroup({
       t_fullName: new FormControl(t_fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
