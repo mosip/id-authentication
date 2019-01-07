@@ -13,8 +13,8 @@ import { RequestModel } from './modal/request.modal';
 import { DemoIdentityModel } from './modal/demo.identity.modal';
 import { UserModel } from './modal/user.modal';
 import { SharedService } from 'src/app/shared/shared.service';
-import Utils from 'src/app/app.util';
 import * as appConstants from '../../app.constants';
+import Utils from 'src/app/app.util';
 
 export interface DropDown {
   locationCode: string;
