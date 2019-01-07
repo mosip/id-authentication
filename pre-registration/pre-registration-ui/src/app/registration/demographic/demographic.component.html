@@ -138,9 +138,9 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                #regiontest
-                (selectionChange)="setLocation($event, userForm.get('region'))"
-                (selectionChange)="onLocationSelect($event.value, provinces)"
+                (selectionChange)="
+                  onLocationSelect($event, regions, provinces, selectedRegion, transRegions, transSelectedRegion)
+                "
                 placeholder="{{ 'demographic.label_region'| translate }}"
                 formControlName="region"
                 #region
@@ -156,8 +156,9 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event.value, cities)"
-                (selectionChange)="setLocation($event, userForm.get('province'))"
+                (selectionChange)="
+                  onLocationSelect($event, provinces, cities, selectedProvince, transProvinces, transSelectedProvince)
+                "
                 placeholder="{{'demographic.label_province' | translate}}"
                 formControlName="province"
                 #province
@@ -172,8 +173,16 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="onLocationSelect($event.value, localAdministrativeAuthorities)"
-                (selectionChange)="setLocation($event, userForm.get('city'))"
+                (selectionChange)="
+                  onLocationSelect(
+                    $event,
+                    cities,
+                    localAdministrativeAuthorities,
+                    selectedCity,
+                    transCities,
+                    transSelectedCity
+                  )
+                "
                 placeholder="{{ 'demographic.label_city' | translate }}"
                 formControlName="city"
                 #city
@@ -413,9 +422,6 @@
                 <mat-option *ngFor="let region of transRegions" [value]="region.locationCode">{{
                   region.locationName
                 }}</mat-option>
-                <!-- <mat-option value="region1">trans_Region1</mat-option>
-                <mat-option value="region2">trans_Region2</mat-option>
-                <mat-option value="region3">trans_Region3</mat-option> -->
               </mat-select>
             </mat-form-field>
           </div>
@@ -428,9 +434,9 @@
                 [ngModel]="userForm.get('province').value"
                 name="t_province"
               >
-                <mat-option value="BLR">trans_Province1</mat-option>
-                <mat-option value="TN">trans_Province2</mat-option>
-                <mat-option value="province3">trans_Province3</mat-option>
+              <mat-option *ngFor="let province of transProvinces" [value]="province.locationCode">{{
+                  province.locationName
+                }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -442,9 +448,9 @@
                 [ngModel]="userForm.get('city').value"
                 name="t_city"
               >
-                <mat-option value="BLR">trans_City1</mat-option>
-                <mat-option value="TN">trans_City2</mat-option>
-                <mat-option value="city3">trans_City3</mat-option>
+              <mat-option *ngFor="let city of transCities" [value]="city.locationCode">{{
+                  city.locationName
+                }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -456,9 +462,9 @@
                 [ngModel]="userForm.get('localAdministrativeAuthority').value"
                 name="t_localAdministrativeAuthority"
               >
-                <mat-option value="BLR">trans_LAA1</mat-option>
-                <mat-option value="TN">trans_LAA2</mat-option>
-                <mat-option value="LAA3">trans_LAA3</mat-option>
+              <mat-option *ngFor="let LAA of transLocalAdministrativeAuthorities" [value]="LAA.locationCode">{{
+                  LAA.locationName
+                }}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -515,11 +521,6 @@
   </div>
   <div class="user__buttons">
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">{{'demographic.action_back'| translate}}</button>
-    <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
-      <!-- <div *ngIf="dataUploadComplete">Continue</div>
-          <div *ngIf="!dataUploadComplete" class="pgbar">
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-          </div> -->{{'demographic.action_continue'| translate}}
-    </button>
+    <button class="user__btn" type="button" [disabled]="!dataUploadComplete || !userForm.valid" (click)="onSubmit() ">{{'demographic.action_continue'| translate}}</button>
   </div>
 </div>

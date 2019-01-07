@@ -8,9 +8,8 @@ describe('DemographicComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DemographicComponent ]
-    })
-    .compileComponents();
+      declarations: [DemographicComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

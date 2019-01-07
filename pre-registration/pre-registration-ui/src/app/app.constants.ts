@@ -1,4 +1,5 @@
-export const LANG_CODE = 'en';
+export const PRIMARY_LANG_CODE = 'ENG';
+export const SECONDARY_LANG_CODE = 'arb';
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
 export const COUNTRY_NAME = 'India';
