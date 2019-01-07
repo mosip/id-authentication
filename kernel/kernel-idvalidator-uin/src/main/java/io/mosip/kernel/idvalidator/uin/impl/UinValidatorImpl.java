@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.uin.constant.UinExceptionConstant;
 
@@ -27,7 +26,7 @@ import io.mosip.kernel.idvalidator.uin.constant.UinExceptionConstant;
  */
 
 @Component
-public class UinValidatorImpl implements IdValidator<String> {
+public class UinValidatorImpl implements UinValidator<String> {
 
 	/**
 	 * The length of the UIN is reading from property file
@@ -39,7 +38,7 @@ public class UinValidatorImpl implements IdValidator<String> {
 	 * This Field to hold regular expressions for checking UIN has only digits.
 	 */
 	private String numaricRegEx;
-	
+
 	/**
 	 * Upper bound of number of digits in sequence allowed in id. For example if
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
@@ -89,7 +88,7 @@ public class UinValidatorImpl implements IdValidator<String> {
 	@PostConstruct
 	private void uinValidatorImplnumaricRegEx() {
 		numaricRegEx = "\\d{" + uinLength + "}";
-		
+
 		/**
 		 * Regex for matching repeating digits like 11, 1x1, 1xx1, 1xxx1, etc.<br/>
 		 * If repeating digit limit is 2, then <b>Regex:</b> (\d)\d{0,2}\1<br/>
@@ -194,7 +193,6 @@ public class UinValidatorImpl implements IdValidator<String> {
 					UinExceptionConstant.UIN_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
-
 		/**
 		 * 
 		 * The method isValidId(id) from MosipIDFilter will validate the UIN for the
@@ -210,8 +208,7 @@ public class UinValidatorImpl implements IdValidator<String> {
 		 * 
 		 */
 		if (isValidId(id)) {
-			throw new InvalidIDException(
-					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
 					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
 
@@ -235,8 +232,7 @@ public class UinValidatorImpl implements IdValidator<String> {
 		 */
 		return true;
 	}
-	
-	
+
 	/**
 	 * Checks if the input id is valid by passing the id through
 	 * {@link #sequenceLimit} filter, {@link #repeatingLimit} filter and
@@ -277,6 +273,5 @@ public class UinValidatorImpl implements IdValidator<String> {
 	private boolean regexFilter(String id, Pattern pattern) {
 		return pattern.matcher(id).find();
 	}
-
 
 }

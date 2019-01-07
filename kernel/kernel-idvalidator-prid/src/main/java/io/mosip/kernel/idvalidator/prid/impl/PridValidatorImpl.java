@@ -136,6 +136,9 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 *             If entered PRID should not match with checksum
 	 * @throws InvalidIDException
 	 *             If entered PRID contain Zero or One as first Digit.
+	 * @throws InvalidIDException
+	 *             If entered prid length,sequence length,repeat limit and block
+	 *             limit is equal or less than Zero.
 	 */
 
 	public boolean validateId(String id, int pridLength, int sequenceLimit, int repeatingLimit, int blockLimit) {
@@ -159,6 +162,10 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 *            repeating block limit
 	 */
 	private void validateInputs(String id, int pridLength, int sequenceLimit, int repeatLimit, int blockLimit) {
+		/**
+		 * Checking prid length , sequence length, repeat limit and block limit is not
+		 * equal or less than zero.
+		 */
 		if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <= 0 || blockLimit <= 0) {
 			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(),
 					PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage());
@@ -287,9 +294,16 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * 
 	 * @param id
 	 *            The input id to validate
+	 * 
+	 * @param sequenceLimit
+	 *            sequence in prid to limit
+	 * @param repeatingLimit
+	 *            repeating limit
+	 * @param repeatingBlockLimit
+	 *            repeating block limit
 	 * @return true if the input id is valid
 	 */
-	public boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
+	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
 				|| regexFilter(id, repeatingBlockpattern));

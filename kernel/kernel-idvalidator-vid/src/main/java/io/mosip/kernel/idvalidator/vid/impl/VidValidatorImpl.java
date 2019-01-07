@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.vid.constant.VidExceptionConstant;
 
@@ -26,7 +25,7 @@ import io.mosip.kernel.idvalidator.vid.constant.VidExceptionConstant;
  * @since 1.0.0
  */
 @Component
-public class VidValidatorImpl implements IdValidator<String> {
+public class VidValidatorImpl implements VidValidator<String> {
 
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
@@ -85,7 +84,7 @@ public class VidValidatorImpl implements IdValidator<String> {
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
 	@PostConstruct
-	private void VidValidatorImplPostConstruct() {
+	private void vidValidatorImplPostConstruct() {
 		numaricRegEx = "\\d{" + vidLength + "}";
 		/**
 		 * Regex for matching repeating digits like 11, 1x1, 1xx1, 1xxx1, etc.<br/>

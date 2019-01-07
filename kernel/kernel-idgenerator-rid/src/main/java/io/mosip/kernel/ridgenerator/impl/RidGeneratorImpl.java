@@ -30,7 +30,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	@Value("${mosip.kernel.rid.centerid.length}")
 	private int centerIdLength;
 
-	@Value("${mosip.kernel.rid.dongleid.length}")
+	@Value("${mosip.kernel.rid.machineid.length}")
 	private int dongleIdLength;
 
 	@Autowired
