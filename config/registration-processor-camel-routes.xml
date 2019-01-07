@@ -1,0 +1,114 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+	<!-- Packet-Reciever to Virus Scanner Route -->
+	<route id="packet-reciever-->virus-scanner route">
+		<from uri="vertx:packet-receiver-out" />
+		<log
+			message="packet-reciever-->virus-scanner route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:virus-scanner-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<!-- Virus Scanner to Packet Uploader Route -->
+	<route id="virus-scan-->packet-uploader route">
+		<from uri="vertx:virus-scanner-out" />
+		<log
+			message=" virus-scan-->packet-uploader route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:packet-uploader-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<!-- Packet Uploader to Packet Validator Route -->
+	<route id="packet-uploader-->packet-validator route">
+		<from uri="vertx:packet-uploader-out" />
+		<log
+			message="packet-uploader-->packet-validator route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:packet-validator-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<!-- Packet Validator to OSI Validator Route -->
+	<route id="packet-validator-->osi-validator route">
+		<from uri="vertx:packet-validator-bus-out" />
+		<log
+			message="packet-validator-->osi-validator route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:osi-validator-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="osi-validator-->demo-dedupe route">
+		<from uri="vertx:osi-validator-bus-out" />
+		<log
+			message="osi-validator-->demo-dedupe route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:demo-dedupe-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="demo-dedupe-->bio-dedupe route">
+		<from uri="vertx:demo-dedupe-bus-out" />
+		<log
+			message="demo-dedupe-->bio-dedupe route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:bio-dedupe-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+</routes>
