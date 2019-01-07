@@ -83,10 +83,8 @@ public class TriggerNotificationForUIN {
 			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 					getGlobalConfigJson);
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-			System.out.println("getGlobalConfigJson notification"+getGlobalConfigJson);
 			GlobalConfig jsonObject = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, GlobalConfig.class);
 			String notificationTypes= jsonObject.getNotificationtype();
-			System.out.println("Debug notification"+notificationTypes);
 			if (notificationTypes.isEmpty()) {
 				throw new ConfigurationNotFoundException(
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
