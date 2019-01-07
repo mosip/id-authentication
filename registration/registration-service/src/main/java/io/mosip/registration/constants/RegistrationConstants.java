@@ -54,9 +54,14 @@ public class RegistrationConstants {
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
+	
+	//Images path
 	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
 	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
-
+	public static final String FP_IMG_PATH = "/images/fingerprint.jpg";
+	public static final String IRIS_IMG_PATH = "/images/iris.jpg";
+	public static final String FACE_IMG_PATH = "/images/face.jpg";
+	
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
 	public static final String SUPERVISOR_NAME = "Supervisor";
@@ -73,6 +78,11 @@ public class RegistrationConstants {
 	public static final String LOGIN_METHOD_PWORD = "PWD";
 	public static final String LOGIN_METHOD_OTP = "OTP";
 	public static final String LOGIN_METHOD_BIO = "BIO";
+	public static final String LOGIN_METHOD_IRIS = "IRIS";
+	public static final String LOGIN_METHOD_FACE = "FACE";
+	public static final String FINGERPRINT_TEXT = "Place your fingerprint on the device to scan it";
+	public static final String IRIS_TEXT = "Scan your eye on the iris scanner";
+	public static final String FACE_TEXT = "Bring your face near the camera";
 	public static final String BLOCKED = "BLOCKED";
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
@@ -164,6 +174,8 @@ public class RegistrationConstants {
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";
+	public static final String VALIDATION_TYPE_IRIS = "Iris";
+	public static final String VALIDATION_TYPE_FACE = "Face";
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
 
 	// Supervisor Authentication
@@ -762,6 +774,10 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_SERVICE="policysync";
 	public static final String KEY_NAME="KEY_POLICY_SYNC_THRESHOLD_VALUE";
 	public static final String REFERENCE_ID="1001";
+	
+	//Reg Deletion
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS="Registartion Packets Deletion Successful ";
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE="Registartion Packets Deletion Failure ";
 	
 	public enum mappedCodeForLang{
 		en("ENG");

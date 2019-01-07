@@ -86,7 +86,7 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 		
 	}
 	
-	public List<UserBiometric> getUserSpecificFingerprintDetails(String userId){
-		return userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrue(userId);
+	public List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType){
+		return userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(userId, bioType);
 	}
 }

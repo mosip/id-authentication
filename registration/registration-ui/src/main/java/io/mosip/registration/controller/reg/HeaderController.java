@@ -80,7 +80,10 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
-
+	
+	/*@Autowired
+	RegistrationDeletionService registrationDeletionService;
+*/
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -188,6 +191,7 @@ public class HeaderController extends BaseController {
 	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
+		//registrationDeletionService.deleteReRegistrationPackets();
 
 		AnchorPane syncData;
 		try {

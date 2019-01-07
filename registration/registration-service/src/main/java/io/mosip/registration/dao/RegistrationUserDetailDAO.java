@@ -32,6 +32,6 @@ public interface RegistrationUserDetailDAO {
 	
 	List<UserBiometric> getAllActiveUsers(String attrCode);
 	
-	List<UserBiometric> getUserSpecificFingerprintDetails(String userId);
+	List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType);
 
 }
