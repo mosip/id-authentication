@@ -1,28 +1,51 @@
 package io.mosip.registration.dto.mastersync;
 
 /**
- * DTO class for IdType.
+ * DTO class for IdType fetch response.
  * 
  * @author Sreekar Chukka
  * @since 1.0.0
  *
  */
 
-public class IdTypeDto {
+public class IdTypeDto extends MasterSyncBaseDto{
 	/**
-	 * the id code.
+	 * The id code.
 	 */
 	private String code;
 	/**
-	 * the id description.
+	 * The id description.
 	 */
-	private String description;
+	private String descr;
+	
+	
 	/**
-	 * the language code.
+	 * The id name.
+	 */
+	private String name;
+	
+	/**
+	 * The language code.
 	 */
 	private String langCode;
+	
+	private Boolean isActive;
+	
+	
 
-	private String name;
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * @return the code
@@ -39,17 +62,17 @@ public class IdTypeDto {
 	}
 
 	/**
-	 * @return the description
+	 * @return the descr
 	 */
-	public String getDescription() {
-		return description;
+	public String getDescr() {
+		return descr;
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param descr the descr to set
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescr(String descr) {
+		this.descr = descr;
 	}
 
 	/**
@@ -67,17 +90,19 @@ public class IdTypeDto {
 	}
 
 	/**
-	 * @return the name
+	 * @return the isActive
 	 */
-	public String getName() {
-		return name;
+	public Boolean getIsActive() {
+		return isActive;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param isActive the isActive to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
-
+	
+	
 }
+

@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,12 +18,12 @@ import lombok.Data;
 @ApiModel(value = "Template", description = "Template resource representation")
 public class TemplateDto {
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 128)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
@@ -31,7 +32,7 @@ public class TemplateDto {
 	@ApiModelProperty(value = "Template description", required = false, dataType = "java.lang.String")
 	private String description;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "Template file format code", required = true, dataType = "java.lang.String")
 	private String fileFormatCode;
@@ -52,12 +53,12 @@ public class TemplateDto {
 	@ApiModelProperty(value = "module name", required = false, dataType = "java.lang.String")
 	private String moduleName;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "Template file format code", required = true, dataType = "java.lang.String")
 	private String templateTypeCode;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;

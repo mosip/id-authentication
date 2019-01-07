@@ -1,2 +1,0 @@
-2018-12-20T11:22:07+05:30 - [io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl] - INFO  -  -  -  - Registration Packet is Not yet sync in Sync table
-2018-12-20T11:49:26+05:30 - [io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl] - INFO  - SESSIONID - REGISTRATIONID - 27847657360002520181208094055 - Registration Packet is Not yet sync in Sync table

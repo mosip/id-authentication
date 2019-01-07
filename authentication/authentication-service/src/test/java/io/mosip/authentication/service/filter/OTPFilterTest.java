@@ -20,7 +20,7 @@ public class OTPFilterTest {
 	@Test
 	public void testSetTxnId() {
 		responseBody.put("txnId", "1234");
-		assertEquals(responseBody, filter.setTxnId(requestBody, responseBody));
+		assertEquals(responseBody, filter.setResponseParam(requestBody, responseBody));
 	}
 	
 	@Test

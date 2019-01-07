@@ -8,4 +8,6 @@ COPY ./target/kernel-masterdata-service-*.jar kernel-masterdata-service.jar
 
 EXPOSE 8086
 
-CMD ["java","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-masterdata-service.jar"]
+EXPOSE 8093
+
+CMD ["java","-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-XX:MaxRAMFraction=1","-jar","-Dspring.profiles.active=${active_profile_env}","kernel-masterdata-service.jar"]

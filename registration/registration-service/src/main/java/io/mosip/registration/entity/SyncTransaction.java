@@ -18,33 +18,33 @@ import javax.persistence.Table;
 public class SyncTransaction  {
 	@Id
 	//@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", length = 36)
+	@Column(name = "id")
 	private String id;
-	@Column(name = "syncjob_id", length = 36, nullable = false)
+	@Column(name = "syncjob_id")
 	private String syncJobId;
-	@Column(name = "sync_dtimes", nullable = false)
+	@Column(name = "sync_dtimes")
 	private Timestamp syncDateTime;
-	@Column(name = "status_code", length = 36, nullable = false)
+	@Column(name = "status_code")
 	private String statusCode;
-	@Column(name = "status_comment", length = 256)
+	@Column(name = "status_comment")
 	private String statusComment;
-	@Column(name = "trigger_point", length = 32, nullable = false)
+	@Column(name = "trigger_point")
 	private String triggerPoint;
-	@Column(name = "sync_from", length = 32)
+	@Column(name = "sync_from")
 	private String syncFrom;
-	@Column(name = "sync_to", length = 32)
+	@Column(name = "sync_to")
 	private String syncTo;
-	@Column(name = "machine_id", length = 36)
+	@Column(name = "machine_id")
 	private String machmId;
-	@Column(name = "regcntr_id", length = 36)
+	@Column(name = "regcntr_id")
 	private String cntrId;
-	@Column(name = "ref_id", length = 36)
+	@Column(name = "ref_id")
 	private String refId;
-	@Column(name = "ref_id_type", length = 64)
+	@Column(name = "ref_id_type")
 	private String refIdType;
-	@Column(name = "sync_param", length = 2048)
+	@Column(name = "sync_param")
 	private String syncParam;
-	@Column(name = "lang_code", length = 3)
+	@Column(name = "lang_code")
 	private String langCode;
 	@Column(name = "is_deleted")
 	private boolean isDeleted;

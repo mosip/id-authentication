@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
-
+	
 /**
  * The Class SyncRegistrationDao.
  *

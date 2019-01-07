@@ -40,6 +40,7 @@ import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentService;
+import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 
 /**
@@ -52,29 +53,32 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
  * @since 1.0.0
  * 
  */
-//@RunWith(SpringRunner.class)
-//@WebMvcTest(DocumentController.class)
-public class DocumentControllerTest {/*
+@RunWith(SpringRunner.class)
+@WebMvcTest(DocumentController.class)
+public class DocumentControllerTest {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	*//**
+	/**
 	 * Autowired reference for {@link #MockMvc}
-	 *//*
+	 */
 	@Autowired
 	private MockMvc mockMvc;
 
 	private MockMultipartFile multipartFile, jsonMultiPart;
 
-	*//**
+	/**
 	 * Creating Mock Bean for DocumentUploadService
-	 *//*
+	 */
 	@MockBean
 	private DocumentService service;
+	
+	@MockBean
+	private DocumentServiceUtil serviceutil;
 
-	*//**
+	/**
 	 * Creating Mock Bean for FilesystemCephAdapterImpl
-	 *//*
+	 */
 	@MockBean
 	private FilesystemCephAdapterImpl ceph;
 
@@ -91,9 +95,9 @@ public class DocumentControllerTest {/*
 	MainListResponseDTO responseDelete = new MainListResponseDTO<>();
 	DocumentRequestDTO documentDto = null;
 
-	*//**
+	/**
 	 * @throws IOException
-	 *//*
+	 */
 	@Before
 	public void setUp() throws IOException {
 
@@ -146,18 +150,18 @@ public class DocumentControllerTest {/*
 
 	}
 
-	@Test
-	public void successSave() throws Exception {
-		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-		Mockito.when(service.uploadDoucment(multipartFile, jsonDTO)).thenReturn(responseCopy);
-		this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+//	@Test
+//	public void successSave() throws Exception {
+//		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+//		Mockito.when(service.uploadDoucment(multipartFile, jsonDTO)).thenReturn(responseCopy);
+//		this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+//				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+//
+//	}
 
-	}
-
-	*//**
+	/**
 	 * @throws Exception
-	 *//*
+	 */
 	@Test
 	public void successDelete() throws Exception {
 		Mockito.when(service.deleteDocument(documentId)).thenReturn(responseCopy);
@@ -167,9 +171,9 @@ public class DocumentControllerTest {/*
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	*//**
+	/**
 	 * @throws Exception
-	 *//*
+	 */
 	@Test
 	public void getAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
@@ -177,9 +181,9 @@ public class DocumentControllerTest {/*
 				.param("preId", "48690172097498")).andExpect(status().isOk());
 	}
 
-	*//**
+	/**
 	 * @throws Exception
-	 *//*
+	 */
 	@Test
 	public void deletetAllDocumentByPreidTest() throws Exception {
 		Mockito.when(service.deleteAllByPreId("48690172097498")).thenReturn(responseDelete);
@@ -189,9 +193,9 @@ public class DocumentControllerTest {/*
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	*//**
+	/**
 	 * @throws Exception
-	 *//*
+	 */
 	@Test
 	public void copyDocumentTest() throws Exception {
 		Mockito.when(service.copyDoucment("POA", "48690172097498", "1234567891")).thenReturn(responseCopy);
@@ -200,9 +204,9 @@ public class DocumentControllerTest {/*
 				.andExpect(status().isOk());
 	}
 
-	*//**
+	/**
 	 * @throws Exception
-	 *//*
+	 */
 	@Test(expected = Exception.class)
 	public void FailuregetAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("2")).thenThrow(Exception.class);
@@ -211,9 +215,9 @@ public class DocumentControllerTest {/*
 
 	}
 
-	*//**
+	/**
 	 * @throws Exception
-	 *//*
+	 */
 	@Test(expected = Exception.class)
 	public void FailurecopyDocumentTest() throws Exception {
 		Mockito.when(service.copyDoucment(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
@@ -225,4 +229,4 @@ public class DocumentControllerTest {/*
 
 	}
 
-*/}
+}

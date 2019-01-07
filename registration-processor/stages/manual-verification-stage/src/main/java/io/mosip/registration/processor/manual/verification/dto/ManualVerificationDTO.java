@@ -1,34 +1,39 @@
 package io.mosip.registration.processor.manual.verification.dto;
 
 import java.io.Serializable;
-
+	
 /**
- * The {@link ManualVerificationDTO} class
- * 
+ * The {@link ManualVerificationDTO} class.
+ *
  * @author Pranav Kumar
  * @since 0.0.1
- *
  */
 public class ManualVerificationDTO implements Serializable {
 	
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The reg id. */
 	private String regId;
 	
+	/** The mv usr id. */
 	private String mvUsrId;
 	
+	/** The status code. */
 	private String statusCode;
 	
+	/** The matched ref id. */
 	private String matchedRefId;
 	
+	/** The matched ref type. */
 	private String matchedRefType;
 	
+	/** The reason code. */
 	private String reasonCode;
 
 	/**
+	 * Gets the reg id.
+	 *
 	 * @return the regId
 	 */
 	public String getRegId() {
@@ -36,6 +41,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the reg id.
+	 *
 	 * @param regId the regId to set
 	 */
 	public void setRegId(String regId) {
@@ -43,6 +50,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the mv usr id.
+	 *
 	 * @return the mvUsrId
 	 */
 	public String getMvUsrId() {
@@ -50,6 +59,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the mv usr id.
+	 *
 	 * @param mvUsrId the mvUsrId to set
 	 */
 	public void setMvUsrId(String mvUsrId) {
@@ -57,6 +68,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the status code.
+	 *
 	 * @return the statusCode
 	 */
 	public String getStatusCode() {
@@ -64,6 +77,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the status code.
+	 *
 	 * @param statusCode the statusCode to set
 	 */
 	public void setStatusCode(String statusCode) {
@@ -71,6 +86,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the matched ref id.
+	 *
 	 * @return the matchedRefId
 	 */
 	public String getMatchedRefId() {
@@ -78,6 +95,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the matched ref id.
+	 *
 	 * @param matchedRefId the matchedRefId to set
 	 */
 	public void setMatchedRefId(String matchedRefId) {
@@ -85,6 +104,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the matched ref type.
+	 *
 	 * @return the matchedRefType
 	 */
 	public String getMatchedRefType() {
@@ -92,6 +113,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the matched ref type.
+	 *
 	 * @param matchedRefType the matchedRefType to set
 	 */
 	public void setMatchedRefType(String matchedRefType) {
@@ -99,6 +122,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the serialversionuid.
+	 *
 	 * @return the serialversionuid
 	 */
 	public static long getSerialversionuid() {
@@ -166,6 +191,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the reason code.
+	 *
 	 * @return the reasonCode
 	 */
 	public String getReasonCode() {
@@ -173,6 +200,8 @@ public class ManualVerificationDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the reason code.
+	 *
 	 * @param reasonCode the reasonCode to set
 	 */
 	public void setReasonCode(String reasonCode) {

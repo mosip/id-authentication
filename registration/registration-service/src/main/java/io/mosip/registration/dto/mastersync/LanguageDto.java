@@ -1,73 +1,84 @@
 package io.mosip.registration.dto.mastersync;
 
 /**
- * Dto class for Language.
+ * Data transfer object class for Language.
  * 
  * @author Sreekar Chukka
  * @since 1.0.0
  */
-public class LanguageDto {
+
+public class LanguageDto extends MasterSyncBaseDto{
 
 	/**
 	 * Field for language code
 	 */
-	private String languageCode;
+	
+	private String code;
 
 	/**
 	 * Field for language name
 	 */
-	private String languageName;
+	
+	private String name;
 
 	/**
 	 * Field for language family
 	 */
-	private String languageFamily;
+	
+	private String family;
 
 	/**
 	 * Field for language native name
 	 */
+	
 	private String nativeName;
 
 	/**
-	 * @return the languageCode
+	 * Field for the status of data.
 	 */
-	public String getLanguageCode() {
-		return languageCode;
+	
+	private Boolean isActive;
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
 	}
 
 	/**
-	 * @param languageCode the languageCode to set
+	 * @param code the code to set
 	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	/**
-	 * @return the languageName
+	 * @return the name
 	 */
-	public String getLanguageName() {
-		return languageName;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @param languageName the languageName to set
+	 * @param name the name to set
 	 */
-	public void setLanguageName(String languageName) {
-		this.languageName = languageName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * @return the languageFamily
+	 * @return the family
 	 */
-	public String getLanguageFamily() {
-		return languageFamily;
+	public String getFamily() {
+		return family;
 	}
 
 	/**
-	 * @param languageFamily the languageFamily to set
+	 * @param family the family to set
 	 */
-	public void setLanguageFamily(String languageFamily) {
-		this.languageFamily = languageFamily;
+	public void setFamily(String family) {
+		this.family = family;
 	}
 
 	/**
@@ -83,5 +94,27 @@ public class LanguageDto {
 	public void setNativeName(String nativeName) {
 		this.nativeName = nativeName;
 	}
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+//	@NotNull
+//	private LocalTime lunchStartTime;
+	
+//	@NotNull
+//	private LocalDateTime createdDateTime;
+	
+	
 
 }

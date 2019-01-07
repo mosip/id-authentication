@@ -5,7 +5,7 @@ ARG active_profile
 ENV active_profile_env=${active_profile}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/ftp1/LANDING_ZONE
+VOLUME /home/ftp1/VIRUS_SCAN/encrypted
 
 COPY ./target/packet-receiver-*.jar packet-receiver.jar
 

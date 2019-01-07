@@ -231,7 +231,7 @@ public class DocumentExceptionHandler {
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(responseStatus);
 		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**

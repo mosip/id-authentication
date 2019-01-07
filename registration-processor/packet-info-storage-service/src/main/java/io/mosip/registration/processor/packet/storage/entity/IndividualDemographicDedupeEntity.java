@@ -25,7 +25,7 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "uin")
-	private String uinRefId;
+	private String uin;
 
 	@Column(name = "name")
 	private String name;
@@ -155,12 +155,12 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 		this.phoneticName = pheoniticName;
 	}
 
-	public String getUinRefId() {
-		return uinRefId;
+	public String getUin() {
+		return uin;
 	}
 
-	public void setUinRefId(String uinRefId) {
-		this.uinRefId = uinRefId;
+	public void setUin(String uinRefId) {
+		this.uin = uinRefId;
 	}
 
 }

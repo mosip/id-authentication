@@ -131,10 +131,6 @@ public class BookingServiceUtil {
 					holidaylist.add(holiday.getHolidayDate());
 				}
 			}
-			if (holidaylist.isEmpty()) {
-				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.toString(),
-						ErrorMessages.HOLIDAY_MASTER_DATA_NOT_FOUND.toString());
-			}
 		} catch (HttpClientErrorException e) {
 			throw new RestCallException(ErrorCodes.PRG_BOOK_002.toString(), "HTTP_CLIENT_EXCEPTION");
 		}
@@ -231,11 +227,11 @@ public class BookingServiceUtil {
 
 		} else {
 
-			int loop1 = ((regDto.getLunchStartTime().getHour() * 60 + regDto.getLunchStartTime().getMinute())
+			int window1 = ((regDto.getLunchStartTime().getHour() * 60 + regDto.getLunchStartTime().getMinute())
 					- (regDto.getCenterStartTime().getHour() * 60 + regDto.getCenterStartTime().getMinute()))
 					/ (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
 
-			int loop2 = ((regDto.getCenterEndTime().getHour() * 60 + regDto.getCenterEndTime().getMinute())
+			int window2 = ((regDto.getCenterEndTime().getHour() * 60 + regDto.getCenterEndTime().getMinute())
 					- (regDto.getLunchEndTime().getHour() * 60 + regDto.getLunchEndTime().getMinute()))
 					/ (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
 
@@ -248,8 +244,8 @@ public class BookingServiceUtil {
 					% (regDto.getPerKioskProcessTime().getHour() * 60 + regDto.getPerKioskProcessTime().getMinute());
 
 			LocalTime currentTime1 = regDto.getCenterStartTime();
-			for (int i = 0; i < loop1; i++) {
-				if (i == (loop1 - 1)) {
+			for (int i = 0; i < window1; i++) {
+				if (i == (window1 - 1)) {
 					LocalTime toTime = currentTime1.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
 							.plusMinutes(extraTime1);
 					saveAvailability(regDto, sDate, currentTime1, toTime, bookingAvailabilityRepository);
@@ -262,8 +258,8 @@ public class BookingServiceUtil {
 			}
 
 			LocalTime currentTime2 = regDto.getLunchEndTime();
-			for (int i = 0; i < loop2; i++) {
-				if (i == (loop2 - 1)) {
+			for (int i = 0; i < window2; i++) {
+				if (i == (window2 - 1)) {
 					LocalTime toTime = currentTime2.plusMinutes(regDto.getPerKioskProcessTime().getMinute())
 							.plusMinutes(extraTime2);
 					saveAvailability(regDto, sDate, currentTime2, toTime, bookingAvailabilityRepository);
@@ -353,7 +349,7 @@ public class BookingServiceUtil {
 		bookingAvailabilityRepository.save(avaEntity);
 	}
 
-	public void slotSetter(List<java.sql.Date> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
+	public void slotSetter(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
 			List<AvailibityEntity> entity) {
 		List<SlotDto> slotList = new ArrayList<>();
 		for (AvailibityEntity en : entity) {

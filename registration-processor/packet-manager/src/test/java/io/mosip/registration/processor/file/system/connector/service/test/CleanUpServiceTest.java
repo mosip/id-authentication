@@ -41,7 +41,7 @@ public class CleanUpServiceTest {
 
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
-
+	
 	@Mock
 	private FileManagerImpl fileManagerImpl;
 
@@ -72,6 +72,8 @@ public class CleanUpServiceTest {
 		assertFalse(exists);
 
 	}
+	
+
 
 	@Test(expected = FileNotFoundInDestinationException.class)
 	public void cleanUpFileDestinationFailureCheck() throws IOException {

@@ -3,6 +3,7 @@ package io.mosip.registration.repositories;
 import java.util.List;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import io.mosip.registration.dao.AppAuthenticationDetails;
 import io.mosip.registration.entity.RegistrationAppAuthenticationMethod;
 import io.mosip.registration.entity.RegistrationAppAuthenticationMethodId;
 
@@ -18,11 +19,11 @@ public interface RegistrationAppAuthenticationRepository
 		extends BaseRepository<RegistrationAppAuthenticationMethod, RegistrationAppAuthenticationMethodId> {
 
 	/**
-	 * This method returns the list of {@link RegistrationAppAuthenticationMethod} based on
+	 * This method returns the list of {@link AppAuthenticationDetails} based on
 	 * status
 	 * 
-	 * @return the list of {@link RegistrationAppAuthenticationMethod}
+	 * @return the list of {@link AppAuthenticationDetails}
 	 */
-	List<RegistrationAppAuthenticationMethod> findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq(String authType);
+	List<AppAuthenticationDetails> findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq(String authType);
 
 }

@@ -11,4 +11,4 @@ copy ./target/pre-registration-translitration-service-*.jar pre-registration-tra
 
 EXPOSE 9098
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-translitration-service-1.0.0-SNAPSHOT.jar"] 
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","pre-registration-translitration-service.jar"] 

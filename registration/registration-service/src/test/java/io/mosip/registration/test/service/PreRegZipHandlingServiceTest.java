@@ -33,11 +33,9 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
-import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
@@ -155,20 +153,11 @@ public class PreRegZipHandlingServiceTest {
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
-		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
-		DemographicInfoDTO demographicInfoDTOUser = new DemographicInfoDTO();
-		AddressDTO addressDTO = new AddressDTO();
-		addressDTO.setLocationDTO(new LocationDTO());
-		demographicInfoDTOUser.setAddressDTO(addressDTO);
 
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
-		AddressDTO addressDTOLocal = new AddressDTO();
-		addressDTO.setLocationDTO(new LocationDTO());
-		demographicInfoDTOLocal.setAddressDTO(addressDTOLocal);
 
-		demographicDTO.setDemoInLocalLang(demographicInfoDTOLocal);
-		demographicDTO.setDemoInUserLang(demographicInfoDTOUser);
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTOLocal);
 		registrationDTO.setDemographicDTO(demographicDTO);
 
 		// Create object for OSIData DTO

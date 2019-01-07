@@ -35,18 +35,23 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	@Column(name = "officer_iris_image_name")
 	private String officerIrisImageName;
 
+	/** The officerfinger type. */
 	@Column(name = "officer_fingerp_typ")
 	private String officerfingerType;
 
+	/** The officer iris type. */
 	@Column(name = "officer_iris_typ")
 	private String officerIrisType;
 
+	/** The officer photo name. */
 	@Column(name = "officer_photo_name")
 	private String officerPhotoName;
 
+	/** The officer hashed pin. */
 	@Column(name = "officer_hashed_pin")
 	private String officerHashedPin;
 
+	/** The officer hashed pwd. */
 	@Column(name = "officer_hashed_pwd")
 	private String officerHashedPwd;
 
@@ -66,18 +71,23 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	@Column(name = "supervisor_iris_image_name")
 	private String supervisorIrisImageName;
 
+	/** The supervisor finger type. */
 	@Column(name = "supervisor_fingerp_typ")
 	private String supervisorFingerType;
 
+	/** The supervisor iris type. */
 	@Column(name = "supervisor_iris_typ")
 	private String supervisorIrisType;
 
+	/** The supervisor hashed pwd. */
 	@Column(name = "supervisor_hashed_pwd")
 	private String supervisorHashedPwd;
 
+	/** The supervisor hashed pin. */
 	@Column(name = "supervisor_hashed_pin")
 	private String supervisorHashedPin;
 
+	/** The supervisor photo name. */
 	@Column(name = "supervisor_photo_name")
 	private String supervisorPhotoName;
 	/** The introducer id. */
@@ -96,9 +106,11 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	@Column(name = "introducer_iris_image_name")
 	private String introducerIrisImageName;
 
+	/** The introducer fingerp type. */
 	@Column(name = "introducer_fingerp_typ")
 	private String introducerFingerpType;
 
+	/** The introducer iris type. */
 	@Column(name = "introducer_iris_typ")
 	private String introducerIrisType;
 
@@ -469,8 +481,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimes
-	 *            the new cr dtimes
+	 * @param crDtimesz the new cr dtimesz
 	 */
 	public void setCrDtimesz(LocalDateTime crDtimesz) {
 		this.crDtimes = crDtimesz;
@@ -507,8 +518,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimes
-	 *            the new upd dtimes
+	 * @param updDtimesz the new upd dtimesz
 	 */
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {
 		this.updDtimes = updDtimesz;
@@ -545,106 +555,225 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/**
 	 * Sets the del dtimes.
 	 *
-	 * @param delDtimes
-	 *            the new del dtimes
+	 * @param delDtimesz the new del dtimesz
 	 */
 	public void setDelDtimesz(LocalDateTime delDtimesz) {
 		this.delDtimes = delDtimesz;
 	}
 	
 
+	/**
+	 * Gets the officerfinger type.
+	 *
+	 * @return the officerfinger type
+	 */
 	public String getOfficerfingerType() {
 		return officerfingerType;
 	}
 
+	/**
+	 * Sets the officerfinger type.
+	 *
+	 * @param officerfingerType the new officerfinger type
+	 */
 	public void setOfficerfingerType(String officerfingerType) {
 		this.officerfingerType = officerfingerType;
 	}
 
+	/**
+	 * Gets the officer iris type.
+	 *
+	 * @return the officer iris type
+	 */
 	public String getOfficerIrisType() {
 		return officerIrisType;
 	}
 
+	/**
+	 * Sets the officer iris type.
+	 *
+	 * @param officerIrisType the new officer iris type
+	 */
 	public void setOfficerIrisType(String officerIrisType) {
 		this.officerIrisType = officerIrisType;
 	}
 
+	/**
+	 * Gets the officer photo name.
+	 *
+	 * @return the officer photo name
+	 */
 	public String getOfficerPhotoName() {
 		return officerPhotoName;
 	}
 
+	/**
+	 * Sets the officer photo name.
+	 *
+	 * @param officerPhotoName the new officer photo name
+	 */
 	public void setOfficerPhotoName(String officerPhotoName) {
 		this.officerPhotoName = officerPhotoName;
 	}
 
+	/**
+	 * Gets the officer hashed pin.
+	 *
+	 * @return the officer hashed pin
+	 */
 	public String getOfficerHashedPin() {
 		return officerHashedPin;
 	}
 
+	/**
+	 * Sets the officer hashed pin.
+	 *
+	 * @param officerHashedPin the new officer hashed pin
+	 */
 	public void setOfficerHashedPin(String officerHashedPin) {
 		this.officerHashedPin = officerHashedPin;
 	}
 
+	/**
+	 * Gets the officer hashed pwd.
+	 *
+	 * @return the officer hashed pwd
+	 */
 	public String getOfficerHashedPwd() {
 		return officerHashedPwd;
 	}
 
+	/**
+	 * Sets the officer hashed pwd.
+	 *
+	 * @param officerHashedPwd the new officer hashed pwd
+	 */
 	public void setOfficerHashedPwd(String officerHashedPwd) {
 		this.officerHashedPwd = officerHashedPwd;
 	}
 
+	/**
+	 * Gets the supervisor finger type.
+	 *
+	 * @return the supervisor finger type
+	 */
 	public String getSupervisorFingerType() {
 		return supervisorFingerType;
 	}
 
+	/**
+	 * Sets the supervisor finger type.
+	 *
+	 * @param supervisorFingerType the new supervisor finger type
+	 */
 	public void setSupervisorFingerType(String supervisorFingerType) {
 		this.supervisorFingerType = supervisorFingerType;
 	}
 
+	/**
+	 * Gets the supervisor iris type.
+	 *
+	 * @return the supervisor iris type
+	 */
 	public String getSupervisorIrisType() {
 		return supervisorIrisType;
 	}
 
+	/**
+	 * Sets the supervisor iris type.
+	 *
+	 * @param supervisorTrisType the new supervisor iris type
+	 */
 	public void setSupervisorIrisType(String supervisorTrisType) {
 		this.supervisorIrisType = supervisorTrisType;
 	}
 
+	/**
+	 * Gets the supervisor hashed pwd.
+	 *
+	 * @return the supervisor hashed pwd
+	 */
 	public String getSupervisorHashedPwd() {
 		return supervisorHashedPwd;
 	}
 
+	/**
+	 * Sets the supervisor hashed pwd.
+	 *
+	 * @param supervisorHashedPwd the new supervisor hashed pwd
+	 */
 	public void setSupervisorHashedPwd(String supervisorHashedPwd) {
 		this.supervisorHashedPwd = supervisorHashedPwd;
 	}
 
+	/**
+	 * Gets the supervisor hashed pin.
+	 *
+	 * @return the supervisor hashed pin
+	 */
 	public String getSupervisorHashedPin() {
 		return supervisorHashedPin;
 	}
 
+	/**
+	 * Sets the supervisor hashed pin.
+	 *
+	 * @param supervisorHashedPin the new supervisor hashed pin
+	 */
 	public void setSupervisorHashedPin(String supervisorHashedPin) {
 		this.supervisorHashedPin = supervisorHashedPin;
 	}
 
+	/**
+	 * Gets the supervisor photo name.
+	 *
+	 * @return the supervisor photo name
+	 */
 	public String getSupervisorPhotoName() {
 		return supervisorPhotoName;
 	}
 
+	/**
+	 * Sets the supervisor photo name.
+	 *
+	 * @param supervisorPhotoName the new supervisor photo name
+	 */
 	public void setSupervisorPhotoName(String supervisorPhotoName) {
 		this.supervisorPhotoName = supervisorPhotoName;
 	}
 
+	/**
+	 * Gets the introducer fingerp type.
+	 *
+	 * @return the introducer fingerp type
+	 */
 	public String getIntroducerFingerpType() {
 		return introducerFingerpType;
 	}
 
+	/**
+	 * Sets the introducer fingerp type.
+	 *
+	 * @param introducerFingerpType the new introducer fingerp type
+	 */
 	public void setIntroducerFingerpType(String introducerFingerpType) {
 		this.introducerFingerpType = introducerFingerpType;
 	}
 
+	/**
+	 * Gets the introducer iris type.
+	 *
+	 * @return the introducer iris type
+	 */
 	public String getIntroducerIrisType() {
 		return introducerIrisType;
 	}
 
+	/**
+	 * Sets the introducer iris type.
+	 *
+	 * @param introducerIrisType the new introducer iris type
+	 */
 	public void setIntroducerIrisType(String introducerIrisType) {
 		this.introducerIrisType = introducerIrisType;
 	}
