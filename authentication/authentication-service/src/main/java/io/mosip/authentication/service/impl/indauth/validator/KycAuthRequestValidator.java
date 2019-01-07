@@ -73,7 +73,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	
 	/**
 	 * Validates the KycAuthRequest
-	 * @param Object 
+	 * 
+	 * @param target 
 	 * 
 	 * @param errors
 	 * 
