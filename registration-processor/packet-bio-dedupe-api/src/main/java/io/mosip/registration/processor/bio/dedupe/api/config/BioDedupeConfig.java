@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.bio.dedupe.config;
+package io.mosip.registration.processor.bio.dedupe.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
