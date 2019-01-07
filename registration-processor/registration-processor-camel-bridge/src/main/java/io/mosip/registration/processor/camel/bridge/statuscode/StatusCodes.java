@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.camel.bridge.statuscode;
-
+	
 /**
  * The Enum StatusCodes.
  */

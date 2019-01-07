@@ -1,21 +1,33 @@
 package io.mosip.registration.processor.core.packet.dto;
 
 /**
+ * 	
  * This contains the attributes of BiometricException object to be displayed in
- * PacketMetaInfo JSON
- * 
+ * PacketMetaInfo JSON.
+ *
  * @author Balaji Sridharan
  * @since 1.0.0
  */
 public class BiometricExceptionDto {
 
+	/** The language. */
 	private String language;
+	
+	/** The type. */
 	private String type;
+	
+	/** The missing biometric. */
 	private String missingBiometric;
+	
+	/** The exception description. */
 	private String exceptionDescription;
+	
+	/** The exception type. */
 	private String exceptionType;
 
 	/**
+	 * Gets the language.
+	 *
 	 * @return the language
 	 */
 	public String getLanguage() {
@@ -23,14 +35,17 @@ public class BiometricExceptionDto {
 	}
 
 	/**
-	 * @param language
-	 *            the language to set
+	 * Sets the language.
+	 *
+	 * @param language            the language to set
 	 */
 	public void setLanguage(String language) {
 		this.language = language;
 	}
 
 	/**
+	 * Gets the type.
+	 *
 	 * @return the type
 	 */
 	public String getType() {
@@ -38,14 +53,17 @@ public class BiometricExceptionDto {
 	}
 
 	/**
-	 * @param type
-	 *            the type to set
+	 * Sets the type.
+	 *
+	 * @param type            the type to set
 	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
 	/**
+	 * Gets the missing biometric.
+	 *
 	 * @return the missingBiometric
 	 */
 	public String getMissingBiometric() {
@@ -53,14 +71,17 @@ public class BiometricExceptionDto {
 	}
 
 	/**
-	 * @param missingBiometric
-	 *            the missingBiometric to set
+	 * Sets the missing biometric.
+	 *
+	 * @param missingBiometric            the missingBiometric to set
 	 */
 	public void setMissingBiometric(String missingBiometric) {
 		this.missingBiometric = missingBiometric;
 	}
 
 	/**
+	 * Gets the exception description.
+	 *
 	 * @return the exceptionDescription
 	 */
 	public String getExceptionDescription() {
@@ -68,14 +89,17 @@ public class BiometricExceptionDto {
 	}
 
 	/**
-	 * @param exceptionDescription
-	 *            the exceptionDescription to set
+	 * Sets the exception description.
+	 *
+	 * @param exceptionDescription            the exceptionDescription to set
 	 */
 	public void setExceptionDescription(String exceptionDescription) {
 		this.exceptionDescription = exceptionDescription;
 	}
 
 	/**
+	 * Gets the exception type.
+	 *
 	 * @return the exceptionType
 	 */
 	public String getExceptionType() {
@@ -83,8 +107,9 @@ public class BiometricExceptionDto {
 	}
 
 	/**
-	 * @param exceptionType
-	 *            the exceptionType to set
+	 * Sets the exception type.
+	 *
+	 * @param exceptionType            the exceptionType to set
 	 */
 	public void setExceptionType(String exceptionType) {
 		this.exceptionType = exceptionType;

@@ -1,5 +1,6 @@
 package io.mosip.preregistration.booking.repository;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -25,7 +26,7 @@ public interface BookingAvailabilityRepository extends BaseRepository<Availibity
 
 	public List<AvailibityEntity> findByRegcntrIdAndRegDateOrderByFromTimeAsc(String regcntrId, LocalDate regDate);
 
-	public List<java.sql.Date> findDate(@Param("regcntrId") String regcntrId, @Param("fromDate") LocalDate fromDate,
+	public List<LocalDate> findDate(@Param("regcntrId") String regcntrId, @Param("fromDate") LocalDate fromDate,
 			@Param("toDate") LocalDate toDate);
 
 	/**

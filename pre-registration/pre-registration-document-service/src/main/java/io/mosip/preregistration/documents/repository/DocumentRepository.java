@@ -50,7 +50,7 @@ public interface DocumentRepository extends BaseRepository<DocumentEntity, Strin
 	 *            pass documentId
 	 * @return the document for a document Id
 	 */
-	DocumentEntity findBydocumentId(int documentId);
+	DocumentEntity findBydocumentId(String documentId);
 
 	/**
 	 * @param preId
@@ -66,7 +66,7 @@ public interface DocumentRepository extends BaseRepository<DocumentEntity, Strin
 	 *            pass documentId
 	 * @return the number of records deleted for a document Id
 	 */
-	public int deleteAllBydocumentId(Integer documentId);
+	public int deleteAllBydocumentId(String documentId);
 
 	/**
 	 * @param preregId

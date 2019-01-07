@@ -9,6 +9,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,9 +66,9 @@ public class DemographicServiceUtil {
 			createDto.setStatusCode(demographicEntity.getStatusCode());
 			createDto.setLangCode(demographicEntity.getLangCode());
 			createDto.setCreatedBy(demographicEntity.getCreatedBy());
-			createDto.setCreatedDateTime(demographicEntity.getCreateDateTime());
+			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
 			createDto.setUpdatedBy(demographicEntity.getUpdatedBy());
-			createDto.setUpdatedDateTime(demographicEntity.getUpdateDateTime());
+			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getUpdateDateTime()));
 		} catch (ParseException e) {
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
 					ErrorMessages.JSON_PARSING_FAILED.toString(), e.getCause());
@@ -102,10 +104,11 @@ public class DemographicServiceUtil {
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
 					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
 					demographicEntity
-							.setCreateDateTime(new Timestamp(demographicRequest.getCreatedDateTime().getTime()));
+							.setCreateDateTime(DateUtils.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+					
 					demographicEntity.setUpdatedBy(null);
 					demographicEntity
-							.setUpdateDateTime(new Timestamp(demographicRequest.getCreatedDateTime().getTime()));
+							.setUpdateDateTime(DateUtils.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -116,10 +119,10 @@ public class DemographicServiceUtil {
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
 					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
 					demographicEntity
-							.setCreateDateTime(new Timestamp(demographicRequest.getCreatedDateTime().getTime()));
+							.setCreateDateTime(DateUtils.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
 					demographicEntity
-							.setUpdateDateTime(new Timestamp(demographicRequest.getUpdatedDateTime().getTime()));
+							.setUpdateDateTime(DateUtils.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));
 				} else {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
@@ -218,8 +221,8 @@ public class DemographicServiceUtil {
 	 * 				pass Date format
 	 * @return map with formatted fromDate and toDate
 	 */
-	public Map<String, Timestamp> dateSetter(Map<String, String> dateMap, String format) {
-		Map<String, Timestamp> timeStampMap = new HashMap<>();
+	public Map<String, LocalDateTime> dateSetter(Map<String, String> dateMap, String format) {
+		Map<String, LocalDateTime> localDateTimeMap = new HashMap<>();
 		try {
 
 			Date fromDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.fromDate.toString()), "UTF-8"),
@@ -239,8 +242,8 @@ public class DemographicServiceUtil {
 				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.toDate.toString()), "UTF-8"),
 						format);
 			}
-			timeStampMap.put(RequestCodes.fromDate.toString(), new Timestamp(fromDate.getTime()));
-			timeStampMap.put(RequestCodes.toDate.toString(), new Timestamp(toDate.getTime()));
+			localDateTimeMap.put(RequestCodes.fromDate.toString(), DateUtils.parseDateToLocalDateTime(fromDate));
+			localDateTimeMap.put(RequestCodes.toDate.toString(), DateUtils.parseDateToLocalDateTime(toDate));
 
 		} catch (java.text.ParseException e) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
@@ -249,10 +252,24 @@ public class DemographicServiceUtil {
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), e.getCause());
 		}
-		return timeStampMap;
+		return localDateTimeMap;
 	}
 	
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
+	}
+	
+	public Date getDateFromString(String date) {
+		try {
+			return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
+		} catch (java.text.ParseException e) {
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), e.getCause());
+		}
+	}
+	
+	public String getLocalDateString(LocalDateTime date) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+		return date.format(dateTimeFormatter);
 	}
 }

@@ -1,12 +1,17 @@
 package io.mosip.authentication.service.impl.indauth.service.bio;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.collections.map.HashedMap;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
@@ -72,7 +77,60 @@ public enum BioMatchType implements MatchType {
 	FGRIMG_RIGHT_RING(IdaIdMapping.RIGHTRING, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightRing,
 			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
 	FGRIMG_RIGHT_LITTLE(IdaIdMapping.RIGHTLITTLE, setOf(FingerPrintMatchingStrategy.PARTIAL), IdentityDTO::getRightLittle,
-			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE);
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE),
+	
+	//Multi-fingerPrint 
+	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE, t -> {
+				Map<String, List<IdentityInfoDTO>> multifingerMap = new HashMap<>();
+
+				if (null != t.getRightLittle() && !t.getRightLittle().isEmpty()) {
+					List<IdentityInfoDTO> rightLittle = t.getRightLittle();
+					multifingerMap.put(IdaIdMapping.RIGHTLITTLE.getIdname(), rightLittle);
+				}
+				if (null != t.getLeftLittle() && !t.getLeftLittle().isEmpty()) {
+					List<IdentityInfoDTO> leftLittle = t.getLeftLittle();
+					multifingerMap.put(IdaIdMapping.LEFTLITTLE.getIdname(), leftLittle);
+				}
+				if (null != t.getRightRing() && !t.getRightRing().isEmpty()) {
+					List<IdentityInfoDTO> rightRing = t.getRightRing();
+					multifingerMap.put(IdaIdMapping.RIGHTRING.getIdname(), rightRing);
+				}
+				if (null != t.getLeftRing() && !t.getLeftRing().isEmpty()) {
+					List<IdentityInfoDTO> leftRing = t.getLeftRing();
+					multifingerMap.put(IdaIdMapping.LEFTRING.getIdname(), leftRing);
+				}
+				if (null != t.getRightIndex() && !t.getRightIndex().isEmpty()) {
+					List<IdentityInfoDTO> rightIndex = t.getRightIndex();
+					multifingerMap.put(IdaIdMapping.RIGHTINDEX.getIdname(), rightIndex);
+				}
+				if (null != t.getLeftIndex() && !t.getLeftIndex().isEmpty()) {
+					List<IdentityInfoDTO> leftIndex = t.getLeftIndex();
+					multifingerMap.put(IdaIdMapping.LEFTINDEX.getIdname(), leftIndex);
+				}
+				if (null != t.getRightThumb() && !t.getRightThumb().isEmpty()) {
+					List<IdentityInfoDTO> rightThumb = t.getRightThumb();
+					multifingerMap.put(IdaIdMapping.RIGHTTHUMB.getIdname(), rightThumb);
+				}
+				if (null != t.getLeftThumb() && !t.getLeftThumb().isEmpty()) {
+					List<IdentityInfoDTO> leftThumb = t.getLeftThumb();
+					multifingerMap.put(IdaIdMapping.LEFTTHUMB.getIdname(), leftThumb);
+				}
+				if (null != t.getRightMiddle() && !t.getRightMiddle().isEmpty()) {
+					List<IdentityInfoDTO> rightMiddle = t.getRightMiddle();
+					multifingerMap.put(IdaIdMapping.RIGHTMIDDLE.getIdname(), rightMiddle);
+				}
+				if (null != t.getLeftMiddle() && !t.getLeftMiddle().isEmpty()) {
+					List<IdentityInfoDTO> leftMiddle = t.getLeftMiddle();
+					multifingerMap.put(IdaIdMapping.LEFTMIDDLE.getIdname(), leftMiddle);
+				}
+
+				return multifingerMap;
+			});
+	
+	
+	
+	
 
 	/** The mosipLogger. */
 	private static final Logger mosipLogger = IdaLogger.getLogger(BioMatchType.class);
@@ -86,13 +144,27 @@ public enum BioMatchType implements MatchType {
 	/** The matched bit. */
 	private AuthUsageDataBit matchedBit;
 
-	private Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction;
+	private Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
 	private IdMapping idMapping;
 
 	BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, AuthUsageDataBit usedBit,
 			AuthUsageDataBit matchedBit) {
+		this.idMapping = idMapping;
+		this.identityInfoFunction = (IdentityDTO identityDTO) -> {
+			Map<String, List<IdentityInfoDTO>> map = new HashMap<>();
+			map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO));
+			return map;
+		};
+		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
+		this.usedBit = usedBit;
+		this.matchedBit = matchedBit;
+	}
+	
+	BioMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+			AuthUsageDataBit usedBit,
+			AuthUsageDataBit matchedBit,Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction) {
 		this.idMapping = idMapping;
 		this.identityInfoFunction = identityInfoFunction;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
@@ -115,7 +187,7 @@ public enum BioMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<String, String> getEntityInfoMapper() {
+	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 		return Function.identity();
 	}
 
@@ -153,7 +225,7 @@ public enum BioMatchType implements MatchType {
 	}
 
 	@Override
-	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
 

@@ -45,5 +45,6 @@ public class IDAMappingConfig implements MappingConfig {
 	private List<String> rightThumb;
 	private List<String> iris;
 	private List<String> face;
+	private List<String> fingerprint;
 
 }

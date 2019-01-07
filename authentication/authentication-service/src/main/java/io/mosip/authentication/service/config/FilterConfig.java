@@ -26,7 +26,7 @@ public class FilterConfig {
     public FilterRegistrationBean<OTPFilter> getOtpFilter() {
 	FilterRegistrationBean<OTPFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new OTPFilter());
-	registrationBean.addUrlPatterns("/otp");
+	registrationBean.addUrlPatterns("/v1.0/otp");
 
 	return registrationBean;
     }
@@ -40,7 +40,7 @@ public class FilterConfig {
     public FilterRegistrationBean<IdAuthFilter> getIdAuthFilter() {
 	FilterRegistrationBean<IdAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new IdAuthFilter());
-	registrationBean.addUrlPatterns("/auth");
+	registrationBean.addUrlPatterns("/v1.0/auth");
 
 	return registrationBean;
     }
@@ -54,7 +54,7 @@ public class FilterConfig {
     public FilterRegistrationBean<KycAuthFilter> getEkycFilter() {
 	FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new KycAuthFilter());
-	registrationBean.addUrlPatterns("/ekyc");
+	registrationBean.addUrlPatterns("/v1.0/ekyc");
 
 	return registrationBean;
     }
@@ -69,7 +69,7 @@ public class FilterConfig {
     public FilterRegistrationBean<InternalAuthFilter> getInternalAuthFilter() {
 	FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 	registrationBean.setFilter(new InternalAuthFilter());
-	registrationBean.addUrlPatterns("/auth/internal");
+	registrationBean.addUrlPatterns("/v1.0/auth/internal");
 
 	return registrationBean;
     }

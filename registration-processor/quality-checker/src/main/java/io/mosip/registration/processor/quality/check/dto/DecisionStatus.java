@@ -1,6 +1,15 @@
 package io.mosip.registration.processor.quality.check.dto;
 
+/**
+ * The Enum DecisionStatus.
+ */
 public enum DecisionStatus {
-	ACCEPTED,REJECTED,PENDING
+	
+	/** The accepted. */
+	ACCEPTED,
+/** The rejected. */
+REJECTED,
+/** The pending. */
+PENDING
 
 }

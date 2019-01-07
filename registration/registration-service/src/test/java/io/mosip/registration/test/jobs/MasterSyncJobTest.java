@@ -29,6 +29,7 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.jobs.impl.MasterSyncJob;
+import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.impl.MasterSyncServiceImpl;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
@@ -127,6 +128,8 @@ public class MasterSyncJobTest {
 		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(masterSyncJob);
 	
+		Mockito.when(applicationContext.getBean(MasterSyncService.class)).thenReturn(masterSyncService);
+		
 		Mockito.when(masterSyncService.getMasterSync(Mockito.anyString())).thenReturn(responseDTO);
 
 	

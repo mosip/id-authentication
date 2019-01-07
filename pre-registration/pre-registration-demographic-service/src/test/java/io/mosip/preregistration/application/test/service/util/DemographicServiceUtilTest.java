@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,9 +74,9 @@ public class DemographicServiceUtilTest {
 		saveDemographicRequest.setStatusCode("Pending_Appointment");
 		saveDemographicRequest.setLangCode("ENG");
 		saveDemographicRequest.setCreatedBy("9900806086");
-		saveDemographicRequest.setCreatedDateTime(new Date());
+		saveDemographicRequest.setCreatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		saveDemographicRequest.setUpdatedBy(null);
-		saveDemographicRequest.setUpdatedDateTime(new Date());
+		saveDemographicRequest.setUpdatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		saveDemographicRequest.setDemographicDetails(jsonObject);
 
 		updateDemographicRequest = new CreateDemographicDTO();
@@ -83,9 +84,9 @@ public class DemographicServiceUtilTest {
 		updateDemographicRequest.setStatusCode("Pending_Appointment");
 		updateDemographicRequest.setLangCode("ENG");
 		updateDemographicRequest.setCreatedBy("9900806086");
-		updateDemographicRequest.setCreatedDateTime(new Date());
+		updateDemographicRequest.setCreatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		updateDemographicRequest.setUpdatedBy("9900806086");
-		updateDemographicRequest.setUpdatedDateTime(new Date());
+		updateDemographicRequest.setUpdatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		updateDemographicRequest.setDemographicDetails(jsonObject);
 
 		demographicEntity = new DemographicEntity();

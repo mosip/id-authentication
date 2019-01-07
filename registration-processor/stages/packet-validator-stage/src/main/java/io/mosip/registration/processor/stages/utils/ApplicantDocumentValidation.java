@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.stages.utils;
-
+	
 import java.util.List;
 
 import io.mosip.registration.processor.core.constant.JsonConstant;

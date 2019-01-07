@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.manual.verification.controller;
 
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,24 +13,21 @@ import io.mosip.registration.processor.manual.verification.exception.InvalidFile
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
 import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
-
+	
 /**
- * The Exception Handler class for Manual Verification
- * 
+ * The Exception Handler class for Manual Verification.
+ *
  * @author Pranav
  * @since 0.0.1
- *
  */
 @RestControllerAdvice
 public class ManualVerificationExceptionHandler {
 
 	/**
-	 * Method to handle Invalid File Name request Exception
-	 * 
-	 * @param e
-	 *            {@link InvalidFileNameException}
-	 * @param request
-	 *            WebRequest
+	 * Method to handle Invalid File Name request Exception.
+	 *
+	 * @param e            {@link InvalidFileNameException}
+	 * @param request            WebRequest
 	 * @return The built ResponseEntity with error code and error message
 	 */
 	@ExceptionHandler(InvalidFileNameException.class)
@@ -42,12 +38,10 @@ public class ManualVerificationExceptionHandler {
 	}
 
 	/**
-	 * Method to handle PacketNotFoundException
-	 * 
-	 * @param e
-	 *            {@link PacketNotFoundException}
-	 * @param request
-	 *            WebRequest
+	 * Method to handle PacketNotFoundException.
+	 *
+	 * @param e            {@link PacketNotFoundException}
+	 * @param request            WebRequest
 	 * @return The built ResponseEntity with error code and error message
 	 */
 	@ExceptionHandler(PacketNotFoundException.class)
@@ -61,6 +55,13 @@ public class ManualVerificationExceptionHandler {
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
 	
+	/**
+	 * No record assigned exception handler.
+	 *
+	 * @param e the e
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(NoRecordAssignedException.class)
 	public ResponseEntity<ExceptionJSONInfo> noRecordAssignedExceptionHandler(final NoRecordAssignedException e,
 			WebRequest request) {
@@ -68,6 +69,14 @@ public class ManualVerificationExceptionHandler {
 				e.getLocalizedMessage());
 		return new ResponseEntity<>(exceptionJSONInfo, HttpStatus.NOT_FOUND);
 	}
+	
+	/**
+	 * Invalid update exception.
+	 *
+	 * @param e the e
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(InvalidUpdateException.class)
 	public ResponseEntity<ExceptionJSONInfo> invalidUpdateException(final InvalidUpdateException e,
 			WebRequest request) {

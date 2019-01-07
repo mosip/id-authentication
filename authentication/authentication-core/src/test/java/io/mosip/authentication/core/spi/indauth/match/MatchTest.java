@@ -1,5 +1,10 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +19,7 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 public class MatchTest {
 
@@ -28,7 +34,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public boolean isAuthTypeEnabled(AuthRequestDTO authReq) {
+			public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
 				// TODO Auto-generated method stub
 				return false;
 			}
@@ -77,10 +83,21 @@ public class MatchTest {
 		};
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-
+		boolean authTypeInfoAvailable = authType.isAuthTypeInfoAvailable(authRequestDTO);
+		assertFalse(authTypeInfoAvailable);
+		IdInfoFetcher languageInfoFetcher = null;
+		Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, languageInfoFetcher);
+		System.err.println(matchProperties);
 		System.err.println(authType.getLangType());
 		System.err.println(authType.getDisplayName());
 		System.err.println(authType.getAssociatedMatchTypes());
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("dinesh");
+		nameList.add(identityInfoDTO);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -96,9 +113,12 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
-				// TODO Auto-generated method stub
-				return null;
+			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+				return any -> {
+					Map<String, List<IdentityInfoDTO>> valuemap = new HashMap<String, List<IdentityInfoDTO>>();
+					valuemap.put("name", nameList);
+					return valuemap;
+				};
 			}
 
 			@Override
@@ -108,7 +128,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<String, String> getEntityInfoMapper() {
+			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -121,8 +141,7 @@ public class MatchTest {
 
 			@Override
 			public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
-				// TODO Auto-generated method stub
-				return null;
+				return getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 			}
 		};
 
@@ -132,6 +151,13 @@ public class MatchTest {
 
 	@Test
 	public void TestMatchtype() {
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<IdentityInfoDTO>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue("dinesh");
+		nameList.add(identityInfoDTO);
+		identity.setName(nameList);
 		MatchType matchType = new MatchType() {
 
 			@Override
@@ -147,9 +173,12 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
-				// TODO Auto-generated method stub
-				return null;
+			public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
+				return any -> {
+					Map<String, List<IdentityInfoDTO>> valuemap = new HashMap<String, List<IdentityInfoDTO>>();
+					valuemap.put("name", nameList);
+					return valuemap;
+				};
 			}
 
 			@Override
@@ -159,7 +188,7 @@ public class MatchTest {
 			}
 
 			@Override
-			public Function<String, String> getEntityInfoMapper() {
+			public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -172,11 +201,11 @@ public class MatchTest {
 
 			@Override
 			public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};
 
+		List<IdentityInfoDTO> identityInfoList = matchType.getIdentityInfoList(identity);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.EXACT);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL);
 		matchType.getAllowedMatchingStrategy(MatchingStrategyType.PHONETICS);
@@ -206,6 +235,26 @@ public class MatchTest {
 		IdMapping[] authTypes = new IdMapping[] { idMapping };
 		IdMapping.getIdMapping(name, authTypes);
 
+	}
+
+	@Test
+	public void testMatchingStrategy() throws IdAuthenticationBusinessException {
+		MatchingStrategy matchingStrategy = new MatchingStrategy() {
+
+			@Override
+			public MatchingStrategyType getType() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public MatchFunction getMatchFunction() {
+				return (reqInfo, entityInfo, matchProperties) -> 50;
+			}
+		};
+
+		int match = matchingStrategy.match(new HashMap<>(), new HashMap<>(), new HashMap<>());
+		assertThat(match).isEqualTo(50);
 	}
 
 }

@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.TimeZone;
-import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -19,10 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
@@ -40,7 +35,6 @@ import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 
@@ -52,18 +46,22 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 @Component
 public class IdRequestValidator implements Validator {
 
+	/** The Constant CREATE. */
 	private static final String CREATE = "create";
 
-	private static final String UPDATE = "update";
-
+	/** The Constant DATETIME_TIMEZONE. */
 	private static final String DATETIME_TIMEZONE = "datetime.timezone";
 
+	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
+	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
 
+	/** The Constant MOSIP_KERNEL_IDREPO_SECONDARY_LANG. */
 	private static final String MOSIP_KERNEL_IDREPO_SECONDARY_LANG = "mosip.kernel.idrepo.secondary-lang";
 
+	/** The Constant MOSIP_KERNEL_IDREPO_PRIMARY_LANG. */
 	private static final String MOSIP_KERNEL_IDREPO_PRIMARY_LANG = "mosip.kernel.idrepo.primary-lang";
 
 	/** The Constant LANGUAGE. */
@@ -157,12 +155,9 @@ public class IdRequestValidator implements Validator {
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
+			validateUin(request.getUin(), errors);
 			validateStatus(request.getStatus(), errors);
 			validateRequest(request.getRequest(), errors);
-		}
-
-		if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
-			validateUin(request.getUin(), errors);
 		}
 
 		if (!errors.hasErrors() && request.getId().equals(id.get(CREATE))) {
@@ -265,18 +260,6 @@ public class IdRequestValidator implements Validator {
 		} else {
 			try {
 				jsonValidator.validateJson(mapper.writeValueAsString(request), SCHEMA_NAME);
-				Map<String, Map<String, List<Map<String, String>>>> requestMap = mapper.readValue(
-						mapper.writeValueAsBytes(request),
-						new TypeReference<Map<String, Map<String, List<Map<String, String>>>>>() {
-						});
-
-				Optional<Boolean> isInvalidLang = checkForInvalidLang(requestMap);
-				if ((isInvalidLang.isPresent() && isInvalidLang.get()) || checkForDuplicates(requestMap)) {
-					mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
-							VALIDATE_REQUEST + " - Invalid language");
-					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
-				}
 			} catch (UnidentifiedJsonException | IOException | JsonValidationProcessingException | JsonIOException e) {
 				mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 						(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
@@ -290,39 +273,6 @@ public class IdRequestValidator implements Validator {
 						IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage());
 			}
 		}
-	}
-
-	/**
-	 * Check for invalid lang.
-	 *
-	 * @param requestMap
-	 *            the request map
-	 * @return the optional
-	 */
-	private Optional<Boolean> checkForInvalidLang(Map<String, Map<String, List<Map<String, String>>>> requestMap) {
-		return requestMap.get(IDENTITY).values().parallelStream()
-				.map(listOfMap -> listOfMap.parallelStream().filter(map -> map.containsKey(LANGUAGE))
-						.peek(leftMap -> leftMap.replace(LANGUAGE, leftMap.get(LANGUAGE).toUpperCase()))
-						.anyMatch(map -> !Lists
-								.newArrayList(env.getProperty(MOSIP_KERNEL_IDREPO_PRIMARY_LANG).toUpperCase(),
-										env.getProperty(MOSIP_KERNEL_IDREPO_SECONDARY_LANG).toUpperCase())
-								.contains(map.get(LANGUAGE).toUpperCase())))
-				.findFirst();
-	}
-
-	/**
-	 * Check for duplicates.
-	 *
-	 * @param requestMap
-	 *            the request map
-	 * @return true, if successful
-	 */
-	private boolean checkForDuplicates(Map<String, Map<String, List<Map<String, String>>>> requestMap) {
-		TreeSet<Map<String, String>> identitySet = Sets.newTreeSet((Map<String, String> map1,
-				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
-
-		return requestMap.get(IDENTITY).values().stream().peek(map -> identitySet.clear())
-				.peek(identitySet::addAll).anyMatch(listOfMap -> listOfMap.size() != identitySet.size());
 	}
 
 	/**

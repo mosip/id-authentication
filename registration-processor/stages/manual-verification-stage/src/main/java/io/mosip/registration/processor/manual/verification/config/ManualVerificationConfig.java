@@ -8,18 +8,20 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
+	
 /**
- * The Swagger config class for Manual Adjudication API
- * 
+ * The Swagger config class for Manual Adjudication API.
+ *
  * @author Pranav Kumar
  * @since 0.0.1
- *
  */
 @Configuration
 @EnableSwagger2
 public class ManualVerificationConfig {
+	
 	/**
+	 * Registration status bean.
+	 *
 	 * @return Docket
 	 */
 	@Bean

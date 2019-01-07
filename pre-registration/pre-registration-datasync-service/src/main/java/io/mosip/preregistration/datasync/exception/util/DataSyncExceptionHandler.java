@@ -1,6 +1,5 @@
 package io.mosip.preregistration.datasync.exception.util;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 import io.mosip.preregistration.datasync.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.datasync.dto.MainResponseDTO;
@@ -32,6 +32,7 @@ import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
 public class DataSyncExceptionHandler {
 	private boolean status = Boolean.FALSE;
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
 	/**
 	 * DataSyncRecordNotFoundException Handling
 	 * 
@@ -135,8 +136,7 @@ public class DataSyncExceptionHandler {
 	@ExceptionHandler(DemographicGetDetailsException.class)
 	public ResponseEntity<MainResponseDTO<?>> demogetDetails(final DemographicGetDetailsException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_DATA_SYNC_007.toString(),
-				ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);
@@ -152,8 +152,22 @@ public class DataSyncExceptionHandler {
 	 */
 	@ExceptionHandler(DocumentGetDetailsException.class)
 	public ResponseEntity<MainResponseDTO<?>> docGetDetails(final DocumentGetDetailsException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_DATA_SYNC_008.toString(),
-				ErrorMessages.DOCUMENT_GET_RECORD_FAILED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
+		responseDto.setStatus(status);
+		responseDto.setErr(errorDetails);
+		responseDto.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+
+	}
+	/**
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(InvalidRequestParameterException.class)
+	public ResponseEntity<MainResponseDTO<?>> invalidRequestParamCheck(final InvalidRequestParameterException e, WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);
 		responseDto.setErr(errorDetails);

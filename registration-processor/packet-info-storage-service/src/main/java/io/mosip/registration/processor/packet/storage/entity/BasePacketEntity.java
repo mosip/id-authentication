@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.packet.storage.entity;
-
+	
 import javax.persistence.EmbeddedId;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;

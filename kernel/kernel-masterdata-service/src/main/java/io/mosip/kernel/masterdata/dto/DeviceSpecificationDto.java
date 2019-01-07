@@ -1,14 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
-/**
- * Response dto for Device Detail
- * 
- * @author Megha Tanga
- * @author Uday
- * @since 1.0.0
- *
- */
-
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,32 +12,32 @@ import lombok.Data;
 @ApiModel(value = "DeviceSpeicification", description = "DeviceSpecification Detail resource")
 public class DeviceSpecificationDto {
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
 	private String id;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 32)
 	@ApiModelProperty(value = "brand", required = true, dataType = "java.lang.String")
 	private String brand;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 16)
 	@ApiModelProperty(value = "model", required = true, dataType = "java.lang.String")
 	private String model;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "deviceTypeCode", required = true, dataType = "java.lang.String")
 	private String deviceTypeCode;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 16)
 	@ApiModelProperty(value = "minDriverversion", required = true, dataType = "java.lang.String")
 	private String minDriverversion;
@@ -54,7 +46,7 @@ public class DeviceSpecificationDto {
 	@ApiModelProperty(value = "description", required = true, dataType = "java.lang.String")
 	private String description;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;

@@ -308,10 +308,20 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 		super();
 	}
 
+	/**
+	 * Gets the packet creation date.
+	 *
+	 * @return the packet creation date
+	 */
 	public LocalDateTime getPacketCreationDate() {
 		return packetCreationDate;
 	}
 
+	/**
+	 * Sets the packet creation date.
+	 *
+	 * @param packetCreationDate the new packet creation date
+	 */
 	public void setPacketCreationDate(LocalDateTime packetCreationDate) {
 		this.packetCreationDate = packetCreationDate;
 	}

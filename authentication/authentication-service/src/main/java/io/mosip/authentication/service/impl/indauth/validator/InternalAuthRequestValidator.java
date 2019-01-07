@@ -129,7 +129,7 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 	private Set<String> extractAuthInfo() {
 		Set<String> allowedAuthType = new HashSet<>();
 		String intAllowedAuthType = env.getProperty(INTERNAL_ALLOWED_AUTH_TYPE);
-		if (intAllowedAuthType.contains(",")) {
+		if (null!=intAllowedAuthType && intAllowedAuthType.contains(",")) {
 			String value[] = intAllowedAuthType.split(",");
 			for (int i = 0; i < value.length; i++) {
 				allowedAuthType.add(value[i]);				
