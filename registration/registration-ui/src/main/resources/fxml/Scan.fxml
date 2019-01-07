@@ -25,9 +25,9 @@
                   <Font size="10.0" />
                </font>
             </Button>
-            <Text fx:id="totalScannedPages" layoutX="390.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%0" />
+            <Text fx:id="totalScannedPages" layoutX="390.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
             <Label fx:id="scannedPagesLabel" layoutX="359.0" layoutY="171.0" text="%totalpages" />
-            <Text fx:id="scanningMsg" layoutX="369.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%scanning..." />
+            <Text fx:id="scanningMsg" layoutX="369.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%scanning" />
          </children>
       </AnchorPane>
       <AnchorPane layoutY="-1.0" styleClass="headerPane">
