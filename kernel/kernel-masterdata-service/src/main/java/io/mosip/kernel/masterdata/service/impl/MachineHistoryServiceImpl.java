@@ -14,9 +14,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -37,7 +39,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 public class MachineHistoryServiceImpl implements MachineHistoryService {
 
 	@Autowired
-	MachineHistoryRepository macRepo;
+	MachineHistoryRepository machineHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -62,7 +64,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		List<MachineHistoryDto> machineHistoryDtoList = null;
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
-			macHistoryList = macRepo
+			macHistoryList = machineHistoryRepository
 					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id,
 							langCode, lDateAndTime);
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -79,5 +81,22 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		}
 		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
 		return machineHistoryResponseDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#createMachineHistory(io.mosip.kernel.masterdata.entity.MachineHistory)
+	 */
+	@Override
+	public IdResponseDto createMachineHistory(MachineHistory entityHistory) {
+		MachineHistory createdHistory;
+		try {
+			createdHistory = machineHistoryRepository.create(entityHistory);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(createdHistory, idResponseDto);
+		return idResponseDto;
 	}
 }
