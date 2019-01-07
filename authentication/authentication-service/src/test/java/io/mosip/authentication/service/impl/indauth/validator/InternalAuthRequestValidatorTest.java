@@ -287,15 +287,15 @@ public class InternalAuthRequestValidatorTest {
 		authRequestDTO.setBioInfo(lb);
 
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setLanguage("AR");
 
 		idInfoDTO.setValue("finger");
-		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		/*IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
 		idInfoDTO1.setLanguage("FR");
-		idInfoDTO.setValue("iris");
+		idInfoDTO1.setValue("iris");*/
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
-		idInfoList.add(idInfoDTO1);
+		//idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
 		idDTO.setName(idInfoList);
 		idDTO.setFace(idInfoList);
