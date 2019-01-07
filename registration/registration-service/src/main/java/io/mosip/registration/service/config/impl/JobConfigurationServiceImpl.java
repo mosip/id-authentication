@@ -129,24 +129,23 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
 				try {
 					if (syncJob.getParentSyncJobId() == null && responseDTO.getErrorResponseDTOs() == null
-							&& isSchedulerRunning) {
+							&& isSchedulerRunning
+							&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
-						if (!schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
-							BaseJob baseJob = null;
+						BaseJob baseJob = null;
 
-							// Get Job instance through application context
-							baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+						// Get Job instance through application context
+						baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
 
-							JobDetail jobDetail = JobBuilder.newJob(baseJob.jobClass()).withIdentity(syncJob.getId())
-									.usingJobData(jobDataMap).build();
+						JobDetail jobDetail = JobBuilder.newJob(baseJob.jobClass()).withIdentity(syncJob.getId())
+								.usingJobData(jobDataMap).build();
 
-							CronTrigger trigger = (CronTrigger) TriggerBuilder.newTrigger().forJob(jobDetail)
-									.withIdentity(syncJob.getId())
-									.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
+						CronTrigger trigger = (CronTrigger) TriggerBuilder.newTrigger().forJob(jobDetail)
+								.withIdentity(syncJob.getId())
+								.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
 
-							schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
+						schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
 
-						}
 					}
 				} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
 					LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
@@ -191,6 +190,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.config.JobConfigurationService#stopScheduler()
+	 */
 	public ResponseDTO stopScheduler() {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation started");
@@ -252,11 +254,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					String jobId = jobDetail.getKey().getName();
 
 					SyncJobDef syncJobDef = SYNC_JOB_MAP.get(jobId);
-					SyncDataProcessDTO syncDataProcessDTO = new SyncDataProcessDTO(syncJobDef.getId(),
-							syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
-							new Timestamp(System.currentTimeMillis()).toString());
-
-					return syncDataProcessDTO;
+					return new SyncDataProcessDTO(syncJobDef.getId(), syncJobDef.getName(),
+							RegistrationConstants.JOB_RUNNING, new Timestamp(System.currentTimeMillis()).toString());
 
 				}).collect(Collectors.toList());
 
@@ -340,10 +339,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			String lastUpdTimes = (syncControl.getUpdDtimes() == null) ? syncControl.getCrDtime().toString()
 					: syncControl.getUpdDtimes().toString();
 
-			SyncDataProcessDTO syncDataProcessDTO = new SyncDataProcessDTO(syncControl.getId(), jobName,
-					RegistrationConstants.JOB_COMPLETED, lastUpdTimes);
-
-			return syncDataProcessDTO;
+			return new SyncDataProcessDTO(syncControl.getId(), jobName, RegistrationConstants.JOB_COMPLETED,
+					lastUpdTimes);
 
 		}).collect(Collectors.toList());
 
@@ -384,10 +381,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			String jobName = (SYNC_JOB_MAP.get(syncTransaction.getSyncJobId()) == null) ? ""
 					: SYNC_JOB_MAP.get(syncTransaction.getSyncJobId()).getName();
 
-			SyncDataProcessDTO syncDataProcessDTO = new SyncDataProcessDTO(syncTransaction.getSyncJobId(), jobName,
-					syncTransaction.getStatusCode(), syncTransaction.getCrDtime().toString());
-
-			return syncDataProcessDTO;
+			return new SyncDataProcessDTO(syncTransaction.getSyncJobId(), jobName, syncTransaction.getStatusCode(),
+					syncTransaction.getCrDtime().toString());
 
 		}).collect(Collectors.toList());
 
