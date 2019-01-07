@@ -1,5 +1,6 @@
 package io.mosip.registration.test.service.packet;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -7,6 +8,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
@@ -34,7 +37,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.jobs.SyncManager;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.impl.PreRegistrationDataSyncServiceImpl;
-import io.mosip.registration.test.service.PreRegZipHandlingServiceTest;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class PreRegistrationDataSyncServiceTest {
@@ -73,7 +75,7 @@ public class PreRegistrationDataSyncServiceTest {
 	@BeforeClass
 	public static void initialize() throws IOException {
 
-		URL url = PreRegZipHandlingServiceTest.class.getResource("/70694681371453.zip");
+		URL url = PreRegistrationDataSyncServiceImpl.class.getResource("/70694681371453.zip");
 		File packetZipFile = new File(url.getFile());
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
 
@@ -85,6 +87,8 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationsTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
+		LinkedHashMap<String, Object> responseData = new LinkedHashMap<>();
+
 		ArrayList<String> ids = new ArrayList<String>();
 		ids.add("70694681371453");
 
@@ -95,15 +99,16 @@ public class PreRegistrationDataSyncServiceTest {
 
 		list.add(map);
 
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any()))
-				.thenReturn(preRegistrationResponseDTO);
+		responseData.put("response", map);
+
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any())).thenReturn(responseData);
 		Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
-		Mockito.when(preRegistrationDAO.getPreRegistration(Mockito.anyString())).thenReturn(null);
+		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(null);
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegData);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
-		Mockito.when(preRegistrationDAO.savePreRegistration(preRegistrationList)).thenReturn(preRegistrationList);
+		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
 
 		mockEncryptedPacket();
 
@@ -123,6 +128,17 @@ public class PreRegistrationDataSyncServiceTest {
 
 		ResponseDTO responseDTO = preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 		assertNotNull(responseDTO);
+
+	}
+
+	@Test
+	public void getPreRegistrationNegativeTest()
+			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
+
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any()))
+				.thenThrow(HttpClientErrorException.class);
+
+		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 
 	}
 
@@ -150,6 +166,17 @@ public class PreRegistrationDataSyncServiceTest {
 
 		Mockito.when(preRegZipHandlingService.extractPreRegZipFile(preRegPacket)).thenReturn(new RegistrationDTO());
 
+	}
+
+	@Test
+	public void fetchAndDeleteRecordsTest() {
+		List<PreRegistrationList> preRegList = new ArrayList<>();
+		PreRegistrationList preRegistrationList = new PreRegistrationList();
+		preRegistrationList.setPacketPath("");
+		preRegList.add(preRegistrationList);
+		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
+		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
+		assertEquals(null, preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords().getErrorResponseDTOs());
 	}
 
 }

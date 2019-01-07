@@ -21,6 +21,7 @@ public class RegistrationDTO extends BaseDTO {
 	private RegistrationMetaDataDTO registrationMetaDataDTO;
 	private OSIDataDTO osiDataDTO;
 	private List<AuditDTO> auditDTOs;
+	private SelectionListDTO selectionListDTO;
 
 	/**
 	 * @return the biometricDTO
@@ -133,5 +134,19 @@ public class RegistrationDTO extends BaseDTO {
 	 */
 	public void setAuditDTOs(List<AuditDTO> auditDTOs) {
 		this.auditDTOs = auditDTOs;
+	}
+
+	/**
+	 * @return the selectionListDTO
+	 */
+	public SelectionListDTO getSelectionListDTO() {
+		return selectionListDTO;
+	}
+
+	/**
+	 * @param selectionListDTO the selectionListDTO to set
+	 */
+	public void setSelectionListDTO(SelectionListDTO selectionListDTO) {
+		this.selectionListDTO = selectionListDTO;
 	}
 }

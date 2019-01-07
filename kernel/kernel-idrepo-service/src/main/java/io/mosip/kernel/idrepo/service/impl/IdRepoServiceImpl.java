@@ -73,7 +73,7 @@ import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
+import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 
 /**
  * The Class IdRepoServiceImpl.
@@ -203,7 +203,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 	/** The connection. */
 	@Autowired
-	private ConnectionUtil connection;
+	private DFSConnectionUtil connection;
 
 	/*
 	 * (non-Javadoc)
@@ -245,12 +245,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			String uinRefId = UUID.randomUUID().toString().replace("-", "").substring(0, 28);
 
 			if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
-
+				identityInfo = convertToBytes(mapper.readValue(identityInfo, ObjectNode.class).get(IDENTITY));
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now()));
 
-				identityInfo = mapper.writeValueAsBytes(mapper.readValue(identityInfo, ObjectNode.class).get(IDENTITY));
 				if (Objects.nonNull(documents) && !documents.isEmpty()) {
 					ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
 					if (documents.stream().filter(doc -> identityObject.has(doc.getDocType())).anyMatch(doc -> {

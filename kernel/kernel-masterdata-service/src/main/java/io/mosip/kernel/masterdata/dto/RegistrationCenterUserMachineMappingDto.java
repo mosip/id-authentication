@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -19,7 +20,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	/**
 	 * Center Id for request
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 10)
 	@ApiModelProperty(notes = "Registration Center Id for request", example = "RC001", required = true)
 	private String cntrId;
@@ -27,7 +28,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	/**
 	 * Machine Id for request
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 10)
 	@ApiModelProperty(notes = "Machine Id for request", example = "MC001", required = true)
 	private String machineId;
@@ -35,7 +36,7 @@ public class RegistrationCenterUserMachineMappingDto {
 	/**
 	 * User Id for request
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(notes = "User Id for request", example = "QC001", required = true)
 	private String usrId;

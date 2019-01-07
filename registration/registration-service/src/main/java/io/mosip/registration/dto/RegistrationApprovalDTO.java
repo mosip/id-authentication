@@ -6,6 +6,7 @@ public class RegistrationApprovalDTO {
 
 	private SimpleStringProperty id;
 	private SimpleStringProperty acknowledgementFormPath;
+	private SimpleStringProperty statusComment;
 
 	/**
 	 * @param id
@@ -14,10 +15,11 @@ public class RegistrationApprovalDTO {
 	 * @param operatorId
 	 * @param operatorName
 	 */
-	public RegistrationApprovalDTO(String id, String acknowledgementFormPath) {
+	public RegistrationApprovalDTO(String id, String acknowledgementFormPath, String statusComment) {
 		super();
 		this.id = new SimpleStringProperty(id);
 		this.acknowledgementFormPath = new SimpleStringProperty(acknowledgementFormPath);
+		this.statusComment = new SimpleStringProperty(statusComment);
 	}
 
 	/**
@@ -32,5 +34,12 @@ public class RegistrationApprovalDTO {
 	 */
 	public String getAcknowledgementFormPath() {
 		return acknowledgementFormPath.get();
+	}
+
+	/**
+	 * @return the statusComment
+	 */
+	public String getStatusComment() {
+		return statusComment.get();
 	}
 }

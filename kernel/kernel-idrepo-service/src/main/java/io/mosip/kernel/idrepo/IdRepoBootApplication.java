@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Import;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 
 /**
  * The Class IdRepoApplication.
@@ -15,7 +14,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Connec
  * @author Manoj SP
  */
 @SpringBootApplication
-@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class, ConnectionUtil.class })
+@Import(value = { UinValidatorImpl.class, RidValidatorImpl.class, JsonValidatorImpl.class })
 public class IdRepoBootApplication {
 
 	/**

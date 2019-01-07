@@ -8,27 +8,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="937.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.AckReceiptController">
+<ScrollPane id="ackScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="976.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.AckReceiptController">
   <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="575.0" prefWidth="937.0">
+    <AnchorPane id="ackScreen-anchor-pane" minHeight="0.0" minWidth="0.0" prefHeight="707.0" prefWidth="957.0">
          <children>
-            <WebView fx:id="webView" layoutX="79.0" layoutY="36.0" prefHeight="535.0" prefWidth="810.0" />
-            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="34.0" layoutY="4.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="33.0" layoutY="15.0" onMouseClicked="#goToHomePageFromRegistration" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/Home.png" />
                </image>
             </ImageView>
-            <Text layoutX="60.0" layoutY="21.0" onMouseClicked="#goToNewRegistrationPage" strokeType="OUTSIDE" strokeWidth="0.0" text="/ New Registration" wrappingWidth="154.2451171875" />
-            <AnchorPane layoutX="9.0" layoutY="582.0" prefHeight="38.0" prefWidth="920.0">
-               <children>
-                  <Button layoutX="430.0" layoutY="3.0" mnemonicParsing="false" onAction="#saveReceipt" prefWidth="60.8" text="Save" />
-               </children>
-            </AnchorPane>
+            <Text layoutX="60.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ New Registration" wrappingWidth="154.2451171875" />
             <Label layoutX="417.0" layoutY="11.0" text="Registration" underline="true">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
+            <AnchorPane id="anchor-pane-acknowledgement" layoutX="60.0" layoutY="36.0" prefHeight="662.0" prefWidth="829.0">
+               <children>
+                  <WebView fx:id="webView" layoutX="9.0" layoutY="8.0" prefHeight="644.0" prefWidth="816.0" />
+                  <Button fx:id="print" layoutX="754.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveReceipt" text="Print" />
+                  <Button fx:id="newRegistration" layoutX="654.0" layoutY="609.0" mnemonicParsing="false" onAction="#saveReceipt" text="New Registration" />
+               </children>
+            </AnchorPane>
          </children></AnchorPane>
   </content>
 </ScrollPane>
