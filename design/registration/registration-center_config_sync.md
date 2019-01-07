@@ -15,8 +15,9 @@ The **target users** are
 
 The key **requirements** are
 
--   The server will provide the information based on the each center id. Client will call this service, online and pull the delta details and persisted.
+- The server will provide the information based on the each center id. Client will call this service, online and pull the delta details and persisted.
 	Always the configuration will be overridden by the latest.
+- All application configuration values should be taken by this desired info which we captured.
 
 The key **non-functional requirements** are
 
@@ -26,14 +27,13 @@ The key **non-functional requirements** are
 	
 **Solution**
 
-1.	Registration center configuration from server to pulled if the system is in online,always before start of the application.
--	Frequency of execution – once in a day. [configurable]
--	Automatic
+1.	Registration center configuration from server to be pulled if the system is in online,always before start of the application.
+-	Frequency of execution – will be configurable for batch JOB automatic and manually also the user can click on the **Sync Data** to sync.
 
 2.	Global PARAM table: Holds the key/value pair for each configuration elements.
 
-2.	Get the latest configuration by passing the center id as input parameter 
--	If not available, the application should not start initially. This sync has to be initialed before launch of the application.
+2.	Get the latest configuration by passing the center id as input parameter. 
+-	If the configuration not available, the application should not start initially. This sync has to be initialed before launch of the application.
 -   Based on the certain configured days if the application is not download latest configuration, 
 	then the application will be restricted the user to download the latest information form server.
    
