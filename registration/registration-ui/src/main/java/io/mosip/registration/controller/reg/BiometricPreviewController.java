@@ -1,8 +1,10 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,10 +19,12 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 
 /**
  * This controller class is to handle the preview screen of the Biometric
@@ -87,11 +91,10 @@ public class BiometricPreviewController extends BaseController {
 	private Text leftIrisThreshold;
 	@FXML
 	private Text rightIrisThreshold;
+	@FXML
+	private ScrollPane bioScrollPane;
 	@Autowired
 	private RegistrationController registrationController;
-
-	@Autowired
-	private DemographicPreviewController demographicPreviewController;
 
 	/**
 	 * Instance of {@link Logger}
@@ -102,6 +105,7 @@ public class BiometricPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
+		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 		registrationDTOContent.getBiometricDTO();
@@ -175,7 +179,12 @@ public class BiometricPreviewController extends BaseController {
 	 * This method is used to handle the edit action of registration preview screen
 	 */
 	public void handleEdit() {
-		demographicPreviewController.handleEdit();
+		try {
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI-  Preview ", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
 	}
 
 	/**
@@ -189,8 +198,8 @@ public class BiometricPreviewController extends BaseController {
 	/**
 	 * This method is used to navigate the screen to home page
 	 */
-	public void goToHomePage() {
-		registrationController.goToHomePage();
+	public void handleHomeButton() {
+		goToHomePageFromRegistration();
 	}
 
 	private String getQualityScore(Double qulaityScore) {

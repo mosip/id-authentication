@@ -15,6 +15,6 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 @Repository
 public interface VIDRepository extends BaseRepository<VIDEntity, String> {
 	
-	@Query("Select refId from VIDEntity where id = :vidNumber")
-	Optional<String> findRefIdByVid(@Param("vidNumber") String uinRefId);
+	@Query("Select uin from VIDEntity where id = :vidNumber")
+	Optional<String> findUinByVid(@Param("vidNumber") String uinRefId);
 }

@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 
 /**
- * ManualAdjudicationApplication Main class
- * 
+ * ManualAdjudicationApplication Main class	.
+ *
  * @author Pranav Kumar
  * @since 0.0.1
  */
@@ -20,19 +20,22 @@ import io.mosip.registration.processor.manual.verification.stage.ManualVerificat
 		"io.mosip.registration.processor.filesystem.ceph.adapter.impl" })
 public class ManualVerificationApplication {
 
+	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
 
 	/**
-	 * Main method to instantiate the spring boot application
+	 * Main method to instantiate the spring boot application.
 	 *
-	 * @param args
-	 *            the command line arguments
+	 * @param args            the command line arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(ManualVerificationApplication.class, args);
 	}
 
+	/**
+	 * Deploy manual verification stage.
+	 */
 	@PostConstruct
 	public void deployManualVerificationStage() {
 		manualVerificationStage.deployStage();

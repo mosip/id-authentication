@@ -1,7 +1,12 @@
 package io.mosip.registration.processor.packet.receiver;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 
 /**
  * The Class PacketReceiverApplication.
@@ -12,6 +17,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 public class PacketReceiverApplication {
 
+	/** The packet receiver stage. */
+	@Autowired
+	PacketReceiverStage packetReceiverStage;
+
 	/**
 	 * The main method.
 	 *
@@ -21,4 +30,13 @@ public class PacketReceiverApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PacketReceiverApplication.class, args);
 	}
+
+	/**
+	 * Deploy manual verification stage.
+	 */
+	@PostConstruct
+	public void deployManualVerificationStage() {
+		packetReceiverStage.deployStage();
+	}
+
 }

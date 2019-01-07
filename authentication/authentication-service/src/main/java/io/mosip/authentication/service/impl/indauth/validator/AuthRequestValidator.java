@@ -155,15 +155,18 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			Instant now = Instant.now();
 			mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 					"reqTimeInstance" + reqTimeInstance.toString() + " -- current time : " + now.toString());
-			if (Duration.between(reqTimeInstance, now).toHours() > env
-					.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class)) {
+			Integer reqDateMaxTimeInt = env
+					.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class);
+			Long reqDateMaxTimeLong = env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class);
+			if (null !=reqDateMaxTimeInt && null != reqDateMaxTimeLong && 
+					Duration.between(reqTimeInstance, now).toHours() > reqDateMaxTimeInt) {
 				mosipLogger.debug(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 						"INVALID_AUTH_REQUEST_TIMESTAMP -- " + String.format(
 								IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage(),
 								Duration.between(reqTimeInstance, now).toMinutes()
-										- env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class)));
+										- reqDateMaxTimeLong));
 				errors.rejectValue(REQ_TIME,
 						IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
 						new Object[] { env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Integer.class) },

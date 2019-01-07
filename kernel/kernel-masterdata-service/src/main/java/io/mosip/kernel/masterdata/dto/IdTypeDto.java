@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -17,7 +18,7 @@ public class IdTypeDto {
 	/**
 	 * The id code.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	private String code;
 
@@ -30,14 +31,14 @@ public class IdTypeDto {
 	/**
 	 * The name of the idtype.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	private String name;
 
 	/**
 	 * The language code.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	private String langCode;
 

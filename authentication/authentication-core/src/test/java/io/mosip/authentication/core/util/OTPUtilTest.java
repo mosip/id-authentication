@@ -13,8 +13,8 @@ public class OTPUtilTest {
 
 	@Test
 	public void testGenerateKey() {
-		String actualKey = OTPUtil.generateKey("IDA", "refId", "txnId", "auaCode");
-		String expectedKey = "IDA".concat("_").concat(Base64.getEncoder().encodeToString("refId".getBytes())).concat("_")
+		String actualKey = OTPUtil.generateKey("IDA", "uin", "txnId", "auaCode");
+		String expectedKey = "IDA".concat("_").concat(Base64.getEncoder().encodeToString("uin".getBytes())).concat("_")
 				.concat("txnId").concat("_").concat("auaCode");
 		assertEquals(expectedKey, actualKey);
 	}
@@ -22,7 +22,7 @@ public class OTPUtilTest {
 	@Test
 	public void testGenerateKeyFail() {
 		String actualKey = OTPUtil.generateKey("IDA", "ref", "txnId", "auaCode");
-		String expectedKey = "IDA".concat("_").concat(Base64.getEncoder().encodeToString("refId".getBytes())).concat("_")
+		String expectedKey = "IDA".concat("_").concat(Base64.getEncoder().encodeToString("uin".getBytes())).concat("_")
 				.concat("txnId").concat("_").concat("auaCode");
 		assertNotEquals(expectedKey, actualKey);
 	}

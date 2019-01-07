@@ -109,9 +109,16 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction.setSyncTo(RegistrationConstants.JOB_SYNC_TO_SERVER);
 
-			syncTransaction
-					.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
+			try {
+				syncTransaction
+				.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
 
+			} catch (RegBaseCheckedException exception) {
+				LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
+						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						exception.getMessage());
+			}
+			
 			if (SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO() != null) {
 				syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 						.getRegistrationCenterId());
@@ -126,11 +133,7 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 
-		} catch (RegBaseCheckedException exception) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					exception.getMessage());
-		} catch (NullPointerException nullPointerException) {
+		}  catch (NullPointerException nullPointerException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					nullPointerException.getMessage());

@@ -15,15 +15,15 @@ import org.hibernate.annotations.Type;
 
 @MappedSuperclass
 public class MasterCommonFields {
-	@Column(name = "lang_code", length = 3, nullable = false)
+	@Column(name = "lang_code")
 	private String languageCode;
-	@Column(name = "cr_by", length = 24, nullable = false)
+	@Column(name = "cr_by")
 	private String createdBy;
-	@Column(name = "cr_dtimesz", nullable = false)
+	@Column(name = "cr_dtimesz")
 	private Timestamp createdTimesZone;
-	@Column(name = "upd_by", length = 24, nullable = true)
+	@Column(name = "upd_by")
 	private String updatedBy;
-	@Column(name = "upd_dtimesz", nullable = true)
+	@Column(name = "upd_dtimesz")
 	private Timestamp updatedTimesZone;
 	@Column(name = "is_deleted")
 	@Type(type = "true_false")

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -35,9 +36,16 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
+/**
+ * View Acknowledgement Controller class.
+ * 
+ * @author Mahesh kumar
+ */
 @Controller
 public class ViewAckController extends BaseController {
 
+	@Value("${AUTO_CLOSE_STAGE_TIME}")
+	private int autoCloseTiming;
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -46,9 +54,10 @@ public class ViewAckController extends BaseController {
 	private Timeline timeline;
 
 	public void viewAck(String ackPath, Stage stage) {
+		
 		try (FileInputStream file = new FileInputStream(new File(ackPath))) {
 
-			int startTime = 5;
+			int startTime = autoCloseTiming;
 			IntegerProperty timeSeconds = new SimpleIntegerProperty(startTime);
 
 			Stage primaryStage = new Stage();

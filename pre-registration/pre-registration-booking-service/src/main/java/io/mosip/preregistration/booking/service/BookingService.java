@@ -93,6 +93,7 @@ public class BookingService {
 	 * 
 	 * @return ResponseDto<String>
 	 */
+	@Transactional
 	public MainResponseDTO<String> addAvailability() {
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		try {
@@ -127,13 +128,13 @@ public class BookingService {
 		LocalDate fromDate = LocalDate.now().plusDays(2);
 		AvailabilityDto availability = new AvailabilityDto();
 		try {
-			List<java.sql.Date> dateList = bookingAvailabilityRepository.findDate(regID, fromDate, endDate);
+			List<LocalDate> dateList = bookingAvailabilityRepository.findDate(regID, fromDate, endDate);
 			if (!dateList.isEmpty()) {
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
 				for (int i = 0; i < dateList.size(); i++) {
 					DateTimeDto dateTime = new DateTimeDto();
 					List<AvailibityEntity> entity = bookingAvailabilityRepository
-							.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID, dateList.get(i).toLocalDate());
+							.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regID, dateList.get(i));
 					if (!entity.isEmpty()) {
 						serviceUtil.slotSetter(dateList, dateTimeList, i, dateTime, entity);
 					}
@@ -227,6 +228,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		} 
 		return responseDTO;
 	}
@@ -253,6 +256,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 
 		return responseDto;
@@ -281,7 +286,9 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		} 
+		} catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
+		}
 		return dto;
 
 	}
@@ -316,6 +323,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 		return responseDto;
 	}

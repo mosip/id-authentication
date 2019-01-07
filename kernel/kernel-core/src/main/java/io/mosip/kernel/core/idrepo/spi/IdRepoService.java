@@ -25,10 +25,11 @@ public interface IdRepoService<REQUEST, RESPONSE, UIN> {
 	 * Retrieve identity.
 	 *
 	 * @param uin the uin
+	 * @param filter 
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	RESPONSE retrieveIdentity(String uin) throws IdRepoAppException;
+	RESPONSE retrieveIdentity(String uin, String filter) throws IdRepoAppException;
 
 	/**
 	 * Update identity.
