@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewChecked, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, NgForm, AbstractControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
@@ -91,14 +91,9 @@ export class DemographicComponent implements OnInit {
 
   uppermostLocationHierarchy;
   regions: DropDown[] = [
-    { locationCode: 'region1', locationName: 'Tangier, Tetouan and the northwest' },
-    { locationCode: 'region2', locationName: 'The Mediterranean coast and the Rif' },
-    { locationCode: 'region3', locationName: 'Fez, Meknes and the Middle Atlas' }
-  ];
-  transRegions: DropDown[] = [
-    { locationCode: 'region1', locationName: '(trans) Tangier, Tetouan and the northwest' },
-    { locationCode: 'region2', locationName: '(trans) The Mediterranean coast and the Rif' },
-    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+    // { locationCode: 'region1', locationName: 'Tangier, Tetouan and the northwest' },
+    // { locationCode: 'region2', locationName: 'The Mediterranean coast and the Rif' },
+    // { locationCode: 'region3', locationName: 'Fez, Meknes and the Middle Atlas' }
   ];
   provinces: DropDown[] = [
     //   { locationCode: 'province1', locationName: 'Fahs-Anjra' },
@@ -115,6 +110,26 @@ export class DemographicComponent implements OnInit {
     // { locationCode: 'localAdministrativeAuthorities2', locationName: 'LAA2' },
     // { locationCode: 'localAdministrativeAuthorities3', locationName: 'LAA3' }
   ];
+  transRegions: DropDown[] = [
+    { locationCode: 'BLR', locationName: '(trans) BLR' },
+    { locationCode: 'TN', locationName: '(trans) TN' },
+    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+  ];
+  transProvinces: DropDown[] = [
+    { locationCode: 'BLR', locationName: '(trans) BLR' },
+    { locationCode: 'TN', locationName: '(trans) TN' },
+    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+  ];
+  transCities: DropDown[] = [
+    { locationCode: 'BLR', locationName: '(trans) BLR' },
+    { locationCode: 'TN', locationName: '(trans) TN' },
+    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+  ];
+  transLocalAdministrativeAuthorities: DropDown[] = [
+    { locationCode: 'BLR', locationName: '(trans) BLR' },
+    { locationCode: 'TN', locationName: '(trans) TN' },
+    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+  ];
 
   isNewApplicant = false;
   @ViewChild('dd') dd: ElementRef;
@@ -123,10 +138,14 @@ export class DemographicComponent implements OnInit {
   @ViewChild('age') age: ElementRef;
   @ViewChild('f') transForm: NgForm;
 
-  selectedRegion: DropDown;
-  selectedProvince: DropDown;
-  selectedCity: DropDown;
-  selectedLAA: DropDown;
+  selectedRegion = {} as DropDown;
+  transSelectedRegion = {} as DropDown;
+  selectedProvince = {} as DropDown;
+  transSelectedProvince = {} as DropDown;
+  selectedCity = {} as DropDown;
+  transSelectedCity = {} as DropDown;
+  selectedLAA = {} as DropDown;
+  transSelectedLAA = {} as DropDown;
 
   constructor(
     private router: Router,
@@ -136,7 +155,7 @@ export class DemographicComponent implements OnInit {
     private sharedService: SharedService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     if (sessionStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
@@ -145,13 +164,13 @@ export class DemographicComponent implements OnInit {
     });
     this.numberOfApplicants = 1;
     this.initForm();
+    // await this.getLocationMetadataHirearchy();
 
-    await this.getLocationMetadataHirearchy();
-    // await this.onLocationSelect(this.uppermostLocationHierarchy[0].code);
-    // console.log('tets', this.uppermostLocationHierarchy[0].code);
-    // await this.getLocationImmediateHierearchy('', this.uppermostLocationHierarchy[0].code).then(res => {
-    //   console.log(res);
-    // });
+    // await this.getLocationImmediateHierearchy(
+    //   this.primaryLangCode,
+    //   this.uppermostLocationHierarchy[0].code,
+    //   this.regions
+    // );
   }
 
   async initForm() {
@@ -184,7 +203,6 @@ export class DemographicComponent implements OnInit {
     let t_addressLine1 = '';
     let t_addressLine2 = '';
     let t_addressLine3 = '';
-    let t_region = '';
 
     if (this.regService.getUser(this.step) != null) {
       this.user = this.regService.getUser(this.step);
@@ -219,12 +237,6 @@ export class DemographicComponent implements OnInit {
       t_addressLine1 = this.user.request.demographicDetails.identity.addressLine1[1].value;
       t_addressLine2 = this.user.request.demographicDetails.identity.addressLine2[1].value;
       t_addressLine3 = this.user.request.demographicDetails.identity.addressLine3[1].value;
-
-      await this.callLocation();
-      await this.viewValueToValue(region);
-      await this.viewValueToValue(province);
-      await this.viewValueToValue(city);
-      await this.viewValueToValue(localAdministrativeAuthority);
     }
 
     this.userForm = new FormGroup({
@@ -288,8 +300,7 @@ export class DemographicComponent implements OnInit {
       t_year: new FormControl(t_year),
       t_addressLine1: new FormControl(t_addressLine1, [Validators.required, this.noWhitespaceValidator]),
       t_addressLine2: new FormControl(t_addressLine2),
-      t_addressLine3: new FormControl(t_addressLine3),
-      t_region: new FormControl(t_region)
+      t_addressLine3: new FormControl(t_addressLine3)
     });
 
     this.userForm.valueChanges.subscribe(selectedValue => {
@@ -307,16 +318,52 @@ export class DemographicComponent implements OnInit {
         this.transUserForm.controls['t_dob'].patchValue(selectedValue.dob);
       }
     });
+
+    await this.getLocationMetadataHirearchy();
+    await this.getLocationImmediateHierearchy(
+      this.primaryLangCode,
+      this.uppermostLocationHierarchy[0].code,
+      this.regions
+    );
+
+    if (this.regService.getUser(this.step) != null) {
+      await this.getLocationImmediateHierearchy(
+        this.primaryLangCode,
+        this.uppermostLocationHierarchy[0].code,
+        this.provinces
+      );
+      await this.getLocationImmediateHierearchy(
+        this.primaryLangCode,
+        this.uppermostLocationHierarchy[0].code,
+        this.cities
+      );
+      await this.getLocationImmediateHierearchy(
+        this.primaryLangCode,
+        this.uppermostLocationHierarchy[0].code,
+        this.localAdministrativeAuthorities
+      );
+      this.viewValueToValue(region, this.regions, 'region');
+      this.viewValueToValue(province, this.provinces, 'province');
+      this.viewValueToValue(city, this.cities, 'city');
+      this.viewValueToValue(
+        localAdministrativeAuthority,
+        this.localAdministrativeAuthorities,
+        'localAdministrativeAuthority'
+      );
+    }
   }
 
-  callLocation() {
-    this.onLocationSelect('IND', this.provinces);
-    this.onLocationSelect('IND', this.cities);
-    this.onLocationSelect('IND', this.localAdministrativeAuthorities);
+  viewValueToValue(viewValue: string, entity: DropDown[], controlValue: string) {
+    console.log(viewValue);
+    console.log(entity);
 
-    console.log('provinces', this.provinces);
-    console.log('cities', this.cities);
-    console.log('LAAS', this.localAdministrativeAuthorities);
+    entity.filter(el => {
+      console.log(el);
+
+      if (el.locationName === viewValue) {
+        this.userForm.controls[controlValue].patchValue(el.locationCode);
+      }
+    });
   }
 
   getLocationMetadataHirearchy() {
@@ -325,7 +372,7 @@ export class DemographicComponent implements OnInit {
         response => {
           const countryHirearchy = response['locations'];
           const uppermostLocationHierarchy = countryHirearchy.filter(
-            element => element.name === appConstants.COUNTRY_NAME
+            (element: any) => element.name === appConstants.COUNTRY_NAME
           );
           this.uppermostLocationHierarchy = uppermostLocationHierarchy;
           resolve(this.uppermostLocationHierarchy);
@@ -335,55 +382,55 @@ export class DemographicComponent implements OnInit {
     });
   }
 
-  setLocation(event: MatSelectChange, entity: AbstractControl) {
-    // entity.patchValue(event.source.triggerValue);
-    console.log(event);
-    const test = this.regions.filter(element => {
-      if (element.locationCode === entity.value) {
-        console.log('inside');
-        this.selectedRegion = element;
-        return element;
-      }
-    });
-    //same for transRegion///////////////////////////
-
-    // console.log(this.selectedRegion.locationName);
-    // this.viewValueToValue();
-    // console.log(this.selectedRegion);
-  }
-
-  viewValueToValue(region) {
-    console.log(region);
-
-    const value = region;
-    this.regions.filter(el => {
-      if (el.locationCode === value) {
-        this.selectedRegion = el;
-      }
-    });
-  }
-
-  onLocationSelect(locationCode: string, entity: DropDown[]) {
-    locationCode = 'IND';
-    this.getLocationImmediateHierearchy(this.primaryLangCode, locationCode, entity);
+  onLocationSelect(
+    event: MatSelectChange,
+    currentEntity: DropDown[],
+    nextEntity: DropDown[],
+    selectedEntity: DropDown,
+    transCurrentEntity: DropDown[],
+    transSelectedEntiy: DropDown
+  ) {
+    const locationCode = 'IND';
+    if (nextEntity) this.getLocationImmediateHierearchy(this.primaryLangCode, locationCode, nextEntity);
+    this.valueToViewValue(event, currentEntity, selectedEntity, transCurrentEntity, transSelectedEntiy);
   }
 
   getLocationImmediateHierearchy(lang: string, location: string, entity: DropDown[]) {
-    this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
-      response => {
-        response['locations'].forEach(element => {
-          let dropDown: DropDown = {
-            locationCode: element.code,
-            locationName: element.name
-          };
-          entity.push(dropDown);
-        });
-      },
-      error => console.log('Unable to fetch Regions'),
-      () => {
-        this.setLocation(null, this.userForm.controls['region']);
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
+        response => {
+          response['locations'].forEach(element => {
+            let dropDown: DropDown = {
+              locationCode: element.code,
+              locationName: element.name
+            };
+            entity.push(dropDown);
+          });
+          return resolve(true);
+        },
+        error => console.log('Unable to fetch Regions')
+      );
+    });
+  }
+
+  valueToViewValue(
+    event: MatSelectChange,
+    currentEntity: DropDown[],
+    selectedEntity: DropDown,
+    transCurrentEntity: DropDown[],
+    transSelectedEntiy: DropDown
+  ) {
+    currentEntity.filter(element => {
+      if (element.locationCode === event.value) {
+        selectedEntity.locationName = element.locationName;
       }
-    );
+    });
+
+    transCurrentEntity.filter(element => {
+      if (element.locationCode === event.value) {
+        transSelectedEntiy.locationName = element.locationName;
+      }
+    });
   }
 
   onBack() {
@@ -434,7 +481,6 @@ export class DemographicComponent implements OnInit {
     const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
 
     if (this.regService.getUser(this.step) != null) {
-      console.log(bDay);
       return years;
     }
     if (years > 150) {
@@ -478,13 +524,13 @@ export class DemographicComponent implements OnInit {
   onSubmit() {
     // console.log(this.uppermostLocationHierarchy[0].code);
     // this.dataStorageService.getLocationList('BLR', this.primaryLangCode);
-    console.log(this.userForm.controls);
+    console.log(this.transForm);
 
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
     this.dataStorageService.addUser(request).subscribe(
       response => {
-        console.log('response', response);
+        // console.log('response', response);
 
         if (this.regService.getUser(this.step) != null) {
           this.regService.updateUser(
@@ -496,7 +542,7 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else {
-          this.preRegId = response['response'][0].preRegistrationId;
+          this.preRegId = response['response'][0].prId;
           this.regService.addUser(new UserModel(this.preRegId, request, []));
           this.sharedService.addNameList({
             fullName: this.userForm.controls.fullName.value,
@@ -517,6 +563,8 @@ export class DemographicComponent implements OnInit {
   }
 
   private createIdentityJSON() {
+    console.log(this.selectedRegion);
+
     const identity = new IdentityModel(
       [
         new AttributeModel(this.primaryLang, this.demo.fullName, this.userForm.controls.fullName.value),
@@ -555,27 +603,23 @@ export class DemographicComponent implements OnInit {
         )
       ],
       [
-        new AttributeModel(this.primaryLang, this.selectedRegion.locationName, this.userForm.controls.region.value),
-        new AttributeModel(this.secondaryLang, this.demo1.region, this.transForm.controls.t_region.value)
+        new AttributeModel(this.primaryLang, this.demo.region, this.selectedRegion.locationName),
+        new AttributeModel(this.secondaryLang, this.demo1.region, this.transSelectedRegion.locationName)
       ],
       [
-        new AttributeModel(this.primaryLang, this.demo.province, this.userForm.controls.province.value),
-        new AttributeModel(this.secondaryLang, this.demo1.province, this.transForm.controls.t_province.value)
+        new AttributeModel(this.primaryLang, this.demo.province, this.selectedProvince.locationName),
+        new AttributeModel(this.secondaryLang, this.demo1.province, this.transSelectedProvince.locationName)
       ],
       [
-        new AttributeModel(this.primaryLang, this.demo.city, this.userForm.controls.city.value),
-        new AttributeModel(this.secondaryLang, this.demo1.city, this.transForm.controls.t_city.value)
+        new AttributeModel(this.primaryLang, this.demo.city, this.selectedCity.locationName),
+        new AttributeModel(this.secondaryLang, this.demo1.city, this.transSelectedCity.locationName)
       ],
       [
-        new AttributeModel(
-          this.primaryLang,
-          this.demo.localAdministrativeAuthority,
-          this.userForm.controls.localAdministrativeAuthority.value
-        ),
+        new AttributeModel(this.primaryLang, this.demo.localAdministrativeAuthority, this.selectedLAA.locationName),
         new AttributeModel(
           this.secondaryLang,
           this.demo1.localAdministrativeAuthority,
-          this.transForm.controls.t_localAdministrativeAuthority.value
+          this.transSelectedLAA.locationName
         )
       ],
       [

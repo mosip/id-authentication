@@ -85,9 +85,9 @@
               formControlName="gender"
               (change)="onGenderChange()"
               appearance="legacy"
-              name="fontStyle"
-              aria-label="Font Style"
-            >
+              >
+              <!-- name="fontStyle"
+              aria-label="Font Style" -->
               <mat-button-toggle value="male">Male</mat-button-toggle>
               <mat-button-toggle value="female">Female</mat-button-toggle>
             </mat-button-toggle-group>
@@ -138,9 +138,7 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                #regiontest
-                (selectionChange)="setLocation($event, userForm.get('region'))"
-                (selectionChange)="onLocationSelect($event.value, provinces)"
+                (selectionChange)="onLocationSelect($event, regions, provinces, selectedRegion, transRegions, transSelectedRegion)"
                 placeholder="{{ demo.region }}"
                 formControlName="region"
                 #region
@@ -155,9 +153,9 @@
 
           <div class="user__dropdown">
             <mat-form-field>
+              <!-- (selectionChange)="setLocation($event, userForm.get('province'))" -->
               <mat-select
-                (selectionChange)="onLocationSelect($event.value, cities)"
-                (selectionChange)="setLocation($event, userForm.get('province'))"
+                (selectionChange)="onLocationSelect($event, provinces, cities, selectedProvince, transProvinces, transSelectedProvince)"
                 placeholder="{{ demo.province }}"
                 formControlName="province"
                 #province
@@ -171,9 +169,9 @@
           </div>
           <div class="user__dropdown">
             <mat-form-field>
+              <!-- (selectionChange)="setLocation($event, userForm.get('city'))" -->
               <mat-select
-                (selectionChange)="onLocationSelect($event.value, localAdministrativeAuthorities)"
-                (selectionChange)="setLocation($event, userForm.get('city'))"
+                (selectionChange)="onLocationSelect($event, cities, localAdministrativeAuthorities, selectedCity,transCities,transSelectedCity)"
                 placeholder="{{ demo.city }}"
                 formControlName="city"
                 #city
@@ -186,7 +184,16 @@
           <div class="user__dropdown">
             <mat-form-field>
               <mat-select
-                (selectionChange)="setLocation($event, userForm.get('localAdministrativeAuthority'))"
+                (selectionChange)="
+                  onLocationSelect(
+                    $event,
+                    localAdministrativeAuthorities,
+                    null,
+                    selectedLAA,
+                    transLocalAdministrativeAuthorities,
+                    transSelectedLAA
+                  )
+                "
                 placeholder="{{ demo.localAdministrativeAuthority }}"
                 formControlName="localAdministrativeAuthority"
                 #authority
@@ -264,7 +271,6 @@
               name="t_fullName"
               #t_fullName
             />
-            <!-- (focusout)="noWhitespaceValidatorHTML(transForm.controls.t_fullName)" -->
             <mat-hint align="end">{{ t_fullName.value.length }} / 50</mat-hint>
             <mat-error *ngIf="!t_fullName.invalid">Full Name is required</mat-error>
           </mat-form-field>
@@ -414,8 +420,8 @@
                   region.locationName
                 }}</mat-option>
                 <!-- <mat-option value="region1">trans_Region1</mat-option>
-                <mat-option value="region2">trans_Region2</mat-option>
-                <mat-option value="region3">trans_Region3</mat-option> -->
+                  <mat-option value="region2">trans_Region2</mat-option>
+                  <mat-option value="region3">trans_Region3</mat-option> -->
               </mat-select>
             </mat-form-field>
           </div>
@@ -515,11 +521,6 @@
   </div>
   <div class="user__buttons">
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">Back</button>
-    <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
-      <!-- <div *ngIf="dataUploadComplete">Continue</div>
-          <div *ngIf="!dataUploadComplete" class="pgbar">
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-          </div> -->Continue
-    </button>
+    <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">Continue</button>
   </div>
 </div>
