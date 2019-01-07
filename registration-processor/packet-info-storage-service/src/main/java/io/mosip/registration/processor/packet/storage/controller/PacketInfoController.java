@@ -18,15 +18,25 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
+	
+/**
+ * The Class PacketInfoController.
+ */
 @RestController
 @RequestMapping("/v0.1/registration-processor/packet-info-storage-service")
 @Api(tags = "Reg Packet Info")
 public class PacketInfoController {
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/**
+	 * Gets the packetsfor QC user.
+	 *
+	 * @param qcuserId the qcuser id
+	 * @return the packetsfor QC user
+	 */
 	@GetMapping(path = "/getexceptiondata", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the exception entity", response = Object.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Assigned packets fetched successfully"),

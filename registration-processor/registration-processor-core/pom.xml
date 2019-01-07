@@ -22,17 +22,6 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-ignite</artifactId>
 			<version>${vertx.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.195</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -67,6 +56,15 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+		        <version>${h2.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

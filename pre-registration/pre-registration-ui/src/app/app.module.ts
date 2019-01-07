@@ -11,11 +11,13 @@ import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { SharedService } from './shared/shared.service';
 import { AcknowledgementComponent} from './acknowledgement/acknowledgement.component';
+import { PreviewComponent } from './preview/preview.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AcknowledgementComponent
+    AcknowledgementComponent,
+	PreviewComponent
   ],
   imports: [
     BrowserModule,

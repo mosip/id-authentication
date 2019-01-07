@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.retry.verticle",
 		"io.mosip.registration.processor.failoverstage" })
 class FailoverApplication {
-
+	
 	/** The failover stage. */
 	@Autowired
 	FailoverStage failoverStage;

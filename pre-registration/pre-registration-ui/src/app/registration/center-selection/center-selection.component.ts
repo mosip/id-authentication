@@ -27,7 +27,8 @@ export class CenterSelectionComponent implements OnInit {
   displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
   dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
   selection = new SelectionModel<RegistrationCentre>(true, []);
-
+  
+  searchClick : boolean = true;
 
   locationTypes = [
     { value: 'province', viewValue: 'Province' },
@@ -59,7 +60,9 @@ export class CenterSelectionComponent implements OnInit {
   ngOnInit() {
     this.getLocation();
   }
-
+  setSearchClick(flag:boolean){
+    this.searchClick = flag;
+  }
   setStep(index: number) {
     this.step = index;
   }

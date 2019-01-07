@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,7 +23,7 @@ public class DocumentCategoryDto {
 	/**
 	 * Document category code.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
@@ -30,7 +31,7 @@ public class DocumentCategoryDto {
 	/**
 	 * Document category name.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
@@ -45,7 +46,7 @@ public class DocumentCategoryDto {
 	/**
 	 * The Language Code.
 	 */
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String langCode;

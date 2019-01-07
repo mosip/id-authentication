@@ -5,6 +5,7 @@
 package io.mosip.preregistration.application.service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import io.mosip.preregistration.application.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.application.dto.BookingResponseDTO;
 import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.application.dto.MainRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
@@ -188,7 +190,7 @@ public class DemographicService {
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						String identityValue = serviceUtil.getValueFromIdentity(
-								demographicEntity.getApplicantDetailJson(), RequestCodes.FullName.toString());
+								demographicEntity.getApplicantDetailJson(), RequestCodes.fullName.toString());
 						viewDto = new PreRegistrationViewDTO();
 						viewDto.setPreId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
@@ -277,6 +279,7 @@ public class DemographicService {
 						int isDeletedDemo = demographicRepository.deleteByPreRegistrationId(preregId);
 						if (isDeletedDemo > 0) {
 							deleteDto.setPrId(demographicEntity.getPreRegistrationId());
+							deleteDto.setDeletedBy(demographicEntity.getCreatedBy());
 							deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 							deleteList.add(deleteDto);
 						} else {
@@ -383,7 +386,7 @@ public class DemographicService {
 			reqDateRange.put(RequestCodes.fromDate.toString(), fromDate);
 			reqDateRange.put(RequestCodes.toDate.toString(), toDate);
 			if (ValidationUtil.requstParamValidator(reqDateRange)) {
-				Map<String, Timestamp> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, "yyyy-MM-dd HH:mm:ss");
+				Map<String, LocalDateTime> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, "yyyy-MM-dd HH:mm:ss");
 				List<DemographicEntity> details = demographicRepository.findBycreateDateTimeBetween(
 						reqTimeStamp.get(RequestCodes.fromDate.toString()),
 						reqTimeStamp.get(RequestCodes.toDate.toString()));
@@ -485,10 +488,10 @@ public class DemographicService {
 					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId").queryParam("preId", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
 
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
-
+			System.out.println("strUriBuilder::"+strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity, MainListResponseDTO.class);
 
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {

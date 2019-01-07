@@ -5,28 +5,43 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.dto.mastersync.MasterSyncDto;
+import io.mosip.registration.dto.mastersync.LocationDto;
+import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
+import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.mastersync.MasterLocation;
+import io.mosip.registration.entity.mastersync.MasterReasonCategory;
+import io.mosip.registration.entity.mastersync.MasterReasonList;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * Service class to sync master data from server to client
@@ -42,17 +57,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	@Autowired
 	private MasterSyncDao masterSyncDao;
 
-	/** Object for urlPath. */
-	@Value("${MASTER_SYNC_URL}")
-	private String urlPath;
-
-	/** Object for readTimeout. */
-	@Value("${UPLOAD_API_READ_TIMEOUT}")
-	private int readTimeout;
-
-	/** Object for connectTimeout. */
-	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int connectTimeout;
+	@Autowired
+	ServiceDelegateUtil serviceDelegateUtil;
 
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
@@ -60,16 +66,20 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync()
+	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync(java.lang.
+	 * String)
 	 */
 	@Override
 	public ResponseDTO getMasterSync(String masterSyncDtls) {
 
 		ResponseDTO responseDTO = null;
+		String resoponse = null;
 
 		SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
 		SyncControl masterSyncDetails;
 
@@ -86,65 +96,112 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		try {
 
 			// getting Last Sync date from Data from sync table
-			masterSyncDetails = masterSyncDao.getMasterSyncStatus(masterSyncDtls);
-
-			String registrationCenterId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-					.getRegistrationCenterId();
+			masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
 
 			Timestamp lastSyncTime = masterSyncDetails.getLastSyncDtimes();
 
-			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + registrationCenterId,
+			// Converting Time Stamp to LocalDateTime
+			LocalDateTime masterLastSyncTime = LocalDateTime.ofInstant(lastSyncTime.toInstant(), ZoneOffset.ofHours(0));
+
+			// Getting machineID from data base
+			String machineId = masterSyncDetails.getMachineId();
+
+			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + machineId,
 					"lastSyncTime" + "===>" + lastSyncTime);
 
-			String masterJson = "{\"languages\":[{\"language\":[{\"languageCode\":\"1\",\"languageName\":\"eng\",\"languageFamily\":\"Engish\",\"nativeName\":\"Engilsh\"},{\"languageCode\":\"2\",\"languageName\":\"arb\",\"languageFamily\":\"Arab\",\"nativeName\":\"Arab\"}]}],\"biometricattributes\":[{\"biometricattribute\":[{\"code\":\"1\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"2\",\"name\":\"asdf\",\"description\":\"testing\",\"biometricTypeCode\":\"1\",\"langCode\":\"eng\"}]},{\"biometricattribute\":[{\"code\":\"3\",\"name\":\"asfesr\",\"description\":\"testing2\",\"biometricTypeCode\":\"2\",\"langCode\":\"eng\"}]}],\"blacklistedwords\":[{\"word\":\"1\",\"description\":\"asdf1\",\"langCode\":\"eng\"},{\"word\":\"2\",\"description\":\"asdf2\",\"langCode\":\"eng\"},{\"word\":\"3\",\"description\":\"asdf3\",\"langCode\":\"eng\"}],\"biometrictypes\":[{\"biometrictype\":[{\"code\":\"1\",\"name\":\"fingerprints\",\"description\":\"fingerprint\",\"langCode\":\"eng\"}]},{\"biometrictype\":[{\"code\":\"2\",\"name\":\"iries\",\"description\":\"iriescapture\",\"langCode\":\"eng\"}]}],\"idtypes\":[{\"code\":\"1\",\"name\":\"PAN\",\"description\":\"pan card\",\"langCode\":\"eng\"},{\"code\":\"1\",\"name\":\"VID\",\"description\":\"voter id\",\"langCode\":\"eng\"}],\"documentcategories\":[{\"code\":\"1\",\"name\":\"POA\",\"description\":\"poaaa\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"POI\",\"description\":\"porrr\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"POR\",\"description\":\"pobbb\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"POB\",\"description\":\"poiii\",\"langCode\":\"eng\"}],\"documenttypes\":[{\"code\":\"1\",\"name\":\"passport\",\"description\":\"passportid\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"passport\",\"description\":\"passportid's\",\"langCode\":\"eng\"},{\"code\":\"3\",\"name\":\"voterid\",\"description\":\"votercards\",\"langCode\":\"eng\"},{\"code\":\"4\",\"name\":\"passport\",\"description\":\"passports\",\"langCode\":\"eng\"}],\"locations\":[{\"code\":\"1\",\"name\":\"chennai\",\"hierarchyLevel\":\"1\",\"hierarchyName\":\"Tamil Nadu\",\"parentLocCode\":\"1\",\"langCode\":\"eng\"},{\"code\":\"2\",\"name\":\"hyderabad\",\"hierarchyLevel\":\"2\",\"hierarchyName\":\"Telengana\",\"parentLocCode\":\"2\",\"langCode\":\"eng\"}],\"titles\":[{\"title\":[{\"titleCode\":\"1\",\"titleName\":\"admin\",\"titleDescription\":\"ahsasa\",\"langCode\":\"eng\"}]},{\"title\":[{\"titleCode\":\"2\",\"titleDescription\":\"asas\",\"titleName\":\"superadmin\",\"langCode\":\"eng\"}]}],\"genders\":[{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"male\",\"langCode\":\"eng\"},{\"genderCode\":\"2\",\"genderName\":\"female\",\"langCode\":\"eng\"}]},{\"gender\":[{\"genderCode\":\"1\",\"genderName\":\"female\",\"langCode\":\"eng\"}]}],\"reasonCategory\":{\"code\":\"1\",\"name\":\"rejected\",\"description\":\"rejectedfile\",\"langCode\":\"eng\",\"reasonLists\":[{\"code\":\"1\",\"name\":\"document\",\"description\":\"inavliddoc\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"1\"},{\"code\":\"2\",\"name\":\"document\",\"description\":\"inavlidtype\",\"langCode\":\"eng\",\"reasonCategoryCode\":\"2\"}]}}";
+			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime);
 
-			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-BEGINE");
+			if (null != masterSyncJson) {
 
-			// Mapping json object to respective dto's
-			MasterSyncDto masterSyncDto = mapper.readValue(masterJson, MasterSyncDto.class);
+				LOGGER.debug(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, "MASTER-SYNC-RESTFUL_SERVICE-ENDS",
+						"master sync json ======>" + masterSyncJson.toString());
 
-			masterSyncDao.insertMasterSyncData(masterSyncDto);
+				LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						"MASTER-SYNC-RESTFUL_SERVICE-BEGINE");
 
-			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-ENDS");
+				// Mapping json object to respective dto's
+				MasterDataResponseDto masterSyncDto = objectMapper.readValue(masterSyncJson.toString(),
+						MasterDataResponseDto.class);
 
-			sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
-			sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			sucessResponse.setMessage(RegistrationConstants.MASTER_SYNC_SUCCESS);
-			responseDTO = new ResponseDTO();
-			responseDTO.setSuccessResponseDTO(sucessResponse);
+				resoponse = masterSyncDao.save(masterSyncDto);
 
-		} catch (JsonParseException jsonParseException) {
+				LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-ENDS");
 
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, jsonParseException.getMessage());
+				sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
+				sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+				sucessResponse.setMessage(RegistrationConstants.MASTER_SYNC_SUCCESS);
+				responseDTO = new ResponseDTO();
+				responseDTO.setSuccessResponseDTO(sucessResponse);
+
+			} else {
+
+				responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+						RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+			}
+
+		} catch (RegBaseUncheckedException | RegBaseCheckedException regBaseUncheckedException) {
+
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + resoponse);
+
+			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
+					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
+
+		} catch (RuntimeException | IOException runtimeException) {
+
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + resoponse);
 
 			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
 					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
-		} catch (JsonMappingException jsonMappingException) {
-
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, jsonMappingException.getMessage());
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-
-		} catch (IOException ioException) {
-
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
-
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-
-			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, regBaseUncheckedException.getMessage());
-
-			responseDTO = buildErrorRespone(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE,
-					RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 		}
 
 		return responseDTO;
 	}
 
+	/**
+	 * Gets the master sync json.
+	 *
+	 * @param machineId    the machine id
+	 * @param lastSyncTime the last sync time
+	 * @return the master sync json
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	private Object getMasterSyncJson(String machineId, LocalDateTime lastSyncTime) throws RegBaseCheckedException {
+
+		Object response = null;
+
+		// Setting uri Variables
+
+		Map<String, String> requestParamMap = new LinkedHashMap<>();
+		requestParamMap.put("machineId", machineId);
+		requestParamMap.put("lastUpdated", lastSyncTime.toString());
+
+		try {
+			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap);
+		} catch (HttpClientErrorException httpClientErrorException) {
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server");
+			throw new RegBaseCheckedException(Integer.toString(httpClientErrorException.getRawStatusCode()),
+					httpClientErrorException.getStatusText());
+		} catch (SocketTimeoutException socketTimeoutException) {
+			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					socketTimeoutException.getMessage() + "Http error while pulling json from server");
+			throw new RegBaseCheckedException(socketTimeoutException.getMessage(),
+					socketTimeoutException.getLocalizedMessage());
+		}
+
+		return response;
+	}
+
+	/**
+	 * Builds the error respone.
+	 *
+	 * @param errorCode the error code
+	 * @param message   the message
+	 * @return the response DTO
+	 */
 	private ResponseDTO buildErrorRespone(final String errorCode, final String message) {
 
 		ResponseDTO response = new ResponseDTO();
@@ -165,4 +222,90 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		return response;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#findLocationByHierarchyCode(
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<LocationDto> findLocationByHierarchyCode(String hierarchyCode, String langCode) {
+
+		List<LocationDto> locationDto = new ArrayList<>();
+
+		List<MasterLocation> masterLocation = masterSyncDao.findLocationByLangCode(hierarchyCode, langCode);
+
+		for (MasterLocation masLocation : masterLocation) {
+			LocationDto location = new LocationDto();
+			location.setCode(masLocation.getCode());
+			location.setHierarchyName(masLocation.getHierarchyName());
+			location.setName(masLocation.getName());
+			location.setLanguageCode(masLocation.getLanguageCode());
+			locationDto.add(location);
+		}
+
+		return locationDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#findProvianceByHierarchyCode(
+	 * java.lang.String)
+	 */
+	@Override
+	public List<LocationDto> findProvianceByHierarchyCode(String code) {
+
+		List<LocationDto> locationDto = new ArrayList<>();
+
+		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code);
+
+		for (MasterLocation masLocation : masterLocation) {
+			LocationDto location = new LocationDto();
+			location.setCode(masLocation.getCode());
+			location.setHierarchyName(masLocation.getHierarchyName());
+			location.setName(masLocation.getName());
+			location.setLanguageCode(masLocation.getLanguageCode());
+			locationDto.add(location);
+		}
+
+		return locationDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.MasterSyncService#getAllReasons(java.lang.
+	 * String)
+	 */
+	@Override
+	public List<MasterReasonListDto> getAllReasonsList(String langCode) {
+
+		List<MasterReasonListDto> reasonListResponse = new ArrayList<>();
+		List<String> resonCantCode = new ArrayList<>();
+		// Fetting Reason Category
+		List<MasterReasonCategory> masterReasonCatogery = masterSyncDao.getAllReasonCatogery();
+		if (masterReasonCatogery != null && !masterReasonCatogery.isEmpty()) {
+
+			masterReasonCatogery.forEach(reason -> {
+				resonCantCode.add(reason.getCode());
+			});
+
+		}
+		// Fetching reason list based on lang_Code and rsncat_code
+		List<MasterReasonList> masterReasonList = masterSyncDao.getReasonList(langCode, resonCantCode);
+		masterReasonList.forEach(reasonList -> {
+			MasterReasonListDto reasonListDto = new MasterReasonListDto();
+			reasonListDto.setCode(reasonList.getCode());
+			reasonListDto.setName(reasonList.getName());
+			reasonListDto.setRsnCatCode(reasonList.getRsnCatCode());
+			reasonListDto.setLangCode(reasonList.getLangCode());
+			reasonListResponse.add(reasonListDto);
+		});
+
+		return reasonListResponse;
+
+	}
 }

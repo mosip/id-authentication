@@ -19,6 +19,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
@@ -63,7 +64,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private RegistrationController registrationController;
 
 	@Autowired
-	private ScanController scanController;
+	private ScanPopUpViewController scanPopUpViewController;
 
 	/** The finger print capture pane. */
 	@FXML
@@ -203,12 +204,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private void loadingImageFromSessionContext() {
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-		leftHandPalmImageview.setImage(null);
-		rightHandPalmImageview.setImage(null);
-		thumbImageview.setImage(null);
-		leftSlapQualityScore.setText("");
-		rightSlapQualityScore.setText("");
-		thumbsQualityScore.setText("");
 		if (null != registrationDTOContent) {
 			registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
 					.forEach(item -> {
@@ -239,9 +234,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
 					.parseInt(getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))) {
 
-				scanController.init(this, RegistrationConstants.FINGERPRINT);
+				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_MAX_RETRIES_ALERT);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
 
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -252,7 +247,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"%s -> Exception while Opening pop-up screen to capture fingerprint for user registration  %s",
 					RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_FINGERPRINT_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_FINGERPRINT_SCAN_POPUP);
 		}
 	}
 
@@ -313,14 +308,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_SCANNING_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"Exception while getting the scanned Finger details for user registration: %s caused by %s",
 							regBaseCheckedException.getMessage(), regBaseCheckedException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.FINGERPRINT_SCANNING_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
 
@@ -362,9 +357,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
-		scanController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FP_CAPTURE_SUCCESS);
+		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
 		popupStage.close();
 
@@ -396,7 +391,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							runtimeException.getMessage()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR);
+					RegistrationUIConstants.FINGERPRINT_NAVIGATE_NEXT_SECTION_ERROR);
 		}
 	}
 
@@ -422,7 +417,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							runtimeException.getMessage()));
 
 			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR);
+					RegistrationUIConstants.FINGERPRINT_NAVIGATE_PREVIOUS_SECTION_ERROR);
 		}
 	}
 
@@ -463,7 +458,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						isthumbsCaptured = true;
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.IRIS_QUALITY_SCORE_ERROR);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
@@ -488,10 +483,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						}
 					}
 					duplicateCheckLbl.setText(duplicateFinger.getFingerType().toUpperCase() + " "
-							+ RegistrationConstants.FINGERPRINT_DUPLICATION_ALERT);
+							+ RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.FINGERPRINT_SCAN_ALERT);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FINGERPRINT_SCAN_ALERT);
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured ended");

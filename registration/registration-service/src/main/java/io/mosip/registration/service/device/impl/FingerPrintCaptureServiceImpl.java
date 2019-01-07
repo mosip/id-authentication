@@ -8,22 +8,19 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.AuthenticationValidatorImplementation;
+import io.mosip.registration.service.AuthenticationService;
 
 @Service
 public class FingerPrintCaptureServiceImpl {
 
 	@Autowired
-	private AuthenticationService authenticationValidatorFactory;
+	private AuthenticationService authenticationService;
 
 	public boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(SessionContext.getInstance().getUserContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
-		AuthenticationValidatorImplementation authenticationValidatorImplementation=authenticationValidatorFactory.getValidator("Fingerprint");
-		authenticationValidatorImplementation.setFingerPrintType("multiple");
-		return authenticationValidatorImplementation.validate(authenticationValidatorDTO);		
-		
+		authenticationValidatorDTO.setAuthValidationType("multiple");
+		return authenticationService.authValidator("Fingerprint", authenticationValidatorDTO);
 	}
 }

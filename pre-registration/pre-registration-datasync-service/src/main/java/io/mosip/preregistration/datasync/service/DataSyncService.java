@@ -25,6 +25,7 @@ import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
 import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
+import io.mosip.preregistration.datasync.exception.util.DataSyncExceptionCatcher;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
 
 /**
@@ -92,6 +93,8 @@ public class DataSyncService {
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+		}catch (Exception e) {
+			new DataSyncExceptionCatcher().handle(e);
 		}
 		return responseDto;
 	}
@@ -114,7 +117,7 @@ public class DataSyncService {
 			responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 			responseDto.setResponse(preRegArchiveDTO);
 		} catch (Exception e) {
-			e.printStackTrace();
+			new DataSyncExceptionCatcher().handle(e);
 		}
 		return responseDto;
 	}
@@ -139,7 +142,7 @@ public class DataSyncService {
 				responseDto.setErr(null);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			new DataSyncExceptionCatcher().handle(e);
 		}
 		return responseDto;
 	}

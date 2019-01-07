@@ -26,13 +26,14 @@ public class CheckSumValidation {
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
 
 	/**
 	 * Instantiates a new check sum validation.
 	 *
-	 * @param adapter
-	 *            the adapter
+	 * @param adapter            the adapter
+	 * @param registrationStatusDto the registration status dto
 	 */
 	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter,
 			InternalRegistrationStatusDto registrationStatusDto) {
@@ -44,13 +45,10 @@ public class CheckSumValidation {
 	/**
 	 * Checksumvalidation.
 	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param packetInfo
-	 *            the packet info
+	 * @param registrationId            the registration id
+	 * @param identity the identity
 	 * @return true, if successful
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException             Signals that an I/O exception has occurred.
 	 */
 	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException {
 		List<FieldValueArray> hashSequence = identity.getHashSequence();
