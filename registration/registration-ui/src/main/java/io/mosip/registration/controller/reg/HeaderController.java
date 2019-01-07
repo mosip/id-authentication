@@ -24,7 +24,6 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.config.JobConfigurationService;
-import io.mosip.registration.service.packet.RegistrationDeletionService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
@@ -82,9 +81,9 @@ public class HeaderController extends BaseController {
 	@Autowired
 	PacketHandlerController packetHandlerController;
 	
-	@Autowired
+	/*@Autowired
 	RegistrationDeletionService registrationDeletionService;
-
+*/
 	/**
 	 * Mapping Registration Officer details
 	 */
