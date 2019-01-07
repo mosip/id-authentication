@@ -428,9 +428,12 @@ public class RegistrationController extends BaseController {
 			nextBtn.setDisable(false);
 			preRegistrationLabel.setText("UIN");
 
+			getRegistrationDtoContent().getRegistrationMetaDataDTO()
+					.setUin(getRegistrationDtoContent().getSelectionListDTO().getUinId());
 			preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
 
-			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
+			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
+					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
 
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
@@ -452,9 +455,31 @@ public class RegistrationController extends BaseController {
 			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 
-			parentName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
-			uinId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
-			if (getRegistrationDtoContent().getSelectionListDTO().isChild()) {
+			parentName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
+					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
+			uinId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
+					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
+
+			if (getRegistrationDtoContent().getSelectionListDTO().isBiometricException()) {
+				bioExceptionToggleLabel1.setId("toggleLabel2");
+				bioExceptionToggleLabel2.setId("toggleLabel1");
+				toggleBiometricException = true;
+				SessionContext.getInstance().getUserContext().getUserMap()
+						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+				captureExceptionImage.setDisable(false);
+			} else {
+				bioExceptionToggleLabel1.setDisable(true);
+				bioExceptionToggleLabel2.setDisable(true);
+				bioExceptionToggleLabel1.setId("toggleLabel1");
+				bioExceptionToggleLabel2.setId("toggleLabel2");
+				toggleBiometricException = false;
+				SessionContext.getInstance().getUserContext().getUserMap()
+						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
+				captureExceptionImage.setDisable(true);
+			}
+
+			if (getRegistrationDtoContent().getSelectionListDTO().isChild()
+					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails()) {
 				documentScanController.documentScan.setLayoutY(134.00);
 			} else {
 				documentScanController.documentScan.setLayoutY(25.00);
@@ -775,10 +800,19 @@ public class RegistrationController extends BaseController {
 				}
 				biometricTitlePane.setExpanded(true);
 
-				toggleFingerprintCaptureVisibility(registrationDTO.getSelectionListDTO().isBiometricFingerprint());
-				toggleIrisCaptureVisibility(registrationDTO.getSelectionListDTO().isBiometricIris());
-				// togglePhotoCaptureVisibility(true);
+				if (registrationDTO.getSelectionListDTO() != null) {
 
+					if (registrationDTO.getSelectionListDTO().isBiometricFingerprint()) {
+						toggleFingerprintCaptureVisibility(true);
+						toggleIrisCaptureVisibility(false);
+					} else if (registrationDTO.getSelectionListDTO().isBiometricIris()) {
+						toggleFingerprintCaptureVisibility(false);
+						toggleIrisCaptureVisibility(true);
+					} else {
+						togglePhotoCaptureVisibility(true);
+					}
+
+				}
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
@@ -989,8 +1023,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1543,8 +1576,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane
-	 *            the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1558,8 +1590,7 @@ public class RegistrationController extends BaseController {
 			authenticationController.initData(ProcessNames.PACKET.getType());
 			/*
 			 * if (toggleBiometricException) {
-			 * authenticationController.initData(ProcessNames.EXCEPTION.getType(
-			 * )); }
+			 * authenticationController.initData(ProcessNames.EXCEPTION.getType()); }
 			 */
 			accord.setExpandedPane(authenticationTitlePane);
 			headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
@@ -1576,8 +1607,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1642,8 +1672,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1652,8 +1681,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
@@ -1664,7 +1692,9 @@ public class RegistrationController extends BaseController {
 	 */
 	private void addRegions() {
 		try {
-			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),RegistrationConstants.mappedCodeForLang.valueOf(AppConfig.getApplicationProperty("application_language")).getMappedCode());
+			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),
+					RegistrationConstants.mappedCodeForLang
+							.valueOf(AppConfig.getApplicationProperty("application_language")).getMappedCode());
 			region.getItems().addAll(
 					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
 		} catch (RuntimeException runtimeException) {
@@ -1723,8 +1753,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {

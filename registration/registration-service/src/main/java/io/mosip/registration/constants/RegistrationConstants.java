@@ -49,7 +49,7 @@ public class RegistrationConstants {
 	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
 	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
-	public static final String UIN_UPDATE = "/fxml/UINUpdate.fxml";
+	public static final String UIN_UPDATE = "/fxml/UpdateUIN.fxml";
 	public static final String SYNC_DATA = "/fxml/SyncDataProcess.fxml";
 
 	// CSS file

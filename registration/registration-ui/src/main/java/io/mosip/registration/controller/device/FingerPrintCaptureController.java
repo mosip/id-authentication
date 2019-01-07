@@ -247,7 +247,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"%s -> Exception while Opening pop-up screen to capture fingerprint for user registration  %s",
 					RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_FINGERPRINT_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ALERT_ERROR,
+					RegistrationUIConstants.UNABLE_LOAD_FINGERPRINT_SCAN_POPUP);
 		}
 	}
 
@@ -377,10 +378,20 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Iris capture page for user registration started");
 
-			if (validateFingerPrints()) {
-				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
-				registrationController.toggleFingerprintCaptureVisibility(false);
-				registrationController.toggleIrisCaptureVisibility(true);
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
+					registrationController.toggleFingerprintCaptureVisibility(false);
+					registrationController.toggleIrisCaptureVisibility(true);
+				}else {
+					registrationController.togglePhotoCaptureVisibility(true);
+				}
+			} else {
+
+				if (validateFingerPrints()) {
+					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
+					registrationController.toggleFingerprintCaptureVisibility(false);
+					registrationController.toggleIrisCaptureVisibility(true);
+				}
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Iris capture page for user registration ended");

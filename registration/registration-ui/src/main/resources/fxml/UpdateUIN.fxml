@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UINUpdateController">
+<AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
 	<children>
       <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="24.0" layoutY="22.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
          <image>

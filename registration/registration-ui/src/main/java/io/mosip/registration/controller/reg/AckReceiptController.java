@@ -216,24 +216,28 @@ public class AckReceiptController extends BaseController implements Initializabl
 		ResponseDTO response = packetHandlerService.handle(registrationData);
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
-			Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
-			AddressDTO addressDTO = Builder.build(AddressDTO.class)
-					.with(address -> address
-							.setAddressLine1(identity.getAddressLine1().getValues().getFirst().getValue()))
-					.with(address -> address
-							.setAddressLine2(identity.getAddressLine2().getValues().getFirst().getValue()))
-					.with(address -> address.setLine3(identity.getAddressLine3().getValues().getFirst().getValue()))
-					.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
-							.with(location -> location.setCity(identity.getCity().getValues().getFirst().getValue()))
-							.with(location -> location
-									.setProvince(identity.getProvince().getValues().getFirst().getValue()))
-							.with(location -> location
-									.setRegion(identity.getRegion().getValues().getFirst().getValue()))
-							.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
-					.get();
-			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
-			addr.put("PrevAddress", addressDTO);
-			SessionContext.getInstance().setMapObject(addr);
+			if (registrationData.getSelectionListDTO() == null) {
+
+				Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+				AddressDTO addressDTO = Builder.build(AddressDTO.class)
+						.with(address -> address
+								.setAddressLine1(identity.getAddressLine1().getValues().getFirst().getValue()))
+						.with(address -> address
+								.setAddressLine2(identity.getAddressLine2().getValues().getFirst().getValue()))
+						.with(address -> address.setLine3(identity.getAddressLine3().getValues().getFirst().getValue()))
+						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
+								.with(location -> location
+										.setCity(identity.getCity().getValues().getFirst().getValue()))
+								.with(location -> location
+										.setProvince(identity.getProvince().getValues().getFirst().getValue()))
+								.with(location -> location
+										.setRegion(identity.getRegion().getValues().getFirst().getValue()))
+								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
+						.get();
+				Map<String, Object> addr = SessionContext.getInstance().getMapObject();
+				addr.put("PrevAddress", addressDTO);
+				SessionContext.getInstance().setMapObject(addr);
+			}
 		}
 	}
 

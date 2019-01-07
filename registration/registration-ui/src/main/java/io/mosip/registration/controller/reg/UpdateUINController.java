@@ -36,9 +36,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 @Controller
-public class UINUpdateController extends BaseController implements Initializable {
+public class UpdateUINController extends BaseController implements Initializable {
 
-	private static final Logger LOGGER = AppConfig.getLogger(UINUpdateController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(UpdateUINController.class);
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -92,9 +92,9 @@ public class UINUpdateController extends BaseController implements Initializable
 					RegistrationConstants.APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
-			//TODO : remove this stub afterwards
+			// TODO : remove this stub afterwards
 			uinId.setText("426789089018");
-			
+
 			toggleLabel1.setId("toggleLabel1");
 			toggleLabel2.setId("toggleLabel2");
 			switchedOn.addListener(new ChangeListener<Boolean>() {
@@ -175,29 +175,37 @@ public class UINUpdateController extends BaseController implements Initializable
 					selectionListDTO.setChild(isChild);
 					selectionListDTO.setUinId(uinId.getText());
 
-					registrationController.init(selectionListDTO);
+					if (name.isSelected() || age.isSelected() || gender.isSelected() || address.isSelected()
+							|| contactDetails.isSelected() || biometricException.isSelected()
+							|| biometricIris.isSelected() || biometricFingerprint.isSelected()
+							|| cnieNumber.isSelected() || parentOrGuardianDetails.isSelected()) {
+						registrationController.init(selectionListDTO);
 
-					Parent createRoot = BaseController.load(
-							getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-							applicationContext.getApplicationLanguageBundle());
+						Parent createRoot = BaseController.load(
+								getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+								applicationContext.getApplicationLanguageBundle());
 
-					if (!validateScreenAuthorization(createRoot.getId())) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-					} else {
-						StringBuilder errorMessage = new StringBuilder();
-						ResponseDTO responseDTO;
-						responseDTO = validateSyncStatus();
-						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(
-										errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
-							}
-							generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
-
+						if (!validateScreenAuthorization(createRoot.getId())) {
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									RegistrationUIConstants.AUTHORIZATION_ERROR);
 						} else {
-							getScene(createRoot).setRoot(createRoot);
+							StringBuilder errorMessage = new StringBuilder();
+							ResponseDTO responseDTO;
+							responseDTO = validateSyncStatus();
+							List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+							if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+								for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+									errorMessage.append(errorResponseDTO.getMessage() + " - "
+											+ errorResponseDTO.getCode() + "\n\n");
+								}
+								generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
+
+							} else {
+								getScene(createRoot).setRoot(createRoot);
+							}
 						}
+					} else {
+						generateAlert(RegistrationConstants.ALERT_ERROR, "please select any one detail for updation");
 					}
 				}
 			}
