@@ -104,6 +104,10 @@ public class BioDedupeStage extends MosipVerticleManager {
 			if (insertionResult.equalsIgnoreCase(ResponseStatusCode.SUCCESS.name())) {
 				List<String> matchedRegIds = bioDedupeService.performDedupe(registrationId);
 				if (matchedRegIds != null && !matchedRegIds.isEmpty()) {
+					object.setIsValid(Boolean.FALSE);
+					registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
+					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
+					description = registrationStatusDto.getStatusComment() + registrationId;
 					packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
 				} else {
 					object.setIsValid(Boolean.TRUE);
