@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { UserModel } from '../demographic/modal/user.modal';
 import { FileModel } from '../demographic/modal/file.model';
 import * as appConstants from '../../app.constants';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-file-upload',
@@ -13,6 +14,8 @@ import * as appConstants from '../../app.constants';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
+  fileByteArray;
+  fileUrl;
   applicantPreRegId;
   userFiles: FileModel = new FileModel();
   formData = new FormData();
@@ -109,7 +112,8 @@ export class FileUploadComponent implements OnInit {
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private domSanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -127,6 +131,14 @@ export class FileUploadComponent implements OnInit {
     console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
+
+      //document preview
+      this.fileByteArray = this.users[0].files[0][0].multipartFile;
+      if (this.fileByteArray) {
+        console.log(this.fileByteArray);
+        this.fileUrl =this.domSanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + this.fileByteArray);
+        console.log(this.fileUrl);
+      }
     });
     // this.users.forEach(element => {
     //   let i = 0;
@@ -219,6 +231,18 @@ export class FileUploadComponent implements OnInit {
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('userFiles updaated', this.users);
+  }
+  documentPreview(fileIndex){
+
+    this.fileByteArray = this.users[0].files[0][0].multipartFile;
+    if (this.fileByteArray) {
+      console.log(this.fileByteArray);
+      this.fileUrl =this.domSanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + this.fileByteArray);
+      console.log(this.fileUrl);
+    }
+    console.log(this.user);
+    console.log("filessss ",this.fileByteArray);
+    console.log("url",this.fileUrl);
   }
 
   openFile() {
