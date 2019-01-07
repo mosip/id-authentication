@@ -7,26 +7,31 @@ Identity Repository service can be used internally by products to create, read a
 
 
 
-***1.1.Target users -***  
+***1.1.Target Users -***  
 - Registration Processor can use Identity Repo services to create and update Identity information associated with a UIN   
 - ID Authentication can use Identity Repo services to validate an input UIN and read identity details associated with a UIN   
 - Resident Services can use Update ID API when an Individual requests for updating ID details like address   
 
-***1.2. Key requirements -***   
--	Create UIN and associate input identity information with the created UIN and store
+***1.2. Key Functional Requirements -***   
+-	Store identity information for a given UIN
 -	Update Identity information partially or status of UIN
 -	Read Identity Information associated with a valid UIN
--	Check status of UIN for validating a UIN
+-	Check status of UIN for validating a UIN    
 
-***1.3. Key non-functional requirements -***   
+![Functional Flow Diagram - Create ID](_images/kernel-idrepo-createid-fd.PNG)      
 
+
+![Functional Flow Diagram - Create ID](_images/kernel-idrepo-getidentity-fd.PNG) 
+
+
+***1.3. Key Non-Functional Requirements -***   
 
 -	Logging :
 	-	Log all the exceptions along with error code and short error message
-	-	As a security measure, Individual’s UIN should not be logged
+	-	As a security measure, Individualâ€™s UIN should not be logged
 -	Audit :
 	-	Audit all transaction details in database
-	-	Individual’s UIN should not be audited     
+	-	Individualâ€™s UIN should not be audited     
 -	Exception :
 	-	Any error in storing or retrieval of Identity details should be handled with appropriate error code and message in the response  
 -	Security :    
@@ -52,11 +57,11 @@ The key solution considerations are
 MOSIP Products can use ID Repo API spec available here - [ID Repository API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to create Identity of an Individual    
 
 1. 	Integrate with Kernel UIN Generator to create UIN   
-2.	Below are the various UIN status, which are configurable and can be modified by the country as needed –    
+2.	Below are the various UIN status, which are configurable and can be modified by the country as needed â€“    
 a.	_REGISTERED_   
 b.	_BLOCKED_   
 c.	_DEACTIVATED_   
-3. Once UIN is generated, assign “REGISTERED” as UIN status. UIN, status and Identity details are then stored in UIN and UIN_detail table   
+3. Once UIN is generated, assign â€œREGISTEREDâ€� as UIN status. UIN, status and Identity details are then stored in UIN and UIN_detail table   
 
 Below sequence diagram for create Identity service shows sequence of operations to create UIN and store corresponding Identity details.   
 ![Create Identity Sequence Diagram](_images/kernel-idrepo-createid-sd.PNG)      
@@ -73,7 +78,7 @@ Below sequence diagram for Update Identity service shows sequence of operations 
 ![Update Identity Sequence Diagram](_images/kernel-idrepo-updateid-sd.PNG)   
 
 When UIN status is updated using Update ID API, the status is first validated against the configured status for the country. Once input UIN status matches the one among all the configured UIN status, it is updated in the database. 
-Default configuration of UIN status has REGISTERED, BLOCKED and DEACTIVATED. This can be changed based on country’s requirements.   
+Default configuration of UIN status has REGISTERED, BLOCKED and DEACTIVATED. This can be changed based on countryâ€™s requirements.   
 
 Below sequence diagram shows sequence of operations to update UIN status.   
 ![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)       
