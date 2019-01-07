@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-/**
+/**	
  * The Class RegistrationUtility.
  *
  * @author M1048219

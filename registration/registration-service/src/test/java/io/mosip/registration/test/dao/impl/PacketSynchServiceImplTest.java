@@ -48,14 +48,11 @@ public class PacketSynchServiceImplTest {
 
 	@InjectMocks
 	private PacketSynchServiceImpl packetSynchServiceImpl;
-	
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	@Before
 	public void initialize() {
 		ReflectionTestUtils.setField(packetSynchServiceImpl, "syncUrlPath",
 				"http://104.211.209.102:8080/v0.1/registration-processor/registration-status/sync");
-		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test

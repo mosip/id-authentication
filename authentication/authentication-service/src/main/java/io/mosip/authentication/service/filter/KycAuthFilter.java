@@ -44,7 +44,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 			Map<String, Object> authRequest = (Map<String, Object>) decodeToMap((String) requestBody.get(AUTH_REQUEST));
 			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
 			if(null != authRequest.get(REQUEST)) {
-				authRequest.replace(REQUEST, keyManager.requestData(authRequest, env, decryptor, mapper));				
+				authRequest.replace(REQUEST, keyManager.requestData(authRequest, mapper));				
 			}
 			requestBody.replace(AUTH_REQUEST, authRequest);
 			return requestBody;
@@ -91,18 +91,10 @@ public class KycAuthFilter extends BaseAuthFilter {
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody) {
 		Map<String, Object> authReq = (Map<String, Object>) requestBody.get(AUTH_REQUEST);
 		responseBody.replace("txnID", authReq.get("txnID"));
 		return responseBody;
-	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
-	 */
-	@Override
-	protected boolean validateSignature(Map<String, Object> requestBody, String signature) {
-		return true;
 	}
 	
 	protected Object decodeToMap(String stringToDecode)
@@ -123,6 +115,11 @@ public class KycAuthFilter extends BaseAuthFilter {
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
 							.getErrorMessage());
 		}
+	}
+	
+	@Override
+	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
+		return true;
 	}
 
 }

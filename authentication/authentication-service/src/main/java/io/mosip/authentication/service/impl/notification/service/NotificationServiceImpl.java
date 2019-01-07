@@ -43,7 +43,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 /**
  * 
  * @author Dinesh Karuppiah.T
- *  
+ * 
  * 
  *
  */
@@ -61,13 +61,13 @@ public class NotificationServiceImpl implements NotificationService {
 	private static final String TIME = "time";
 	/** The Constant DATE. */
 	private static final String DATE = "date";
-	
+
 	/** Property Name for Auth SMS Template */
 	private static final String AUTH_SMS_TEMPLATE = "mosip.auth.sms.template";
 
 	/** Property Name for OTP SMS Template */
 	private static final String OTP_SMS_TEMPLATE = "mosip.otp.sms.template";
-	
+
 	/** The Constant STATUS_SUCCESS. */
 	private static final String STATUS_SUCCESS = "y";
 
@@ -82,44 +82,44 @@ public class NotificationServiceImpl implements NotificationService {
 
 	/** Property Name for OTP Content Template */
 	private static final String OTP_CONTENT_TEMPLATE = "mosip.otp.mail.content.template";
-	
+
 	/** The Constant STATUS. */
 	private static final String STATUS = "status";
-	
+
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
-	
+
 	@Autowired
 	private Environment env;
-	
+
 	/** The demo auth service. */
 	@Autowired
-	private IdInfoHelper demoHelper;
+	private IdInfoHelper infoHelper;
 	
 	/** The id auth service. */
 	@Autowired
 	private IdAuthService idAuthService;
-	
+
 	@Autowired
 	IdRepoService idInfoService;
-	
+
 	/** ID Template manager */
 	@Autowired
 	private IdTemplateManager idTemplateManager;
-	
+
 	@Autowired
 	private NotificationManager notificationManager;
-	
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
-	
+
 	public void sendAuthNotification(AuthRequestDTO authRequestDTO, String uin, AuthResponseDTO authResponseDTO,
 			Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth) throws IdAuthenticationBusinessException {
 
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 
 		Map<String, Object> values = new HashMap<>();
-		values.put(NAME, demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
+		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
 		String resTime = authResponseDTO.getResTime();
 
 		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
@@ -137,14 +137,15 @@ public class NotificationServiceImpl implements NotificationService {
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
 		String maskedUin = "";
-		if (ismaskRequired) {
-			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
+		String charCount = env.getProperty("uin.masking.charcount");
+		if (ismaskRequired && charCount != null) {
+			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
 		}
-
 		values.put(UIN2, maskedUin);
+
 		values.put(AUTH_TYPE,
 
-				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
+				Stream.of(DemoAuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO, infoHelper))
 						.map(DemoAuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
 		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Passed");
@@ -154,8 +155,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String phoneNumber = null;
 		String email = null;
-		phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo);
-		email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo);
+		phoneNumber = infoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
+		email = infoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo);
 		String notificationType = null;
 		if (isAuth) {
 			notificationType = env.getProperty("auth.notification.type");
@@ -165,12 +166,10 @@ public class NotificationServiceImpl implements NotificationService {
 
 		sendNotification(values, email, phoneNumber, SenderType.AUTH, notificationType);
 	}
-	
-	
-	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin,
-			String email, String mobileNumber,Map<String, List<IdentityInfoDTO>> idInfo) {
-		
-		
+
+	public void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String uin, String email,
+			String mobileNumber, Map<String, List<IdentityInfoDTO>> idInfo) {
+
 		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(), env.getProperty(DATETIME_PATTERN));
 		String date = dateAndTime[0];
 		String time = dateAndTime[1];
@@ -178,44 +177,46 @@ public class NotificationServiceImpl implements NotificationService {
 		String maskedUin = null;
 		Map<String, Object> values = new HashMap<>();
 		try {
-			maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount")));
+			String charCount = env.getProperty("uin.masking.charcount");
+			if (charCount != null) {
+				maskedUin = MaskUtil.generateMaskValue(uin, Integer.parseInt(charCount));
+			}
 			values.put("uin", maskedUin);
 			values.put("otp", otp);
 			values.put("validTime", env.getProperty("otp.expiring.time"));
 			values.put(DATE, date);
 			values.put(TIME, time);
 
-			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo));
+			values.put("name", infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
 
-			sendNotification(values, email, mobileNumber, SenderType.OTP,
-					env.getProperty("otp.notification.type"));
+			sendNotification(values, email, mobileNumber, SenderType.OTP, env.getProperty("otp.notification.type"));
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
 	}
-	
-	
+
 	/**
 	 * Method to Send Notification to the Individual via SMS / E-Mail
 	 * 
-	 * @param notificationtype - specifies notification type
-	 * @param values           - list of values to send notification
-	 * @param emailId          - sender E-Mail ID
-	 * @param phoneNumber      - sender Phone Number
-	 * @param sender           - to specify the sender type
-	 * @param notificationProperty 
+	 * @param notificationtype     - specifies notification type
+	 * @param values               - list of values to send notification
+	 * @param emailId              - sender E-Mail ID
+	 * @param phoneNumber          - sender Phone Number
+	 * @param sender               - to specify the sender type
+	 * @param notificationProperty
 	 * @throws IdAuthenticationBusinessException
 	 */
-	
-	private void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender, String notificationProperty)
-			throws IdAuthenticationBusinessException {
+
+	private void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender,
+			String notificationProperty) throws IdAuthenticationBusinessException {
 		String contentTemplate = null;
 		String subjectTemplate = null;
-		String notificationtypeconfig = notificationProperty ;	
+		String notificationtypeconfig = notificationProperty;
 		String notificationMobileNo = phoneNumber;
 		Set<NotificationType> notificationtype = new HashSet<>();
 
-		if (isNotNullorEmpty(notificationtypeconfig) && !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
+		if (isNotNullorEmpty(notificationtypeconfig)
+				&& !notificationtypeconfig.equalsIgnoreCase(NotificationType.NONE.getName())) {
 			if (notificationtypeconfig.contains(",")) {
 				String value[] = notificationtypeconfig.split(",");
 				for (int i = 0; i < 2; i++) {
@@ -273,10 +274,11 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 		}
 	}
+
 	private boolean isNotNullorEmpty(String value) {
 		return value != null && !value.isEmpty() && value.trim().length() > 0;
 	}
-	
+
 	/**
 	 * To apply Templates for Email or SMS Notifications
 	 * 
@@ -294,44 +296,54 @@ public class NotificationServiceImpl implements NotificationService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		}
 	}
+
 	/**
 	 * Sms notification.
 	 *
-	 * @param values the values
-	 * @param sender the sender
-	 * @param contentTemplate the content template
+	 * @param values               the values
+	 * @param sender               the sender
+	 * @param contentTemplate      the content template
 	 * @param notificationMobileNo the notification mobile no
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void invokeSmsNotification(Map<String, Object> values, SenderType sender, String contentTemplate,
 			String notificationMobileNo) throws IdAuthenticationBusinessException {
-		if (sender == SenderType.AUTH) {
-			contentTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
-		} else if (sender == SenderType.OTP) {
-			contentTemplate = env.getProperty(OTP_SMS_TEMPLATE);
+		String authSmsTemplate = env.getProperty(AUTH_SMS_TEMPLATE);
+		String otpSmsTemplate = env.getProperty(OTP_SMS_TEMPLATE);
+		if (sender == SenderType.AUTH && authSmsTemplate != null) {
+			contentTemplate = authSmsTemplate;
+		} else if (sender == SenderType.OTP && otpSmsTemplate != null) {
+			contentTemplate = otpSmsTemplate;
 		}
- 
+
 		String smsTemplate = applyTemplate(values, contentTemplate);
 		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
 	}
+
 	/**
 	 * Email notification.
 	 *
-	 * @param values the values
-	 * @param emailId the email id
-	 * @param sender the sender
+	 * @param values          the values
+	 * @param emailId         the email id
+	 * @param sender          the sender
 	 * @param contentTemplate the content template
 	 * @param subjectTemplate the subject template
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	private void invokeEmailNotification(Map<String, Object> values, String emailId, SenderType sender,
 			String contentTemplate, String subjectTemplate) throws IdAuthenticationBusinessException {
-		if (sender == SenderType.AUTH) {
-			subjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
-			contentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-		} else if (sender == SenderType.OTP) {
-			subjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
-			contentTemplate = env.getProperty(OTP_CONTENT_TEMPLATE);
+		String otpContentTemaplate = env.getProperty(OTP_CONTENT_TEMPLATE);
+		String authEmailSubjectTemplate = env.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
+		String authEmailContentTemplate = env.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
+		String otpSubjectTemplate = env.getProperty(OTP_SUBJECT_TEMPLATE);
+		if (sender == SenderType.AUTH && authEmailSubjectTemplate != null && authEmailContentTemplate != null) {
+			subjectTemplate = authEmailSubjectTemplate;
+			contentTemplate = authEmailContentTemplate;
+		} else if (sender == SenderType.OTP && otpSubjectTemplate != null && otpContentTemaplate != null) {
+			subjectTemplate = otpSubjectTemplate;
+			contentTemplate = otpContentTemaplate;
 		}
 
 		String mailSubject = applyTemplate(values, subjectTemplate);

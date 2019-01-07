@@ -1,5 +1,6 @@
 package io.mosip.registration.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,34 +18,37 @@ import javax.persistence.Table;
 @Table(name = "pre_registration_list", schema = "reg")
 public class PreRegistrationList extends RegistrationCommonFields{
 	@Id
-	@Column(name = "id", length = 36, nullable = false)	
+	@Column(name = "id")	
 	private String id;
-	@Column(name = "prereg_id", length = 64, nullable = false)	
+	@Column(name = "prereg_id")	
 	private String preRegId;
-	@Column(name = "prereg_type", length = 64, nullable = true)
+	@Column(name = "prereg_type")
 	private String preRegType;
-	@Column(name = "parent_prereg_id", length = 64, nullable = true)
+	@Column(name = "parent_prereg_id")
 	private String parentPreRegId;
-	@Column(name = "appointment_date",nullable = true)
+	@Column(name = "appointment_date")
 	private Date appointmentDate;
-	@Column(name = "packet_symmetric_key", length = 256, nullable = true)
+	@Column(name = "packet_symmetric_key")
 	private String packetSymmetricKey;
-	@Column(name = "status_code", length = 36, nullable = false)
+	@Column(name = "status_code")
 	private String statusCode;
-	@Column(name = "status_comment", length = 256, nullable = true)
+	@Column(name = "status_comment")
 	private String statusComment;
-	@Column(name = "packet_path", length = 256, nullable = true)
+	@Column(name = "packet_path")
 	private String packetPath;
-	@Column(name = "sjob_id", length = 36, nullable = true)
+	@Column(name = "sjob_id")
 	private String sJobId;
-	@Column(name = "synctrn_id", length = 36, nullable = true)
+	@Column(name = "synctrn_id")
 	private String synctrnId;
 	
-	@Column(name = "lang_code", length = 3, nullable = false)
+	@Column(name = "last_upd_dtimes")
+	private Timestamp lastUpdatedPreRegTimeStamp;
+
+	@Column(name = "lang_code")
 	private String langCode;
-	@Column(name = "is_deleted", nullable = true)
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
-	@Column(name = "del_dtimes", nullable = true)
+	@Column(name = "del_dtimes")
 	private String delDtimes;
 	
 	
@@ -131,6 +135,14 @@ public class PreRegistrationList extends RegistrationCommonFields{
 	}
 	public void setDelDtimes(String delDtimes) {
 		this.delDtimes = delDtimes;
+	}
+	
+	public Timestamp getLastUpdatedPreRegTimeStamp() {
+		return lastUpdatedPreRegTimeStamp;
+	}
+	
+	public void setLastUpdatedPreRegTimeStamp(Timestamp lastUpdatedPreRegTimeStamp) {
+		this.lastUpdatedPreRegTimeStamp = lastUpdatedPreRegTimeStamp;
 	}
 
 }

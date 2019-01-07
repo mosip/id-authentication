@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 /**
  * Service API implementaion class for Application
@@ -38,6 +43,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	private DataMapper dataMapper;
 
+	MapperFactory mapperFactory = null;
+	MapperFacade mapper = null;
+
+	@PostConstruct
+	private void postConsApplicationServiceImpl() {
+		mapperFactory = new DefaultMapperFactory.Builder().build();
+		mapperFactory.classMap(Application.class, ApplicationDto.class);
+		mapper = mapperFactory.getMapperFacade();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -50,16 +65,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByIsDeletedFalseOrIsDeletedNull(Application.class);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
+
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
-				ApplicationDto applicationDto = new ApplicationDto();
-				dataMapper.map(application, applicationDto, true, null, null, true);
-				applicationDtoList.add(applicationDto);
+				applicationDtoList.add(mapper.map(application, ApplicationDto.class));
 			});
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -82,7 +96,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -116,7 +130,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		try {
 			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					languageCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
@@ -142,8 +156,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 */
 	@Override
 	public CodeAndLanguageCodeID createApplication(RequestDto<ApplicationDto> applicationRequestDto) {
-		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto.getRequest(),
-				Application.class);
+		Application entity = MetaDataUtils.setCreateMetaData(applicationRequestDto.getRequest(), Application.class);
 		Application application;
 		try {
 			application = applicationRepository.create(entity);

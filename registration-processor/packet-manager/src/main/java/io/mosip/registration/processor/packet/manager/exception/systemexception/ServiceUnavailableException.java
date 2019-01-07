@@ -2,7 +2,8 @@ package io.mosip.registration.processor.packet.manager.exception.systemexception
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-
+	
+// TODO: Auto-generated Javadoc
 /**
  * ServiceUnavailableException occurs when service is not available.
  *

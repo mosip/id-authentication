@@ -14,7 +14,9 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_NOT_FOUND("KER-MSD-042", "Registration Center not found"),
 
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043",
-			"Invalid date format");
+			"Invalid date format"),
+	
+	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX","start/end time Data not configured in database");
 
 	private final String errorCode;
 	private final String errorMessage;

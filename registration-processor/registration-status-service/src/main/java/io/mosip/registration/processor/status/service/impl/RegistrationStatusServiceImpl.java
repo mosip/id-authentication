@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -32,6 +30,7 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
+	
 
 /**
  * The Class RegistrationStatusServiceImpl.
@@ -40,6 +39,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
 public class RegistrationStatusServiceImpl
 implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
+	/** The threshhold time. */
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
 	private int threshholdTime;
@@ -61,6 +61,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/** The event type. */
 	private String eventType = "";
 
+	/** The description. */
 	String description = "";
 
 	/** The core audit request builder. */
@@ -290,6 +291,12 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		}
 	}
 
+	/**
+	 * Convert entity list to dto list and get external status.
+	 *
+	 * @param entities the entities
+	 * @return the list
+	 */
 	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(List<RegistrationStatusEntity> entities) {
 		List<RegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
@@ -301,6 +308,12 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		return list;
 	}
 
+	/**
+	 * Convert entity to dto and get external status.
+	 *
+	 * @param entity the entity
+	 * @return the registration status dto
+	 */
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
@@ -312,6 +325,12 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		return registrationStatusDto;
 	}
 
+	/**
+	 * Convert entity list to dto list.
+	 *
+	 * @param entities the entities
+	 * @return the list
+	 */
 	private List<InternalRegistrationStatusDto> convertEntityListToDtoList(List<RegistrationStatusEntity> entities) {
 		List<InternalRegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
@@ -323,6 +342,12 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		return list;
 	}
 
+	/**
+	 * Convert entity to dto.
+	 *
+	 * @param entity the entity
+	 * @return the internal registration status dto
+	 */
 	private InternalRegistrationStatusDto convertEntityToDto(RegistrationStatusEntity entity) {
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
@@ -344,6 +369,12 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		return registrationStatusDto;
 	}
 
+	/**
+	 * Convert dto to entity.
+	 *
+	 * @param dto the dto
+	 * @return the registration status entity
+	 */
 	private RegistrationStatusEntity convertDtoToEntity(InternalRegistrationStatusDto dto) {
 		RegistrationStatusEntity registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setId(dto.getRegistrationId());

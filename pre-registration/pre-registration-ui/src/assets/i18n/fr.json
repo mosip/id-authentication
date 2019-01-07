@@ -1,3 +1,149 @@
 {
-    "HELLO": "Bonjour"
-}
+    "header": {
+      "link_about": "À PROPOS DE NOUS",
+      "link_faq": "FAQ",
+      "link_contact": "CONTACT"
+    },
+    "login": {
+      "text": "Étapes rapides et faciles",
+      "sub_text": "Pour inscrire un numéro d'identification unique",
+      "label_select": "Choisissez votre langue",
+      "label_email_num": "Email ID ou numéro de téléphone",
+      "label_otp": "Entrez OTP",
+      "action_send": "Envoyer OTP",
+      "action_resend": "Renvoyer",
+      "action_verify": "Vérifier"
+    },
+    "stepper": {
+      "link_demographic": "Détails démographiques",
+      "link_upload_doc": "Télécharger un document",
+      "link_book": "Rendez-vous du livre",
+      "link_confirm": "Confirmation"
+    },
+    "demographic": {
+      "title_demographic": "Détails démographiques",
+      "language": "Anglais",
+      "label_name": "Nom complet",
+      "label_age": "Âge",
+      "text_years": "Années",
+      "text_gender": "Le sexe",
+      "button_male": "Mâle",
+      "button_female": "Femelle",
+      "label_address1": "Adresse 1",
+      "label_address2": "Adresse Ligne 2",
+      "label_region": "Région",
+      "label_province": "Province",
+      "label_city": "Ville",
+      "label_local_administrative_authority": "Autorité administrative locale",
+      "label_mob_num": "Numéro de portable",
+      "label_alt_mob_num": "Numéro de téléphone alternatif (facultatif)",
+      "label_email_id": "Identifiant Email",
+      "label_pin": "Numéro CINE / PIN",
+      "action_back": "RETOUR",
+      "action_continue": "CONTINUER",
+      "action_preview": "APERÇU"
+    },
+    "documents": {
+      "title_document": "Télécharger des documents",
+      "text_filetype": "Type de fichier autorisé Pdf, Word et Max 5 Mo",
+      "action_browse": "FEUILLETER",
+      "action_back": "RETOUR",
+      "action_skip": "SAUTER",
+      "action_continue": "CONTINUER",
+      "label_sameas": "Pareil que",
+      "text_or": "OU",
+      "action_view": "VUE"
+    },
+    "preview": {
+      "title_preview": "Aperçu",
+      "language": "français",
+      "subheading_information": "Informations personnelles",
+      "label_name": "Nom complet",
+      "label_age": "Âge",
+      "text_years": "Années",
+      "text_gender": "Le sexe",
+      "subheading_contact": "Détails du contact",
+      "label_address": "Adresse",
+      "label_region": "Région",
+      "label_province": "Province",
+      "label_city": "Ville",
+      "label_local_administrative_authority": "Autorité administrative locale",
+      "label_mob_num": "Numéro de portable",
+      "label_alt_mob_num": "Numéro de téléphone alternatif (facultatif)",
+      "label_email_id": "Identifiant Email",
+      "label_pin": "Numéro CINE / PIN",
+      "title_document": "Documents téléchargés",
+      "action_modify": "modifier",
+      "action_back": "RETOUR",
+      "action_add_applicant": "AJOUTER LE CANDIDAT",
+      "action_continue": "CONTINUER"
+    },
+    "bookAppointment": {
+      "title_book": "Book Appointment",
+      "text_prev": "Previous",
+      "text_next": "Next",
+      "text_morning": "Morning",
+      "text_afternoon": "Afternoon",
+      "text_available": "Available Applicants",
+      "action_done": "DONE",
+      "action_back": "BACK",
+      "action_bookLater": "BOOK LATER",
+      "action_continue": "CONTINUE"
+    },
+    "message": {
+      "login": {
+        "msg1": "Email ID is not valid",
+        "msg2": "Phone number is not valid",
+        "msg3": "OTP enter is not valid",
+        "msg4": "Login Successful"
+      },
+      "demographicDetails": {
+        "msg1": "Black listed word entered"
+      },
+      "uploadDocuments": {
+        "msg1": "Document exceeding permitted size",
+        "msg2": "Virus scan failed",
+        "msg3": "File type not supported"
+      },
+      "appointmentCentreSearch": {
+        "msg1": "No result found",
+        "msg2": "Location not enable"
+      },
+      "bookAppointment": {
+        "msg1": "The Following User has not been selected any time slot",
+        "msg2": "(should provide User name) Do you want to continue Booking"
+      },
+      "cancelAppointment": {
+        "msg1": "Appointment for the selected application will be cancelled",
+        "msg2": "Appointment for the selected application has been successfully cancelled"
+      }
+    },
+    "uidStatus": {
+      "title": "UID Status ",
+      "action_modify_information": "Modify Information",
+      "action_modify_appointment": "Book/Modify Appointment",
+      "action_cre_application": "Create New Application ",
+      "card": {
+        "text_app_id": "Application ID",
+        "text_name": "Name",
+        "text_appoinment_date": "Appointment Date",
+        "text_status": "Status",
+        "action_modify_information": "Modify Information",
+        "action_modify_appointment": "Modify Appointment"
+      }
+    },
+    "appointmentCentreSearch": {
+      "title": " Book Appointment ",
+      "text_recommended_centres": "Recommended Centres",
+      "text_finding_result": "finding result for",
+      "text_nearBy": "Nearby",
+      "acttion_back": "BACK",
+      "action_bookLater": "BOOK LATER",
+      "action_continue": "CONTINUE"
+    },
+    "appointmentConfirmed": {
+      "text_confirmation": "The Pre-Registarion id and Appointment details have been sent to registered email id and phone number",
+      "action_download": "DOWNLOAD",
+      "action_print": "PRINT"
+    }
+  }
