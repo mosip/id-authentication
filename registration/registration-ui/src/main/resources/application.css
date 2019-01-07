@@ -347,7 +347,7 @@
 	-fx-pref-width: 483px;
 }
 
-#submit, #rejectionSubmit,#submitBtn{
+#submit, #rejectionSubmit,#submitBtn, #getOTP, #resend{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -436,9 +436,9 @@
 	-fx-pref-width: 136px;
 }
 
-.loginfpStyle{
+.loginBioStyle{
 	-fx-pref-height: 27px;
-	-fx-pref-width: 127px;
+	-fx-pref-width: 230px;
 }
 
 .headerStyle{
@@ -480,4 +480,32 @@
 	-fx-border-color: black;
 	-fx-background-insets: 0,0 0 1 0;
   	-fx-border-width: 0 0 1 0;	
+}
+.operatorAuthenticationStyle{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 269px;
+}
+.operatorAuthenticationAnchorPaneStyle{
+	-fx-pref-height: 550px; 
+	-fx-pref-width: 850px;
+}
+.operatorAuthenticationAnchorPane{
+	-fx-pref-height: 600px; 
+	-fx-pref-width: 850px;
+}
+#authenticateRootSubPane, .authenticationAnchorPaneStyle{
+	-fx-pref-height: 300px; 
+	-fx-pref-width: 480px;
+}
+.authenticationStyle{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 269px;
+}
+#authenticateRootPane{
+	-fx-pref-height: 54px; 
+	-fx-pref-width: 483px;
+}
+#fingerPrintScanRoot{
+	-fx-pref-height: 359px; 
+	-fx-pref-width: 477px;
 }

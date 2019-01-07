@@ -69,7 +69,7 @@ public class FingerprintValidatorTest {
 		List<UserBiometric> userBiometrics = new ArrayList<>();
 		userBiometrics.add(userBiometric);
 
-		when(registrationUserDetailDAO.getUserSpecificFingerprintDetails("mosip")).thenReturn(userBiometrics);
+		when(registrationUserDetailDAO.getUserSpecificBioDetails("mosip","Fingerprint")).thenReturn(userBiometrics);
 		when(fingerprintFacade.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics)).thenReturn(true);
 		authenticationValidatorDTO.setAuthValidationType("single");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));

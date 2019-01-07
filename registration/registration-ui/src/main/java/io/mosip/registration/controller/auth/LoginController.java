@@ -39,6 +39,7 @@ import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -53,6 +54,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -91,10 +93,10 @@ public class LoginController extends BaseController implements Initializable {
 	private Label otpValidity;
 
 	@FXML
-	private Label fingerprint;
+	private Label bioText;
 
 	@FXML
-	private ImageView fingerImage;
+	private ImageView bioImage;
 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
@@ -355,6 +357,11 @@ public class LoginController extends BaseController implements Initializable {
 		}
 	}
 
+	/**
+	 * Validate User through username and fingerprint
+	 * 
+	 * @param event
+	 */
 	public void validateFingerPrint(ActionEvent event) {
 
 		LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -375,7 +382,7 @@ public class LoginController extends BaseController implements Initializable {
 
 				boolean bioLoginStatus = false;
 
-				if (validateBiometric(detail)) {
+				if (validateBiometricFP()) {
 					bioLoginStatus = validateInvalidLogin(detail, "");
 				} else {
 					bioLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -403,6 +410,118 @@ public class LoginController extends BaseController implements Initializable {
 
 			LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 					"Fingerprint validation done");
+
+		}
+	}
+	
+	/**
+	 * Validate User through username and Iris
+	 * 
+	 * @param event
+	 */
+	public void validateIris(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Validating Biometric login with Iris");
+
+		if (userId.getText().isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+		} else {
+
+			RegistrationUserDetail detail = loginService.getUserDetail(userId.getText());
+
+			if (detail == null) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
+			} else {
+
+				LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						"Validating Iris with stored data");
+
+				boolean irisLoginStatus = false;
+
+				if (validateBiometricIris()) {
+					irisLoginStatus = validateInvalidLogin(detail, "");
+				} else {
+					irisLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.IRIS_MATCH);
+				}
+				if (irisLoginStatus) {
+					if (detail.getStatusCode() != null
+							&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+					} else {
+						try {
+							SessionContext sessionContext = SessionContext.getInstance();
+							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_IRIS);
+							loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_IRIS);
+						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+
+							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
+									APPLICATION_ID, exception.getMessage());
+
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+						}
+					}
+				}
+			}
+
+			LOGGER.debug("REGISTRATION - SCAN_IRIS - IRIS_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+					"Iris validation done");
+
+		}
+	}
+	
+	/**
+	 * Validate User through username and face
+	 * 
+	 * @param event
+	 */
+	public void validateFace(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Validating Biometric login with Iris");
+
+		if (userId.getText().isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+		} else {
+
+			RegistrationUserDetail detail = loginService.getUserDetail(userId.getText());
+
+			if (detail == null) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
+			} else {
+
+				LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						"Validating Face with stored data");
+
+				boolean faceLoginStatus = false;
+
+				if (validateBiometricFace()) {
+					faceLoginStatus = validateInvalidLogin(detail, "");
+				} else {
+					faceLoginStatus = validateInvalidLogin(detail, RegistrationUIConstants.FACE_MATCH);
+				}
+				if (faceLoginStatus) {
+					if (detail.getStatusCode() != null
+							&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+					} else {
+						try {
+							SessionContext sessionContext = SessionContext.getInstance();
+							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_FACE);
+							loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_FACE);
+						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+
+							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
+									APPLICATION_ID, exception.getMessage());
+
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+						}
+					}
+				}
+			}
+
+			LOGGER.debug("REGISTRATION - SCAN_IRIS - IRIS_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+					"Face validation done");
 
 		}
 	}
@@ -451,8 +570,8 @@ public class LoginController extends BaseController implements Initializable {
 		password.setPromptText("Enter OTP");
 		otpValidity.setVisible(true);
 		getOTP.setVisible(true);
-		fingerprint.setVisible(false);
-		fingerImage.setVisible(false);
+		bioText.setVisible(false);
+		bioImage.setVisible(false);
 		if(!userId.getText().isEmpty()) {
 			userId.setEditable(false);
 		}
@@ -478,8 +597,9 @@ public class LoginController extends BaseController implements Initializable {
 		password.setVisible(true);
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
-		fingerprint.setVisible(false);
-		fingerImage.setVisible(false);
+		resend.setVisible(false);
+		bioText.setVisible(false);
+		bioImage.setVisible(false);
 		if(!userId.getText().isEmpty()) {
 			userId.setEditable(false);
 		}
@@ -492,14 +612,18 @@ public class LoginController extends BaseController implements Initializable {
 	}
 
 	/**
-	 * Enable BIO login specific attributes
+	 * Enable Fingerprint login specific attributes
 	 */
 	private void enableFingerPrint() {
 		password.setVisible(false);
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
-		fingerprint.setVisible(true);
-		fingerImage.setVisible(true);
+		resend.setVisible(false);
+		bioText.setVisible(true);
+		bioText.setText(RegistrationConstants.FINGERPRINT_TEXT);
+		bioImage.setVisible(true);
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.FP_IMG_PATH));
+		bioImage.setImage(image);
 		if(!userId.getText().isEmpty()) {
 			userId.setEditable(false);
 		}
@@ -507,6 +631,54 @@ public class LoginController extends BaseController implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				validateFingerPrint(event);
+			}
+		});
+	}
+	
+	/**
+	 * Enable Iris login specific attributes
+	 */
+	private void enableIris(){
+		password.setVisible(false);
+		otpValidity.setVisible(false);
+		getOTP.setVisible(false);
+		resend.setVisible(false);
+		bioText.setVisible(true);
+		bioText.setText(RegistrationConstants.IRIS_TEXT);
+		bioImage.setVisible(true);
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMG_PATH));
+		bioImage.setImage(image);
+		if(!userId.getText().isEmpty()) {
+			userId.setEditable(false);
+		}
+		submit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				validateIris(event);
+			}
+		});
+	}
+	
+	/**
+	 * Enable Face login specific attributes
+	 */
+	private void enableFace(){
+		password.setVisible(false);
+		otpValidity.setVisible(false);
+		getOTP.setVisible(false);
+		resend.setVisible(false);
+		bioText.setVisible(true);
+		bioText.setText(RegistrationConstants.FACE_TEXT);
+		bioImage.setVisible(true);
+		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.FACE_IMG_PATH));
+		bioImage.setImage(image);
+		if(!userId.getText().isEmpty()) {
+			userId.setEditable(false);
+		}
+		submit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				validateFace(event);
 			}
 		});
 	}
@@ -527,6 +699,12 @@ public class LoginController extends BaseController implements Initializable {
 			break;
 		case RegistrationConstants.LOGIN_METHOD_BIO:
 			enableFingerPrint();
+			break;
+		case RegistrationConstants.LOGIN_METHOD_IRIS:
+			enableIris();
+			break;
+		case RegistrationConstants.LOGIN_METHOD_FACE:
+			enableFace();
 			break;
 		default:
 			enablePWD();
@@ -720,13 +898,9 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating User Biometrics using Minutia
 	 * 
-	 * @param minutia
-	 *            minutia of fingerprint
-	 * @param registrationUserDetail
-	 *            user details
 	 * @return boolean
 	 */
-	private boolean validateBiometric(RegistrationUserDetail registrationUserDetail) {
+	private boolean validateBiometricFP() {
 
 		LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Initializing FingerPrint device");
@@ -777,6 +951,37 @@ public class LoginController extends BaseController implements Initializable {
 			return fingerPrintStatus;
 		}
 
+	}
+	
+	/**
+	 * Validating User Biometrics using Iris
+	 * 
+	 * @return boolean
+	 */
+	private boolean validateBiometricIris() {
+		
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
+		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
+		irisDetailsDTO.setIris("leftIris".getBytes());
+		irisDetailsDTOs.add(irisDetailsDTO);
+		authenticationValidatorDTO.setUserId(userId.getText());
+		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
+		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_IRIS,
+				authenticationValidatorDTO);
+	}
+	
+	/**
+	 * Validating User Biometrics using Face
+	 * 
+	 * @return boolean
+	 */
+	private boolean validateBiometricFace() {
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(userId.getText());
+		authenticationValidatorDTO.setFaceDetail("face".getBytes());
+		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
+				authenticationValidatorDTO);
 	}
 	
 	/**

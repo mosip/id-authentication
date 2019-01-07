@@ -26,6 +26,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
@@ -62,13 +63,25 @@ public class AuthenticationController extends BaseController {
 	@FXML
 	private AnchorPane fingerprintBasedLogin;
 	@FXML
+	private AnchorPane irisBasedLogin;
+	@FXML
+	private AnchorPane faceBasedLogin;
+	@FXML
 	private Label otpValidity;
 	@FXML
 	private Label otpLabel;
 	@FXML
 	private Label fingerPrintLabel;
 	@FXML
+	private Label irisLabel;
+	@FXML
+	private Label faceLabel;
+	@FXML
 	private TextField fpUserId;
+	@FXML
+	private TextField irisUserId;
+	@FXML
+	private TextField faceUserId;
 	@FXML
 	private TextField username;
 	@FXML
@@ -124,7 +137,7 @@ public class AuthenticationController extends BaseController {
 	private String userNameField;
 
 	@Autowired
-	BaseController baseController;
+	private BaseController baseController;
 
 	/**
 	 * to generate OTP in case of OTP based authentication
@@ -237,6 +250,68 @@ public class AuthenticationController extends BaseController {
 			}
 		}
 	}
+	
+	/**
+	 * to validate the iris in case of iris based authentication
+	 */
+	public void validateIris() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Validating Iris for Iris based Authentication");
+
+		if (isSupervisor) {
+			if (!irisUserId.getText().isEmpty()) {
+				if (fetchUserRole(irisUserId.getText())) {
+					if (captureAndValidateIris(irisUserId.getText())) {
+						userNameField = irisUserId.getText();
+						loadNextScreen();
+					} else {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_MATCH);
+					}
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+				}
+			} else {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+			}
+		} else {
+			if (captureAndValidateIris(irisUserId.getText())) {
+				loadNextScreen();
+			} else {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_MATCH);
+			}
+		}
+	}
+	
+	/**
+	 * to validate the face in case of face based authentication
+	 */
+	public void validateFace() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Validating Face for Face based Authentication");
+
+		if (isSupervisor) {
+			if (!faceUserId.getText().isEmpty()) {
+				if (fetchUserRole(faceUserId.getText())) {
+					if (captureAndValidateFace(faceUserId.getText())) {
+						userNameField = faceUserId.getText();
+						loadNextScreen();
+					} else {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FACE_MATCH);
+					}
+				} else {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+				}
+			} else {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+			}
+		} else {
+			if (captureAndValidateFace(faceUserId.getText())) {
+				loadNextScreen();
+			} else {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FACE_MATCH);
+			}
+		}
+	}
 
 	/**
 	 * to get the configured modes of authentication
@@ -311,6 +386,12 @@ public class AuthenticationController extends BaseController {
 		case RegistrationConstants.LOGIN_METHOD_BIO:
 			enableFingerPrint();
 			break;
+		case RegistrationConstants.LOGIN_METHOD_IRIS:
+			enableIris();
+			break;
+		case RegistrationConstants.LOGIN_METHOD_FACE:
+			enableFace();
+			break;
 		default:
 			enablePWD();
 		}
@@ -326,6 +407,8 @@ public class AuthenticationController extends BaseController {
 		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
 		otp.clear();
 		otpUserId.clear();
 		otpUserId.setEditable(false);
@@ -353,6 +436,8 @@ public class AuthenticationController extends BaseController {
 		pwdBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
 		username.clear();
 		password.clear();
 		username.setEditable(false);
@@ -376,6 +461,8 @@ public class AuthenticationController extends BaseController {
 				"Enabling Fingerprint based Authentication Screen in UI");
 
 		fingerprintBasedLogin.setVisible(true);
+		faceBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(false);
 		pwdBasedLogin.setVisible(false);
 		fpUserId.clear();
@@ -389,6 +476,57 @@ public class AuthenticationController extends BaseController {
 			}
 		} else {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+		}
+	}
+	
+	/**
+	 * to enable the iris based authentication mode and disable rest of modes
+	 */
+	private void enableIris() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling Iris based Authentication Screen in UI");
+		
+		irisBasedLogin.setVisible(true);
+		fingerprintBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		pwdBasedLogin.setVisible(false);
+		irisUserId.clear();
+		irisUserId.setEditable(false);
+		if (isSupervisor) {
+			irisLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			if (authCount > 1 && !userNameField.isEmpty()) {
+				irisUserId.setText(userNameField);
+			} else {
+				irisUserId.setEditable(true);
+			}
+		} else {
+			irisUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+		}
+	}
+	
+	/**
+	 * to enable the face based authentication mode and disable rest of modes
+	 */
+	private void enableFace() {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling Face based Authentication Screen in UI");
+		
+		faceBasedLogin.setVisible(true);
+		irisBasedLogin.setVisible(false);
+		fingerprintBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		pwdBasedLogin.setVisible(false);
+		faceUserId.clear();
+		faceUserId.setEditable(false);
+		if (isSupervisor) {
+			faceLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+			if (authCount > 1 && !userNameField.isEmpty()) {
+				faceUserId.setText(userNameField);
+			} else {
+				faceUserId.setEditable(true);
+			}
+		} else {
+			faceUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 		}
 	}
 
@@ -475,6 +613,68 @@ public class AuthenticationController extends BaseController {
 			}
 		}
 		return fpMatchStatus;
+	}
+	
+	/**
+	 * to capture and validate the iris for authentication
+	 * 
+	 * @param userId
+	 *            - username entered in the textfield
+	 * @return true/false after validating iris
+	 */
+	private boolean captureAndValidateIris(String userId) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Capturing and Validating Iris");
+		
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
+		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
+		irisDetailsDTO.setIris("leftIris".getBytes());
+		irisDetailsDTOs.add(irisDetailsDTO);
+		if (!isEODAuthentication) {
+			if (isSupervisor) {
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA);
+				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
+				SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+			} else {
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
+						.setIrisDetailsDTO(irisDetailsDTOs);
+			}
+		}
+		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
+		authenticationValidatorDTO.setUserId(userId);
+		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.VALIDATION_TYPE_IRIS,
+				authenticationValidatorDTO);
+
+		if (irisMatchStatus) {
+			if (isSupervisor) {
+				irisDetailsDTO.setIrisImageName("supervisor".concat(irisDetailsDTO.getIrisType()));
+			} else {
+				irisDetailsDTO.setIrisImageName("officer".concat(irisDetailsDTO.getIrisType()));
+			}
+		}
+		return irisMatchStatus;
+	}
+
+	/**
+	 * to capture and validate the iris for authentication
+	 * 
+	 * @param userId
+	 *            - username entered in the textfield
+	 * @return true/false after validating face
+	 */
+	private boolean captureAndValidateFace(String userId) {
+		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Capturing and Validating Face");
+		
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setFaceDetail("face".getBytes());
+		authenticationValidatorDTO.setUserId(userId);
+		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
+				authenticationValidatorDTO);
 	}
 
 	/**

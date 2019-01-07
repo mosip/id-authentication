@@ -86,8 +86,8 @@ public class RegistrationUserDetailDAOTest {
 	public void getUserSpecificFingerprintDetailsTest() {
 
 		List<UserBiometric> bioList=new ArrayList<>();
-		Mockito.when(userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrue(Mockito.anyString())).thenReturn(bioList);
-		assertEquals(bioList, registrationUserDetailDAOImpl.getUserSpecificFingerprintDetails("abcd"));
+		Mockito.when(userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeIgnoreCase(Mockito.anyString(), Mockito.anyString())).thenReturn(bioList);
+		assertEquals(bioList, registrationUserDetailDAOImpl.getUserSpecificBioDetails("abcd","Fingerprint"));
 	
 	}
 
