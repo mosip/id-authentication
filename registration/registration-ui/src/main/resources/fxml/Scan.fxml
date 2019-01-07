@@ -11,7 +11,7 @@
    <children>
       <AnchorPane layoutX="3.0" layoutY="53.0" styleClass="subPane">
          <children>
-            <Button layoutX="376.0" layoutY="124.0" mnemonicParsing="false" onAction="#scan" styleClass="RegbuttonStyle" text="Scan">
+            <Button layoutX="376.0" layoutY="124.0" mnemonicParsing="false" onAction="#scan" styleClass="RegbuttonStyle" text="%scan">
                <font>
                   <Font size="10.0" />
                </font></Button>
@@ -20,20 +20,20 @@
                   <ImageView fx:id="scanImage" fitHeight="238.0" fitWidth="349.0" layoutX="-2.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" styleClass="scannedImagePreview" />
                </children>
             </AnchorPane>
-            <Button fx:id="saveBtn" layoutX="372.0" layoutY="65.0" mnemonicParsing="false" onAction="#save" prefHeight="23.0" prefWidth="44.0" styleClass="RegbuttonStyle" text="Save">
+            <Button fx:id="saveBtn" layoutX="372.0" layoutY="65.0" mnemonicParsing="false" onAction="#save" prefHeight="23.0" prefWidth="44.0" styleClass="RegbuttonStyle" text="%save">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Text fx:id="totalScannedPages" layoutX="390.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-            <Label fx:id="scannedPagesLabel" layoutX="359.0" layoutY="171.0" text="Total Pages" />
-            <Text fx:id="scanningMsg" layoutX="369.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scanning..." />
+            <Text fx:id="totalScannedPages" layoutX="390.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%0" />
+            <Label fx:id="scannedPagesLabel" layoutX="359.0" layoutY="171.0" text="%totalpages" />
+            <Text fx:id="scanningMsg" layoutX="369.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%scanning..." />
          </children>
       </AnchorPane>
       <AnchorPane layoutY="-1.0" styleClass="headerPane">
          <children>
             <Label fx:id="popupTitle" layoutX="194.0" layoutY="14.0" styleClass="scanPopupHeader" />
-            <Hyperlink layoutX="458.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit" text="X" />
+            <Hyperlink layoutX="458.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit" text="%x" />
          </children>
       </AnchorPane>
    </children>

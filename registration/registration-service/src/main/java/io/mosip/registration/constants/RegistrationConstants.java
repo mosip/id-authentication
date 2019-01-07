@@ -492,8 +492,6 @@ public class RegistrationConstants {
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
 	
-	public static List<String> CITY_LIST = Arrays.asList("Delhi","Chennai","Bengaluru","Mumbai");
-
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	// Pre Registration
@@ -764,4 +762,17 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_SERVICE="policysync";
 	public static final String KEY_NAME="KEY_POLICY_SYNC_THRESHOLD_VALUE";
 	public static final String REFERENCE_ID="1001";
+	
+	public enum mappedCodeForLang{
+		en("ENG");
+		private String langCode;
+		mappedCodeForLang(String langCode) {
+			this.langCode=langCode;
+		}
+		public String getMappedCode() {
+			return langCode;
+		}
+		
+	}
+	
 }

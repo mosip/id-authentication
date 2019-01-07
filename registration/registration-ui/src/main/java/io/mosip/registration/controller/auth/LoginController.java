@@ -177,8 +177,7 @@ public class LoginController extends BaseController implements Initializable {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Retrieved corresponding Login mode");
 
-			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE),
-					applicationContext.getApplicationMessagesBundle());
+			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 			
 			scene = getScene(loginRoot);
 			if (loginMode == null) {

@@ -274,91 +274,91 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<MasterApplication> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
 					MasterApplication.class);
 			masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity);
-			
+
 			List<MasterBiometricType> masterBiometricTypeDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterBiometricTypeDto, MasterBiometricType.class);
 			masterSyncBiometricTypeRepository.saveAll(masterBiometricTypeDtoEntity);
-			
+
 			List<MasterBiometricAttribute> masterBiometricAttributeDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterBiometricAttributeDto, MasterBiometricAttribute.class);
 			masterSyncBiometricAttributeRepository.saveAll(masterBiometricAttributeDtoEntity);
-			
+
 			List<MasterBlacklistedWords> blacklistedWordsEntity = MetaDataUtils
 					.setCreateMetaData(masterBlackListedWordsDto, MasterBlacklistedWords.class);
 			masterSyncBlacklistedWordsRepository.saveAll(blacklistedWordsEntity);
-			
+
 			List<MasterDeviceType> masterDeviceTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterDeviceTypeDto,
 					MasterDeviceType.class);
 			masterSyncDeviceTypeRepository.saveAll(masterDeviceTypeDtoEntity);
-			
+
 			List<MasterDeviceSpecification> masterDeviceSpecificDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterDeviceSpecificDto, MasterDeviceSpecification.class);
 			masterSyncDeviceSpecificationRepository.saveAll(masterDeviceSpecificDtoEntity);
-			
+
 			List<MasterDevice> masterDeviceDtoEntity = MetaDataUtils.setCreateMetaData(masterDeviceDto,
 					MasterDevice.class);
 			masterSyncDeviceRepository.saveAll(masterDeviceDtoEntity);
-			
+
 			List<MasterDocumentCategory> masterDocumnetCategoryDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterDocumnetCategoryDto, MasterDocumentCategory.class);
 			masterSyncDocumentCategoryRepository.saveAll(masterDocumnetCategoryDtoEntity);
-			
+
 			List<MasterDocumentType> masterDocumnetTypeDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterDocumnetTypeDto, MasterDocumentType.class);
 			masterSyncDocumentTypeRepository.saveAll(masterDocumnetTypeDtoEntity);
-			
+
 			List<MasterGender> masterGenderDtoEntity = MetaDataUtils.setCreateMetaData(masterGenderDto,
 					MasterGender.class);
 			masterSyncGenderRepository.saveAll(masterGenderDtoEntity);
-			
+
 			List<MasterHoliday> masterHolidaysDtoEntity = MetaDataUtils.setCreateMetaData(masterHolidaysDto,
 					MasterHoliday.class);
 			masterSyncHolidayRepository.saveAll(masterHolidaysDtoEntity);
-			
+
 			List<MasterIdType> masterIdTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterIdTypeDto,
 					MasterIdType.class);
 			masterSyncIdTypeRepository.saveAll(masterIdTypeDtoEntity);
-			
+
 			List<MasterLocation> masterLocationDtoEntity = MetaDataUtils.setCreateMetaData(masterLocationDto,
 					MasterLocation.class);
 			masterSyncLocationRepository.saveAll(masterLocationDtoEntity);
-			
+
 			List<MasterMachineType> masterMachineTypeDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineTypeDto,
 					MasterMachineType.class);
 			masterSyncMachineTypeRepository.saveAll(masterMachineTypeDtoEntity);
-			
+
 			List<MasterMachineSpecification> masterMachineSpecDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterMachineSpecDto, MasterMachineSpecification.class);
 			masterSyncMachineSpecificationRepository.saveAll(masterMachineSpecDtoEntity);
-			
+
 			List<MasterMachine> masterMachineDtoEntity = MetaDataUtils.setCreateMetaData(masterMachineDto,
 					MasterMachine.class);
 			masterSyncMachineRepository.saveAll(masterMachineDtoEntity);
-			
+
 			List<MasterReasonCategory> masterReasonCategoryDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterPostReasonCategoryDto, MasterReasonCategory.class);
 			masterSyncReasonCategoryRepository.saveAll(masterReasonCategoryDtoEntity);
-			
+
 			List<MasterReasonList> masterReasonListDtoEntity = MetaDataUtils.setCreateMetaData(masterReasonListDto,
 					MasterReasonList.class);
 			masterSyncReasonListRepository.saveAll(masterReasonListDtoEntity);
 			// MetaDataUtils.setCreateMetaData(regCenter, MasterRegistrationCenter.class);
-			
+
 			List<MasterTemplateFileFormat> masterTemplateFileDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterTemplateFileDto, MasterTemplateFileFormat.class);
 			masterSyncTemplateFileFormatRepository.saveAll(masterTemplateFileDtoEntity);
-			
+
 			List<MasterTemplate> masterTemplateDtoEntity = MetaDataUtils.setCreateMetaData(masterTemplateDto,
 					MasterTemplate.class);
 			masterSyncTemplateRepository.saveAll(masterTemplateDtoEntity);
-			
+
 			List<MasterTemplateType> masterTemplateTypeDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterTemplateTypeDto, MasterTemplateType.class);
 			masterSyncTemplateTypeRepository.saveAll(masterTemplateTypeDtoEntity);
-			
+
 			List<MasterTitle> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto, MasterTitle.class);
 			masterSyncTitleRepository.saveAll(masterTitleDtoEntity);
-			
+
 			List<MasterValidDocument> masterValidDocumnetsDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterValidDocumnetsDto, MasterValidDocument.class);
 			masterSyncValidDocumentRepository.saveAll(masterValidDocumnetsDtoEntity);
@@ -421,6 +421,17 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<MasterReasonList> getReasonList(String langCode, List<String> reasonCat) {
 		return masterSyncReasonListRepository.findByLangCodeAndReasonCategoryCodeIn(langCode, reasonCat);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#getBlackListedWords(java.lang.String)
+	 */
+	@Override
+	public List<MasterBlacklistedWords> getBlackListedWords(String langCode) {
+		return masterSyncBlacklistedWordsRepository.findBlackListedWordsByLangCode(langCode);
 	}
 
 }

@@ -17,8 +17,8 @@
                   <Image url="@../images/Home.png" />
                </image>
             </ImageView>
-            <Text layoutX="60.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ New Registration" wrappingWidth="154.2451171875" />
-            <Label layoutX="417.0" layoutY="11.0" text="Registration" underline="true">
+            <Text layoutX="60.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
+            <Label layoutX="417.0" layoutY="11.0" text="%registration" underline="true">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -26,8 +26,8 @@
             <AnchorPane id="anchor-pane-acknowledgement" layoutX="60.0" layoutY="36.0" prefHeight="662.0" prefWidth="829.0">
                <children>
                   <WebView fx:id="webView" layoutX="9.0" layoutY="8.0" prefHeight="644.0" prefWidth="816.0" />
-                  <Button fx:id="print" layoutX="754.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveReceipt" text="Print" />
-                  <Button fx:id="newRegistration" layoutX="654.0" layoutY="609.0" mnemonicParsing="false" onAction="#saveReceipt" text="New Registration" />
+                  <Button fx:id="print" layoutX="754.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveReceipt" text="%print" />
+                  <Button fx:id="newRegistration" layoutX="654.0" layoutY="609.0" mnemonicParsing="false" onAction="#saveReceipt" text="%newregistration" />
                </children>
             </AnchorPane>
          </children></AnchorPane>

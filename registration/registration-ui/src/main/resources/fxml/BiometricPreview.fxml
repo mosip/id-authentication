@@ -21,7 +21,7 @@
 								<Image url="@../images/Home.png" />
 							</image>
 						</ImageView>
-						<Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
+						<Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
 						<ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@../images/Pre-Registration.png" />
@@ -29,9 +29,9 @@
 						</ImageView>
 					</children>
 				</AnchorPane>
-				<TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="80.0" layoutY="106.0" prefHeight="1000.0" prefWidth="816.0" text="PREVIEW">
+				<TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="80.0" layoutY="106.0" prefHeight="1000.0" prefWidth="816.0" text="%preview">
 					<content>
-						<TitledPane fx:id="biometricPreviewPane" collapsible="false" layoutX="80.0" layoutY="120.0" prefHeight="1200.0" prefWidth="814.0" text="Applicant Biometric">
+						<TitledPane fx:id="biometricPreviewPane" collapsible="false" layoutX="80.0" layoutY="120.0" prefHeight="1200.0" prefWidth="814.0" text="%applicantbiometric">
 							<content>
 								<GridPane id="bioPreviewGridId" alignment="CENTER" prefHeight="785.0" prefWidth="812.0">
 									<columnConstraints>
@@ -47,18 +47,18 @@
 									<children>
 										<AnchorPane>
 											<children>
-												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
-												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
+												<Label layoutX="24.0" layoutY="231.0" text="%quality" />
+												<Label layoutX="24.0" layoutY="262.0" text="%threshold" />
 												<Text fx:id="leftPalmQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-												<Text fx:id="leftPalmThresholdScoreLbl" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Text fx:id="leftPalmThresholdScoreLbl" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
-												<Label layoutX="65.0" layoutY="189.0" text="Left Hand Palm" />
+												<Label layoutX="65.0" layoutY="189.0" text="%lefthandpalm" />
 												<ImageView fx:id="leftPalm" fitHeight="183.0" fitWidth="211.0" layoutX="21.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
 											</children>
 										</AnchorPane>
 										<AnchorPane GridPane.rowIndex="2">
 											<children>
-												<Label layoutX="37.0" layoutY="193.0" text="Individual Photo" />
+												<Label layoutX="37.0" layoutY="193.0" text="%individualphoto" />
 												<ImageView fx:id="individualPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="23.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
 													<image>
 														<Image url="@../images/ApplicantPhoto.png" />
@@ -68,7 +68,7 @@
 										</AnchorPane>
 										<AnchorPane prefHeight="251.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
 											<children>
-												<Label layoutX="33.0" layoutY="192.0" text="Exception Photo" />
+												<Label layoutX="33.0" layoutY="192.0" text="%exceptionphoto" />
 												<ImageView fx:id="exceptionPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="19.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
 													<image>
 														<Image url="@../images/ApplicantPhoto.png" />
@@ -78,49 +78,49 @@
 										</AnchorPane>
 										<AnchorPane prefHeight="289.0" prefWidth="261.0" GridPane.columnIndex="1">
 											<children>
-												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
-												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
+												<Label layoutX="24.0" layoutY="231.0" text="%quality" />
+												<Label layoutX="24.0" layoutY="262.0" text="%threshold" />
 												<Text fx:id="rightPalmQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-												<Text fx:id="rightPalmThresholdScoreLbl" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Text fx:id="rightPalmThresholdScoreLbl" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
-												<Label layoutX="65.0" layoutY="189.0" text="Right Hand Palm" />
+												<Label layoutX="65.0" layoutY="189.0" text="%righthandpalm" />
 												<ImageView fx:id="rightPalm" fitHeight="182.0" fitWidth="211.0" layoutX="23.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
 											</children>
 										</AnchorPane>
 										<AnchorPane GridPane.columnIndex="2">
 											<children>
-												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
-												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
+												<Label layoutX="24.0" layoutY="231.0" text="%quality" />
+												<Label layoutX="24.0" layoutY="262.0" text="%threshold" />
 												<Text fx:id="thumbsQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-												<Text fx:id="thumbsThresholdScoreLbl" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Text fx:id="thumbsThresholdScoreLbl" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
-												<Label layoutX="97.0" layoutY="189.0" text="Thumb" />
+												<Label layoutX="97.0" layoutY="189.0" text="%thumb" />
 												<ImageView fx:id="thumb" fitHeight="183.0" fitWidth="217.0" layoutX="20.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
 											</children>
 										</AnchorPane>
 										<AnchorPane GridPane.rowIndex="1">
 											<children>
-												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
-												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
-												<Text fx:id="leftEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
-												<Text fx:id="leftIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Label layoutX="24.0" layoutY="231.0" text="%quality" />
+												<Label layoutX="24.0" layoutY="262.0" text="%threshold" />
+												<Text fx:id="leftEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
+												<Text fx:id="leftIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
 												<ImageView fx:id="leftEye" fitHeight="109.0" fitWidth="198.0" layoutX="34.0" layoutY="55.0" pickOnBounds="true" preserveRatio="true">
 													<image>
 														<Image url="@../images/leftEye.png" />
 													</image>
 												</ImageView>
-												<Label layoutX="85.0" layoutY="189.0" text="Left eye" />
+												<Label layoutX="85.0" layoutY="189.0" text="%lefteye" />
 											</children>
 										</AnchorPane>
 										<AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
 											<children>
-												<Label layoutX="24.0" layoutY="231.0" text="Quality%        :" />
-												<Label layoutX="24.0" layoutY="262.0" text="Threshold%    :" />
-												<Text fx:id="rightEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
-												<Text fx:id="rightIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="80%" />
+												<Label layoutX="24.0" layoutY="231.0" text="%quality" />
+												<Label layoutX="24.0" layoutY="262.0" text="%threshold" />
+												<Text fx:id="rightEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
+												<Text fx:id="rightIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%80%" />
 												<Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
-												<Label layoutX="88.0" layoutY="189.0" text="Right Eye" />
+												<Label layoutX="88.0" layoutY="189.0" text="%righteye" />
 												<ImageView fx:id="rightEye" fitHeight="109.0" fitWidth="198.0" layoutX="34.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
 													<image>
 														<Image url="@../images/leftEye.png" />
@@ -134,8 +134,8 @@
 						</TitledPane>
 					</content>
 				</TitledPane>
-				<Button fx:id="nextBtn" layoutX="793.0" layoutY="1000.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" styleClass="RegbuttonStyle" />
-				<Button fx:id="editBtn" layoutX="710.0" layoutY="1000.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" styleClass="RegbuttonStyle" />
+				<Button fx:id="nextBtn" layoutX="793.0" layoutY="1000.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="%next" styleClass="RegbuttonStyle" />
+				<Button fx:id="editBtn" layoutX="710.0" layoutY="1000.0" mnemonicParsing="false" onAction="#handleEdit" text="%edit" styleClass="RegbuttonStyle" />
 			</children>
 		</AnchorPane>
 	</content>

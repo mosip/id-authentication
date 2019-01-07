@@ -21,20 +21,20 @@
 				<Cursor fx:constant="HAND" />
 			</cursor>
 		</ImageView>
-		<Label layoutX="32.0" layoutY="5.0" text="/" />
-		<Label layoutX="42.0" layoutY="5.0" text="Device Onboarding" />
-		<Label layoutX="393.0" layoutY="20.0" text="Device Onboarding" textAlignment="CENTER">
+		<Label layoutX="32.0" layoutY="5.0" text="%/" />
+		<Label layoutX="42.0" layoutY="5.0" text="%deviceonboarding" />
+		<Label layoutX="393.0" layoutY="20.0" text="%deviceonboarding" textAlignment="CENTER">
 			<font>
 				<Font size="23.0" />
 			</font>
 		</Label>
-		<TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search">
+		<TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="%search">
 			<styleClass>
 				<String fx:value="inputFields" />
 				<String fx:value="inputFieldBottomBorder" />
 			</styleClass>
 		</TextField>
-		<ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="Device Type">
+		<ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="%devicetype">
 			<styleClass>
 				<String fx:value="inputFields" />
 				<String fx:value="inputFieldBottomBorder" />
@@ -42,23 +42,23 @@
 		</ComboBox>
 		<TableView fx:id="availableDevices" layoutX="10.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
 			<columns>
-				<TableColumn fx:id="availableDeviceName" minWidth="146.0" prefWidth="146.0" text="Manufacturer Name" />
-				<TableColumn fx:id="availableDeviceModel" minWidth="90.0" prefWidth="90.0" text="Model Name" />
-				<TableColumn fx:id="availableDeviceSerial" minWidth="80.0" prefWidth="80.0" text="Serial No." />
-				<TableColumn fx:id="availableDeviceType" minWidth="80.0" prefWidth="80.0" text="Type" />
+				<TableColumn fx:id="availableDeviceName" minWidth="146.0" prefWidth="146.0" text="%manufacturername" />
+				<TableColumn fx:id="availableDeviceModel" minWidth="90.0" prefWidth="90.0" text="%modelname" />
+				<TableColumn fx:id="availableDeviceSerial" minWidth="80.0" prefWidth="80.0" text="%serialno." />
+				<TableColumn fx:id="availableDeviceType" minWidth="80.0" prefWidth="80.0" text="%type" />
 			</columns>
 		</TableView>
 		<TableView fx:id="mappedDevices" layoutX="520.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
 			<columns>
-				<TableColumn fx:id="mappedDeviceName" minWidth="146.0" prefWidth="146.0" text="Manufacturer Name" />
-				<TableColumn fx:id="mappedDeviceModel" minWidth="90.0" prefWidth="90.0" text="Model Name" />
-				<TableColumn fx:id="mappedDeviceSerial" minWidth="80.0" prefWidth="80.0" text="Serial No." />
-				<TableColumn fx:id="mappedDeviceType" minWidth="80.0" prefWidth="80.0" text="Type" />
+				<TableColumn fx:id="mappedDeviceName" minWidth="146.0" prefWidth="146.0" text="%manufacturername" />
+				<TableColumn fx:id="mappedDeviceModel" minWidth="90.0" prefWidth="90.0" text="%modelname" />
+				<TableColumn fx:id="mappedDeviceSerial" minWidth="80.0" prefWidth="80.0" text="%serialno." />
+				<TableColumn fx:id="mappedDeviceType" minWidth="80.0" prefWidth="80.0" text="%type" />
 			</columns>
 		</TableView>
-		<Label layoutX="10.0" layoutY="107.0" text="Available Devices" />
-		<Label layoutX="531.0" layoutY="107.0" text="Mapped Devices" />
-		<Button fx:id="submitOnboardDevices" layoutX="885.0" layoutY="434.0" mnemonicParsing="false" onAction="#submit" text="Submit" textAlignment="CENTER">
+		<Label layoutX="10.0" layoutY="107.0" text="%availabledevices" />
+		<Label layoutX="531.0" layoutY="107.0" text="%mappeddevices" />
+		<Button fx:id="submitOnboardDevices" layoutX="885.0" layoutY="434.0" mnemonicParsing="false" onAction="#submit" text="%submit" textAlignment="CENTER">
 			<styleClass>
 				<String fx:value="inputFields" />
 				<String fx:value="inputFieldNoBorder" />

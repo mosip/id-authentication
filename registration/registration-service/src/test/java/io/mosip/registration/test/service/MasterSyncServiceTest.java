@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +44,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -76,7 +76,7 @@ public class MasterSyncServiceTest {
 
 	@Mock
 	ObjectMapper objectMapper;
-	
+
 	@Mock
 	private ServiceDelegateUtil serviceDelegateUtil;
 
@@ -192,7 +192,7 @@ public class MasterSyncServiceTest {
 		ResponseDTO responseDTO = new ResponseDTO();
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
-		String masterSyncJson="";
+		String masterSyncJson = "";
 		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
 
 		// Error response
@@ -209,13 +209,14 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class)).thenReturn(masterSyncDto);
+		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
+				.thenReturn(masterSyncDto);
 
 		Mockito.when(masterSyncDao.save(masterSyncDto)).thenReturn("");
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(IOException.class);
 		masterSyncServiceImpl.getMasterSync("MDS_J00001");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testExpectedNullException() throws JsonParseException, JsonMappingException, IOException {
@@ -223,7 +224,7 @@ public class MasterSyncServiceTest {
 		ResponseDTO responseDTO = new ResponseDTO();
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		MasterDataResponseDto masterSyncDto = new MasterDataResponseDto();
-		String masterSyncJson="";
+		String masterSyncJson = "";
 		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
 
 		// Error response
@@ -240,7 +241,8 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class)).thenReturn(masterSyncDto);
+		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
+				.thenReturn(masterSyncDto);
 
 		Mockito.when(masterSyncDao.save(masterSyncDto)).thenReturn("");
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(NullPointerException.class);
@@ -277,7 +279,7 @@ public class MasterSyncServiceTest {
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
 		masterSyncServiceImpl.getMasterSync("MDS_J00001");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testExpectedRunException() throws JsonParseException, JsonMappingException, IOException {
@@ -308,7 +310,7 @@ public class MasterSyncServiceTest {
 		when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenThrow(new RuntimeException().getClass());
 		masterSyncServiceImpl.getMasterSync("MDS_J00001");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testExpectedRegBasecheckedException() throws JsonParseException, JsonMappingException, IOException {
@@ -385,1445 +387,625 @@ public class MasterSyncServiceTest {
 		masterSyncDetails.setLangCode("eng");
 		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		String masterSyncJson="";
-		
-		String masterJson = "{\r\n" + 
-				"   \"registrationCenter\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"1\",\r\n" + 
-				"         \"name\": \"BangaloreMain\",\r\n" + 
-				"         \"centerTypeCode\": \"REG01\",\r\n" + 
-				"         \"addressLine1\": \"Global village\",\r\n" + 
-				"         \"addressLine2\": null,\r\n" + 
-				"         \"addressLine3\": null,\r\n" + 
-				"         \"latitude\": \"12.9180022\",\r\n" + 
-				"         \"longitude\": \"77.5028892\",\r\n" + 
-				"         \"locationCode\": \"LOC01\",\r\n" + 
-				"         \"holidayLocationCode\": \"LOC01\",\r\n" + 
-				"         \"contactPhone\": \"9348548\",\r\n" + 
-				"         \"numberOfStations\": null,\r\n" + 
-				"         \"workingHours\": \"8\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"numberOfKiosks\": 4,\r\n" + 
-				"         \"perKioskProcessTime\": \"00:13:00\",\r\n" + 
-				"         \"centerStartTime\": \"09:00:00\",\r\n" + 
-				"         \"centerEndTime\": \"17:00:00\",\r\n" + 
-				"         \"timeZone\": null,\r\n" + 
-				"         \"contactPerson\": null,\r\n" + 
-				"         \"lunchStartTime\": \"13:00:00\",\r\n" + 
-				"         \"lunchEndTime\": \"14:00:00\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"registrationCenterTypes\": null,\r\n" + 
-				"   \"machineDetails\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"HP\",\r\n" + 
-				"         \"name\": \"HP\",\r\n" + 
-				"         \"serialNum\": \"12345\",\r\n" + 
-				"         \"macAddress\": null,\r\n" + 
-				"         \"ipAddress\": \"127.01.01.01\",\r\n" + 
-				"         \"machineSpecId\": \"HP_ID\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"validityDateTime\": \"2022-11-15T22:55:42\",\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"machineSpecification\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"HP_ID\",\r\n" + 
-				"         \"name\": \"HP\",\r\n" + 
-				"         \"brand\": \"HP\",\r\n" + 
-				"         \"model\": \"Intel\",\r\n" + 
-				"         \"machineTypeCode\": \"1001\",\r\n" + 
-				"         \"minDriverversion\": \"0.05\",\r\n" + 
-				"         \"description\": \"HP laptop\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"machineType\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"1001\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"name\": \"HP\",\r\n" + 
-				"         \"description\": \"HP laptop\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"devices\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"1001\",\r\n" + 
-				"         \"name\": \"laptop\",\r\n" + 
-				"         \"serialNum\": \"1234\",\r\n" + 
-				"         \"deviceSpecId\": \"laptop_id\",\r\n" + 
-				"         \"macAddress\": \"127.01.01.01\",\r\n" + 
-				"         \"ipAddress\": \"127.01.01.01\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"active\": false\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"deviceTypes\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"laptop_code\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"name\": \"Laptop\",\r\n" + 
-				"         \"description\": \"laptop hp\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"deviceSpecifications\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"laptop_id\",\r\n" + 
-				"         \"name\": \"laptop\",\r\n" + 
-				"         \"brand\": \"HP\",\r\n" + 
-				"         \"model\": \"HP\",\r\n" + 
-				"         \"deviceTypeCode\": \"laptop_code\",\r\n" + 
-				"         \"minDriverversion\": \"10.0\",\r\n" + 
-				"         \"description\": \"hp laptop\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"holidays\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"holidayId\": \"0\",\r\n" + 
-				"         \"holidayDate\": \"2012-06-21\",\r\n" + 
-				"         \"holidayDay\": \"4\",\r\n" + 
-				"         \"holidayMonth\": \"6\",\r\n" + 
-				"         \"holidayYear\": \"2012\",\r\n" + 
-				"         \"holidayName\": \"string\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"locationCode\": \"LOC01\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"holidayId\": \"4\",\r\n" + 
-				"         \"holidayDate\": \"2017-12-12\",\r\n" + 
-				"         \"holidayDay\": \"2\",\r\n" + 
-				"         \"holidayMonth\": \"12\",\r\n" + 
-				"         \"holidayYear\": \"2017\",\r\n" + 
-				"         \"holidayName\": \"string\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"locationCode\": \"LOC01\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"holidayId\": \"56\",\r\n" + 
-				"         \"holidayDate\": \"1994-12-12\",\r\n" + 
-				"         \"holidayDay\": \"1\",\r\n" + 
-				"         \"holidayMonth\": \"12\",\r\n" + 
-				"         \"holidayYear\": \"1994\",\r\n" + 
-				"         \"holidayName\": \"string\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"locationCode\": \"LOC01\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"holidayId\": \"5\",\r\n" + 
-				"         \"holidayDate\": \"2018-10-21\",\r\n" + 
-				"         \"holidayDay\": \"7\",\r\n" + 
-				"         \"holidayMonth\": \"10\",\r\n" + 
-				"         \"holidayYear\": \"2018\",\r\n" + 
-				"         \"holidayName\": \"string\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"locationCode\": \"LOC01\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"documentCategories\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"string\",\r\n" + 
-				"         \"name\": \"Proof of adress\",\r\n" + 
-				"         \"description\": \"Address\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"string\",\r\n" + 
-				"         \"name\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"str\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"st5ing\",\r\n" + 
-				"         \"name\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"str\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POR\",\r\n" + 
-				"         \"name\": \"Residency\",\r\n" + 
-				"         \"description\": \"Proof of residency\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsu\",\r\n" + 
-				"         \"name\": \"Residency\",\r\n" + 
-				"         \"description\": \"code length 35\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsua\",\r\n" + 
-				"         \"name\": \"Residency\",\r\n" + 
-				"         \"description\": \"code length 36\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POP\",\r\n" + 
-				"         \"name\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwace\",\r\n" + 
-				"         \"description\": \"name length 63\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POP\",\r\n" + 
-				"         \"name\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwace\",\r\n" + 
-				"         \"description\": \"name length 63\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POJ\",\r\n" + 
-				"         \"name\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwaceg\",\r\n" + 
-				"         \"description\": \"name length 64\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POM\",\r\n" + 
-				"         \"name\": \"description missing\",\r\n" + 
-				"         \"description\": \"\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"PON\",\r\n" + 
-				"         \"name\": \"description 128\",\r\n" + 
-				"         \"description\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmo\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POL\",\r\n" + 
-				"         \"name\": \"description 127\",\r\n" + 
-				"         \"description\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikm\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA\",\r\n" + 
-				"         \"name\": \"Proof of adress\",\r\n" + 
-				"         \"description\": \"Address\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\",\r\n" + 
-				"         \"name\": \"Proof of adress\",\r\n" + 
-				"         \"description\": \"Address\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POI\",\r\n" + 
-				"         \"name\": \"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\",\r\n" + 
-				"         \"description\": \"Address\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POB\",\r\n" + 
-				"         \"name\": \"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\",\r\n" + 
-				"         \"description\": \"Adgahsg hdfhkjhf hfkajfh af hdfkjhdaf  hdjakf adkfa hjkdafh dafad kdajfhkdafh  hakdfh afk fgah g gsgashgaksdaskddksad ksjdhaks q\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"documentTypes\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA05\",\r\n" + 
-				"         \"name\": \"DL\",\r\n" + 
-				"         \"description\": \"Driving Licence\",\r\n" + 
-				"         \"langCode\": \"EN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"string\",\r\n" + 
-				"         \"name\": \"Proof of adress\",\r\n" + 
-				"         \"description\": \"Address\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA\",\r\n" + 
-				"         \"name\": \"Rental Agreement\",\r\n" + 
-				"         \"description\": \"proof of address\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA01\",\r\n" + 
-				"         \"name\": \"Rental Agreement\",\r\n" + 
-				"         \"description\": \"Rental Agreement\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA02\",\r\n" + 
-				"         \"name\": \"Passport\",\r\n" + 
-				"         \"description\": \"Passport\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA03\",\r\n" + 
-				"         \"name\": \"Passport\",\r\n" + 
-				"         \"description\": \"Passport\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"POA04\",\r\n" + 
-				"         \"name\": \"Driving Licence\",\r\n" + 
-				"         \"description\": \"Driving Licence\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"validDocumentMapping\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"docTypeCode\": \"string\",\r\n" + 
-				"         \"docCategoryCode\": \"string\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"docTypeCode\": \"POA01\",\r\n" + 
-				"         \"docCategoryCode\": \"POA\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"docTypeCode\": \"POA02\",\r\n" + 
-				"         \"docCategoryCode\": \"POA\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"docTypeCode\": \"POA03\",\r\n" + 
-				"         \"docCategoryCode\": \"POA\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"docTypeCode\": \"POA04\",\r\n" + 
-				"         \"docCategoryCode\": \"POA\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"templates\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"SMS\",\r\n" + 
-				"         \"name\": \"SMS template\",\r\n" + 
-				"         \"description\": \"SMS template to mobile\",\r\n" + 
-				"         \"fileFormatCode\": \"TEXT\",\r\n" + 
-				"         \"model\": \"PRE-reg\",\r\n" + 
-				"         \"fileText\": \"\",\r\n" + 
-				"         \"moduleId\": \"PRE\",\r\n" + 
-				"         \"moduleName\": \"Pre-Registration\",\r\n" + 
-				"         \"templateTypeCode\": \"SMS type\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"SMS1\",\r\n" + 
-				"         \"name\": \"SMS template\",\r\n" + 
-				"         \"description\": \"SMS template to mobile\",\r\n" + 
-				"         \"fileFormatCode\": \"JSON\",\r\n" + 
-				"         \"model\": \"reg-proc model\",\r\n" + 
-				"         \"fileText\": \"\",\r\n" + 
-				"         \"moduleId\": \"REGPR\",\r\n" + 
-				"         \"moduleName\": \"Registration-Processor\",\r\n" + 
-				"         \"templateTypeCode\": \"SMS type\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"EMAIL\",\r\n" + 
-				"         \"name\": \"Email template\",\r\n" + 
-				"         \"description\": \"Email template to mobile\",\r\n" + 
-				"         \"fileFormatCode\": \"HTML\",\r\n" + 
-				"         \"model\": \"reg model\",\r\n" + 
-				"         \"fileText\": \"\",\r\n" + 
-				"         \"moduleId\": \"REG\",\r\n" + 
-				"         \"moduleName\": \"Registration\",\r\n" + 
-				"         \"templateTypeCode\": \"EMAIL type\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"EMAIL1\",\r\n" + 
-				"         \"name\": \"Email template\",\r\n" + 
-				"         \"description\": \"Email template to mobile\",\r\n" + 
-				"         \"fileFormatCode\": \"XML\",\r\n" + 
-				"         \"model\": \"ida model\",\r\n" + 
-				"         \"fileText\": \"\",\r\n" + 
-				"         \"moduleId\": \"IDA\",\r\n" + 
-				"         \"moduleName\": \"IDA module\",\r\n" + 
-				"         \"templateTypeCode\": \"EMAIL type\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"id\": \"ida-otp-sms-template.txt\",\r\n" + 
-				"         \"name\": \"Sample IDA OTP SMS Template\",\r\n" + 
-				"         \"description\": \"ID Authentication OTP SMS template\",\r\n" + 
-				"         \"fileFormatCode\": \"TEXT\",\r\n" + 
-				"         \"model\": \"dev\",\r\n" + 
-				"         \"fileText\": \"OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs)\",\r\n" + 
-				"         \"moduleId\": \"IDA\",\r\n" + 
-				"         \"moduleName\": \"ID Authentication\",\r\n" + 
-				"         \"templateTypeCode\": \"SMS type\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"templatesTypes\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"SMS type\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"description\": \"SMS template type\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"EMAIL type\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"description\": \"EMAIl template type\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"SMS type\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"description\": \"SMS template type\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"EMAIL type\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"description\": \"EMAIl template type\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"templateFileFormat\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"TEXT\",\r\n" + 
-				"         \"description\": \"Text file format \",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"HTML\",\r\n" + 
-				"         \"description\": \"HTML file format\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"JSON\",\r\n" + 
-				"         \"description\": \"JSON file format\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"XML\",\r\n" + 
-				"         \"description\": \"XML file format\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"reasonCategory\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"DEMO\",\r\n" + 
-				"         \"name\": \"Demogrphic is not valid\",\r\n" + 
-				"         \"description\": \"Pincode is not valid\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"DOCUMENTS\",\r\n" + 
-				"         \"name\": \"Document is not valid\",\r\n" + 
-				"         \"description\": \"poa is not valid\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"IRIS\",\r\n" + 
-				"         \"name\": \"Iris scan is missing\",\r\n" + 
-				"         \"description\": \"Iris scan is missing\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"Biometric\",\r\n" + 
-				"         \"name\": \"Biometric scan is missing\",\r\n" + 
-				"         \"description\": \"Biometric scan is missing\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"Biometric\",\r\n" + 
-				"         \"name\": \"Biometric scan is missing\",\r\n" + 
-				"         \"description\": \" Biometric scan is missing\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"reasonList\": null,\r\n" + 
-				"   \"blackListedWords\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"black6\",\r\n" + 
-				"         \"description\": \"blacklistedword6\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"black\",\r\n" + 
-				"         \"description\": \"blacklistedword\",\r\n" + 
-				"         \"langCode\": \"HIN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"black3\",\r\n" + 
-				"         \"description\": \"blacklistedword3\",\r\n" + 
-				"         \"langCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"black2\",\r\n" + 
-				"         \"description\": \"blacklistedword2\",\r\n" + 
-				"         \"langCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"black5\",\r\n" + 
-				"         \"description\": \"blacklistedword5\",\r\n" + 
-				"         \"langCode\": \"eng\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"black4\",\r\n" + 
-				"         \"description\": \"blacklistedword4\",\r\n" + 
-				"         \"langCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"123\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"786\",\r\n" + 
-				"         \"description\": \"arabic number\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"abcdefghijklmnopqrstuvwxyabcdefghijk\",\r\n" + 
-				"         \"description\": \"code length 36\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"abcdefghijklmnopqrstuvwxyabcdefghij\",\r\n" + 
-				"         \"description\": \"code length 36\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"abcdefghijklmnopqrstuvwxyabcdefghijkl\",\r\n" + 
-				"         \"description\": \"code length 36\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"dove\",\r\n" + 
-				"         \"description\": \"code length 37\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": false,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"123\",\r\n" + 
-				"         \"description\": \"is active is missing\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"plane\",\r\n" + 
-				"         \"description\": \"13\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"SAMPLE_WORD\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"${uniqueStr}\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"FQlxnvvxwaoGJLXvXdsXuATgOeqFUkIo\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"dSnWuAsURsAlruCvAzMdSfBHGmuNRWva\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"nLLSiFykpDmcikJJygONNBFRsLPouTZd\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"OudWVLukISoAWdaGimTBqaiiZTMQBNQr\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"EdGcmIdcFxLmyPkFqnpJTvJSmvuPyxzw\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"usqtZBVHeDXdKLTHGRPNnvaHZPKLGNAl\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"${extcode1}\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"${randomstring}\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"TrtTeDXbHwfxZeUKeZPKECwZlWnrOOaO\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"vTPFkPxLixMkEEKmnpksAZWftBuRCGPy\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"yrpMBCqPBNncbqepfCkSlTIOcngHLdRE\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"novHVGCGAxJwAXoVXpvffrZfDgWuBTlK\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"xaxfplvhnigsfph\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"fvwsrzmalqofmqy\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"kesmwycciqyqblf\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"lxfhymqsjxyycrc\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"kalirmoisculedx\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"mffjsffiqroxglm\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"haiiipgonvlzjka\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"vvluwxexllyvrvs\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"word\": \"acnpaljakoxuvtm\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"locationHierarchy\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"LOC09\",\r\n" + 
-				"         \"name\": \"string\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"string\",\r\n" + 
-				"         \"parentLocCode\": \"string\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": \"defaultadmin@mosip.io\"\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"TTK\",\r\n" + 
-				"         \"name\": \"TTK\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"ZIPCODE\",\r\n" + 
-				"         \"parentLocCode\": \"IND\",\r\n" + 
-				"         \"languageCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"TN\",\r\n" + 
-				"         \"name\": \"TamilNadu\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"STATE\",\r\n" + 
-				"         \"parentLocCode\": \"IND\",\r\n" + 
-				"         \"languageCode\": \"TAM\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": \"defaultadmin@mosip.io\"\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"IND\",\r\n" + 
-				"         \"name\": \"India\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"Country\",\r\n" + 
-				"         \"parentLocCode\": null,\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"BLR\",\r\n" + 
-				"         \"name\": \"Bangalore\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"city\",\r\n" + 
-				"         \"parentLocCode\": \"IND\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": \"Rajath\"\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"RRN\",\r\n" + 
-				"         \"name\": \"Rajarajeshwari Nagar\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"province\",\r\n" + 
-				"         \"parentLocCode\": \"BLR\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": \"Rajath\"\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"BBMP\",\r\n" + 
-				"         \"name\": \"BBMP\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"local admin autority\",\r\n" + 
-				"         \"parentLocCode\": \"RRN\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": \"Rajath\"\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"POSTAL_CODE\",\r\n" + 
-				"         \"name\": \"560059\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"Postal Code\",\r\n" + 
-				"         \"parentLocCode\": \"RRN\",\r\n" + 
-				"         \"languageCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": \"Rajath\"\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"KER\",\r\n" + 
-				"         \"name\": \"KERALA\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"STATE\",\r\n" + 
-				"         \"parentLocCode\": \"IND\",\r\n" + 
-				"         \"languageCode\": \"MAL\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"KAR\",\r\n" + 
-				"         \"name\": \"Karnataka\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"Region\",\r\n" + 
-				"         \"parentLocCode\": \"IND\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"MH\",\r\n" + 
-				"         \"name\": \"Maharastra\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"Region\",\r\n" + 
-				"         \"parentLocCode\": \"IND\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"RCH\",\r\n" + 
-				"         \"name\": \"Raichur\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"Province\",\r\n" + 
-				"         \"parentLocCode\": \"KAR\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"MSK\",\r\n" + 
-				"         \"name\": \"Maski\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"City\",\r\n" + 
-				"         \"parentLocCode\": \"RCH\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"MNC\",\r\n" + 
-				"         \"name\": \"Municipal\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"LocalAuthority\",\r\n" + 
-				"         \"parentLocCode\": \"MSK\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"584124\",\r\n" + 
-				"         \"name\": \"PinCode\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"PostalCode\",\r\n" + 
-				"         \"parentLocCode\": \"MSK\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"SIN\",\r\n" + 
-				"         \"name\": \"Sindhanur\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"City\",\r\n" + 
-				"         \"parentLocCode\": \"RCH\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"584128\",\r\n" + 
-				"         \"name\": \"PinCode\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"PostalCode\",\r\n" + 
-				"         \"parentLocCode\": \"SIN\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"isDeleted\": null,\r\n" + 
-				"         \"code\": \"KPL\",\r\n" + 
-				"         \"name\": \"koppal\",\r\n" + 
-				"         \"hierarchyLevel\": 0,\r\n" + 
-				"         \"hierarchyName\": \"Province\",\r\n" + 
-				"         \"parentLocCode\": \"KAR\",\r\n" + 
-				"         \"languageCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"createdBy\": \"Arun\",\r\n" + 
-				"         \"updatedBy\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"biometricattributes\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"string\",\r\n" + 
-				"         \"name\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"biometricTypeCode\": \"0101114122\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"12345\",\r\n" + 
-				"         \"name\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"biometricTypeCode\": \"0101114122\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"0101114122\",\r\n" + 
-				"         \"name\": \"string\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"biometricTypeCode\": \"0101114122\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"LTH\",\r\n" + 
-				"         \"name\": \"left thumb\",\r\n" + 
-				"         \"description\": \"left thumb\",\r\n" + 
-				"         \"biometricTypeCode\": \"LTH\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuw\",\r\n" + 
-				"         \"name\": \"left thumb\",\r\n" + 
-				"         \"description\": \"code length 36\",\r\n" + 
-				"         \"biometricTypeCode\": \"LTH\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsu\",\r\n" + 
-				"         \"name\": \"left thumb\",\r\n" + 
-				"         \"description\": \"code length 36\",\r\n" + 
-				"         \"biometricTypeCode\": \"LTH\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"LIR\",\r\n" + 
-				"         \"name\": \"abcdefghijklmnopqrstuvwxabcdefghijklmnopqrstuvwxabcdefghijklmnop\",\r\n" + 
-				"         \"description\": \"code length 37\",\r\n" + 
-				"         \"biometricTypeCode\": \"LIR\",\r\n" + 
-				"         \"langCode\": \"ARB\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"LIR\",\r\n" + 
-				"         \"name\": \"abcdefghijklmnopqrstuvwxabcdefghijklmnopqrstuvwxabcdefghijklmno\",\r\n" + 
-				"         \"description\": \"name length 63\",\r\n" + 
-				"         \"biometricTypeCode\": \"LIR\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"biometricTypes\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"01011151242\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Left_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"010111212426\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Right_finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"010111312426\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Index_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"0101111126\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Left_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"0101114126\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Middle_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"010111212226\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Right_finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"010111512226\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Left_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"0101111312226\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Left_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"0101114312226\",\r\n" + 
-				"         \"name\": \"Kumar\",\r\n" + 
-				"         \"description\": \"Middle_Finger\",\r\n" + 
-				"         \"langCode\": \"ASG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"applications\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111586\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111588\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111593\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111594\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111592\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111590\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"11111595\",\r\n" + 
-				"         \"name\": \"Pre_Reg\",\r\n" + 
-				"         \"description\": \"string\",\r\n" + 
-				"         \"langCode\": \"ard\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"idTypes\": null,\r\n" + 
-				"   \"titles\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"LOGIN\",\r\n" + 
-				"         \"titleName\": \"LoginPage\",\r\n" + 
-				"         \"titleDescription\": \"login page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"HOME\",\r\n" + 
-				"         \"titleName\": \"HomePage\",\r\n" + 
-				"         \"titleDescription\": \"Home page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"REG\",\r\n" + 
-				"         \"titleName\": \"RegistrationPage\",\r\n" + 
-				"         \"titleDescription\": \"Registration page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"DEMO\",\r\n" + 
-				"         \"titleName\": \"DemographicPage\",\r\n" + 
-				"         \"titleDescription\": \"Demographic page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"UPLOAD\",\r\n" + 
-				"         \"titleName\": \"FileUpload\",\r\n" + 
-				"         \"titleDescription\": \"file upload page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"LOGIN\",\r\n" + 
-				"         \"titleName\": \"LoginPage\",\r\n" + 
-				"         \"titleDescription\": \"login page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"HOME\",\r\n" + 
-				"         \"titleName\": \"HomePage\",\r\n" + 
-				"         \"titleDescription\": \"Home page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"REG\",\r\n" + 
-				"         \"titleName\": \"RegistrationPage\",\r\n" + 
-				"         \"titleDescription\": \"Registration page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"DEMO\",\r\n" + 
-				"         \"titleName\": \"DemographicPage\",\r\n" + 
-				"         \"titleDescription\": \"Demographic page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"UPLOAD\",\r\n" + 
-				"         \"titleName\": \"FileUpload\",\r\n" + 
-				"         \"titleDescription\": \"file upload page\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": false\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"genders\": [\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"OTH\",\r\n" + 
-				"         \"genderName\": \"OTHERS\",\r\n" + 
-				"         \"langCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"FE\",\r\n" + 
-				"         \"genderName\": \"FEMALE\",\r\n" + 
-				"         \"langCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"M\",\r\n" + 
-				"         \"genderName\": \"MALE\",\r\n" + 
-				"         \"langCode\": \"KAN\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"m\",\r\n" + 
-				"         \"genderName\": \"MALE\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"fe\",\r\n" + 
-				"         \"genderName\": \"FEMALE\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"oth\",\r\n" + 
-				"         \"genderName\": \"OTHERS\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"1234567890123456\",\r\n" + 
-				"         \"genderName\": \"OTHERS\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"M\",\r\n" + 
-				"         \"genderName\": \"MALE\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"ENG\",\r\n" + 
-				"         \"genderName\": \"string\",\r\n" + 
-				"         \"langCode\": \"ENG\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"M\",\r\n" + 
-				"         \"genderName\": \"Male\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"jklmnopqrstuvwx\",\r\n" + 
-				"         \"genderName\": \"Male\",\r\n" + 
-				"         \"langCode\": \"FRE\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"jklmnopqrstuvwxy\",\r\n" + 
-				"         \"genderName\": \"Male\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"M\",\r\n" + 
-				"         \"genderName\": \"abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklm\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"F\",\r\n" + 
-				"         \"genderName\": \"abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmn\",\r\n" + 
-				"         \"langCode\": \"fre\",\r\n" + 
-				"         \"isActive\": true,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      },\r\n" + 
-				"      {\r\n" + 
-				"         \"code\": \"Fem\",\r\n" + 
-				"         \"genderName\": \"Female\",\r\n" + 
-				"         \"langCode\": \"arb\",\r\n" + 
-				"         \"isActive\": false,\r\n" + 
-				"         \"isDeleted\": null\r\n" + 
-				"      }\r\n" + 
-				"   ],\r\n" + 
-				"   \"languages\": null\r\n" + 
-				"}";
+		String masterSyncJson = "";
+
+		String masterJson = "{\r\n" + "   \"registrationCenter\": [\r\n" + "      {\r\n" + "         \"id\": \"1\",\r\n"
+				+ "         \"name\": \"BangaloreMain\",\r\n" + "         \"centerTypeCode\": \"REG01\",\r\n"
+				+ "         \"addressLine1\": \"Global village\",\r\n" + "         \"addressLine2\": null,\r\n"
+				+ "         \"addressLine3\": null,\r\n" + "         \"latitude\": \"12.9180022\",\r\n"
+				+ "         \"longitude\": \"77.5028892\",\r\n" + "         \"locationCode\": \"LOC01\",\r\n"
+				+ "         \"holidayLocationCode\": \"LOC01\",\r\n" + "         \"contactPhone\": \"9348548\",\r\n"
+				+ "         \"numberOfStations\": null,\r\n" + "         \"workingHours\": \"8\",\r\n"
+				+ "         \"languageCode\": \"ENG\",\r\n" + "         \"numberOfKiosks\": 4,\r\n"
+				+ "         \"perKioskProcessTime\": \"00:13:00\",\r\n"
+				+ "         \"centerStartTime\": \"09:00:00\",\r\n" + "         \"centerEndTime\": \"17:00:00\",\r\n"
+				+ "         \"timeZone\": null,\r\n" + "         \"contactPerson\": null,\r\n"
+				+ "         \"lunchStartTime\": \"13:00:00\",\r\n" + "         \"lunchEndTime\": \"14:00:00\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": false\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"registrationCenterTypes\": null,\r\n" + "   \"machineDetails\": [\r\n" + "      {\r\n"
+				+ "         \"id\": \"HP\",\r\n" + "         \"name\": \"HP\",\r\n"
+				+ "         \"serialNum\": \"12345\",\r\n" + "         \"macAddress\": null,\r\n"
+				+ "         \"ipAddress\": \"127.01.01.01\",\r\n" + "         \"machineSpecId\": \"HP_ID\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"validityDateTime\": \"2022-11-15T22:55:42\",\r\n" + "         \"isDeleted\": false\r\n"
+				+ "      }\r\n" + "   ],\r\n" + "   \"machineSpecification\": [\r\n" + "      {\r\n"
+				+ "         \"id\": \"HP_ID\",\r\n" + "         \"name\": \"HP\",\r\n"
+				+ "         \"brand\": \"HP\",\r\n" + "         \"model\": \"Intel\",\r\n"
+				+ "         \"machineTypeCode\": \"1001\",\r\n" + "         \"minDriverversion\": \"0.05\",\r\n"
+				+ "         \"description\": \"HP laptop\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"machineType\": [\r\n" + "      {\r\n" + "         \"code\": \"1001\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"name\": \"HP\",\r\n"
+				+ "         \"description\": \"HP laptop\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n" + "   \"devices\": [\r\n"
+				+ "      {\r\n" + "         \"id\": \"1001\",\r\n" + "         \"name\": \"laptop\",\r\n"
+				+ "         \"serialNum\": \"1234\",\r\n" + "         \"deviceSpecId\": \"laptop_id\",\r\n"
+				+ "         \"macAddress\": \"127.01.01.01\",\r\n" + "         \"ipAddress\": \"127.01.01.01\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isDeleted\": null,\r\n"
+				+ "         \"active\": false\r\n" + "      }\r\n" + "   ],\r\n" + "   \"deviceTypes\": [\r\n"
+				+ "      {\r\n" + "         \"code\": \"laptop_code\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"name\": \"Laptop\",\r\n" + "         \"description\": \"laptop hp\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"deviceSpecifications\": [\r\n" + "      {\r\n" + "         \"id\": \"laptop_id\",\r\n"
+				+ "         \"name\": \"laptop\",\r\n" + "         \"brand\": \"HP\",\r\n"
+				+ "         \"model\": \"HP\",\r\n" + "         \"deviceTypeCode\": \"laptop_code\",\r\n"
+				+ "         \"minDriverversion\": \"10.0\",\r\n" + "         \"description\": \"hp laptop\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      }\r\n" + "   ],\r\n" + "   \"holidays\": [\r\n"
+				+ "      {\r\n" + "         \"holidayId\": \"0\",\r\n" + "         \"holidayDate\": \"2012-06-21\",\r\n"
+				+ "         \"holidayDay\": \"4\",\r\n" + "         \"holidayMonth\": \"6\",\r\n"
+				+ "         \"holidayYear\": \"2012\",\r\n" + "         \"holidayName\": \"string\",\r\n"
+				+ "         \"languageCode\": \"ENG\",\r\n" + "         \"locationCode\": \"LOC01\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"holidayId\": \"4\",\r\n" + "         \"holidayDate\": \"2017-12-12\",\r\n"
+				+ "         \"holidayDay\": \"2\",\r\n" + "         \"holidayMonth\": \"12\",\r\n"
+				+ "         \"holidayYear\": \"2017\",\r\n" + "         \"holidayName\": \"string\",\r\n"
+				+ "         \"languageCode\": \"ENG\",\r\n" + "         \"locationCode\": \"LOC01\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"holidayId\": \"56\",\r\n"
+				+ "         \"holidayDate\": \"1994-12-12\",\r\n" + "         \"holidayDay\": \"1\",\r\n"
+				+ "         \"holidayMonth\": \"12\",\r\n" + "         \"holidayYear\": \"1994\",\r\n"
+				+ "         \"holidayName\": \"string\",\r\n" + "         \"languageCode\": \"ENG\",\r\n"
+				+ "         \"locationCode\": \"LOC01\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"holidayId\": \"5\",\r\n" + "         \"holidayDate\": \"2018-10-21\",\r\n"
+				+ "         \"holidayDay\": \"7\",\r\n" + "         \"holidayMonth\": \"10\",\r\n"
+				+ "         \"holidayYear\": \"2018\",\r\n" + "         \"holidayName\": \"string\",\r\n"
+				+ "         \"languageCode\": \"ENG\",\r\n" + "         \"locationCode\": \"LOC01\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"documentCategories\": [\r\n" + "      {\r\n" + "         \"code\": \"string\",\r\n"
+				+ "         \"name\": \"Proof of adress\",\r\n" + "         \"description\": \"Address\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"string\",\r\n" + "         \"name\": \"string\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"str\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"st5ing\",\r\n" + "         \"name\": \"string\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"str\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POR\",\r\n" + "         \"name\": \"Residency\",\r\n"
+				+ "         \"description\": \"Proof of residency\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsu\",\r\n"
+				+ "         \"name\": \"Residency\",\r\n" + "         \"description\": \"code length 35\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsua\",\r\n"
+				+ "         \"name\": \"Residency\",\r\n" + "         \"description\": \"code length 36\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"POP\",\r\n"
+				+ "         \"name\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwace\",\r\n"
+				+ "         \"description\": \"name length 63\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POP\",\r\n"
+				+ "         \"name\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwace\",\r\n"
+				+ "         \"description\": \"name length 63\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POJ\",\r\n"
+				+ "         \"name\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwaceg\",\r\n"
+				+ "         \"description\": \"name length 64\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POM\",\r\n" + "         \"name\": \"description missing\",\r\n"
+				+ "         \"description\": \"\",\r\n" + "         \"langCode\": \"arb\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"PON\",\r\n" + "         \"name\": \"description 128\",\r\n"
+				+ "         \"description\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmo\",\r\n"
+				+ "         \"langCode\": \"arb\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"POL\",\r\n" + "         \"name\": \"description 127\",\r\n"
+				+ "         \"description\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikmoqsuwacegikm\",\r\n"
+				+ "         \"langCode\": \"arb\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"POA\",\r\n" + "         \"name\": \"Proof of adress\",\r\n"
+				+ "         \"description\": \"Address\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\",\r\n"
+				+ "         \"name\": \"Proof of adress\",\r\n" + "         \"description\": \"Address\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"POI\",\r\n"
+				+ "         \"name\": \"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\",\r\n"
+				+ "         \"description\": \"Address\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POB\",\r\n"
+				+ "         \"name\": \"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\",\r\n"
+				+ "         \"description\": \"Adgahsg hdfhkjhf hfkajfh af hdfkjhdaf  hdjakf adkfa hjkdafh dafad kdajfhkdafh  hakdfh afk fgah g gsgashgaksdaskddksad ksjdhaks q\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n" + "   \"documentTypes\": [\r\n"
+				+ "      {\r\n" + "         \"code\": \"POA05\",\r\n" + "         \"name\": \"DL\",\r\n"
+				+ "         \"description\": \"Driving Licence\",\r\n" + "         \"langCode\": \"EN\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"string\",\r\n" + "         \"name\": \"Proof of adress\",\r\n"
+				+ "         \"description\": \"Address\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POA\",\r\n" + "         \"name\": \"Rental Agreement\",\r\n"
+				+ "         \"description\": \"proof of address\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POA01\",\r\n" + "         \"name\": \"Rental Agreement\",\r\n"
+				+ "         \"description\": \"Rental Agreement\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POA02\",\r\n" + "         \"name\": \"Passport\",\r\n"
+				+ "         \"description\": \"Passport\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POA03\",\r\n" + "         \"name\": \"Passport\",\r\n"
+				+ "         \"description\": \"Passport\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"POA04\",\r\n" + "         \"name\": \"Driving Licence\",\r\n"
+				+ "         \"description\": \"Driving Licence\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"validDocumentMapping\": [\r\n" + "      {\r\n" + "         \"docTypeCode\": \"string\",\r\n"
+				+ "         \"docCategoryCode\": \"string\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"docTypeCode\": \"POA01\",\r\n"
+				+ "         \"docCategoryCode\": \"POA\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"docTypeCode\": \"POA02\",\r\n"
+				+ "         \"docCategoryCode\": \"POA\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"docTypeCode\": \"POA03\",\r\n"
+				+ "         \"docCategoryCode\": \"POA\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"docTypeCode\": \"POA04\",\r\n"
+				+ "         \"docCategoryCode\": \"POA\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"templates\": [\r\n" + "      {\r\n" + "         \"id\": \"SMS\",\r\n"
+				+ "         \"name\": \"SMS template\",\r\n"
+				+ "         \"description\": \"SMS template to mobile\",\r\n"
+				+ "         \"fileFormatCode\": \"TEXT\",\r\n" + "         \"model\": \"PRE-reg\",\r\n"
+				+ "         \"fileText\": \"\",\r\n" + "         \"moduleId\": \"PRE\",\r\n"
+				+ "         \"moduleName\": \"Pre-Registration\",\r\n"
+				+ "         \"templateTypeCode\": \"SMS type\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"id\": \"SMS1\",\r\n" + "         \"name\": \"SMS template\",\r\n"
+				+ "         \"description\": \"SMS template to mobile\",\r\n"
+				+ "         \"fileFormatCode\": \"JSON\",\r\n" + "         \"model\": \"reg-proc model\",\r\n"
+				+ "         \"fileText\": \"\",\r\n" + "         \"moduleId\": \"REGPR\",\r\n"
+				+ "         \"moduleName\": \"Registration-Processor\",\r\n"
+				+ "         \"templateTypeCode\": \"SMS type\",\r\n" + "         \"langCode\": \"ARB\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"id\": \"EMAIL\",\r\n" + "         \"name\": \"Email template\",\r\n"
+				+ "         \"description\": \"Email template to mobile\",\r\n"
+				+ "         \"fileFormatCode\": \"HTML\",\r\n" + "         \"model\": \"reg model\",\r\n"
+				+ "         \"fileText\": \"\",\r\n" + "         \"moduleId\": \"REG\",\r\n"
+				+ "         \"moduleName\": \"Registration\",\r\n"
+				+ "         \"templateTypeCode\": \"EMAIL type\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"id\": \"EMAIL1\",\r\n" + "         \"name\": \"Email template\",\r\n"
+				+ "         \"description\": \"Email template to mobile\",\r\n"
+				+ "         \"fileFormatCode\": \"XML\",\r\n" + "         \"model\": \"ida model\",\r\n"
+				+ "         \"fileText\": \"\",\r\n" + "         \"moduleId\": \"IDA\",\r\n"
+				+ "         \"moduleName\": \"IDA module\",\r\n" + "         \"templateTypeCode\": \"EMAIL type\",\r\n"
+				+ "         \"langCode\": \"arb\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"id\": \"ida-otp-sms-template.txt\",\r\n"
+				+ "         \"name\": \"Sample IDA OTP SMS Template\",\r\n"
+				+ "         \"description\": \"ID Authentication OTP SMS template\",\r\n"
+				+ "         \"fileFormatCode\": \"TEXT\",\r\n" + "         \"model\": \"dev\",\r\n"
+				+ "         \"fileText\": \"OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs)\",\r\n"
+				+ "         \"moduleId\": \"IDA\",\r\n" + "         \"moduleName\": \"ID Authentication\",\r\n"
+				+ "         \"templateTypeCode\": \"SMS type\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"templatesTypes\": [\r\n" + "      {\r\n" + "         \"code\": \"SMS type\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"description\": \"SMS template type\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"EMAIL type\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"description\": \"EMAIl template type\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"SMS type\",\r\n" + "         \"langCode\": \"ARB\",\r\n"
+				+ "         \"description\": \"SMS template type\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"EMAIL type\",\r\n" + "         \"langCode\": \"arb\",\r\n"
+				+ "         \"description\": \"EMAIl template type\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n" + "   \"templateFileFormat\": [\r\n"
+				+ "      {\r\n" + "         \"code\": \"TEXT\",\r\n"
+				+ "         \"description\": \"Text file format \",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"HTML\",\r\n"
+				+ "         \"description\": \"HTML file format\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"JSON\",\r\n"
+				+ "         \"description\": \"JSON file format\",\r\n" + "         \"langCode\": \"ARB\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"XML\",\r\n"
+				+ "         \"description\": \"XML file format\",\r\n" + "         \"langCode\": \"arb\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"reasonCategory\": [\r\n" + "      {\r\n" + "         \"code\": \"DEMO\",\r\n"
+				+ "         \"name\": \"Demogrphic is not valid\",\r\n"
+				+ "         \"description\": \"Pincode is not valid\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"DOCUMENTS\",\r\n"
+				+ "         \"name\": \"Document is not valid\",\r\n"
+				+ "         \"description\": \"poa is not valid\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"IRIS\",\r\n"
+				+ "         \"name\": \"Iris scan is missing\",\r\n"
+				+ "         \"description\": \"Iris scan is missing\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"Biometric\",\r\n"
+				+ "         \"name\": \"Biometric scan is missing\",\r\n"
+				+ "         \"description\": \"Biometric scan is missing\",\r\n" + "         \"langCode\": \"ARB\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"Biometric\",\r\n"
+				+ "         \"name\": \"Biometric scan is missing\",\r\n"
+				+ "         \"description\": \" Biometric scan is missing\",\r\n"
+				+ "         \"langCode\": \"arb\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n" + "   \"reasonList\": null,\r\n"
+				+ "   \"blackListedWords\": [\r\n" + "      {\r\n" + "         \"word\": \"black6\",\r\n"
+				+ "         \"description\": \"blacklistedword6\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"black\",\r\n"
+				+ "         \"description\": \"blacklistedword\",\r\n" + "         \"langCode\": \"HIN\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"black3\",\r\n"
+				+ "         \"description\": \"blacklistedword3\",\r\n" + "         \"langCode\": \"KAN\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"black2\",\r\n"
+				+ "         \"description\": \"blacklistedword2\",\r\n" + "         \"langCode\": \"KAN\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"black5\",\r\n"
+				+ "         \"description\": \"blacklistedword5\",\r\n" + "         \"langCode\": \"eng\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"black4\",\r\n"
+				+ "         \"description\": \"blacklistedword4\",\r\n" + "         \"langCode\": \"KAN\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"string\",\r\n" + "         \"description\": \"string\",\r\n"
+				+ "         \"langCode\": \"123\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"word\": \"786\",\r\n" + "         \"description\": \"arabic number\",\r\n"
+				+ "         \"langCode\": \"arb\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"word\": \"abcdefghijklmnopqrstuvwxyabcdefghijk\",\r\n"
+				+ "         \"description\": \"code length 36\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"abcdefghijklmnopqrstuvwxyabcdefghij\",\r\n"
+				+ "         \"description\": \"code length 36\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"abcdefghijklmnopqrstuvwxyabcdefghijkl\",\r\n"
+				+ "         \"description\": \"code length 36\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"dove\",\r\n"
+				+ "         \"description\": \"code length 37\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": false,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"123\",\r\n"
+				+ "         \"description\": \"is active is missing\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"plane\",\r\n" + "         \"description\": \"13\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"word\": \"string\",\r\n" + "         \"description\": \"string\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"word\": \"SAMPLE_WORD\",\r\n" + "         \"description\": \"string\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"word\": \"${uniqueStr}\",\r\n" + "         \"description\": \"string\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"word\": \"FQlxnvvxwaoGJLXvXdsXuATgOeqFUkIo\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"dSnWuAsURsAlruCvAzMdSfBHGmuNRWva\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"nLLSiFykpDmcikJJygONNBFRsLPouTZd\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"OudWVLukISoAWdaGimTBqaiiZTMQBNQr\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"EdGcmIdcFxLmyPkFqnpJTvJSmvuPyxzw\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"usqtZBVHeDXdKLTHGRPNnvaHZPKLGNAl\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"${extcode1}\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"${randomstring}\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"TrtTeDXbHwfxZeUKeZPKECwZlWnrOOaO\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"vTPFkPxLixMkEEKmnpksAZWftBuRCGPy\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"yrpMBCqPBNncbqepfCkSlTIOcngHLdRE\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"novHVGCGAxJwAXoVXpvffrZfDgWuBTlK\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"xaxfplvhnigsfph\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"fvwsrzmalqofmqy\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"kesmwycciqyqblf\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"lxfhymqsjxyycrc\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"kalirmoisculedx\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"mffjsffiqroxglm\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"haiiipgonvlzjka\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"vvluwxexllyvrvs\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"word\": \"acnpaljakoxuvtm\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"locationHierarchy\": [\r\n" + "      {\r\n" + "         \"isDeleted\": null,\r\n"
+				+ "         \"code\": \"LOC09\",\r\n" + "         \"name\": \"string\",\r\n"
+				+ "         \"hierarchyLevel\": 0,\r\n" + "         \"hierarchyName\": \"string\",\r\n"
+				+ "         \"parentLocCode\": \"string\",\r\n" + "         \"languageCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n"
+				+ "         \"updatedBy\": \"defaultadmin@mosip.io\"\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"isDeleted\": null,\r\n" + "         \"code\": \"TTK\",\r\n"
+				+ "         \"name\": \"TTK\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"ZIPCODE\",\r\n" + "         \"parentLocCode\": \"IND\",\r\n"
+				+ "         \"languageCode\": \"KAN\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + "         \"updatedBy\": null\r\n"
+				+ "      },\r\n" + "      {\r\n" + "         \"isDeleted\": null,\r\n"
+				+ "         \"code\": \"TN\",\r\n" + "         \"name\": \"TamilNadu\",\r\n"
+				+ "         \"hierarchyLevel\": 0,\r\n" + "         \"hierarchyName\": \"STATE\",\r\n"
+				+ "         \"parentLocCode\": \"IND\",\r\n" + "         \"languageCode\": \"TAM\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n"
+				+ "         \"updatedBy\": \"defaultadmin@mosip.io\"\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"isDeleted\": null,\r\n" + "         \"code\": \"IND\",\r\n"
+				+ "         \"name\": \"India\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"Country\",\r\n" + "         \"parentLocCode\": null,\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"BLR\",\r\n"
+				+ "         \"name\": \"Bangalore\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"city\",\r\n" + "         \"parentLocCode\": \"IND\",\r\n"
+				+ "         \"languageCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + "         \"updatedBy\": \"Rajath\"\r\n"
+				+ "      },\r\n" + "      {\r\n" + "         \"isDeleted\": null,\r\n"
+				+ "         \"code\": \"RRN\",\r\n" + "         \"name\": \"Rajarajeshwari Nagar\",\r\n"
+				+ "         \"hierarchyLevel\": 0,\r\n" + "         \"hierarchyName\": \"province\",\r\n"
+				+ "         \"parentLocCode\": \"BLR\",\r\n" + "         \"languageCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n"
+				+ "         \"updatedBy\": \"Rajath\"\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"isDeleted\": null,\r\n" + "         \"code\": \"BBMP\",\r\n"
+				+ "         \"name\": \"BBMP\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"local admin autority\",\r\n"
+				+ "         \"parentLocCode\": \"RRN\",\r\n" + "         \"languageCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n"
+				+ "         \"updatedBy\": \"Rajath\"\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"isDeleted\": null,\r\n" + "         \"code\": \"POSTAL_CODE\",\r\n"
+				+ "         \"name\": \"560059\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"Postal Code\",\r\n" + "         \"parentLocCode\": \"RRN\",\r\n"
+				+ "         \"languageCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n" + "         \"updatedBy\": \"Rajath\"\r\n"
+				+ "      },\r\n" + "      {\r\n" + "         \"isDeleted\": null,\r\n"
+				+ "         \"code\": \"KER\",\r\n" + "         \"name\": \"KERALA\",\r\n"
+				+ "         \"hierarchyLevel\": 0,\r\n" + "         \"hierarchyName\": \"STATE\",\r\n"
+				+ "         \"parentLocCode\": \"IND\",\r\n" + "         \"languageCode\": \"MAL\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"createdBy\": \"defaultadmin@mosip.io\",\r\n"
+				+ "         \"updatedBy\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"isDeleted\": null,\r\n" + "         \"code\": \"KAR\",\r\n"
+				+ "         \"name\": \"Karnataka\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"Region\",\r\n" + "         \"parentLocCode\": \"IND\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"MH\",\r\n"
+				+ "         \"name\": \"Maharastra\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"Region\",\r\n" + "         \"parentLocCode\": \"IND\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"RCH\",\r\n"
+				+ "         \"name\": \"Raichur\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"Province\",\r\n" + "         \"parentLocCode\": \"KAR\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"MSK\",\r\n"
+				+ "         \"name\": \"Maski\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"City\",\r\n" + "         \"parentLocCode\": \"RCH\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"MNC\",\r\n"
+				+ "         \"name\": \"Municipal\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"LocalAuthority\",\r\n" + "         \"parentLocCode\": \"MSK\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"584124\",\r\n"
+				+ "         \"name\": \"PinCode\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"PostalCode\",\r\n" + "         \"parentLocCode\": \"MSK\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"SIN\",\r\n"
+				+ "         \"name\": \"Sindhanur\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"City\",\r\n" + "         \"parentLocCode\": \"RCH\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"584128\",\r\n"
+				+ "         \"name\": \"PinCode\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"PostalCode\",\r\n" + "         \"parentLocCode\": \"SIN\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"isDeleted\": null,\r\n" + "         \"code\": \"KPL\",\r\n"
+				+ "         \"name\": \"koppal\",\r\n" + "         \"hierarchyLevel\": 0,\r\n"
+				+ "         \"hierarchyName\": \"Province\",\r\n" + "         \"parentLocCode\": \"KAR\",\r\n"
+				+ "         \"languageCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"createdBy\": \"Arun\",\r\n" + "         \"updatedBy\": null\r\n" + "      }\r\n"
+				+ "   ],\r\n" + "   \"biometricattributes\": [\r\n" + "      {\r\n"
+				+ "         \"code\": \"string\",\r\n" + "         \"name\": \"string\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"biometricTypeCode\": \"0101114122\",\r\n"
+				+ "         \"langCode\": \"ASG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"12345\",\r\n" + "         \"name\": \"string\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"biometricTypeCode\": \"0101114122\",\r\n"
+				+ "         \"langCode\": \"ASG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"0101114122\",\r\n" + "         \"name\": \"string\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"biometricTypeCode\": \"0101114122\",\r\n"
+				+ "         \"langCode\": \"ASG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"LTH\",\r\n" + "         \"name\": \"left thumb\",\r\n"
+				+ "         \"description\": \"left thumb\",\r\n" + "         \"biometricTypeCode\": \"LTH\",\r\n"
+				+ "         \"langCode\": \"ARB\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsuw\",\r\n"
+				+ "         \"name\": \"left thumb\",\r\n" + "         \"description\": \"code length 36\",\r\n"
+				+ "         \"biometricTypeCode\": \"LTH\",\r\n" + "         \"langCode\": \"ARB\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"acegikmoqsuwacegikmoqsuwacegikmoqsu\",\r\n"
+				+ "         \"name\": \"left thumb\",\r\n" + "         \"description\": \"code length 36\",\r\n"
+				+ "         \"biometricTypeCode\": \"LTH\",\r\n" + "         \"langCode\": \"ARB\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"LIR\",\r\n"
+				+ "         \"name\": \"abcdefghijklmnopqrstuvwxabcdefghijklmnopqrstuvwxabcdefghijklmnop\",\r\n"
+				+ "         \"description\": \"code length 37\",\r\n" + "         \"biometricTypeCode\": \"LIR\",\r\n"
+				+ "         \"langCode\": \"ARB\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"LIR\",\r\n"
+				+ "         \"name\": \"abcdefghijklmnopqrstuvwxabcdefghijklmnopqrstuvwxabcdefghijklmno\",\r\n"
+				+ "         \"description\": \"name length 63\",\r\n" + "         \"biometricTypeCode\": \"LIR\",\r\n"
+				+ "         \"langCode\": \"FRE\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n" + "   \"biometricTypes\": [\r\n"
+				+ "      {\r\n" + "         \"code\": \"01011151242\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Left_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"010111212426\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Right_finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"010111312426\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Index_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"0101111126\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Left_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"0101114126\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Middle_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"010111212226\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Right_finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"010111512226\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Left_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"0101111312226\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Left_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"0101114312226\",\r\n" + "         \"name\": \"Kumar\",\r\n"
+				+ "         \"description\": \"Middle_Finger\",\r\n" + "         \"langCode\": \"ASG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"applications\": [\r\n" + "      {\r\n" + "         \"code\": \"11111586\",\r\n"
+				+ "         \"name\": \"Pre_Reg\",\r\n" + "         \"description\": \"string\",\r\n"
+				+ "         \"langCode\": \"ard\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"11111588\",\r\n" + "         \"name\": \"Pre_Reg\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"ard\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"11111593\",\r\n" + "         \"name\": \"Pre_Reg\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"ard\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"11111594\",\r\n" + "         \"name\": \"Pre_Reg\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"ard\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"11111592\",\r\n" + "         \"name\": \"Pre_Reg\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"ard\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"11111590\",\r\n" + "         \"name\": \"Pre_Reg\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"ard\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"11111595\",\r\n" + "         \"name\": \"Pre_Reg\",\r\n"
+				+ "         \"description\": \"string\",\r\n" + "         \"langCode\": \"ard\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n"
+				+ "   \"idTypes\": null,\r\n" + "   \"titles\": [\r\n" + "      {\r\n"
+				+ "         \"code\": \"LOGIN\",\r\n" + "         \"titleName\": \"LoginPage\",\r\n"
+				+ "         \"titleDescription\": \"login page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"HOME\",\r\n" + "         \"titleName\": \"HomePage\",\r\n"
+				+ "         \"titleDescription\": \"Home page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"REG\",\r\n" + "         \"titleName\": \"RegistrationPage\",\r\n"
+				+ "         \"titleDescription\": \"Registration page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"DEMO\",\r\n" + "         \"titleName\": \"DemographicPage\",\r\n"
+				+ "         \"titleDescription\": \"Demographic page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"UPLOAD\",\r\n" + "         \"titleName\": \"FileUpload\",\r\n"
+				+ "         \"titleDescription\": \"file upload page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"LOGIN\",\r\n" + "         \"titleName\": \"LoginPage\",\r\n"
+				+ "         \"titleDescription\": \"login page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"HOME\",\r\n" + "         \"titleName\": \"HomePage\",\r\n"
+				+ "         \"titleDescription\": \"Home page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"REG\",\r\n" + "         \"titleName\": \"RegistrationPage\",\r\n"
+				+ "         \"titleDescription\": \"Registration page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"DEMO\",\r\n" + "         \"titleName\": \"DemographicPage\",\r\n"
+				+ "         \"titleDescription\": \"Demographic page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"UPLOAD\",\r\n" + "         \"titleName\": \"FileUpload\",\r\n"
+				+ "         \"titleDescription\": \"file upload page\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": false\r\n" + "      }\r\n" + "   ],\r\n" + "   \"genders\": [\r\n"
+				+ "      {\r\n" + "         \"code\": \"OTH\",\r\n" + "         \"genderName\": \"OTHERS\",\r\n"
+				+ "         \"langCode\": \"KAN\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n" + "         \"code\": \"FE\",\r\n"
+				+ "         \"genderName\": \"FEMALE\",\r\n" + "         \"langCode\": \"KAN\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"M\",\r\n" + "         \"genderName\": \"MALE\",\r\n"
+				+ "         \"langCode\": \"KAN\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n" + "         \"code\": \"m\",\r\n"
+				+ "         \"genderName\": \"MALE\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"fe\",\r\n" + "         \"genderName\": \"FEMALE\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"oth\",\r\n" + "         \"genderName\": \"OTHERS\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"1234567890123456\",\r\n" + "         \"genderName\": \"OTHERS\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n" + "         \"code\": \"M\",\r\n"
+				+ "         \"genderName\": \"MALE\",\r\n" + "         \"langCode\": \"ENG\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"ENG\",\r\n" + "         \"genderName\": \"string\",\r\n"
+				+ "         \"langCode\": \"ENG\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n" + "         \"code\": \"M\",\r\n"
+				+ "         \"genderName\": \"Male\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"jklmnopqrstuvwx\",\r\n"
+				+ "         \"genderName\": \"Male\",\r\n" + "         \"langCode\": \"FRE\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"jklmnopqrstuvwxy\",\r\n"
+				+ "         \"genderName\": \"Male\",\r\n" + "         \"langCode\": \"fre\",\r\n"
+				+ "         \"isActive\": true,\r\n" + "         \"isDeleted\": null\r\n" + "      },\r\n"
+				+ "      {\r\n" + "         \"code\": \"M\",\r\n"
+				+ "         \"genderName\": \"abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklm\",\r\n"
+				+ "         \"langCode\": \"fre\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n" + "         \"code\": \"F\",\r\n"
+				+ "         \"genderName\": \"abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmn\",\r\n"
+				+ "         \"langCode\": \"fre\",\r\n" + "         \"isActive\": true,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      },\r\n" + "      {\r\n"
+				+ "         \"code\": \"Fem\",\r\n" + "         \"genderName\": \"Female\",\r\n"
+				+ "         \"langCode\": \"arb\",\r\n" + "         \"isActive\": false,\r\n"
+				+ "         \"isDeleted\": null\r\n" + "      }\r\n" + "   ],\r\n" + "   \"languages\": null\r\n" + "}";
 
 		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
-		
+
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(masterJson);
-		
-		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class)).thenReturn(masterSyncDt);
+
+		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
+				.thenReturn(masterSyncDt);
 
 		Mockito.when(masterSyncDao.save(masterSyncDto)).thenReturn("");
 
@@ -1837,6 +1019,7 @@ public class MasterSyncServiceTest {
 		// assertEquals(RegistrationConstants.MASTER_SYNC_SUCCESS,
 		// responseDto.getSuccessResponseDTO().getMessage());
 	}
+
 	@SuppressWarnings({ "static-access", "unchecked" })
 	@Test
 	public void testMasterSyncHttpCaseJson()
@@ -1883,27 +1066,30 @@ public class MasterSyncServiceTest {
 		masterSyncDetails.setLangCode("eng");
 		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		String masterSyncJson="";
-		
-        Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
-		
+		String masterSyncJson = "";
+
+		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
+
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenThrow(HttpClientErrorException.class);
-		
-		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class)).thenReturn(masterSyncDt);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any()))
+				.thenThrow(HttpClientErrorException.class);
+
+		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
+				.thenReturn(masterSyncDt);
 
 		Mockito.when(masterSyncDao.save(masterSyncDto)).thenReturn("");
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		sucessResponse.setMessage(RegistrationConstants.MASTER_SYNC_SUCCESS);
-		
+
 		responseDTO.setSuccessResponseDTO(sucessResponse);
 
 		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
-		
+
 	}
+
 	@SuppressWarnings({ "static-access", "unchecked" })
 	@Test
 	public void testMasterSyncSocketCaseJson()
@@ -1950,28 +1136,30 @@ public class MasterSyncServiceTest {
 		masterSyncDetails.setLangCode("eng");
 		masterSyncDetails.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		String masterSyncJson="";
-		
-        Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
-		
+		String masterSyncJson = "";
+
+		Mockito.when(masterSyncDao.syncJobDetails(Mockito.anyString())).thenReturn(masterSyncDetails);
+
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenThrow(SocketTimeoutException.class);
-		
-		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class)).thenReturn(masterSyncDt);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any()))
+				.thenThrow(SocketTimeoutException.class);
+
+		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
+				.thenReturn(masterSyncDt);
 
 		Mockito.when(masterSyncDao.save(masterSyncDto)).thenReturn("");
 
 		sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 		sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 		sucessResponse.setMessage(RegistrationConstants.MASTER_SYNC_SUCCESS);
-		
+
 		responseDTO.setSuccessResponseDTO(sucessResponse);
 
 		ResponseDTO responseDto = masterSyncServiceImpl.getMasterSync("MDS_J00001");
-		
+
 	}
-	
+
 	@Test
 	public void findLocationByHierarchyCode() {
 
@@ -1984,14 +1172,14 @@ public class MasterSyncServiceTest {
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
-		
-        Mockito.when(masterSyncDao.findLocationByLangCode(Mockito.anyString(), Mockito.anyString())).thenReturn(locations);
-		
-        masterSyncServiceImpl.findLocationByHierarchyCode("LOC01", "ENG");
-		
+
+		Mockito.when(masterSyncDao.findLocationByLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locations);
+
+		masterSyncServiceImpl.findLocationByHierarchyCode("LOC01", "ENG");
 
 	}
-	
+
 	@Test
 	public void findProvianceByHierarchyCode() {
 
@@ -2004,14 +1192,13 @@ public class MasterSyncServiceTest {
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
-		
-        Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
-		
-        masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01");
-		
+
+		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
+
+		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01");
 
 	}
-	
+
 	@Test
 	public void findAllReasons() {
 
@@ -2021,19 +1208,35 @@ public class MasterSyncServiceTest {
 		reasons.setName("InvalidData");
 		reasons.setLangCode("FRE");
 		allReason.add(reasons);
-		
+
 		List<MasterReasonList> allReasonList = new ArrayList<>();
 		MasterReasonList reasonList = new MasterReasonList();
 		reasonList.setCode("DEMO");
 		reasonList.setName("InvalidData");
 		reasonList.setLangCode("FRE");
 		allReasonList.add(reasonList);
-		
-        Mockito.when(masterSyncDao.getAllReasonCatogery()).thenReturn(allReason);
-        Mockito.when(masterSyncDao.getReasonList(Mockito.anyString(), Mockito.anyList())).thenReturn(allReasonList);
-		
-        masterSyncServiceImpl.getAllReasonsList("ENG");
-		
+
+		Mockito.when(masterSyncDao.getAllReasonCatogery()).thenReturn(allReason);
+		Mockito.when(masterSyncDao.getReasonList(Mockito.anyString(), Mockito.anyList())).thenReturn(allReasonList);
+
+		masterSyncServiceImpl.getAllReasonsList("ENG");
+
+	}
+
+	@Test
+	public void findAllBlackWords() {
+
+		List<MasterBlacklistedWords> allBlackWords = new ArrayList<>();
+		MasterBlacklistedWords blackWord = new MasterBlacklistedWords();
+		blackWord.setWord("asdfg");
+		blackWord.setDescription("asdfg");
+		blackWord.setLangCode("ENG");
+		allBlackWords.add(blackWord);
+		allBlackWords.add(blackWord);
+
+		Mockito.when(masterSyncDao.getBlackListedWords(Mockito.anyString())).thenReturn(allBlackWords);
+
+		masterSyncServiceImpl.getAllBlackListedWords("ENG");
 
 	}
 }

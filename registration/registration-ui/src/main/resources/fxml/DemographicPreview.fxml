@@ -21,7 +21,7 @@
             			<Image url="@../images/Home.png" />
          			 </image>
                   </ImageView>
-                  <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
+                  <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
                   <ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                   	<image>
             			<Image url="@../images/Pre-Registration.png" />
@@ -29,17 +29,17 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="49.0" layoutY="120.0" text="PREVIEW">
+            <TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="49.0" layoutY="120.0" text="%preview">
                <content>
-                  <TitledPane fx:id="demographicPreview" collapsible="false" layoutX="80.0" layoutY="120.0" text="Demographic Details                                                                              Demographic Details">
+                  <TitledPane fx:id="demographicPreview" collapsible="false" layoutX="80.0" layoutY="120.0" text="%demographicdetailsdemographicdetails">
                      <content>
                         <VBox fx:id="demoGraphicVbox" />
                      </content>
                   </TitledPane>
                </content>
             </TitledPane>
-            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" styleClass="RegbuttonStyle" />
-            <Button fx:id="editBtn" layoutX="680.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" styleClass="RegbuttonStyle" />
+            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="%next" styleClass="RegbuttonStyle" />
+            <Button fx:id="editBtn" layoutX="680.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="%edit" styleClass="RegbuttonStyle" />
              </children>
     </AnchorPane>
   </content>
