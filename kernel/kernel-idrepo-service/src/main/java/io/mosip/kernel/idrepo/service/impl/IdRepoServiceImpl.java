@@ -359,30 +359,34 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Override
 	public IdResponseDTO retrieveIdentity(String uin, String filter) throws IdRepoAppException {
 		try {
-			validateUIN(uin);
-			List<Documents> documents = new ArrayList<>();
-			Uin uinObject = retrieveIdentityByUin(uin);
+			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
+			if (uinRepo.existsByUin(uin)) {
+				List<Documents> documents = new ArrayList<>();
+				Uin uinObject = retrieveIdentityByUin(uin);
 
-			if (filter.contains(DEMO)) {
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
-						"filter - demo");
-				return constructIdResponse(this.id.get(READ), uinObject, null);
-			} else if (filter.equalsIgnoreCase(BIO)) {
-				getFiles(uin, documents, BIOMETRICS);
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - bio",
-						"bio documents  --> " + documents);
-				return constructIdResponse(this.id.get(READ), uinObject, documents);
-			} else if (filter.equalsIgnoreCase(DOCS)) {
-				getFiles(uin, documents, DOCUMENTS);
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - docs",
-						"docs documents  --> " + documents);
-				return constructIdResponse(this.id.get(READ), uinObject, documents);
+				if (filter.contains(DEMO)) {
+					mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
+							"filter - demo");
+					return constructIdResponse(this.id.get(READ), uinObject, null);
+				} else if (filter.equalsIgnoreCase(BIO)) {
+					getFiles(uin, documents, BIOMETRICS);
+					mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - bio",
+							"bio documents  --> " + documents);
+					return constructIdResponse(this.id.get(READ), uinObject, documents);
+				} else if (filter.equalsIgnoreCase(DOCS)) {
+					getFiles(uin, documents, DOCUMENTS);
+					mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - docs",
+							"docs documents  --> " + documents);
+					return constructIdResponse(this.id.get(READ), uinObject, documents);
+				} else {
+					getFiles(uin, documents, BIOMETRICS);
+					getFiles(uin, documents, DOCUMENTS);
+					mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - all",
+							"docs documents  --> " + documents);
+					return constructIdResponse(this.id.get(READ), uinObject, documents);
+				}
 			} else {
-				getFiles(uin, documents, BIOMETRICS);
-				getFiles(uin, documents, DOCUMENTS);
-				mosipLogger.info(ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "filter - all",
-						"docs documents  --> " + documents);
-				return constructIdResponse(this.id.get(READ), uinObject, documents);
+				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, this.id.get(READ));
