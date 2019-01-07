@@ -763,6 +763,10 @@ public class RegistrationConstants {
 	public static final String KEY_NAME="KEY_POLICY_SYNC_THRESHOLD_VALUE";
 	public static final String REFERENCE_ID="1001";
 	
+	//Reg Deletion
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS="Registartion Packets Deletion Successful ";
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE="Registartion Packets Deletion Failure ";
+	
 	public enum mappedCodeForLang{
 		en("ENG");
 		private String langCode;
