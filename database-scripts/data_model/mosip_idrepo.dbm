@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,222" last-zoom="1"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,365" last-zoom="1"
 	 default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -190,7 +190,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<comment><![CDATA[Table to store individual data and the assigned UIN. This table will also contain the latest registration id that was used to update individual's information.]]></comment>
 	<position x="49" y="51"/>
 	<column name="uin_ref_id" not-null="true">
-		<type name="character varying" length="28"/>
+		<type name="character varying" length="36"/>
 		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables within id repository db and in file store.]]></comment>
 	</column>
 	<column name="uin" not-null="true">
@@ -255,7 +255,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<comment><![CDATA[Table to store history of the individual data and the assigned UIN. This table will also contain the  registration id that was used to update individual's information.]]></comment>
 	<position x="513" y="49"/>
 	<column name="uin_ref_id" not-null="true">
-		<type name="character varying" length="28"/>
+		<type name="character varying" length="36"/>
 		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables.]]></comment>
 	</column>
 	<column name="eff_dtimes" not-null="true">
@@ -386,7 +386,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<comment><![CDATA[Table to store documents that are provided during the registration process and are related to this UIN. ]]></comment>
 	<position x="75" y="690"/>
 	<column name="uin_ref_id" not-null="true">
-		<type name="character varying" length="28"/>
+		<type name="character varying" length="36"/>
 		<comment><![CDATA[reference id of an uin, refers to uin_ref_id of idrep.uin table]]></comment>
 	</column>
 	<column name="doccat_code" not-null="true">
@@ -454,7 +454,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<comment><![CDATA[Table to store history of biometric reference and hash value of the biometric file. This table will keep the history of changes to the biometric information. ]]></comment>
 	<position x="536" y="699"/>
 	<column name="uin_ref_id" not-null="true">
-		<type name="character varying" length="28"/>
+		<type name="character varying" length="36"/>
 		<comment><![CDATA[reference id of an uin, refers to uin_ref_id of idrep.uin table]]></comment>
 	</column>
 	<column name="eff_dtimes" not-null="true">
@@ -462,6 +462,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="bio_file_id" not-null="true">
 		<type name="character varying" length="128"/>
+		<comment><![CDATA[file id of the biometric cbeff file of an individual]]></comment>
 	</column>
 	<column name="biometric_file_name" not-null="true">
 		<type name="character varying" length="128"/>
@@ -470,6 +471,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="biometric_file_hash" not-null="true">
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Hash value of the biometric dbeff file]]></comment>
+	</column>
+	<column name="parent_guardian_bio_file_id">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[file id of the biometric cbeff file of individual's parent / guardian]]></comment>
+	</column>
+	<column name="parent_guardian_bio_file_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name of the biometric cbeff file of parent / guardian]]></comment>
+	</column>
+	<column name="parent_guardian_bio_file_hash">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Hash value of the biometric dbeff file of parent / guardian]]></comment>
 	</column>
 	<column name="lang_code" not-null="true">
 		<type name="character varying" length="3"/>
@@ -529,6 +542,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<position x="507" y="383"/>
 	<column name="bio_file_id" not-null="true">
 		<type name="character varying" length="128"/>
+		<comment><![CDATA[file id of the biometric cbeff file of an individual]]></comment>
 	</column>
 	<column name="biometric_file_name">
 		<type name="character varying" length="128"/>
@@ -537,6 +551,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="biometric_file_hash" not-null="true">
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Hash value of the biometric dbeff file]]></comment>
+	</column>
+	<column name="parent_guardian_bio_file_id">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[file id of the biometric cbeff file of individual's parent / guardian]]></comment>
+	</column>
+	<column name="parent_guardian_bio_file_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name of the biometric cbeff file of the parent / guardian]]></comment>
+	</column>
+	<column name="parent_guardian_bio_file_hash">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Hash value of the biometric dbeff file of the parent / guardian]]></comment>
 	</column>
 	<column name="lang_code" not-null="true">
 		<type name="character varying" length="3"/>

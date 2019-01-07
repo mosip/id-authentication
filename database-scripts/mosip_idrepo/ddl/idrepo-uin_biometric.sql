@@ -5,6 +5,9 @@ CREATE TABLE idrepo.uin_biometric(
 	bio_file_id character varying(128) NOT NULL,
 	biometric_file_name character varying(128),
 	biometric_file_hash character varying(64) NOT NULL,
+	parent_guardian_bio_file_id character varying(128),
+	parent_guardian_bio_file_name character varying(128),
+	parent_guardian_bio_file_hash character varying(64),
 	lang_code character varying(3) NOT NULL,
 	cr_by character varying(32) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
@@ -19,9 +22,17 @@ CREATE TABLE idrepo.uin_biometric(
 -- ddl-end --
 COMMENT ON TABLE idrepo.uin_biometric IS 'Table to store biometric reference and hash value of the biometric file. ';
 -- ddl-end --
+COMMENT ON COLUMN idrepo.uin_biometric.bio_file_id IS 'file id of the biometric cbeff file of an individual';
+-- ddl-end --
 COMMENT ON COLUMN idrepo.uin_biometric.biometric_file_name IS 'Name of the biometric cbeff file';
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin_biometric.biometric_file_hash IS 'Hash value of the biometric dbeff file';
+-- ddl-end --
+COMMENT ON COLUMN idrepo.uin_biometric.parent_guardian_bio_file_id IS 'file id of the biometric cbeff file of individual''s parent / guardian';
+-- ddl-end --
+COMMENT ON COLUMN idrepo.uin_biometric.parent_guardian_bio_file_name IS 'Name of the biometric cbeff file of the parent / guardian';
+-- ddl-end --
+COMMENT ON COLUMN idrepo.uin_biometric.parent_guardian_bio_file_hash IS 'Hash value of the biometric dbeff file of the parent / guardian';
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin_biometric.lang_code IS 'Language code of the biometic file name.';
 -- ddl-end --
