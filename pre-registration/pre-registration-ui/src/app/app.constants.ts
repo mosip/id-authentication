@@ -14,33 +14,6 @@ export const PARAMS_KEYS = {
   locationHierarchyName: 'hierarchyName'
 };
 
-// to be removed in future.
-export const nameList = [
-  {
-    fullName: 'Agnitra Banerjee',
-    preRegId: '1'
-  },
-  {
-    fullName: 'Shashank Agrawal',
-    preRegId: '2'
-  },
-  {
-    fullName: 'Gurdayal Singh Dhillon',
-    preRegId: '3'
-  },
-  {
-    fullName: 'Agnitra Banerjee',
-    preRegId: '4'
-  },
-  {
-    fullName: 'Shashank Agrawal',
-    preRegId: '5'
-  },
-  {
-    fullName: 'Gurdayal Singh Dhillon',
-    preRegId: '6'
-  }
-]
 export const APPLICATION_STATUS_CODES = {
   pending: 'Pending_Appointment',
   booked: 'Booked',

@@ -9,6 +9,7 @@ import { TimeSelectionComponent } from '../time-selection/time-selection.compone
 import { BookingModel } from './booking.model';
 import { BookingModelRequest } from '../../shared/booking-request.model';
 import { Router, ActivatedRoute } from '@angular/router';
+import { RegistrationService } from '../registration.service';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -53,7 +54,8 @@ export class CenterSelectionComponent implements OnInit {
     private service: SharedService,
     private dataService: DataStorageService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private registrationService: RegistrationService) { }
 
   ngOnInit() {
     this.getLocation();
@@ -132,51 +134,6 @@ export class CenterSelectionComponent implements OnInit {
     }
   }
 
-  makeBooking(): void {
-    this.bookingDataList = [];
-    this.timeSelectionComponent.availabilityData.forEach(data => {
-      data.timeSlots.forEach(slot => {
-        if (slot.names.length !== 0) {
-          slot.names.forEach(name => {
-            const bookingData = new BookingModel(this.selectedCentre.id, data.date, slot.fromTime, slot.toTime);
-            const requestObject = {
-              newBookingDetails: bookingData,
-              oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,
-              pre_registration_id: name.preRegId
-            };
-            this.bookingDataList.push(requestObject);
-          });
-        }
-      });
-    });
-    const request = new BookingModelRequest(this.bookingDataList);
-    console.log(request);
-    this.dataService.makeBooking(request).subscribe(() => {
-        const data = {
-            case: 'MESSAGE',
-            title: 'Success',
-            message: 'Action was completed successfully'
-          };
-        const dialogRef = this.dialog.open(DialougComponent, {
-            width: '250px',
-            data: data
-          }).afterClosed().subscribe(() => {
-            this.router.navigate(['../confirmation'], { relativeTo: this.route });
-          });
-        }, error => {
-          console.log(error);
-          const data = {
-              case: 'MESSAGE',
-              title: 'Failure',
-              message: 'Action could not be completed'
-            };
-          const dialogRef = this.dialog.open(DialougComponent, {
-              width: '250px',
-              data: data
-            });
-        });
-  }
-
   dispatchCenterCoordinatesList() {
     const coords = [];
     REGISTRATION_CENTRES.forEach(centre => {
@@ -188,6 +145,11 @@ export class CenterSelectionComponent implements OnInit {
       coords.push(data);
     });
     this.service.listOfCenters(coords);
+  }
+
+  routeNext() {
+    this.registrationService.setRegCenterId('1');
+    this.router.navigate(['../pick-time'], { relativeTo: this.route });
   }
 
 }

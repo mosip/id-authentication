@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 export class RegistrationService {
   private users: UserModel[] = [];
   usersChanged = new Subject<UserModel[]>();
+  private regCenterId: string;
 
   flushUsers() {
     this.users.length = 0;
@@ -45,5 +46,13 @@ export class RegistrationService {
 
   getUserFiles(index: number) {
     return this.users[index].files.slice();
+  }
+
+  setRegCenterId(id: string) {
+    this.regCenterId = id;
+  }
+
+  getRegCenterId() {
+    return this.regCenterId;
   }
 }

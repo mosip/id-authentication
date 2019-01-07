@@ -114,7 +114,7 @@
             >
             <button mat-icon-button><img src="assets\view.png" class="view-img" /></button>
             <span class="spacer"></span>
-            <button mat-icon-button><img src="assets\delete.png" class="delete-img" /></button>
+            <button (click)="onDelete(user)" mat-icon-button><img src="assets\delete.png" class="delete-img" /></button>
           </div>
           <mat-card-content>
             <div class="card-content">

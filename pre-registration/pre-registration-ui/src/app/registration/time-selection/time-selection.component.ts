@@ -4,7 +4,10 @@ import { NameList } from '../demographic/modal/name-list.modal';
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
-import * as constants from '../../app.constants';
+import { Router, ActivatedRoute } from '@angular/router';
+import { BookingModelRequest } from 'src/app/shared/booking-request.model';
+import { BookingModel } from '../center-selection/booking.model';
+import { RegistrationService } from '../registration.service';
 
 @Component({
   selector: 'app-time-selection',
@@ -28,16 +31,20 @@ export class TimeSelectionComponent implements OnInit {
   DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   enableBookButton = false;
   activeTab = 'morning';
+  bookingDataList = [];
 
   constructor(
     private sharedService: SharedService,
     private dialog: MatDialog,
-    private dataService: DataStorageService
+    private dataService: DataStorageService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private registrationService: RegistrationService
   ) {}
 
   ngOnInit() {
-    this.names = [...constants.nameList];
- //   this.sharedService.resetNameList();
+    this.names = [...this.sharedService.getNameList()];
+    this.sharedService.resetNameList();
     console.log('in onInit', this.names);
     this.getSlotsforCenter(this.registrationCenter);
   }
@@ -145,4 +152,52 @@ export class TimeSelectionComponent implements OnInit {
   tabSelected(selection) {
     this.activeTab = selection;
   }
+
+  makeBooking(): void {
+    this.bookingDataList = [];
+    this.availabilityData.forEach(data => {
+      data.timeSlots.forEach(slot => {
+        if (slot.names.length !== 0) {
+          slot.names.forEach(name => {
+            const bookingData = new BookingModel(this.registrationCenter.toString(), data.date, slot.fromTime, slot.toTime);
+            const requestObject = {
+              newBookingDetails: bookingData,
+              oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,
+              pre_registration_id: name.preRegId
+            };
+            this.bookingDataList.push(requestObject);
+          });
+        }
+      });
+    });
+    const request = new BookingModelRequest(this.bookingDataList);
+    console.log(request);
+    this.dataService.makeBooking(request).subscribe((response) => {
+      console.log(response);
+        const data = {
+            case: 'MESSAGE',
+            title: 'Success',
+            message: 'Action was completed successfully'
+          };
+        const dialogRef = this.dialog.open(DialougComponent, {
+            width: '250px',
+            data: data
+          }).afterClosed().subscribe(() => {
+            this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
+          });
+        }, error => {
+          console.log(error);
+          const data = {
+              case: 'MESSAGE',
+              title: 'Failure',
+              message: 'Action could not be completed'
+            };
+          const dialogRef = this.dialog.open(DialougComponent, {
+              width: '250px',
+              data: data
+            });
+        });
+  }
+
 }
+
