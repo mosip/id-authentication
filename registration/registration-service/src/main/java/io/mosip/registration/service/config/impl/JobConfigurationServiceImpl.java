@@ -61,13 +61,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private SchedulerFactoryBean schedulerFactoryBean;
 
 	@Autowired
-	private SyncJobTransactionDAO syncJobTransactionDAO;
+	SyncJobTransactionDAO syncJobTransactionDAO;
 
 	@Autowired
-	private JobManager jobManager;
+	JobManager jobManager;
 
 	@Autowired
-	private SyncJobDAO syncJobDAO;
+	SyncJobDAO syncJobDAO;
 
 	/**
 	 * LOGGER for logging
@@ -190,8 +190,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.config.JobConfigurationService#stopScheduler()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.config.JobConfigurationService#stopScheduler()
 	 */
 	public ResponseDTO stopScheduler() {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -199,21 +202,22 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		if (schedulerFactoryBean.isRunning()) {
-			try {
+		try {
+			if (schedulerFactoryBean.isRunning()) {
+
 				schedulerFactoryBean.stop();
 				isSchedulerRunning = false;
 				setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE, null);
 
-			} catch (RuntimeException runtimeException) {
-				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
-						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						runtimeException.getMessage());
+			} else {
+				setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STOPPED, null);
 
-				setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 			}
-		} else {
-			setErrorResponse(responseDTO, RegistrationConstants.SYNC_DATA_PROCESS_ALREADY_STOPPED, null);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+
+			setErrorResponse(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE, null);
 
 		}
 
@@ -254,6 +258,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					String jobId = jobDetail.getKey().getName();
 
 					SyncJobDef syncJobDef = SYNC_JOB_MAP.get(jobId);
+
 					return new SyncDataProcessDTO(syncJobDef.getId(), syncJobDef.getName(),
 							RegistrationConstants.JOB_RUNNING, new Timestamp(System.currentTimeMillis()).toString());
 
@@ -386,7 +391,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		}).collect(Collectors.toList());
 
-		if (syncDataProcessDTOs != null) {
+		if (syncDataProcessDTOs.isEmpty()) {
+			return setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_TRANSACTION, null);
+
+		} else {
 			HashMap<String, Object> attributes = new HashMap<>();
 			attributes.put(RegistrationConstants.SYNC_DATA_DTO, syncDataProcessDTOs);
 
