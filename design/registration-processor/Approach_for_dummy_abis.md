@@ -10,6 +10,7 @@ The registration client application which will upload packets.
 The ID repository which will store CBEFF biometrics
 System administrator who will integrate abis systems.
 
+
 The key requirements are -
 - A Dummy abis system with rest endpoints.
 - Insert biometric records in ABIS.
@@ -17,8 +18,15 @@ The key requirements are -
 - Get the applicant biometric file and evaluate each biometric (fingerprint/iris/face).
 - Find potential duplicate from the CBEFF xml file.
 
+
 The key non-functional requirements are
 -	Performance: Should be able to perform bio dedupe on thousands of potential duplicate records per second.
+
+**Assumptions**
+- Security mechanism is out of scope.
+- Negative scenarios are out of scope as its dummy implementation.
+- No message queue implementation for dummy abis.
+
 
 **Solution**
 
@@ -66,5 +74,8 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 
 **Class Diagram**
 
+![Dummy abis class diagram](_images/dummyabis_class_diagram.png)
 
 **Sequence Diagram**
+
+![Dummy abis sequence diagram](_images/dummyabis_seq_diagram.png)
