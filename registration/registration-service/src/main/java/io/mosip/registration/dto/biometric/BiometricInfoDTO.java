@@ -24,6 +24,9 @@ public class BiometricInfoDTO extends BaseDTO {
 
 	/** The iris biometric exception DTO. */
 	private List<BiometricExceptionDTO> irisBiometricExceptionDTO;
+	
+	/** The face details DTO. */
+	private FaceDetailsDTO faceDetailsDTO;
 
 
 	/**
@@ -97,5 +100,21 @@ public class BiometricInfoDTO extends BaseDTO {
 	 */
 	public void setIrisBiometricExceptionDTO(List<BiometricExceptionDTO> irisBiometricExceptionDTO) {
 		this.irisBiometricExceptionDTO = irisBiometricExceptionDTO;
+	}
+	
+	/**
+	 * Sets the face details DTO.
+	 * 
+	 * @return faceDetailsDTO
+	 */
+	public FaceDetailsDTO getFaceDetailsDTO() {
+		return faceDetailsDTO;
+	}
+
+	/**
+	 * @param faceDetailsDTO the faceDetailsDTO to set
+	 */
+	public void setFaceDetailsDTO(FaceDetailsDTO faceDetailsDTO) {
+		this.faceDetailsDTO = faceDetailsDTO;
 	}
 }

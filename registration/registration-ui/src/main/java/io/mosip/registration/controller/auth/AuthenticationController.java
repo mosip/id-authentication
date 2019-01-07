@@ -25,6 +25,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
@@ -671,7 +672,25 @@ public class AuthenticationController extends BaseController {
 				"Capturing and Validating Face");
 		
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		authenticationValidatorDTO.setFaceDetail("face".getBytes());
+		
+		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
+		faceDetailsDTO.setFace("face".getBytes());
+		
+		if (!isEODAuthentication) {
+			if (isSupervisor) {
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA);
+				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
+				SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+			} else {
+				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
+						.setFaceDetailsDTO(faceDetailsDTO);
+			}
+		}
+		
+		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		authenticationValidatorDTO.setUserId(userId);
 		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
 				authenticationValidatorDTO);

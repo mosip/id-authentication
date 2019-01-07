@@ -38,6 +38,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
@@ -978,8 +979,10 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	private boolean validateBiometricFace() {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
+		faceDetailsDTO.setFace("face".getBytes());
 		authenticationValidatorDTO.setUserId(userId.getText());
-		authenticationValidatorDTO.setFaceDetail("face".getBytes());
+		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
 				authenticationValidatorDTO);
 	}

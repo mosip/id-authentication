@@ -2,6 +2,7 @@ package io.mosip.registration.dto;
 
 import java.util.List;
 
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import lombok.Getter;
@@ -16,6 +17,6 @@ public class AuthenticationValidatorDTO {
 	private List<FingerprintDetailsDTO> fingerPrintDetails;
 	private String authValidationType;
 	private List<IrisDetailsDTO> irisDetails;
-	private byte[] faceDetail;
+	private FaceDetailsDTO faceDetail;
 	
 }

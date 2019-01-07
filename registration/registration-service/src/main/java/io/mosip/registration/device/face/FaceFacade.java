@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 
 @Component
@@ -18,12 +19,12 @@ public class FaceFacade {
 	
 	private static final Logger LOGGER = AppConfig.getLogger(FaceFacade.class);
 	
-	public boolean validateFace(byte[] faceDetail, List<UserBiometric> userFaceDetails) {
+	public boolean validateFace(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails) {
 		
 		LOGGER.debug(LOG_REG_FACE_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Stubbing face details for user registration");
 		
-		return userFaceDetails.stream().anyMatch(face -> Arrays.equals(faceDetail, face.getBioIsoImage()));
+		return userFaceDetails.stream().anyMatch(face -> Arrays.equals(faceDetail.getFace(), face.getBioIsoImage()));
 	}
 
 }
