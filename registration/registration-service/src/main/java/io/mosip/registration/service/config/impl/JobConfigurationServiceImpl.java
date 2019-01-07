@@ -61,13 +61,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private SchedulerFactoryBean schedulerFactoryBean;
 
 	@Autowired
-	SyncJobTransactionDAO syncJobTransactionDAO;
+	private SyncJobTransactionDAO syncJobTransactionDAO;
 
 	@Autowired
-	JobManager jobManager;
+	private JobManager jobManager;
 
 	@Autowired
-	SyncJobDAO syncJobDAO;
+	private SyncJobDAO syncJobDAO;
 
 	/**
 	 * LOGGER for logging
