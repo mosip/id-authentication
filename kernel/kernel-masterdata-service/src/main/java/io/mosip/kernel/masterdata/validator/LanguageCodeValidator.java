@@ -46,7 +46,7 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 		} else {
 			try {
 				String jsonString = restTemplate.getForObject(globalconfigsUrl, String.class);
-				if (!(jsonString.isEmpty()) && jsonString != null) {
+				if (!EmptyCheckUtils.isNullEmpty(jsonString)) {
 					JSONArray jsonArray = new JSONObject(jsonString).getJSONArray(supportedLanguages);
 					for (int i = 0; i < jsonArray.length(); i++) {
 						if (langCode.equals(jsonArray.getString(i))) {
