@@ -63,6 +63,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	@Value("${REG_NO_OF_DAYS_LIMIT_TO_DELETE}")
 	private int noOfDays;
 
+	private HashMap<String, Registration> registrationMap = new HashMap<>();
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,23 +74,35 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	@Override
 	public ResponseDTO deleteReRegistrationPackets() {
 
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Delete  Reg-packets started");
+
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
 
-		List<Registration> registrations = registrationDAO.getRegistrationsToBeDeleted(
-				getPacketDeletionLastDate(reqTime), RegistrationClientStatusCode.DELETED.getCode());
-
+		
 		try {
+			/** Get Registrations to be deleted */
+			List<Registration> registrations = registrationDAO.getRegistrationsToBeDeleted(
+					getPacketDeletionLastDate(reqTime), RegistrationClientStatusCode.DELETED.getCode());
+
 			for (Registration registration : registrations) {
+				/** Delete each registration */
 				delete(registration, registration.getStatusCode(), true);
 			}
 			setSuccessResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS, null);
 
 		} catch (RuntimeException runtimeException) {
 
+			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage());
+
 			setErrorResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS, null);
 		}
+
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Delete  Reg-packets ended");
 
 		return responseDTO;
 
@@ -96,6 +110,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	private Timestamp getPacketDeletionLastDate(Timestamp reqTime) {
 
+		/** Get Calendar instance */
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
 		cal.add(Calendar.DATE, -noOfDays);
@@ -118,7 +133,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		List<String> packetIds = new ArrayList<>();
 		for (Registration registration : registrationList) {
-			packetIds.add(registration.getId());
+			String registrationId = registration.getId();
+
+			registrationMap.put(registrationId, registration);
+			packetIds.add(registrationId);
 		}
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"getting packets by status post-sync has been ended");
@@ -147,7 +165,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			for (RegPacketStatusDTO regPacketStatusDTO : packetStatusDTO) {
-				Registration registration = regPacketStatusDAO.get(regPacketStatusDTO.getPacketId());
+
+				Registration registration = registrationMap.get(regPacketStatusDTO.getPacketId());
 				registration.setServerStatusCode(regPacketStatusDTO.getStatus());
 				registration.setServerStatusTimestamp(new Timestamp(System.currentTimeMillis()));
 
@@ -159,6 +178,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, runtimeException.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
+					runtimeException.toString());
+			
 
 		}
 
@@ -174,6 +196,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		List<String> packetIds = getPacketIds();
 		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"PacketIds for sync with server have been retrieved");
+
 		/** Create Response to Return to UI layer */
 		ResponseDTO response = new ResponseDTO();
 		SuccessResponseDTO successResponse;
@@ -195,10 +218,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				try {
 					updatePacketIdsByServerStatus(registrations);
 				} catch (RegBaseUncheckedException regBaseUncheckedException) {
-					getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
+					LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+							regBaseUncheckedException.getMessage());
+
+					setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+					return response;
 				}
-				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-						"packet status has been synced with server");
 				/** Create Success response */
 				successResponse = new SuccessResponseDTO();
 				successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
@@ -211,17 +236,17 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 						"Success Response Created");
 			} else {
 				/** Create Error response */
-				getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-						"Error Response Created");
+				setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+				return response;
 			}
 
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
 				| ResourceAccessException exception) {
-			/** Create Error response */
-			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"Error Response Created");
+			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
+
+			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
+			return response;
 		}
 		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"Packet Status Sync ended");
