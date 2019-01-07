@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm, FormBuilder } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
@@ -116,6 +116,7 @@ export class DemographicComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService
