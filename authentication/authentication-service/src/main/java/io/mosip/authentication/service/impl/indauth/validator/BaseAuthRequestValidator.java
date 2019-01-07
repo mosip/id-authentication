@@ -225,7 +225,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 		}
 	}
-
+	/**
+	 *  Validation for MultiIris Values
+	 * @param authRequestDTO
+	 * @param errors
+	 */
 	private void validateMultiIrisValue(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
 		List<Supplier<List<IdentityInfoDTO>>> listOfIris = Stream

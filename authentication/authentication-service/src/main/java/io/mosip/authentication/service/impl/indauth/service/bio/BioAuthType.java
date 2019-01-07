@@ -90,7 +90,7 @@ public enum BioAuthType implements AuthType {
 
 			String bioType = getType();
 			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(".multi.default.match.value");
+			String key = bioType.toLowerCase().concat(".multi.min.match.value");
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				threshold = Integer.parseInt(property);
@@ -226,7 +226,7 @@ public enum BioAuthType implements AuthType {
 
 		String bioType = getType();
 		Integer threshold = null;
-		String key = bioType.toLowerCase().concat(".default.match.value");
+		String key = bioType.toLowerCase().concat(".min.match.value");
 		String property = environment.getProperty(key);
 		if (property != null && !property.isEmpty()) {
 			threshold = Integer.parseInt(property);

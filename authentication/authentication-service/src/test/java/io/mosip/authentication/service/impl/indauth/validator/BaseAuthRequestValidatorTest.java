@@ -8,8 +8,10 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.junit.Before;
@@ -32,6 +34,7 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
@@ -1039,6 +1042,103 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
 	}
+	@Test
+	public void testInValidAuthRequest_SecondaryLanguage() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("fullAddress");
+		matchInfo.setLanguage("Test");
+		matchInfo.setMatchingStrategy("E");
+		matchInfo.setMatchingThreshold(100);
+		MatchInfo matchInfo111 = new MatchInfo();
+		matchInfo111.setAuthType("fullAddress");
+		matchInfo111.setLanguage("AR");
+		matchInfo111.setMatchingStrategy("T");
+		matchInfo111.setMatchingThreshold(100);
+		List<MatchInfo> matList = new ArrayList<>();
+		matList.add(matchInfo);
+		matList.add(matchInfo111);
+		authRequestDTO.setMatchInfo(matList);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		assertFalse(errors.hasErrors());
+	}
+	@Test
+	public void testInValidAuthRequest() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setFullAddress(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(null);
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(null);
+		idInfoDTO1.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("personalIdentity");
+		matchInfo.setLanguage("FR");
+		matchInfo.setMatchingStrategy("E");
+		matchInfo.setMatchingThreshold(100);
+		MatchInfo matchInfo111 = new MatchInfo();
+		matchInfo111.setAuthType("fullAddress");
+		matchInfo111.setLanguage("AR");
+		matchInfo111.setMatchingStrategy("T");
+		matchInfo111.setMatchingThreshold(100);
+		List<MatchInfo> matList = new ArrayList<>();
+		matList.add(matchInfo);
+		matList.add(matchInfo111);
+		authRequestDTO.setMatchInfo(matList);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
+		assertFalse(errors.hasErrors());
+	}
 
 	@Test
 	public void testValidAuthRequest2() {
@@ -1182,5 +1282,74 @@ public class BaseAuthRequestValidatorTest {
 
 		assertTrue(error.hasErrors());
 
+	}
+	
+	@Test
+	public void testValidateAdandFullAdd()
+	{
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setFullAddress(true);
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
+		authRequestDTO.setAuthType(authTypeDTO);
+		Set<String> availableAuthTypeInfos=new HashSet<>();
+		availableAuthTypeInfos.add("address");
+		availableAuthTypeInfos.add("fullAddress");
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdAndFullAd", availableAuthTypeInfos, error);
+		assertTrue(error.hasErrors());
+	}
+	@Test
+	public void testValidateAge()
+	{
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setValue("16");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setFullAddress(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setAge(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
+		assertTrue(error.hasErrors());
+	}
+	@Test
+	public void testValidateDOB()
+	{
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
+		idInfoDTO.setValue("16");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage(env.getProperty("mosip.secondary.lang-code"));
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setFullAddress(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setDob(idInfoList);
+		idDTO.setAge(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOB", authRequestDTO, error);
+		assertTrue(error.hasErrors());
 	}
 }

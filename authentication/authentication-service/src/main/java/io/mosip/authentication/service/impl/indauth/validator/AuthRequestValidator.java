@@ -215,11 +215,4 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
-	/**
-	 * Adding IdAuthValidator Methods in AuthRequestValidator Class *.
-	 *
-	 * @param id     the id
-	 * @param idType the id type
-	 * @param errors the errors
-	 */
 }

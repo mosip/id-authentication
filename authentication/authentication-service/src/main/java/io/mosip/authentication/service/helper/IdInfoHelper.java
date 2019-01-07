@@ -68,7 +68,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	public static final int DEFAULT_EXACT_MATCH_VALUE = 100;
 	
 	/** The Constant DEFAULT_MATCH_VALUE. */
-	public static final String DEFAULT_MATCH_VALUE = "demo.default.match.value";
+	public static final String DEFAULT_MATCH_VALUE = "demo.min.match.value";
 
 	/** The id mapping config. */
 	@Autowired

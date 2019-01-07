@@ -70,9 +70,13 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	public boolean supports(Class<?> clazz) {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
-
+	
 	/**
 	 * Validates the KycAuthRequest
+	 * @param Object 
+	 * 
+	 * @param errors
+	 * 
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
