@@ -1,4 +1,4 @@
-Design - Registration user mapping sync from Client to Server
+**Design - Registration user mapping sync from Client to Server**
 
 **Background**
 
