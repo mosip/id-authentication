@@ -104,10 +104,6 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		MessageDTO messageDTO = new MessageDTO();
-		messageDTO.setRid("12345");
-		messageDTO.setIsValid(true);
-		messageDTO.setInternalError(false);
 		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> process(new MessageDTO()));
 	}
 
