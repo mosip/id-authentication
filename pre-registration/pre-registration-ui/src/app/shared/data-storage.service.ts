@@ -21,7 +21,7 @@ export class DataStorageService {
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   AVAILABILITY_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/book';
-  LOCATION_URL = 'https://integ.mosip.io/masterdata/';
+  LOCATION_URL = this.BASE_URL;
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
@@ -142,7 +142,7 @@ export class DataStorageService {
   }
 
   getLocationMetadataHirearchy(value: string) {
-    return this.httpClient.get(this.LOCATION_URL + appConstants.LOCATION_APPEND_URL, {
+    return this.httpClient.get(this.LOCATION_URL + appConstants.LOCATION_METADAT_APPEND_URL, {
       params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
     });
   }
