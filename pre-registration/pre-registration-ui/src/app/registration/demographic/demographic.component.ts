@@ -485,7 +485,7 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else {
-          this.preRegId = response['response'][0].prId;
+          this.preRegId = response['response'][0].preRegistrationId;
           this.regService.addUser(new UserModel(this.preRegId, request, []));
           this.sharedService.addNameList({
             fullName: this.userForm.controls.fullName.value,
