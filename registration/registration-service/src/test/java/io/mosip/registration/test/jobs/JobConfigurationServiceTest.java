@@ -29,8 +29,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import io.mosip.registration.dao.SyncJobConfigDAO;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobTransactionDAO;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -63,10 +63,10 @@ public class JobConfigurationServiceTest {
 	Scheduler scheduler;
 
 	@Mock
-	SyncJobDAO syncJobDAO;
+	SyncJobControlDAO syncJobDAO;
 
 	@Mock
-	SyncJobTransactionDAO syncJobTransactionDAO;
+	SyncTransactionDAO syncJobTransactionDAO;
 	
 	@Mock
 	JobExecutionContext jobExecutionContext;
@@ -92,6 +92,8 @@ public class JobConfigurationServiceTest {
 			jobMap.put(job.getId(), job);
 		});
 		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
+		
+		Mockito.when(jobConfigDAO.getAll()).thenReturn(syncJobList);
 
 	}
 
@@ -236,7 +238,8 @@ public class JobConfigurationServiceTest {
 
 		syncTransactions.add(syncTransaction);
 
-		Mockito.when(syncJobTransactionDAO.getAll()).thenReturn(syncTransactions);
+		Timestamp req =new Timestamp(System.currentTimeMillis());
+		Mockito.when(syncJobTransactionDAO.getSyncTransactions(req)).thenReturn(syncTransactions);
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getSuccessResponseDTO());
 
 		syncTransactions.clear();

@@ -1,6 +1,7 @@
 package io.mosip.registration.service.config.impl;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobConfigDAO;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobTransactionDAO;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.entity.SyncControl;
@@ -61,13 +63,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private SchedulerFactoryBean schedulerFactoryBean;
 
 	@Autowired
-	SyncJobTransactionDAO syncJobTransactionDAO;
+	SyncTransactionDAO syncJobTransactionDAO;
 
 	@Autowired
 	JobManager jobManager;
 
 	@Autowired
-	SyncJobDAO syncJobDAO;
+	SyncJobControlDAO syncJobDAO;
 
 	/**
 	 * LOGGER for logging
@@ -75,13 +77,21 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private static final Logger LOGGER = AppConfig.getLogger(JobConfigurationServiceImpl.class);
 
 	/**
-	 * sync job map with key as jobID and value as SyncJob (Entity)
+	 * Active sync job map with key as jobID and value as SyncJob (Entity)
+	 */
+	private Map<String, SyncJobDef> SYNC_ACTIVE_JOB_MAP = new HashMap<>();
+
+	/**
+	 * Sync job map with key as jobID and value as SyncJob (Entity)
 	 */
 	private Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
 
 	private List<SyncJobDef> jobList;
 
 	private boolean isSchedulerRunning = false;
+
+	@Value("${SYNC_TRANSACTION_NO_OF_DAYS_LIMIT}")
+	private int syncTransactionHistoryLimitDays;
 
 	/*
 	 * (non-Javadoc)
@@ -93,8 +103,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
+		/** Get Active Jobs */
 		jobList = jobConfigDAO.getActiveJobs();
-		jobList.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
+		jobList.forEach(syncJob -> SYNC_ACTIVE_JOB_MAP.put(syncJob.getId(), syncJob));
+
+		/** Get All Jobs */
+		List<SyncJobDef> jobDefs = jobConfigDAO.getAll();
+		jobDefs.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
@@ -122,11 +137,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			isSchedulerRunning = true;
 			Map<String, Object> jobDataAsMap = new HashMap<>();
 			jobDataAsMap.put("applicationContext", applicationContext);
-			jobDataAsMap.putAll(SYNC_JOB_MAP);
+			jobDataAsMap.putAll(SYNC_ACTIVE_JOB_MAP);
 
 			JobDataMap jobDataMap = new JobDataMap(jobDataAsMap);
 
-			SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
+			SYNC_ACTIVE_JOB_MAP.forEach((jobId, syncJob) -> {
 				try {
 					if (syncJob.getParentSyncJobId() == null && responseDTO.getErrorResponseDTOs() == null
 							&& isSchedulerRunning
@@ -257,7 +272,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					JobDetail jobDetail = jobExecutionContext.getJobDetail();
 					String jobId = jobDetail.getKey().getName();
 
-					SyncJobDef syncJobDef = SYNC_JOB_MAP.get(jobId);
+					SyncJobDef syncJobDef = SYNC_ACTIVE_JOB_MAP.get(jobId);
 
 					return new SyncDataProcessDTO(syncJobDef.getId(), syncJobDef.getName(),
 							RegistrationConstants.JOB_RUNNING, new Timestamp(System.currentTimeMillis()).toString());
@@ -298,7 +313,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = null;
 		try {
 
-			SyncJobDef syncJobDef = SYNC_JOB_MAP.get(jobId);
+			SyncJobDef syncJobDef = SYNC_ACTIVE_JOB_MAP.get(jobId);
 
 			// Get Job using application context and api name
 			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
@@ -344,7 +359,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			String lastUpdTimes = (syncControl.getUpdDtimes() == null) ? syncControl.getCrDtime().toString()
 					: syncControl.getUpdDtimes().toString();
 
-			return new SyncDataProcessDTO(syncControl.getId(), jobName, RegistrationConstants.JOB_COMPLETED,
+			return new SyncDataProcessDTO(syncControl.getSyncJobId(), jobName, RegistrationConstants.JOB_COMPLETED,
 					lastUpdTimes);
 
 		}).collect(Collectors.toList());
@@ -373,8 +388,16 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<SyncTransaction> syncTransactionList = null;
 
+		/** Get Calendar instance */
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Timestamp(System.currentTimeMillis()));
+		cal.add(Calendar.DATE, -syncTransactionHistoryLimitDays);
+
+		/** To-Date */
+		Timestamp req = new Timestamp(cal.getTimeInMillis());
+		
 		/** Get All sync Transcation Details from DataBase */
-		syncTransactionList = syncJobTransactionDAO.getAll();
+		syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req);
 
 		/** Reverese the list order, so that we can go through recent transactions */
 		Collections.reverse(syncTransactionList);
@@ -383,8 +406,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		syncDataProcessDTOs = syncTransactionList.stream().map(syncTransaction -> {
 
-			String jobName = (SYNC_JOB_MAP.get(syncTransaction.getSyncJobId()) == null) ? ""
-					: SYNC_JOB_MAP.get(syncTransaction.getSyncJobId()).getName();
+			String jobName = (SYNC_ACTIVE_JOB_MAP.get(syncTransaction.getSyncJobId()) == null) ? ""
+					: SYNC_ACTIVE_JOB_MAP.get(syncTransaction.getSyncJobId()).getName();
 
 			return new SyncDataProcessDTO(syncTransaction.getSyncJobId(), jobName, syncTransaction.getStatusCode(),
 					syncTransaction.getCrDtime().toString());
