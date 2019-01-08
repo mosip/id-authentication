@@ -13,6 +13,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
@@ -90,6 +91,8 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof java.text.ParseException) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
 					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+		} else if (ex instanceof UnidentifiedJsonException) {
+			throw new JsonValidationException(((UnidentifiedJsonException) ex).getErrorCode(),ex.getMessage());
 		}
 	}
 
