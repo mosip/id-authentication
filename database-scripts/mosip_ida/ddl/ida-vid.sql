@@ -12,7 +12,7 @@ create schema if not exists ida
 -- table section --------------------------------------------------------------------
 create table ida.vid (
 
-	id 	 character varying(28) not null,
+	id 	 character varying(36) not null,
 	
 	uin  character varying(28) not null,     		-- UIN of indivisuals and referenced from idrepo database 
 	
