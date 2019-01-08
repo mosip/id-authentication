@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from './../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
@@ -11,11 +12,12 @@ import * as appConstants from './../app.constants';
 export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
+  BASE_URL = environment.BASE_URL;
+  GET_APPLICANT = this.BASE_URL + 'demographic/v0.1/pre-registration/applicationData';
+  APPLICANTS = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   SEND_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = 'https://integ.mosip.io/document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/getDocument';
-  BASE_URL2 = 'https://integ.mosip.io/demographic/v0.1/pre-registration/applicationData';
-  BASE_URL = 'https://integ.mosip.io/demographic/v0.1/pre-registration/applications';
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   AVAILABILITY_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/book';
@@ -25,7 +27,7 @@ export class DataStorageService {
   DISTANCE = 2000;
 
   getUsers(value: string) {
-    return this.httpClient.get<Applicant[]>(this.BASE_URL, {
+    return this.httpClient.get<Applicant[]>(this.APPLICANTS, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
@@ -33,7 +35,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL2, {
+    return this.httpClient.get(this.GET_APPLICANT, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
@@ -68,7 +70,7 @@ export class DataStorageService {
     };
     console.log('data being sent', obj);
 
-    return this.httpClient.post(this.BASE_URL, obj);
+    return this.httpClient.post(this.APPLICANTS, obj);
   }
 
   sendFile(formdata: FormData) {
@@ -150,17 +152,6 @@ export class DataStorageService {
       this.LOCATION_URL + appConstants.LOCATION_IMMEDIATE_CHILDREN_APPEND_URL + location + '/' + lang
     );
   }
-
-  // getLocationList(locationCode: string, langCode: string) {
-  //   const URL = 'https://integ.mosip.io/masterdata/v1.0/locations/';
-  //   return this.httpClient
-  //     .get(URL, {
-  //       observe: 'body',
-  //       responseType: 'json',
-  //       params: new HttpParams().append('locationCode', locationCode).append('langCode', langCode)
-  //     })
-  //     .subscribe(res => console.log(res));
-  // }
 
   deleteFile(documentId) {
     return this.httpClient.delete(this.DELETE_FILE_URL, {

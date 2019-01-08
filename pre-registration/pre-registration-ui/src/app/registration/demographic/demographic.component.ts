@@ -443,14 +443,14 @@ export class DemographicComponent implements OnInit {
     }
   }
 
-  onTransliteration(fromControl: FormControl, toControl) {
+  onTransliteration(fromControl: FormControl, toControl: any) {
     if (fromControl.value) {
       const request: any = {
         from_field_lang: 'English',
-        from_field_name: 'Name1',
+        from_field_name: toControl.name,
         from_field_value: fromControl.value,
         to_field_lang: 'Arabic',
-        to_field_name: 'Name2',
+        to_field_name: toControl.name,
         to_field_value: ''
       };
       this.transUserForm.controls[toControl.name].patchValue('dummyValue');
