@@ -67,7 +67,7 @@ public class RegPacketStatusServiceTest {
 		
 		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
 
-		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(registrations);
+		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean())).thenReturn(registrations);
 		Assert.assertNotNull(packetStatusService.packetSyncStatus().getSuccessResponseDTO());
 		
 		when(packetStatusDao.update(Mockito.any())).thenThrow(RuntimeException.class);
@@ -79,10 +79,10 @@ public class RegPacketStatusServiceTest {
 	public void packetSyncStatusFailureTest()
 			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
 		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
-		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(registrations);
+		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean())).thenReturn(registrations);
 		Assert.assertNotNull(packetStatusService.packetSyncStatus().getErrorResponseDTOs());
 		
-		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenThrow(HttpClientErrorException.class);
+		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(),Mockito.anyBoolean())).thenThrow(HttpClientErrorException.class);
 		packetStatusService.packetSyncStatus();
 		
 	}

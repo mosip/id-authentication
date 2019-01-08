@@ -51,8 +51,10 @@ public class RestClientUtil {
 	 * 
 	 * @param requestDto
 	 * @return ResponseEntity<?> response entity obtained from api
-	 * @throws HttpClientErrorException when client error exception from server
-	 * @throws HttpServerErrorException when server exception from server
+	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object invoke(RequestHTTPDTO requestHTTPDTO)
 			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
@@ -63,8 +65,8 @@ public class RestClientUtil {
 		Object responseBody = null;
 		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
 		try {
-			if(requestHTTPDTO.getUri().toString().contains("https"))
-			turnOffSslChecking();
+			if (requestHTTPDTO.getUri().toString().contains("https"))
+				turnOffSslChecking();
 		} catch (KeyManagementException keyManagementException) {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					keyManagementException.getMessage());
@@ -83,7 +85,7 @@ public class RestClientUtil {
 					preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME,
 							responseEntity.getHeaders().getContentDisposition().getFilename());
 					preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, responseEntity.getBody());
-					responseBody=preRegData;
+					responseBody = preRegData;
 				} else {
 					responseBody = responseEntity.getBody();
 				}

@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.text.SimpleDateFormat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.config.GlobalParamService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -33,6 +36,9 @@ public class Initialization extends Application {
 	private static final Logger LOGGER = AppConfig.getLogger(Initialization.class);
 
 	private static ApplicationContext applicationContext;
+	
+	@Autowired
+	private static GlobalParamService globalParamService;
 
 	@Override
 	public void start(Stage primaryStage) throws RegBaseCheckedException {
@@ -52,6 +58,10 @@ public class Initialization extends Application {
 	public static void main(String[] args) {
 		System.setProperty("java.net.useSystemProxies", "true");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+		
+		globalParamService = applicationContext.getBean(GlobalParamService.class);
+		ResponseDTO res= globalParamService.getGlobalParamsFromServer();
+		
 		launch(args);
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Application Initilization"

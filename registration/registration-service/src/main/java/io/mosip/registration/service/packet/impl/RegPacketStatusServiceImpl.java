@@ -213,7 +213,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		try {
 			/** Obtain RegistrationStatusDTO from service delegate util */
 			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME,
-					requestParamMap);
+					requestParamMap, false);
 			if (!registrations.isEmpty()) {
 				/** update the status of packets after sync with server */
 				try {

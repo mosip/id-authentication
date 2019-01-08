@@ -2,6 +2,7 @@ package io.mosip.registration.service.config;
 
 import java.util.Map;
 
+import io.mosip.registration.dto.ResponseDTO;
 
 /**
  * Service Class for GlobalContextParameters
@@ -14,8 +15,16 @@ public interface GlobalParamService {
 
 	/**
 	 * Fetching Global parameters of application
+	 * 
 	 * @return map
 	 */
-	Map<String,Object> getGlobalParams();
+	Map<String, Object> getGlobalParams();
+
+	/**
+	 * Get Global params details from server
+	 * 
+	 * @return response
+	 */
+	ResponseDTO getGlobalParamsFromServer();
 
 }

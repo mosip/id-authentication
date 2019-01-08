@@ -54,14 +54,14 @@ public class RegistrationConstants {
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
-	
-	//Images path
+
+	// Images path
 	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
 	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
 	public static final String FP_IMG_PATH = "/images/fingerprint.jpg";
 	public static final String IRIS_IMG_PATH = "/images/iris.jpg";
 	public static final String FACE_IMG_PATH = "/images/face.jpg";
-	
+
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
 	public static final String SUPERVISOR_NAME = "Supervisor";
@@ -122,49 +122,45 @@ public class RegistrationConstants {
 	public static final String IS_CONSOLIDATED = "isConsolidated";
 	public static final String CONSOLIDATED_VALIDATION = "Y";
 	public static final String INDIVIDUAL_VALIDATION = "N";
-	public static final String VALIDATION_SPLITTER="\\s,";
-	public static final String ON_TYPE="_ontype";
-	public static final String POR_DOCUMENTS="porDocuments";
-	public static final String POR_BOX="porBox";
-	public static final String VALIDATION_LOGGER="VALIDATIONS";
-	public static final String REG_LGN_001="REG_LGN_001";
-	public static final String REG_DDC_002_1="REG_DDC_002_1";
-	public static final String REG_DDC_002_2="REG_DDC_002_2";
-	public static final String REG_DDC_003_1="REG_DDC_003_1";
-	public static final String REG_DDC_003_2="REG_DDC_003_2";
-	public static final String REG_DDC_004_1="REG_DDC_004_1";
-	public static final String REG_DDC_004_2="REG_DDC_004_2";
+	public static final String VALIDATION_SPLITTER = "\\s,";
+	public static final String ON_TYPE = "_ontype";
+	public static final String POR_DOCUMENTS = "porDocuments";
+	public static final String POR_BOX = "porBox";
+	public static final String VALIDATION_LOGGER = "VALIDATIONS";
+	public static final String REG_LGN_001 = "REG_LGN_001";
+	public static final String REG_DDC_002_1 = "REG_DDC_002_1";
+	public static final String REG_DDC_002_2 = "REG_DDC_002_2";
+	public static final String REG_DDC_003_1 = "REG_DDC_003_1";
+	public static final String REG_DDC_003_2 = "REG_DDC_003_2";
+	public static final String REG_DDC_004_1 = "REG_DDC_004_1";
+	public static final String REG_DDC_004_2 = "REG_DDC_004_2";
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
-	public static final String LOCAL_LANGUAGE="LocalLanguage";
-	public static final String APPLICATION_LANGUAGE="application_language";
-	public static final String REGISTRATION_LOCAL_LANGUAGE="local_language";
-	public static final String PACKET_TYPE_NEW="New";
-	public static final String FLAG_YES="Y";
-	public static final String FLAG_NO="N";
-	public static final String REGISTRATION_DTO="registrationDto";
-	public static final String ADDRESS_LINE1="addressLine1";
-	public static final String ADDRESS_LINE2="addressLine2";
-	public static final String ADDRESS_LINE3="addressLine3";
-	public static final String FULL_NAME="fullName";
-	public static final String CHILD="Child";
-	public static final String ADULT="Adult";
-	public static final String AGE_DATEPICKER_CONTENT="ageDatePickerContent";
-
+	public static final String LOCAL_LANGUAGE = "LocalLanguage";
+	public static final String APPLICATION_LANGUAGE = "application_language";
+	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
+	public static final String PACKET_TYPE_NEW = "New";
+	public static final String FLAG_YES = "Y";
+	public static final String FLAG_NO = "N";
+	public static final String REGISTRATION_DTO = "registrationDto";
+	public static final String ADDRESS_LINE1 = "addressLine1";
+	public static final String ADDRESS_LINE2 = "addressLine2";
+	public static final String ADDRESS_LINE3 = "addressLine3";
+	public static final String FULL_NAME = "fullName";
+	public static final String CHILD = "Child";
+	public static final String ADULT = "Adult";
+	public static final String AGE_DATEPICKER_CONTENT = "ageDatePickerContent";
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
 	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
 
-	//update UIN
-	public static final String UIN_NAV_LABEL="/ UIN Update";
-	public static final String UIN_LABEL="UIN";
-	public static final String FIRST_TOGGLE_LABEL="toggleLabel1";
-	public static final String SECOND_TOGGLE_LABEL="toggleLabel2";
-	public static final String PACKET_TYPE_UPDATE="Update";
+	// update UIN
+	public static final String UIN_NAV_LABEL = "/ UIN Update";
+	public static final String UIN_LABEL = "UIN";
+	public static final String FIRST_TOGGLE_LABEL = "toggleLabel1";
+	public static final String SECOND_TOGGLE_LABEL = "toggleLabel2";
+	public static final String PACKET_TYPE_UPDATE = "Update";
 
-
-
-	
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 
@@ -532,7 +528,7 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "DoB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-	
+
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	// Pre Registration
@@ -714,7 +710,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
 	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
-	
+
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
@@ -803,28 +799,33 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_INSERT_GPS = "Unable to validate machine location. Please insert the GPS device and try again";
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again";
 
-	public static final String POLICY_SYNC_SERVICE="policysync";
-	public static final String KEY_NAME="KEY_POLICY_SYNC_THRESHOLD_VALUE";
-	public static final String REFERENCE_ID="1001";
-	
-	//Reg Deletion
-	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS="Registartion Packets Deletion Successful ";
-	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE="Registartion Packets Deletion Failure ";
-	
-	//Application Language
-	public static final String APPLICATION_LANUAGE="application_language";
-	
-	
-	public enum mappedCodeForLang{
+	public static final String POLICY_SYNC_SERVICE = "policysync";
+	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
+	public static final String REFERENCE_ID = "1001";
+
+	// Reg Deletion
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE = "Registartion Packets Deletion Failure ";
+
+	// Application Language
+	public static final String APPLICATION_LANUAGE = "application_language";
+
+	// Global-Config Constants
+	public static final String GET_GLOBAL_CONFIG = "get_registration_center_config";
+	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
+
+	public enum mappedCodeForLang {
 		en("ENG");
 		private String langCode;
+
 		mappedCodeForLang(String langCode) {
-			this.langCode=langCode;
+			this.langCode = langCode;
 		}
+
 		public String getMappedCode() {
 			return langCode;
 		}
-		
+
 	}
-	
+
 }

@@ -1002,7 +1002,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(masterJson);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean())).thenReturn(masterJson);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
 				.thenReturn(masterSyncDt);
@@ -1072,7 +1072,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean()))
 				.thenThrow(HttpClientErrorException.class);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))
@@ -1142,7 +1142,7 @@ public class MasterSyncServiceTest {
 
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean()))
 				.thenThrow(SocketTimeoutException.class);
 
 		Mockito.when(objectMapper.readValue(masterSyncJson.toString(), MasterDataResponseDto.class))

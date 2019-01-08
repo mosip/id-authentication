@@ -190,7 +190,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				/** REST call to get packet */
 				requestParamMap.put(RegistrationConstants.IS_PRE_REG_SYNC, "true");
 				Map<String, Object> packet = (Map<String, Object>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap);
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap,false);
 
 				if (packet != null && !packet.isEmpty()) {
 

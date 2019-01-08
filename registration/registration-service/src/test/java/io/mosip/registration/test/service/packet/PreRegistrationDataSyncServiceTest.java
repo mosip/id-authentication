@@ -105,7 +105,7 @@ public class PreRegistrationDataSyncServiceTest {
 		Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
 		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(null);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegData);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean())).thenReturn(preRegData);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
@@ -120,7 +120,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any())).thenReturn(preRegData);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean())).thenReturn(preRegData);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 
@@ -135,7 +135,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationNegativeTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean()))
 				.thenThrow(HttpClientErrorException.class);
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
