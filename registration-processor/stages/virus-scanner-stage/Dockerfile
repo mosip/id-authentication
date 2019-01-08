@@ -10,3 +10,4 @@ VOLUME /home/ftp1/VIRUS_SCAN/encrypted /home/ftp1/VIRUS_SCAN/decrypted /home/ftp
 COPY ./target/virus-scanner-stage-*.jar virus-scanner-stage.jar
 
 CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","virus-scanner-stage.jar"]
+
