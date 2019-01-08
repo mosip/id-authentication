@@ -84,16 +84,16 @@
       "action_continue": "CONTINUER"
     },
     "bookAppointment": {
-      "title_book": "Book Appointment",
-      "text_prev": "Previous",
-      "text_next": "Next",
-      "text_morning": "Morning",
-      "text_afternoon": "Afternoon",
-      "text_available": "Available Applicants",
-      "action_done": "DONE",
-      "action_back": "BACK",
-      "action_bookLater": "BOOK LATER",
-      "action_continue": "CONTINUE"
+      "title_book": "Rendez-vous du livre",
+      "text_prev": "précédent",
+      "text_next": "Suivant",
+      "text_morning": "Matin",
+      "text_afternoon": "Après midi",
+      "text_available": "Candidats disponibles",
+      "action_done": "TERMINÉ",
+      "action_back": "RETOUR",
+      "action_bookLater": "RÉSERVER PLUS TARD",
+      "action_continue": "CONTINUER"
     },
     "message": {
       "login": {
@@ -147,8 +147,9 @@
       "action_continue": "CONTINUE"
     },
     "appointmentConfirmed": {
-      "text_confirmation": "The Pre-Registarion id and Appointment details have been sent to registered email id and phone number",
-      "action_download": "DOWNLOAD",
-      "action_print": "PRINT"
+      "title":"Rendez-vous confirmé",
+      "text_confirmation": "L'identifiant pré-enregistrement et les détails du rendez-vous ont été envoyés à l'identifiant et au numéro de téléphone de l'e-mail enregistré.",
+      "action_download": "TÉLÉCHARGER",
+      "action_print": "IMPRESSION"
     }
   }

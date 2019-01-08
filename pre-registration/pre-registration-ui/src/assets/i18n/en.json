@@ -150,6 +150,7 @@
         "action_continue": "CONTINUE"
       },
       "appointmentConfirmed": {
+        "title":"Appointment Confirmed",
         "text_confirmation": "The Pre-Registarion id and Appointment details have been sent to registered email id and phone number",
         "action_download": "DOWNLOAD",
         "action_print": "PRINT"

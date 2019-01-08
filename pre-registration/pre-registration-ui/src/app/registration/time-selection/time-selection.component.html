@@ -1,13 +1,13 @@
 <mat-card class="time-selection__title-card">
   <mat-card-header>
-      <p class="time-selection__title-card-text">Book Appointment</p>
+      <p class="time-selection__title-card-text">{{'bookAppointment.title_book'|translate}} </p>
   </mat-card-header>
 </mat-card>
 <mat-card class="time-selection__date-card">
   <div *ngIf="availabilityData.length !== 0">
     <div class="container">
       <div class="time-selection__arrow-text">
-        <p (click)="scrollLeft()">Previous</p>
+        <p (click)="scrollLeft()">{{'bookAppointment.text_prev'|translate}}</p>
       </div>
       <div class="left-button">
           <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
@@ -27,14 +27,14 @@
           <a (click)="scrollRight()"><i class="material-icons">arrow_forward</i></a>
       </div>
       <div class="time-selection__arrow-text">
-          <p (click)="scrollRight()">Next</p>
+          <p (click)="scrollRight()">{{'bookAppointment.text_next'|translate}}</p>
       </div>
     </div>
     </div>
 </mat-card>
 <div class="time-seelection__slot-groups-div">
-  <p (click)="tabSelected('morning')" [ngClass]="activeTab === 'morning' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">Morning</p>
-  <p (click)="tabSelected('afternoon')" [ngClass]="activeTab === 'afternoon' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">Afternoon</p>
+  <p (click)="tabSelected('morning')" [ngClass]="activeTab === 'morning' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">{{'bookAppointment.text_morning'|translate}}</p>
+  <p (click)="tabSelected('afternoon')" [ngClass]="activeTab === 'afternoon' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">{{'bookAppointment.text_afternoon'|translate}}</p>
 </div>
 <div class="time-selection__slots-div">
   <mat-card class="time-selection__time-slots-container">
@@ -74,7 +74,7 @@
     </div>
     <div *ngIf="deletedNames.length !== 0">
      <div class="time-selection__name-list-header">
-       Available Applicants
+       {{'bookAppointment.text_available'|translate}} 
      </div>
      <div>
       <table class="time-selection__name-list">
@@ -89,10 +89,10 @@
 
 <div>
   <mat-card class="center-selection__button-container">
-    <button mat-button class="user-back-btn">Back</button>
+    <button mat-button class="user-back-btn">{{'bookAppointment.action_back'|translate}}</button>
     <span class="spacer"></span>
-    <button mat-button class="user-book_later-btn">Book Later</button>
-    <button mat-button (click)="makeBooking()" class="user-continue-btn">Continue</button>
+    <button mat-button class="user-book_later-btn">{{'bookAppointment.action_bookLater'|translate}}</button>
+    <button mat-button (click)="makeBooking()" class="user-continue-btn">{{'bookAppointment.action_continue'|translate}}</button>
   </mat-card>
 </div>
 

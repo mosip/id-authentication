@@ -151,6 +151,7 @@
             "action_continue": "استمر"
         },
         "appointmentConfirmed": {
+            "title":"تم تأكيد الموعد",
             "text_confirmation": "تم إرسال تفاصيل معرف التسجيل ال  و الموعد  إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
             "action_download": "تحميل",
             "action_print": "طباعة"
