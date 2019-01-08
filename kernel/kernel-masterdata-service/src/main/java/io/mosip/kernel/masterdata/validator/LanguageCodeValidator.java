@@ -41,7 +41,7 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	 */
 	@Override
 	public boolean isValid(String langCode, ConstraintValidatorContext context) {
-		if (EmptyCheckUtils.isNullEmpty(langCode) && langCode.trim().length() > 3) {
+		if (EmptyCheckUtils.isNullEmpty(langCode) || langCode.trim().length() > 3) {
 			return false;
 		} else {
 			try {
@@ -55,7 +55,8 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 					}
 				}
 			} catch (JSONException | RestClientException e) {
-				throw new MasterDataServiceException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
+				throw new MasterDataServiceException(
+						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
 						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
 			}
 			return false;

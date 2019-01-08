@@ -9,14 +9,22 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+/**
+ * 
+ * 
+ * @author Bal Vikash Sharma
+ *
+ */
 @Documented
 @Constraint(validatedBy = LanguageCodeValidator.class)
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.TYPE_USE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidLangCode {
 
 	String message() default "Language code not supported!";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
-	
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 }
