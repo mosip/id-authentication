@@ -13,21 +13,19 @@ export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
   BASE_URL = environment.BASE_URL;
-  GET_APPLICANT = this.BASE_URL + 'demographic/v0.1/pre-registration/applicationData';
-  APPLICANTS = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   SEND_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = 'https://integ.mosip.io/document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/getDocument';
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   AVAILABILITY_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/book';
-  LOCATION_URL = this.BASE_URL;
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
+  // const TEST_URL = 'http://A2ML27085:9092/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
   getUsers(value: string) {
-    return this.httpClient.get<Applicant[]>(this.APPLICANTS, {
+    return this.httpClient.get<Applicant[]>(this.BASE_URL + appConstants.APPEND_URL.APPLICANTS, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
@@ -35,7 +33,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    return this.httpClient.get(this.GET_APPLICANT, {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.GET_APPLICANT, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
@@ -44,7 +42,7 @@ export class DataStorageService {
 
   getTransliteration(request) {
     const obj = {
-      id: appConstants.TRANSLITERATION_ID,
+      id: appConstants.IDS.transliteration,
       reqTime: '2019-01-02T11:01:31.211Z',
       ver: appConstants.VERSION,
       request: request
@@ -63,14 +61,14 @@ export class DataStorageService {
 
   addUser(identity: any) {
     const obj = {
-      id: appConstants.NEW_USER_ID,
+      id: appConstants.IDS.newUser,
       ver: appConstants.VERSION,
       reqTime: '2019-01-02T11:01:31.211Z',
       request: identity
     };
     console.log('data being sent', obj);
 
-    return this.httpClient.post(this.APPLICANTS, obj);
+    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.APPLICANTS, obj);
   }
 
   sendFile(formdata: FormData) {
@@ -142,14 +140,22 @@ export class DataStorageService {
   }
 
   getLocationMetadataHirearchy(value: string) {
-    return this.httpClient.get(this.LOCATION_URL + appConstants.LOCATION_METADATA_APPEND_URL, {
-      params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
-    });
+    return this.httpClient.get(
+      this.BASE_URL + appConstants.APPEND_URL.LOCATION + appConstants.APPEND_URL.LOCATION_METADATA,
+      {
+        params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
+      }
+    );
   }
 
   getLocationImmediateHierearchy(lang: string, location: string) {
     return this.httpClient.get(
-      this.LOCATION_URL + appConstants.LOCATION_IMMEDIATE_CHILDREN_APPEND_URL + location + '/' + lang
+      this.BASE_URL +
+        appConstants.APPEND_URL.LOCATION +
+        appConstants.APPEND_URL.LOCATION_IMMEDIATE_CHILDREN +
+        location +
+        '/' +
+        lang
     );
   }
 

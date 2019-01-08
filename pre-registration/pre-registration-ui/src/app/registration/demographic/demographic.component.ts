@@ -29,8 +29,8 @@ export interface DropDown {
 export class DemographicComponent implements OnInit {
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
-  primaryLang = appConstants.PRIMARY_LANG_CODE;
-  secondaryLang = appConstants.SECONDARY_LANG_CODE;
+  primaryLang = appConstants.LANGUAGE_CODE.primary;
+  secondaryLang = appConstants.LANGUAGE_CODE.secondary;
   ageOrDobPref = '';
   showDate = false;
   isNewApplicant = false;
@@ -163,6 +163,10 @@ export class DemographicComponent implements OnInit {
     let t_addressLine1 = '';
     let t_addressLine2 = '';
     let t_addressLine3 = '';
+    let t_postalCode = '';
+    let t_mobilePhone = '';
+    let t_email = '';
+    let t_pin = '';
 
     if (this.regService.getUser(this.step) != null) {
       this.user = this.regService.getUser(this.step);
@@ -188,12 +192,12 @@ export class DemographicComponent implements OnInit {
       pin = this.user.request.demographicDetails.identity.CNEOrPINNumber[0].value;
 
       t_fullName = this.user.request.demographicDetails.identity.fullName[1].value;
-      t_gender = this.user.request.demographicDetails.identity.gender[1].value;
-      t_date = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[0];
-      t_month = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[1];
-      t_year = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[2];
-      t_dob = this.user.request.demographicDetails.identity.dateOfBirth[1].value;
-      t_age = this.calculateAge(new Date(new Date(dob))).toString();
+      // t_gender = this.user.request.demographicDetails.identity.gender[1].value;
+      // t_date = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[0];
+      // t_month = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[1];
+      // t_year = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[2];
+      // t_dob = this.user.request.demographicDetails.identity.dateOfBirth[1].value;
+      // t_age = this.calculateAge(new Date(new Date(dob))).toString();
       t_addressLine1 = this.user.request.demographicDetails.identity.addressLine1[1].value;
       t_addressLine2 = this.user.request.demographicDetails.identity.addressLine2[1].value;
       t_addressLine3 = this.user.request.demographicDetails.identity.addressLine3[1].value;
@@ -260,7 +264,11 @@ export class DemographicComponent implements OnInit {
       t_year: new FormControl(t_year),
       t_addressLine1: new FormControl(t_addressLine1, [Validators.required, this.noWhitespaceValidator]),
       t_addressLine2: new FormControl(t_addressLine2),
-      t_addressLine3: new FormControl(t_addressLine3)
+      t_addressLine3: new FormControl(t_addressLine3),
+      t_postalCode: new FormControl({ value: t_postalCode, disabled: true }),
+      t_mobilePhone: new FormControl({ value: t_mobilePhone, disabled: true }),
+      t_email: new FormControl({ value: t_email, disabled: true }),
+      t_pin: new FormControl({ value: t_pin, disabled: true })
     });
 
     this.userForm.valueChanges.subscribe(selectedValue => {
@@ -355,7 +363,7 @@ export class DemographicComponent implements OnInit {
           });
           return resolve(true);
         },
-        error => console.log('Unable to fetch Regions')
+        error => console.log('Unable to fetch Below Hierearchy')
       );
     });
   }
@@ -483,6 +491,8 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else {
+          console.log(response);
+
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, []));
           this.sharedService.addNameList({
@@ -547,19 +557,19 @@ export class DemographicComponent implements OnInit {
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.postalCode.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_postalCode.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_postalCode.value)
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.mobilePhone.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_mobilePhone.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_mobilePhone.value)
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.email.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_email.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_email.value)
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.pin.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_pin.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_pin.value)
       ]
     );
 

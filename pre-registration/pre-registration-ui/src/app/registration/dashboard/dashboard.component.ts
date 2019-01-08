@@ -278,9 +278,14 @@ export class DashBoardComponent implements OnInit {
       () => {
         this.dataStorageService.getUser(preId).subscribe(
           response => {
+<<<<<<< Updated upstream
             const request = this.createRequestJSON(
               response[appConstants.RESPONSE][0]
             );
+=======
+            console.log('update response', response[appConstants.RESPONSE][0]);
+            const request = this.createRequestJSON(response[appConstants.RESPONSE][0]);
+>>>>>>> Stashed changes
             this.disableModifyDataButton = true;
             this.regService.addUser(
               new UserModel(preId, request, this.userFiles)
