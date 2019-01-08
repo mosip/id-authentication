@@ -230,12 +230,12 @@ public class LoginController extends BaseController implements Initializable {
 		
 		LoginUserDTO userDTO = new LoginUserDTO();
 		userDTO.setUserId(userId.getText().toLowerCase());
-		userDTO.setPassword(password.getText().toLowerCase());
+		userDTO.setPassword(password.getText());
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 		if(!serverStatus) {
-			String status = validatePwd(userId.getText().toLowerCase(), password.getText().toLowerCase());
+			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
 			if(RegistrationConstants.SUCCESS.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, "");
 			} else if(RegistrationConstants.FAILURE.equals(status)){

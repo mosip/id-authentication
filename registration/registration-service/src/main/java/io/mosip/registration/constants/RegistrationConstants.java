@@ -747,6 +747,7 @@ public class RegistrationConstants {
 	public static final String JOB_RUNNING = "RUNNING";
 	public static final String JOB_COMPLETED = "COMPLETED";
 	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
+	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
 	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";

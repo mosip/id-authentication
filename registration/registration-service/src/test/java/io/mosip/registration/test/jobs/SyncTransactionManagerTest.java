@@ -22,8 +22,8 @@ import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobTransactionDAO;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
@@ -67,10 +67,10 @@ public class SyncTransactionManagerTest {
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
 	@Mock
-	SyncJobTransactionDAO jobTransactionDAO;
+	SyncTransactionDAO jobTransactionDAO;
 
 	@Mock
-	SyncJobDAO syncJobDAO;
+	SyncJobControlDAO syncJobDAO;
 	
 	@Mock
 	private MachineMappingDAO machineMappingDAO;

@@ -11,8 +11,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobTransactionDAO;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -32,10 +32,10 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 public class SyncManagerImpl implements SyncManager {
 
 	@Autowired
-	private SyncJobTransactionDAO jobTransactionDAO;
+	private SyncTransactionDAO jobTransactionDAO;
 
 	@Autowired
-	private SyncJobDAO syncJobDAO;
+	private SyncJobControlDAO syncJobDAO;
 	
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;

@@ -22,8 +22,8 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
 import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -71,7 +71,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
-	private SyncJobDAO syncJObDao;
+	private SyncJobControlDAO syncJObDao;
 
 	@Autowired
 	private GPSFacade gpsFacade;

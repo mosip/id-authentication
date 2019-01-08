@@ -9,11 +9,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.dao.impl.JobTransactionDAOImpl;
+import io.mosip.registration.dao.impl.SyncTransactionDAOImpl;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.repositories.SyncTransactionRepository;
 
-public class JobTransactionDAOTest {
+public class SyncTransactionDAOTest {
 	@Mock
    private Logger logger;
 	
@@ -24,7 +24,7 @@ public class JobTransactionDAOTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@InjectMocks
-	private JobTransactionDAOImpl jobTransactionDAOImpl;
+	private SyncTransactionDAOImpl jobTransactionDAOImpl;
 
 	@Test
 	public void saveTest()  {

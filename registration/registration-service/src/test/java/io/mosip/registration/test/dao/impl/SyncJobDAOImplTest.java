@@ -19,8 +19,8 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
-import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
-import io.mosip.registration.dao.impl.SyncJobDAOImpl;
+import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
+import io.mosip.registration.dao.impl.SyncJobControlDAOImpl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -33,7 +33,7 @@ public class SyncJobDAOImplTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	private SyncJobDAOImpl syncJobDAOImpl;
+	private SyncJobControlDAOImpl syncJobDAOImpl;
 	@Mock
 	private SyncJobRepository syncStatusRepository;
 	@Mock

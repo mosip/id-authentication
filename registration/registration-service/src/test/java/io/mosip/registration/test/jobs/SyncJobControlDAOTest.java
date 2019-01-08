@@ -11,17 +11,17 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.dao.impl.SyncJobDAOImpl;
+import io.mosip.registration.dao.impl.SyncJobControlDAOImpl;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.repositories.SyncJobRepository;
 
-public class SyncJobDAOTest {
+public class SyncJobControlDAOTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@InjectMocks
-	SyncJobDAOImpl syncJobDAOImpl;
+	SyncJobControlDAOImpl syncJobDAOImpl;
 	
 	@Mock
 	SyncJobRepository syncJobRepository;
