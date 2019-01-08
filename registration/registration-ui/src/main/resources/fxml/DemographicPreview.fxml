@@ -21,7 +21,7 @@
             			<Image url="@../images/Home.png" />
          			 </image>
                   </ImageView>
-                  <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
+                  <Text id="homeReg" fx:id="registrationNavLabel" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
                   <ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                   	<image>
             			<Image url="@../images/Pre-Registration.png" />

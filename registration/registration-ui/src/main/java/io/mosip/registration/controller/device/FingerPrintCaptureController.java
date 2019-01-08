@@ -379,11 +379,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"Navigating to Iris capture page for user registration started");
 
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
-					registrationController.toggleFingerprintCaptureVisibility(false);
-					registrationController.toggleIrisCaptureVisibility(true);
-				}else {
-					registrationController.togglePhotoCaptureVisibility(true);
+				if (validateFingerPrints()) {
+					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
+						registrationController.toggleFingerprintCaptureVisibility(false);
+						registrationController.toggleIrisCaptureVisibility(true);
+					} else {
+						registrationController.toggleFingerprintCaptureVisibility(false);
+						registrationController.togglePhotoCaptureVisibility(true);
+					}
 				}
 			} else {
 
@@ -488,7 +491,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						for (FingerprintDetailsDTO duplicate : value.getSegmentedFingerprints()) {
 							if (duplicate.getFingerType().equals(duplicateFinger.getFingerType())) {
 								iterator.remove();
-								loadingImageFromSessionContext();
 								break;
 							}
 						}

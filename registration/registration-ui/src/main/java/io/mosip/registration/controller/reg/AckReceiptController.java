@@ -51,6 +51,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
@@ -100,6 +101,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@FXML
 	private Button print;
 
+	@FXML
+	private Text registrationNavLabel;
+	
 	@Autowired
 	private Environment environment;
 
@@ -120,6 +124,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
+			
+			if(getRegistrationData().getSelectionListDTO()!=null) {
+				registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+				newRegistration.setVisible(false);
+			}
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				// get the mode of communication

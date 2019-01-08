@@ -22,7 +22,7 @@
 								<Image url="@../images/Home.png" />
 							</image>
 						</ImageView>
-						<Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
+						<Text id="homeReg" fx:id="registrationNavLabel" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="%/registration" />
 						<ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
 							<image>
 								<Image url="@../images/Pre-Registration.png" />
@@ -72,7 +72,7 @@
                                              </children>
                                           </AnchorPane>
                                        </children></AnchorPane>
-                                    <AnchorPane fx:id="photoAnchorPane" layoutX="14.0" layoutY="591.0" prefHeight="289.0" prefWidth="765.0">
+                                    <AnchorPane fx:id="photoAnchorPane" layoutX="14.0" layoutY="591.0" prefHeight="326.0" prefWidth="765.0">
                                        <children>
                                           <AnchorPane layoutX="267.0" layoutY="19.0" prefHeight="251.0" prefWidth="244.0">
                                              <children>
@@ -94,8 +94,10 @@
                                                 </ImageView>
                                              </children>
                                           </AnchorPane>
+                        				<Button fx:id="nextBtn" layoutX="685.0" layoutY="279.0" mnemonicParsing="false" onAction="#handleNextBtnAction" styleClass="RegbuttonStyle" text="%next" />
+                        				<Button fx:id="editBtn" layoutX="602.0" layoutY="279.0" mnemonicParsing="false" onAction="#handleEdit" styleClass="RegbuttonStyle" text="%edit" />
                                        </children></AnchorPane>
-                                    <AnchorPane fx:id="IrisAnchorPane" layoutX="14.0" layoutY="303.0" prefHeight="289.0" prefWidth="765.0">
+                                    <AnchorPane fx:id="irisAnchorPane" layoutX="14.0" layoutY="303.0" prefHeight="289.0" prefWidth="765.0">
                                        <children>
                                           <AnchorPane>
                                              <children>
@@ -120,8 +122,6 @@
                                              </children>
                                           </AnchorPane>
                                        </children></AnchorPane>
-                  				<Button fx:id="nextBtn" layoutX="706.0" layoutY="890.0" mnemonicParsing="false" onAction="#handleNextBtnAction" styleClass="RegbuttonStyle" text="%next" />
-                  				<Button fx:id="editBtn" layoutX="623.0" layoutY="890.0" mnemonicParsing="false" onAction="#handleEdit" styleClass="RegbuttonStyle" text="%edit" />
                                  </children></AnchorPane>
                            </content>
 						</TitledPane>

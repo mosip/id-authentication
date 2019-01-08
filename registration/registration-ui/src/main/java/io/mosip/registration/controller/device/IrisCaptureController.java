@@ -122,8 +122,7 @@ public class IrisCaptureController extends BaseController {
 	 * This event handler will be invoked when left iris or right iris {@link Pane}
 	 * is clicked.
 	 * 
-	 * @param mouseEvent
-	 *            the triggered {@link MouseEvent} object
+	 * @param mouseEvent the triggered {@link MouseEvent} object
 	 */
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
@@ -299,9 +298,20 @@ public class IrisCaptureController extends BaseController {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Fingerprint capture page for user registration");
 
-			if (validateIris() && validateIrisLocalDedup()) {
-				registrationController.toggleIrisCaptureVisibility(false);
-				registrationController.toggleFingerprintCaptureVisibility(true);
+			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+				if (validateIris() && validateIrisLocalDedup()) {
+					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()) {
+						registrationController.toggleFingerprintCaptureVisibility(true);
+						registrationController.toggleIrisCaptureVisibility(false);
+					} else {
+						registrationController.getDemoGraphicTitlePane().setExpanded(true);
+					}
+				}
+			} else {
+				if (validateIris() && validateIrisLocalDedup()) {
+					registrationController.toggleIrisCaptureVisibility(false);
+					registrationController.toggleFingerprintCaptureVisibility(true);
+				}
 			}
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

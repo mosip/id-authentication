@@ -59,10 +59,10 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private ImageView thumb;
-	
+
 	@FXML
 	private Label exceptionLabel;
-	
+
 	@FXML
 	private ImageView individualPhoto;
 
@@ -92,28 +92,30 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private Text thumbsThresholdScoreLbl;
-	
+
 	@FXML
 	private Text leftIrisThreshold;
-	
+
 	@FXML
 	private Text rightIrisThreshold;
-	
+
 	@FXML
 	private ScrollPane bioScrollPane;
-	
+
 	@FXML
 	private AnchorPane fingerprintAnchorPane;
-	
+
 	@FXML
-	private AnchorPane IrisAnchorPane;
-	
+	private AnchorPane irisAnchorPane;
+
 	@FXML
 	private AnchorPane photoAnchorPane;
-	
+
 	@Autowired
 	private RegistrationController registrationController;
 
+	@FXML
+	private Text registrationNavLabel;
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -127,20 +129,26 @@ public class BiometricPreviewController extends BaseController {
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
 
-		if(registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty() && registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
+		if (registrationDTOContent.getSelectionListDTO() != null) {
+			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+		}
+
+		if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()
+				&& registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
 			fingerprintAnchorPane.setVisible(false);
-			IrisAnchorPane.setVisible(false);
+			irisAnchorPane.setVisible(false);
 			photoAnchorPane.setLayoutY(14);
-		}else if(registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()) {
-			IrisAnchorPane.setLayoutY(14);
+		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+				.isEmpty()) {
+			irisAnchorPane.setLayoutY(14);
 			photoAnchorPane.setLayoutY(303);
 			fingerprintAnchorPane.setVisible(false);
-		}else if(registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
+		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
 			fingerprintAnchorPane.setLayoutY(14);
 			photoAnchorPane.setLayoutY(303);
-			IrisAnchorPane.setVisible(false);
+			irisAnchorPane.setVisible(false);
 		}
-		
+
 		String irisThreshold = ((String) applicationContext.getApplicationMap()
 				.get(RegistrationConstants.IRIS_THRESHOLD)).concat(RegistrationConstants.PERCENTAGE);
 		leftIrisThreshold.setText(irisThreshold);
