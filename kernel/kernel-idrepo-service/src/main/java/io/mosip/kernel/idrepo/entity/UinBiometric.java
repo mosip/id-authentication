@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -81,5 +83,6 @@ public class UinBiometric {
 
 	@ManyToOne
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
+    @JsonBackReference
 	private Uin uin;
 }

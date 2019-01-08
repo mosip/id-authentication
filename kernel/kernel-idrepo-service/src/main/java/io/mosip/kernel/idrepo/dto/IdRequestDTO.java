@@ -24,7 +24,5 @@ public class IdRequestDTO extends BaseIdRequestResponseDTO {
 	private String registrationId;
 	
 	/** The request. */
-	private Object request;
-	
-	private List<Documents> documents;
+	private RequestDTO request;
 }

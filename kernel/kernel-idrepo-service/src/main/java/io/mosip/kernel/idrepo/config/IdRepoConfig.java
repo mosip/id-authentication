@@ -71,9 +71,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The db. */
 	private Map<String, Map<String, String>> db;
 	
-	/** The doc attributes. */
-	private List<String> docAttributes;
-
 	/** The status. */
 	private List<String> status;
 
@@ -138,24 +135,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * Gets the doc attributes.
-	 *
-	 * @return the doc attributes
-	 */
-	public List<String> getDocAttributes() {
-		return docAttributes;
-	}
-
-	/**
-	 * Sets the doc attributes.
-	 *
-	 * @param docAttributes the new doc attributes
-	 */
-	public void setDocAttributes(List<String> docAttributes) {
-		this.docAttributes = docAttributes;
-	}
-
-	/**
 	 * Setup.
 	 */
 	@PostConstruct
@@ -211,16 +190,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return Collections.unmodifiableList(status);
 	}
 	
-	/**
-	 * Doc attributes.
-	 *
-	 * @return the list
-	 */
-	@Bean
-	public List<String> docAttributes() {
-		return docAttributes;
-	}
-
 	/**
 	 * Entity manager factory.
 	 *

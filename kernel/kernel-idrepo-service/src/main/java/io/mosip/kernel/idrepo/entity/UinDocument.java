@@ -9,15 +9,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The Class UinDocument.
  *
  * @author Manoj SP
  */
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"uin"})
 @Entity
 @NoArgsConstructor
 @Table(schema = "idrepo")
@@ -93,5 +101,6 @@ public class UinDocument {
 	
 	@ManyToOne
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
+	@Setter(value = AccessLevel.NONE)
 	private Uin uin;
 }

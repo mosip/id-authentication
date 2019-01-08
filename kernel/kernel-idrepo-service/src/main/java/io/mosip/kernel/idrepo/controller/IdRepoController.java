@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,8 +42,6 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class IdRepoController {
-
-	private static final String ALL = "all";
 
 	/** The id. */
 	@Resource
@@ -106,17 +105,15 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(required = false) String filter) throws IdRepoAppException {
+			@RequestParam(name = "type", required = false) String type, HttpServletRequest request)
+			throws IdRepoAppException {
+		if (request.getParameterMap().size() > 1
+				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey("type"))) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST);
+		}
 		try {
-			if (!Objects.isNull(uin)) {
-				if (Objects.isNull(filter)) {
-					filter = ALL;
-				}
-				uinValidatorImpl.validateId(uin);
-				return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, filter), HttpStatus.OK);
-			} else {
-				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN);
-			}
+			uinValidatorImpl.validateId(uin);
+			return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, type), HttpStatus.OK);
 		} catch (InvalidIDException | IdRepoAppException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get("read"));
 		}
