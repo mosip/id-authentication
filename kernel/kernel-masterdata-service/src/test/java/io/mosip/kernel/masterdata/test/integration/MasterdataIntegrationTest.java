@@ -502,7 +502,7 @@ public class MasterdataIntegrationTest {
 
 		machineType = new MachineType();
 		machineType.setCode("1000");
-		machineType.setLangCode("ENG");
+		machineType.setLangCode("eng");
 		machineType.setName("HP");
 		machineType.setIsActive(true);
 		machineType.setDescription("HP Description");
@@ -2894,6 +2894,19 @@ public class MasterdataIntegrationTest {
 		when(machineTypeRepository.create(Mockito.any())).thenReturn(machineType);
 		mockMvc.perform(post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createMachineTypeLangCodeValidationTest() throws Exception {
+		RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVer("1.0.0");
+		machineTypeDto.setLangCode("akk");
+		requestDto.setRequest(machineTypeDto);
+
+		String machineTypeJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
