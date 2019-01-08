@@ -18,19 +18,19 @@
               (change)="onTransliteration(fullName, t_fullName)"
             />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
-            <mat-error *ngIf="!fullName.invalid">Full Name is required</mat-error>
+            <mat-error *ngIf="!fullName.invalid"> {{'demographic.name_required'| translate}}  </mat-error>
           </mat-form-field>
 
           <div class="user__age-or-date">
             <div class="user__date">
               <mat-form-field>
-                <input matInput placeholder="{{ demo.date }}" #dd formControlName="date" (focusout)="onDOBChange()" />
+                <input matInput placeholder="{{ 'demographic.date_dd'| translate }}" #dd formControlName="date" (focusout)="onDOBChange()" />
               </mat-form-field>
               <mat-form-field>
-                <input matInput placeholder="{{ demo.month }}" #mm formControlName="month" (focusout)="onDOBChange()" />
+                <input matInput placeholder="{{ 'demographic.date_mm'| translate }}" #mm formControlName="month" (focusout)="onDOBChange()" />
               </mat-form-field>
               <mat-form-field>
-                <input matInput placeholder="{{ demo.year }}" #yyyy formControlName="year" (focusout)="onDOBChange()" />
+                <input matInput placeholder="{{ 'demographic.date_yyyy'| translate }}" #yyyy formControlName="year" (focusout)="onDOBChange()" />
               </mat-form-field>
             </div>
 
