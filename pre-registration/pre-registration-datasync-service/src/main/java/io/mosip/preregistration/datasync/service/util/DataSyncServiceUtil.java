@@ -433,26 +433,34 @@ public class DataSyncServiceUtil {
 		File fileToZip = null;
 		List<String> srcFiles = new ArrayList<>();
 		srcFiles.addAll(inputFIle);
+		byte[] byteArray = null;
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
-		for (String srcFile : srcFiles) {
-			fileToZip = new File(srcFile);
-			try (FileInputStream fileInputStream = new FileInputStream(fileToZip);
-					BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, 1024)) {
-				ZipEntry entry = new ZipEntry(fileToZip.getName());
-				zipOutputStream.putNextEntry(entry);
-				readFile(zipOutputStream, fileInputStream);
-			} catch (FileNotFoundException e) {
-				throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
-						ErrorMessages.FILE_NOT_FOUND.toString(),e.getCause());
-			} catch (IOException e) {
-				throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-						ErrorMessages.FILE_IO_EXCEPTION.toString(),e.getCause());
+		try {
+			for (String srcFile : srcFiles) {
+				fileToZip = new File(srcFile);
+				try (FileInputStream fileInputStream = new FileInputStream(fileToZip);
+						BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, 1024)) {
+					ZipEntry entry = new ZipEntry(fileToZip.getName());
+					zipOutputStream.putNextEntry(entry);
+					readFile(zipOutputStream, fileInputStream);
+				} catch (FileNotFoundException e) {
+					throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
+							ErrorMessages.FILE_NOT_FOUND.toString(), e.getCause());
+				} catch (IOException e) {
+					throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
+							ErrorMessages.FILE_IO_EXCEPTION.toString(), e.getCause());
+				}
 			}
+			zipOutputStream.close();
+			byteArray = byteArrayOutputStream.toByteArray();
+		} catch (IOException e1) {
+			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
+					ErrorMessages.FILE_IO_EXCEPTION.toString(), e1.getCause());
 		}
-		return byteArrayOutputStream.toByteArray();
-	}
 
+		return byteArray;
+	} 
 	/**
 	 * @param zipOut
 	 * @param fis
