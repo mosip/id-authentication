@@ -48,7 +48,7 @@ public class SyncManagerImpl implements SyncManager {
 	
 
 	@Override
-	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) throws NullPointerException {
+	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) {
 
 		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncTransaction.getSyncJobId());
 
@@ -61,7 +61,7 @@ public class SyncManagerImpl implements SyncManager {
 			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
 
 			syncControl.setRegcntrId(syncTransaction.getCntrId());
-			syncControl.setLangCode("EN");
+			syncControl.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
 			syncControl.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			syncControl.setCrDtime(new Timestamp(System.currentTimeMillis()));
@@ -117,6 +117,7 @@ public class SyncManagerImpl implements SyncManager {
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage());
+				
 			}
 			
 			if (SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO() != null) {
@@ -124,7 +125,7 @@ public class SyncManagerImpl implements SyncManager {
 						.getRegistrationCenterId());
 			}
 
-			syncTransaction.setLangCode("EN");
+			syncTransaction.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
 			
 			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());

@@ -783,6 +783,10 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS="Registartion Packets Deletion Successful ";
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE="Registartion Packets Deletion Failure ";
 	
+	//Application Language
+	public static final String APPLICATION_LANUAGE="application_language";
+	
+	
 	public enum mappedCodeForLang{
 		en("ENG");
 		private String langCode;
