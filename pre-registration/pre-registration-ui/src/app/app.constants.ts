@@ -6,7 +6,7 @@ export const COUNTRY_NAME = 'India';
 export const NEW_USER_ID = 'mosip.pre-registration.demographic.create';
 export const TRANSLITERATION_ID = 'mosip.pre-registration.transliteration.transliterate';
 export const VERSION = '1.0';
-export const LOCATION_APPEND_URL = 'v1.0/locations/locationhierarchy/country';
+export const LOCATION_METADATA_APPEND_URL = 'v1.0/locations/locationhierarchy/country';
 export const LOCATION_IMMEDIATE_CHILDREN_APPEND_URL = 'v1.0/locations/immediatechildren/';
 export const PARAMS_KEYS = {
   getUsers: 'userId',
