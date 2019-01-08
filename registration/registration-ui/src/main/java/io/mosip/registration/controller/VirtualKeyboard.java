@@ -268,11 +268,13 @@ public class VirtualKeyboard {
 			@Override
 			public void handle(ActionEvent event) {
 
-				final Node targetNode;
+				Node targetNode;
 				if (target != null) {
 					targetNode = target.get();
 				} else {
 					targetNode = view().getScene().getFocusOwner();
+					if(!targetNode.getId().contains("Local"))
+						targetNode=null;
 				}
 
 				if (targetNode != null) {
