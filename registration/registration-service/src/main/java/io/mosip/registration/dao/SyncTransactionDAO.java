@@ -1,5 +1,6 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import io.mosip.registration.entity.SyncTransaction;
@@ -12,7 +13,7 @@ import io.mosip.registration.entity.SyncTransaction;
  * @since1.0.0
  *
  */
-public interface SyncJobTransactionDAO {
+public interface SyncTransactionDAO {
 	/**
 	 * To save {@link SyncTransaction}
 	 * 
@@ -27,5 +28,13 @@ public interface SyncJobTransactionDAO {
 	 * @return list of sync transaction
 	 */
 	List<SyncTransaction> getAll();
+	
+	/**
+	 * Get All sync Transaction
+	 * @param request time
+	 * @return list of sync transaction
+	 */
+	List<SyncTransaction> getSyncTransactions(Timestamp req);
+
 
 }

@@ -49,7 +49,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
@@ -83,7 +82,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private RidGenerator<String> ridGeneratorImpl;
 
-	private TemplateGenerator templateGenerator = new TemplateGenerator();
+	@Autowired
+	private TemplateGenerator templateGenerator;
 
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
@@ -259,11 +259,11 @@ public class AckReceiptController extends BaseController implements Initializabl
 			LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
 
-			PrinterJob job = PrinterJob.createPrinterJob();
+			/*PrinterJob job = PrinterJob.createPrinterJob();
 			if (job != null) {
 				webView.getEngine().print(job);
 				job.endJob();
-			}
+			} */
 
 			if (button.getId().equals(print.getId())) {
 				generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);

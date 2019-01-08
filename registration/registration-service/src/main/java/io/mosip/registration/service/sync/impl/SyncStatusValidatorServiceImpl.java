@@ -22,8 +22,8 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
 import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -60,6 +60,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private int posJobId;
 	@Value("${LER_J00009}")
 	private int lerJobId;
+	@Value("${RDJ_J00010}")
+	private int rdjJobId;
 	@Value("${GEO_CAP_FREQ}")
 	private String geoFrequnecyFlag;
 	@Value("${REG_PAK_MAX_CNT_OFFLINE_FREQ}")
@@ -71,7 +73,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
-	private SyncJobDAO syncJObDao;
+	private SyncJobControlDAO syncJObDao;
 
 	@Autowired
 	private GPSFacade gpsFacade;
@@ -107,6 +109,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		map.put(RegistrationConstants.OPT_TO_REG_URS_J00007, ursJobId);
 		map.put(RegistrationConstants.OPT_TO_REG_POS_J00008, posJobId);
 		map.put(RegistrationConstants.OPT_TO_REG_LER_J00009, lerJobId);
+		map.put(RegistrationConstants.OPT_TO_REG_RDJ_J00010, rdjJobId);
 
 		List<ErrorResponseDTO> errorResponseDTOList = new ArrayList<>();
 
@@ -177,6 +180,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 					"Validating the sync status ended successfully", "refId", "refIdType");
 
 		} catch (RuntimeException runtimeException) {
+			runtimeException.printStackTrace();
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
 					runtimeException.toString());
 		}

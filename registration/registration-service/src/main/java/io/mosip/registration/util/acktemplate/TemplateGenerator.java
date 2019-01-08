@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
@@ -55,6 +56,7 @@ import io.mosip.registration.service.BaseService;
  * @author Himaja Dhanyamraju
  *
  */
+@Controller
 public class TemplateGenerator extends BaseService {
 
 	/**

@@ -408,6 +408,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_URS_J00007 = "URS_J00007";
 	public static final String OPT_TO_REG_POS_J00008 = "POS_J00008";
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
+	public static final String OPT_TO_REG_RDJ_J00010 = "RDJ_J00010";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -781,6 +782,10 @@ public class RegistrationConstants {
 	//Reg Deletion
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS="Registartion Packets Deletion Successful ";
 	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE="Registartion Packets Deletion Failure ";
+	
+	//Application Language
+	public static final String APPLICATION_LANUAGE="application_language";
+	
 	
 	public enum mappedCodeForLang{
 		en("ENG");

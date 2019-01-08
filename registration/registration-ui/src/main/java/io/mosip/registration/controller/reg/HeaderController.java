@@ -80,10 +80,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
-	
-	/*@Autowired
-	RegistrationDeletionService registrationDeletionService;
-*/
+
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -115,9 +112,7 @@ public class HeaderController extends BaseController {
 	 */
 	public void logout(ActionEvent event) {
 		try {
-			String initialMode = SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.LOGIN_INITIAL_SCREEN).toString();
-
+			
 			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
 
@@ -126,11 +121,12 @@ public class HeaderController extends BaseController {
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
-
-			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
-			loginController.loadLoginScreen(initialMode);
-			getScene(loginpage);
+			
+			
+				BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+				LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
+				loginController.enableUserId();
+				getScene(loginpage);
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
@@ -191,7 +187,6 @@ public class HeaderController extends BaseController {
 	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
-		//registrationDeletionService.deleteReRegistrationPackets();
 
 		AnchorPane syncData;
 		try {

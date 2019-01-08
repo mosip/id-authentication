@@ -10,7 +10,7 @@ import io.mosip.registration.entity.SyncControl;
  * @author Chukka Sreekar
  * @since 1.0.0
  */
-public interface SyncJobDAO {
+public interface SyncJobControlDAO {
 
 	/**
 	 * Gets the values for sync status.

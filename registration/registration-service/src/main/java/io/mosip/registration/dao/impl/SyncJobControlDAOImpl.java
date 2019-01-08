@@ -16,7 +16,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.SyncJobDAO;
+import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -24,14 +24,14 @@ import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.repositories.SyncJobRepository;
 
 /**
- * The implementation class for {@link SyncJobDAO}.
+ * The implementation class for {@link SyncJobControlDAO}.
  *
  * @author Sreekar Chukka
  * @author Mahesh Kumar
  * @since 1.0.0
  */
 @Repository
-public class SyncJobDAOImpl implements SyncJobDAO {
+public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 
 	private static final List<String> REG_STATUS_CODES = Arrays.asList(RegistrationClientStatusCode.CREATED.getCode(),
 			RegistrationClientStatusCode.REJECTED.getCode(), RegistrationClientStatusCode.APPROVED.getCode(),
@@ -50,7 +50,7 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 	/**
 	 * Object for Logger
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(SyncJobDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncJobControlDAOImpl.class);
 
 	@Autowired
 	private AuditFactory auditFactory;

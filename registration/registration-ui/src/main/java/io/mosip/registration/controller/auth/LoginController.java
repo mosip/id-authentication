@@ -52,6 +52,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -59,6 +60,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -76,6 +78,12 @@ public class LoginController extends BaseController implements Initializable {
 	private static final Logger LOGGER = AppConfig.getLogger(LoginController.class);
 
 	@FXML
+	private AnchorPane userIdPane;
+
+	@FXML
+	private AnchorPane credentialsPane;
+	
+	@FXML
 	private TextField userId;
 
 	@FXML
@@ -83,6 +91,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private Button submit;
+
+	@FXML
+	private Button submitUserId;
 
 	@FXML
 	private Button getOTP;
@@ -98,6 +109,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private ImageView bioImage;
+
+	@FXML
+	private VBox mainBox;
 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
@@ -141,6 +155,10 @@ public class LoginController extends BaseController implements Initializable {
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
 
+	private boolean isNewUser = false;
+
+	AnchorPane optionRoot;
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
@@ -155,41 +173,20 @@ public class LoginController extends BaseController implements Initializable {
 	 * @return String loginMode
 	 * @throws RegBaseCheckedException
 	 */
-	public String loadInitialScreen(Stage primaryStage) {
+	public void loadInitialScreen(Stage primaryStage) {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 
 		fXComponents.setStage(primaryStage);
-		String loginMode = null;
 
 		try {
-			loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
-
-			if (!loginList.isEmpty()) {
-				loginMode = loginList.get(RegistrationConstants.PARAM_ZERO);
-			}
-
-			// To maintain the login mode sequence
-			SessionContext.getInstance().setMapObject(new HashMap<String,Object>());
-			loginList.remove(RegistrationConstants.PARAM_ZERO);
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN, loginMode);
-
-			// Load the property files for application and local language
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Retrieved corresponding Login mode");
 
 			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			
-			scene = getScene(loginRoot);
-			if (loginMode == null) {
-				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-				scene = getScene(loginType);
-			} else {
-				loadLoginScreen(loginMode);
-			}
 
+			scene = getScene(loginRoot);
+
+			enableUserId();
 			getGlobalParams();
 
 			primaryStage.setMaximized(true);
@@ -211,7 +208,70 @@ public class LoginController extends BaseController implements Initializable {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 		}
 
-		return loginMode;
+	}
+
+	/**
+	 * Validate user id.
+	 *
+	 * @param event the event
+	 */
+	public RegistrationUserDetail validateUserId(ActionEvent event) {
+
+		LOGGER.debug("REGISTRATION - LOGIN_MODE_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Validating Credentials entered through UI");
+		
+		if (SessionContext.getInstance().getMapObject() == null) {
+			loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
+			SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+		}
+		
+		RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
+
+		if (null != userDetail) {
+
+			if (getCenterMachineStatus(userDetail)) {
+
+				String loginMode = null;
+
+				try {
+
+					SessionContext.getInstance().getMapObject().put("isNewUser", isNewUser);
+
+					if (!loginList.isEmpty()) {
+						loginMode = loginList.get(RegistrationConstants.PARAM_ZERO);
+					}
+
+					loginList.remove(RegistrationConstants.PARAM_ZERO);
+					// Load the property files for application and local language
+
+					LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+							APPLICATION_ID, "Retrieved corresponding Login mode");
+
+					if (loginMode == null) {
+						AnchorPane loginType = BaseController
+								.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
+						scene = getScene(loginType);
+					} else {
+						loadLoginScreen(loginMode);
+					}
+
+				} catch (IOException ioException) {
+
+					LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+							APPLICATION_ID, ioException.getMessage());
+
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+				}
+			} else {
+				SessionContext.getInstance().getMapObject().put("isNewUser", true);
+				enablePWD();
+			}
+
+		} else {
+
+		}
+		return userDetail;
+
 	}
 
 	/**
@@ -234,23 +294,31 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
-		if(!serverStatus) {
-			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
-			if(RegistrationConstants.SUCCESS.equals(status)) {
-				offlineStatus = validateInvalidLogin(userDetail, "");
-			} else if(RegistrationConstants.FAILURE.equals(status)){
+		boolean flag = (boolean) SessionContext.getInstance().getMapObject().get("isNewUser");
+		if (!serverStatus) {
+			String status = validatePwd(userId.getText().toLowerCase(), password.getText().toLowerCase());
+
+			if (RegistrationConstants.SUCCESS.equals(status)) {
+
+				if (!flag) {
+					offlineStatus = validateInvalidLogin(userDetail, "");
+				} else {
+					offlineStatus = validateInvalidLogin(userDetail, "");
+					enableOTP();
+				}
+			} else if (RegistrationConstants.FAILURE.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 			}
 		}
-		
-		if(serverStatus || offlineStatus) {
+
+		if (!flag) {
+		if (serverStatus || offlineStatus) {
 			try {
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
 						APPLICATION_ID, "Loading next login screen");
 
 				SessionContext sessionContext = SessionContext.getInstance();
-				loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
 				loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
 
 			} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
@@ -262,7 +330,8 @@ public class LoginController extends BaseController implements Initializable {
 						RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
 
-		} 
+		}
+		}
 	}
 
 	/**
@@ -334,9 +403,17 @@ public class LoginController extends BaseController implements Initializable {
 						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
 					} else {
 						try {
-							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
-							loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
+							boolean flag = (boolean) SessionContext.getInstance().getMapObject().get("isNewUser");
+							if (!flag) {
+								SessionContext sessionContext = SessionContext.getInstance();
+								loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
+							} else {
+								setInitialLoginInfo(userDetail.getId());
+								Parent parent = BaseController
+										.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+								getScene(parent);
+							}
+
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 							LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -395,7 +472,6 @@ public class LoginController extends BaseController implements Initializable {
 					} else {
 						try {
 							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
 							loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -451,7 +527,6 @@ public class LoginController extends BaseController implements Initializable {
 					} else {
 						try {
 							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_IRIS);
 							loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_IRIS);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -507,7 +582,6 @@ public class LoginController extends BaseController implements Initializable {
 					} else {
 						try {
 							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_FACE);
 							loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_FACE);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -566,6 +640,8 @@ public class LoginController extends BaseController implements Initializable {
 	 * Enable OTP login specific attributes
 	 */
 	private void enableOTP() {
+		userIdPane.setVisible(false);
+		credentialsPane.setVisible(true);
 		password.clear();
 		password.setVisible(true);
 		password.setPromptText("Enter OTP");
@@ -573,9 +649,6 @@ public class LoginController extends BaseController implements Initializable {
 		getOTP.setVisible(true);
 		bioText.setVisible(false);
 		bioImage.setVisible(false);
-		if(!userId.getText().isEmpty()) {
-			userId.setEditable(false);
-		}
 		getOTP.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -594,6 +667,9 @@ public class LoginController extends BaseController implements Initializable {
 	 * Enable PWD login specific attributes
 	 */
 	private void enablePWD() {
+		userIdPane.setVisible(false);
+		credentialsPane.setVisible(true);
+		submit.setVisible(true);
 		password.clear();
 		password.setVisible(true);
 		otpValidity.setVisible(false);
@@ -616,6 +692,8 @@ public class LoginController extends BaseController implements Initializable {
 	 * Enable Fingerprint login specific attributes
 	 */
 	private void enableFingerPrint() {
+		userIdPane.setVisible(false);
+		credentialsPane.setVisible(true);
 		password.setVisible(false);
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
@@ -636,6 +714,15 @@ public class LoginController extends BaseController implements Initializable {
 		});
 	}
 	
+/**
+	 * Enable Iris login specific attributes
+	 */
+	public void enableUserId() {
+		userIdPane.setVisible(true);
+		credentialsPane.setVisible(false);
+		bioText.setText("Enter your username");
+	}
+
 	/**
 	 * Enable Iris login specific attributes
 	 */
@@ -756,11 +843,12 @@ public class LoginController extends BaseController implements Initializable {
 			authInfo = RegistrationConstants.SUCCESS_MSG;
 		} else {
 			// checking for machine mapping
-			if (!getCenterMachineStatus(userDetail)) {
-				authInfo = RegistrationConstants.MACHINE_MAPPING;
-			} else {
-				authInfo = RegistrationConstants.SUCCESS_MSG;
-			}
+			/*
+			 * if (!getCenterMachineStatus(userDetail)) { authInfo =
+			 * RegistrationConstants.MACHINE_MAPPING; }
+			 */ // else {
+			authInfo = RegistrationConstants.SUCCESS_MSG;
+			// }
 		}
 		return setSessionContext(authInfo, userDetail, roleList);
 	}
@@ -810,9 +898,12 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (authInfo != null && authInfo.equals(RegistrationConstants.ROLES_EMPTY)) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
-		} else if (authInfo != null && authInfo.equals(RegistrationConstants.MACHINE_MAPPING)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.MACHINE_MAPPING_ERROR);
-		} else if (authInfo != null && authInfo.equalsIgnoreCase(RegistrationConstants.SUCCESS_MSG)) {
+		} /*
+			 * else if (authInfo != null &&
+			 * authInfo.equals(RegistrationConstants.MACHINE_MAPPING)) {
+			 * generateAlert(RegistrationConstants.ALERT_ERROR,
+			 * RegistrationUIConstants.MACHINE_MAPPING_ERROR); }
+			 */ else if (authInfo != null && authInfo.equalsIgnoreCase(RegistrationConstants.SUCCESS_MSG)) {
 			SessionContext sessionContext = SessionContext.getInstance();
 
 			LOGGER.debug("REGISTRATION - SESSION_CONTEXT - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -837,30 +928,6 @@ public class LoginController extends BaseController implements Initializable {
 	}
 
 	/**
-	 * Loading login screen after logout with multiple screens in case of
-	 * multifactor authentication
-	 * 
-	 * @param sessionContext
-	 *            the sessionContext
-	 * @param loginModeToLoad
-	 *            the loginMode to load
-	 */
-	private void loadLoginAfterLogout(SessionContext sessionContext, String loginModeToLoad) {
-
-		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Resetting login sequence to the Session context after log out");
-
-		if (sessionContext.getMapObject() == null) {
-			loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
-			if(!loginList.isEmpty() && loginList.get(RegistrationConstants.PARAM_ZERO).equals(loginModeToLoad)) {
-				loginList.remove(RegistrationConstants.PARAM_ZERO);
-			}
-			SessionContext.getInstance().setMapObject(new HashMap<String,Object>());
-			sessionContext.getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN, loginModeToLoad);
-		}
-	}
-
-	/**
 	 * Loading next login screen in case of multifactor authentication
 	 * 
 	 * @param sessionContext
@@ -882,16 +949,19 @@ public class LoginController extends BaseController implements Initializable {
 
 				LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 						"Loading Home screen");
+				try {
+					schedulerUtil.startSchedulerUtil();
 
-				schedulerUtil.startSchedulerUtil();
+					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 
-				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+					userDetail.setLastLoginMethod(loginMode);
+					userDetail.setLastLoginDtimes(Timestamp.valueOf(LocalDateTime.now()));
+					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
 
-				userDetail.setLastLoginMethod(loginMode);
-				userDetail.setLastLoginDtimes(Timestamp.valueOf(LocalDateTime.now()));
-				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
-
-				loginService.updateLoginParams(userDetail);
+					loginService.updateLoginParams(userDetail);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
