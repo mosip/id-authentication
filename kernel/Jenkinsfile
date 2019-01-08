@@ -273,7 +273,7 @@ stage('---------- SonarQube Analysis --------------') {
     }
     stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
-      sh ' kubectl config use-context $k8DevContext'
+      sh "kubectl config use-context $k8DevContext"
       for(int i = 0; i<updatedDockerImages.size(); i++){
         def updatedDockerImage = updatedDockerImages[i]
         def updatedService = updatedServices[i]
