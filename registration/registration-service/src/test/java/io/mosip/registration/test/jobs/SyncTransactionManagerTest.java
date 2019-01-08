@@ -24,6 +24,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
@@ -145,7 +146,16 @@ public class SyncTransactionManagerTest {
 		
 		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenReturn(syncTransaction);
 		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId())).thenReturn(Mockito.anyString());
+		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
+		centerDetailDTO.setRegistrationCenterId("CNTR123");
+		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1");
+	
+		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId())).thenThrow(RegBaseCheckedException.class);
+		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1");
+		
+		
 	}
 	
 	@Test
