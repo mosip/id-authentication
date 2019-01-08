@@ -3,7 +3,11 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalDateTime;
 
 import lombok.Data;
-
+/**
+ * DTO class
+ * @author Srinivasan
+ *
+ */
 @Data
 public class RegistrationCenterMachineDeviceHistoryDto  {
 
