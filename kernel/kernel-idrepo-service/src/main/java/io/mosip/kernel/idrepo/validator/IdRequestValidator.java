@@ -48,6 +48,8 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 @Component
 public class IdRequestValidator implements Validator {
 
+	private static final String DOC_TYPE = "docType";
+
 	private static final String DOCUMENTS = "documents";
 
 	/** The Constant CREATE. */
@@ -253,6 +255,9 @@ public class IdRequestValidator implements Validator {
 			if (Objects.nonNull(request)) {
 				Map<String, Object> requestMap = convertToMap(request);
 				if (requestMap.containsKey(DOCUMENTS)) {
+					if (requestMap.containsKey(IDENTITY)) {
+						validateDocuments(requestMap.get(DOCUMENTS), requestMap.get(IDENTITY), errors);
+					}
 					requestMap.remove(DOCUMENTS);
 				}
 				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
@@ -274,6 +279,32 @@ public class IdRequestValidator implements Validator {
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
 					IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void validateDocuments(Object documents, Object identity, Errors errors) {
+		Map<String, Object> identityMap;
+		try {
+			identityMap = convertToMap(identity);
+			if (documents instanceof List) {
+				((List<Map<String, String>>) documents)
+					.parallelStream()
+					.filter(doc -> doc.containsKey(DOC_TYPE))
+					.forEach(doc -> {
+						if (!identityMap.containsKey(doc.get(DOC_TYPE))) {
+							mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+									(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_TYPE)));
+							errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+									String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+											doc.get(DOC_TYPE)));
+						}
+					});
+			}
+
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 		}
 	}
 
@@ -322,9 +353,8 @@ public class IdRequestValidator implements Validator {
 	 */
 	private Map<String, Object> convertToMap(Object identity) throws IdRepoAppException {
 		try {
-			return mapper.readValue(mapper.writeValueAsBytes(identity),
-					new TypeReference<Map<String, Object>>() {
-					});
+			return mapper.readValue(mapper.writeValueAsBytes(identity), new TypeReference<Map<String, Object>>() {
+			});
 		} catch (IOException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST), e);
