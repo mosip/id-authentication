@@ -168,7 +168,8 @@ img {
   display: flex;
   height: 100%;
   flex-wrap: wrap;
-  justify-content: center;
+  margin-left: 80px;
+  justify-content: flex-start;
   
 }
 .card-component {

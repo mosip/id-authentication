@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.application.code.RequestCodes;
-import io.mosip.preregistration.application.dto.CreateDemographicDTO;
+import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
@@ -50,8 +50,8 @@ public class DemographicServiceUtilTest {
 	@Autowired
 	private DemographicServiceUtil demographicServiceUtil;
 
-	private CreateDemographicDTO saveDemographicRequest = null;
-	private CreateDemographicDTO updateDemographicRequest = null;
+	private DemographicRequestDTO saveDemographicRequest = null;
+	private DemographicRequestDTO updateDemographicRequest = null;
 	private DemographicEntity demographicEntity = null;
 	private String requestId = null;
 	private JSONObject jsonObject;
@@ -69,9 +69,8 @@ public class DemographicServiceUtilTest {
 		File file = new File(classLoader.getResource("pre-registration.json").getFile());
 		jsonObject = (JSONObject) parser.parse(new FileReader(file));
 
-		saveDemographicRequest = new CreateDemographicDTO();
+		saveDemographicRequest = new DemographicRequestDTO();
 		saveDemographicRequest.setPreRegistrationId(null);
-		saveDemographicRequest.setStatusCode("Pending_Appointment");
 		saveDemographicRequest.setLangCode("ENG");
 		saveDemographicRequest.setCreatedBy("9900806086");
 		saveDemographicRequest.setCreatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
@@ -79,9 +78,8 @@ public class DemographicServiceUtilTest {
 		saveDemographicRequest.setUpdatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
 		saveDemographicRequest.setDemographicDetails(jsonObject);
 
-		updateDemographicRequest = new CreateDemographicDTO();
+		updateDemographicRequest = new DemographicRequestDTO();
 		updateDemographicRequest.setPreRegistrationId("35760478648170");
-		updateDemographicRequest.setStatusCode("Pending_Appointment");
 		updateDemographicRequest.setLangCode("ENG");
 		updateDemographicRequest.setCreatedBy("9900806086");
 		updateDemographicRequest.setCreatedDateTime(demographicServiceUtil.getLocalDateString(LocalDateTime.now()));
