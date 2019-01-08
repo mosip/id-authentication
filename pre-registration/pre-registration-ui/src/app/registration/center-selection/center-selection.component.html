@@ -124,25 +124,32 @@
   </mat-card>
   <!-- search container -->
   <div
-  class="center_selection-intial-recommendation-container"
-  *ngIf="searchClick; else elseBlock"
->
-  <div class="center_selection-center_recommendation-display">
-    <span><b>Recommended Centers</b></span>
-    <button mat-button class="center_selection-nearby-btn" (click)="getLocation()">Nearby</button><br/>
-    <span class="center_selection-center-available-text"
-      >(Found 6 Centers)
-    </span>
+    class="center_selection-intial-recommendation-container"
+    *ngIf="searchClick; else elseBlock"
+  >
+    <div class="center_selection-center_recommendation-display">
+      <span><b>Recommended Centers</b></span>
+      <button
+        mat-button
+        class="center_selection-nearby-btn"
+        (click)="getLocation()"
+      >
+        Nearby</button
+      ><br />
+      <span class="center_selection-center-available-text"
+        >(Found 6 Centers)
+      </span>
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button class="search-btn" (click)="setSearchClick(false)">
+      <img src="assets\search.png" />
+    </button>
   </div>
-  <span class="spacer"></span>
-  <button mat-icon-button class="search-btn" (click)="setSearchClick(false)">
-    <img src="assets\search.png" />
-  </button>
-</div>
-<ng-template #elseBlock>
-    <!-- <div style="display:flex;" class="center_selection-form-container">
-      <mat-card> 
-        <form>
+  <ng-template #elseBlock>
+    <!-- <div  class="center_selection-form-container">
+      <div class="form-wrapper">
+      <form>
+        <mat-card >
           <mat-select class="select-input">
             <mat-option
               style="color:black;"
@@ -152,7 +159,9 @@
               {{ locationType.viewValue }}
             </mat-option>
           </mat-select>
-   <input
+        </mat-card>
+        <mat-card>
+          <input
             mat-input
             type="search"
             name="search"
@@ -164,7 +173,7 @@
               style="height: 15px; margin-right:20px; "
             />
           </button>
-  
+
           <button
             mat-icon-button
             class="search-cancel-btn"
@@ -172,18 +181,22 @@
           >
             <img src="assets\close.png" />
           </button>
-        </form>
-        </div>
+        </mat-card>
+      </form>
+    </div>
+    </div>
     <span class="search-text">Searching "{{ searchText }}"</span> -->
-    </ng-template>
-  
+  </ng-template>
+
   <!-- Footer navigation -->
-<div>
-  <mat-card class="center-selection__button-container">
-    <button mat-button class="user-back-btn">Back</button>
-    <span class="spacer"></span>
-    <button mat-button class="user-book_later-btn">Book Later</button>
-    <button (click)="routeNext()" mat-button class="user-continue-btn">Continue</button>
-  </mat-card>
-</div>
+  <div>
+    <mat-card class="center-selection__button-container">
+      <button mat-button class="user-back-btn">Back</button>
+      <span class="spacer"></span>
+      <button mat-button class="user-book_later-btn">Book Later</button>
+      <button (click)="routeNext()" mat-button class="user-continue-btn">
+        Continue
+      </button>
+    </mat-card>
+  </div>
 </div>
