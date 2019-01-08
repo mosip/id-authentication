@@ -82,6 +82,9 @@ public class RegistrationConstants {
 	public static final String LOGIN_METHOD_BIO = "BIO";
 	public static final String LOGIN_METHOD_IRIS = "IRIS";
 	public static final String LOGIN_METHOD_FACE = "FACE";
+	public static final String USR_TEXT = "Enter your Username";
+	public static final String PWORD_TEXT = "Enter your Password";
+	public static final String OTP_TEXT = "Enter OTP";
 	public static final String FINGERPRINT_TEXT = "Place your fingerprint on the device to scan it";
 	public static final String IRIS_TEXT = "Scan your eye on the iris scanner";
 	public static final String FACE_TEXT = "Bring your face near the camera";
