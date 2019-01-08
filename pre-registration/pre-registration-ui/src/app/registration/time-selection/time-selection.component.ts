@@ -163,7 +163,7 @@ export class TimeSelectionComponent implements OnInit {
             const requestObject = {
               newBookingDetails: bookingData,
               oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,
-              pre_registration_id: name.preRegId
+              preRegistrationId: name.preRegId
             };
             this.bookingDataList.push(requestObject);
           });
@@ -171,7 +171,7 @@ export class TimeSelectionComponent implements OnInit {
       });
     });
     const request = new BookingModelRequest(this.bookingDataList);
-    console.log(request);
+    console.log('request being sent from time selection',request);
     this.dataService.makeBooking(request).subscribe((response) => {
       console.log(response);
         const data = {

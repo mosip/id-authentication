@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Applicant } from '../registration/dashboard/dashboard.modal';
+import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
 import * as appConstants from './../app.constants';
 
@@ -16,7 +16,6 @@ export class DataStorageService {
   GET_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/getDocument';
   BASE_URL2 = 'https://integ.mosip.io/demographic/v0.1/pre-registration/applicationData';
   BASE_URL = 'https://integ.mosip.io/demographic/v0.1/pre-registration/applications';
-  // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
   AVAILABILITY_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/book';
@@ -25,7 +24,7 @@ export class DataStorageService {
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
-  getUsers(value) {
+  getUsers(value: string) {
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',

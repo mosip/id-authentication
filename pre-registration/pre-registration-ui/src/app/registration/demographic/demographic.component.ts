@@ -317,7 +317,7 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationMetadataHirearchy('country').subscribe(
         response => {
-          const countryHirearchy = response['locations'];
+          const countryHirearchy = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
           const uppermostLocationHierarchy = countryHirearchy.filter(
             (element: any) => element.name === appConstants.COUNTRY_NAME
           );
@@ -337,8 +337,6 @@ export class DemographicComponent implements OnInit {
     transCurrentEntity: DropDown[],
     transSelectedEntiy: DropDown
   ) {
-    console.log(this.userForm.controls.region.value);
-
     const locationCode = 'IND';
     if (nextEntity) this.getLocationImmediateHierearchy(this.primaryLang, locationCode, nextEntity);
     this.valueToViewValue(event, currentEntity, selectedEntity, transCurrentEntity, transSelectedEntiy);
@@ -348,7 +346,7 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
-          response['locations'].forEach(element => {
+          response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let dropDown: DropDown = {
               locationCode: element.code,
               locationName: element.name
@@ -459,7 +457,7 @@ export class DemographicComponent implements OnInit {
 
       // this.dataStorageService.getTransliteration(request).subscribe(response => {
       //   console.log(response);
-      //   this.transForm.controls[toControl.name].patchValue(response['response'].to_field_value);
+      // this.transForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
       // });
     }
   }
@@ -485,7 +483,7 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else {
-          this.preRegId = response['response'][0].prId;
+          this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, []));
           this.sharedService.addNameList({
             fullName: this.userForm.controls.fullName.value,
