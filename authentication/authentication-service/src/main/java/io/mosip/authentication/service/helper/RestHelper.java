@@ -70,6 +70,10 @@ public class RestHelper {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
+
+	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
+
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(RestHelper.class);
 
@@ -101,17 +105,18 @@ public class RestHelper {
 			}
 		} catch (WebClientResponseException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-					"Throwing RestServiceException - Http Status error - \n " + ExceptionUtils.getStackTrace(e)
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e)
 							+ " \n Response Body : \n" + e.getResponseBodyAsString());
 			throw handleStatusError(e, request.getResponseType());
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-						"Throwing RestServiceException - CONNECTION_TIMED_OUT - \n " + ExceptionUtils.getStackTrace(e));
+						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n "
+								+ ExceptionUtils.getStackTrace(e));
 				throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
 			} else {
-				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
-						"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
 				throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 			}
 		}
@@ -132,7 +137,7 @@ public class RestHelper {
 			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
 			return () -> sendRequest.block();
 		} catch (RestServiceException e) {
-			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
 			return () -> new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 		}
@@ -148,7 +153,7 @@ public class RestHelper {
 		try {
 			return SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
 		} catch (SSLException e) {
-			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
 			throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 		}
