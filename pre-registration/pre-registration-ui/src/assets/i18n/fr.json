@@ -124,17 +124,17 @@
       }
     },
     "uidStatus": {
-      "title": "UID Status ",
-      "action_modify_information": "Modify Information",
-      "action_modify_appointment": "Book/Modify Appointment",
-      "action_cre_application": "Create New Application ",
+      "title": "Statut UID",
+      "action_modify_information": "Modifier les informations",
+      "action_modify_appointment": "Réserver / modifier un rendez-vous",
+      "action_cre_application": "Créer une nouvelle application ",
       "card": {
-        "text_app_id": "Application ID",
-        "text_name": "Name",
-        "text_appoinment_date": "Appointment Date",
-        "text_status": "Status",
-        "action_modify_information": "Modify Information",
-        "action_modify_appointment": "Modify Appointment"
+        "text_app_id": "ID d'application",
+        "text_name": "prénom",
+        "text_appoinment_date": "Date de rendez-vous",
+        "text_status": "Statut",
+        "action_modify_information": "Modifier les informations",
+        "action_modify_appointment": "Modifier un rendez-vous"
       }
     },
     "appointmentCentreSearch": {
