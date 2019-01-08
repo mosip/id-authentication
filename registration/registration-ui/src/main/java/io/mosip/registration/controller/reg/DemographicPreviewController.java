@@ -103,7 +103,6 @@ public class DemographicPreviewController extends BaseController {
 				demoGraphicPane2.lookup("#porDocuments").setDisable(true);
 				demoGraphicPane2.lookup("#dobDocuments").setDisable(true);
 				demoGraphicPane2.lookup("#biometricException").setDisable(true);
-				demoGraphicPane2.lookup("#childSpecificFields").setDisable(true);
 				String vBoxesId[] = { "#poaBox", "#poiBox", "#porBox", "#dobBox" };
 				for (String vBoxId : vBoxesId) {
 					VBox vbox = (VBox) demoGraphicPane2.lookup(vBoxId);

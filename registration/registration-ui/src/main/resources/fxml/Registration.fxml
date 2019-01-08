@@ -10,13 +10,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="newRegistrationRoot" maxHeight="300" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
+<AnchorPane fx:id="newRegistrationRoot" maxHeight="1250.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1250.0" prefWidth="1014.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
    <children> 
-   <ScrollPane fx:id="demoScrollPane" hbarPolicy="NEVER" prefHeight="1000" prefWidth="934" vbarPolicy="ALWAYS">
+   <ScrollPane fx:id="demoScrollPane" hbarPolicy="NEVER" prefHeight="1021.0" prefWidth="998.0" vbarPolicy="ALWAYS">
        <content>
-       <AnchorPane id="anchor-pane-registration" fx:id="anchorPaneRegistration" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="950.0">
+       <AnchorPane id="anchor-pane-registration" fx:id="anchorPaneRegistration" minHeight="0.0" minWidth="0.0" prefHeight="1045.0" prefWidth="996.0">
             <children>
-               <AnchorPane layoutX="46.0" layoutY="20.0" prefHeight="803.0" prefWidth="848.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+               <AnchorPane layoutX="46.0" layoutY="20.0" prefHeight="936.0" prefWidth="914.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
                   <children>
                      <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePageFromRegistration" pickOnBounds="true" preserveRatio="true">
                      	 <image>
@@ -29,16 +29,8 @@
                			<Image url="@../images/Pre-Registration.png" />
             			 </image>
                      </ImageView>
-                     <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="438.0" prefWidth="819.0" visible="false">
+                     <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="10.0" prefHeight="438.0" prefWidth="819.0" visible="false">
                     	<children>
-                    	 <AnchorPane id="childSpecificFields" fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
-                            <children>
-                               <Label layoutX="25.0" layoutY="8.0" text="%parentName" />
-                               <TextField fx:id="parentName" layoutX="25.0" layoutY="20.0" prefHeight="30.0" prefWidth="320.0" />
-                               <Label layoutX="25.0" layoutY="60.0" text="%uinId" />
-                               <TextField fx:id="uinId" layoutX="25.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
-                            </children>
-                      </AnchorPane>
                       <fx:include source="DocumentScan.fxml" />
                       <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="389.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
                   	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="389.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
@@ -56,7 +48,7 @@
                </AnchorPane>
                <Accordion id="registrationAccordian" fx:id="accord" layoutX="40.0" layoutY="85.0" pickOnBounds="false" visible="true">
                  <panes>
-                     <TitledPane fx:id="demoGraphicTitlePane" text="%titleDemographicPane">
+                     <TitledPane fx:id="demoGraphicTitlePane" prefHeight="863.0" prefWidth="900.0" text="%titleDemographicPane">
                         <content>
                            <AnchorPane id="demographicPane" fx:id="demoGraphicPane1" prefHeight="720.0" prefWidth="806.0" visible="true">
                               <children>
@@ -75,7 +67,7 @@
                                        <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                     </children>
                                  </AnchorPane>
-                                 <Label fx:id="genderLabel" layoutX="47.0" layoutY="175.0" text="%gender" />
+                                    <Label fx:id="genderLabel" layoutX="47.0" layoutY="175.0" text="%gender" />
                                  <ComboBox fx:id="gender" layoutX="45.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="%select">
                                     <items>
                                        <FXCollections fx:factory="observableArrayList">
@@ -85,8 +77,7 @@
                                        </FXCollections>
                                     </items>
                                  </ComboBox>
-                                 
-                                 <AnchorPane fx:id="addressAnchorPane" layoutX="31.0" layoutY="210.0" prefHeight="327.0" prefWidth="777.0">
+                              <AnchorPane fx:id="addressAnchorPane" layoutX="31.0" layoutY="211.0" prefHeight="327.0" prefWidth="777.0">
                                     <children>
                                        <Label layoutX="17.0" layoutY="10.0" text="%addressLine1" />
                                        <TextField fx:id="addressLine1" layoutX="14.0" layoutY="25.0" prefHeight="30.0" prefWidth="320.0" />
@@ -104,12 +95,23 @@
                                        <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
                                        <Label layoutX="17.0" layoutY="270.0" text="%postalCode" />
                                        <TextField fx:id="postalCode" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
+                                       <Label layoutX="410" layoutY="270.0" text="%postalCode" />
+                                       <TextField fx:id="postalCodeLocalLanguage" layoutX="410" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
                                           <Label fx:id="addressLine1LocalLanguagelabel" layoutX="410.0" layoutY="13.0" text="" />
                                        <TextField fx:id="addressLine1LocalLanguage" layoutX="410.0" layoutY="27.0" prefHeight="30.0" prefWidth="320.0" />
                                        <Label fx:id="addressLine2LocalLanguagelabel" layoutX="410.0" layoutY="62.0" text="" />
                                        <TextField fx:id="addressLine2LocalLanguage" layoutX="410.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                                        <Label fx:id="addressLine3LocalLanguagelabel" layoutX="410.0" layoutY="110.0" text="" />
                                        <TextField fx:id="addressLine3LocalLanguage" layoutX="410.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
+                                         <Label layoutX="410.0" layoutY="170.0" text="%region" />
+                                       <ComboBox fx:id="regionLocalLanguage" layoutX="410.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" />
+                                       <Label layoutX="580" layoutY="170.0" text="%city" />
+                                       <ComboBox fx:id="cityLocalLanguage" layoutX="580.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" />
+                                       <Label layoutX="410.0" layoutY="218.0" text="%province" />
+                                       <ComboBox fx:id="provinceLocalLanguage" layoutX="410.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                        <Label layoutX="580" layoutY="218.0" text="%localAdminAuthority" />
+                                       <ComboBox fx:id="localAdminAuthorityLocalLanguage" layoutX="580" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                   
                                        <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="40.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                        	<image>
                      						<Image url="@../images/keyboard.png" />
@@ -127,29 +129,78 @@
                                        </ImageView>
                                     </children>
                                  </AnchorPane>
-                                 <Label fx:id="fullNameLocalLanguageLabel" layoutX="435.0" layoutY="75.0" prefHeight="10.0" prefWidth="320.0" text="" />
+                                 <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
+                                   <TextField fx:id="mobileNo" layoutX="43.0" layoutY="542.0" prefHeight="39.0" prefWidth="145.0" />
+                                    <Label fx:id="mobileNoLabel" layoutX="46.0" layoutY="537.0" text="%mobileNo" />
+                                 	 <TextField fx:id="alternateMobileNo" layoutX="220.0" layoutY="542.0" prefHeight="39.0" prefWidth="145.0" />
+                                    <Label layoutX="220.0" layoutY="537.0" text="Alternative Mobile No (Optional)" />
+                                 	 <TextField fx:id="emailId" layoutX="46.0" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
+                                    <Label fx:id="emailIdLabel" layoutX="46.0" layoutY="587.0" text="%emailId" />
+                                 	<TextField fx:id="cniOrPinNumber" layoutX="220.0" layoutY="593.0" prefHeight="39.0" prefWidth="147.0" />
+                                    <Label fx:id="cnieLabel" layoutX="620.0" layoutY="587.0" text="%cniOrPinNumber" />
+                                    <AnchorPane fx:id="childSpecificFields" layoutX="38.0" layoutY="652.0" prefHeight="124.0" prefWidth="345.0">
+                                       <children>
+                                          <Label layoutX="5.0" layoutY="1.0" text="%parentName" />
+                                          <TextField fx:id="parentName" layoutX="5.0" layoutY="21.0" prefHeight="30.0" prefWidth="320.0" />
+                                          <TextField fx:id="uinId" layoutX="5.0" layoutY="85.0" prefHeight="30.0" prefWidth="320.0" />
+                                          <Label layoutX="5.0" layoutY="60.0" text="%uinId" />
+                                       </children>
+                                    </AnchorPane>
+                                    <Label fx:id="fullNameLocalLanguageLabel" layoutX="435.0" layoutY="75.0" prefHeight="10.0" prefWidth="320.0" text="" />
                                  <TextField id="fullNameLocalLanguage" fx:id="fullNameLocalLanguage" layoutX="435.0" layoutY="90.00" prefHeight="10.0" prefWidth="320.0" />
                                  <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="768.0" layoutY="100.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                  <image>
                  					<Image url="@../images/keyboard.png" />
                			 			</image>
-                                   
-                                                   </ImageView>
-                                   <ImageView fx:id="copyAddressImage" fitHeight="20.0" fitWidth="27.0" layoutX="382.0" layoutY="220.0" onMouseClicked="#loadAddressFromPreviousEntry" pickOnBounds="true" preserveRatio="true">
+	                           </ImageView>
+	                           <AnchorPane fx:id="dateAnchorPane" layoutX="440.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">
+                                    <children>
+                                       <Label layoutX="5.0" layoutY="9.0" text="%ageField" />
+                                       <TextField fx:id="ageFieldLocalLanguage" layoutX="5.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
+                                       <Label id="toggleLabel1" fx:id="toggleLabel1LocalLanguage" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.1" text="" />
+                                       <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
+                                    </children>
+                                 </AnchorPane>
+                                 <Label fx:id="genderLabelLocal" layoutX="440.0" layoutY="175.0" text="%gender" />
+                                 <ComboBox fx:id="genderLocalLanguage" layoutX="440.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="%select">
+                                    <items>
+                                       <FXCollections fx:factory="observableArrayList">
+                                          <String fx:value="Male" />
+                                          <String fx:value="Female" />
+                                          <String fx:value="Unidentified" />
+                                       </FXCollections>
+                                    </items>
+                                 </ComboBox>
+                                    <TextField fx:id="mobileNoLocalLanguage" layoutX="440.0" layoutY="542.0" prefHeight="39.0" prefWidth="145.0" />
+                                    <Label fx:id="mobileNoLabelLocal" layoutX="440.0" layoutY="537.0" text="%mobileNo" />
+                                    <TextField fx:id="alternateMobileNoLocalLanguage" layoutX="620.0" layoutY="543.0" prefHeight="39.0" prefWidth="145.0" />
+                                    <Label fx:id="alternateMobileNoLabelLocal" layoutX="620.0" layoutY="537.0" text="Alternative Mobile No (Optional)" />
+                                    <TextField fx:id="emailIdLocalLanguage" layoutX="440.00" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
+                                    <Label fx:id="emailIdLabelLocal" layoutX="440.00" layoutY="584.0" text="%emailId" />
+                                    <TextField fx:id="cniOrPinNumberLocalLanguage" layoutX="620.0" layoutY="602.0" prefHeight="30.0" prefWidth="147.0" />
+                                    <Label fx:id="cnieLabelLocal" layoutX="220.0" layoutY="587.0" text="%cniOrPinNumber" />
+                                    <ImageView fx:id="copyAddressImage" fitHeight="20.0" fitWidth="27.0" layoutX="382.0" layoutY="220.0" onMouseClicked="#loadAddressFromPreviousEntry" pickOnBounds="true" preserveRatio="true">
                                       <image>
                     						<Image url="@../images/CopyAddress.png" />
                                       </image>
                                    </ImageView>
                                    <Label fx:id="copyAddressLabel" layoutX="352.0" layoutY="240.0" text="%copyaddress" visible="false" />
-                                 <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
-                                 <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
-                                    <Button fx:id="nextBtn" layoutX="668.0" layoutY="652.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
-                                    <TextField fx:id="cniOrPinNumber" layoutX="46.0" layoutY="652.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label fx:id="cnieLabel" layoutX="46.0" layoutY="637.0" text="%cniOrPinNumber" />
-                                    <TextField fx:id="emailId" layoutX="46.0" layoutY="602.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label fx:id="emailIdLabel" layoutX="46.0" layoutY="587.0" text="%emailId" />
-                                    <TextField fx:id="mobileNo" layoutX="43.0" layoutY="552.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Label fx:id="mobileNoLabel" layoutX="46.0" layoutY="537.0" text="%mobileNo" />
+                                
+                                    <AnchorPane fx:id="childSpecificFieldsLocal" layoutX="435.0" layoutY="652.0" prefHeight="124.0" prefWidth="398.0">
+                                       <children>
+                                          <Label layoutX="5.0" layoutY="1.0" text="%parentName" />
+                                          <TextField fx:id="parentNameLocalLanguage" layoutY="21.0" prefHeight="30.0" prefWidth="320.0" />
+                                           <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="340.0" layoutY="30.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                       	<image>
+                     						<Image url="@../images/keyboard.png" />
+                  			 			</image>
+                                       </ImageView>
+                                          <Label layoutX="5.0" layoutY="60.0" text="%uinId" />
+                                          <TextField fx:id="uinIdLocalLanguage" layoutY="85.0" prefHeight="30.0" prefWidth="320.0" />
+                                       </children>
+                                    </AnchorPane>
+                                         <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
+                                    <Button fx:id="nextBtn" layoutX="700.0" layoutY="783.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
                               </children>
                            </AnchorPane>
                         </content>

@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.service.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -87,8 +89,12 @@ public class Validations extends BaseController {
 				&& !(node instanceof Button) && !(node instanceof Label);
 	}
 
-	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, List<String> blackListedWords) {
-		this.blackListedWords=blackListedWords;
+	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
+		this.blackListedWords=masterSync
+				.getAllBlackListedWords(RegistrationConstants.mappedCodeForLang
+						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
+		
 		System.out.println(this.blackListedWords.size()+"hello");
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);

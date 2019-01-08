@@ -154,6 +154,9 @@ public class RegistrationController extends BaseController {
 	private AnchorPane childSpecificFields;
 
 	@FXML
+	private AnchorPane childSpecificFieldsLocal;
+	
+	@FXML
 	private ScrollPane demoScrollPane;
 
 	private SimpleBooleanProperty switchedOn;
@@ -435,6 +438,9 @@ public class RegistrationController extends BaseController {
 
 			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
 					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
+			
+			childSpecificFieldsLocal.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
+					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
 
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
@@ -477,13 +483,6 @@ public class RegistrationController extends BaseController {
 				SessionContext.getInstance().getUserContext().getUserMap()
 						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 				captureExceptionImage.setDisable(true);
-			}
-
-			if (getRegistrationDtoContent().getSelectionListDTO().isChild()
-					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails()) {
-				documentScanController.documentScan.setLayoutY(134.00);
-			} else {
-				documentScanController.documentScan.setLayoutY(25.00);
 			}
 
 		}
@@ -543,6 +542,7 @@ public class RegistrationController extends BaseController {
 			mobileNo.setText(demo.getIdentity().getPhone().getValue());
 			emailId.setText(demo.getIdentity().getEmail().getValue());
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber());
+			
 
 			populateFieldValue(localAdminAuthority, null,
 					demo.getIdentity().getLocalAdministrativeAuthority().getValues());
@@ -1240,12 +1240,12 @@ public class RegistrationController extends BaseController {
 				int age = (int) ageInDays / 365;
 				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
+					childSpecificFieldsLocal.setVisible(true);
 					isChild = true;
-					// documentFields.setLayoutY(134.00);
 				} else {
 					isChild = false;
 					childSpecificFields.setVisible(false);
-					// documentFields.setLayoutY(25.00);
+					childSpecificFieldsLocal.setVisible(false);
 				}
 				// to populate age based on date of birth
 				ageField.setText("" + (Period.between(ageDatePicker.getValue(), LocalDate.now()).getYears()));
@@ -1313,14 +1313,14 @@ public class RegistrationController extends BaseController {
 						autoAgeDatePicker.setValue(dob);
 						if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 							childSpecificFields.setVisible(true);
+							childSpecificFieldsLocal.setVisible(true);
 							isChild = true;
-							documentScanController.documentScan.setLayoutY(134.00);
 							parentName.setDisable(false);
 							uinId.setDisable(false);
 						} else {
 							isChild = false;
 							childSpecificFields.setVisible(false);
-							documentScanController.documentScan.setLayoutY(25.00);
+							childSpecificFieldsLocal.setVisible(false);
 							parentName.setDisable(true);
 							uinId.setDisable(true);
 						}
@@ -1358,6 +1358,7 @@ public class RegistrationController extends BaseController {
 						parentName.clear();
 						uinId.clear();
 						childSpecificFields.setVisible(false);
+						childSpecificFieldsLocal.setVisible(false);
 						ageDatePicker.setDisable(true);
 						ageField.setDisable(false);
 
@@ -1369,6 +1370,7 @@ public class RegistrationController extends BaseController {
 						parentName.clear();
 						uinId.clear();
 						childSpecificFields.setVisible(false);
+						childSpecificFieldsLocal.setVisible(false);
 						ageDatePicker.setDisable(false);
 						ageField.setDisable(true);
 
@@ -1408,13 +1410,17 @@ public class RegistrationController extends BaseController {
 		excludedIds.add("province");
 		excludedIds.add("localAdminAuthority");
 		excludedIds.add("virtualKeyboard");
+
+		excludedIds.add("genderLocalLanguage");
+		excludedIds.add("regionLocalLanguage");
+		excludedIds.add("cityLocalLanguage");
+		excludedIds.add("provinceLocalLanguage");
+		excludedIds.add("localAdminAuthorityLocalLanguage");
+		
+		
 		validation.setChild(isChild);
 		validation.setValidationMessage();
-		List<String> blackListedWords = masterSync
-				.getAllBlackListedWords(RegistrationConstants.mappedCodeForLang
-						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
-		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext,blackListedWords);
+		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync );
 		displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
