@@ -37,38 +37,56 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
+/**
+ * The Class BioDedupeServiceImpl.
+ */
 @RefreshScope
 @Service
 public class BioDedupeServiceImpl implements BioDedupeService {
 
+	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeServiceImpl.class);
 
+	/** The abis insert request dto. */
 	private AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 
+	/** The identify request dto. */
 	private IdentityRequestDto identifyRequestDto = new IdentityRequestDto();
 
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The url. */
 	@Value("${registration.processor.biometric.reference.url}")
 	private String url;
 
+	/** The max results. */
 	@Value("${registration.processor.abis.maxResults}")
 	private Integer maxResults;
 
+	/** The target FPIR. */
 	@Value("${registration.processor.abis.targetFPIR}")
 	private Integer targetFPIR;
 
+	/** The threshold. */
 	@Value("${registration.processor.abis.threshold}")
 	private Integer threshold;
 
+	/** The filesystem ceph adapter impl. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#
+	 * insertBiometrics(java.lang.String)
+	 */
 	@Override
 	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
 
@@ -78,7 +96,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
-		abisInsertRequestDto.setReferenceURL(url + registrationId);
+		abisInsertRequestDto.setReferenceURL("http://localhost:9097/abis/swagger-ui.html/" + registrationId);
 		String timeStamp = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L);
 		abisInsertRequestDto.setTimestamp(timeStamp);
 
@@ -100,6 +118,16 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	}
 
+	/**
+	 * Throw exception.
+	 *
+	 * @param failureReason
+	 *            the failure reason
+	 * @param referenceId
+	 *            the reference id
+	 * @param requestId
+	 *            the request id
+	 */
 	private void throwException(int failureReason, String referenceId, String requestId) {
 
 		if (failureReason == 1)
@@ -120,6 +148,12 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#
+	 * performDedupe(java.lang.String)
+	 */
 	@Override
 	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException {
 		List<String> duplicates = new ArrayList<>();
@@ -166,10 +200,22 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		return duplicates;
 	}
 
+	/**
+	 * Uuid generator.
+	 *
+	 * @return the string
+	 */
 	private String uuidGenerator() {
 		return UUID.randomUUID().toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#getFile(
+	 * java.lang.String)
+	 */
 	@Override
 	public byte[] getFile(String registrationId) {
 		byte[] file = null;
