@@ -1,5 +1,9 @@
 package io.mosip.registration.processor.abis.controller;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
@@ -9,12 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.xml.sax.SAXException;
 
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
 import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
 import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
 import io.mosip.registration.processor.abis.service.impl.AbisServiceImpl;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -51,11 +57,18 @@ public class AbisController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "unique biometric data"),
 			@ApiResponse(code = 400, message = "duplicate biometric data") })
 	public ResponseEntity<IdentityResponceDto> identity(@RequestBody(required = true) IdentityRequestDto identityRequestDto) {
-		
-		IdentityResponceDto identityResponceDto= abisServiceImpl.deDupeCheck(identityRequestDto);
-		
-		if(identityRequestDto.getId().equals("identify")) {
-		return ResponseEntity.status(HttpStatus.OK).body(identityResponceDto);
+		IdentityResponceDto identityResponceDto = null;
+		try {
+			identityResponceDto = abisServiceImpl.performDedupe(identityRequestDto);
+		} catch (ApisResourceAccessException | ClassNotFoundException | IOException | ParserConfigurationException
+				| SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//IdentityResponceDto identityResponceDto = abisServiceImpl.deDupeCheck(identityRequestDto);
+
+		if (identityRequestDto.getId().equals("identify")) {
+			return ResponseEntity.status(HttpStatus.OK).body(identityResponceDto);
 		}
 		identityResponceDto.setCandidateList(null);
 		identityResponceDto.setReturnValue(2);

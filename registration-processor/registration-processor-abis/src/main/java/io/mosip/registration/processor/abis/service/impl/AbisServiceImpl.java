@@ -37,6 +37,8 @@ public class AbisServiceImpl {
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+	
+	private static final String DUPLICATE = "duplicate";
 
 	public IdentityResponceDto deDupeCheck(IdentityRequestDto identityRequest) {
 		CandidateListDto cd = new CandidateListDto();
@@ -71,12 +73,12 @@ public class AbisServiceImpl {
 	public IdentityResponceDto performDedupe(IdentityRequestDto identityRequest) throws ApisResourceAccessException,
 			IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
 		boolean duplicate = false;
-		//String referenceId = identityRequest.getReferenceId();
-		//String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
-		//List<String> pathSegments = new ArrayList<>();
-		//pathSegments.add(regId);
+		String referenceId = identityRequest.getReferenceId();
+		String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add(regId);
 
-		//byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPEPOTENTIAL, pathSegments, "", "",
+		//byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
 				//byte[].class);
 
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -93,24 +95,27 @@ public class AbisServiceImpl {
 		NodeList fingerNodeList = doc.getElementsByTagName("TestFingerPrint");
 		for(int i = 0; i<fingerNodeList.getLength(); i++) {
 			String value = fingerNodeList.item(i).getTextContent();
-			if(value.equalsIgnoreCase("duplicate")) {
+			if(value.equalsIgnoreCase(DUPLICATE)) {
 				duplicate = true;
+				break;
 			}
 		}
 		
 		NodeList irisNodeList = doc.getElementsByTagName("TestIRIS");
 		for(int i = 0; i<irisNodeList.getLength(); i++) {
 			String value = irisNodeList.item(i).getTextContent();
-			if(value.equalsIgnoreCase("duplicate")) {
+			if(value.equalsIgnoreCase(DUPLICATE)) {
 				duplicate = true;
+				break;
 			}
 		}
 		
 		NodeList faceNodeList = doc.getElementsByTagName("TestFace");
 		for(int i = 0; i<faceNodeList.getLength(); i++) {
 			String value = faceNodeList.item(i).getTextContent();
-			if(value.equalsIgnoreCase("duplicate")) {
+			if(value.equalsIgnoreCase(DUPLICATE)) {
 				duplicate = true;
+				break;
 			}
 		}
 		
