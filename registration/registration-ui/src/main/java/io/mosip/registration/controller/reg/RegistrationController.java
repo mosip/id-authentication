@@ -507,7 +507,7 @@ public class RegistrationController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine1LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
-			vk.focusListener(fullNameLocalLanguage,120.00, keyboardNode);
+			vk.focusListener(fullNameLocalLanguage, 120.00, keyboardNode);
 			vk.focusListener(addressLine1LocalLanguage, 270, keyboardNode);
 			vk.focusListener(addressLine2LocalLanguage, 320.00, keyboardNode);
 			vk.focusListener(addressLine3LocalLanguage, 375.00, keyboardNode);
@@ -799,9 +799,11 @@ public class RegistrationController extends BaseController {
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
 				if (ageDatePicker.getValue() != null) {
-					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT, ageDatePicker);
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT,
+							ageDatePicker);
 				} else {
-					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT, autoAgeDatePicker);
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT,
+							autoAgeDatePicker);
 				}
 				biometricTitlePane.setExpanded(true);
 
@@ -810,10 +812,14 @@ public class RegistrationController extends BaseController {
 					if (registrationDTO.getSelectionListDTO().isBiometricFingerprint()) {
 						toggleFingerprintCaptureVisibility(true);
 						toggleIrisCaptureVisibility(false);
+						togglePhotoCaptureVisibility(false);
 					} else if (registrationDTO.getSelectionListDTO().isBiometricIris()) {
 						toggleFingerprintCaptureVisibility(false);
 						toggleIrisCaptureVisibility(true);
+						togglePhotoCaptureVisibility(false);
 					} else {
+						toggleFingerprintCaptureVisibility(false);
+						toggleIrisCaptureVisibility(false);
 						togglePhotoCaptureVisibility(true);
 					}
 
@@ -990,8 +996,25 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void goToPreviousPane() {
 		try {
-			toggleIrisCaptureVisibility(true);
-			togglePhotoCaptureVisibility(false);
+			if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+
+				if (getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()
+						&& getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()
+						|| getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()) {
+					toggleIrisCaptureVisibility(true);
+					togglePhotoCaptureVisibility(false);
+				} else if (getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()) {
+					togglePhotoCaptureVisibility(false);
+					toggleFingerprintCaptureVisibility(true);
+				} else if (!getRegistrationDtoContent().getSelectionListDTO().isBiometricFingerprint()
+						&& !getRegistrationDtoContent().getSelectionListDTO().isBiometricIris()) {
+					demoGraphicTitlePane.setExpanded(true);
+				}
+			} else {
+				toggleIrisCaptureVisibility(true);
+				togglePhotoCaptureVisibility(false);
+			}
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO DEMOGRAPHIC TITLE PANE ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1705,7 +1728,8 @@ public class RegistrationController extends BaseController {
 		try {
 			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),
 					RegistrationConstants.mappedCodeForLang
-							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode());
+							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+							.getMappedCode());
 			region.getItems().addAll(
 					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
 		} catch (RuntimeException runtimeException) {

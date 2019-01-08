@@ -309,7 +309,7 @@ public class BaseController {
 	}
 	
 	public static FXMLLoader loadChild(URL url) throws IOException {
-		FXMLLoader loader = new FXMLLoader(url);
+		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader;
 	}

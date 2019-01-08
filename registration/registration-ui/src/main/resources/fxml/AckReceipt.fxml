@@ -17,7 +17,7 @@
                   <Image url="@../images/Home.png" />
                </image>
             </ImageView>
-            <Text layoutX="60.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
+            <Text fx:id="registrationNavLabel" layoutX="60.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
             <Label layoutX="417.0" layoutY="11.0" text="%registration" underline="true">
                <font>
                   <Font name="System Bold" size="18.0" />
