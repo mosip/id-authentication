@@ -10,10 +10,9 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * 
+ * Annotation used to validate field for valid language code as per ISO:639-3.
  * 
  * @author Bal Vikash Sharma
- *
  */
 @Documented
 @Constraint(validatedBy = LanguageCodeValidator.class)
@@ -21,7 +20,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidLangCode {
 
-	String message() default "Language code not supported!";
+	String message() default "Language code not supported.";
 
 	Class<?>[] groups() default {};
 

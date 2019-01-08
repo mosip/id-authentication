@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
  * updation of Masterdata
  * 
  * @author Neha
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
@@ -36,8 +37,9 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Value("${mosip.kernel.supported-languages}")
 	private String supportedLanguages;
 
-	/**
-	 * 
+	
+	/* (non-Javadoc)
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
 	 */
 	@Override
 	public boolean isValid(String langCode, ConstraintValidatorContext context) {

@@ -181,7 +181,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class MasterdataIntegrationTest {
-	private static final String JSON_STRING_RESPONCE = "{\"uinLength\":24,\"numberOfWrongAttemptsForOtp\":5,\"accountFreezeTimeoutInHours\":10,\"mobilenumberlength\":10,\"archivalPolicy\":\"arc_policy_2\",\"tokenIdLength\":23,\"restrictedNumbers\":[\"8732\",\"321\",\"65\"],\"registrationCenterId\":\"KDUE83CJ3\",\"machineId\":\"MCBD3UI3\",\"supportedLanguages\":[\"eng\",\"hnd\",\"ara\",\"deu\"],\"tspIdLength\":24,\"otpTimeOutInMinutes\":2,\"notificationtype\":\"SMS|EMAIL\",\"pridLength\":32,\"vidLength\":32}";
+	private static final String JSON_STRING_RESPONCE = "{\"uinLength\":24,\"numberOfWrongAttemptsForOtp\":5,\"accountFreezeTimeoutInHours\":10,\"mobilenumberlength\":10,\"archivalPolicy\":\"arc_policy_2\",\"tokenIdLength\":23,\"restrictedNumbers\":[\"8732\",\"321\",\"65\"],\"registrationCenterId\":\"KDUE83CJ3\",\"machineId\":\"MCBD3UI3\",\"supportedLanguages\":[\"eng\",\"hnd\",\"ara\",\"deu\",\"FRN\"],\"tspIdLength\":24,\"otpTimeOutInMinutes\":2,\"notificationtype\":\"SMS|EMAIL\",\"pridLength\":32,\"vidLength\":32}";
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
@@ -459,7 +459,7 @@ public class MasterdataIntegrationTest {
 
 		deviceType = new DeviceType();
 		deviceType.setCode("1000");
-		deviceType.setLangCode("ENG");
+		deviceType.setLangCode("eng");
 		deviceType.setName("Laptop");
 		deviceType.setIsActive(true);
 		deviceType.setDescription("Laptop Description");
