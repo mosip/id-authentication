@@ -347,7 +347,7 @@
 	-fx-pref-width: 483px;
 }
 
-#submit, #rejectionSubmit,#submitBtn, #getOTP, #resend{
+#submit, #rejectionSubmit,#submitBtn, #getOTP, #resend, #submitUserId{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;

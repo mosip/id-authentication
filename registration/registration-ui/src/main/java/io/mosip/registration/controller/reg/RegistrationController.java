@@ -355,10 +355,10 @@ public class RegistrationController extends BaseController {
 
 			// Create RegistrationDTO Object
 			if (getRegistrationDtoContent() == null) {
-				createRegistrationDTOObject("New");
+				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
 
-			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
+			if (capturePhotoUsingDevice.equals(RegistrationConstants.FLAG_YES) && !isEditPage()) {
 				defaultImage = applicantImage.getImage();
 				applicantImageCaptured = false;
 				exceptionImageCaptured = false;
@@ -423,11 +423,11 @@ public class RegistrationController extends BaseController {
 			for (Node node : nodes) {
 				node.setDisable(true);
 			}
-			paneLabel.setText("/ UIN Update");
+			paneLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			fetchBtn.setVisible(false);
 			headerImage.setVisible(false);
 			nextBtn.setDisable(false);
-			preRegistrationLabel.setText("UIN");
+			preRegistrationLabel.setText(RegistrationConstants.UIN_LABEL);
 
 			getRegistrationDtoContent().getRegistrationMetaDataDTO()
 					.setUin(getRegistrationDtoContent().getSelectionListDTO().getUinId());
@@ -462,8 +462,8 @@ public class RegistrationController extends BaseController {
 					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
 
 			if (getRegistrationDtoContent().getSelectionListDTO().isBiometricException()) {
-				bioExceptionToggleLabel1.setId("toggleLabel2");
-				bioExceptionToggleLabel2.setId("toggleLabel1");
+				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 				toggleBiometricException = true;
 				SessionContext.getInstance().getUserContext().getUserMap()
 						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
@@ -471,8 +471,8 @@ public class RegistrationController extends BaseController {
 			} else {
 				bioExceptionToggleLabel1.setDisable(true);
 				bioExceptionToggleLabel2.setDisable(true);
-				bioExceptionToggleLabel1.setId("toggleLabel1");
-				bioExceptionToggleLabel2.setId("toggleLabel2");
+				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 				toggleBiometricException = false;
 				SessionContext.getInstance().getUserContext().getUserMap()
 						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
@@ -490,7 +490,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	public void init(SelectionListDTO selectionListDTO) {
-		createRegistrationDTOObject("Update");
+		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_UPDATE);
 		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
 	}
 
@@ -601,8 +601,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
-		String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
-		String localLanguageCode = AppConfig.getApplicationProperty("local_language");
+		String platformLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE);
+		String localLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE);
 		String valueInPlatformLang = "";
 		String valueinLocalLang = "";
 
@@ -650,9 +650,9 @@ public class RegistrationController extends BaseController {
 		List<ErrorResponseDTO> errorResponseDTOList = responseDTO.getErrorResponseDTOs();
 
 		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null
-				&& successResponseDTO.getOtherAttributes().containsKey("registrationDto")) {
+				&& successResponseDTO.getOtherAttributes().containsKey(RegistrationConstants.REGISTRATION_DTO)) {
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA,
-					successResponseDTO.getOtherAttributes().get("registrationDto"));
+					successResponseDTO.getOtherAttributes().get(RegistrationConstants.REGISTRATION_DTO));
 			prepareEditPageContent();
 
 		} else if (errorResponseDTOList != null && !errorResponseDTOList.isEmpty()) {
@@ -728,22 +728,22 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setLayoutX(300.00);
 			Node node = (Node) event.getSource();
 
-			if (node.getId().equals("addressLine1")) {
+			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(270.00);
 			}
 
-			if (node.getId().equals("addressLine2")) {
+			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(320.00);
 			}
 
-			if (node.getId().equals("addressLine3")) {
+			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(375.00);
 			}
 
-			if (node.getId().equals("fullName")) {
+			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(120.00);
 			}
@@ -785,9 +785,9 @@ public class RegistrationController extends BaseController {
 
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
 
-					registrationMetaDataDTO.setApplicationType("Child");
+					registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
 				} else {
-					registrationMetaDataDTO.setApplicationType("Adult");
+					registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
 				}
 
 				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
@@ -799,9 +799,9 @@ public class RegistrationController extends BaseController {
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
 
 				if (ageDatePicker.getValue() != null) {
-					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", ageDatePicker);
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT, ageDatePicker);
 				} else {
-					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", autoAgeDatePicker);
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT, autoAgeDatePicker);
 				}
 				biometricTitlePane.setExpanded(true);
 
@@ -828,8 +828,8 @@ public class RegistrationController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private DemographicInfoDTO buildDemographicInfo() {
 
-		String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
-		String localLanguageCode = AppConfig.getApplicationProperty("local_language");
+		String platformLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE);
+		String localLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE);
 		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
 
@@ -1322,14 +1322,14 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
-			toggleLabel1.setId("toggleLabel1");
-			toggleLabel2.setId("toggleLabel2");
+			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+			toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			switchedOn.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						toggleLabel1.setId("toggleLabel2");
-						toggleLabel2.setId("toggleLabel1");
+						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						ageField.clear();
 						ageDatePicker.setValue(null);
 						parentName.clear();
@@ -1339,8 +1339,8 @@ public class RegistrationController extends BaseController {
 						ageField.setDisable(false);
 
 					} else {
-						toggleLabel1.setId("toggleLabel1");
-						toggleLabel2.setId("toggleLabel2");
+						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
 						ageDatePicker.setValue(null);
 						parentName.clear();
@@ -1528,24 +1528,24 @@ public class RegistrationController extends BaseController {
 			}
 
 			if (toggleBiometricException) {
-				bioExceptionToggleLabel1.setId("toggleLabel2");
-				bioExceptionToggleLabel2.setId("toggleLabel1");
+				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+				bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			} else {
-				bioExceptionToggleLabel1.setId("toggleLabel1");
-				bioExceptionToggleLabel2.setId("toggleLabel2");
+				bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+				bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			}
 
 			switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						bioExceptionToggleLabel1.setId("toggleLabel2");
-						bioExceptionToggleLabel2.setId("toggleLabel1");
+						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleBiometricException = true;
 						captureExceptionImage.setDisable(false);
 					} else {
-						bioExceptionToggleLabel1.setId("toggleLabel1");
-						bioExceptionToggleLabel2.setId("toggleLabel2");
+						bioExceptionToggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleBiometricException = false;
 						captureExceptionImage.setDisable(true);
 					}
@@ -1618,9 +1618,9 @@ public class RegistrationController extends BaseController {
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
-			if (capturePhotoUsingDevice.equals("Y")) {
+			if (capturePhotoUsingDevice.equals(RegistrationConstants.FLAG_YES)) {
 				getBiometricsPane().setVisible(true);
-			} else if (capturePhotoUsingDevice.equals("N")) {
+			} else if (capturePhotoUsingDevice.equals(RegistrationConstants.FLAG_NO)) {
 				saveBiometricDetails();
 				getBiometricsPane().setVisible(false);
 			}
@@ -1701,7 +1701,7 @@ public class RegistrationController extends BaseController {
 		try {
 			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),
 					RegistrationConstants.mappedCodeForLang
-							.valueOf(AppConfig.getApplicationProperty("application_language")).getMappedCode());
+							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode());
 			region.getItems().addAll(
 					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
 		} catch (RuntimeException runtimeException) {

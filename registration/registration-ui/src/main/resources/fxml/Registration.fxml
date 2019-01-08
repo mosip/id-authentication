@@ -18,7 +18,7 @@
             <children>
                <AnchorPane layoutX="46.0" layoutY="20.0" prefHeight="803.0" prefWidth="848.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
                   <children>
-                     <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+                     <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePageFromRegistration" pickOnBounds="true" preserveRatio="true">
                      	 <image>
                			<Image url="@../images/Home.png" />
             			 </image>
@@ -95,11 +95,11 @@
                                        <Label layoutX="17.0" layoutY="112.0" text="%addressLine3" />
                                        <TextField fx:id="addressLine3" layoutX="14.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
                                 	   <Label layoutX="17.0" layoutY="170.0" text="%region" />
-                                       <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" onAction="#addProvince" />
+                                       <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" onAction="#addProvince" prefHeight="25.0" prefWidth="155.0" />
                                        <Label layoutX="180.0" layoutY="170.0" text="%city" />
-                                       <ComboBox fx:id="city" layoutX="180.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" onAction="#addlocalAdminAuthority" />
+                                       <ComboBox fx:id="city" layoutX="180.0" layoutY="187.0" onAction="#addlocalAdminAuthority" prefHeight="25.0" prefWidth="155.0" />
                                        <Label layoutX="17.0" layoutY="218.0" text="%province" />
-                                       <ComboBox fx:id="province" layoutX="17.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" onAction="#addCity" />
+                                       <ComboBox fx:id="province" layoutX="17.0" layoutY="235.0" onAction="#addCity" prefHeight="25.0" prefWidth="153.0" />
                                        <Label layoutX="180.0" layoutY="218.0" text="%localAdminAuthority" />
                                        <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
                                        <Label layoutX="17.0" layoutY="270.0" text="%postalCode" />

@@ -103,9 +103,6 @@ public class DocumentScanController extends BaseController {
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
-
-	@Value("${SCROLL_CHECK}")
-	public int scrollCheck;
 	
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;

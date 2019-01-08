@@ -82,6 +82,9 @@ public class RegistrationConstants {
 	public static final String LOGIN_METHOD_BIO = "BIO";
 	public static final String LOGIN_METHOD_IRIS = "IRIS";
 	public static final String LOGIN_METHOD_FACE = "FACE";
+	public static final String USR_TEXT = "Enter your Username";
+	public static final String PWORD_TEXT = "Enter your Password";
+	public static final String OTP_TEXT = "Enter OTP";
 	public static final String FINGERPRINT_TEXT = "Place your fingerprint on the device to scan it";
 	public static final String IRIS_TEXT = "Scan your eye on the iris scanner";
 	public static final String FACE_TEXT = "Bring your face near the camera";
@@ -133,12 +136,35 @@ public class RegistrationConstants {
 	public static final String REG_DDC_004_2="REG_DDC_004_2";
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE="LocalLanguage";
+	public static final String APPLICATION_LANGUAGE="application_language";
+	public static final String REGISTRATION_LOCAL_LANGUAGE="local_language";
+	public static final String PACKET_TYPE_NEW="New";
+	public static final String FLAG_YES="Y";
+	public static final String FLAG_NO="N";
+	public static final String REGISTRATION_DTO="registrationDto";
+	public static final String ADDRESS_LINE1="addressLine1";
+	public static final String ADDRESS_LINE2="addressLine2";
+	public static final String ADDRESS_LINE3="addressLine3";
+	public static final String FULL_NAME="fullName";
+	public static final String CHILD="Child";
+	public static final String ADULT="Adult";
+	public static final String AGE_DATEPICKER_CONTENT="ageDatePickerContent";
 
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
 	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
 
+	//update UIN
+	public static final String UIN_NAV_LABEL="/ UIN Update";
+	public static final String UIN_LABEL="UIN";
+	public static final String FIRST_TOGGLE_LABEL="toggleLabel1";
+	public static final String SECOND_TOGGLE_LABEL="toggleLabel2";
+	public static final String PACKET_TYPE_UPDATE="Update";
+
+
+
+	
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
 

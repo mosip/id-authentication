@@ -414,16 +414,9 @@ public class BaseController {
 
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-		String validationStatus = "";
-		if (username.isEmpty() && password.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
-		} else if (username.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
-		} else if (password.isEmpty()) {
+		if (password.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
-		} else if (username.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
-		} else if (password.length() > usernamePwdLength) {
+		}  else if (password.length() > usernamePwdLength) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
 		} else {
 			String hashPassword = null;
@@ -437,19 +430,12 @@ public class BaseController {
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username);
 			authenticationValidatorDTO.setPassword(hashPassword);
-			String userStatus = validatePassword(authenticationValidatorDTO);
 
-			if (userStatus.equals(RegistrationUIConstants.USER_NOT_ONBOARDED)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
-			} else {
-				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
-					validationStatus = "Success";
-				} else {
-					validationStatus = "Fail";
-				}
-			}
+			if (validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
+				return RegistrationConstants.SUCCESS;
+			} 
 		}
-		return validationStatus;
+		return RegistrationConstants.FAILURE;
 	}
 
 	/**
@@ -464,11 +450,7 @@ public class BaseController {
 				"Validating credentials using database");
 
 		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		if (userDetail == null) {
-			return RegistrationUIConstants.USER_NOT_ONBOARDED;
-		} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-			return RegistrationUIConstants.BLOCKED_USER_ERROR;
-		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
+		if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {
 			return RegistrationConstants.PWD_MISMATCH;

@@ -81,7 +81,7 @@
                <children>
       				<Button fx:id="getOTP" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginOtpStyle" text="%getotp" />
       				<Button fx:id="resend" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginResendOtpStyle" text="%resendotp" visible="false" />
-      				<ImageView fx:id="bioImage" fitHeight="99.0" fitWidth="92.0" layoutX="1.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      				<ImageView fx:id="bioImage" fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true" visible="false">
       					<image>
       						<Image url="@../images/fingerprint.jpg" />
       					</image>
