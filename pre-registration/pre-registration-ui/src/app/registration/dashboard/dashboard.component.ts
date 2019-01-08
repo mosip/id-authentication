@@ -28,8 +28,6 @@ export class DashBoardComponent implements OnInit {
   tempFiles;
   disableModifyDataButton = true;
   disableModifyAppointmentButton = true;
-  // numRows: number;
-  // numSelected: number;
   fetchedDetails = true;
   modify = false;
   users: Applicant[] = [];
@@ -59,26 +57,39 @@ export class DashBoardComponent implements OnInit {
     this.regService.flushUsers();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
-        console.log('applicant', applicants);
-        if (applicants['response'] !== null) {
+        if (applicants[appConstants.RESPONSE] !== null) {
           sessionStorage.setItem('newApplicant', 'false');
-          for (let index = 0; index < applicants['response'].length; index++) {
-            const bookingRegistrationDTO = applicants['response'][index]['bookingRegistrationDTO'];
+          for (let index = 0; index < applicants[appConstants.RESPONSE].length; index++) {
+            const bookingRegistrationDTO =
+              applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
             let appointmentDateTime = '-';
             if (
               bookingRegistrationDTO !== null &&
-              applicants['response'][index]['statusCode'].toLowerCase() === appConstants.APPLICATION_STATUS_CODES.booked
+              applicants[appConstants.RESPONSE][index][
+                appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode
+              ].toLowerCase() === appConstants.APPLICATION_STATUS_CODES.booked
             ) {
-              const date = applicants['response'][index].bookingRegistrationDTO.reg_date;
-              const fromTime = applicants['response'][index].bookingRegistrationDTO.time_slot_from;
-              const toTime = applicants['response'][index].bookingRegistrationDTO.time_slot_to;
+              const date =
+                applicants[appConstants.RESPONSE][index][
+                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate
+                ];
+              const fromTime =
+                applicants[appConstants.RESPONSE][index][
+                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from
+                ];
+              const toTime =
+                applicants[appConstants.RESPONSE][index][
+                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to
+                ];
               appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
             }
             const applicant: Applicant = {
-              applicationID: applicants['response'][index]['preId'],
-              name: applicants['response'][index]['fullname'],
+              applicationID:
+                applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
+              name: applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname],
               appointmentDateTime: appointmentDateTime,
-              status: applicants['response'][index]['statusCode'],
+              status:
+                applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
               regDto: bookingRegistrationDTO
             };
             this.users.push(applicant);
@@ -91,7 +102,11 @@ export class DashBoardComponent implements OnInit {
         //   console.log('error');
         //   return this.router.navigate(['error']);
         // } else
-        if (error.error.err && error.error.err.errorCode === 'PRG_PAM_APP_005') {
+        if (
+          error[appConstants.ERROR][appConstants.NESTED_ERROR] &&
+          error[appConstants.ERROR][appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
+            appConstants.ERROR_CODES.noApplicantEnrolled
+        ) {
           sessionStorage.setItem('newApplicant', 'true');
           this.onNewApplication();
         } else {
@@ -241,7 +256,7 @@ export class DashBoardComponent implements OnInit {
       () => {
         this.dataStorageService.getUser(preId).subscribe(
           response => {
-            const request = this.createRequestJSON(response['response'][0]);
+            const request = this.createRequestJSON(response[appConstants.RESPONSE][0]);
             this.disableModifyDataButton = true;
             this.regService.addUser(new UserModel(preId, request, this.userFiles));
           },
@@ -269,13 +284,11 @@ export class DashBoardComponent implements OnInit {
     } else {
       this.selectedUsers.splice(this.selectedUsers.indexOf(user));
     }
-
     if (this.selectedUsers.length > 0) {
       this.disableModifyAppointmentButton = false;
     } else {
       this.disableModifyAppointmentButton = true;
     }
-    console.log(this.selectedUsers);
   }
 
   onModifyMultipleAppointment() {
@@ -379,7 +392,7 @@ export class DashBoardComponent implements OnInit {
 
   setUserFiles(response) {
     console.log('user files fetched', response);
-    this.userFile = response.response;
+    this.userFile = response[appConstants.RESPONSE];
     this.userFiles.push(this.userFile);
     console.log('user files after pushing', this.userFiles);
   }
