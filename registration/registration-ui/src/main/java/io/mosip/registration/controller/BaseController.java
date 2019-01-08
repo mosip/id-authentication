@@ -164,7 +164,6 @@ public class BaseController {
 		alert.setContentText(context);
 		alert.setTitle(title);
 		alert.setGraphic(null);
-		alert.getDialogPane().setPrefSize(Region.USE_PREF_SIZE,Region.USE_PREF_SIZE);
 		alert.showAndWait();
 	}
 	
@@ -181,7 +180,6 @@ public class BaseController {
 		alert.setHeaderText(null);
 		alert.setContentText(context);
 		alert.setGraphic(null);
-		alert.getDialogPane().setPrefSize(Region.USE_PREF_SIZE,Region.USE_PREF_SIZE);
 		alert.showAndWait();
 	}
 	
@@ -200,7 +198,6 @@ public class BaseController {
 			alert.setHeaderText(null);
 			alert.setContentText(context);
 			alert.setGraphic(null);
-			alert.getDialogPane().setPrefSize(Region.USE_PREF_SIZE,Region.USE_PREF_SIZE);
 			alert.showAndWait();
 		} else {
 			validationMessage.append("* ").append(context).append(System.getProperty("line.separator"));

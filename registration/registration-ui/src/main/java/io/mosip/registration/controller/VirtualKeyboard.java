@@ -448,7 +448,22 @@ public class VirtualKeyboard {
 
 			}
 		});
+		
+		
 
 	}
 
+	public void focusListener(TextField field, double y, Node keyboardNode) {
+		field.focusedProperty().addListener(new ChangeListener<Boolean>()
+		{
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+		    {
+		        if (newPropertyValue)
+		        {
+		        	keyboardNode.setLayoutY(y);
+		        }
+		    }
+		});
+	}
 }

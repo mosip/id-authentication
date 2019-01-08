@@ -507,6 +507,10 @@ public class RegistrationController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine1LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
+			vk.focusListener(fullNameLocalLanguage,120.00, keyboardNode);
+			vk.focusListener(addressLine1LocalLanguage, 270, keyboardNode);
+			vk.focusListener(addressLine2LocalLanguage, 320.00, keyboardNode);
+			vk.focusListener(addressLine3LocalLanguage, 375.00, keyboardNode);
 		} catch (NullPointerException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
