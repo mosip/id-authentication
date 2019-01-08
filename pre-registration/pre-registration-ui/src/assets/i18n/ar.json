@@ -49,7 +49,24 @@
 		"label1_pin": "رقم CINE / PIN",
 		"action_back": "الى الخلف",
 		"action_continue": "استمر",
-		"action_preview": "معاينة"
+        "action_preview": "معاينة",
+        "validation": {
+            "name_required": "الإسم الكامل ضروري",
+            "age_validation": "يجب أن يكون العمر أقل من 150",
+            "DOB_validation":"أدخل DOB صالح ",
+            "date_required": "مطلوب رقمين التاريخ",
+            "month_required": "أدخل رقمين رقميين للشهر",
+            "year_required": "أدخل رقمين رقميين للسنة",
+            "address_required": "العنوان مطلوب",
+            "region_required": "يرجى اختيار المنطقة",
+            "province_required": "يرجى اختيار مقاطعة",
+            "city_required": "يرجى اختيار المدينة",
+            "admin_required": "يرجى اختيار السلطة الإدارية المحلية",
+            "postal_code_required": "الرجاء إدخال رمز بريدي صالح",
+            "mobile_required": "يرجى إدخال رقم هاتف محمول صحيح",
+            "email_required": "الرجاء إدخال معرف البريد الإلكتروني الصحيح",
+            "pin_required": "الرجاء إدخال دبوس صالح"
+        }
     },
 
         "documents": {
