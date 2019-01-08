@@ -103,11 +103,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -160,11 +160,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -218,11 +218,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -275,11 +275,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -333,11 +333,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -419,11 +419,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();

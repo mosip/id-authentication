@@ -109,11 +109,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 				validateIdvId(authRequestDto.getIdvId(), authRequestDto.getIdvIdType(), errors);
 
-				validateMuaCode(authRequestDto.getMuaCode(), errors);
-
 				validateTxnId(authRequestDto.getTxnID(), errors);
+				
+//				validateTspId(authRequestDto.getTspID(),errors);
 
-				validateReqHmac(authRequestDto.getReqHmac(), errors);
+//				validateReqHmac(authRequestDto.getReqHmac(), errors);
 
 				validateBioDetails(authRequestDto, errors);
 

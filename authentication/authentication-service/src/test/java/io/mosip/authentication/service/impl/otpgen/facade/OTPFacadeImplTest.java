@@ -145,7 +145,7 @@ public class OTPFacadeImplTest {
 		String uin = "8765";
 		String otp = "987654";
 		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
-		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -191,7 +191,7 @@ public class OTPFacadeImplTest {
 		Map<String, Object> repoDetails = repoDetails();
 		repoDetails.put("uin", uin);
 		Mockito.when(idAuthService.getIdRepoByUinNumber(uin)).thenReturn(repoDetails);
-		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
@@ -265,7 +265,7 @@ public class OTPFacadeImplTest {
 		String otp = null;
 
 		Mockito.when(idAuthService.getIdRepoByUinNumber(unqueId)).thenReturn(repoDetails());
-		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
+		String otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
@@ -334,7 +334,7 @@ public class OTPFacadeImplTest {
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setId("id");
-		otpRequestDto.setMuaCode("2345678901234");
+		otpRequestDto.setTspID("2345678901234");
 		otpRequestDto.setIdvIdType(IdType.UIN.getType());
 		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTxnID("2345678901234");

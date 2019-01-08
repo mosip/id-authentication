@@ -205,7 +205,7 @@ public class IdAuthServiceImplTest {
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setId("id");
-		otpRequestDto.setMuaCode("2345678901234");
+		otpRequestDto.setTspID("2345678901234");
 		otpRequestDto.setIdvIdType(IdType.UIN.getType());
 		otpRequestDto.setReqTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		otpRequestDto.setTxnID("2345678901234");
