@@ -10,13 +10,13 @@
 
 <AnchorPane fx:id="newRegistrationRoot" maxHeight="800" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.DemographicPreviewController"> 
 <children>
-<ScrollPane fx:id="demoRevScrollPane" vbarPolicy="ALWAYS" prefWidth="934.0">
+<ScrollPane fx:id="demoRevScrollPane" prefWidth="934.0" vbarPolicy="ALWAYS">
   <content>
     <AnchorPane id="anchor-pane-registration" fx:id="anchor_pane_registration" minHeight="0.0" minWidth="0.0" prefHeight="950.0" prefWidth="917.0">
          <children>
             <AnchorPane layoutX="43.0" layoutY="14.0" prefHeight="803.0" prefWidth="848.0">
                <children>
-                   <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#handleHomeButton" pickOnBounds="true" preserveRatio="true">
+                   <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePageFromRegistration" pickOnBounds="true" preserveRatio="true">
                   	 <image>
             			<Image url="@../images/Home.png" />
          			 </image>
@@ -38,8 +38,8 @@
                   </TitledPane>
                </content>
             </TitledPane>
-            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="%next" styleClass="RegbuttonStyle" />
-            <Button fx:id="editBtn" layoutX="680.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="%edit" styleClass="RegbuttonStyle" />
+            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" styleClass="RegbuttonStyle" text="%next" />
+            <Button fx:id="editBtn" layoutX="680.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" styleClass="RegbuttonStyle" text="%edit" />
              </children>
     </AnchorPane>
   </content>
