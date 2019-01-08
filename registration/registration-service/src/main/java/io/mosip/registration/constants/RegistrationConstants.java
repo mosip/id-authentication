@@ -73,6 +73,8 @@ public class RegistrationConstants {
 	public static final String FAILURE = "Fail";
 	public static final String SUPERVISOR = "SUPERVISOR";
 	public static final String OFFICER = "OFFICER";
+	public static final String IRIS_STUB = "leftIris";
+	public static final String FACE_STUB = "face";
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";

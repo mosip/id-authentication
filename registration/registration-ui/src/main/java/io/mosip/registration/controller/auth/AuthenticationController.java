@@ -630,7 +630,7 @@ public class AuthenticationController extends BaseController {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
 		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-		irisDetailsDTO.setIris("leftIris".getBytes());
+		irisDetailsDTO.setIris(RegistrationConstants.IRIS_STUB.getBytes());
 		irisDetailsDTOs.add(irisDetailsDTO);
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
@@ -674,7 +674,7 @@ public class AuthenticationController extends BaseController {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace("face".getBytes());
+		faceDetailsDTO.setFace(RegistrationConstants.FACE_STUB.getBytes());
 		
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
