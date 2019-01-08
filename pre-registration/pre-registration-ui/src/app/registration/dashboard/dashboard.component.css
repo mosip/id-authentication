@@ -167,14 +167,12 @@ img {
 .card-container {
   display: flex;
   height: 100%;
-  margin-left: 5px;
   flex-wrap: wrap;
-  width: calc(100%-5px);
+  margin-left: 3px;
 }
 .card-component {
   margin-top: 20px;
   margin-left: 3px;
-  width: calc(100%-8px);
 }
 .card-header {
   font-family: Roboto;
@@ -185,11 +183,12 @@ img {
   align-items: center;
 }
 .mat-card {
-  width: 305px;
+  width: 303px;
   height: 220px;
   padding: 0;
   box-shadow: 1px 1px 1px;
   opacity: 100%;
+  border-radius:0; 
 }
 .mat-card-content {
   margin-top: 20px;
