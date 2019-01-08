@@ -68,7 +68,8 @@ public class PacketHandlerController extends BaseController {
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
 
-	private TemplateGenerator templateGenerator = new TemplateGenerator();
+	@Autowired
+	private TemplateGenerator templateGenerator;
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
