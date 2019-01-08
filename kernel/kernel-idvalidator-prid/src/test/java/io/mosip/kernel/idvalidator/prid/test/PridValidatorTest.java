@@ -103,11 +103,17 @@ public class PridValidatorTest {
 		String id = "75124301328620";
 		assertEquals(true, pridValidatorImpl.validateId(id, -1, 3, 2, 2));
 	}
-	
+
+	@Test(expected = InvalidIDException.class)
+	public void ValidIdWithAllParamsTestInvalid() {
+		String id = "75124301328620";
+		assertEquals(true, pridValidatorImpl.validateId(id, -1, -1, -1, -1));
+	}
+
 	@Test(expected = InvalidIDException.class)
 	public void ChecksumTestF() {
-		String id = "5371843613598205";
+		String id = "75124301328621";
 		pridValidatorImpl.validateId(id);
-	} 
-	
+	}
+
 }

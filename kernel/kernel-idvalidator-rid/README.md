@@ -36,7 +36,7 @@
 
 3. Input RID first 5 digit from 1 to 5 digit should contain Center ID
 
-4. and from 6 to 10 digit should contain Dongle ID
+4. and from 6 to 10 digit should contain Machine ID
 
 5. and next 5 digit should be sequential number
 
@@ -70,8 +70,16 @@ Valid RID Example:
 	
 	String rid ="27847657360002520181208183050";
 	
-	boolean return = ridValidatorImpl.validateId(rid,centerId,dongleId); //return true
-    boolean return = ridValidatorImpl.validateId(rid); //return true
+	int centerIdLength = 5;
+	
+	int machineIdLength = 5;
+	
+	int timeStampLength = 14;
+	
+	boolean return = ridValidatorImpl.validateId(rid,centerId,machineId); //return true
+	boolean return = ridValidatorImpl.validateId(rid,centerId,machineId,centerIdLength,machineIdLength,timeStampLength); //return true
+	boolean return = ridValidatorImpl.validateId(rid); //return true
+	boolean return = ridValidatorImpl.validateId(rid,,centerIdLength,machineIdLength,timeStampLength); //return true
  
  ```
  
@@ -79,16 +87,13 @@ Valid RID Example:
  Invalid RID Example:
  
  ```
-	@Autowired
-	private RidValidator<String> ridValidatorImpl;
-	
 	String centerId = "27847";
 
-	String dongleId = "65736";
+	String machineId = "65736";
 	
 	String rid ="27847657360002520181208183070";
 	
-	boolean return = ridValidatorImpl.validateId(rid,centerId,dongleId); //Throws Exception "Invalid Time Stamp Found"
+	boolean return = ridValidatorImpl.validateId(rid,centerId,machineId); //Throws Exception "Invalid Time Stamp Found"
 	
  ```
 

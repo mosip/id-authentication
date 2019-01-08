@@ -72,9 +72,6 @@ Valid UIN  Example:
 Invalid UIN Example
 
 ```
-	@Autowired
-	private IdValidator<String> uinValidatorImpl;
-	
 	boolean isValid = uinValidatorImpl.validateId("026789089018"); //throw Exception "UIN should not contain Zero or One as first digit."
 
  

@@ -166,11 +166,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 		 * Checking prid length , sequence length, repeat limit and block limit is not
 		 * equal or less than zero.
 		 */
-		if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <= 0 || blockLimit <= 0) {
-			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(),
-					PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage());
-		}
-
+		checkInput(pridLength, sequenceLimit, repeatLimit, blockLimit);
 		/**
 		 * 
 		 * Check PRID, It Shouldn't be Null or empty
@@ -334,6 +330,17 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
 		return pattern.matcher(id).find();
+	}
+
+	/**
+	 * Checking prid length , sequence length, repeat limit and block limit is not
+	 * equal or less than zero.
+	 */
+	private void checkInput(int pridLength, int sequenceLimit, int repeatLimit, int blockLimit) {
+		if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <= 0 || blockLimit <= 0) {
+			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(),
+					PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage());
+		}
 	}
 
 }

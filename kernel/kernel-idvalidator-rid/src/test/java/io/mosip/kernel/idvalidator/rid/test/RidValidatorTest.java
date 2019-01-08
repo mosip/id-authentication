@@ -40,7 +40,7 @@ public class RidValidatorTest {
 	}
 
 	@Test(expected = InvalidIDException.class)
-	public void invalidDongleIdInRidTest() {
+	public void invalidMachineIdInRidTest() {
 		String rid = "27847657340002520181208183050";
 		ridValidatorImpl.validateId(rid, centerId, machineId);
 	}
