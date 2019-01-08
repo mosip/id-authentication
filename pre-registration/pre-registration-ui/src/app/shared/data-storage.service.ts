@@ -142,7 +142,7 @@ export class DataStorageService {
   }
 
   getLocationMetadataHirearchy(value: string) {
-    return this.httpClient.get(this.LOCATION_URL + appConstants.LOCATION_METADATA_APPEND_URL, {
+    return this.httpClient.get(this.LOCATION_URL + appConstants.LOCATION_METADAT_APPEND_URL, {
       params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
     });
   }
