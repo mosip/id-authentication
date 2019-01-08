@@ -111,7 +111,7 @@ ul {
   max-height: 100%;
   min-height: 100vh;
   margin: 0;
- } 
+}
 .heading-row {
   display: flex;
   flex-wrap: wrap;
@@ -162,19 +162,19 @@ img {
   font-size: 12px;
   margin-right: 20px;
   margin-top: 30px;
-  border-radius:none; 
+  border-radius: none;
 }
 .card-container {
   display: flex;
   height: 100%;
   margin-left: 5px;
   flex-wrap: wrap;
-  justify-content:stretch;
-
+  width: calc(100%-5px);
 }
 .card-component {
   margin-top: 20px;
-  margin-left: 5px;
+  margin-left: 3px;
+  width: calc(100%-8px);
 }
 .card-header {
   font-family: Roboto;
@@ -185,7 +185,7 @@ img {
   align-items: center;
 }
 .mat-card {
-  width: 308px;
+  width: 305px;
   height: 220px;
   padding: 0;
   box-shadow: 1px 1px 1px;
@@ -208,7 +208,7 @@ img {
 .footer-btn {
   font-size: 9px;
   margin: 2px;
-  padding: 1px 10px 1px 10px ;
+  padding: 1px 10px 1px 10px;
 }
 .download-btn-img {
   height: 14px;
@@ -235,13 +235,13 @@ img {
 .delete-img {
   height: 18px;
 }
-#status{
+#status {
   padding-left: 10px;
 }
-.checkbox{
+.checkbox {
   white-space: nowrap;
   margin-left: 10px;
 }
-.footer-download-btn{
+.footer-download-btn {
   margin-left: 8px;
 }
