@@ -1034,7 +1034,7 @@ public class LoginController extends BaseController implements Initializable {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
 		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
-		irisDetailsDTO.setIris("leftIris".getBytes());
+		irisDetailsDTO.setIris(RegistrationConstants.IRIS_STUB.getBytes());
 		irisDetailsDTOs.add(irisDetailsDTO);
 		authenticationValidatorDTO.setUserId(userId.getText());
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
@@ -1050,7 +1050,7 @@ public class LoginController extends BaseController implements Initializable {
 	private boolean validateBiometricFace() {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace("face".getBytes());
+		faceDetailsDTO.setFace(RegistrationConstants.FACE_STUB.getBytes());
 		authenticationValidatorDTO.setUserId(userId.getText());
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
