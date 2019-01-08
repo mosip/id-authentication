@@ -23,12 +23,14 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -36,13 +38,19 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
+import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
+import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
+import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 import io.mosip.kernel.core.logger.spi.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdInfoHelper.
  *
@@ -77,6 +85,23 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/** The environment. */
 	@Autowired
 	private Environment environment;
+	
+	/** The mantra fingerprint provider. */
+	@Autowired
+	private MantraFingerprintProvider mantraFingerprintProvider ;
+
+	/** The cogent fingerprint provider. */
+	@Autowired
+	private CogentFingerprintProvider cogentFingerprintProvider;
+	
+	
+	/** The mantra fingerprint provider. */
+	@Autowired
+	private CogentIrisProvider cogentrisProvider; 
+
+	/** The cogent fingerprint provider. */
+	@Autowired
+	private MorphoIrisProvider morphoIrisProvider ;
 
 	/**
 	 *  The environment.
@@ -448,6 +473,38 @@ public class IdInfoHelper implements IdInfoFetcher {
 			}
 		}
 		return demoBuilder.toString();
+	}
+	
+	
+	/**
+	 * Gets the finger print provider.
+	 *
+	 * @param bioinfovalue the bioinfovalue
+	 * @return the finger print provider
+	 */
+	public FingerprintProvider getFingerPrintProvider(BioInfo bioinfovalue) {
+		FingerprintProvider provider = null;
+		if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("mantra")) {
+			provider = mantraFingerprintProvider;
+		} else if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("cogent")) {
+			provider = cogentFingerprintProvider;
+		}
+
+		return provider;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIrisProvider(io.mosip.authentication.core.dto.indauth.BioInfo)
+	 */
+	public IrisProvider getIrisProvider(BioInfo bioinfovalue) {
+		IrisProvider provider = null;
+		if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("cogent")) {
+			provider = cogentrisProvider;
+		} else if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("morpho")) {
+			provider = morphoIrisProvider;
+		}
+
+		return provider;
 	}
 
 }

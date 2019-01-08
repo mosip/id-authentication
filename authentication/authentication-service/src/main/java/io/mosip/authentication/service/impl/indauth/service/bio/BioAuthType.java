@@ -20,8 +20,11 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
+import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
+import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
 /**
  * The Enum BioAuthType.
@@ -43,11 +46,19 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchMinutiea;
+						BiFunction<String, String, Double> func =
+								idInfoFetcher
+								.getFingerPrintProvider(
+										bioinfovalue)::matchMinutiea;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
 						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
 			return valueMap;
+		}
+
+		@Override
+		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
 		}
 	},
 	FGR_IMG("fgrImg",
@@ -62,11 +73,16 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchImage;
+						BiFunction<String, String, Double> func = idInfoFetcher.getFingerPrintProvider(bioinfovalue)::matchImage;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
 						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
 			return valueMap;
+		}
+		
+		@Override
+		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
 		}
 	},
 	FGR_MIN_MULTI("fgrMin",
@@ -79,7 +95,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction< Map<String, String>,  Map<String, String>, Double> func = getFingerPrintProvider(bioinfovalue)::matchMultiMinutae;
+						BiFunction< Map<String, String>,  Map<String, String>, Double> func = idInfoFetcher.getFingerPrintProvider(bioinfovalue)::matchMultiMinutae;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
 					});
 			return valueMap;
@@ -90,12 +106,17 @@ public enum BioAuthType implements AuthType {
 
 			String bioType = getType();
 			Integer threshold = null;
-			String key = bioType.toLowerCase().concat(".multi.min.match.value");
+			String key = bioType.toLowerCase().concat(".multi.default.match.value");
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				threshold = Integer.parseInt(property);
 			}
 			return Optional.ofNullable(threshold);
+		}
+		
+		@Override
+		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper);
 		}
 	},
 	IRIS_COMP_IMG("irisImg",
@@ -108,14 +129,50 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction< Map<String, String>,  Map<String, String>, Double> func = getFingerPrintProvider(bioinfovalue)::matchMultiImage;//TODO add provider
+						BiFunction< Map<String, String>,  Map<String, String>, Double> func = idInfoFetcher.getFingerPrintProvider(bioinfovalue)::matchMultiImage;//TODO add provider
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
 					});
+			valueMap.put("idvid", authRequestDTO.getIdvId());
 			return valueMap;
 		}
+			
+		
+		@Override
+		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
+		}
+		
+	
+	  
+	  
 	},
-	IRIS_IMG("irisImg", Collections.emptySet(), "Iris", 1),
-	FACE_IMG("faceImg", Collections.emptySet(), "Face", 1);
+	IRIS_IMG("irisImg",setOf(BioMatchType.RIGHT_IRIS,BioMatchType.LEFT_IRIS), "Iris", 1){
+
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
+				IdInfoFetcher idInfoFetcher) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+			.forEach((BioInfo bioinfovalue) -> {
+				BiFunction< Map<String, String>,  Map<String, String>, Double> func =idInfoFetcher.getIrisProvider(bioinfovalue)::matchIrisImage;//TODO add provider
+				valueMap.put(IrisProvider.class.getSimpleName(), func);
+			});
+//			valueMap.put("idvid", authRequestDTO.getIdvId());
+			return valueMap;
+		}
+	 
+		@Override
+		protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
+		}
+	 },
+	FACE_IMG("faceImg", Collections.emptySet(), "Face", 1) {
+		 @Override
+			protected Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+			 //TODO
+				return 0L;
+		}
+	 };
 	
 	/** The type. */
 	private String type;
@@ -128,11 +185,7 @@ public enum BioAuthType implements AuthType {
 	/** The display name. */
 	private String displayName;
 
-	/** The mantra fingerprint provider. */
-	private static MantraFingerprintProvider mantraFingerprintProvider = new MantraFingerprintProvider();
 
-	/** The cogent fingerprint provider. */
-	private static CogentFingerprintProvider cogentFingerprintProvider = new CogentFingerprintProvider();
 
 	/** The count. */
 	private int count;
@@ -153,6 +206,9 @@ public enum BioAuthType implements AuthType {
 		this.count = count;
 		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
 	}
+	
+	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
+
 
 	/**
 	 * Gets the FP values count in identity.
@@ -161,8 +217,13 @@ public enum BioAuthType implements AuthType {
 	 * @param helper the helper
 	 * @return the FP values count in identity
 	 */
-	private Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+	private static Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
 		Long count = (long) helper.getIdentityInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity()).size();
+		return count;
+	}
+	
+	private  static  Long getIrisValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+		Long count = (long) helper.getIdentityInfo(BioMatchType.IRIS_COMP, reqDTO.getRequest().getIdentity()).size();
 		return count;
 	}
 
@@ -195,8 +256,10 @@ public enum BioAuthType implements AuthType {
 	 */
 	@Override
 	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
-		return  authReq.getAuthType().isBio() && getFPValuesCountInIdentity(authReq, helper) == getCount();
+		return  authReq.getAuthType().isBio() && getBioIdentityValuesCount(authReq, helper) == getCount();
 	}
+	
+	
 
 
 	/**
@@ -270,21 +333,6 @@ public enum BioAuthType implements AuthType {
 				.isPresent();
 	}
 
-	/**
-	 * Gets the finger print provider.
-	 *
-	 * @param bioinfovalue the bioinfovalue
-	 * @return the finger print provider
-	 */
-	private static FingerprintProvider getFingerPrintProvider(BioInfo bioinfovalue) {
-		FingerprintProvider provider = null;
-		if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("mantra")) {
-			provider = mantraFingerprintProvider;
-		} else if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("cogent")) {
-			provider = cogentFingerprintProvider;
-		}
-
-		return provider;
-	}
+	
 
 }

@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.iris;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 
@@ -8,6 +10,7 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
  * 
  * The Class MorphoIrisProvider.
  */
+@Component
 public class MorphoIrisProvider extends IrisProvider {
 
 	/* (non-Javadoc)

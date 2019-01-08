@@ -123,13 +123,24 @@ public enum BioMatchType implements MatchType {
 				return multifingerMap;
 			}),
 	
+	RIGHT_IRIS(IdaIdMapping.RIGHTEYE,setOf(IrisMatchingStrategy.PARTIAL),IdentityDTO::getRightEye,
+			AuthUsageDataBit.USED_BIO_IRIS, AuthUsageDataBit.MATCHED_BIO_IRIS),
+	
+	LEFT_IRIS(IdaIdMapping.LEFTEYE,setOf(IrisMatchingStrategy.PARTIAL),IdentityDTO::getLeftEye,
+			AuthUsageDataBit.USED_BIO_IRIS, AuthUsageDataBit.MATCHED_BIO_IRIS),
+	
 	IRIS_COMP(IdaIdMapping.IRIS, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
 			AuthUsageDataBit.USED_BIO_IRIS, AuthUsageDataBit.MATCHED_BIO_IRIS, t -> {
 				Map<String, List<IdentityInfoDTO>> compositeIrisMap = new HashMap<>();
 				//TODO add righteye and lefteye
-				if (null != t.getLeftMiddle() && !t.getLeftMiddle().isEmpty()) {
-					List<IdentityInfoDTO> leftMiddle = t.getLeftMiddle();
-					compositeIrisMap.put(IdaIdMapping.LEFTMIDDLE.getIdname(), leftMiddle);
+				if (null != t.getLeftEye() && !t.getLeftEye().isEmpty()) {
+					List<IdentityInfoDTO> leftEye = t.getLeftEye();
+					compositeIrisMap.put(IdaIdMapping.LEFTEYE.getIdname(), leftEye);
+				}
+				
+				if (null != t.getRightEye() && !t.getRightEye().isEmpty()) {
+					List<IdentityInfoDTO> rightEye = t.getRightEye();
+					compositeIrisMap.put(IdaIdMapping.RIGHTEYE.getIdname(), rightEye);
 				}
 
 				return compositeIrisMap;
