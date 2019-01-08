@@ -38,6 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -180,8 +181,11 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class MasterdataIntegrationTest {
+	private static final String JSON_STRING_RESPONCE = "{\"uinLength\":24,\"numberOfWrongAttemptsForOtp\":5,\"accountFreezeTimeoutInHours\":10,\"mobilenumberlength\":10,\"archivalPolicy\":\"arc_policy_2\",\"tokenIdLength\":23,\"restrictedNumbers\":[\"8732\",\"321\",\"65\"],\"registrationCenterId\":\"KDUE83CJ3\",\"machineId\":\"MCBD3UI3\",\"supportedLanguages\":[\"eng\",\"hnd\",\"ara\",\"deu\"],\"tspIdLength\":24,\"otpTimeOutInMinutes\":2,\"notificationtype\":\"SMS|EMAIL\",\"pridLength\":32,\"vidLength\":32}";
 	@Autowired
 	private MockMvc mockMvc;
+	@MockBean
+	private RestTemplate restTemplate;
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
 
@@ -390,6 +394,8 @@ public class MasterdataIntegrationTest {
 	@SuppressWarnings("static-access")
 	@Before
 	public void setUp() {
+		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_STRING_RESPONCE);
+
 		mapper = new ObjectMapper();
 
 		localDateTimeUTCFormat = localDateTimeUTCFormat.parse(UTC_DATE_TIME_FORMAT_DATE_STRING, UTC_DATE_TIME_FORMAT);
@@ -496,7 +502,7 @@ public class MasterdataIntegrationTest {
 
 		machineType = new MachineType();
 		machineType.setCode("1000");
-		machineType.setLangCode("ENG");
+		machineType.setLangCode("eng");
 		machineType.setName("HP");
 		machineType.setIsActive(true);
 		machineType.setDescription("HP Description");
@@ -510,14 +516,14 @@ public class MasterdataIntegrationTest {
 		// creating data coming from user
 		biometricAttributeDto = new BiometricAttributeDto();
 		biometricAttributeDto.setCode("BA222");
-		biometricAttributeDto.setLangCode("ENG");
+		biometricAttributeDto.setLangCode("eng");
 		biometricAttributeDto.setName("black_iric");
 		biometricAttributeDto.setBiometricTypeCode("iric");
 		biometricAttributeDto.setIsActive(Boolean.TRUE);
 
 		biometricAttribute = new BiometricAttribute();
 		biometricAttribute.setCode("BA222");
-		biometricAttribute.setLangCode("ENG");
+		biometricAttribute.setLangCode("eng");
 		biometricAttribute.setName("black_iric");
 		biometricAttribute.setBiometricTypeCode("iric");
 		biometricAttribute.setIsActive(Boolean.TRUE);
@@ -527,7 +533,7 @@ public class MasterdataIntegrationTest {
 	private void templateTestSetup() {
 		templateDto = new TemplateDto();
 		templateDto.setId("T222");
-		templateDto.setLangCode("ENG");
+		templateDto.setLangCode("eng");
 		templateDto.setName("Email template");
 		templateDto.setTemplateTypeCode("EMAIL");
 		templateDto.setFileFormatCode("XML");
@@ -536,7 +542,7 @@ public class MasterdataIntegrationTest {
 
 		template = new Template();
 		template.setId("T222");
-		template.setLangCode("ENG");
+		template.setLangCode("eng");
 		template.setName("Email template");
 		template.setTemplateTypeCode("EMAIL");
 		template.setFileFormatCode("XML");
@@ -549,13 +555,13 @@ public class MasterdataIntegrationTest {
 
 		templateTypeDto = new TemplateTypeDto();
 		templateTypeDto.setCode("TTC222");
-		templateTypeDto.setLangCode("ENG");
+		templateTypeDto.setLangCode("eng");
 		templateTypeDto.setDescription("Template type desc");
 		templateTypeDto.setIsActive(Boolean.TRUE);
 
 		templateType = new TemplateType();
 		templateType.setCode("TTC222");
-		templateType.setLangCode("ENG");
+		templateType.setLangCode("eng");
 		templateType.setDescription("Template type desc");
 		templateType.setIsActive(Boolean.TRUE);
 
@@ -624,7 +630,7 @@ public class MasterdataIntegrationTest {
 		deviceSpecification.setDescription("HP Description");
 		deviceSpecification.setBrand("HP");
 		deviceSpecification.setDeviceTypeCode("1231");
-		deviceSpecification.setLangCode("ENG");
+		deviceSpecification.setLangCode("eng");
 		deviceSpecification.setMinDriverversion("version 0.1");
 		deviceSpecification.setModel("3168ngw");
 		deviceSpecList.add(deviceSpecification);
@@ -815,12 +821,12 @@ public class MasterdataIntegrationTest {
 		// creating data coming from user
 
 		languageDto = new LanguageDto();
-		languageDto.setCode("ter");
+		languageDto.setCode("eng");
 		languageDto.setName("terman");
 		languageDto.setIsActive(Boolean.TRUE);
 
 		language = new Language();
-		language.setCode("ter");
+		language.setCode("eng");
 		language.setName("terman");
 		language.setIsActive(Boolean.TRUE);
 	}
@@ -2324,6 +2330,18 @@ public class MasterdataIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	public void createBiometricAttributeLangCodeValidationTest() throws Exception {
+		RequestDto<BiometricAttributeDto> requestDto = new RequestDto<BiometricAttributeDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		biometricAttributeDto.setLangCode("akk");
+		requestDto.setRequest(biometricAttributeDto);
+		String content = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/biometricattributes").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
+	}
+
 	// ----------------------------------TemplateCreateApiTest--------------------------------------------------
 	@Test
 	public void createTemplateTest() throws Exception {
@@ -2335,6 +2353,18 @@ public class MasterdataIntegrationTest {
 		Mockito.when(templateRepository.create(Mockito.any())).thenReturn(template);
 		mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createTemplateLangCodeValidationTest() throws Exception {
+		RequestDto<TemplateDto> requestDto = new RequestDto<TemplateDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		templateDto.setLangCode("akk");
+		requestDto.setRequest(templateDto);
+		String content = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -2374,6 +2404,18 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot insert", null));
 		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void createTemplatetypeLangValidationExceptionTest() throws Exception {
+		RequestDto<TemplateTypeDto> requestDto = new RequestDto<TemplateTypeDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		templateTypeDto.setLangCode("akk");
+		requestDto.setRequest(templateTypeDto);
+		String content = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/templatetypes").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
 	}
 
 	// -----------------------------------DeviceSpecificationTest---------------------------------
@@ -2438,6 +2480,19 @@ public class MasterdataIntegrationTest {
 		when(deviceSpecificationRepository.create(Mockito.any())).thenReturn(deviceSpecification);
 		mockMvc.perform(post("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON)
 				.content(deviceSpecificationJson)).andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createDeviceSpecificationLangCodeValidationTest() throws Exception {
+		RequestDto<DeviceSpecificationDto> requestDto;
+		requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.DeviceSpecificationcode");
+		requestDto.setVer("1.0.0");
+		deviceSpecificationDto.setLangCode("akk");
+		requestDto.setRequest(deviceSpecificationDto);
+		String deviceSpecificationJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(deviceSpecificationJson)).andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -2842,6 +2897,19 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void createMachineTypeLangCodeValidationTest() throws Exception {
+		RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machinetypecode");
+		requestDto.setVer("1.0.0");
+		machineTypeDto.setLangCode("akk");
+		requestDto.setRequest(machineTypeDto);
+
+		String machineTypeJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/machinetypes").contentType(MediaType.APPLICATION_JSON).content(machineTypeJson))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	public void createMachineTypeExceptionTest() throws Exception {
 		RequestDto<MachineTypeDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.match.regcentr.machinetypecode");
@@ -3136,7 +3204,7 @@ public class MasterdataIntegrationTest {
 		documentTypeDto.setCode("D001");
 		documentTypeDto.setDescription("Proof Of Identity");
 		documentTypeDto.setIsActive(true);
-		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setLangCode("eng");
 		documentTypeDto.setName("POI");
 		requestDto.setRequest(documentTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -3155,7 +3223,7 @@ public class MasterdataIntegrationTest {
 		documentTypeDto.setCode("D001");
 		documentTypeDto.setDescription("Proof Of Identity");
 		documentTypeDto.setIsActive(true);
-		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setLangCode("eng");
 		documentTypeDto.setName("POI");
 		requestDto.setRequest(documentTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -3163,6 +3231,23 @@ public class MasterdataIntegrationTest {
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void addDocumentTypesLangCodeValidationTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("akk");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -3174,7 +3259,7 @@ public class MasterdataIntegrationTest {
 		documentTypeDto.setCode("D001");
 		documentTypeDto.setDescription("Proof Of Identity");
 		documentTypeDto.setIsActive(true);
-		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setLangCode("eng");
 		documentTypeDto.setName("POI");
 		requestDto.setRequest(documentTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -3183,6 +3268,25 @@ public class MasterdataIntegrationTest {
 		when(documentTypeRepository.update(Mockito.any())).thenReturn(type);
 		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void updateDocumentTypeLangValidationTest() throws Exception {
+		RequestDto<DocumentTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		DocumentTypeDto documentTypeDto = new DocumentTypeDto();
+		documentTypeDto.setCode("D001");
+		documentTypeDto.setDescription("Proof Of Identity");
+		documentTypeDto.setIsActive(true);
+		documentTypeDto.setLangCode("akk");
+		documentTypeDto.setName("POI");
+		requestDto.setRequest(documentTypeDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		when(documentTypeRepository.update(Mockito.any())).thenReturn(type);
+		mockMvc.perform(put("/v1.0/documenttypes").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isBadRequest());
 
 	}
 
@@ -3214,7 +3318,7 @@ public class MasterdataIntegrationTest {
 		documentTypeDto.setCode("D001");
 		documentTypeDto.setDescription("Proof Of Identity");
 		documentTypeDto.setIsActive(true);
-		documentTypeDto.setLangCode("ENG");
+		documentTypeDto.setLangCode("eng");
 		documentTypeDto.setName("POI");
 		requestDto.setRequest(documentTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -3534,6 +3638,19 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void updateDeviceSpecificationLangCodeValidationTest() throws Exception {
+		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		deviceSpecificationDto.setLangCode("akk");
+		requestDto.setRequest(deviceSpecificationDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(put("/v1.0/devicespecifications").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isBadRequest());
+
+	}
+
+	@Test
 	public void updateDeviceSpecificationRequestExceptionTest() throws Exception {
 		RequestDto<DeviceSpecificationDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
@@ -3618,6 +3735,18 @@ public class MasterdataIntegrationTest {
 		when(templateRepository.update(Mockito.any())).thenReturn(template);
 		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateTemplateLangCodeValidationTest() throws Exception {
+		RequestDto<TemplateDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVer("1.0");
+		templateDto.setLangCode("akk");
+		requestDto.setRequest(templateDto);
+		String contentJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(put("/v1.0/templates").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -4006,40 +4135,40 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
-		@Test
-		public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-			Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-					.thenReturn(registrationCenter);
-			Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
-					.thenReturn(holidays);
-			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-					"REG_CR_001", 2018)).andExpect(status().isOk());
-		}
+	@Test
+	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
+				.thenReturn(registrationCenter);
+		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
+				.thenReturn(holidays);
+		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+				"REG_CR_001", 2018)).andExpect(status().isOk());
+	}
 
-		@Test
-		public void testGetRegistraionCenterHolidaysNoRegCenterFound() throws Exception {
-			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-					"REG_CR_001", 2017)).andExpect(status().isNotFound());
-		}
+	@Test
+	public void testGetRegistraionCenterHolidaysNoRegCenterFound() throws Exception {
+		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+				"REG_CR_001", 2017)).andExpect(status().isNotFound());
+	}
 
-		@Test
-		public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-			Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-					.thenThrow(DataRetrievalFailureException.class);
-			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-					"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
-		}
+	@Test
+	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
+	}
 
-		@Test
-		public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-			Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-					.thenReturn(registrationCenter);
-			
-			Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
-					.thenThrow(DataRetrievalFailureException.class);
-			mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-					"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
-		}
+	@Test
+	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
+				.thenReturn(registrationCenter);
+
+		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
+				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
+	}
 
 	// -------------------Registration center device history-----------
 	@Test
