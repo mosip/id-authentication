@@ -8,7 +8,7 @@ In the MOSIP platform, there are many types of keys used in various modules. The
 
 The keys should be maintained and managed as a separate entity apart from the actual modules. These keys are rotated based on a specific security policy.
 
-![ScreenShot](https://github.com/mosip/mosip/blob/master/design/kernel/_images/kernel_keymanager_connections_diagram.jpg)
+![ScreenShot](https://raw.githubusercontent.com/mosip/mosip/master/design/kernel/_images/kernel_keymanager_connections_diagram.jpg?token=ApNuIF8qDQWAoVNg5OGcLrHcVEgPZExKks5cLec5wA%3D%3D&_sm_au_=iVVF4NJ44tLqHprM)
 
 # Solution
 
