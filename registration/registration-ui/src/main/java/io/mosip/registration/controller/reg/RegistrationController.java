@@ -131,6 +131,42 @@ public class RegistrationController extends BaseController {
 	private Label fullNameLocalLanguageLabel;
 
 	@FXML
+	private Label ageFieldLocalLanguageLabel;
+	
+	@FXML
+	private Label genderLocalLanguageLabel;
+	
+	@FXML
+	private Label regionLocalLanguageLabel;
+	
+	@FXML
+	private Label cityLocalLanguageLabel;
+	
+	@FXML
+	private Label provinceLocalLanguageLabel;
+	
+	@FXML
+	private Label localAdminAuthorityLocalLanguageLabel;
+	
+	@FXML
+	private Label postalCodeLocalLanguageLabel;
+	
+	@FXML
+	private Label mobileNoLocalLanguageLabel;
+	
+	@FXML
+	private Label emailIdLocalLanguageLabel;
+	
+	@FXML
+	private Label cniOrPinNumberLocalLanguageLabel;
+	
+	@FXML
+	private Label parentNameLocalLanguageLabel;
+	
+	@FXML
+	private Label uinIdLocalLanguageLabel;
+
+	@FXML
 	private DatePicker ageDatePicker;
 
 	private DatePicker autoAgeDatePicker = new DatePicker();
@@ -1438,10 +1474,24 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading label fields of local language");
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
-			fullNameLocalLanguageLabel.setText(localProperties.getString("full_name"));
-			addressLine1LocalLanguagelabel.setText(localProperties.getString("address_line1"));
-			addressLine2LocalLanguagelabel.setText(localProperties.getString("address_line2"));
-			addressLine3LocalLanguagelabel.setText(localProperties.getString("address_line3"));
+			fullNameLocalLanguageLabel.setText(localProperties.getString("fullName"));
+			addressLine1LocalLanguagelabel.setText(localProperties.getString("addressLine1"));
+			addressLine2LocalLanguagelabel.setText(localProperties.getString("addressLine2"));
+			addressLine3LocalLanguagelabel.setText(localProperties.getString("addressLine3"));
+			addressLine3LocalLanguagelabel.setText(localProperties.getString("addressLine3"));
+			ageFieldLocalLanguageLabel.setText(localProperties.getString("ageField"));
+			genderLocalLanguageLabel.setText(localProperties.getString("gender"));
+			regionLocalLanguageLabel.setText(localProperties.getString("region"));
+			cityLocalLanguageLabel.setText(localProperties.getString("city"));
+			provinceLocalLanguageLabel.setText(localProperties.getString("province"));
+			localAdminAuthorityLocalLanguageLabel.setText(localProperties.getString("localAdminAuthority"));
+			//cniOrPinNumberLocalLanguageLabel.setText(localProperties.getString("cniOrPinNumber"));
+			postalCodeLocalLanguageLabel.setText(localProperties.getString("postalCode"));
+			mobileNoLocalLanguageLabel.setText(localProperties.getString("mobileNo"));
+			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
+			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
+			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
+			
 			String userlangTitle = demoGraphicTitlePane.getText();
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
