@@ -20,6 +20,7 @@
   background: none;
   border: 1px solid rgba(253, 81, 140, 1);
   color: rgba(253, 81, 140, 1);
+  border-radius: 2px;
 }
 
 .browseInput[disabled] {
@@ -103,11 +104,11 @@ mat-select:focus {
 }
 
 .file-upload__body__1 {
-  width: 75%;
+  width: 65%;
 }
 
 .file-upload__body__2 {
-  width: 25%;
+  width: 35%;
 }
 
 .file-upload__message {
@@ -120,8 +121,7 @@ mat-select:focus {
 }
 
 .file-upload__body__document-name {
-  background: #e0e0e0;
-  width: fit-content;
+  width: 65%;
   padding: 0.6em;
   font-size: 0.7em;
   position: relative;
@@ -132,11 +132,14 @@ mat-select:focus {
 }
 
 .file-upload__body__document-name .cross {
-  position: absolute;
-  top: 0px;
   font-size: 1.5em;
   right: 0px;
   text-align: right;
+}
+
+.file-uplaoad__body__document-name__view {
+  float: right;
+  padding-right: 12%;
 }
 .file-upload__button {
   height: 32px;
@@ -145,6 +148,10 @@ mat-select:focus {
   justify-content: center;
 }
 
+.file-uplaoad__body__2__preview {
+  height: 100%;
+  width: 100%;
+}
 .user__buttons {
   width: 100%;
   display: flex;

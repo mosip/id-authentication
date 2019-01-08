@@ -6,13 +6,41 @@ export const COUNTRY_NAME = 'India';
 export const NEW_USER_ID = 'mosip.pre-registration.demographic.create';
 export const TRANSLITERATION_ID = 'mosip.pre-registration.transliteration.transliterate';
 export const VERSION = '1.0';
-export const LOCATION_APPEND_URL = 'v1.0/locations/locationhierarchy/country';
+export const LOCATION_METADATA_APPEND_URL = 'v1.0/locations/locationhierarchy/country';
 export const LOCATION_IMMEDIATE_CHILDREN_APPEND_URL = 'v1.0/locations/immediatechildren/';
 export const PARAMS_KEYS = {
   getUsers: 'userId',
   getUser: 'preRegId',
   deleteUser: 'preId',
   locationHierarchyName: 'hierarchyName'
+};
+
+export const ERROR_CODES = {
+  noApplicantEnrolled: 'PRG_PAM_APP_005'
+};
+
+export const RESPONSE = 'response';
+export const ERROR = 'error';
+export const NESTED_ERROR = 'err';
+export const ERROR_CODE = 'errorCode';
+
+export const DASHBOARD_RESPONSE_KEYS = {
+  bookingRegistrationDTO: {
+    dto: 'bookingRegistrationDTO',
+    regDate: 'reg_date',
+    time_slot_from: 'time_slot_from',
+    time_slot_to: 'time_slot_to'
+  },
+  applicant: {
+    preId: 'preId',
+    fullname: 'fullname',
+    statusCode: 'statusCode'
+  }
+};
+
+export const DEMOGRAPHIC_RESPONSE_KEYS = {
+  locations: 'locations',
+  preRegistrationId: 'preRegistrationId'
 };
 
 export const APPLICATION_STATUS_CODES = {

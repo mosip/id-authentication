@@ -176,66 +176,71 @@ img {
   opacity: 100%;
   line-height: 30px;
 }
-/* .center_selection-form-container {
+.center_selection-form-container{
     margin-left: 25px;
-    display: flex;
     width: 50%;
     align-items: center;
     padding: 0;
-    animation: 0.3s anim forwards;
+    animation: 1.3s anim ease-out;
+}
+.center_selection-form-container {
+ display: flex;
+}
+@keyframes anim {
+  from {
+    opacity: 0;
+    /* transform: translateY(0); */
   }
-  @keyframes anim {
-    from {
-      opacity: 0;
-      transform: translateX(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  to {
+    opacity: 1;
+    /* transform: translateY(20px); */
   }
-  .search-cancel-btn {
-    width: 35px;
-    height: 40px;
-    background-color: #fd518c;
-    border-radius: 0;
-    opacity: 100%;
-    line-height: 30px;
-    margin-left: 3px;
-  }
-  .search-input {
- width: 19em; 
-    height: 32px;
-    padding: 10px;
-    outline: none;
-    color: #707070;
-    font-family: Roboto;
-    opacity: 100%;
-    background-color: white;
-  }
-  .select-input {
-     width: 18em; 
-    height: 32px;
-    outline: none;
-    font-family: Roboto;
-    color: #000000;
-    opacity: 100%;
-    padding: 10px;
-    background-color: white;
-  }
-  .center_selection-form-container > .mat-card {
-    padding: 0;
-    box-shadow: 3px black;
-    border-radius: 0;
-    height: 40px; 
-    display:flex;
-  }
-  .search-text {
+}
+/* .form-wrapper{
     display: flex;
-    font-family: Roboto;
-    font-size: 14px;
-    color: #707070;
-    width: 50%;
-    justify-content: center;
-    margin-top: 10px;
-  } */
+}
+.search-cancel-btn {
+  width: 35px;
+  height: 40px;
+  background-color: #fd518c;
+  border-radius: 0;
+  opacity: 100%;
+  line-height: 30px;
+  margin-left: 3px;
+}
+.search-input {
+  height: 32px;
+  padding: 10px;
+  outline: none;
+  color: #707070;
+  font-family: Roboto;
+  opacity: 100%;
+  background-color: white;
+  border: none;
+}
+.select-input {
+  height: 32px;
+  outline: none;
+  font-family: Roboto;
+  color: #000000;
+  opacity: 100%;
+  padding: 10px;
+  background-color: white;
+  appearance: none;
+}
+ .form-wrapper > .mat-card {
+  padding: 0;
+  box-shadow: 3px black;
+  border-radius: 0;
+  height: 40px;
+  margin-top: 10px;
+} 
+.search-text {
+  display: flex;
+  font-family: Roboto;
+  font-size: 14px;
+  color: #707070;
+  width: 50%;
+  justify-content: center;
+  margin-top: 10px;
+} */
