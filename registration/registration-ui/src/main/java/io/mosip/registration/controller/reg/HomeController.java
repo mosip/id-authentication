@@ -13,6 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +38,8 @@ public class HomeController extends BaseController implements Initializable {
 	@FXML
 	private VBox mainBox;
 
+	AnchorPane optionRoot;
+
 	/**
 	 * Building Home screen on Login success
 	 */
@@ -44,21 +47,24 @@ public class HomeController extends BaseController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {
 
-			LOGGER.debug("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", APPLICATION_NAME,
-					APPLICATION_ID, "Constructing Registration Home Page");
+			LOGGER.debug("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", APPLICATION_NAME, APPLICATION_ID,
+					"Constructing Registration Home Page");
 
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
 			mainBox.getChildren().add(headerRoot);
-			AnchorPane optionRoot = BaseController
-					.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
+			if ((boolean) SessionContext.getInstance().getMapObject().get("isNewUser")) {
+				optionRoot = BaseController.load(getClass().getResource("/fxml/UserOnbord.fxml"));
+			} else {
+				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
+			}
 			mainBox.getChildren().add(optionRoot);
 
 			getScene(mainBox);
 		} catch (IOException | RuntimeException exception) {
-			
-			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, exception.getMessage());
-			
+
+			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
+
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}

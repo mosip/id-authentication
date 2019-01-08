@@ -70,18 +70,27 @@
 						<Font size="23.0" />
 					</font>
 				</Label>
-				<TextField fx:id="userId" layoutX="106.0" layoutY="151.0" promptText="%username" styleClass="loginFieldStyle" AnchorPane.leftAnchor="106.0" />
-				<PasswordField fx:id="password" layoutX="106.0" layoutY="206.0" promptText="%password" styleClass="loginFieldStyle" AnchorPane.leftAnchor="106.0" />
-				<Button fx:id="submit" layoutX="246.0" layoutY="260.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
-				<Button fx:id="getOTP" layoutX="106.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginOtpStyle" text="%getotp" />
-				<Button fx:id="resend" layoutX="108.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginResendOtpStyle" text="%resendotp" visible="false" />
-				<Label fx:id="otpValidity" layoutX="106.0" layoutY="310.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
 				<Label fx:id="bioText" layoutX="107.0" layoutY="121.0" styleClass="loginfpStyle" text="%withfingerprint" />
-				<ImageView fx:id="bioImage" fitHeight="99.0" fitWidth="92.0" layoutX="107.0" layoutY="205.0" pickOnBounds="true" preserveRatio="true" visible="false">
-					<image>
-						<Image url="@../images/fingerprint.jpg" />
-					</image>
-				</ImageView>
+            <AnchorPane fx:id="userIdPane" layoutX="108.0" layoutY="153.0" prefHeight="150.0" prefWidth="200.0">
+               <children>
+      				<TextField fx:id="userId" layoutY="1.0" promptText="%username" styleClass="loginFieldStyle" AnchorPane.leftAnchor="0.0" />
+                  <Button fx:id="submitUserId" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="credentialsPane" layoutX="108.0" layoutY="153.0" prefHeight="172.0" prefWidth="228.0">
+               <children>
+      				<Button fx:id="getOTP" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginOtpStyle" text="%getotp" />
+      				<Button fx:id="resend" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginResendOtpStyle" text="%resendotp" visible="false" />
+      				<ImageView fx:id="bioImage" fitHeight="99.0" fitWidth="92.0" layoutX="1.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      					<image>
+      						<Image url="@../images/fingerprint.jpg" />
+      					</image>
+      				</ImageView>
+      				<Label fx:id="otpValidity" layoutY="145.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
+      				<Button fx:id="submit" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
+      				<PasswordField fx:id="password" layoutX="2.0" promptText="%password" styleClass="loginFieldStyle" AnchorPane.leftAnchor="2.0" />
+               </children>
+            </AnchorPane>
 			</children>
 		</AnchorPane>
 	</center>
