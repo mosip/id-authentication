@@ -5,8 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -78,14 +80,19 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		//TODO Should be removed 
 		String registrationCenterID = "1234";
 		
+		System.out.println(HashMap.class.getName());
+		
 		Map<String, String> requestParamMap = new HashMap<String, String>();
 		requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, registrationCenterID);
 
 		try {
-			Map<String,Object> globalConfigParam = (Map<String, Object>) serviceDelegateUtil.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap,true);
-		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException e) {
+			HashMap<String,Object>  globalConfigParam = (HashMap<String, Object>) serviceDelegateUtil.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap,true);
+		
+			//System.out.println(globalConfigParam.values());
+			
+		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException exception) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			
 		}
 		
 		return null;
