@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="onboardUser" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="654.0" prefWidth="1006.0" xmlns="__http://javafx.com/javafx/8" xmlns:fx="__http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+   <children>
+      <Label layoutX="530.0" layoutY="210.0" prefHeight="27.0" prefWidth="248.0" text="in order to see the dashboard" />
+      <Label layoutX="170.0" layoutY="210.0" prefHeight="27.0" prefWidth="280.0" text="Please provide your biometrics through" />
+      <Hyperlink fx:id="userOnboard" layoutX="420.0" layoutY="210.0" text="OnBoard User" />
+   </children>
+</AnchorPane> 
