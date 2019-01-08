@@ -168,11 +168,12 @@ img {
   display: flex;
   height: 100%;
   flex-wrap: wrap;
-  margin-left: 3px;
+  justify-content: center;
+  
 }
 .card-component {
   margin-top: 20px;
-  margin-left: 3px;
+  padding-right:45px;
 }
 .card-header {
   font-family: Roboto;
@@ -183,8 +184,8 @@ img {
   align-items: center;
 }
 .mat-card {
-  width: 303px;
-  height: 220px;
+  width: 335px;
+  height: 230px;
   padding: 0;
   box-shadow: 1px 1px 1px;
   opacity: 100%;
@@ -242,5 +243,5 @@ img {
   margin-left: 10px;
 }
 .footer-download-btn {
-  margin-left: 8px;
+  margin-left: 18px;
 }
