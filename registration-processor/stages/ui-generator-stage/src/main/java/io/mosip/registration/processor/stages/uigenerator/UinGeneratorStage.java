@@ -100,7 +100,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			
 			//call idrepo method
 			//if response is succesfull from idrepo service update uin in demo dedupe table.
-			demographicDedupeRepository.updateUinWrtRegistraionId("27847657360002520181208094036", uinResponseDto.getUin());
+		demographicDedupeRepository.updateUinWrtRegistraionId("27847657360002520181208094036", uinResponseDto.getUin());
 		
 			//after succesfully updation of UIn in reg processor DB call trigger function for  triggerring  sms and email to particualr UIN holder
 	
