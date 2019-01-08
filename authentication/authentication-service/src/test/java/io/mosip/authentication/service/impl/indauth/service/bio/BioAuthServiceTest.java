@@ -41,9 +41,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.service.BioAuthServiceImpl;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import(IDAMappingConfig.class)
@@ -56,6 +57,12 @@ public class BioAuthServiceTest {
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
+	@InjectMocks
+	private MantraFingerprintProvider mantraFingerprintProvider;
+
+	@InjectMocks
+	private CogentFingerprintProvider cogentFingerprintProvider;
+
 	@Autowired
 	Environment environment;
 
@@ -67,13 +74,15 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoHelper, "mantraFingerprintProvider", mantraFingerprintProvider);
+		ReflectionTestUtils.setField(idInfoHelper, "cogentFingerprintProvider", cogentFingerprintProvider);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidateBioDetails() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Map<String, List<IdentityInfoDTO>> bioIdentity = null;
-		
+
 		bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 	}
 
@@ -129,7 +138,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("sample", identityList);
-		
+
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertFalse(validateBioDetails.isStatus());
 	}
@@ -186,7 +195,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
-		
+
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
@@ -244,7 +253,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
-		
+
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
@@ -306,6 +315,7 @@ public class BioAuthServiceTest {
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
+
 	@Test
 	public void TestvalidateBioDetailsMulti() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -347,7 +357,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		identityInfoDTO.setLanguage("AR");
 		identityInfoDTO.setValue(value);
 		identityInfoDTOList.setLanguage("AR");
@@ -389,8 +399,9 @@ public class BioAuthServiceTest {
 		bioIdentity.put("ringThumb", identityList);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertFalse(validateBioDetails.isStatus());
-		
+
 	}
+
 	@Test
 	public void TestvalidateBioMultiImage() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -432,7 +443,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		identityInfoDTO.setLanguage("AR");
 		identityInfoDTO.setValue(value);
 		identityInfoDTOList.setLanguage("AR");
@@ -458,7 +469,7 @@ public class BioAuthServiceTest {
 		bioIdentity.put("rightIndex", identityLists);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertTrue(validateBioDetails.isStatus());
-		
+
 	}
 
 }
