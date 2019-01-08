@@ -73,3 +73,9 @@ Design of **[Configuration Sync](registration-config-Sync.md)**
 
 Design of **[Policy Sync](registration-policy-sync.md)**
 
+Design of **[User role Sync](registration_user_role_sync.md)**
+
+Design of **[User credentials Sync](registration-login-credentials-sync.md)**
+
+Design of **[User On board Sync Client to Server](registration-sync_user_mapping_client_to_server.md)**
+
