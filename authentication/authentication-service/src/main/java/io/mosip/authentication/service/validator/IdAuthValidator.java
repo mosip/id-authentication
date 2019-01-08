@@ -27,6 +27,8 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @Component
 public abstract class IdAuthValidator implements Validator {
 
+	private static final String TSP_ID = "tspID";
+
 	private static final String IDV_ID_TYPE = "idvIdType";
 
 	private static final String IDV_ID = "idvId";
@@ -101,27 +103,6 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			validateIdtypeUinVid(id, idType, errors);
-		}
-	}
-
-	/**
-	 * Validate mua code - check whether it is of length 10 and alphanumeric.
-	 *
-	 * @param muaCode the mua code
-	 * @param errors  the errors
-	 */
-	protected void validateMuaCode(String muaCode, Errors errors) {
-		if (Objects.isNull(muaCode)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + MUA_CODE);
-			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { MUA_CODE },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		} else if (!A_Z0_9_10.matcher(muaCode).matches()) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
-					"INVALID_INPUT_PARAMETER - muaCode - value -> " + muaCode);
-			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { MUA_CODE },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
 
@@ -220,5 +201,20 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
+	/**
+	 * Validation for TspId
+	 * @param tspID
+	 * @param errors
+	 */
+	protected void validateTspId(String tspID, Errors errors) {
+		if (Objects.isNull(tspID)) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TSP_ID);
+			errors.rejectValue(TSP_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { TSP_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		
+	}
+
+
 
 }

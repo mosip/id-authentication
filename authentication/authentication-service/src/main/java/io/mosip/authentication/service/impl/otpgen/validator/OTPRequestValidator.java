@@ -82,7 +82,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 				validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 
-				validateMuaCode(otpRequestDto.getMuaCode(), errors);
+				validateTspId(otpRequestDto.getTspID(), errors);
 
 				validateTxnId(otpRequestDto.getTxnID(), errors);
 			}

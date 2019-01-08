@@ -6,61 +6,88 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-
 /**
  * 
- * @author Arun Bose S
- * The Class IrisProvider.
+ * @author Prem Kumar The Class IrisProvider.
  */
 public abstract class IrisProvider implements MosipIrisProvider {
-	
+
 	/** The environment. */
 	@Autowired
 	protected Environment environment;
-	
-     /** The Constant RIGHTEYE. */
-     static final String RIGHTEYE="righteye";
-	
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#matchScoreCalculator(byte[], byte[])
+
+	private static final String IRISIMG_LEFT_MATCH_VALUE = "irisimg.left.match.value";
+
+	private static final String IRISIMG_RIGHT_MATCH_VALUE = "irisimg.right.match.value";
+	static final String LEFTTEYE = "leftEye";
+	static final String RIGHTEYE = "rightEye";
+
+	private static final String idvid = "idvid";
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
+	 * matchScoreCalculator(byte[], byte[])
 	 */
-	@Override  //TODO subject to change 
+	@Override // TODO subject to change
 	public double matchScoreCalculator(byte[] isoImage1, byte[] isoImage2) {
 		return 0;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#matchScoreCalculator(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#
+	 * matchScoreCalculator(java.lang.String, java.lang.String)
 	 */
-	@Override   //TODO Subject to change 
+	@Override // TODO Subject to change
 	public double matchScoreCalculator(String fingerImage1, String fingerImage2) {
 		return 0;
 	}
-	
-	
+
 	/**
 	 * Match iris image.
 	 *
-	 * @param reqInfo the req info
-	 * @param entityInfo the entity info
+	 * @param reqInfo
+	 *            the req info
+	 * @param entityInfo
+	 *            the entity info
 	 * @return the double
 	 */
-	public Double matchIrisImage( Map<String, String> reqInfo, Map<String, String> entityInfo) {
-	 if(reqInfo.containsKey(IrisProvider.RIGHTEYE))
-		 
-	 {
-		 System.err.println(environment.getProperty("irisimg.right.match.value",Double.class));
-		 return environment.getProperty("irisimg.right.match.value",Double.class);
-	 }
-	 else
-	 {	 
-		 System.err.println(environment.getProperty("irisimg.left.match.value",Double.class));
-		 return environment.getProperty("irisimg.left.match.value",Double.class);
-	 }
-		
+	public Double matchIrisImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		String uin = reqInfo.get(idvid);
+		if (reqInfo.containsKey(IrisProvider.RIGHTEYE))
+
+		{
+			System.err.println(environment.getProperty(IRISIMG_RIGHT_MATCH_VALUE, Double.class));
+			return environment.getProperty(uin + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
+		} else {
+			System.err.println(environment.getProperty(IRISIMG_LEFT_MATCH_VALUE, Double.class));
+			return environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
+		}
+
 	}
 
-	
+	/**
+	 * Match multiMatch Iris Image
+	 * 
+	 * @param reqInfo
+	 * @param entityInfo
+	 * @return the double
+	 */
+	public double matchMultiIrisImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
+		double match = 0;
+		String uin = reqInfo.get(idvid);
+		if (entityInfo.containsKey(LEFTTEYE)) {
+			match += environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
+		}
+		if (entityInfo.containsKey(RIGHTEYE)) {
+			match += environment.getProperty(uin + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
+		}
+		return match;
+	}
+
 }

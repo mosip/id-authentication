@@ -124,9 +124,9 @@ public class DemoAuthServiceTest {
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO identityinfo = new IdentityInfoDTO();
@@ -195,9 +195,9 @@ public class DemoAuthServiceTest {
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO address1 = new IdentityInfoDTO();
@@ -310,9 +310,9 @@ public class DemoAuthServiceTest {
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identityDTO);
@@ -460,9 +460,9 @@ public class DemoAuthServiceTest {
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identityDTO);
@@ -514,11 +514,11 @@ public class DemoAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();
@@ -583,11 +583,11 @@ public class DemoAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();

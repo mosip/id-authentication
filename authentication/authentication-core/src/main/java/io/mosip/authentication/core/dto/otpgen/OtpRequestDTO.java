@@ -23,7 +23,7 @@ public class OtpRequestDTO {
 	private String idvIdType;
 
 	/** Variable to hold MUA code */
-	private String muaCode;
+	private String tspID;
 
 	/** Variable to hold Request time */
 	private String reqTime;
