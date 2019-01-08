@@ -451,7 +451,7 @@ public class RegistrationConstants {
 	// Packet Upload
 	public static final String PACKET_TYPE = "file";
 	public static final String PACKET_STATUS_PRE_SYNC = "PRE_SYNC";
-	public static final String PACKET_STATUS_SYNC_TYPE = "NEW_REGISTRATION";
+	public static final String PACKET_STATUS_SYNC_TYPE = "NEW";
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
 	public static final String RE_REGISTRATION_STATUS = "Re-Register";
