@@ -1,13 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatDialog} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
-import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 import { SharedService } from 'src/app/shared/shared.service';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
-import { BookingModel } from './booking.model';
-import { BookingModelRequest } from '../../shared/booking-request.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationService } from '../registration.service';
 
