@@ -50,6 +50,8 @@ public enum ApiName {
 	BIODEDUPEINSERT,
 
 	/** The biodedupepotential. */
-	BIODEDUPEPOTENTIAL
+	BIODEDUPEPOTENTIAL,
+	
+	BIODEDUPE
 
 }
