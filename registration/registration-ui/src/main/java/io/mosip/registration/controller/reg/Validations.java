@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -46,6 +44,7 @@ public class Validations extends BaseController {
 	private ResourceBundle labelBundle;
 	private String isConsolidated;
 	private StringBuilder validationMessage;
+	private List<String> blackListedWords;
 
 	public Validations() {
 		try {
@@ -88,7 +87,9 @@ public class Validations extends BaseController {
 				&& !(node instanceof Button) && !(node instanceof Label);
 	}
 
-	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid) {
+	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, List<String> blackListedWords) {
+		this.blackListedWords=blackListedWords;
+		System.out.println(this.blackListedWords.size()+"hello");
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}
@@ -152,6 +153,15 @@ public class Validations extends BaseController {
 				return false;
 			}
 			if (node.getText().matches(regex)) {
+				
+				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
+					generateAlert(
+							node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
+							isConsolidated, validationMessage);
+					node.requestFocus();
+					return false;
+				}
+				
 				if (isFixed.equals("false")) {
 					if (node.getText().length() <= length) {
 						return true;

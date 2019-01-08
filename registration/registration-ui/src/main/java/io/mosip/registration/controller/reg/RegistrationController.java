@@ -1387,7 +1387,11 @@ public class RegistrationController extends BaseController {
 		excludedIds.add("virtualKeyboard");
 		validation.setChild(isChild);
 		validation.setValidationMessage();
-		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext);
+		List<String> blackListedWords = masterSync
+				.getAllBlackListedWords(RegistrationConstants.mappedCodeForLang
+						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
+		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext,blackListedWords);
 		displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
