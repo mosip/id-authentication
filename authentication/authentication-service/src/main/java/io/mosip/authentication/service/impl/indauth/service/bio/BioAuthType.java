@@ -35,7 +35,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
 					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
 					BioMatchType.FGRMIN_RIGHT_LITTLE),
-		 "Fingerprint", 1) {
+		 getFingerprint(), 1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
@@ -62,7 +62,7 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
 					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
 					BioMatchType.FGRIMG_RIGHT_LITTLE),
-			"Fingerprint", 1) {
+			getFingerprint(), 1) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
@@ -83,7 +83,7 @@ public enum BioAuthType implements AuthType {
 	},
 	FGR_MIN_MULTI("fgrMin",
 			setOf(BioMatchType.FGRMIN_MULTI),
-			"Fingerprint", 2) {
+			getFingerprint(), 2) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
@@ -170,6 +170,8 @@ public enum BioAuthType implements AuthType {
 		}
 	 };
 	
+	private static final String FINGERPRINT = "Fingerprint";
+
 	/** The type. */
 	private String type;
 
@@ -327,6 +329,10 @@ public enum BioAuthType implements AuthType {
 		return Optional.ofNullable(authRequestDTO.getBioInfo()).flatMap(
 				list -> list.stream().filter(bioInfo -> bioInfo.getBioType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
+	}
+
+	public static String getFingerprint() {
+		return FINGERPRINT;
 	}
 
 	

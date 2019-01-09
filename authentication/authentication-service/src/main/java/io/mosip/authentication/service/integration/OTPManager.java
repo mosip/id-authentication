@@ -134,28 +134,10 @@ public class OTPManager {
 				String message = otpvalidateresponsedto.getMessage();
 				if (status != null) {
 					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
-						if (message.equalsIgnoreCase(USER_BLOCKED)) {
-							throw new IdAuthenticationBusinessException(
-									IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
-						} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
-						} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
-						} else {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
-						}
+						throwOtpException(message);
 					}
 				} else {
-					Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
-					// Do not throw server error for OTP not generated, throw invalid OTP error
-					// instead
-					if (errorCode
-							.filter(code -> code.equals(
-									IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
-							.isPresent()) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
-					}
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+					throwKeyNotFound(e);
 				}
 			}
 		} catch (IDDataValidationException e) {
@@ -164,6 +146,32 @@ public class OTPManager {
 					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
 		}
 		return isValidOtp;
+	}
+
+	private void throwKeyNotFound(RestServiceException e) throws IdAuthenticationBusinessException {
+		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
+		// Do not throw server error for OTP not generated, throw invalid OTP error
+		// instead
+		if (errorCode
+				.filter(code -> code.equals(
+						IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+				.isPresent()) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+		}
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+	}
+
+	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
+		if (message.equalsIgnoreCase(USER_BLOCKED)) {
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
+		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+		}
 	}
 
 	/**
