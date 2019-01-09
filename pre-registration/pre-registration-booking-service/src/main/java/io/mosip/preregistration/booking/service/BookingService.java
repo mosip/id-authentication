@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -34,7 +35,6 @@ import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
-import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
@@ -163,9 +163,9 @@ public class BookingService {
 	 * @return response with status code
 	 * @throws java.text.ParseException
 	 */
-	@Transactional(rollbackFor = { DataAccessException.class, AppointmentBookingFailedException.class,
-			BookingTimeSlotAlreadyBooked.class, AvailablityNotFoundException.class,
-			AppointmentCannotBeBookedException.class })
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = { DataAccessException.class,
+			AppointmentBookingFailedException.class, BookingTimeSlotAlreadyBooked.class,
+			AvailablityNotFoundException.class, AppointmentCannotBeBookedException.class })
 	public MainResponseDTO<List<BookingStatusDTO>> bookAppointment(MainListRequestDTO<BookingRequestDTO> bookingDTO) {
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		List<BookingStatusDTO> respList = new ArrayList<>();
@@ -228,6 +228,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		} 
 		return responseDTO;
 	}
@@ -254,14 +256,16 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 
 		return responseDto;
 	}
 
-	@Transactional(rollbackFor = { DataAccessException.class, CancelAppointmentFailedException.class,
-			AppointmentAlreadyCanceledException.class, AvailablityNotFoundException.class,
-			AppointmentCannotBeCanceledException.class })
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = { DataAccessException.class,
+			CancelAppointmentFailedException.class, AppointmentAlreadyCanceledException.class,
+			AvailablityNotFoundException.class, AppointmentCannotBeCanceledException.class })
 	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointment(MainRequestDTO<CancelBookingDTO> requestdto) {
 		MainResponseDTO<CancelBookingResponseDTO> dto = new MainResponseDTO<>();
 		try {
@@ -282,7 +286,9 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		} 
+		} catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
+		}
 		return dto;
 
 	}
@@ -317,6 +323,8 @@ public class BookingService {
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}catch (Exception e) {
+			new BookingExceptionCatcher().handle(e);
 		}
 		return responseDto;
 	}

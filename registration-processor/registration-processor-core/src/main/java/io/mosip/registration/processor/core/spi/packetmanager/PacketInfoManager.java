@@ -95,11 +95,9 @@ public interface PacketInfoManager<T, /** D, M, */
 	public List<String> getApplicantIrisImageNameById(String regId);
 
 	/**
-	 * Gets the reg id by UIN.
-	 *
+	 * Gets the applicant registration id by UIN
 	 * @param uin
-	 *            the uin
-	 * @return the reg id by UIN
+	 * @return the registration id by UIN
 	 */
 	public List<String> getRegIdByUIN(String uin);
 
@@ -119,7 +117,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param regAbisRefDto the reg abis ref dto
 	 */
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto);
-	
+
 	/**
 	 * Gets the reference id by rid.
 	 *
@@ -127,7 +125,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the reference id by rid
 	 */
 	public List<String> getReferenceIdByRid(String rid);
-	
+
 	/**
 	 * Gets the rid by reference id.
 	 *

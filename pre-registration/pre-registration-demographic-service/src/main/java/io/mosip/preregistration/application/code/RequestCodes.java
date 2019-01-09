@@ -66,7 +66,7 @@ public enum RequestCodes {
 	label,
 
 	/* Full name */
-	FullName,
+	fullName,
 
 	/* date of birth */
 	dateOfBirth,

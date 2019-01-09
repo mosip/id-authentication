@@ -28,14 +28,13 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.entity.UinEntity;
+import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import reactor.ipc.netty.http.HttpResources;
@@ -52,13 +51,14 @@ public class OTPAuthServiceTest {
 	@InjectMocks
 	private OTPAuthServiceImpl authserviceimpl;
 
+	@InjectMocks
+	private OTPServiceImpl otpserviceimpl;
+
 	@Autowired
 	Environment env;
 
 	@Mock
 	private AutnTxnRepository repository;
-
-	UinEntity uinentity = new UinEntity();
 
 	@Mock
 	OTPManager otpmanager;
@@ -202,6 +202,12 @@ public class OTPAuthServiceTest {
 	public void TestisEmpty_withValidString() {
 		String txnId = "TXN00001";
 		assertFalse(authserviceimpl.isEmpty(txnId));
+	}
+
+	@Test(expected = IDDataValidationException.class)
+	public void TestOtpisNotPresent() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authserviceimpl.validateOtp(authRequestDTO, "");
 	}
 
 	/**

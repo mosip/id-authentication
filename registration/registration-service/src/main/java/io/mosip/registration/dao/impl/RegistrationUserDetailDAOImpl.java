@@ -53,7 +53,7 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 				APPLICATION_NAME, APPLICATION_ID, "Fetching User details");
 
 		List<RegistrationUserDetail> registrationUserDetail = registrationUserDetailRepository
-				.findByIdAndIsActiveTrue(userId);
+				.findByIdIgnoreCaseAndIsActiveTrue(userId);
 		
 		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID,

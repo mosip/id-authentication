@@ -42,19 +42,17 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
-
 /**
  * The Class PacketUploaderJobTest.
+ * 
  * @author M1049387
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PacketUploaderJobTest {
 
-	
 	/** The Constant stream. */
 	private static final InputStream stream = Mockito.mock(InputStream.class);
 
-	
 	/** The packet uploader stage. */
 	@InjectMocks
 	PacketUploaderStage packetUploaderStage = new PacketUploaderStage() {
@@ -67,7 +65,7 @@ public class PacketUploaderJobTest {
 		public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
 		}
 	};
-	
+
 	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
@@ -83,7 +81,7 @@ public class PacketUploaderJobTest {
 	/** The env. */
 	@Mock
 	private Environment env;
-	
+
 	/** The file manager. */
 	@Mock
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
@@ -104,12 +102,15 @@ public class PacketUploaderJobTest {
 	/** The entry. */
 	InternalRegistrationStatusDto entry = new InternalRegistrationStatusDto();
 	@Mock
-	File filech=new File("");
+	File filech = new File("");
+
 	/**
 	 * Setup.
 	 *
-	 * @throws PacketNotFoundException the packet not found exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws PacketNotFoundException
+	 *             the packet not found exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Before
 	public void setup() throws PacketNotFoundException, IOException {
@@ -125,7 +126,7 @@ public class PacketUploaderJobTest {
 		listAppender = new ListAppender<>();
 		doNothing().when(fileManager).deletePacket(any(), any());
 		doNothing().when(fileManager).deleteFolder(any(), any());
-		
+
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
@@ -135,7 +136,8 @@ public class PacketUploaderJobTest {
 	/**
 	 * Test deploy verticle.
 	 *
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	@Test
 	public void testDeployVerticle() {
@@ -145,7 +147,8 @@ public class PacketUploaderJobTest {
 	/**
 	 * Uploading success if file present test.
 	 *
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	@Test
 	public void UploadingSuccessIfFilePresentTest() throws Exception {
@@ -154,13 +157,16 @@ public class PacketUploaderJobTest {
 		fooLogger.addAppender(listAppender);
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("1001.zip").getFile());
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(adapter).unpackPacket("1001");
 		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list).extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage).containsExactly(Tuple.tuple( Level.INFO, "SESSIONID - REGISTRATIONID - 1001 - File is Already exists in DFS location And its now Deleted from Virus scanner job"));
-		
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(Tuple.tuple(Level.INFO,
+						"SESSIONID - REGISTRATIONID - 1001 - File is Already exists in DFS location And its now Deleted from Virus scanner job"));
+
 	}
 
 	/**
@@ -177,26 +183,27 @@ public class PacketUploaderJobTest {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 		Mockito.doNothing().when(packetArchiver).archivePacket("1001");
-		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService).getRegistrationStatus("1001");
+		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
+				.getRegistrationStatus("1001");
 		packetUploaderStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
+				.containsExactly(Tuple.tuple(Level.ERROR,
+						"SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
 
 	}
 
-	
-	
 	@Test
 	public void StatusUpdateExceptionTest() throws Exception {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 		Mockito.doNothing().when(packetArchiver).archivePacket("1001");
-		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService).updateRegistrationStatus(entry);
+		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
+				.updateRegistrationStatus(entry);
 		packetUploaderStage.process(dto);
 	}
-	
+
 	@Test
 	public void IOExceptionTest() throws Exception {
 
@@ -204,10 +211,9 @@ public class PacketUploaderJobTest {
 		fooLogger.addAppender(listAppender);
 
 		Mockito.doNothing().when(packetArchiver).archivePacket(any());
-	
+
 		Mockito.doThrow(IOException.class).when(adapter).unpackPacket(any(String.class));
 
-	
 		packetUploaderStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
@@ -215,18 +221,20 @@ public class PacketUploaderJobTest {
 						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_SYS_IO_EXCEPTIONnull"));
 
 	}
+
 	@Test
 	public void PacketNotFoundExceptionTest() throws Exception {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 		Mockito.when(filech.exists()).thenReturn(Boolean.FALSE);
-		PacketNotFoundException packetNotFoundException=new PacketNotFoundException("1001 unable to delete after sending to DFS.");
+		PacketNotFoundException packetNotFoundException = new PacketNotFoundException(
+				"1001 unable to delete after sending to DFS.");
 		Mockito.doThrow(packetNotFoundException).when(packetArchiver).archivePacket(anyString());
 		packetUploaderStage.process(dto);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(
-						Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_PUM_PACKET_NOT_FOUND_EXCEPTIONRPR-PIS-004  --> 1001 unable to delete after sending to DFS."));
+				.containsExactly(Tuple.tuple(Level.ERROR,
+						"SESSIONID - REGISTRATIONID - 1001 - RPR_PUM_PACKET_NOT_FOUND_EXCEPTIONRPR-PIS-004  --> 1001 unable to delete after sending to DFS."));
 
 	}
 
@@ -238,14 +246,13 @@ public class PacketUploaderJobTest {
 		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.FALSE);
 		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any(InputStream.class));
 		packetUploaderStage.process(dto);
-		Assertions.assertThat(listAppender.list)
-        .extracting( ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-		.containsExactly(Tuple.tuple( Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_PIS_FILE_NOT_FOUND_IN_DFSnull")); 
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(Tuple.tuple(Level.ERROR,
+						"SESSIONID - REGISTRATIONID - 1001 - RPR_PIS_FILE_NOT_FOUND_IN_DFSnull"));
 	}
-	
-	
+
 	@Test
-	public void testIoExceptionUploadPacket() throws PacketNotFoundException, IOException{
+	public void testIoExceptionUploadPacket() throws PacketNotFoundException, IOException {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 		Mockito.doThrow(IOException.class).when(packetArchiver).archivePacket(anyString());

@@ -78,7 +78,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIODEDUPE_BUS_IN, MessageBusAddress.BIODEDUPE_BUS_OUT);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIO_DEDUPE_BUS_IN, MessageBusAddress.BIO_DEDUPE_BUS_OUT);
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		object.setMessageBusAddress(MessageBusAddress.BIODEDUPE_BUS_IN);
+		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		String description = "";
 		boolean isTransactionSuccessful = false;

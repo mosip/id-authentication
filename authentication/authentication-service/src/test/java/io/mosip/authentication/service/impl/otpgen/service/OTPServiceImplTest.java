@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.otpgen.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,17 +41,40 @@ public class OTPServiceImplTest {
 	private AuditRequestFactory auditRequestFactory;
 	@Mock
 	private RestHelper restHelper;
-	
+
 	@Autowired
 	Environment env;
 
 	@InjectMocks
 	private OTPServiceImpl otpServiceImpl;
-	
+
 	@Mock
 	private OTPServiceImpl otpServiceImplmock;
 
-	
+	@Test
+	public void TestOtpisNullorEmpty() throws IdAuthenticationBusinessException {
+		String generateOtp = otpServiceImpl.generateOtp(null);
+		assertNull(generateOtp);
+	}
+
+	@Test
+	public void TestOtpisEmptyvalue() throws IdAuthenticationBusinessException {
+		String generateOtp = otpServiceImpl.generateOtp("");
+		assertNull(generateOtp);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestOtpisNull() throws IdAuthenticationBusinessException {
+		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn(null);
+		otpServiceImpl.generateOtp("123456");
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestOtpisEmpty() throws IdAuthenticationBusinessException {
+		Mockito.when(otpManager.generateOTP(Mockito.anyString())).thenReturn("");
+		otpServiceImpl.generateOtp("123456");
+	}
+
 	@Test
 	public void testGenerateOtp() throws IdAuthenticationBusinessException {
 		String otpKey = "12345";
@@ -62,7 +86,6 @@ public class OTPServiceImplTest {
 		assertEquals(otp, expactedOtp);
 	}
 
-	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGenerateOtpExpactedException() throws IdAuthenticationBusinessException {
 		IdAuthenticationBusinessException e = new IdAuthenticationBusinessException(
@@ -75,12 +98,12 @@ public class OTPServiceImplTest {
 		Mockito.when(otpServiceImpl.generateOtp(otpKey1)).thenThrow(e);
 		String expactedOtp = otpServiceImpl.generateOtp(otpKey1);
 	}
-	
+
 	@Test
-	public void testGenerateOtpExpactedNullOTP() throws IdAuthenticationBusinessException{
-	
+	public void testGenerateOtpExpactedNullOTP() throws IdAuthenticationBusinessException {
+
 		String otpKey = null;
-		
+
 		String otp = null;
 
 		Mockito.when(otpServiceImpl.generateOtp(otpKey)).thenReturn(otp);
@@ -88,5 +111,3 @@ public class OTPServiceImplTest {
 		assertEquals(otp, expactedOtp);
 	}
 }
-
-

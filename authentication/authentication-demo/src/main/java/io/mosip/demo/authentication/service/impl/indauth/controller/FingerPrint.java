@@ -60,8 +60,8 @@ public class FingerPrint {
 			fp.StopCapture();
 			fp.Uninit();
 			String encodedString = Base64.getEncoder().encodeToString(data.ISOTemplate());
-//			return saveFPData(encodedString);
-			return encodedString;
+			return saveFPData(encodedString);
+//			return encodedString;
 		} else {
 			System.err.println(fp.GetLastError());
 			return "failed";

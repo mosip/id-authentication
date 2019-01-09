@@ -131,10 +131,6 @@ public class BookingServiceUtil {
 					holidaylist.add(holiday.getHolidayDate());
 				}
 			}
-			if (holidaylist.isEmpty()) {
-				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.toString(),
-						ErrorMessages.HOLIDAY_MASTER_DATA_NOT_FOUND.toString());
-			}
 		} catch (HttpClientErrorException e) {
 			throw new RestCallException(ErrorCodes.PRG_BOOK_002.toString(), "HTTP_CLIENT_EXCEPTION");
 		}
@@ -409,13 +405,14 @@ public class BookingServiceUtil {
 					RegistrationBookingEntity registrationBookingEntity = registrationBookingRepository.save(entity);
 
 					if (registrationBookingEntity != null) {
-						/* Pre registration status code update */
-						callUpdateStatusRestService(bookingRequestDTO.getPreRegistrationId(),
-								StatusCodes.BOOKED.getCode());
-
+						
 						/* No. of Availability. update */
 						availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
 						bookingAvailabilityRepository.update(availableEntity);
+
+						/* Pre registration status code update */
+						callUpdateStatusRestService(bookingRequestDTO.getPreRegistrationId(),
+								StatusCodes.BOOKED.getCode());
 
 						bookingStatusDTO.setPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
 						bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());

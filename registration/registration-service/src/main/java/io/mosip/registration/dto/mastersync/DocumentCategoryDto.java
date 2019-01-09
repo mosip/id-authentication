@@ -7,16 +7,37 @@ package io.mosip.registration.dto.mastersync;
  * @since 1.0.0
  *
  */
+public class DocumentCategoryDto extends MasterSyncBaseDto{
 
-public class DocumentCategoryDto {
-
+	/**
+	 * Document category code.
+	 */
+	
 	private String code;
 
+	/**
+	 * Document category name.
+	 */
+	
 	private String name;
 
+	/**
+	 * Document category description
+	 */
+	
 	private String description;
 
+	/**
+	 * The Language Code.
+	 */
+	
 	private String langCode;
+
+	/**
+	 * Is active or not.
+	 */
+	
+	private Boolean isActive;
 
 	/**
 	 * @return the code
@@ -72,6 +93,20 @@ public class DocumentCategoryDto {
 	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
+	}
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

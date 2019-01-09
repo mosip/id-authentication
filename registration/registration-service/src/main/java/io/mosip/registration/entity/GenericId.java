@@ -13,9 +13,9 @@ public class GenericId implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2757022596319558123L;
-	@Column(name = "code", length = 32, nullable = false)
+	@Column(name = "code")
 	private String code;
-	@Column(name = "is_active", nullable = false)
+	@Column(name = "is_active")
 	@Type(type = "true_false")
 	private Boolean isActive;
 

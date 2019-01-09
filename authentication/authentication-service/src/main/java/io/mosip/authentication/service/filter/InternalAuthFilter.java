@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
 /**
@@ -34,13 +35,30 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	
 	/** The Constant PERSONAL_IDENTITY. */
 	private static final String PERSONAL_IDENTITY = "personalIdentity";
+	
+	/** The Constant REQUEST. */
+	private static final String REQUEST = "request";
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#decodedRequest(java.util.Map)
 	 */
 	@Override
 	protected Map<String, Object> decodedRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
-		return requestBody;
+		try {
+			requestBody.replace(REQUEST,
+					decode((String) requestBody.get(REQUEST)));
+			if(null != requestBody.get(REQUEST)) {
+				Map<String, Object> request = keyManager.requestData(requestBody, mapper);
+				requestBody.replace(REQUEST, request);				
+			}
+			return requestBody;
+		} catch (ClassCastException  e) {
+			throw new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
+							.getErrorMessage());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +73,7 @@ public class InternalAuthFilter extends BaseAuthFilter {
 	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#setTxnId(java.util.Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody) {
 		if(Y.equals(responseBody.get(STATUS))) {
 			Map<String, Object> authType = (Map<String, Object>) requestBody.get(AUTH_TYPE);
 			if ((authType.get(PERSONAL_IDENTITY) instanceof Boolean) && (authType.get(FULL_ADDRESS) instanceof Boolean) 
@@ -68,12 +86,9 @@ public class InternalAuthFilter extends BaseAuthFilter {
 		responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
 		return responseBody;
 	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
-	 */
+	
 	@Override
-	protected boolean validateSignature(Map<String, Object> requestBody, String signature) {
+	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 

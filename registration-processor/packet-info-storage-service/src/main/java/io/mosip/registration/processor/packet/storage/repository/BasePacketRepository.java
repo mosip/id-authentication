@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 
 /**
  * The Interface BasePacketRepository.
@@ -130,7 +131,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * @param uin the uin
 	 * @return the reg id by UIN
 	 */
-	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uinRefId =:uin")
+
+	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
 	public List<String> getRegIdByUIN(@Param("uin")String uin);
 	
 	/**
@@ -141,7 +143,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 */
 	@Query("SELECT abis.abisRefId FROM RegAbisRefEntity abis WHERE abis.id.regId =:rid")
 	public List<String> getReferenceIdByRid(@Param("rid")String rid);
-	
+
 	/**
 	 * Gets the rid by reference id.
 	 *
