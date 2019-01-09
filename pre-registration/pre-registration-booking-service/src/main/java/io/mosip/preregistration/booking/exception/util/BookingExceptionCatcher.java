@@ -22,6 +22,7 @@ import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNot
 import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
+import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
@@ -105,6 +106,11 @@ public class BookingExceptionCatcher {
 			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
 					((AvailablityNotFoundException) ex).getErrorText());
 		}
+		else if (ex instanceof DemographicGetStatusException) {
+			throw new DemographicGetStatusException(((DemographicGetStatusException) ex).getErrorCode(),
+					((DemographicGetStatusException) ex).getErrorText());
+		}
+		
 
 	}
 
