@@ -92,6 +92,8 @@ export class DashBoardComponent implements OnInit {
                 applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
               regDto: bookingRegistrationDTO
             };
+            console.log('applicant', applicant);
+
             this.users.push(applicant);
           }
         } else {
