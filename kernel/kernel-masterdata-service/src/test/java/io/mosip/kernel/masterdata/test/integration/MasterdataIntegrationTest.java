@@ -477,13 +477,13 @@ public class MasterdataIntegrationTest {
 
 		machineSpecification = new MachineSpecification();
 		machineSpecification.setId("1000");
-		machineSpecification.setLangCode("ENG");
+		machineSpecification.setLangCode("eng");
 		machineSpecification.setName("laptop");
 		machineSpecification.setIsActive(true);
 		machineSpecification.setDescription("HP Description");
 		machineSpecification.setBrand("HP");
 		machineSpecification.setMachineTypeCode("1231");
-		machineSpecification.setLangCode("ENG");
+		machineSpecification.setLangCode("eng");
 		machineSpecification.setMinDriverversion("version 0.1");
 		machineSpecification.setModel("3168ngw");
 
@@ -581,7 +581,7 @@ public class MasterdataIntegrationTest {
 		machineHistory.setEffectDateTime(eDate);
 		machineHistory.setValidityDateTime(vDate);
 		machineHistory.setIsActive(true);
-		machineHistory.setLangCode("ENG");
+		machineHistory.setLangCode("eng");
 		machineHistoryList.add(machineHistory);
 
 	}
@@ -600,7 +600,7 @@ public class MasterdataIntegrationTest {
 		deviceHistory.setEffectDateTime(eDate);
 		deviceHistory.setValidityDateTime(vDate);
 		deviceHistory.setIsActive(true);
-		deviceHistory.setLangCode("ENG");
+		deviceHistory.setLangCode("eng");
 		deviceHistoryList.add(deviceHistory);
 
 	}
@@ -653,7 +653,7 @@ public class MasterdataIntegrationTest {
 		machineList = new ArrayList<>();
 		machine = new Machine();
 		machine.setId("1000");
-		machine.setLangCode("ENG");
+		machine.setLangCode("eng");
 		machine.setName("HP");
 		machine.setIpAddress("129.0.0.0");
 		machine.setMacAddress("178.0.0.0");
@@ -857,7 +857,7 @@ public class MasterdataIntegrationTest {
 		titleList = new ArrayList<>();
 		title = new Title();
 		titleId = new CodeAndLanguageCodeID();
-		titleId.setLangCode("ENG");
+		titleId.setLangCode("eng");
 		titleId.setCode("ABC");
 		title.setIsActive(true);
 		title.setCreatedBy("Ajay");
@@ -885,7 +885,7 @@ public class MasterdataIntegrationTest {
 		registrationCenter.setName("bangalore");
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
-		registrationCenter.setLanguageCode("ENG");
+		registrationCenter.setLanguageCode("eng");
 		registrationCenter.setHolidayLocationCode("KAR");
 		registrationCenters.add(registrationCenter);
 
@@ -897,12 +897,12 @@ public class MasterdataIntegrationTest {
 		banglore.setName("bangalore");
 		banglore.setLatitude("12.9180722");
 		banglore.setLongitude("77.5028792");
-		banglore.setLanguageCode("ENG");
+		banglore.setLanguageCode("eng");
 		banglore.setLocationCode("LOC");
 		chennai = new RegistrationCenter();
 		chennai.setId("2");
 		chennai.setName("Bangalore Central");
-		chennai.setLanguageCode("ENG");
+		chennai.setLanguageCode("eng");
 		chennai.setLocationCode("LOC");
 		registrationCenters.add(banglore);
 		registrationCenters.add(chennai);
@@ -915,7 +915,7 @@ public class MasterdataIntegrationTest {
 		center.setName("bangalore");
 		center.setLatitude("12.9180722");
 		center.setLongitude("77.5028792");
-		center.setLanguageCode("ENG");
+		center.setLanguageCode("eng");
 		center.setLocationCode("BLR");
 		centers.add(center);
 	}
@@ -989,7 +989,7 @@ public class MasterdataIntegrationTest {
 		holiday = new Holiday();
 
 		holiday = new Holiday();
-		holiday.setHolidayId(new HolidayID("KAR", date, "ENG", "Diwali"));
+		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
 		holiday.setId(1);
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
@@ -997,7 +997,7 @@ public class MasterdataIntegrationTest {
 		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
-		holiday2.setHolidayId(new HolidayID("KAH", date, "ENG", "Durga Puja"));
+		holiday2.setHolidayId(new HolidayID("KAH", date, "eng", "Durga Puja"));
 		holiday2.setId(1);
 		holiday2.setCreatedBy("John");
 		holiday2.setCreatedDateTime(specificDate);
@@ -1014,7 +1014,7 @@ public class MasterdataIntegrationTest {
 		genderDto.setCode("GEN01");
 		genderDto.setGenderName("Male");
 		genderDto.setIsActive(true);
-		genderDto.setLangCode("ENG");
+		genderDto.setLangCode("eng");
 
 		genderTypes = new ArrayList<>();
 		genderTypesNull = new ArrayList<>();
@@ -1027,7 +1027,7 @@ public class MasterdataIntegrationTest {
 		genderType.setCreatedDateTime(null);
 		genderType.setIsDeleted(false);
 		genderType.setDeletedDateTime(null);
-		genderType.setLangCode("ENG");
+		genderType.setLangCode("eng");
 		genderType.setUpdatedBy("Dom");
 		genderType.setUpdatedDateTime(null);
 		genderTypes.add(genderType);
@@ -1038,7 +1038,7 @@ public class MasterdataIntegrationTest {
 
 		BlacklistedWords blacklistedWords = new BlacklistedWords();
 		blacklistedWords.setWord("abc");
-		blacklistedWords.setLangCode("ENG");
+		blacklistedWords.setLangCode("e");
 		blacklistedWords.setDescription("no description available");
 
 		words.add(blacklistedWords);
@@ -1569,7 +1569,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void addHolidayTypeTest() throws Exception {
-		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"eng\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
 		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
 		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated());
@@ -1578,7 +1578,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void addHolidayTypeExceptionTest() throws Exception {
 
-		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"ENG\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"eng\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
 		when(holidayRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -2105,7 +2105,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void saveTitleTest() throws Exception {
-		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"ENG\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"eng\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
 		when(titleRepository.create(Mockito.any())).thenReturn(title);
 		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
@@ -2114,7 +2114,7 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void saveTitleExceptionTest() throws Exception {
 
-		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"ENG\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"eng\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
 		when(titleRepository.create(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute ", null));
 		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
@@ -2131,7 +2131,7 @@ public class MasterdataIntegrationTest {
 		titleDto.setCode("001");
 		titleDto.setTitleDescription("mosip");
 		titleDto.setIsActive(true);
-		titleDto.setLangCode("ENG");
+		titleDto.setLangCode("eng");
 		titleDto.setTitleName("mosip");
 		requestDto.setRequest(titleDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -2169,7 +2169,7 @@ public class MasterdataIntegrationTest {
 		titleDto.setCode("001");
 		titleDto.setTitleDescription("mosip");
 		titleDto.setIsActive(true);
-		titleDto.setLangCode("ENG");
+		titleDto.setLangCode("eng");
 		titleDto.setTitleName("mosip");
 		requestDto.setRequest(titleDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
@@ -3088,7 +3088,7 @@ public class MasterdataIntegrationTest {
 		requestDto.setVer("1.0");
 		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
 		blacklistedWordsDto.setWord("test  word");
-		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setLangCode("eng");
 		blacklistedWordsDto.setDescription("test description");
 		blacklistedWordsDto.setIsActive(true);
 		requestDto.setRequest(blacklistedWordsDto);
@@ -3107,7 +3107,7 @@ public class MasterdataIntegrationTest {
 		requestDto.setVer("1.0");
 		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
 		blacklistedWordsDto.setWord("test  word");
-		blacklistedWordsDto.setLangCode("TST");
+		blacklistedWordsDto.setLangCode("eng");
 		blacklistedWordsDto.setDescription("test description");
 		blacklistedWordsDto.setIsActive(true);
 		requestDto.setRequest(blacklistedWordsDto);
@@ -3953,7 +3953,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void updateBadWordSuccess() throws Exception {
-		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"ENG\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
+		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"eng\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
 		when(wordsRepository.findByWordAndLangCode(anyString(), anyString())).thenReturn(words.get(0));
 		when(wordsRepository.update(any())).thenReturn(words.get(0));
 		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(input))
@@ -3970,7 +3970,7 @@ public class MasterdataIntegrationTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void updateBadWordFailure() throws Exception {
-		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"ENG\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
+		String input = "{\"id\": \"string\",\"request\": {\"description\": \"bad word description\",\"isActive\": false,\"langCode\": \"eng\",\"word\": \"badword\"},\"timestamp\": \"2018-12-24T07:21:42.232Z\",\"ver\": \"string\"}";
 		when(wordsRepository.findByWordAndLangCode(anyString(), anyString())).thenReturn(words.get(0));
 		when(wordsRepository.update(any())).thenThrow(DataRetrievalFailureException.class,
 				DataAccessLayerException.class);
