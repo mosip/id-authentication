@@ -93,10 +93,10 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		String insertStatus = "failure";
 		String requestId = uuidGenerator();
 		String referenceId = uuidGenerator();
-
+		abisInsertRequestDto.setId("insert");
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
-		abisInsertRequestDto.setReferenceURL("http://localhost:9097/abis/swagger-ui.html/" + registrationId);
+		abisInsertRequestDto.setReferenceURL(url + registrationId);
 		String timeStamp = String.valueOf(new Timestamp(System.currentTimeMillis()).getTime() / 1000L);
 		abisInsertRequestDto.setTimestamp(timeStamp);
 
