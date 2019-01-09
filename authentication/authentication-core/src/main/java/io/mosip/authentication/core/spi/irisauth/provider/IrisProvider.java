@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 /**
  * 
- * @author Prem Kumar The Class IrisProvider.
+ * @author Prem Kumar 
+ * 
+ * The Class IrisProvider.
  */
 public abstract class IrisProvider implements MosipIrisProvider {
 
@@ -22,7 +24,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	static final String LEFTTEYE = "leftEye";
 	static final String RIGHTEYE = "rightEye";
 
-	private static final String idvid = "idvid";
+	private static final String IDVID = "idvid";
 
 	/*
 	 * (non-Javadoc)
@@ -58,7 +60,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 * @return the double
 	 */
 	public Double matchIrisImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
-		String uin = reqInfo.get(idvid);
+		String uin = reqInfo.get(IDVID);
 		if (reqInfo.containsKey(IrisProvider.RIGHTEYE))
 
 		{
@@ -80,7 +82,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 */
 	public double matchMultiIrisImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
 		double match = 0;
-		String uin = reqInfo.get(idvid);
+		String uin = reqInfo.get(IDVID);
 		if (entityInfo.containsKey(LEFTTEYE)) {
 			match += environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
 		}

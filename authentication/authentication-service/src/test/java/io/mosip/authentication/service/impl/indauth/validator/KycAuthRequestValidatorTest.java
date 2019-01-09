@@ -91,7 +91,7 @@ public class KycAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
@@ -211,7 +211,7 @@ public class KycAuthRequestValidatorTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("ekyc.mua.accesslevel.1234567890", "none");
-		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "environment", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);

@@ -64,7 +64,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The env. */
 	@Autowired
-	private Environment env;
+	private Environment environment;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -128,7 +128,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		String key = ACCESS_LEVEL
 				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getTspID).orElse("");
-		String accesslevel = env.getProperty(key);
+		String accesslevel = environment.getProperty(key);
 		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
