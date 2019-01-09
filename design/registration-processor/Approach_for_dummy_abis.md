@@ -75,7 +75,7 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 	11. Configuration - targetFPIR : The scaledScore score can be set from 1 to 100 and Dummy abis will return same scaledScore for Candidates in response.
 
 ### Dummy supported functionalities and logic
-Functionality	|	Result	|	Abis Logic
+Functionality	|	Outcome	|	Abis Logic
 ----------------|---------------|----------------------------------------------------
 Insert	|	Insert Success	|	The dummy abis system will check if any one of the biometric type(Fingerprint/Iris/Face) is present in the CBEFF file. The CBEFF file should have any one of the biometric for successful insertion in dummy abis.
 Insert	|	Insert Failure	|	The dummy abis system will check if any one of the biometric type(Fingerprint/Iris/Face) is present in the CBEFF file. The CBEFF file should have none of the biometric for insertion failure in dummy abis.
