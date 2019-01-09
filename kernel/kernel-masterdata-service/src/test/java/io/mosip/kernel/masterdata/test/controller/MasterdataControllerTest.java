@@ -467,8 +467,20 @@ public class MasterdataControllerTest {
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
-						+ "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
+						+ "    \"langCode\": \"eng\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void addBiometricTypeLanguageValidationTest() throws Exception {
+		Mockito.when(biometricTypeService.createBiometricType(Mockito.any())).thenReturn(codeAndLanguageCodeId);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
+						+ "    \"langCode\": \"akk\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
+				.andExpect(status().isBadRequest());
 	}
 
 	// -------------------------------ApplicationControllerTest--------------------------//

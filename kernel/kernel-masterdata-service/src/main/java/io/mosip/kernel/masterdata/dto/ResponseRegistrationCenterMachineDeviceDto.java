@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 
 
-public class ResponseRrgistrationCenterMachineDeviceDto {
+public class ResponseRegistrationCenterMachineDeviceDto {
 
 	private String regCenterId;
 

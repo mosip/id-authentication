@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDeviceDto;
+import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService;
 import io.swagger.annotations.Api;
@@ -37,12 +37,12 @@ public class RegistrationCenterMachineDeviceController {
 	private RegistrationCenterMachineDeviceService registrationCenterMachineDeviceService;
 
 	@PostMapping
-	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id", response = ResponseRrgistrationCenterMachineDeviceDto.class)
+	@ApiOperation(value = "Map provided registration center, machine and device", notes = "Map provided registration center id, machine id and device id", response = ResponseRegistrationCenterMachineDeviceDto.class)
 	@ApiResponses({
-			@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRrgistrationCenterMachineDeviceDto.class),
+			@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRegistrationCenterMachineDeviceDto.class),
 			@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 			@ApiResponse(code = 500, message = "While mapping registration center, machine and device") })
-	public ResponseEntity<ResponseRrgistrationCenterMachineDeviceDto> createRegistrationCenterMachineAndDevice(
+	public ResponseEntity<ResponseRegistrationCenterMachineDeviceDto> createRegistrationCenterMachineAndDevice(
 			@Valid @RequestBody RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
 		return new ResponseEntity<>(
 				registrationCenterMachineDeviceService.createRegistrationCenterMachineAndDevice(requestDto),
@@ -52,7 +52,7 @@ public class RegistrationCenterMachineDeviceController {
 	@DeleteMapping(value="/{regcenterid}/{machineid}/{deviceid}")
 	@ApiOperation(value="delete mapping if this service is called.")
 	@ApiResponses({
-		@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRrgistrationCenterMachineDeviceDto.class),
+		@ApiResponse(code = 201, message = "When registration center, machine and device mapped", response = ResponseRegistrationCenterMachineDeviceDto.class),
 		@ApiResponse(code = 400, message = "When Request body passed  is invalid"),
 		@ApiResponse(code = 500, message = "While mapping registration center, machine and device") })
 	public RegistrationCenterMachineDeviceID deleteRegistrationCentreMachineDeviceMappingDetails(@PathVariable(value="regcenterid") String regCenterId,@PathVariable(value="machineid") String machineId,@PathVariable(value="deviceid") String deviceId){

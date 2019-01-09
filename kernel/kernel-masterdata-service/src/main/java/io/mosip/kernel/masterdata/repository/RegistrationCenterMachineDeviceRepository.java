@@ -29,6 +29,6 @@ public interface RegistrationCenterMachineDeviceRepository
 	@Query("UPDATE RegistrationCenterMachineDevice rcm SET rcm.isDeleted = true ,rcm.deletedDateTime = ?1 WHERE rcm.registrationCenterMachineDevicePk.regCenterId = ?2 AND rcm.registrationCenterMachineDevicePk.machineId = ?3 AND rcm.registrationCenterMachineDevicePk.deviceId = ?4")
 	int deleteRegCenterMachineDevice(LocalDateTime deletedDateTime, String regId, String machineId, String deviceId);
 	
-	@Query("FROM RegistrationCenterMachineDevice rcm where rcm.registrationCenterMachineDevicePk.regCenterId = ?1 AND rcm.registrationCenterMachineDevicePk.machineId = ?2 AND rcm.registrationCenterMachineDevicePk.deviceId = ?3")
-	RegistrationCenterMachineDevice findByIdAndIsDeletedFalseOrIsDeletedIsNull(String regId,String machineId,String deviceId);
+	@Query("FROM RegistrationCenterMachineDevice rcm where rcm.registrationCenterMachineDevicePk.regCenterId = ?1 AND rcm.registrationCenterMachineDevicePk.machineId = ?3 AND rcm.registrationCenterMachineDevicePk.deviceId = ?2 AND (rcm.isDeleted is null or isDeleted=false)")
+	RegistrationCenterMachineDevice findByIdAndIsDeletedFalseOrIsDeletedIsNull(String regId,String deviceId,String machineId);
 }
