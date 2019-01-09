@@ -82,7 +82,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
-		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.OK);
 	}
 
 	/*
@@ -104,12 +104,12 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else if (ex instanceof AsyncRequestTimeoutException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
 					IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage());
 
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.REQUEST_TIMEOUT);
+			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
 		}
@@ -130,7 +130,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
-		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.OK);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppUncheckedException - \n" + ExceptionUtils.getStackTrace(ex));
 
-		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.OK);
 	}
 
 	/**
