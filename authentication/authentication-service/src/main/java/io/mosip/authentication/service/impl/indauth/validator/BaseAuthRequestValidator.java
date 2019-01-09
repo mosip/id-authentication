@@ -59,6 +59,10 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
 
+	private static final String MAKE = "Make";
+
+	private static final String DEVICE_ID = "Device Id";
+
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthRequestValidator.class);
 
@@ -166,7 +170,9 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
 
 			if (bioInfo != null && !bioInfo.isEmpty() && isContainDeviceInfo(bioInfo)) {
-
+				
+				validateDeviceInfo(bioInfo,errors);
+				
 				validateFinger(authRequestDTO, bioInfo, errors);
 
 				validateIris(authRequestDTO, bioInfo, errors);
@@ -180,6 +186,28 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
+	}
+
+	private void validateDeviceInfo(List<BioInfo> bioInfo, Errors errors) {
+		if(!isContainDeviceId(bioInfo)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric Device id Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { DEVICE_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		if(!isContainDeviceMake(bioInfo)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric Device Make Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { MAKE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		
+	}
+
+	private boolean isContainDeviceMake(List<BioInfo> deviceInfoList) {
+		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getMake()!=null &&!deviceInfo.getDeviceInfo().getMake().isEmpty());
+	}
+
+	private boolean isContainDeviceId(List<BioInfo> deviceInfoList) {
+		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getDeviceId()!=null &&!deviceInfo.getDeviceInfo().getDeviceId().isEmpty());
 	}
 
 	/**

@@ -19,10 +19,10 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	protected Environment environment;
 
 	/** The Constant IRISIMG_LEFT_MATCH_VALUE. */
-	private static final String IRISIMG_LEFT_MATCH_VALUE = "irisimg.left.match.value";
+	private static final String IRISIMG_LEFT_MATCH_VALUE = ".irisimg.left.match.value";
 
 	/** The Constant IRISIMG_RIGHT_MATCH_VALUE. */
-	private static final String IRISIMG_RIGHT_MATCH_VALUE = "irisimg.right.match.value";
+	private static final String IRISIMG_RIGHT_MATCH_VALUE = ".irisimg.right.match.value";
 	
 	/** The Constant LEFTTEYE. */
 	static final String LEFTTEYE = "leftEye";
