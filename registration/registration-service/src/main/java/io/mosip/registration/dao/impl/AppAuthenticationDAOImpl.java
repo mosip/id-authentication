@@ -50,9 +50,9 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 		
 		String role = null;
 		
-		if(roleList.size() == RegistrationConstants.PARAM_ONE && !roleList.iterator().next().equals("*")) {
+		if(roleList.size() == RegistrationConstants.PARAM_ONE) {
 			role = roleList.iterator().next();
-		} else if(roleList.size() > RegistrationConstants.PARAM_ONE && !roleList.iterator().next().equals("*")){
+		} else if(roleList.size() > RegistrationConstants.PARAM_ONE){
 			List<AppRolePriorityDetails> appRolePriorityDetails = appRolePriorityRepository.findByAppRolePriorityIdProcessNameAndAppRolePriorityIdRoleCodeInOrderByPriority(authType, roleList);
 			role = String.valueOf(appRolePriorityDetails.get(RegistrationConstants.PARAM_ZERO).getAppRolePriorityId().getRoleCode());
 		}
