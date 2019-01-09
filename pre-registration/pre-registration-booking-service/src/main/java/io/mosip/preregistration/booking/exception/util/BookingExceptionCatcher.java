@@ -26,24 +26,31 @@ import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
- * This class is used to catch the exceptions that occur while uploading the
- * document
+ * This class is used to catch the exceptions that occur while Booking
  * 
- * @author Rajath KR
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
  * @since 1.0.0
  *
  */
 public class BookingExceptionCatcher {
+	
+	/**
+	 * Method to handle the respective exceptions
+	 * 
+	 * @param ex pass the exception
+	 */
 	public void handle(Exception ex) {
 		if (ex instanceof RecordNotFoundException) {
-			throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.toString(),
-					ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
+			throw new RecordNotFoundException(((RecordNotFoundException) ex).getErrorCode(),
+					ex.getMessage());
 		} else if (ex instanceof InvalidRequestParameterException) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_022.toString(),
-					ErrorMessages.INVALID_REQUEST_PARAMETER.toString());
+			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
+					((InvalidRequestParameterException) ex).getErrorText());
 		} else if (ex instanceof DateTimeException) {
 			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
 					ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
@@ -51,47 +58,51 @@ public class BookingExceptionCatcher {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),
 					((DocumentNotFoundException) ex).getErrorText(), ex.getCause());
 		} else if (ex instanceof DataAccessLayerException) {
-			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), ex.getCause());
+			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
+					((DataAccessLayerException) ex).getErrorText());
 		}else if(ex instanceof BookingDataNotFoundException) {
-			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-					ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+			throw new BookingDataNotFoundException(((BookingDataNotFoundException) ex).getErrorCode(),
+					((BookingDataNotFoundException) ex).getErrorText());
 		}else if (ex instanceof AppointmentBookingFailedException) {
-			throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
-					ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
+			throw new AppointmentBookingFailedException(((AppointmentBookingFailedException) ex).getErrorCode(),
+					((AppointmentBookingFailedException) ex).getErrorText());
 		} else if (ex instanceof BookingTimeSlotAlreadyBooked) {
-			throw new BookingTimeSlotAlreadyBooked(ErrorCodes.PRG_BOOK_RCI_004.toString(),
-					ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_BOOKED.toString());
+			throw new BookingTimeSlotAlreadyBooked(((BookingTimeSlotAlreadyBooked) ex).getErrorCode(),
+					((BookingTimeSlotAlreadyBooked) ex).getErrorText());
 		} else if (ex instanceof AppointmentReBookingFailedException) {
-			throw new AppointmentReBookingFailedException(ErrorCodes.PRG_BOOK_RCI_021.toString(),
-					ErrorMessages.APPOINTMENT_REBOOKING_FAILED.toString());
+			throw new AppointmentReBookingFailedException(((AppointmentReBookingFailedException) ex).getErrorCode(),
+					((AppointmentReBookingFailedException) ex).getErrorText());
 		} else if (ex instanceof BookingPreIdNotFoundException) {
-			throw new BookingPreIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_006.toString(),
-					ErrorMessages.PREREGISTRATION_ID_NOT_ENTERED.toString());
+			throw new BookingPreIdNotFoundException(((BookingPreIdNotFoundException) ex).getErrorCode(),
+					((BookingPreIdNotFoundException) ex).getErrorText());
 		} else if (ex instanceof BookingRegistrationCenterIdNotFoundException) {
-			throw new BookingRegistrationCenterIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_007.toString(),
-					ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.toString());
+			throw new BookingRegistrationCenterIdNotFoundException(((BookingRegistrationCenterIdNotFoundException) ex).getErrorCode(),
+					((BookingRegistrationCenterIdNotFoundException) ex).getErrorText());
 		}  else if (ex instanceof BookingTimeSlotNotSeletectedException) {
-			throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.toString(),
-					ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.toString());
+			throw new BookingTimeSlotNotSeletectedException(((BookingTimeSlotNotSeletectedException) ex).getErrorCode(),
+					((BookingTimeSlotNotSeletectedException) ex).getErrorText());
 		}  else if (ex instanceof BookingDateNotSeletectedException) {
-			throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			throw new BookingDateNotSeletectedException(((BookingDateNotSeletectedException) ex).getErrorCode(),
+					((BookingDateNotSeletectedException) ex).getErrorText());
 		} else if (ex instanceof AppointmentCannotBeBookedException) {
-			throw new AppointmentCannotBeBookedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			throw new AppointmentCannotBeBookedException(((AppointmentCannotBeBookedException) ex).getErrorCode(),
+					((AppointmentCannotBeBookedException) ex).getErrorText());
 		} else if (ex instanceof CancelAppointmentFailedException) {
-			throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			throw new CancelAppointmentFailedException(((CancelAppointmentFailedException) ex).getErrorCode(),
+					((CancelAppointmentFailedException) ex).getErrorText());
 		}else if (ex instanceof AvailablityNotFoundException) {
-			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
+					((AvailablityNotFoundException) ex).getErrorText());
 		}else if (ex instanceof AppointmentAlreadyCanceledException) {
-			throw new AppointmentAlreadyCanceledException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			throw new AppointmentAlreadyCanceledException(((AppointmentAlreadyCanceledException) ex).getErrorCode(),
+					((AppointmentAlreadyCanceledException) ex).getErrorText());
 		}else if (ex instanceof AppointmentCannotBeCanceledException) {
-			throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-					ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			throw new AppointmentCannotBeCanceledException(((AppointmentCannotBeCanceledException) ex).getErrorCode(),
+					((AppointmentCannotBeCanceledException) ex).getErrorText());
+		}
+		else if (ex instanceof AvailablityNotFoundException) {
+			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
+					((AvailablityNotFoundException) ex).getErrorText());
 		}
 		
 
