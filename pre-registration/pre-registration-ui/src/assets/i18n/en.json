@@ -27,6 +27,9 @@
         "language": "English",
         "label_name": "Full Name",
         "label_age": "Age",
+        "date_dd":"dd",
+        "date_mm":"mm",
+        "date_yyyy":"yyyy",
         "text_or":"OR",
         "text_years": "Years",
         "text_gender": "Gender",
@@ -45,7 +48,24 @@
         "label1_pin": "CINE/PIN Number",
         "action_back": "BACK",
         "action_continue": "CONTINUE",
-        "action_preview":"PREVIEW"
+        "action_preview":"PREVIEW",
+        "validation":{
+          "name_required":"Full Name is required",
+          "age_validation":"Age should be less than 150",
+          "DOB_validation":"Enter Valid DOB (Age should be less than 150)",
+          "date_required":"Enter 2 numeric digits for date",
+          "month_required":"Enter 2 numeric digits for month",
+          "year_required":"Enter 2 numeric digits for year",
+          "address_required":"Address is required",
+          "region_required":"Please select a Region",
+          "province_required":"Please select a Province",
+          "city_required":"Please select a city",
+          "admin_required":"Please select local AdministrativeAuthority",
+          "postal_code_required":"Please enter valid postalCode",
+          "mobile_required":"Please enter valid mobile number",
+          "email_required":"Please enter valid email id",
+          "pin_required":"Please enter valid pin"
+        }
       },
       "documents": {
         "title_document": "Upload Documents",
@@ -146,6 +166,7 @@
         "action_continue": "CONTINUE"
       },
       "appointmentConfirmed": {
+        "title":"Appointment Confirmed",
         "text_confirmation": "The Pre-Registarion id and Appointment details have been sent to registered email id and phone number",
         "action_download": "DOWNLOAD",
         "action_print": "PRINT"

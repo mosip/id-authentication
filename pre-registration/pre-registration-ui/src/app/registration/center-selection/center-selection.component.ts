@@ -1,13 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {MatTableDataSource, MatDialog} from '@angular/material';
-import {SelectionModel} from '@angular/cdk/collections';
-import { DialougComponent } from '../../shared/dialoug/dialoug.component';
+import { MatTableDataSource, MatDialog } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
 import { SharedService } from 'src/app/shared/shared.service';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
-import { BookingModel } from './booking.model';
-import { BookingModelRequest } from '../../shared/booking-request.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationService } from '../registration.service';
 
@@ -27,14 +24,13 @@ export class CenterSelectionComponent implements OnInit {
   displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
   dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
   selection = new SelectionModel<RegistrationCentre>(true, []);
-  
-  searchClick : boolean = true;
+  searchClick: boolean = true;
 
   locationTypes = [
     { value: 'province', viewValue: 'Province' },
     { value: 'city', viewValue: 'City' },
     { value: 'local_admin_authority', viewValue: 'Local Admin Authority' },
-    { value: 'postal_code', viewValue: 'Postal Code'}
+    { value: 'postal_code', viewValue: 'Postal Code' }
   ];
 
   locationType = null;
@@ -58,9 +54,9 @@ export class CenterSelectionComponent implements OnInit {
     private registrationService: RegistrationService) { }
 
   ngOnInit() {
-    this.getLocation();
+  //  this.getLocation();
   }
-  setSearchClick(flag:boolean){
+  setSearchClick(flag: boolean) {
     this.searchClick = flag;
   }
   setStep(index: number) {
@@ -111,14 +107,16 @@ export class CenterSelectionComponent implements OnInit {
   getLocation() {
 
     if (navigator.geolocation) {
+
       this.showMap = false;
-       navigator.geolocation.getCurrentPosition(position => {
-         console.log(position);
+      navigator.geolocation.getCurrentPosition(position => {
+        console.log(position);
         this.dataService.getNearbyRegistrationCenters(position.coords).subscribe(response => {
           console.log(response);
           if (response['registrationCenters'].length !== 0) {
             REGISTRATION_CENTRES = response['registrationCenters'];
             this.dataSource.data = REGISTRATION_CENTRES;
+            console.log(this.dataSource.data);
             this.showTable = true;
             this.selectedRow(REGISTRATION_CENTRES[0]);
             this.dispatchCenterCoordinatesList();
@@ -128,10 +126,25 @@ export class CenterSelectionComponent implements OnInit {
         }, error => {
           this.showMessage = true;
         });
-       });
+      });
     } else {
       alert('Location not suppored in this browser');
     }
+  }
+
+  changeTimeFormat(time: string): string | Number {
+    let inputTime = time.split(':');
+    let formattedTime: any;
+    if (Number(inputTime[0]) < 12) {
+      formattedTime = inputTime[0];
+      formattedTime += ':' + inputTime[1] + ' am';
+    }
+    else {
+      formattedTime = Number(inputTime[0]) - 12;
+      formattedTime += ':' + inputTime[1] + ' pm';
+    }
+
+    return formattedTime;
   }
 
   dispatchCenterCoordinatesList() {
@@ -150,6 +163,16 @@ export class CenterSelectionComponent implements OnInit {
   routeNext() {
     this.registrationService.setRegCenterId('1');
     this.router.navigate(['../pick-time'], { relativeTo: this.route });
+  }
+
+  routeDashboard() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate(['dashboard', routeParams[2]]);
+  }
+
+  routeBack() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate([routeParams[1], routeParams[2], 'file-upload']);
   }
 
 }

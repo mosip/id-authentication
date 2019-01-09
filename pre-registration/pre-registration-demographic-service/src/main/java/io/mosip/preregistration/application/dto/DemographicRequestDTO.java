@@ -5,7 +5,6 @@
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.json.simple.JSONObject;
 
@@ -26,7 +25,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class CreateDemographicDTO implements Serializable {
+public class DemographicRequestDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
@@ -45,11 +44,6 @@ public class CreateDemographicDTO implements Serializable {
 
 	/** The update date time. */
 	private String updatedDateTime;
-
-	/**
-	 * status code
-	 */
-	private String statusCode;
 
 	/**
 	 * language code

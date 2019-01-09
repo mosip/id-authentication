@@ -19,6 +19,7 @@ import { DraggableDirective } from './file-upload/draggable.directive';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { StepperComponent } from './stepper/stepper.component';
 import { I18nModule } from '../i18n.module';
+import { PreviewComponent } from './preview/preview.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import { I18nModule } from '../i18n.module';
     ParentComponent,
     DraggableDirective,
     ConfirmationComponent,
-    StepperComponent
+    StepperComponent,
+    PreviewComponent
   ]
 })
 export class RegistrationModule {}

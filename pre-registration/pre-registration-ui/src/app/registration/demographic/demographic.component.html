@@ -18,19 +18,37 @@
               (change)="onTransliteration(fullName, t_fullName)"
             />
             <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
-            <mat-error *ngIf="!fullName.invalid">Full Name is required</mat-error>
+            <mat-error *ngIf="!fullName.invalid"> {{ 'demographic.validation.name_required' | translate }} </mat-error>
           </mat-form-field>
 
           <div class="user__age-or-date">
             <div class="user__date">
               <mat-form-field>
-                <input matInput placeholder="{{ demo.date }}" #dd formControlName="date" (focusout)="onDOBChange()" />
+                <input
+                  matInput
+                  placeholder="{{ 'demographic.date_dd' | translate }}"
+                  #dd
+                  formControlName="date"
+                  (focusout)="onDOBChange()"
+                />
               </mat-form-field>
               <mat-form-field>
-                <input matInput placeholder="{{ demo.month }}" #mm formControlName="month" (focusout)="onDOBChange()" />
+                <input
+                  matInput
+                  placeholder="{{ 'demographic.date_mm' | translate }}"
+                  #mm
+                  formControlName="month"
+                  (focusout)="onDOBChange()"
+                />
               </mat-form-field>
               <mat-form-field>
-                <input matInput placeholder="{{ demo.year }}" #yyyy formControlName="year" (focusout)="onDOBChange()" />
+                <input
+                  matInput
+                  placeholder="{{ 'demographic.date_yyyy' | translate }}"
+                  #yyyy
+                  formControlName="year"
+                  (focusout)="onDOBChange()"
+                />
               </mat-form-field>
             </div>
 
@@ -53,25 +71,25 @@
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="userForm.get('age').touched && !userForm.get('age').valid"
           >
-            Age should be less than 150
+          {{ 'demographic.validation.age_validate' | translate }}
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
           >
-            Enter 2 numeric digits for date
+          {{ 'demographic.validation.date_required' | translate }}
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="!userForm.get('month').valid && userForm.get('month').touched"
           >
-            Enter 2 numeric digits for month
+          {{ 'demographic.validation.month_required' | translate }}
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
           >
-            Enter 4 numeric digits for years
+          {{ 'demographic.validation.year_required' | translate }}
           </div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
@@ -111,7 +129,7 @@
               (change)="onTransliteration(addressLine1, t_addressLine1)"
             />
             <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
-            <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
+            <mat-error *ngIf="!addressLine1.invalid">{{ 'demographic.validation.address_required' | translate }}</mat-error>
           </mat-form-field>
           <mat-form-field>
             <input
@@ -150,7 +168,7 @@
                   region.locationName
                 }}</mat-option>
               </mat-select>
-              <mat-error *ngIf="!region.invalid">Please select region</mat-error>
+              <mat-error *ngIf="!region.invalid">{{ 'demographic.validation.region_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
 
@@ -168,7 +186,7 @@
                   province.locationName
                 }}</mat-option>
               </mat-select>
-              <mat-error *ngIf="!province.invalid">Please select province</mat-error>
+              <mat-error *ngIf="!province.invalid">{{ 'demographic.validation.province_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -190,7 +208,7 @@
               >
                 <mat-option *ngFor="let city of cities" [value]="city.locationCode">{{ city.locationName }}</mat-option>
               </mat-select>
-              <mat-error *ngIf="!city.invalid">Please select city</mat-error>
+              <mat-error *ngIf="!city.invalid">{{ 'demographic.validation.city_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -216,7 +234,7 @@
                   >{{ localAdministrativeAuthoritie.locationName }}</mat-option
                 >
               </mat-select>
-              <mat-error *ngIf="!authority.invalid">Please select localAdministrativeAuthority</mat-error>
+              <mat-error *ngIf="!authority.invalid">{{ 'demographic.validation.admin_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -231,7 +249,7 @@
                 #postalCode
               />
               <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
-              <mat-error *ngIf="!postalCode.invalid">Please enter valid postalCode</mat-error>
+              <mat-error *ngIf="!postalCode.invalid">{{ 'demographic.validation.postal_code_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -245,7 +263,7 @@
                 formControlName="mobilePhone"
               />
               <mat-hint align="end">{{ mobilePhone.value.length }} / 9</mat-hint>
-              <mat-error *ngIf="!mobilePhone.invalid">Please enter valid mobile number</mat-error>
+              <mat-error *ngIf="!mobilePhone.invalid">{{ 'demographic.validation.mobile_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -258,7 +276,7 @@
                 formControlName="email"
               />
               <mat-hint align="end">{{ email.value.length }} / 50</mat-hint>
-              <mat-error *ngIf="!email.invalid">Please enter valid email id</mat-error>
+              <mat-error *ngIf="!email.invalid">{{ 'demographic.validation.email_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -272,7 +290,7 @@
                 formControlName="pin"
               />
               <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
-              <mat-error *ngIf="!pin.invalid">Please enter valid pin</mat-error>
+              <mat-error *ngIf="!pin.invalid">{{ 'demographic.validation.pin_required' | translate }}</mat-error>
             </mat-form-field>
           </div>
         </form>
@@ -290,7 +308,7 @@
               #t_fullName
             />
             <mat-hint align="end">{{ t_fullName.value.length }} / 50</mat-hint>
-            <mat-error *ngIf="!t_fullName.invalid">Full Name is required</mat-error>
+            <mat-error *ngIf="!t_fullName.invalid">{{ 'demographic.validation.name_required' | translate }}</mat-error>
           </mat-form-field>
 
           <div class="user__age-or-date">
@@ -422,14 +440,13 @@
             />
             <mat-hint align="end">{{ t_addressLine3.value.length }} / 50</mat-hint>
           </mat-form-field>
-        </form>
 
-        <form #f="ngForm" class="user__form">
           <div class="user__dropdown">
             <mat-form-field>
+              <!-- formControlName="t_region" -->
               <mat-select
                 name="t_region"
-                [ngModel]="userForm.get('region').value"
+                [value]="userForm.get('region').value"
                 [disabled]="true"
                 placeholder="{{ demo1.region }}"
               >
@@ -445,7 +462,7 @@
               <mat-select
                 [disabled]="true"
                 placeholder="{{ demo1.province }}"
-                [ngModel]="userForm.get('province').value"
+                [value]="userForm.get('province').value"
                 name="t_province"
               >
                 <mat-option *ngFor="let province of transProvinces" [value]="province.locationCode">{{
@@ -459,7 +476,7 @@
               <mat-select
                 [disabled]="true"
                 placeholder="{{ demo1.city }}"
-                [ngModel]="userForm.get('city').value"
+                [value]="userForm.get('city').value"
                 name="t_city"
               >
                 <mat-option *ngFor="let city of transCities" [value]="city.locationCode">{{
@@ -473,7 +490,7 @@
               <mat-select
                 [disabled]="true"
                 placeholder="{{ demo1.localAdministrativeAuthority }}"
-                [ngModel]="userForm.get('localAdministrativeAuthority').value"
+                [value]="userForm.get('localAdministrativeAuthority').value"
                 name="t_localAdministrativeAuthority"
               >
                 <mat-option *ngFor="let LAA of transLocalAdministrativeAuthorities" [value]="LAA.locationCode">{{
@@ -482,38 +499,38 @@
               </mat-select>
             </mat-form-field>
           </div>
+
           <div class="user__dropdown">
             <mat-form-field>
               <input
                 matInput
+                [value]="userForm.get('postalCode').value"
                 type="text"
                 placeholder="{{ demo1.postalCode }}"
-                [disabled]="true"
-                [ngModel]="userForm.get('postalCode').value"
                 name="t_postalCode"
+                formControlName="t_postalCode"
               />
             </mat-form-field>
           </div>
+
           <div class="user__dropdown">
             <mat-form-field>
               <input
                 matInput
                 type="text"
                 placeholder="{{ demo1.mobileNumber }}"
-                [ngModel]="userForm.get('mobilePhone').value"
-                [disabled]="true"
-                name="t_mobilePhone"
+                [value]="userForm.get('mobilePhone').value"
+                formControlName="t_mobilePhone"
               />
             </mat-form-field>
           </div>
           <div class="user__dropdown">
             <mat-form-field>
               <input
-                [disabled]="true"
                 matInput
                 placeholder="{{ demo1.emailId }}"
-                [ngModel]="userForm.get('email').value"
-                name="t_email"
+                [value]="userForm.get('email').value"
+                formControlName="t_email"
               />
             </mat-form-field>
           </div>
@@ -523,9 +540,8 @@
                 matInput
                 type="text"
                 placeholder="{{ demo1.CNEOrPINNumber }}"
-                [ngModel]="userForm.get('pin').value"
-                [disabled]="true"
-                name="t_pin"
+                [value]="userForm.get('pin').value"
+                formControlName="t_pin"
               />
             </mat-form-field>
           </div>

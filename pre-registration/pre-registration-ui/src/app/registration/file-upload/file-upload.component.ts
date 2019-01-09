@@ -133,12 +133,6 @@ export class FileUploadComponent implements OnInit {
       this.loginId = params['id'];
 
       //document preview
-      this.fileByteArray = this.users[0].files[0][0].multipartFile;
-      if (this.fileByteArray) {
-        console.log(this.fileByteArray);
-        this.fileUrl =this.domSanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + this.fileByteArray);
-        console.log(this.fileUrl);
-      }
     });
     // this.users.forEach(element => {
     //   let i = 0;
@@ -150,6 +144,15 @@ export class FileUploadComponent implements OnInit {
     //   this.applicants.push(this.applicant);
     //   i++;
     // });
+  }
+
+  viewFile(file) {
+    this.fileByteArray = file;
+    if (this.fileByteArray) {
+      this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+        'data:application/pdf;base64,' + this.fileByteArray
+      );
+    }
   }
 
   handleFileInput(event) {
@@ -232,17 +235,18 @@ export class FileUploadComponent implements OnInit {
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('userFiles updaated', this.users);
   }
-  documentPreview(fileIndex){
-
+  documentPreview(fileIndex) {
     this.fileByteArray = this.users[0].files[0][0].multipartFile;
     if (this.fileByteArray) {
       console.log(this.fileByteArray);
-      this.fileUrl =this.domSanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + this.fileByteArray);
+      this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
+        'data:application/pdf;base64,' + this.fileByteArray
+      );
       console.log(this.fileUrl);
     }
     console.log(this.user);
-    console.log("filessss ",this.fileByteArray);
-    console.log("url",this.fileUrl);
+    console.log('filessss ', this.fileByteArray);
+    console.log('url', this.fileUrl);
   }
 
   openFile() {

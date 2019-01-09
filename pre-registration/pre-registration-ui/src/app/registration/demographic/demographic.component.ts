@@ -1,6 +1,6 @@
-import { OnInit, ViewChild, ElementRef, Component } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
+import { FormGroup, FormControl, Validators, NgForm, FormBuilder } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
@@ -13,8 +13,8 @@ import { RequestModel } from './modal/request.modal';
 import { DemoIdentityModel } from './modal/demo.identity.modal';
 import { UserModel } from './modal/user.modal';
 import { SharedService } from 'src/app/shared/shared.service';
-import Utils from 'src/app/app.util';
 import * as appConstants from '../../app.constants';
+import Utils from 'src/app/app.util';
 
 export interface DropDown {
   locationCode: string;
@@ -29,8 +29,8 @@ export interface DropDown {
 export class DemographicComponent implements OnInit {
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
-  primaryLang = appConstants.PRIMARY_LANG_CODE;
-  secondaryLang = appConstants.SECONDARY_LANG_CODE;
+  primaryLang = appConstants.LANGUAGE_CODE.primary;
+  secondaryLang = appConstants.LANGUAGE_CODE.secondary;
   ageOrDobPref = '';
   showDate = false;
   isNewApplicant = false;
@@ -116,8 +116,8 @@ export class DemographicComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
     private regService: RegistrationService,
-    // private formBuilder = FormBuilder,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService
   ) {}
@@ -163,6 +163,10 @@ export class DemographicComponent implements OnInit {
     let t_addressLine1 = '';
     let t_addressLine2 = '';
     let t_addressLine3 = '';
+    let t_postalCode = '';
+    let t_mobilePhone = '';
+    let t_email = '';
+    let t_pin = '';
 
     if (this.regService.getUser(this.step) != null) {
       this.user = this.regService.getUser(this.step);
@@ -188,67 +192,67 @@ export class DemographicComponent implements OnInit {
       pin = this.user.request.demographicDetails.identity.CNEOrPINNumber[0].value;
 
       t_fullName = this.user.request.demographicDetails.identity.fullName[1].value;
-      t_gender = this.user.request.demographicDetails.identity.gender[1].value;
-      t_date = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[0];
-      t_month = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[1];
-      t_year = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[2];
-      t_dob = this.user.request.demographicDetails.identity.dateOfBirth[1].value;
-      t_age = this.calculateAge(new Date(new Date(dob))).toString();
+      // t_gender = this.user.request.demographicDetails.identity.gender[1].value;
+      // t_date = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[0];
+      // t_month = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[1];
+      // t_year = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[2];
+      // t_dob = this.user.request.demographicDetails.identity.dateOfBirth[1].value;
+      // t_age = this.calculateAge(new Date(new Date(dob))).toString();
       t_addressLine1 = this.user.request.demographicDetails.identity.addressLine1[1].value;
       t_addressLine2 = this.user.request.demographicDetails.identity.addressLine2[1].value;
       t_addressLine3 = this.user.request.demographicDetails.identity.addressLine3[1].value;
     }
 
-    // this.userForm = new FormGroup({
-    //   fullName: new FormControl(fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
-    //   gender: new FormControl(gender, Validators.required),
-    //   age: new FormControl(age, [
-    //     Validators.required,
-    //     Validators.max(150),
-    //     Validators.min(1),
-    //     Validators.pattern(this.numberPattern)
-    //   ]),
-    //   dob: new FormControl(dob),
-    //   date: new FormControl(date, [
-    //     Validators.required,
-    //     Validators.maxLength(2),
-    //     Validators.minLength(2),
-    //     Validators.pattern(this.numberPattern)
-    //   ]),
-    //   month: new FormControl(month, [
-    //     Validators.required,
-    //     Validators.maxLength(2),
-    //     Validators.minLength(2),
-    //     Validators.pattern(this.numberPattern)
-    //   ]),
-    //   year: new FormControl(year, [
-    //     Validators.required,
-    //     Validators.maxLength(4),
-    //     Validators.minLength(4),
-    //     Validators.min(this.maxDate.getFullYear() - 150),
-    //     Validators.pattern(this.numberPattern)
-    //   ]),
-    //   addressLine1: new FormControl(addressLine1, [Validators.required, this.noWhitespaceValidator]),
-    //   addressLine2: new FormControl(addressLine2),
-    //   addressLine3: new FormControl(addressLine3),
-    //   region: new FormControl(region, Validators.required),
-    //   province: new FormControl(province, Validators.required),
-    //   city: new FormControl(city, Validators.required),
-    //   localAdministrativeAuthority: new FormControl(localAdministrativeAuthority, Validators.required),
-    //   email: new FormControl(email, Validators.email),
-    //   postalCode: new FormControl(postalCode, [
-    //     Validators.required,
-    //     Validators.maxLength(5),
-    //     Validators.minLength(5),
-    //     Validators.pattern(this.numberPattern)
-    //   ]),
-    //   mobilePhone: new FormControl(mobilePhone, [
-    //     Validators.maxLength(9),
-    //     Validators.minLength(9),
-    //     Validators.pattern(this.numberPattern)
-    //   ]),
-    //   pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
-    // });
+    this.userForm = new FormGroup({
+      fullName: new FormControl(fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
+      gender: new FormControl(gender, Validators.required),
+      age: new FormControl(age, [
+        Validators.required,
+        Validators.max(150),
+        Validators.min(1),
+        Validators.pattern(this.numberPattern)
+      ]),
+      dob: new FormControl(dob),
+      date: new FormControl(date, [
+        Validators.required,
+        Validators.maxLength(2),
+        Validators.minLength(2),
+        Validators.pattern(this.numberPattern)
+      ]),
+      month: new FormControl(month, [
+        Validators.required,
+        Validators.maxLength(2),
+        Validators.minLength(2),
+        Validators.pattern(this.numberPattern)
+      ]),
+      year: new FormControl(year, [
+        Validators.required,
+        Validators.maxLength(4),
+        Validators.minLength(4),
+        Validators.min(this.maxDate.getFullYear() - 150),
+        Validators.pattern(this.numberPattern)
+      ]),
+      addressLine1: new FormControl(addressLine1, [Validators.required, this.noWhitespaceValidator]),
+      addressLine2: new FormControl(addressLine2),
+      addressLine3: new FormControl(addressLine3),
+      region: new FormControl(region, Validators.required),
+      province: new FormControl(province, Validators.required),
+      city: new FormControl(city, Validators.required),
+      localAdministrativeAuthority: new FormControl(localAdministrativeAuthority, Validators.required),
+      email: new FormControl(email, Validators.email),
+      postalCode: new FormControl(postalCode, [
+        Validators.required,
+        Validators.maxLength(5),
+        Validators.minLength(5),
+        Validators.pattern(this.numberPattern)
+      ]),
+      mobilePhone: new FormControl(mobilePhone, [
+        Validators.maxLength(9),
+        Validators.minLength(9),
+        Validators.pattern(this.numberPattern)
+      ]),
+      pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
+    });
 
     this.transUserForm = new FormGroup({
       t_fullName: new FormControl(t_fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
@@ -260,7 +264,11 @@ export class DemographicComponent implements OnInit {
       t_year: new FormControl(t_year),
       t_addressLine1: new FormControl(t_addressLine1, [Validators.required, this.noWhitespaceValidator]),
       t_addressLine2: new FormControl(t_addressLine2),
-      t_addressLine3: new FormControl(t_addressLine3)
+      t_addressLine3: new FormControl(t_addressLine3),
+      t_postalCode: new FormControl({ value: t_postalCode, disabled: true }),
+      t_mobilePhone: new FormControl({ value: t_mobilePhone, disabled: true }),
+      t_email: new FormControl({ value: t_email, disabled: true }),
+      t_pin: new FormControl({ value: t_pin, disabled: true })
     });
 
     this.userForm.valueChanges.subscribe(selectedValue => {
@@ -317,7 +325,7 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationMetadataHirearchy('country').subscribe(
         response => {
-          const countryHirearchy = response['locations'];
+          const countryHirearchy = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
           const uppermostLocationHierarchy = countryHirearchy.filter(
             (element: any) => element.name === appConstants.COUNTRY_NAME
           );
@@ -337,8 +345,6 @@ export class DemographicComponent implements OnInit {
     transCurrentEntity: DropDown[],
     transSelectedEntiy: DropDown
   ) {
-    console.log(this.userForm.controls.region.value);
-
     const locationCode = 'IND';
     if (nextEntity) this.getLocationImmediateHierearchy(this.primaryLang, locationCode, nextEntity);
     this.valueToViewValue(event, currentEntity, selectedEntity, transCurrentEntity, transSelectedEntiy);
@@ -348,7 +354,7 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
-          response['locations'].forEach(element => {
+          response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let dropDown: DropDown = {
               locationCode: element.code,
               locationName: element.name
@@ -357,7 +363,7 @@ export class DemographicComponent implements OnInit {
           });
           return resolve(true);
         },
-        error => console.log('Unable to fetch Regions')
+        error => console.log('Unable to fetch Below Hierearchy')
       );
     });
   }
@@ -445,21 +451,21 @@ export class DemographicComponent implements OnInit {
     }
   }
 
-  onTransliteration(fromControl: FormControl, toControl) {
+  onTransliteration(fromControl: FormControl, toControl: any) {
     if (fromControl.value) {
       const request: any = {
         from_field_lang: 'English',
-        from_field_name: 'Name1',
+        from_field_name: toControl.name,
         from_field_value: fromControl.value,
         to_field_lang: 'Arabic',
-        to_field_name: 'Name2',
+        to_field_name: toControl.name,
         to_field_value: ''
       };
       this.transUserForm.controls[toControl.name].patchValue('dummyValue');
 
       // this.dataStorageService.getTransliteration(request).subscribe(response => {
       //   console.log(response);
-      //   this.transForm.controls[toControl.name].patchValue(response['response'].to_field_value);
+      // this.transForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
       // });
     }
   }
@@ -485,7 +491,9 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else {
-          this.preRegId = response['response'][0].prId;
+          console.log(response);
+
+          this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, []));
           this.sharedService.addNameList({
             fullName: this.userForm.controls.fullName.value,
@@ -549,19 +557,19 @@ export class DemographicComponent implements OnInit {
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.postalCode.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_postalCode.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_postalCode.value)
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.mobilePhone.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_mobilePhone.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_mobilePhone.value)
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.email.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_email.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_email.value)
       ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.pin.value),
-        new AttributeModel(this.secondaryLang, this.transForm.controls.t_pin.value)
+        new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_pin.value)
       ]
     );
 
