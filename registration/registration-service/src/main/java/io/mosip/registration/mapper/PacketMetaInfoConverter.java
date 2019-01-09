@@ -125,13 +125,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			// Set Right Eye
 			applicant.setRightEye(getBiometric(irisMap.get("RIGHTKEY"), language, biometricType));
 
-			// Add captured Finger-print biometric exceptions
+			// Add captured biometric exceptions
 			identity.getExceptionBiometrics()
-					.addAll(getExceptionBiometrics(biometricInfoDTO.getFingerPrintBiometricExceptionDTO(), language));
-
-			// Add captured iris biometric exceptions
-			identity.getExceptionBiometrics()
-					.addAll(getExceptionBiometrics(biometricInfoDTO.getIrisBiometricExceptionDTO(), language));
+					.addAll(getExceptionBiometrics(biometricInfoDTO.getBiometricExceptionDTO(), language));
 
 			// Set Parent Finger-print Image
 			biometricInfoDTO = source.getBiometricDTO().getIntroducerBiometricDTO();

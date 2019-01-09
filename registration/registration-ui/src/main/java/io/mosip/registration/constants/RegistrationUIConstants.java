@@ -156,4 +156,7 @@ public class RegistrationUIConstants {
 	
 	//UIN update
 	public static final String UPDATE_UIN_VALIDATION_ALERT = bundle.getString("UPDATE_UIN_VALIDATION_ALERT");
+	
+	//Biometric Exception
+	public static final String BIOMETRIC_EXCEPTION_ALERT = bundle.getString("BIOMETRIC_EXCEPTION_ALERT");
 }

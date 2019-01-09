@@ -84,9 +84,9 @@ public class DataProvider {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
 		biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
 		if (persontype.equalsIgnoreCase(DataProvider.APPLICANT)) {
-			biometricInfoDTO.setFingerPrintBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
+			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
-			biometricInfoDTO.setIrisBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
+			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
 		}
 		return biometricInfoDTO;
 	}

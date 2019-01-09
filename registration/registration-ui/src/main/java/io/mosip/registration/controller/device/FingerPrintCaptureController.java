@@ -419,7 +419,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"Navigating to Demographic capture page for user registration started");
 			if (validateFingerPrints()) {
 				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
-				registrationController.getDemoGraphicTitlePane().setExpanded(true);
+				if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+					registrationController.toggleFingerprintCaptureVisibility(false);
+					registrationController.toggleBiometricExceptionVisibility(true);
+				} else {
+					registrationController.getDemoGraphicTitlePane().setExpanded(true);
+				}
 			}
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration ended");
@@ -514,7 +520,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validating quality score of captured fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
 	 * @return true, if successful
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {

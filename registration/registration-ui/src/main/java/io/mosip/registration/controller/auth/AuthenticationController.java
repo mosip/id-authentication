@@ -593,7 +593,6 @@ public class AuthenticationController extends BaseController {
 								.get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
-						SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 					} else {
 						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 								.get(RegistrationConstants.REGISTRATION_DATA);

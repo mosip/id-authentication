@@ -183,9 +183,8 @@ public class PreRegZipHandlingServiceTest {
 
 	private static BiometricInfoDTO createBiometricInfoDTO() {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
-		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}
