@@ -37,6 +37,10 @@ public enum ErrorMessages {
 		 * ErrorMessage for PRG_PAM_APP_009
 		 */
 		UNSUPPORTED_ENCODING_CHARSET,
-		FILE_NOT_FOUND
+		FILE_NOT_FOUND,
+		/**
+		 * ErrorMessage for PRG_DATA_SYNC_016
+		 */
+		BOOKING_NOT_FOUND 
 		;
 }

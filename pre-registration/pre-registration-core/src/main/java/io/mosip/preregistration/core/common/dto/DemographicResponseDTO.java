@@ -1,7 +1,10 @@
-package io.mosip.preregistration.documents.dto;
+/* 
+ * Copyright
+ * 
+ */
+package io.mosip.preregistration.core.common.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.json.simple.JSONObject;
 
@@ -10,11 +13,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This DTO class defines the variables to accept the input parameter from
+ * request.
+ * 
+ * @author Rajath KR
+ * @since 1.0.0
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class CreateDemographicDTO implements Serializable {
+public class DemographicResponseDTO implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
@@ -26,13 +37,13 @@ public class CreateDemographicDTO implements Serializable {
 	private String createdBy;
 
 	/** The create date time. */
-	private Date createdDateTime;
+	private String createdDateTime;
 
 	/** The updated by. */
 	private String updatedBy;
 
 	/** The update date time. */
-	private Date updatedDateTime;
+	private String updatedDateTime;
 
 	/**
 	 * status code

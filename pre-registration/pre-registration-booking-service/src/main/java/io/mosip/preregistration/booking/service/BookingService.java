@@ -50,7 +50,7 @@ import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -158,6 +158,7 @@ public class BookingService {
 		response.setResponse(availability);
 		return response;
 	}
+
 	/**
 	 * @param bookingDTO
 	 * @return response with status code
@@ -211,7 +212,7 @@ public class BookingService {
 								}
 							}
 						} else {
-							BookingStatusDTO noDocumentDTO= new BookingStatusDTO();
+							BookingStatusDTO noDocumentDTO = new BookingStatusDTO();
 							noDocumentDTO.setPreRegistrationId(bookingRequestDTO.getPreRegistrationId());
 							noDocumentDTO.setBookingStatus("Failed");
 							noDocumentDTO.setBookingMessage("BOOKING_FAILED_DUE_TO_NO_DOCUMENT");
@@ -226,11 +227,11 @@ public class BookingService {
 				responseDTO.setResponse(respList);
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
-		} 
+		}
 		return responseDTO;
 	}
 
@@ -254,9 +255,9 @@ public class BookingService {
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
 		}
 
@@ -278,13 +279,13 @@ public class BookingService {
 					dto.setErr(null);
 					dto.setStatus(true);
 					dto.setResTime(serviceUtil.getCurrentResponseTime());
-				}else {
+				} else {
 					throw new CancelAppointmentFailedException(ErrorCodes.PRG_BOOK_RCI_019.toString(),
 							ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
 				}
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
@@ -304,8 +305,8 @@ public class BookingService {
 					.findByRegistrationCenterIdAndStatusCode(regCenterId.trim(), StatusCodes.BOOKED.getCode());
 			List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
 			List<String> entityPreRegIdList = new LinkedList<>();
-			
-			if(bookingEntities!=null && !bookingEntities.isEmpty()) {
+
+			if (bookingEntities != null && !bookingEntities.isEmpty()) {
 				for (RegistrationBookingEntity bookingEntity : bookingEntities) {
 					entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
 				}
@@ -313,7 +314,7 @@ public class BookingService {
 				preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId(regCenterId);
 				preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
 				preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
-			}else {
+			} else {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 			}
@@ -321,9 +322,9 @@ public class BookingService {
 			responseDto.setStatus(true);
 			responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
 					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		}catch (Exception e) {
+		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
 		}
 		return responseDto;

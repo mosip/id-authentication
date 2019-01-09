@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,10 +33,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.controller.DocumentController;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -72,7 +71,7 @@ public class DocumentControllerTest {
 	 */
 	@MockBean
 	private DocumentService service;
-	
+
 	@MockBean
 	private DocumentServiceUtil serviceutil;
 
@@ -101,22 +100,15 @@ public class DocumentControllerTest {
 	@Before
 	public void setUp() throws IOException {
 
-		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "pdf", "Pending-Appoinment", new Date(), "ENG", "Jagadishwari");
+		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "pdf", "Pending-Appoinment",
+				new Date(), "ENG", "Jagadishwari");
 
-		json = "{\r\n" + 
-				"	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + 
-				"	\"ver\": \"1.0\",\r\n" + 
-				"	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + 
-				"	\"request\": {\r\n" + 
-				"		\"prereg_id\": \"59276903416082\",\r\n" + 
-				"		\"doc_cat_code\": \"POA\",\r\n" + 
-				"		\"doc_typ_code\": \"address\",\r\n" + 
-				"		\"doc_file_format\": \"pdf\",\r\n" + 
-				"		\"status_code\": \"Pending-Appoinment\",\r\n" + 
-				"		\"upload_by\": \"9217148168\",\r\n" + 
-				"		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + 
-				"	}\r\n" + 
-				"}";
+		json = "{\r\n" + "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
+				+ "	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + "	\"request\": {\r\n"
+				+ "		\"prereg_id\": \"59276903416082\",\r\n" + "		\"doc_cat_code\": \"POA\",\r\n"
+				+ "		\"doc_typ_code\": \"address\",\r\n" + "		\"doc_file_format\": \"pdf\",\r\n"
+				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "		\"upload_by\": \"9217148168\",\r\n"
+				+ "		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + "	}\r\n" + "}";
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("Doc.pdf").getFile());
 		try {
@@ -150,14 +142,16 @@ public class DocumentControllerTest {
 
 	}
 
-//	@Test
-//	public void successSave() throws Exception {
-//		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-//		Mockito.when(service.uploadDoucment(multipartFile, jsonDTO)).thenReturn(responseCopy);
-//		this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-//				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
-//
-//	}
+	// @Test
+	// public void successSave() throws Exception {
+	// Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(),
+	// Mockito.any());
+	// Mockito.when(service.uploadDoucment(multipartFile,
+	// jsonDTO)).thenReturn(responseCopy);
+	// this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+	// .file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+	//
+	// }
 
 	/**
 	 * @throws Exception
@@ -178,7 +172,7 @@ public class DocumentControllerTest {
 	public void getAllDocumentforPreidTest() throws Exception {
 		Mockito.when(service.getAllDocumentForPreId("48690172097498")).thenReturn(responseCopy);
 		mockMvc.perform(get("/v0.1/pre-registration/getDocument").contentType(MediaType.APPLICATION_JSON_VALUE)
-				.param("preId", "48690172097498")).andExpect(status().isOk());
+				.param("pre_registration_id", "48690172097498")).andExpect(status().isOk());
 	}
 
 	/**
@@ -189,7 +183,7 @@ public class DocumentControllerTest {
 		Mockito.when(service.deleteAllByPreId("48690172097498")).thenReturn(responseDelete);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/deleteAllByPreRegId")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("preId", "48690172097498");
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "48690172097498");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
