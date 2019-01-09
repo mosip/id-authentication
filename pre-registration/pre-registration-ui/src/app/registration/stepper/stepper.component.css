@@ -3,7 +3,7 @@
   width : 150px;
   height: 0;
   position: relative;
-  top:-2px;
+  top: 3px;
   margin-right: 5px;
   margin-left: 5px;
 }
@@ -27,6 +27,12 @@
   vertical-align: center;
   align-content: center;
   display: flex;
+  margin: 0 20% 0 20%;
+}
+
+p {
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .inline-icon {
@@ -62,16 +68,31 @@
 }
 
 @media(max-width: 500px) {
-  .container {
-    margin-left: 3%;
-  }
   .progress {
     width: 0;
   }
+
+  p {
+    white-space: normal;
+  }
 }
 
-@media (max-width:850px) and (min-width:501px) {
+@media (max-width:1000px) and (min-width:801px) {
+  .progress {
+    width: 100px;
+  }
+
+  p {
+    white-space: normal;
+  }
+}
+
+@media (max-width:800px) and (min-width:501px) {
   .progress {
     width: 60px;
+  }
+
+  p {
+    white-space: normal;
   }
 }
