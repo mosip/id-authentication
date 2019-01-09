@@ -2,6 +2,7 @@ package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
 
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
