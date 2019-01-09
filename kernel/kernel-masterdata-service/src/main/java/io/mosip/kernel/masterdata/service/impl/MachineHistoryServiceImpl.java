@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineHistoryResponseDto;
@@ -94,12 +93,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	@Transactional(propagation=Propagation.MANDATORY)
 	public IdResponseDto createMachineHistory(MachineHistory entityHistory) {
 		MachineHistory createdHistory;
-		try {
 			createdHistory = machineHistoryRepository.create(entityHistory);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
-		}
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;
