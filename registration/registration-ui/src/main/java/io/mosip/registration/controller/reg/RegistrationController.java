@@ -745,7 +745,6 @@ public class RegistrationController extends BaseController {
 				demoGraphicTitlePane.setExpanded(false);
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
 				demoGraphicTitlePane.setExpanded(true);
-				anchorPaneRegistration.setMaxHeight(700);
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO SECOND DEMOGRAPHIC PANE", APPLICATION_NAME,
@@ -1350,15 +1349,15 @@ public class RegistrationController extends BaseController {
 						if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 							childSpecificFields.setVisible(true);
 							childSpecificFieldsLocal.setVisible(true);
+							childSpecificFields.setDisable(false);
+							childSpecificFieldsLocal.setDisable(false);
 							isChild = true;
-							parentName.setDisable(false);
-							uinId.setDisable(false);
 						} else {
 							isChild = false;
 							childSpecificFields.setVisible(false);
 							childSpecificFieldsLocal.setVisible(false);
-							parentName.setDisable(true);
-							uinId.setDisable(true);
+							childSpecificFields.setDisable(true);
+							childSpecificFieldsLocal.setDisable(true);
 						}
 					}
 				}
@@ -1588,7 +1587,6 @@ public class RegistrationController extends BaseController {
 		demoGraphicTitlePane.setExpanded(false);
 		demoGraphicTitlePane.setContent(demoGraphicPane1);
 		demoGraphicTitlePane.setExpanded(true);
-		anchorPaneRegistration.setMaxHeight(900);
 	}
 
 	/**

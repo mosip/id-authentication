@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
 
-<AnchorPane fx:id="newRegistrationRoot" maxHeight="800" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.DemographicPreviewController"> 
+<AnchorPane fx:id="newRegistrationRoot" maxHeight="1200" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="1200.00" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.DemographicPreviewController"> 
 <children>
 <ScrollPane fx:id="demoRevScrollPane" prefWidth="934.0" vbarPolicy="ALWAYS">
   <content>
@@ -38,8 +38,8 @@
                   </TitledPane>
                </content>
             </TitledPane>
-            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" styleClass="RegbuttonStyle" text="%next" />
-            <Button fx:id="editBtn" layoutX="680.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" styleClass="RegbuttonStyle" text="%edit" />
+            <Button fx:id="nextBtn" layoutX="763.0" layoutY="900.0" mnemonicParsing="false" onAction="#handleNextBtnAction" styleClass="RegbuttonStyle" text="%next" />
+            <Button fx:id="editBtn" layoutX="680.0" layoutY="900.0" mnemonicParsing="false" onAction="#handleEdit" styleClass="RegbuttonStyle" text="%edit" />
              </children>
     </AnchorPane>
   </content>
