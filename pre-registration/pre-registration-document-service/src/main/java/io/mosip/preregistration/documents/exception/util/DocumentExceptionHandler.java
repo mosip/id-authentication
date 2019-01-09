@@ -23,6 +23,7 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
+import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
@@ -69,6 +70,24 @@ public class DocumentExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for DemographicGetDetailsException
+	 */
+	@ExceptionHandler(DemographicGetDetailsException.class)
+	public ResponseEntity<MainListResponseDTO<?>> databaseerror(final DemographicGetDetailsException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(responseStatus);
+		errorRes.setResTime(getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
 	/**
 	 * @param nv
 	 *            pass the exception

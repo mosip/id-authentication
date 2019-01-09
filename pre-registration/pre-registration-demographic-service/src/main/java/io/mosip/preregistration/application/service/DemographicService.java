@@ -175,7 +175,7 @@ public class DemographicService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In pre-registration service of addPreRegistration- " + ex.getStackTrace());
+					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return null;
@@ -227,7 +227,7 @@ public class DemographicService {
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In getAllApplicationDetails method of pre-registration service - " + ex.getCause());
+					"In getAllApplicationDetails method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -266,7 +266,7 @@ public class DemographicService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In getApplicationStatus method of pre-registration service - " + ex.getCause());
+					"In getApplicationStatus method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -311,7 +311,7 @@ public class DemographicService {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id", "In pre-registration deleteIndividual service- " + ex.getCause());
+			log.error("sessionId", "idType", "id", "In pre-registration deleteIndividual service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -347,7 +347,7 @@ public class DemographicService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In getDemographicData of pre-registration service- " + ex.getCause());
+					"In getDemographicData of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -394,7 +394,7 @@ public class DemographicService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In updatePreRegistrationStatus method of pre-registration service- " + ex.getCause());
+					"In updatePreRegistrationStatus method of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -431,7 +431,7 @@ public class DemographicService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
-					"In getPreRegistrationByDate method of pre-registration service - " + ex.getCause());
+					"In getPreRegistrationByDate method of pre-registration service - " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -467,7 +467,7 @@ public class DemographicService {
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
-					"In callGetAppointmentDetailsRestService method of pre-registration service - " + ex.getCause());
+					"In callGetAppointmentDetailsRestService method of pre-registration service - " + ex.getMessage());
 			return bookingRegistrationDTO;
 		}
 		return bookingRegistrationDTO;
@@ -543,7 +543,7 @@ public class DemographicService {
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
-					"In callDocumentServiceToDeleteAllByPreId method of pre-registration service- " + ex.getCause());
+					"In callDocumentServiceToDeleteAllByPreId method of pre-registration service- " + ex.getMessage());
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 		}
