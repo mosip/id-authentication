@@ -406,7 +406,7 @@ public class IrisCaptureController extends BaseController {
 
 	private List<BiometricExceptionDTO> getIrisExceptions() {
 		return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
-				.getIrisBiometricExceptionDTO();
+				.getBiometricExceptionDTO();
 	}
 
 	private Stream<IrisDetailsDTO> getIrisBySelectedPane() {

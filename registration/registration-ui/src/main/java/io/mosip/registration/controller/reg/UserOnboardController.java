@@ -497,9 +497,8 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	private BiometricInfoDTO createBiometricInfoDTO() {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
-		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		FaceDetailsDTO obj = new FaceDetailsDTO();
 		biometricInfoDTO.setFaceDetailsDTO(obj);
@@ -777,7 +776,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	}
 
 	private List<BiometricExceptionDTO> getIrisExceptions() {
-		return biometricDTO.getOperatorBiometricDTO().getIrisBiometricExceptionDTO();
+		return biometricDTO.getOperatorBiometricDTO().getBiometricExceptionDTO();
 	}
 
 	private boolean validateIrisLocalDedup() {

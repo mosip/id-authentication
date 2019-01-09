@@ -373,6 +373,9 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane irisCapture;
 
+	@FXML
+	private AnchorPane biometricException;
+
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
 
@@ -883,6 +886,14 @@ public class RegistrationController extends BaseController {
 				} else {
 					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT,
 							autoAgeDatePicker);
+				}
+
+				if (toggleBiometricException) {
+					biometricException.setVisible(true);
+					toggleFingerprintCaptureVisibility(false);
+				} else {
+					biometricException.setVisible(false);
+					toggleFingerprintCaptureVisibility(true);
 				}
 				biometricTitlePane.setExpanded(true);
 
@@ -1868,9 +1879,8 @@ public class RegistrationController extends BaseController {
 
 	private BiometricInfoDTO createBiometricInfoDTO() {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
-		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}
@@ -1895,6 +1905,16 @@ public class RegistrationController extends BaseController {
 		this.fingerPrintCapturePane.setVisible(visibility);
 	}
 
+	/**
+	 * This method toggles the visible property of the BiometricException Pane.
+	 * 
+	 * @param visibility
+	 *            the value of the visible property to be set
+	 */
+	public void toggleBiometricExceptionVisibility(boolean visibility) {
+		this.biometricException.setVisible(visibility);
+	}
+	
 	/**
 	 * To load the regions in the selection list based on the language code
 	 */

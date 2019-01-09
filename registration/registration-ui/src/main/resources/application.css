@@ -69,7 +69,10 @@
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-
+.biometricExceptionPane{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: white;
+}
 #anchor-pane-registration .text-field {		
 	-fx-background-color: white;
 	-fx-border-color: black;

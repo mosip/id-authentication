@@ -537,7 +537,7 @@ public class TemplateGenerator extends BaseService {
 
 		// list of missing fingers
 		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
-				.getFingerPrintBiometricExceptionDTO();
+				.getBiometricExceptionDTO();
 		//
 		if (exceptionFingers != null) {
 			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
