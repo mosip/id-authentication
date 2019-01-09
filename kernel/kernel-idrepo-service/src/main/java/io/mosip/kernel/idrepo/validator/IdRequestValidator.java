@@ -48,12 +48,25 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 @Component
 public class IdRequestValidator implements Validator {
 
+	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
+
+	/** The Constant VER. */
+	private static final String VER = "ver";
+
+	/** The Constant APPLICATION_VERSION. */
+	private static final String APPLICATION_VERSION = "application.version";
+
+	/** The Constant DOC_TYPE. */
 	private static final String DOC_TYPE = "docType";
 
+	/** The Constant DOCUMENTS. */
 	private static final String DOCUMENTS = "documents";
 
 	/** The Constant CREATE. */
 	private static final String CREATE = "create";
+
+	/** The Constant CREATE. */
+	private static final String UPDATE = "update";
 
 	/** The Constant DATETIME_TIMEZONE. */
 	private static final String DATETIME_TIMEZONE = "datetime.timezone";
@@ -152,14 +165,23 @@ public class IdRequestValidator implements Validator {
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
+			validateVer(request.getVer(), errors);
 			validateUin(request.getUin(), errors);
-			validateStatus(request.getStatus(), errors);
+		}
+
+		if (!errors.hasErrors()) {
+			if (request.getId().equals(id.get(CREATE))) {
+				validateStatus(request.getStatus(), errors, CREATE);
+			} else if (request.getId().equals(id.get(UPDATE))) {
+				validateStatus(request.getStatus(), errors, UPDATE);
+			}
+			validateRegId(request.getRegistrationId(), errors);
+		}
+
+		if (!errors.hasErrors()) {
 			validateRequest(request.getRequest(), errors);
 		}
 
-		if (!errors.hasErrors() && request.getId().equals(id.get(CREATE))) {
-			validateRegId(request.getRegistrationId(), errors);
-		}
 	}
 
 	/**
@@ -177,6 +199,24 @@ public class IdRequestValidator implements Validator {
 		} else if (!this.id.containsValue(id)) {
 			errors.rejectValue(ID_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
+		}
+	}
+
+	/**
+	 * Validate ver.
+	 *
+	 * @param ver
+	 *            the ver
+	 * @param errors
+	 *            the errors
+	 */
+	private void validateVer(String ver, Errors errors) {
+		if (Objects.isNull(ver)) {
+			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
+		} else if (!ver.equals(env.getProperty(APPLICATION_VERSION))) {
+			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
 		}
 	}
 
@@ -209,12 +249,14 @@ public class IdRequestValidator implements Validator {
 	 *            the status
 	 * @param errors
 	 *            the errors
+	 * @param method
 	 */
-	private void validateStatus(String status, Errors errors) {
-		if (Objects.isNull(status)) {
+	private void validateStatus(String status, Errors errors, String method) {
+		if (method.equals(CREATE) && Objects.nonNull(status)
+				&& !status.equals(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED))) {
 			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
-		} else if (!this.status.contains(status)) {
+		} else if (method.equals(UPDATE) && Objects.nonNull(status) && !this.status.contains(status)) {
 			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
@@ -282,24 +324,32 @@ public class IdRequestValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Validate documents.
+	 *
+	 * @param documents
+	 *            the documents
+	 * @param identity
+	 *            the identity
+	 * @param errors
+	 *            the errors
+	 */
 	@SuppressWarnings("unchecked")
 	private void validateDocuments(Object documents, Object identity, Errors errors) {
 		Map<String, Object> identityMap;
 		try {
 			identityMap = convertToMap(identity);
 			if (documents instanceof List) {
-				((List<Map<String, String>>) documents)
-					.parallelStream()
-					.filter(doc -> doc.containsKey(DOC_TYPE))
-					.forEach(doc -> {
-						if (!identityMap.containsKey(doc.get(DOC_TYPE))) {
-							mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
-									(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_TYPE)));
-							errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-									String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-											doc.get(DOC_TYPE)));
-						}
-					});
+				((List<Map<String, String>>) documents).parallelStream().filter(doc -> doc.containsKey(DOC_TYPE))
+						.forEach(doc -> {
+							if (!identityMap.containsKey(doc.get(DOC_TYPE))) {
+								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_TYPE)));
+								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+												doc.get(DOC_TYPE)));
+							}
+						});
 			}
 
 		} catch (IdRepoAppException e) {

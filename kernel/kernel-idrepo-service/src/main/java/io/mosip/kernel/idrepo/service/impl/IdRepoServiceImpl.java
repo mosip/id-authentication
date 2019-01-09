@@ -76,7 +76,6 @@ import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
@@ -84,6 +83,8 @@ import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
  */
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
+
+	private static final String APPLICATION_VERSION = "application.version";
 
 	private static final String DOCUMENTS = "documents";
 
@@ -645,6 +646,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		Set<String> ignoredProperties = new HashSet<>();
 
 		idResponse.setId(id);
+		
+		idResponse.setVer(env.getProperty(APPLICATION_VERSION));
 
 		idResponse.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 
