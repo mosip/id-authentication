@@ -77,6 +77,12 @@ public class FingerprintProviderTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public double matchImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	};
 
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
@@ -103,6 +109,12 @@ public class FingerprintProviderTest {
 		public String createMinutiae(byte[] inputImage) {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public double matchImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
 		}
 	};
 
@@ -148,7 +160,7 @@ public class FingerprintProviderTest {
 	public void testmatchMinutiea() {
 		byte[] refInfo = Base64.getEncoder().encode(finger1);
 		String value = new String(refInfo);
-		fingerPrint.matchMinutiea(value, value);
+		fingerPrint.matchMinutiae(value, value);
 		fingerPrint.matchImage(value, value);
 		fingerPrint.decodeValue(value);
 	}
@@ -202,7 +214,7 @@ public class FingerprintProviderTest {
 		entityInfo.put("rightIndex", rightIndex);
 		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
 		fingerPrint.matchMultiImage(reqInfo, entityInfo);
-		assertTrue(score < 60);
+		assertTrue(score > 60);
 	}
 
 }

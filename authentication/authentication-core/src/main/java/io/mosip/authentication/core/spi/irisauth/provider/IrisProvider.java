@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author Prem Kumar 
- * 
  * The Class IrisProvider.
+ *
+ * @author Prem Kumar The Class IrisProvider.
  */
 public abstract class IrisProvider implements MosipIrisProvider {
 
@@ -18,12 +18,19 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	@Autowired
 	protected Environment environment;
 
+	/** The Constant IRISIMG_LEFT_MATCH_VALUE. */
 	private static final String IRISIMG_LEFT_MATCH_VALUE = "irisimg.left.match.value";
 
+	/** The Constant IRISIMG_RIGHT_MATCH_VALUE. */
 	private static final String IRISIMG_RIGHT_MATCH_VALUE = "irisimg.right.match.value";
+	
+	/** The Constant LEFTTEYE. */
 	static final String LEFTTEYE = "leftEye";
+	
+	/** The Constant RIGHTEYE. */
 	static final String RIGHTEYE = "rightEye";
 
+	/** The Constant idvid. */
 	private static final String IDVID = "idvid";
 
 	/*
@@ -50,18 +57,16 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		return 0;
 	}
 
-	/**
-	 * Match iris image.
-	 *
-	 * @param reqInfo
-	 *            the req info
-	 * @param entityInfo
-	 *            the entity info
-	 * @return the double
-	 */
-	public Double matchIrisImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
-		String uin = reqInfo.get(IDVID);
-		if (reqInfo.containsKey(IrisProvider.RIGHTEYE))
+	
+	
+	@Override
+	public double matchImage(Object reqInfo, Object entityInfo) {
+		
+		if(reqInfo instanceof Map)
+		{
+		    Map<String,String> reqInfoMap=(Map<String,String>)  reqInfo;
+		    String uin = reqInfoMap.get(IDVID);
+			if (reqInfoMap.containsKey(IrisProvider.RIGHTEYE))
 
 		{
 			System.err.println(environment.getProperty(IRISIMG_RIGHT_MATCH_VALUE, Double.class));
@@ -70,8 +75,14 @@ public abstract class IrisProvider implements MosipIrisProvider {
 			System.err.println(environment.getProperty(IRISIMG_LEFT_MATCH_VALUE, Double.class));
 			return environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
 		}
-
+		
+		}
+		
+		else
+			return 0;
 	}
+
+	
 
 	/**
 	 * Match multiMatch Iris Image
@@ -91,5 +102,8 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		}
 		return match;
 	}
+
+
+	
 
 }

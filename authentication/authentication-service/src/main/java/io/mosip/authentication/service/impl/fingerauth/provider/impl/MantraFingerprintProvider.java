@@ -108,4 +108,10 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public double matchImage(Object reqInfo, Object entityInfo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

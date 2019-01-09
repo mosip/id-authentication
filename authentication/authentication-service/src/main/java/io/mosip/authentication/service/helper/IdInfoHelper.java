@@ -30,6 +30,7 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -42,6 +43,7 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
@@ -86,22 +88,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private Environment environment;
 	
-	/** The mantra fingerprint provider. */
 	@Autowired
-	private MantraFingerprintProvider mantraFingerprintProvider ;
-
-	/** The cogent fingerprint provider. */
-	@Autowired
-	private CogentFingerprintProvider cogentFingerprintProvider;
-	
-	
-	/** The mantra fingerprint provider. */
-	@Autowired
-	private CogentIrisProvider cogentrisProvider; 
-
-	/** The cogent fingerprint provider. */
-	@Autowired
-	private MorphoIrisProvider morphoIrisProvider ;
+	private BiometricProviderFactory biometricProviderFactory;
 
 	/**
 	 *  The environment.
@@ -482,29 +470,15 @@ public class IdInfoHelper implements IdInfoFetcher {
 	 * @param bioinfovalue the bioinfovalue
 	 * @return the finger print provider
 	 */
-	public FingerprintProvider getFingerPrintProvider(BioInfo bioinfovalue) {
-		FingerprintProvider provider = null;
-		if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("mantra")) {
-			provider = mantraFingerprintProvider;
-		} else if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("cogent")) {
-			provider = cogentFingerprintProvider;
-		}
-
-		return provider;
+	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue) {
+		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIrisProvider(io.mosip.authentication.core.dto.indauth.BioInfo)
 	 */
-	public IrisProvider getIrisProvider(BioInfo bioinfovalue) {
-		IrisProvider provider = null;
-		if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("cogent")) {
-			provider = cogentrisProvider;
-		} else if (bioinfovalue.getDeviceInfo().getMake().equalsIgnoreCase("morpho")) {
-			provider = morphoIrisProvider;
-		}
-
-		return provider;
+	public MosipBiometricProvider getIrisProvider(BioInfo bioinfovalue) {
+		return biometricProviderFactory.getBiometricProvider(bioinfovalue);
 	}
 
 }
