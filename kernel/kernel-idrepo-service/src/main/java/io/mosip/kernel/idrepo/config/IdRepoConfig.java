@@ -63,16 +63,19 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
 	/** The interceptor. */
 	@Autowired
 	private Interceptor interceptor;
 
 	/** The db. */
 	private Map<String, Map<String, String>> db;
-	
+
 	/** The status. */
 	private List<String> status;
+
+	/** The allowed bio types. */
+	private List<String> allowedBioTypes;
 
 	/** The id. */
 	private Map<String, String> id;
@@ -135,6 +138,24 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
+	 * Gets the allowed bio types.
+	 *
+	 * @return the allowed bio types
+	 */
+	public List<String> getAllowedBioTypes() {
+		return allowedBioTypes;
+	}
+
+	/**
+	 * Sets the allowed bio types.
+	 *
+	 * @param allowedBioTypes the new allowed bio types
+	 */
+	public void setAllowedBioTypes(List<String> allowedBioTypes) {
+		this.allowedBioTypes = allowedBioTypes;
+	}
+
+	/**
 	 * Setup.
 	 */
 	@PostConstruct
@@ -157,7 +178,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 				.collect(Collectors.toMap(Map.Entry::getKey, value -> buildDataSource(value.getValue()))));
 		return resolver;
 	}
-	
+
 	/**
 	 * Rest template.
 	 *
@@ -181,6 +202,16 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	}
 
 	/**
+	 * Allowed bio types.
+	 *
+	 * @return the list
+	 */
+	@Bean
+	public List<String> allowedBioTypes() {
+		return Collections.unmodifiableList(allowedBioTypes);
+	}
+
+	/**
 	 * Status.
 	 *
 	 * @return the map
@@ -189,7 +220,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	public List<String> status() {
 		return Collections.unmodifiableList(status);
 	}
-	
+
 	/**
 	 * Entity manager factory.
 	 *
@@ -209,8 +240,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 		return em;
 	}
-	
-
 
 	/**
 	 * Transaction manager.
@@ -225,7 +254,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		transactionManager.setEntityManagerFactory(emf);
 		return transactionManager;
 	}
-	
+
 	/**
 	 * Additional properties.
 	 *

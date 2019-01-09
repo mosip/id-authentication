@@ -25,12 +25,13 @@ import lombok.NoArgsConstructor;
 @Table(schema = "idrepo")
 public class UinBiometric {
 
-	public UinBiometric(String uinRefId, String bioFileId, String biometricFileName, String biometricFileHash,
-			String langCode, String createdBy, LocalDateTime createdDateTime, String updatedBy,
-			LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+	public UinBiometric(String uinRefId, String bioFileId, String biometricFileType, String biometricFileName,
+			String biometricFileHash, String langCode, String createdBy, LocalDateTime createdDateTime,
+			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
 		super();
 		this.uinRefId = uinRefId;
 		this.bioFileId = bioFileId;
+		this.biometricFileType = biometricFileType;
 		this.biometricFileName = biometricFileName;
 		this.biometricFileHash = biometricFileHash;
 		this.langCode = langCode;
@@ -48,6 +49,9 @@ public class UinBiometric {
 
 	/** The bio file id. */
 	private String bioFileId;
+
+	/** The bio file id. */
+	private String biometricFileType;
 
 	/** The biometric file name. */
 	private String biometricFileName;
@@ -83,6 +87,6 @@ public class UinBiometric {
 
 	@ManyToOne
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
-    @JsonBackReference
+	@JsonBackReference
 	private Uin uin;
 }

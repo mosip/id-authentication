@@ -187,6 +187,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Resource
 	private Map<String, String> id;
 
+	@Resource
+	private List<String> allowedBioTypes;
+
 	/** The shard resolver. */
 	@Autowired
 	private ShardResolver shardResolver;
@@ -276,11 +279,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 								storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 										CryptoUtil.decodeBase64(doc.getDocValue()));
 
-								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, docType.get(VALUE).asText(),
-										hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE, CREATED_BY, now(),
-										UPDATED_BY, now(), false, now()));
+								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, doc.getDocType(),
+										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
+										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
-								uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId,
+								uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getDocType(),
 										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
@@ -418,16 +421,18 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private void getFiles(Uin uinObject, List<Documents> documents, String type) {
 		if (type.equals(BIOMETRICS)) {
 			uinObject.getBiometrics().parallelStream().forEach(bio -> {
-				try {
-					ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
-					String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
-							+ identityMap.get("individualBiometrics").get(FORMAT).asText();
-					String data = getFile(uinObject.getUin(), fileName);
-					if (Objects.nonNull(data)) {
-						documents.add(new Documents("individualBiometrics", data));
+				if (allowedBioTypes.contains(bio.getBiometricFileType())) {
+					try {
+						ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
+						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
+								+ identityMap.get("individualBiometrics").get(FORMAT).asText();
+						String data = getFile(uinObject.getUin(), fileName);
+						if (Objects.nonNull(data)) {
+							documents.add(new Documents("individualBiometrics", data));
+						}
+					} catch (IdRepoAppException e) {
+						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
 					}
-				} catch (IdRepoAppException e) {
-					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
 				}
 			});
 		}
@@ -646,7 +651,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		Set<String> ignoredProperties = new HashSet<>();
 
 		idResponse.setId(id);
-		
+
 		idResponse.setVer(env.getProperty(APPLICATION_VERSION));
 
 		idResponse.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
