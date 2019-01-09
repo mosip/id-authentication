@@ -7,12 +7,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.DeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceHistoryResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -26,7 +30,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 
 	@Autowired
-	DeviceHistoryRepository devRepo;
+	DeviceHistoryRepository deviceHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -51,7 +55,7 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 		List<DeviceHistoryDto> deviceHistoryDtoList = null;
 		DeviceHistoryResponseDto deviceHistoryResponseDto = new DeviceHistoryResponseDto();
 		try {
-			devHistoryList = devRepo
+			devHistoryList = deviceHistoryRepository
 					.findByFirstByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(id,
 							langCode, lDateAndTime);
 		} catch (DataAccessException | DataAccessLayerException e) {
@@ -68,5 +72,24 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 		}
 		deviceHistoryResponseDto.setDeviceHistoryDetails(deviceHistoryDtoList);
 		return deviceHistoryResponseDto;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DeviceHistoryService#createDeviceHistory(io.mosip.kernel.masterdata.entity.DeviceHistory)
+	 */
+	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
+	public IdResponseDto createDeviceHistory(DeviceHistory entityHistory) {
+		DeviceHistory createdHistory;
+		try {
+			createdHistory = deviceHistoryRepository.create(entityHistory);
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
+					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.map(createdHistory, idResponseDto);
+		return idResponseDto;
 	}
 }
