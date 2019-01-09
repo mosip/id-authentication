@@ -24,10 +24,9 @@ table:tsp_id
 **Maven Dependency**
 
 ```
-	<dependencies>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-idgenerator-tsp</artifactId>
+			<artifactId>kernel-idgenerator-tspid</artifactId>
 			<version>${project.version}</version>
 	</dependency>
 

@@ -31,7 +31,6 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<String> {
 	 */
 	@Value("${mosip.kernel.tsp.length}")
 	private int tspIdLength;
-
 	/**
 	 * The reference to TspRepository.
 	 */
