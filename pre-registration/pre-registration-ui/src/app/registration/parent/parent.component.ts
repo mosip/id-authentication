@@ -28,6 +28,8 @@ export class ParentComponent implements OnInit {
       this.componentName = 'TimeSelectionComponent';
     } else if (route_parts[route_parts.length - 1] === 'acknowledgement') {
       this.componentName = 'AcknowledgementComponent';
+    } else if (route_parts[route_parts.length - 1] === 'preview') {
+      this.componentName = 'PreviewComponent';
     }
   }
 

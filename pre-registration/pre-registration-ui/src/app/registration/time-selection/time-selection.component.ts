@@ -199,5 +199,15 @@ export class TimeSelectionComponent implements OnInit {
         });
   }
 
+  navigateDashboard() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate(['dashboard', routeParams[2]]);
+  }
+
+  navigateBack() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate([routeParams[1], routeParams[2], 'pick-center']);
+  }
+
 }
 

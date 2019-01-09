@@ -68,6 +68,44 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+section{
+  display: flex;
+  
+}
+.centers-wrapper{
+  margin-left: 25px;
+  margin-right: 2vw;
+  width: 60vw;
+
+}
+
+.centers-list ul{
+  list-style-type: none;
+  padding: 0%;
+  font-size: 0.8rem;
+}
+
+.center-card{
+  margin: 2% 0;
+  display: flex;
+}
+
+input[type="radio"] {
+  -ms-transform: scale(1.5); 
+  -webkit-transform: scale(1.5); 
+  transform: scale(1.5);
+  height: 2rem;
+  margin-right: 1.2rem;
+}
+
+.map{
+  width: 30vw;
+  background-color: lightgray;
+  height: 60vh;
+  display: flex;
+}
+
 .user-back-btn {
   color: #fd518c;
   background-color: white;
@@ -103,9 +141,7 @@
   letter-spacing: 1px;
 }
 .center_selection-intial-recommendation-container {
-  margin-left: 25px;
   display: flex;
-  width: 50%;
   align-items: center;
 }
 .center_selection-center_recommendation-display {
@@ -142,7 +178,7 @@ img {
 }
 .center_selection-form-container {
   margin-left: 25px;
-  width: 50%;
+  width:100%;
   padding: 0;
   animation: 1.3s anim ease-out;
 }
@@ -211,6 +247,7 @@ img {
   border-radius: 0;
   margin-top: 10px;
   display: inline-flex;
+  
 }
 .search-form {
   display: flex;
