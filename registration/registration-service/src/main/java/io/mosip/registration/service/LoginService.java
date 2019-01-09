@@ -1,6 +1,7 @@
 package io.mosip.registration.service;
 
 import java.util.List;
+import java.util.Set;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
@@ -20,7 +21,7 @@ public interface LoginService {
 	 * 
 	 * @return Map of login modes along with sequence
 	 */
-	List<String> getModesOfLogin(String authType);
+	List<String> getModesOfLogin(String authType, Set<String> roleList);
 
 	/**
 	 * fetching user details

@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
-import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
+import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
@@ -47,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
 	 * Class to retrieve the Login Details from DB
 	 */
 	@Autowired
-	private RegistrationAppAuthenticationDAO registrationAppLoginDAO;
+	private AppAuthenticationDAO appAuthenticationDAO;
 
 	/**
 	 * Class to retrieve the Registration Officer Details from DB
@@ -73,7 +74,7 @@ public class LoginServiceImpl implements LoginService {
 	 * @see org.mosip.registration.service.login.LoginService#getModesOfLogin()
 	 */
 	@Override
-	public List<String> getModesOfLogin(String authType) {
+	public List<String> getModesOfLogin(String authType, Set<String> roleList) {
 		// Retrieve Login information
 
 		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -82,7 +83,7 @@ public class LoginServiceImpl implements LoginService {
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of login modes",
 				"refId", "refIdType");
 
-		return registrationAppLoginDAO.getModesOfLogin(authType);
+		return appAuthenticationDAO.getModesOfLogin(authType, roleList);
 	}
 	
 	/*

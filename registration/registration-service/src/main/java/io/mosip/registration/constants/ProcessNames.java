@@ -4,7 +4,8 @@ public enum ProcessNames {
 	LOGIN("login authentication"), 
 	PACKET("packet authentication"),
 	EOD("eod authentication"),
-	EXCEPTION("exception authentication"); 
+	EXCEPTION("exception authentication"),
+	ONBOARD("onboard authentication");	
 	
 	
 	/**

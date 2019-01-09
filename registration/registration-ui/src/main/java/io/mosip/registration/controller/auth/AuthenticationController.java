@@ -4,7 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -321,7 +323,10 @@ public class AuthenticationController extends BaseController {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
-		userAuthenticationTypeList = loginService.getModesOfLogin(authType);
+		Set<String> roleSet = new HashSet<>();
+		roleSet.add("*");
+		
+		userAuthenticationTypeList = loginService.getModesOfLogin(authType,roleSet);
 
 		if (userAuthenticationTypeList.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);

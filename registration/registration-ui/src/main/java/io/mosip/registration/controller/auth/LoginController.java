@@ -11,8 +11,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +55,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -218,11 +220,6 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug("REGISTRATION - LOGIN_MODE_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
 		
-		if (SessionContext.getInstance().getMapObject() == null) {
-			loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType());
-			SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-		}
-		
 		RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 		if(userDetail == null) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
@@ -234,38 +231,65 @@ public class LoginController extends BaseController implements Initializable {
 			} else if (userId.getText().length() > usernamePwdLength) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
 			} else {
-				if (getCenterMachineStatus(userDetail)) {
-					String loginMode = null;
+				
+				Set<String> roleList = new LinkedHashSet<>();
 
-					try {
-						SessionContext.getInstance().getMapObject().put("isNewUser", isNewUser);
-						if (!loginList.isEmpty()) {
-							loginMode = loginList.get(RegistrationConstants.PARAM_ZERO);
-						}
-						loginList.remove(RegistrationConstants.PARAM_ZERO);
-
-						LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-								APPLICATION_ID, "Retrieved corresponding Login mode");
-
-						if (loginMode == null) {
-							AnchorPane loginType = BaseController
-									.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-							scene = getScene(loginType);
-						} else {
-							loadLoginScreen(loginMode);
-						}
-
-					} catch (IOException ioException) {
-
-						LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-								APPLICATION_ID, ioException.getMessage());
-
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+				userDetail.getUserRole().forEach(roleCode -> {
+					if (roleCode.getIsActive()) {
+						roleList.add(String.valueOf(roleCode.getRegistrationUserRoleID().getRoleCode()));
 					}
+				});
+
+				LOGGER.debug("REGISTRATION - ROLES - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+						"Validating roles");
+				// Checking roles
+				if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER) || roleList.contains(RegistrationConstants.SUPERVISOR) || roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
 				} else {
-					SessionContext.getInstance().getMapObject().put("isNewUser", true);
-					enablePWD();
-				}
+					
+					
+					if (SessionContext.getInstance().getMapObject() == null) {
+						
+						SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+						
+						if(getCenterMachineStatus(userDetail)) {
+							SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, isNewUser);
+							loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
+						} else {
+							SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, true);
+							Set<String> roleSet = new HashSet<>();
+							roleSet.add("*");
+							loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
+						}
+					}
+
+						try {
+				
+							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO) : null;
+							
+							if (!loginList.isEmpty()) {
+								loginList.remove(RegistrationConstants.PARAM_ZERO);
+							}
+
+							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+									APPLICATION_ID, "Retrieved corresponding Login mode");
+
+							if (loginMode == null) {
+								AnchorPane loginType = BaseController
+										.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
+								scene = getScene(loginType);
+							} else {
+								loadLoginScreen(loginMode);
+							}
+
+						} catch (IOException ioException) {
+
+							LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+									APPLICATION_ID, ioException.getMessage());
+
+							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+						}
+				} 
 			}
 		}
 
@@ -291,22 +315,17 @@ public class LoginController extends BaseController implements Initializable {
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
-		boolean flag = (boolean) SessionContext.getInstance().getMapObject().get("isNewUser");
 		
 		if (!serverStatus) {
 
 			if (RegistrationConstants.SUCCESS.equals(validatePwd(userId.getText().toLowerCase(), password.getText()))) {
-
-				offlineStatus = validateInvalidLogin(userDetail, "");
-				if (flag) {
-					enableOTP();
-				}
+				offlineStatus = validateInvalidLogin(userDetail, "");				
 			} else if (RegistrationConstants.FAILURE.equals(validatePwd(userId.getText().toLowerCase(), password.getText()))) {
 				offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 			}
 		}
 
-		if (!flag && (serverStatus || offlineStatus)) {
+		if (serverStatus || offlineStatus) {
 			try {
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
@@ -377,16 +396,8 @@ public class LoginController extends BaseController implements Initializable {
 				
 				if (otpLoginStatus) {
 						try {
-							boolean flag = (boolean) SessionContext.getInstance().getMapObject().get("isNewUser");
 							
-							if (!flag) {
-								loadNextScreen(userDetail, RegistrationConstants.LOGIN_METHOD_OTP);
-							} else {
-								setInitialLoginInfo(userDetail.getId());
-								Parent parent = BaseController
-										.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-								getScene(parent);
-							}
+							loadNextScreen(userDetail, RegistrationConstants.LOGIN_METHOD_OTP);
 
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -600,9 +611,7 @@ public class LoginController extends BaseController implements Initializable {
 		bioText.setVisible(true);
 		bioText.setText(RegistrationConstants.PWORD_TEXT);
 		bioImage.setVisible(false);
-		if(!userId.getText().isEmpty()) {
-			userId.setEditable(false);
-		}
+		
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -626,9 +635,7 @@ public class LoginController extends BaseController implements Initializable {
 		bioImage.setVisible(true);
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.FP_IMG_PATH));
 		bioImage.setImage(image);
-		if(!userId.getText().isEmpty()) {
-			userId.setEditable(false);
-		}
+		
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -651,6 +658,8 @@ public class LoginController extends BaseController implements Initializable {
 	 * Enable Iris login specific attributes
 	 */
 	private void enableIris(){
+		userIdPane.setVisible(false);
+		credentialsPane.setVisible(true);
 		password.setVisible(false);
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
@@ -660,9 +669,7 @@ public class LoginController extends BaseController implements Initializable {
 		bioImage.setVisible(true);
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMG_PATH));
 		bioImage.setImage(image);
-		if(!userId.getText().isEmpty()) {
-			userId.setEditable(false);
-		}
+
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -675,6 +682,8 @@ public class LoginController extends BaseController implements Initializable {
 	 * Enable Face login specific attributes
 	 */
 	private void enableFace(){
+		userIdPane.setVisible(false);
+		credentialsPane.setVisible(true);
 		password.setVisible(false);
 		otpValidity.setVisible(false);
 		getOTP.setVisible(false);
@@ -684,9 +693,7 @@ public class LoginController extends BaseController implements Initializable {
 		bioImage.setVisible(true);
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.FACE_IMG_PATH));
 		bioImage.setImage(image);
-		if(!userId.getText().isEmpty()) {
-			userId.setEditable(false);
-		}
+		
 		submit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {

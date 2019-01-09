@@ -6,13 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
- * Composite key for RegistrationAppLoginMethod entity
+ * Composite key for AppAuthenticationMethod entity
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
  */
 @Embeddable
-public class RegistrationAppAuthenticationMethodId implements Serializable {
+public class AppAuthenticationMethodId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

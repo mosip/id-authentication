@@ -26,7 +26,7 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationAppAuthenticationDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(GlobalParamDAOImpl.class);
 
 	/** The globalParam repository. */
 	@Autowired

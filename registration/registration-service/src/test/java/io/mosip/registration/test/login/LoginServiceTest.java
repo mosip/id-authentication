@@ -26,8 +26,8 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.AppAuthenticationDetails;
-import io.mosip.registration.dao.RegistrationAppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
@@ -36,7 +36,7 @@ import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.repositories.RegistrationAppAuthenticationRepository;
+import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
@@ -54,10 +54,10 @@ public class LoginServiceTest {
 	private LoginServiceImpl loginServiceImpl;
 
 	@Mock
-	private RegistrationAppAuthenticationRepository registrationAppLoginRepository;
+	private AppAuthenticationRepository appAuthenticationRepository;
 
 	@Mock
-	private RegistrationAppAuthenticationDAO registrationAppLoginDAO;
+	private AppAuthenticationDAO appAuthenticationDAO;
 
 	@Mock
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
@@ -87,15 +87,15 @@ public class LoginServiceTest {
 	public void getModesOfLoginTest() {
 
 		List<AppAuthenticationDetails> loginList = new ArrayList<AppAuthenticationDetails>();
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq(Mockito.anyString())).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq(Mockito.anyString(), Mockito.anyString())).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
-		loginList.stream().map(loginMethod -> loginMethod.getregistrationAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
+		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
 
-		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueAndRegistrationAppAuthenticationMethodIdProcessNameOrderByMethodSeq("LOGIN")).thenReturn(loginList);
+		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq("LOGIN","*")).thenReturn(loginList);
 		
-		Mockito.when(registrationAppLoginDAO.getModesOfLogin("LOGIN")).thenReturn(modes);
-		assertEquals(modes,loginServiceImpl.getModesOfLogin("LOGIN"));
+		Mockito.when(appAuthenticationDAO.getModesOfLogin("LOGIN",Mockito.anySet())).thenReturn(modes);
+		assertEquals(modes,loginServiceImpl.getModesOfLogin("LOGIN",Mockito.anySet()));
 	}
 
 	@Test

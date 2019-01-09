@@ -12,7 +12,7 @@ public interface AppAuthenticationDetails {
 	/**
 	 * To fetch only selected columns from Embeddable
 	 */
-	AppAuthentication getregistrationAppAuthenticationMethodId();
+	AppAuthentication getAppAuthenticationMethodId();
 	
 	/**
 	 * To fetch only selected columns from table
