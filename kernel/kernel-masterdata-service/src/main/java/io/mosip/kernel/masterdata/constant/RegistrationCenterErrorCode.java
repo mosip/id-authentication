@@ -12,7 +12,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_FETCH_EXCEPTION("KER-MSD-041", "Error occured while fetching Registration Centers"),
 	REGISTRATION_CENTER_UPDATE_EXCEPTION("KER-MSD-111", "Error occurred while updating Registration Center details"),
-
+	REGISTRATION_CENTER_DELETE_EXCEPTION("KER-MSD-112", "Error occurred while deleting Registration Center details"),
 	REGISTRATION_CENTER_NOT_FOUND("KER-MSD-042", "Registration Center not found"),
 
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043",

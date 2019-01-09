@@ -139,4 +139,13 @@ public interface RegistrationCenterService {
 	 */
 	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
 
+	/**
+	 * This method deletes the registration center.
+	 * 
+	 * @param registrationCenterId
+	 *            - the id of the registration center to be deleted.
+	 * @return - the id response DTO.
+	 */
+	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
+
 }

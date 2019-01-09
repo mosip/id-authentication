@@ -3,9 +3,12 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -408,6 +411,33 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(exception));
 		}
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * deleteRegistrationCenter(java.lang.String)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto deleteRegistrationCenter(String registrationCenterId) {
+		try {
+			int deletedRegistrationCenter = registrationCenterRepository.deleteRegistrationCenter(
+					LocalDateTime.now(ZoneId.of("UTC")), registrationCenterId, MetaDataUtils.getContextUser());
+			if (deletedRegistrationCenter < 1) {
+				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_DELETE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		idResponseDto.setId(registrationCenterId);
 		return idResponseDto;
 	}
 }
