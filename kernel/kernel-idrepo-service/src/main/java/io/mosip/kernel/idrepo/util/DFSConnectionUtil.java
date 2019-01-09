@@ -25,15 +25,15 @@ public class DFSConnectionUtil {
 	private AmazonS3 connection;
 
 	/** The access key. */
-	@Value("${registration.processor.access-key}")
+	@Value("${mosip.kernel.idrepo.dfs.access-key}")
 	private String accessKey;
 
 	/** The secret key. */
-	@Value("${registration.processor.secret-key}")
+	@Value("${mosip.kernel.idrepo.dfs.secret-key}")
 	private String secretKey;
 
 	/** The endpoint. */
-	@Value("${registration.processor.endpoint}")
+	@Value("${mosip.kernel.idrepo.dfs.endpoint}")
 	private String endpoint;
 
 	/**
