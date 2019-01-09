@@ -111,6 +111,10 @@ mat-select:focus {
   width: 30%;
 }
 
+.file-upload__body__2 > p {
+  margin: 0px;
+}
+
 .file-upload__message {
   padding: 20px 25px 10px 25px;
   font-size: 12px;
