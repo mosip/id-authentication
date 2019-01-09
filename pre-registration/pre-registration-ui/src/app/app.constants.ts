@@ -1,6 +1,8 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-export const COUNTRY_NAME = 'India';
+export const COUNTRY_NAME = 'INDIA';
+export const NEW_USER_ID = 'mosip.pre-registration.demographic.create';
+export const TRANSLITERATION_ID = 'mosip.pre-registration.transliteration.transliterate';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
@@ -26,8 +28,8 @@ export const APPEND_URL = {
 };
 
 export const PARAMS_KEYS = {
-  getUsers: 'userId',
-  getUser: 'preRegId',
+  getUsers: 'user_id',
+  getUser: 'pre_registration_id',
   deleteUser: 'preId',
   locationHierarchyName: 'hierarchyName'
 };
@@ -39,7 +41,7 @@ export const ERROR_CODES = {
 export const DASHBOARD_RESPONSE_KEYS = {
   bookingRegistrationDTO: {
     dto: 'bookingRegistrationDTO',
-    regDate: 'reg_date',
+    regDate: 'appointment_date',
     time_slot_from: 'time_slot_from',
     time_slot_to: 'time_slot_to'
   },

@@ -133,9 +133,7 @@
         </span>
         <div class="file-upload__body__document-name" *ngIf="users[0].files[0][i]">
           <span>{{ users[0].files[0][i].doc_name }}</span>
-          <span class="file-uplaoad__body__document-name__view" (click)="viewFile(users[0].files[0][i].multipartFile)">
-            view
-          </span>
+          <span class="file-uplaoad__body__document-name__view" (click)="viewFile(users[0].files[0][i])"> view </span>
           <span>
             <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, i)">close</mat-icon>
           </span>
@@ -143,6 +141,7 @@
       </div>
     </div>
     <div class="file-upload__body__2">
+      <p>{{ fileName }}</p>
       <iframe class="file-uplaoad__body__2__preview" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
     </div>
   </div>

@@ -13,12 +13,17 @@ export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
   BASE_URL = environment.BASE_URL;
-  SEND_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/documents';
-  DELETE_FILE_URL = 'https://integ.mosip.io/document/v0.1/pre-registration/deleteDocument';
-  GET_FILE_URL = 'http://integ.mosip.io/document/v0.1/pre-registration/getDocument';
-  MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/http://integ.mosip.io/masterdata/v1.0/';
-  AVAILABILITY_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/availability';
-  BOOKING_URL = 'https://integ.mosip.io/booking/v0.1/pre-registration/booking/book';
+  // GET_APPLICANT = this.BASE_URL + 'demographic/v0.1/pre-registration/applicationData';
+  // APPLICANTS = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
+  GET_APPLICANT = this.BASE_URL + 'demographic/v0.1/pre-registration/applicationData';
+  APPLICANTS = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
+  SEND_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/documents';
+  DELETE_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/deleteDocument';
+  GET_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/getDocument';
+  MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/' + this.BASE_URL + 'masterdata/v1.0/';
+  AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
+  BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
+  LOCATION_URL = this.BASE_URL + 'masterdata/';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   // const TEST_URL = 'http://A2ML27085:9092/';
   LANGUAGE_CODE = 'ENG';
@@ -52,10 +57,12 @@ export class DataStorageService {
   }
 
   getUserDocuments(preRegId) {
+    console.log('pre reg id', preRegId);
+
     return this.httpClient.get(this.GET_FILE_URL, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('preId', preRegId)
+      params: new HttpParams().append('pre_registration_id', preRegId)
     });
   }
 
@@ -172,11 +179,10 @@ export class DataStorageService {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append('preRegId', preRegId)
-    })
+    });
   }
 
   getSecondaryLanguageLabels(langCode: string) {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
   }
-
 }

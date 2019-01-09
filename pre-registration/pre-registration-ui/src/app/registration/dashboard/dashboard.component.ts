@@ -247,12 +247,18 @@ export class DashBoardComponent implements OnInit {
   }
 
   onModifyInformation(preId: string) {
+    console.log('modify info called');
+
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => {
+        console.log('response from modify data', response);
+
         this.setUserFiles(response);
       },
-      error => {},
+      error => {
+        console.log('response from modify data', error);
+      },
       () => {
         this.dataStorageService.getUser(preId).subscribe(
           response => {
