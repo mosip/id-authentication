@@ -39,9 +39,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Autowired
 	private ApplicationRepository applicationRepository;
-
-	@Autowired
-	private DataMapper dataMapper;
 	
 
     MapperFactory mapperFactory = null;
@@ -73,9 +70,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> {
-				applicationDtoList.add(dataMapper.map(application,ApplicationDto.class,true,null,null,true));
-			});
+			applicationList.forEach(application -> 
+				applicationDtoList.add(mapper.map(application,ApplicationDto.class))
+			);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -103,9 +100,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> {
-				applicationDtoList.add(dataMapper.map(application,ApplicationDto.class,true,null,null,true));
-			});
+			applicationList.forEach(application -> 
+				applicationDtoList.add(mapper.map(application,ApplicationDto.class))
+			);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -134,7 +131,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
-	     applicationDtoList.add(dataMapper.map(application,ApplicationDto.class,true,null,null,true));
+	     applicationDtoList.add(mapper.map(application,ApplicationDto.class));
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -162,6 +159,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		return dataMapper.map(application,CodeAndLanguageCodeID.class,true,null,null,true);
+		return mapper.map(application,CodeAndLanguageCodeID.class);
 	}
 }
