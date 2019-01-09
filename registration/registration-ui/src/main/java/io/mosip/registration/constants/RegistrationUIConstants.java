@@ -16,7 +16,8 @@ public class RegistrationUIConstants {
 	public static final String CREDENTIALS_FIELD_EMPTY = bundle.getString("CREDENTIALS_FIELD_EMPTY");
 	public static final String USERNAME_FIELD_EMPTY = bundle.getString("USERNAME_FIELD_EMPTY");
 	public static final String PWORD_FIELD_EMPTY = bundle.getString("PWORD_FIELD_EMPTY");
-	public static final String USRNAME_PWORD_LENGTH = bundle.getString("USRNAME_PWORD_LENGTH");
+	public static final String USRNAME_LENGTH = bundle.getString("USRNAME_LENGTH");
+	public static final String PWORD_LENGTH = bundle.getString("PWORD_LENGTH");
 	public static final String USER_NOT_ONBOARDED = bundle.getString("USER_NOT_ONBOARDED");
 	public static final String USER_NOT_AUTHORIZED = bundle.getString("USER_NOT_AUTHORIZED");
 	public static final String INCORRECT_PWORD = bundle.getString("INCORRECT_PWORD");

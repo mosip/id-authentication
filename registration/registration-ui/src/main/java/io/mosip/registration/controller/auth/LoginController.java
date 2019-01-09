@@ -220,80 +220,81 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug("REGISTRATION - LOGIN_MODE_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Credentials entered through UI");
 		
-		RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
-		if(userDetail == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
-		} else if(userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+		
+		if (userId.getText().isEmpty()) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+		} else if (userId.getText().length() > usernamePwdLength) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_LENGTH);
 		} else {
-			if (userId.getText().isEmpty()) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
-			} else if (userId.getText().length() > usernamePwdLength) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
-			} else {
-				
-				Set<String> roleList = new LinkedHashSet<>();
-
-				userDetail.getUserRole().forEach(roleCode -> {
-					if (roleCode.getIsActive()) {
-						roleList.add(String.valueOf(roleCode.getRegistrationUserRoleID().getRoleCode()));
-					}
-				});
-
-				LOGGER.debug("REGISTRATION - ROLES - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-						"Validating roles");
-				// Checking roles
-				if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER) || roleList.contains(RegistrationConstants.SUPERVISOR) || roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
-				} else {
+			RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
+			if(userDetail == null) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
+			} else if(userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
+			} else  {
 					
-					
-					if (SessionContext.getInstance().getMapObject() == null) {
-						
-						SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-						
-						if(getCenterMachineStatus(userDetail)) {
-							SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, isNewUser);
-							loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
-						} else {
-							SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, true);
-							Set<String> roleSet = new HashSet<>();
-							roleSet.add("*");
-							loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
+					Set<String> roleList = new LinkedHashSet<>();
+
+					userDetail.getUserRole().forEach(roleCode -> {
+						if (roleCode.getIsActive()) {
+							roleList.add(String.valueOf(roleCode.getRegistrationUserRoleID().getRoleCode()));
 						}
-					}
+					});
 
-						try {
-				
-							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO) : null;
+					LOGGER.debug("REGISTRATION - ROLES - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+							"Validating roles");
+					// Checking roles
+					if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER) || roleList.contains(RegistrationConstants.SUPERVISOR) || roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
+					} else {
+						
+						
+						if (SessionContext.getInstance().getMapObject() == null) {
 							
-							if (!loginList.isEmpty()) {
-								loginList.remove(RegistrationConstants.PARAM_ZERO);
-							}
-
-							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-									APPLICATION_ID, "Retrieved corresponding Login mode");
-
-							if (loginMode == null) {
-								AnchorPane loginType = BaseController
-										.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-								scene = getScene(loginType);
+							SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+							
+							if(getCenterMachineStatus(userDetail)) {
+								SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, isNewUser);
+								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
 							} else {
-								loadLoginScreen(loginMode);
+								SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, true);
+								Set<String> roleSet = new HashSet<>();
+								roleSet.add("*");
+								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
 							}
-
-						} catch (IOException ioException) {
-
-							LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-									APPLICATION_ID, ioException.getMessage());
-
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 						}
-				} 
-			}
-		}
 
+							try {
+					
+								String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO) : null;
+								
+								if (!loginList.isEmpty()) {
+									loginList.remove(RegistrationConstants.PARAM_ZERO);
+								}
+
+								LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+										APPLICATION_ID, "Retrieved corresponding Login mode");
+
+								if (loginMode == null) {
+									AnchorPane loginType = BaseController
+											.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
+									scene = getScene(loginType);
+								} else {
+									loadLoginScreen(loginMode);
+								}
+
+							} catch (IOException ioException) {
+
+								LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+										APPLICATION_ID, ioException.getMessage());
+
+								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+							}
+					} 
+				}
+		}
 	}
+
 
 	/**
 	 * 
@@ -318,9 +319,11 @@ public class LoginController extends BaseController implements Initializable {
 		
 		if (!serverStatus) {
 
-			if (RegistrationConstants.SUCCESS.equals(validatePwd(userId.getText().toLowerCase(), password.getText()))) {
+			String status = validatePwd(userId.getText().toLowerCase(), password.getText());
+			
+			if (RegistrationConstants.SUCCESS.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, "");				
-			} else if (RegistrationConstants.FAILURE.equals(validatePwd(userId.getText().toLowerCase(), password.getText()))) {
+			} else if (RegistrationConstants.FAILURE.equals(status)) {
 				offlineStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.INCORRECT_PWORD);
 			}
 		}

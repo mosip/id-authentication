@@ -419,8 +419,10 @@ public class BaseController {
 
 		if (password.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
+			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
 		}  else if (password.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_LENGTH);
+			return RegistrationUIConstants.PWORD_LENGTH;
 		} else {
 			String hashPassword = null;
 
@@ -437,8 +439,8 @@ public class BaseController {
 			if (validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
 				return RegistrationConstants.SUCCESS;
 			} 
+			return RegistrationConstants.FAILURE;
 		}
-		return RegistrationConstants.FAILURE;
 	}
 
 	/**
