@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.junit.Before;
@@ -29,57 +30,59 @@ import io.mosip.registration.processor.stages.uingenerator.util.UinAvailabilityC
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({JsonUtil.class})
 public class UinAvailabilityCheckTest {
-	
+
 	@InjectMocks
 	private UinAvailabilityCheck uinAvailabilityCheck;
-	
+
 	@Mock
 	private InputStream inputStream;
-	
+
 	@Mock
 	private  FileSystemAdapter<InputStream, Boolean> adapter;
-	
+
 	@Mock
 	private PacketMetaInfo packetMetaInfo;
-	
+
 	@Mock
 	private List<FieldValue> hashSequence;
-	
+
 	@Mock
 	private Identity identity;
-	
+
 	@Mock
 	private IdentityIteratorUtil identityIteratorUtil;
-	
-	
-	
-	
-	
+
 	@Before
 	public void setup() throws Exception {
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
-				.thenReturn(packetMetaInfo);
+		.thenReturn(packetMetaInfo);
 		Mockito.when(packetMetaInfo.getIdentity()).thenReturn(identity);
 		Mockito.when(identity.getMetaData()).thenReturn(hashSequence);
-		
 	}
+	
 	@Test
 	public void uinCheckSuccess() {
 		Mockito.when(identityIteratorUtil.getMetadataLabelValue(hashSequence,"uin")).thenReturn("12345");
 		boolean result= uinAvailabilityCheck.uinCheck("12345", adapter);
 		assertTrue(result);
-		
-		
 	}
+	
 	@Test
 	public void uinCheckFail() {
 		Mockito.when(identityIteratorUtil.getMetadataLabelValue(hashSequence,"uin")).thenReturn(null);
 		boolean result= uinAvailabilityCheck.uinCheck("12345", adapter);
 		assertFalse(result);
 	}
-	
 
-
+	@Test
+	public void uinUnsupportedEncordingException() throws Exception {
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+		.thenThrow(new UnsupportedEncodingException( "json object parsing failed"));
+		Mockito.when(identityIteratorUtil.getMetadataLabelValue(hashSequence,"uin")).thenReturn("12345");
+		uinAvailabilityCheck.uinCheck("12345", adapter);
+		
+	}
 }
