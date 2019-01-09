@@ -130,7 +130,7 @@ public enum BioAuthType implements AuthType {
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction< Map<String, String>,  Map<String, String>, Double> func = idInfoFetcher.getFingerPrintProvider(bioinfovalue)::matchMultiImage;//TODO add provider
-						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
 			valueMap.put("idvid", authRequestDTO.getIdvId());
 			return valueMap;
