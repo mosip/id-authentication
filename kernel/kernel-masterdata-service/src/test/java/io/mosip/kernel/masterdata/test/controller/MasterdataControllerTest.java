@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,8 +93,13 @@ import io.mosip.kernel.masterdata.service.TemplateService;
 @AutoConfigureMockMvc
 public class MasterdataControllerTest {
 
+	private static final String JSON_STRING_RESPONCE = "{\"uinLength\":24,\"numberOfWrongAttemptsForOtp\":5,\"accountFreezeTimeoutInHours\":10,\"mobilenumberlength\":10,\"archivalPolicy\":\"arc_policy_2\",\"tokenIdLength\":23,\"restrictedNumbers\":[\"8732\",\"321\",\"65\"],\"registrationCenterId\":\"KDUE83CJ3\",\"machineId\":\"MCBD3UI3\",\"supportedLanguages\":[\"eng\",\"hnd\",\"ara\",\"deu\",\"FRN\"],\"tspIdLength\":24,\"otpTimeOutInMinutes\":2,\"notificationtype\":\"SMS|EMAIL\",\"pridLength\":32,\"vidLength\":32}";
+
 	@Autowired
 	public MockMvc mockMvc;
+
+	@MockBean
+	private RestTemplate restTemplate;
 
 	@MockBean
 	private BiometricTypeService biometricTypeService;
@@ -196,6 +202,7 @@ public class MasterdataControllerTest {
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
+		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_STRING_RESPONCE);
 		biometricTypeSetup();
 
 		applicationSetup();
@@ -470,7 +477,7 @@ public class MasterdataControllerTest {
 						+ "    \"langCode\": \"eng\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void addBiometricTypeLanguageValidationTest() throws Exception {
 		Mockito.when(biometricTypeService.createBiometricType(Mockito.any())).thenReturn(codeAndLanguageCodeId);
@@ -955,37 +962,34 @@ public class MasterdataControllerTest {
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
 		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(resgistrationCenterStatusResponseDto);
-		
-		 mockMvc.perform(get(
-				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				 .andExpect(status().isOk());
-		
+
+		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				.andExpect(status().isOk());
+
 	}
-	
+
 	@Test
 	public void validateTimestampWithRegistrationCenterMasterDataExceptionTest() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
 		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(new MasterDataServiceException("11111","Database exception"));
-		
-		 mockMvc.perform(get(
-				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				 .andExpect(status().isInternalServerError());
-		
+				Mockito.anyString())).thenThrow(new MasterDataServiceException("11111", "Database exception"));
+
+		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				.andExpect(status().isInternalServerError());
+
 	}
-	
+
 	@Test
 	public void validateTimestampWithRegistrationCenterDataNotFoundExceptionTest() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
 		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(new DataNotFoundException("11111","Data not found exception"));
-		
-		 mockMvc.perform(get(
-				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				 .andExpect(status().isNotFound());
-		
+				Mockito.anyString())).thenThrow(new DataNotFoundException("11111", "Data not found exception"));
+
+		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				.andExpect(status().isNotFound());
+
 	}
 
 }
