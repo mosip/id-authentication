@@ -146,11 +146,10 @@
     </button>
   </div>
   <ng-template #elseBlock>
-    <!-- <div  class="center_selection-form-container">
-      <div class="form-wrapper">
-      <form>
-        <mat-card >
-          <mat-select class="select-input">
+    <div class="center_selection-form-container">
+      <form class="search-form">
+        <mat-card class="select-card">
+          <mat-select class="select-input" placeholder="Select Location Types">
             <mat-option
               style="color:black;"
               *ngFor="let locationType of locationTypes"
@@ -160,18 +159,17 @@
             </mat-option>
           </mat-select>
         </mat-card>
-        <mat-card>
+        <mat-card class="search-card">
           <input
             mat-input
             type="search"
+            placeholder="Search..."
             name="search"
             class="search-input"
             [(ngModel)]="searchText"
-          /><button mat-icon-button type="submit">
-            <img
-              src="assets\search_grey.png"
-              style="height: 15px; margin-right:20px; "
-            />
+          /><button mat-icon-button type="submit" (click)="showResults()"
+          (click)="onSubmit()">
+            <img src="assets\search_grey.png" />
           </button>
 
           <button
@@ -184,8 +182,7 @@
         </mat-card>
       </form>
     </div>
-    </div>
-    <span class="search-text">Searching "{{ searchText }}"</span> -->
+    <span class="search-text" *ngIf="searchTextFlag" >{{displayMessage}}</span>
   </ng-template>
 
   <!-- Footer navigation -->
