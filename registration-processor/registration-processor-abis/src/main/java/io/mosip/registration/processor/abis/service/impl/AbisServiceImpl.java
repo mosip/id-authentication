@@ -39,28 +39,6 @@ public class AbisServiceImpl {
 	private RegistrationProcessorRestClientService<Object> restClientService;
 	
 	private static final String DUPLICATE = "duplicate";
-	
-	private int count=0;
-
-	public IdentityResponceDto deDupeCheck(IdentityRequestDto identityRequest) {
-		CandidateListDto cd = new CandidateListDto();
-		CandidatesDto[] candidatesDto = new CandidatesDto[10];
-		IdentityResponceDto identityResponceDto = new IdentityResponceDto();
-		for (int i = 0; i < 10; i++) {
-			candidatesDto[i] = new CandidatesDto();
-			candidatesDto[i].setReferenceId(i + "0bd41f8-31b2-46ac-ac9c-3534fc1b220e");
-			candidatesDto[i].setScaledScore(i + 10 + "");
-		}
-		cd.setCount("10");
-		cd.setCandidates(candidatesDto);
-		identityResponceDto.setCandidateList(cd);
-		identityResponceDto.setId("identity");
-		identityResponceDto.setRequestId("80bd41f8-31b2-46ac-ac9c-3534fc1b220e");
-		identityResponceDto.setReturnValue(1);
-		identityResponceDto.setTimestamp("1539777717");
-		return identityResponceDto;
-
-	}
 
 	public AbisInsertResponceDto insert(AbisInsertRequestDto abisInsertRequestDto) {
 		AbisInsertResponceDto abisInsertResponceDto = new AbisInsertResponceDto();
@@ -75,6 +53,7 @@ public class AbisServiceImpl {
 	public IdentityResponceDto performDedupe(IdentityRequestDto identityRequest) throws ApisResourceAccessException,
 			IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
 		boolean duplicate = false;
+		int count = 0;
 		String referenceId = identityRequest.getReferenceId();
 	//	String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
 		List<String> pathSegments = new ArrayList<>();
@@ -96,7 +75,6 @@ public class AbisServiceImpl {
 		
 		NodeList fingerNodeList = doc.getElementsByTagName("TestFingerPrint");
 		for(int i = 0; i<fingerNodeList.getLength(); i++) {
-			count++;
 			String value = fingerNodeList.item(i).getTextContent();
 			if(value.equalsIgnoreCase(DUPLICATE)) {
 				duplicate = true;
@@ -106,7 +84,6 @@ public class AbisServiceImpl {
 		
 		NodeList irisNodeList = doc.getElementsByTagName("TestIRIS");
 		for(int i = 0; i<irisNodeList.getLength(); i++) {
-			count++;
 			String value = irisNodeList.item(i).getTextContent();
 			if(value.equalsIgnoreCase(DUPLICATE)) {
 				duplicate = true;
@@ -116,7 +93,6 @@ public class AbisServiceImpl {
 		
 		NodeList faceNodeList = doc.getElementsByTagName("TestFace");
 		for(int i = 0; i<faceNodeList.getLength(); i++) {
-			count++;
 			String value = faceNodeList.item(i).getTextContent();
 			if(value.equalsIgnoreCase(DUPLICATE)) {
 				duplicate = true;
@@ -133,12 +109,13 @@ public class AbisServiceImpl {
 		if (duplicate) {
 			CandidateListDto cd = new CandidateListDto();
 			CandidatesDto[] candidatesDto = new CandidatesDto[10];
-			for (int i = 0; i < 10; i++) {
+			for (int i = 1; i <= identityRequest.getMaxResults(); i++) {
 				candidatesDto[i] = new CandidatesDto();
-				candidatesDto[i].setReferenceId(i + "0bd41f8-31b2-46ac-ac9c-3534fc1b220e");
-				candidatesDto[i].setScaledScore(i + 10 + "");
+				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
+				candidatesDto[i].setScaledScore(100 - i + "");
+				count++;
 			}
-			cd.setCount(count+"");
+			cd.setCount(count + "");
 			cd.setCandidates(candidatesDto);
 			response.setCandidateList(cd);
 		}

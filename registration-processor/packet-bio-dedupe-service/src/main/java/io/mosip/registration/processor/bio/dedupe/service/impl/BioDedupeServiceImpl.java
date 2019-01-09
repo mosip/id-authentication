@@ -177,23 +177,28 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		IdentityResponceDto responsedto = (IdentityResponceDto) restClientService.postApi(ApiName.BIODEDUPEPOTENTIAL,
 				"", "", identifyRequestDto, IdentityResponceDto.class);
 
-		if (responsedto.getReturnValue() == 2) {
-			throwException(responsedto.getFailureReason(), referenceId, requestId);
-		}
+		if (responsedto != null) {
 
-		CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
-
-		for (CandidatesDto candidate : candidateList) {
-			if (Integer.parseInt(candidate.getScaledScore()) >= threshold) {
-				String regId = packetInfoManager.getRidByReferenceId(candidate.getReferenceId()).get(0);
-				abisResponseDuplicates.add(regId);
+			if (responsedto.getReturnValue() == 2) {
+				throwException(responsedto.getFailureReason(), referenceId, requestId);
 			}
-		}
 
-		for (String duplicateReg : abisResponseDuplicates) {
-			String uin = packetInfoManager.findDemoById(duplicateReg).get(0).getUin();
-			if (!uin.isEmpty()) {
-				duplicates.add(duplicateReg);
+			if (responsedto.getCandidateList() != null) {
+				CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
+
+				for (CandidatesDto candidate : candidateList) {
+					if (Integer.parseInt(candidate.getScaledScore()) >= threshold) {
+						String regId = packetInfoManager.getRidByReferenceId(candidate.getReferenceId()).get(0);
+						abisResponseDuplicates.add(regId);
+					}
+				}
+
+				for (String duplicateReg : abisResponseDuplicates) {
+					String uin = packetInfoManager.findDemoById(duplicateReg).get(0).getUin();
+					if (!uin.isEmpty()) {
+						duplicates.add(duplicateReg);
+					}
+				}
 			}
 		}
 
