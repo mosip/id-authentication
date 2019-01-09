@@ -60,9 +60,6 @@ public class FilesystemCephAdapterImplTest {
 	/** The file extension. */
 	private String fileExtension;
 
-	/** The Constant CONFIG_FILE_NAME. */
-	private static final String CONFIG_FILE_NAME = "config.properties";
-
 	/** The dfs adapter. */
 
 	private FilesystemCephAdapterImpl dfsAdapter;

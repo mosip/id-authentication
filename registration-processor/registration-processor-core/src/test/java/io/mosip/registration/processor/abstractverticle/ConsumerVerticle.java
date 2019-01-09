@@ -17,13 +17,13 @@ public class ConsumerVerticle extends MosipVerticleManager {
 		this.messageDTO = new MessageDTO();
 		this.messageDTO.setRid("1001");
 		this.messageDTO.setRetryCount(0);
-		this.messageDTO.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
+		this.messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 		this.messageDTO.setIsValid(true);
 		this.messageDTO.setInternalError(false);
 
-		this.consume(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN);
-		this.send(mosipEventBus, MessageBusAddress.DEMOGRAPHIC_BUS_IN, this.messageDTO);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_OUT, MessageBusAddress.RETRY_BUS);
+		this.consume(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
+		this.send(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN, this.messageDTO);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.PACKET_VALIDATOR_BUS_OUT, MessageBusAddress.RETRY_BUS);
 
 	}
 

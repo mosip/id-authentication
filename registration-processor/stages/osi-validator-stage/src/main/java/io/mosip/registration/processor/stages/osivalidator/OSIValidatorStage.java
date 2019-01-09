@@ -39,7 +39,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(OSIValidatorStage.class);
 
-
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -55,7 +54,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	/** The umc validator. */
 	@Autowired
 	UMCValidator umcValidator;
-	
+
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
@@ -117,17 +116,20 @@ public class OSIValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (DataAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.OSI_VALIDATION_FAILED.name()+e.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Data voilation in reg packet : " + registrationId;
 
 		} catch (IOException | ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.OSI_VALIDATION_FAILED.name()+e.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.OSI_VALIDATION_FAILED.name()+ex.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + ex.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
