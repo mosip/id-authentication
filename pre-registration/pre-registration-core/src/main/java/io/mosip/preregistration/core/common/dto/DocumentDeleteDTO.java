@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.application.dto;
+package io.mosip.preregistration.core.common.dto;
 
 import java.io.Serializable;
 
@@ -11,16 +11,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * This DTO class is used to define the values for document deletion.
+ * This DTO class is used to define Document Id and message.
  * 
- * @author Kishan Rathore
+ * @author Tapaswini Behera
  * @since 1.0.0
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocumentDeleteResponseDTO implements Serializable {
-
+public class DocumentDeleteDTO implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7070542323407937205L;
 
@@ -28,8 +27,9 @@ public class DocumentDeleteResponseDTO implements Serializable {
 	 * Document Id
 	 */
 	private String documnet_Id;
+
 	/**
-	 * Delete response Message
+	 * Response Message
 	 */
 	private String resMsg;
 
