@@ -1,10 +1,10 @@
 ## kernel-idvalidator-rid
 
- 1- [Background & Design](../../design/kernel/kernel-idvalidator-rid.md)
+ 1- ** [Background & Design](../../design/kernel/kernel-idvalidator-rid.md) **
  
 
  
- 2- [API Documentation ]
+ 2- ** API Documentation **
  
  ```
  mvn javadoc:javadoc
