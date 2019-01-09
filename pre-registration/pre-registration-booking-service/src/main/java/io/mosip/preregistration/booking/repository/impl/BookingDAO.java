@@ -41,7 +41,7 @@ public class BookingDAO {
 
 	/** Autowired reference for {@link #bookingRepository}. */
 	@Autowired
-	@Qualifier("bookingRepository")
+	@Qualifier("bookingAvailabilityRepository")
 	private BookingAvailabilityRepository bookingAvailabilityRepository;
 
 	/** Autowired reference for {@link #registrationBookingRepository}. */
@@ -212,7 +212,7 @@ public class BookingDAO {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
 			entityList=registrationBookingRepository.findByRegistrationCenterIdAndStatusCode(registrationCenterId, statusCode);
-			if (entityList != null && !entityList.isEmpty()) {
+			if (entityList == null && entityList.isEmpty()) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 			}

@@ -237,9 +237,9 @@ public class BookingServiceUtil {
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-
+			System.out.println("uriBuilder::"+uriBuilder);
 			@SuppressWarnings({ "rawtypes" })
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
