@@ -12,6 +12,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
@@ -89,6 +91,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#createMachineHistory(io.mosip.kernel.masterdata.entity.MachineHistory)
 	 */
 	@Override
+	@Transactional(propagation=Propagation.MANDATORY)
 	public IdResponseDto createMachineHistory(MachineHistory entityHistory) {
 		MachineHistory createdHistory;
 		try {

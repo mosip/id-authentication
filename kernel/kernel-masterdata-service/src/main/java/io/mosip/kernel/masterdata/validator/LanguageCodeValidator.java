@@ -20,6 +20,7 @@ import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
  * updation of Masterdata
  * 
  * @author Neha
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
@@ -36,12 +37,13 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Value("${mosip.kernel.supported-languages}")
 	private String supportedLanguages;
 
-	/**
-	 * 
+	
+	/* (non-Javadoc)
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
 	 */
 	@Override
 	public boolean isValid(String langCode, ConstraintValidatorContext context) {
-		if (EmptyCheckUtils.isNullEmpty(langCode) && langCode.trim().length() > 3) {
+		if (EmptyCheckUtils.isNullEmpty(langCode) || langCode.trim().length() > 3) {
 			return false;
 		} else {
 			try {
@@ -55,7 +57,8 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 					}
 				}
 			} catch (JSONException | RestClientException e) {
-				throw new MasterDataServiceException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
+				throw new MasterDataServiceException(
+						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
 						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
 			}
 			return false;
