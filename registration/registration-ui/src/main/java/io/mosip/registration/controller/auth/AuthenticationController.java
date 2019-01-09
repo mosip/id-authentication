@@ -728,6 +728,7 @@ public class AuthenticationController extends BaseController {
 	 */
 	public void init(BaseController parentControllerObj, String authType) {
 		authCount = 0;
+		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = true;
 		isEODAuthentication = true;
 		baseController = parentControllerObj;
@@ -739,6 +740,7 @@ public class AuthenticationController extends BaseController {
 		authCount = 0;
 		otpValidity.setText("Valid for " + otpValidityInMins + " minutes");
 		isSupervisor = false;
+		isEODAuthentication = false;
 		getAuthenticationModes(authType);
 	}
 
