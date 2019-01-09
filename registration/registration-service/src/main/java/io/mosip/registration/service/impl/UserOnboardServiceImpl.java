@@ -23,7 +23,7 @@ import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.UserOnBoardService;
+import io.mosip.registration.service.UserOnboardService;
 
 /**
  * @author Sreekar Chukka
@@ -31,7 +31,7 @@ import io.mosip.registration.service.UserOnBoardService;
  * @since 1.0.0
  */
 @Service
-public class UserOnBoardServiceImpl implements UserOnBoardService {
+public class UserOnboardServiceImpl implements UserOnboardService {
 	
 	@Autowired
 	private UserOnBoardDao userOnBoardDao;
@@ -42,7 +42,7 @@ public class UserOnBoardServiceImpl implements UserOnBoardService {
 	/**
 	 * logger for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(UserOnBoardServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardServiceImpl.class);
 	
 	
 

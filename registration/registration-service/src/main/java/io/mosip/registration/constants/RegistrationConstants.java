@@ -51,6 +51,10 @@ public class RegistrationConstants {
 	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
 	public static final String UIN_UPDATE = "/fxml/UpdateUIN.fxml";
 	public static final String SYNC_DATA = "/fxml/SyncDataProcess.fxml";
+	public static final String USER_ONBOARD = "/fxml/UserOnbord.fxml";
+	public static final String USER_ONBOARD_FP = "/fxml/UserOnboardFPCapture.fxml";
+	public static final String USER_ONBOARD_IRIS = "/fxml/UserOnboardIrisCapture.fxml";
+	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";

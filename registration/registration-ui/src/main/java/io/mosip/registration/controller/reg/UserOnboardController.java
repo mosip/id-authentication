@@ -33,6 +33,7 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.iris.IrisFacade;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -41,6 +42,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.service.device.impl.FingerPrintCaptureServiceImpl;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
@@ -59,6 +61,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+/** 
+ * {@code UserOnboardController} is to capture and display the captured
+ * fingerprints,Iris and face.
+ * 
+ * @author Dinesh Ashokan
+ * @version 1.0
+ *
+ */
 @Controller
 public class UserOnboardController extends BaseController implements Initializable {
 
@@ -175,13 +185,22 @@ public class UserOnboardController extends BaseController implements Initializab
 	private Image defaultImage;
 
 	private Pane selectedIris;
-
+		
 	@Autowired
 	private IrisFacade irisFacade;
 
 	// WebCam
 	@Autowired
 	private WebCameraController webCameraController;
+	
+	@Autowired
+	private UserOnboardService userOnboardService;
+	
+	/**
+	 * This method initializes the Fingerprint,Iris and face Capture page.
+	 * 
+	 * 	 
+	 */
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -305,6 +324,17 @@ public class UserOnboardController extends BaseController implements Initializab
 			}
 		}
 	}
+	
+	/**
+	 * Method to load the biometric fingerprint page
+	 */
+	public void loadFingerPrint() {
+		init = true;
+		pageName = RegistrationConstants.FINGERPRINT;
+		biometricDTO = new BiometricDTO();
+		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
+		loadPage(RegistrationConstants.USER_ONBOARD_FP);
+	}
 
 	private Stream<FingerprintDetailsDTO> getFingerprintBySelectedPane() {
 		return biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO().stream().filter(fingerprint -> {
@@ -321,7 +351,12 @@ public class UserOnboardController extends BaseController implements Initializab
 			return fingerprint.getFingerType().contains(fingerType);
 		});
 	}
-
+	
+	/**
+	 * Validating finger prints.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean validateFingerPrints() {
 		try {
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -394,6 +429,12 @@ public class UserOnboardController extends BaseController implements Initializab
 		}
 	}
 
+	/**
+	 * Validating quality score of captured fingerprints.
+	 *
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
+	 * @return true, if successful
+	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
 		try {
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -464,22 +505,10 @@ public class UserOnboardController extends BaseController implements Initializab
 		biometricInfoDTO.setFaceDetailsDTO(obj);
 		return biometricInfoDTO;
 	}
-
-	public void loadFingerPrint() {
-
-		Parent createRoot;
-		try {
-			init = true;
-			pageName = RegistrationConstants.FINGERPRINT;
-			biometricDTO = new BiometricDTO();
-			biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
-			createRoot = BaseController.load(getClass().getResource("/fxml/UserOnboardFPCapture.fxml"));
-			getScene(createRoot).setRoot(createRoot);
-		} catch (java.io.IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * This method displays the Biometric Scan pop-up window. This method will be
+	 * invoked when Scan button is clicked.
+	 */
 	public void scan() {
 		if (pageName == RegistrationConstants.FINGERPRINT) {
 			scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
@@ -493,40 +522,29 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	public void goToNextPage() {
 		if (validateFingerPrints()) {
-			Parent createRoot;
-			try {
-				pageName = RegistrationConstants.EYE;
-				createRoot = BaseController.load(getClass().getResource("/fxml/UserOnboardIrisCapture.fxml"));
-				getScene(createRoot).setRoot(createRoot);
-			} catch (java.io.IOException e) {
-				e.printStackTrace();
-			}
+			pageName = RegistrationConstants.EYE;
+			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
 		}
 	}
 
+	/**
+	 * This method will be invoked when Next button is clicked. The next section
+	 * will be displayed.
+	 */
 	@FXML
 	private void previousSection() {
-		Parent createRoot;
-		try {
-			pageName = RegistrationConstants.FINGERPRINT;
-			createRoot = BaseController.load(getClass().getResource("/fxml/UserOnboardFPCapture.fxml"));
-			getScene(createRoot).setRoot(createRoot);
-		} catch (java.io.IOException e) {
-			e.printStackTrace();
-		}
+		pageName = RegistrationConstants.FINGERPRINT;
+		loadPage(RegistrationConstants.USER_ONBOARD_FP);
 	}
-
+	/**
+	 * This method will be invoked when Previous button is clicked. The previous
+	 * section will be displayed.
+	 */
 	@FXML
 	private void nextSection() {
 		if (validateIris() && validateIrisLocalDedup()) {
-			Parent createRoot;
-			try {
-				pageName = "webCam";
-				createRoot = BaseController.load(getClass().getResource("/fxml/UserOnboardWebCamera.fxml"));
-				getScene(createRoot).setRoot(createRoot);
-			} catch (java.io.IOException e) {
-				e.printStackTrace();
-			}
+			pageName = "webCam";
+			loadPage(RegistrationConstants.USER_ONBOARD_WEBCAM);
 		}
 	}
 
@@ -688,6 +706,12 @@ public class UserOnboardController extends BaseController implements Initializab
 		scanBtn.setDisable(true);
 	}
 
+	/**
+	 * This event handler will be invoked when left iris or right iris {@link Pane}
+	 * is clicked.
+	 * 
+	 * @param mouseEvent the triggered {@link MouseEvent} object
+	 */
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
 		try {
@@ -837,14 +861,9 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	@FXML
 	private void goToPreviousPane() {
-		Parent createRoot;
-		try {
-			pageName = RegistrationConstants.EYE;
-			createRoot = BaseController.load(getClass().getResource("/fxml/UserOnboardIrisCapture.fxml"));
-			getScene(createRoot).setRoot(createRoot);
-		} catch (java.io.IOException e) {
-			e.printStackTrace();
-		}
+		pageName = RegistrationConstants.EYE;
+		loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
+
 	}
 
 	/**
@@ -895,7 +914,6 @@ public class UserOnboardController extends BaseController implements Initializab
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (IOException ioException) {
-			ioException.printStackTrace();
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 		}
@@ -940,6 +958,39 @@ public class UserOnboardController extends BaseController implements Initializab
 			exceptionImage.setImage(defaultImage);
 			exceptionBufferedImage = null;
 			exceptionImageCaptured = false;
+		}
+	}
+
+	
+	/**
+	 * Method to load fxml page
+	 * @param fxml file name
+	 */
+	private void loadPage(String page) {
+		Parent createRoot;
+		try {
+			createRoot = BaseController.load(getClass().getResource(page));
+			getScene(createRoot).setRoot(createRoot);
+		} catch (IOException exception) {			
+			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+		}
+	}
+	
+	
+	/**
+	 * Validate and save operator biometrics
+	 */
+	@FXML
+	private void submit() {
+		
+		ResponseDTO response=userOnboardService.validate(biometricDTO);
+		if (response != null && response.getErrorResponseDTOs() != null
+				&& response.getErrorResponseDTOs().get(0) != null) {
+			generateAlert(RegistrationConstants.ALERT_ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+		}else if(response !=null && response.getSuccessResponseDTO() !=null){
+			generateAlert(response.getSuccessResponseDTO().getMessage());
 		}
 	}
 

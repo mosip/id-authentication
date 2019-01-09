@@ -8,7 +8,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
  *
  * @since 1.0.0
  */
-public interface UserOnBoardService {
+public interface UserOnboardService {
 
 	/**
 	 * Validate.
