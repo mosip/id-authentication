@@ -30,7 +30,7 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	/**
 	 * @param preregistrationId
 	 * @param statusCode
-	 * @return RegistrationBookingEntity based on Pre-regisytration-Id and status code
+	 * @return RegistrationBookingEntity based on Pre-registration-Id and status code
 	 */
 	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode);
 	
