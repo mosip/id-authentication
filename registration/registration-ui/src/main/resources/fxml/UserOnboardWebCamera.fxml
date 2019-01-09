@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.stage.Screen?>
+
+<AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+<children>
+<AnchorPane prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
+         <children>
+         <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+  	 			<image>
+					<Image url="@../images/Home.png" />
+		 		</image>	
+    		</ImageView>
+    		<Text id="homeReg" fx:id="paneLabel" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" /> 
+       <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="Capture" />
+       <Button fx:id="captureExceptionImage" disable="false" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" />
+       <Label layoutX="172.0" layoutY="328.0" text="Applicant Image" />
+       <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
+       <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
+         
+       </Label>
+       <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :">
+        
+       </Label>
+       <Label layoutX="115.0" layoutY="363.0" text="Quality Percentage     :">
+        
+       </Label>
+       <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :">
+        
+       </Label>
+       <Label layoutX="284.0" layoutY="390.0" text="    85%">
+         
+       </Label>
+       <Label layoutX="656.0" layoutY="390.0" text="    85%">
+         
+       </Label>
+       <HBox fx:id="applicantImageHBox" layoutX="104.0" layoutY="105.0" prefHeight="183.0" prefWidth="265.0">
+          <children>
+             <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                   <Image url="@../images/ApplicantPhoto.png" />
+                </image>
+             </ImageView>
+          </children>
+       </HBox>
+       <HBox fx:id="exceptionImageHBox" layoutX="471.0" layoutY="106.0" prefHeight="182.0" prefWidth="265.0">
+          <children>
+             <ImageView fx:id="exceptionImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                   <Image url="@../images/ApplicantPhoto.png" />
+                </image>
+             </ImageView>
+          </children>
+       </HBox>
+       <Label layoutX="104.0" layoutY="54.0" text="Image" />
+       <Button fx:id="biometricPrevBtn" layoutX="738.0" layoutY="592.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="RegbuttonStyle" text="Previous" />
+       <Button fx:id="saveBiometricDetailsBtn" layoutX="390.0" layoutY="530.0" mnemonicParsing="false" styleClass="RegbuttonStyle" text="Submit" />
+   </children>
+   </AnchorPane>
+    </children>
+ </AnchorPane>
