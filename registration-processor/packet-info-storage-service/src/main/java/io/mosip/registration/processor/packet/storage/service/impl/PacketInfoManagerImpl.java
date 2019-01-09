@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
@@ -707,6 +708,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public List<String> getRegIdByUIN(String uin) {
 		return packetInfoDao.getRegIdByUIN(uin);
+	}
+	
+	@Override
+	public List<ApplicantDocument> getDocumentsByRegId(String regId) {
+		return packetInfoDao.getDocumentsByRegId(regId);
 	}
 
 

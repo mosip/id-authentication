@@ -53,6 +53,8 @@ public enum ApiName {
 
 
 	/** The uingenerator. */
-	UINGENERATOR
+	UINGENERATOR,
+	
+	IDREPODEV
 	
 }

@@ -9,11 +9,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
@@ -39,6 +41,9 @@ public class PacketInfoDao {
 	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
+	
+	@Autowired
+	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentEntity;
 
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
@@ -332,5 +337,22 @@ public class PacketInfoDao {
 
 	public List<String> getRegIdByUIN(String uin) {
 		return demographicDedupeRepository.getRegIdByUIN(uin);
+	}
+	
+	public List<ApplicantDocument> getDocumentsByRegId(String regId) {
+		List<ApplicantDocument> applicantDocumentDtos = new ArrayList<>();
+
+		List<ApplicantDocumentEntity> applicantDocumentEntities = applicantDocumentEntity.getDocumentsByRegId(regId);
+		for (ApplicantDocumentEntity entity : applicantDocumentEntities) {
+			applicantDocumentDtos.add(convertEntityToApplicantDocumentDto(entity));
+		}
+		return applicantDocumentDtos;
+	}
+
+	private ApplicantDocument convertEntityToApplicantDocumentDto(ApplicantDocumentEntity entity) {
+		ApplicantDocument applicantDocumentDto = new ApplicantDocument();
+		applicantDocumentDto.setDocName(entity.getDocName());
+		applicantDocumentDto.setDocStore(entity.getDocStore());
+		return applicantDocumentDto;
 	}
 }
