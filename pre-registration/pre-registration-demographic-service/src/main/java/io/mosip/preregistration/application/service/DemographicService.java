@@ -36,10 +36,8 @@ import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.config.LoggerConfiguration;
-import io.mosip.preregistration.application.controller.DemographicController;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.DemographicResponseDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
@@ -53,6 +51,7 @@ import io.mosip.preregistration.application.exception.util.DemographicExceptionC
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -71,11 +70,11 @@ import io.mosip.preregistration.core.util.ValidationUtil;
  */
 @Service
 public class DemographicService {
-	
+
 	/**
 	 * logger instance
 	 */
-	private Logger log= LoggerConfiguration.logConfig(DemographicService.class);
+	private Logger log = LoggerConfiguration.logConfig(DemographicService.class);
 	/**
 	 * Autowired reference for {@link #MosipPridGenerator<String>}
 	 */
@@ -165,7 +164,7 @@ public class DemographicService {
 	 */
 	public MainListResponseDTO<DemographicResponseDTO> addPreRegistration(
 			MainRequestDTO<DemographicRequestDTO> demographicRequest) {
-		log.info("sessionId","idType","id","In addPreRegistration method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In addPreRegistration method of pre-registration service ");
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest),
 					requiredRequestMap)) {
@@ -174,7 +173,8 @@ public class DemographicService {
 				return createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
 			}
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In pre-registration service of addPreRegistration- "+ex.getStackTrace());
+			log.error("sessionId", "idType", "id",
+					"In pre-registration service of addPreRegistration- " + ex.getStackTrace());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return null;
@@ -190,7 +190,7 @@ public class DemographicService {
 	 * 
 	 */
 	public MainListResponseDTO<PreRegistrationViewDTO> getAllApplicationDetails(String userId) {
-		log.info("sessionId","idType","id","In getAllApplicationDetails method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In getAllApplicationDetails method of pre-registration service ");
 		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = null;
@@ -225,7 +225,8 @@ public class DemographicService {
 			}
 
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In getAllApplicationDetails method of pre-registration service - "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In getAllApplicationDetails method of pre-registration service - " + ex.getCause());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -241,7 +242,7 @@ public class DemographicService {
 	 * 
 	 */
 	public MainListResponseDTO<PreRegistartionStatusDTO> getApplicationStatus(String preRegId) {
-		log.info("sessionId","idType","id","In getApplicationStatus method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In getApplicationStatus method of pre-registration service ");
 		PreRegistartionStatusDTO statusdto = new PreRegistartionStatusDTO();
 		MainListResponseDTO<PreRegistartionStatusDTO> response = new MainListResponseDTO<>();
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
@@ -263,7 +264,8 @@ public class DemographicService {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In getApplicationStatus method of pre-registration service - "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In getApplicationStatus method of pre-registration service - " + ex.getCause());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -279,7 +281,7 @@ public class DemographicService {
 	 * 
 	 */
 	public MainListResponseDTO<DeletePreRegistartionDTO> deleteIndividual(String preregId) {
-		log.info("sessionId","idType","id","In deleteIndividual method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In deleteIndividual method of pre-registration service ");
 		MainListResponseDTO<DeletePreRegistartionDTO> response = new MainListResponseDTO<>();
 		List<DeletePreRegistartionDTO> deleteList = new ArrayList<>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
@@ -308,7 +310,7 @@ public class DemographicService {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In pre-registration deleteIndividual service- "+ex.getCause());
+			log.error("sessionId", "idType", "id", "In pre-registration deleteIndividual service- " + ex.getCause());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -325,7 +327,7 @@ public class DemographicService {
 	 * @return response DemographicData of preRegId
 	 */
 	public MainListResponseDTO<DemographicResponseDTO> getDemographicData(String preRegId) {
-		log.info("sessionId","idType","id","In getDemographicData method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In getDemographicData method of pre-registration service ");
 		List<DemographicResponseDTO> createDtos = new ArrayList<>();
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
@@ -343,7 +345,8 @@ public class DemographicService {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In getDemographicData of pre-registration service- "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In getDemographicData of pre-registration service- " + ex.getCause());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -364,7 +367,7 @@ public class DemographicService {
 	 * 
 	 */
 	public UpdateResponseDTO<String> updatePreRegistrationStatus(String preRegId, String status) {
-		log.info("sessionId","idType","id","In updatePreRegistrationStatus method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In updatePreRegistrationStatus method of pre-registration service ");
 		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
@@ -379,7 +382,8 @@ public class DemographicService {
 				response.setStatus("true");
 			}
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In updatePreRegistrationStatus method of pre-registration service- "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In updatePreRegistrationStatus method of pre-registration service- " + ex.getCause());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		return response;
@@ -397,7 +401,7 @@ public class DemographicService {
 	 * 
 	 */
 	public MainListResponseDTO<String> getPreRegistrationByDate(String fromDate, String toDate) {
-		log.info("sessionId","idType","id","In getPreRegistrationByDate method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In getPreRegistrationByDate method of pre-registration service ");
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		Map<String, String> reqDateRange = new HashMap<>();
@@ -415,7 +419,8 @@ public class DemographicService {
 				response.setResponse(preIds);
 			}
 		} catch (Exception ex) {
-			log.error("sessionId","idType","id","In getPreRegistrationByDate method of pre-registration service - "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In getPreRegistrationByDate method of pre-registration service - " + ex.getCause());
 			new DemographicExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -432,24 +437,26 @@ public class DemographicService {
 	 * 
 	 */
 	private BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
-		log.info("sessionId","idType","id","In callGetAppointmentDetailsRestService method of pre-registration service ");
+		log.info("sessionId", "idType", "id",
+				"In callGetAppointmentDetailsRestService method of pre-registration service ");
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
-					.queryParam("preRegID", preId);
+					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<BookingRegistrationDTO> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			log.info("sessionId","idType","id","In callGetAppointmentDetailsRestService method URL- "+uriBuilder);
+			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
 			ResponseEntity<MainResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
 					MainResponseDTO.class);
-			if (!respEntity.getBody().isStatus()) {
+			if (respEntity.getBody().isStatus()) {
 				ObjectMapper mapper = new ObjectMapper();
 				bookingRegistrationDTO = mapper.convertValue(respEntity.getBody(), BookingRegistrationDTO.class);
 			}
 		} catch (RestClientException ex) {
-			log.error("sessionId","idType","id","In callGetAppointmentDetailsRestService method of pre-registration service - "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In callGetAppointmentDetailsRestService method of pre-registration service - " + ex.getCause());
 			return bookingRegistrationDTO;
 		}
 		return bookingRegistrationDTO;
@@ -465,7 +472,7 @@ public class DemographicService {
 	 */
 	private MainListResponseDTO<DemographicResponseDTO> createOrUpdate(DemographicRequestDTO demographicRequest,
 			String requestId) {
-		log.info("sessionId","idType","id","In createOrUpdate method of pre-registration service ");
+		log.info("sessionId", "idType", "id", "In createOrUpdate method of pre-registration service ");
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		List<DemographicResponseDTO> saveList = new ArrayList<>();
 		DemographicEntity demographicEntity;
@@ -501,7 +508,8 @@ public class DemographicService {
 	 * 
 	 */
 	private boolean callDocumentServiceToDeleteAllByPreId(String preregId) {
-		log.info("sessionId","idType","id","In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
+		log.info("sessionId", "idType", "id",
+				"In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
 		ResponseEntity<?> responseEntity = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
@@ -511,7 +519,8 @@ public class DemographicService {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
 			String strUriBuilder = uriBuilder.build().encode().toUriString();
-			log.info("sessionId","idType","id","In callDocumentServiceToDeleteAllByPreId method URL- "+strUriBuilder);
+			log.info("sessionId", "idType", "id",
+					"In callDocumentServiceToDeleteAllByPreId method URL- " + strUriBuilder);
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
 					MainListResponseDTO.class);
 
@@ -522,7 +531,8 @@ public class DemographicService {
 						ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 			}
 		} catch (RestClientException ex) {
-			log.error("sessionId","idType","id","In callDocumentServiceToDeleteAllByPreId method of pre-registration service- "+ex.getCause());
+			log.error("sessionId", "idType", "id",
+					"In callDocumentServiceToDeleteAllByPreId method of pre-registration service- " + ex.getCause());
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
 					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 		}

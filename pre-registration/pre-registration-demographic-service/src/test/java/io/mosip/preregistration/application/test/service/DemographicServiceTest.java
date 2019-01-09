@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +48,8 @@ import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.DemographicResponseDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
@@ -65,11 +63,12 @@ import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
  * Test class to test the PreRegistration Service methods
@@ -136,7 +135,7 @@ public class DemographicServiceTest {
 	File fileUp = null;
 	MainRequestDTO<DemographicRequestDTO> demographicRequestDTO = null;
 	DemographicRequestDTO createPreRegistrationDTO = null;
-	DemographicResponseDTO demographicResponseDTO=null;
+	DemographicResponseDTO demographicResponseDTO = null;
 	boolean requestValidatorFlag = false;
 	Map<String, String> requestMap = new HashMap<>();
 	Map<String, String> requiredRequestMap = new HashMap<>();
@@ -212,8 +211,8 @@ public class DemographicServiceTest {
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
 
 		bookingRegistrationDTO = new BookingRegistrationDTO();
-		bookingRegistrationDTO.setReg_date("2018-12-10");
-		bookingRegistrationDTO.setRegistration_center_id("1");
+		bookingRegistrationDTO.setRegDate("2018-12-10");
+		bookingRegistrationDTO.setRegistrationCenterId("1");
 		bookingRegistrationDTO.setSlotFromTime("09:00");
 		bookingRegistrationDTO.setSlotToTime("09:13");
 
@@ -263,14 +262,15 @@ public class DemographicServiceTest {
 		listOfCreatePreRegistrationDTO.add(demographicResponseDTO);
 		responseDTO.setResponse(listOfCreatePreRegistrationDTO);
 
-		MainListResponseDTO<DemographicResponseDTO> actualRes = preRegistrationService.addPreRegistration(demographicRequestDTO);
+		MainListResponseDTO<DemographicResponseDTO> actualRes = preRegistrationService
+				.addPreRegistration(demographicRequestDTO);
 		assertEquals(actualRes.getResponse().get(0).getStatusCode(), responseDTO.getResponse().get(0).getStatusCode());
 	}
 
 	/**
 	 * @throws Exception
 	 */
-	@Test(expected = TablenotAccessibleException.class)
+	@Test(expected = TableNotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
@@ -301,7 +301,8 @@ public class DemographicServiceTest {
 		createPreRegistrationDTO.setUpdatedBy("9988905444");
 		createPreRegistrationDTO.setUpdatedDateTime(serviceUtil.getLocalDateString(times));
 		demographicRequestDTO.setRequest(createPreRegistrationDTO);
-		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
+		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService
+				.addPreRegistration(demographicRequestDTO);
 		assertEquals("1234", res.getResponse().get(0).getPreRegistrationId());
 	}
 
@@ -353,7 +354,8 @@ public class DemographicServiceTest {
 		List<DemographicResponseDTO> listOfCreatePreRegistrationDTO = new ArrayList<>();
 		listOfCreatePreRegistrationDTO.add(demographicResponseDTO);
 		responseDTO.setResponse(listOfCreatePreRegistrationDTO);
-		MainListResponseDTO<DemographicResponseDTO> actualRes = preRegistrationService.addPreRegistration(demographicRequestDTO);
+		MainListResponseDTO<DemographicResponseDTO> actualRes = preRegistrationService
+				.addPreRegistration(demographicRequestDTO);
 		assertEquals(actualRes.getResponse().get(0).getStatusCode(), responseDTO.getResponse().get(0).getStatusCode());
 
 	}
@@ -368,42 +370,49 @@ public class DemographicServiceTest {
 
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
 				.thenThrow(exception);
-		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService.addPreRegistration(demographicRequestDTO);
+		MainListResponseDTO<DemographicResponseDTO> res = preRegistrationService
+				.addPreRegistration(demographicRequestDTO);
 		assertEquals(false, res.isStatus());
 	}
 
-//	@Test
-//	public void getApplicationDetailsTest() throws org.json.simple.parser.ParseException {
-//
-//		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-//		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-//		String userId = "9988905444";
-//		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
-//		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
-//		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
-//
-//		viewDto = new PreRegistrationViewDTO();
-//		viewDto.setPreId("1234");
-//		viewDto.setFullname("rupika");
-//		viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
-//		viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
-//
-//		viewList.add(viewDto);
-//		response.setResponse(viewList);
-//		response.setStatus(Boolean.TRUE);
-//		BookingResponseDTO<BookingRegistrationDTO> bookingResultDto = new BookingResponseDTO<>();
-//
-//		ResponseEntity<BookingResponseDTO> res = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
-//
-//		Mockito.when(demographicRepository.findByCreatedBy(userId)).thenReturn(userEntityDetails);
-//
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(BookingResponseDTO.class))).thenReturn(res);
-//
-//		MainListResponseDTO<PreRegistrationViewDTO> actualRes = preRegistrationService.getAllApplicationDetails(userId);
-//		assertEquals(actualRes.isStatus(), response.isStatus());
-//
-//	}
+	// @Test
+	// public void getApplicationDetailsTest() throws
+	// org.json.simple.parser.ParseException {
+	//
+	// RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+	// Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+	// String userId = "9988905444";
+	// MainListResponseDTO<PreRegistrationViewDTO> response = new
+	// MainListResponseDTO<>();
+	// List<PreRegistrationViewDTO> viewList = new ArrayList<>();
+	// PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
+	//
+	// viewDto = new PreRegistrationViewDTO();
+	// viewDto.setPreId("1234");
+	// viewDto.setFullname("rupika");
+	// viewDto.setStatusCode(preRegistrationEntity.getStatusCode());
+	// viewDto.setBookingRegistrationDTO(bookingRegistrationDTO);
+	//
+	// viewList.add(viewDto);
+	// response.setResponse(viewList);
+	// response.setStatus(Boolean.TRUE);
+	// BookingResponseDTO<BookingRegistrationDTO> bookingResultDto = new
+	// BookingResponseDTO<>();
+	//
+	// ResponseEntity<BookingResponseDTO> res = new
+	// ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+	//
+	// Mockito.when(demographicRepository.findByCreatedBy(userId)).thenReturn(userEntityDetails);
+	//
+	// Mockito.when(restTemplate.exchange(Mockito.anyString(),
+	// Mockito.eq(HttpMethod.GET), Mockito.any(),
+	// Mockito.eq(BookingResponseDTO.class))).thenReturn(res);
+	//
+	// MainListResponseDTO<PreRegistrationViewDTO> actualRes =
+	// preRegistrationService.getAllApplicationDetails(userId);
+	// assertEquals(actualRes.isStatus(), response.isStatus());
+	//
+	// }
 
 	@Test(expected = RecordNotFoundException.class)
 	public void getApplicationDetailsFailureTest() {
@@ -459,7 +468,7 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = TablenotAccessibleException.class)
+	@Test(expected = TableNotAccessibleException.class)
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
@@ -604,8 +613,9 @@ public class DemographicServiceTest {
 
 			Date myToDate = DateUtils.parseToDate(URLDecoder.decode(toDate, "UTF-8"), dateFormat);
 
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate),
-					DateUtils.parseDateToLocalDateTime(myToDate))).thenReturn(details);
+			Mockito.when(demographicRepository.findBycreateDateTimeBetween(
+					DateUtils.parseDateToLocalDateTime(myFromDate), DateUtils.parseDateToLocalDateTime(myToDate)))
+					.thenReturn(details);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (java.io.UnsupportedEncodingException e) {
@@ -635,7 +645,8 @@ public class DemographicServiceTest {
 		Date myFromDate;
 		try {
 			myFromDate = DateUtils.parseToDate(URLDecoder.decode(fromDate, "UTF-8"), dateFormat);
-			Mockito.when(demographicRepository.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate), null))
+			Mockito.when(demographicRepository
+					.findBycreateDateTimeBetween(DateUtils.parseDateToLocalDateTime(myFromDate), null))
 					.thenReturn(details);
 		} catch (ParseException e) {
 			e.printStackTrace();

@@ -26,7 +26,7 @@ import io.mosip.preregistration.application.exception.system.SystemFileIOExcepti
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
  * This class is used to catch the exceptions that occur while creating the
@@ -40,14 +40,15 @@ public class DemographicExceptionCatcher {
 	/**
 	 * Method to handle the respective exceptions
 	 * 
-	 * @param ex pass the exception
+	 * @param ex
+	 *            pass the exception
 	 */
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {
 			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
 					ErrorMessages.JSON_HTTP_REQUEST_EXCEPTION.name(), ex.getCause());
 		} else if (ex instanceof DataAccessLayerException) {
-			throw new TablenotAccessibleException(ErrorCodes.PRG_PAM_APP_002.toString(),
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_APP_002.toString(),
 					ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), ex.getCause());
 		} else if (ex instanceof JsonValidationProcessingException) {
 			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
@@ -92,7 +93,7 @@ public class DemographicExceptionCatcher {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
 					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
 		} else if (ex instanceof UnidentifiedJsonException) {
-			throw new JsonValidationException(((UnidentifiedJsonException) ex).getErrorCode(),ex.getMessage());
+			throw new JsonValidationException(((UnidentifiedJsonException) ex).getErrorCode(), ex.getMessage());
 		}
 	}
 

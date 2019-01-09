@@ -27,18 +27,18 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.documents.code.RequestCodes;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.dto.MainListResponseDTO;
-import io.mosip.preregistration.documents.dto.MainRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
@@ -59,8 +59,9 @@ public class DocumentServiceUtil {
 	/**
 	 * Autowired reference for {@link #VirusScanner}
 	 */
-/*	@Autowired
-	private VirusScanner<Boolean, String> virusScan;*/
+	/*
+	 * @Autowired private VirusScanner<Boolean, String> virusScan;
+	 */
 
 	/**
 	 * Reference for ${max.file.size} from property file
@@ -81,14 +82,18 @@ public class DocumentServiceUtil {
 	 */
 	@Autowired
 	RestTemplateBuilder restTemplateBuilder;
-	
+
 	/**
 	 * Reference for ${demographic.resource.url} from property file
 	 */
 	@Value("${demographic.resource.url}")
 	private String demographicResourceUrl;
-	
-	private ObjectMapper mapper = new ObjectMapper();
+
+	/**
+	 * Logger configuration for DocumentServiceUtil
+	 */
+	private static Logger log = LoggerConfiguration.logConfig(DocumentServiceUtil.class);
+
 	/**
 	 * This method adds the initial request values to inputValidation map
 	 * 
@@ -97,6 +102,7 @@ public class DocumentServiceUtil {
 	 * @return inputValidation map
 	 */
 	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DocumentRequestDTO> docReqDto) {
+		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of document service util");
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.id.toString(), docReqDto.getId());
 		inputValidation.put(RequestCodes.ver.toString(), docReqDto.getVer());
@@ -125,6 +131,7 @@ public class DocumentServiceUtil {
 	 */
 	public MainRequestDTO<DocumentRequestDTO> createUploadDto(String documentJsonString)
 			throws JSONException, JsonParseException, JsonMappingException, IOException, ParseException {
+		log.info("sessionId", "idType", "id", "In createUploadDto method of document service util");
 		MainRequestDTO<DocumentRequestDTO> uploadReqDto = new MainRequestDTO<>();
 		JSONObject documentData = new JSONObject(documentJsonString);
 		JSONObject docDTOData = (JSONObject) documentData.get("request");
@@ -132,8 +139,7 @@ public class DocumentServiceUtil {
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVer(documentData.get("ver").toString());
-		uploadReqDto.setReqTime(
-				new SimpleDateFormat(dateTimeFormat).parse(documentData.get("reqTime").toString()));
+		uploadReqDto.setReqTime(new SimpleDateFormat(dateTimeFormat).parse(documentData.get("reqTime").toString()));
 		uploadReqDto.setRequest(documentDto);
 		return uploadReqDto;
 	}
@@ -146,6 +152,7 @@ public class DocumentServiceUtil {
 	 * @return DocumentEntity
 	 */
 	public DocumentEntity dtoToEntity(DocumentRequestDTO dto) {
+		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setPreregId(dto.getPreregId());
 		documentEntity.setDocCatCode(dto.getDocCatCode());
@@ -167,6 +174,7 @@ public class DocumentServiceUtil {
 	 * @return DocumentDTO
 	 */
 	public DocumentRequestDTO entityToDto(DocumentEntity entity) {
+		log.info("sessionId", "idType", "id", "In entityToDto method of document service util");
 		return null;
 	}
 
@@ -178,6 +186,7 @@ public class DocumentServiceUtil {
 	 * @return true if key is null, else false
 	 */
 	public boolean isNull(Object key) {
+		log.info("sessionId", "idType", "id", "In isNull method of document service util");
 		if (key instanceof String) {
 			if (key.equals(""))
 				return true;
@@ -196,6 +205,7 @@ public class DocumentServiceUtil {
 	 * @return maximum file size defined.
 	 */
 	public long getMaxFileSize() {
+		log.info("sessionId", "idType", "id", "In getMaxFileSize method of document service util");
 		return Math.multiplyExact(this.maxFileSize, Math.multiplyExact(1024, 1024));
 	}
 
@@ -203,21 +213,28 @@ public class DocumentServiceUtil {
 	 * @return defined document extension.
 	 */
 	public String getFileExtension() {
+		log.info("sessionId", "idType", "id", "In getFileExtension method of document service util");
 		return this.fileExtension;
 	}
 
 	public String getCurrentResponseTime() {
+		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of document service util");
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
 
 	public String getDateString(Date date) {
+		log.info("sessionId", "idType", "id", "In getDateString method of document service util");
 		return DateUtils.formatDate(date, dateTimeFormat);
 	}
 
 	public Integer parseDocumentId(String documentId) {
+		log.info("sessionId", "idType", "id", "In parseDocumentId method of document service util");
 		try {
 			return Integer.parseInt(documentId);
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException ex) {
+			log.error("sessionId", "idType", "id",
+					"In parseDocumentId method of document service util- " + ex.getMessage());
+
 			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
 					ErrorMessages.INVALID_DOCUMENT_ID.toString());
 		}
@@ -225,6 +242,7 @@ public class DocumentServiceUtil {
 	}
 
 	public boolean isValidCatCode(String catCode) {
+		log.info("sessionId", "idType", "id", "In isValidCatCode method of document service util");
 		if (catCode.equals("POA")) {
 			return true;
 		} else {
@@ -234,6 +252,7 @@ public class DocumentServiceUtil {
 	}
 
 	public DocumentEntity documentEntitySetter(String destinationPreId, DocumentEntity documentEntity) {
+		log.info("sessionId", "idType", "id", "In documentEntitySetter method of document service util");
 		DocumentEntity copyDocumentEntity = new DocumentEntity();
 		copyDocumentEntity.setPreregId(destinationPreId);
 		copyDocumentEntity.setDocName(documentEntity.getDocName());
@@ -257,6 +276,7 @@ public class DocumentServiceUtil {
 	 * @return true if file size is within the limit, else false
 	 */
 	public boolean fileSizeCheck(long uploadedFileSize) {
+		log.info("sessionId", "idType", "id", "In fileSizeCheck method of document service util");
 		long maxAllowedSize = getMaxFileSize();
 		if (uploadedFileSize < maxAllowedSize) {
 			return true;
@@ -275,6 +295,7 @@ public class DocumentServiceUtil {
 	 *             if uploaded document is not valid
 	 */
 	public boolean fileExtensionCheck(MultipartFile file) {
+		log.info("sessionId", "idType", "id", "In fileExtensionCheck method of document service util");
 		if (file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
 			return true;
 		} else {
@@ -293,16 +314,19 @@ public class DocumentServiceUtil {
 	 *             if uploaded document is not valid
 	 */
 	public boolean isVirusScanSuccess(MultipartFile file) {
+		boolean flag = true;
 		// return virusScan.scanDocument(file.getBytes());
-		return true;
+		log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
+		return flag;
 	}
-	
-	
+
 	public boolean callGetPreRegInfoRestService(String preId) {
+		boolean flag = false;
+		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of document service util");
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applicationData")
-					.queryParam("preRegId", preId);
+					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
@@ -310,16 +334,20 @@ public class DocumentServiceUtil {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
-			if(respEntity.getStatusCode().is2xxSuccessful()) {
-				return true;
-			}else {
-				throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
-						ErrorMessages.DEMOGRAPHIC_DATA_NOT_FOUND.toString());
+			if (respEntity.getBody().isStatus()) {
+				flag = true;
+			} else {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
 			}
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetPreRegInfoRestService method of document service util- " + ex.getMessage());
+
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_PAM_DOC_020.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), e.getCause());
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
 		}
+		return flag;
 	}
 
 }

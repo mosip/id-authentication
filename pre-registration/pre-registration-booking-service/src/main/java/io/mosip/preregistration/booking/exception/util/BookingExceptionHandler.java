@@ -35,7 +35,7 @@ import io.mosip.preregistration.booking.exception.MasterDataNotAvailableExceptio
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
  * Exception Handler
@@ -306,7 +306,8 @@ public class BookingExceptionHandler {
 
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AvailablityNotFoundException.class)
-	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
@@ -317,8 +318,9 @@ public class BookingExceptionHandler {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	@ExceptionHandler(TablenotAccessibleException.class)
-	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TablenotAccessibleException e, WebRequest request) {
+	@ExceptionHandler(TableNotAccessibleException.class)
+	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TableNotAccessibleException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
@@ -327,9 +329,11 @@ public class BookingExceptionHandler {
 		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
+
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentBookingFailedException.class)
-	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
@@ -338,7 +342,7 @@ public class BookingExceptionHandler {
 		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
-	
+
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}

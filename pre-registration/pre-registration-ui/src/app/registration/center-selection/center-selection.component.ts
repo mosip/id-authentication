@@ -1,30 +1,32 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { DialougComponent } from '../../shared/dialoug/dialoug.component';
 import { SharedService } from 'src/app/shared/shared.service';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
-import { BookingModel } from './booking.model';
-import { BookingModelRequest } from '../../shared/booking-request.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationService } from '../registration.service';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
 @Component({
-  selector: 'app-center-selection',
-  templateUrl: './center-selection.component.html',
-  styleUrls: ['./center-selection.component.css']
+  selector: "app-center-selection",
+  templateUrl: "./center-selection.component.html",
+  styleUrls: ["./center-selection.component.css"]
 })
-
 export class CenterSelectionComponent implements OnInit {
-
   @ViewChild(TimeSelectionComponent)
   timeSelectionComponent: TimeSelectionComponent;
 
-  displayedColumns: string[] = ['select', 'name', 'addressLine1', 'contactPerson', 'centerTypeCode', 'contactPhone'];
+  displayedColumns: string[] = [
+    "select",
+    "name",
+    "addressLine1",
+    "contactPerson",
+    "centerTypeCode",
+    "contactPhone"
+  ];
   dataSource = new MatTableDataSource<RegistrationCentre>(REGISTRATION_CENTRES);
   selection = new SelectionModel<RegistrationCentre>(true, []);
   searchClick: boolean = true;
@@ -37,7 +39,7 @@ export class CenterSelectionComponent implements OnInit {
   ];
 
   locationType = null;
-  text = null;
+  searchText = null;
   showTable = false;
   selectedCentre = null;
   showMap = false;
@@ -46,21 +48,34 @@ export class CenterSelectionComponent implements OnInit {
   bookingDataList = [];
   step = 0;
   showDescription = false;
-  mapProvider = 'OSM';
-
+  mapProvider = "OSM";
+  searchTextFlag = false;
+  displayMessage = null;
   constructor(
     private dialog: MatDialog,
     private service: SharedService,
     private dataService: DataStorageService,
     private router: Router,
     private route: ActivatedRoute,
-    private registrationService: RegistrationService) { }
+    private registrationService: RegistrationService
+  ) {}
 
   ngOnInit() {
-    this.getLocation();
+  //  this.getLocation();
   }
   setSearchClick(flag: boolean) {
     this.searchClick = flag;
+  }
+  onSubmit() {
+    this.searchTextFlag = true;
+    if (this.searchText.length !== 0 || this.searchText !== null) {
+      this.displayMessage = `Searching results for ${this.searchText} ....`;
+    } else {
+      this.displayMessage = '';
+    }
+    // if(REGISTRATION_CENTRES.length === 0){
+    //   this.displayMessage = `No results found`;
+    // }
   }
   setStep(index: number) {
     this.step = index;
@@ -76,28 +91,36 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   showResults() {
-    if (this.locationType !== null && this.text !== null) {
+    if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
-      this.dataService.getRegistrationCentersByName(this.locationType, this.text).subscribe(response => {
-        console.log(response);
-        if (response['registrationCenters'].length !== 0) {
-          REGISTRATION_CENTRES = response['registrationCenters'];
-          this.dataSource.data = REGISTRATION_CENTRES;
-          this.showTable = true;
-          this.selectedRow(REGISTRATION_CENTRES[0]);
-          this.dispatchCenterCoordinatesList();
-        } else {
-          this.showMessage = true;
-        }
-      }, error => {
-        this.showMessage = true;
-      });
+      this.dataService
+        .getRegistrationCentersByName(this.locationType, this.searchText)
+        .subscribe(
+          response => {
+            console.log(response);
+            if (response["registrationCenters"].length !== 0) {
+              REGISTRATION_CENTRES = response["registrationCenters"];
+              this.dataSource.data = REGISTRATION_CENTRES;
+              this.showTable = true;
+              this.selectedRow(REGISTRATION_CENTRES[0]);
+              this.dispatchCenterCoordinatesList();
+            } else {
+              this.showMessage = true;
+            }
+          },
+          error => {
+            this.showMessage = true;
+          }
+        );
     }
   }
 
   plotOnMap() {
     this.showMap = true;
-    this.service.changeCoordinates([Number(this.selectedCentre.longitude), Number(this.selectedCentre.latitude)]);
+    this.service.changeCoordinates([
+      Number(this.selectedCentre.longitude),
+      Number(this.selectedCentre.latitude)
+    ]);
   }
 
   selectedRow(row) {
@@ -108,7 +131,6 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   getLocation() {
-
     if (navigator.geolocation) {
 
       this.showMap = false;
@@ -131,7 +153,7 @@ export class CenterSelectionComponent implements OnInit {
         });
       });
     } else {
-      alert('Location not suppored in this browser');
+      alert("Location not suppored in this browser");
     }
   }
 
@@ -164,8 +186,18 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   routeNext() {
-    this.registrationService.setRegCenterId('1');
-    this.router.navigate(['../pick-time'], { relativeTo: this.route });
+    this.registrationService.setRegCenterId("1");
+    this.router.navigate(["../pick-time"], { relativeTo: this.route });
+  }
+
+  routeDashboard() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate(['dashboard', routeParams[2]]);
+  }
+
+  routeBack() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate([routeParams[1], routeParams[2], 'file-upload']);
   }
 
 }

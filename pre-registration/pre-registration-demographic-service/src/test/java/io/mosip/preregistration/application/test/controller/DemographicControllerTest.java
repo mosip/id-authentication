@@ -27,16 +27,16 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.application.controller.DemographicController;
-import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.DemographicResponseDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
@@ -72,9 +72,12 @@ public class DemographicControllerTest {
 	private Object jsonObject = null;
 
 	/**
-	 * @throws FileNotFoundException when file not found
-	 * @throws IOException on input error
-	 * @throws ParseException on json parsing error
+	 * @throws FileNotFoundException
+	 *             when file not found
+	 * @throws IOException
+	 *             on input error
+	 * @throws ParseException
+	 *             on json parsing error
 	 */
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
@@ -86,7 +89,8 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void successSave() throws Exception {
@@ -94,11 +98,11 @@ public class DemographicControllerTest {
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		List<DemographicResponseDTO> saveList = new ArrayList<DemographicResponseDTO>();
 		DemographicResponseDTO createDto = new DemographicResponseDTO();
-		
-		 MainRequestDTO<DemographicRequestDTO> request= new MainRequestDTO<>();
-		 DemographicRequestDTO demo= new DemographicRequestDTO();
-		 demo.setPreRegistrationId("22893647484937");
-		 request.setRequest(demo);
+
+		MainRequestDTO<DemographicRequestDTO> request = new MainRequestDTO<>();
+		DemographicRequestDTO demo = new DemographicRequestDTO();
+		demo.setPreRegistrationId("22893647484937");
+		request.setRequest(demo);
 
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
@@ -114,12 +118,13 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");
-		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService)
+		Mockito.doThrow(new TableNotAccessibleException("ex")).when(preRegistrationService)
 				.addPreRegistration(Mockito.any());
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
@@ -129,7 +134,8 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void successUpdate() throws Exception {
@@ -145,14 +151,14 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.content(jsonObject.toString());
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 		logger.info("Resonse " + response);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void getAllApplicationTest() throws Exception {
@@ -177,7 +183,8 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void getApplicationStatusTest() throws Exception {
@@ -199,7 +206,8 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void discardIndividualTest() throws Exception {
@@ -221,7 +229,8 @@ public class DemographicControllerTest {
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
@@ -237,13 +246,15 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationData")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", createDto.getPreRegistrationId());
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("pre_registration_id", createDto.getPreRegistrationId());
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
@@ -257,13 +268,15 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "1234").param("status_code", "Booked");
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "1234")
+				.param("status_code", "Booked");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 	/**
-	 * @throws Exception on error
+	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void getAllApplicationByDateTest() throws Exception {

@@ -46,7 +46,24 @@
       "label_pin": "Numéro CINE / PIN",
       "action_back": "RETOUR",
       "action_continue": "CONTINUER",
-      "action_preview": "APERÇU"
+      "action_preview": "APERÇU",
+      "validation": {
+        "name_required": "Le nom complet est requis",
+        "age_validation": "L'âge devrait être inférieur à 150",
+        "DOB_validation":"Entrez une date de naissance valide (l'âge doit être inférieur à 150)",
+        "date_required": "Entrez 2 chiffres pour la date",
+        "month_required": "Entrez 2 chiffres pour le mois",
+        "year_required": "Entrez 2 chiffres pour l'année",
+        "address_required": "L'adresse est obligatoire",
+        "region_required": "Veuillez sélectionner une région",
+        "province_required": "Veuillez sélectionner une province",
+        "city_required": "Veuillez sélectionner une ville",
+        "admin_required": "Veuillez sélectionner l'autorité administrative locale",
+        "postal_code_required": "Veuillez entrer un code postal valide",
+        "mobile_required": "Veuillez entrer un numéro de téléphone valide",
+        "email_required": "S'il vous plaît entrer email id valide",
+        "pin_required": "Veuillez entrer un code PIN valide"
+      }
     },
     "documents": {
       "title_document": "Télécharger des documents",

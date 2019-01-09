@@ -21,7 +21,7 @@ import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephServerException;
-import io.mosip.preregistration.documents.exception.ConnectionUnavailableException;
+import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
@@ -35,6 +35,7 @@ import io.mosip.preregistration.documents.exception.InvalidConnectionParameters;
 import io.mosip.preregistration.documents.exception.InvalidDocumnetIdExcepion;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.ParsingException;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 
 /**
@@ -81,13 +82,13 @@ public class DocumentExceptionCatcher {
 		} else if (ex instanceof PacketNotFoundException) {
 			throw new CephServerException(((PacketNotFoundException) ex).getErrorCode(),ex.getMessage());
 		} else if (ex instanceof SdkClientException) {
-			throw new ConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
+			throw new CephConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
 					ErrorMessages.CONNECTION_UNAVAILABLE.toString());
 		} else if (ex instanceof DocumentNotValidException) {
 			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
 					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
 		} else if (ex instanceof ConnectionUnavailableException) {
-			throw new ConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
+			throw new CephConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
 					ErrorMessages.CONNECTION_UNAVAILABLE.toString());
 		} else if (ex instanceof DocumentSizeExceedException) {
 			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
