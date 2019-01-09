@@ -150,29 +150,16 @@
   <section>
     <div class="centers-wrapper">
       <!-- search container -->
-      <div
-        class="center_selection-intial-recommendation-container"
-        *ngIf="searchClick; else elseBlock"
-      >
+      <div class="center_selection-intial-recommendation-container" *ngIf="searchClick; else elseBlock">
         <div class="center_selection-center_recommendation-display">
           <span><b>Recommended Centers</b></span>
-          <button
-            mat-button
-            class="center_selection-nearby-btn"
-            (click)="getLocation()"
-          >
-            Nearby</button
-          ><br />
-          <span class="center_selection-center-available-text"
-            >Found {{ dataSource.data.length }} centers
+          <button mat-button class="center_selection-nearby-btn" (click)="getLocation()">
+            Nearby</button><br />
+          <span class="center_selection-center-available-text">Found {{ dataSource.data.length }} centers
           </span>
         </div>
         <span class="spacer"></span>
-        <button
-          mat-icon-button
-          class="search-btn"
-          (click)="setSearchClick(false)"
-        >
+        <button mat-icon-button class="search-btn" (click)="setSearchClick(false)">
           <img src="assets\search.png" />
         </button>
       </div>
@@ -181,40 +168,19 @@
         <div class="center_selection-form-container">
           <form class="search-form">
             <mat-card class="select-card">
-              <mat-select
-                class="select-input"
-                placeholder="Select Location Types"
-              >
-                <mat-option
-                  style="color:black;"
-                  *ngFor="let locationType of locationTypes"
-                  [value]="locationType.value"
-                >
+              <mat-select name="select" class="select-input" [(ngModel)]="locationType" value="locationType.value"
+                placeholder="Select Location Types">
+                <mat-option style="color:black;" *ngFor="let locationType of locationTypes" [value]="locationType.value">
                   {{ locationType.viewValue }}
                 </mat-option>
               </mat-select>
             </mat-card>
             <mat-card class="search-card">
-              <input
-                mat-input
-                type="search"
-                placeholder="Search..."
-                name="search"
-                class="search-input"
-                [(ngModel)]="searchText"
-              /><button
-                mat-icon-button
-                type="submit"
-                (click)="showResults()"
-                (click)="onSubmit()"
-              >
+              <input mat-input type="search" placeholder="Search..." name="search" class="search-input" [(ngModel)]="searchText" /><button
+                mat-icon-button type="submit" (click)="showResults()">
                 <img src="assets\search_grey.png" />
               </button>
-              <button
-                mat-icon-button
-                class="search-cancel-btn"
-                (click)="setSearchClick(true)"
-              >
+              <button mat-icon-button class="search-cancel-btn" (click)="setSearchClick(true)">
                 <img src="assets\close.png" />
               </button>
             </mat-card>
@@ -222,55 +188,49 @@
         </div>
         <span class="search-text" *ngIf="searchTextFlag">{{
           displayMessage
-        }}</span>
+          }}</span>
       </ng-template>
 
       <div class="centers-list" *ngIf="dataSource.data">
         <ul>
-          <li *ngFor="let center of dataSource.data">
+          <li *ngFor="let center of dataSource.data; let i = index;">
             <mat-card class="center-card">
-              <input type="radio" name="center" />
+              <input type="radio" [value]="center" [(ngModel)]="selectedCentre" (click)="selectedRow(center)" name="center" />
               <div>
                 <div>
-                  <span><img src="assets\address.png"/></span>
-                  <span
-                    ><strong>
+                  <span><img src="assets\address.png" /></span>
+                  <span><strong>
                       {{
-                        center.addressLine1 +
-                          ", " +
-                          center.addressLine2 +
-                          ", " +
-                          center.addressLine3
-                      }}</strong
-                    ></span
-                  >
+                      center.addressLine1 +
+                      ", " +
+                      center.addressLine2 +
+                      ", " +
+                      center.addressLine3
+                      }}</strong></span>
                 </div>
                 <div>
-                  <span><img src="assets\contact number.png"/></span>
+                  <span><img src="assets\contact number.png" /></span>
                   <span>
                     {{
-                      center.contactPerson + ", " + center.contactPhone
-                    }}</span
-                  >
+                    center.contactPerson + ", " + center.contactPhone
+                    }}</span>
                 </div>
               </div>
               <span class="spacer"></span>
               <div>
                 <div>
-                  <span
-                    >Timing:
+                  <span>Timing:
                     {{
-                      changeTimeFormat(center.centerStartTime.substring(0, 5)) +
-                        " - " +
-                        changeTimeFormat(center.centerEndTime.substring(0, 5)) +
-                        " | Lunch: " +
-                        changeTimeFormat(
-                          center.lunchStartTime.substring(0, 5)
-                        ) +
-                        " - " +
-                        changeTimeFormat(center.lunchEndTime.substring(0, 5))
-                    }}</span
-                  >
+                    changeTimeFormat(center.centerStartTime.substring(0, 5)) +
+                    " - " +
+                    changeTimeFormat(center.centerEndTime.substring(0, 5)) +
+                    " | Lunch: " +
+                    changeTimeFormat(
+                    center.lunchStartTime.substring(0, 5)
+                    ) +
+                    " - " +
+                    changeTimeFormat(center.lunchEndTime.substring(0, 5))
+                    }}</span>
                 </div>
                 <div><span>Open: Monday - Friday</span></div>
               </div>
@@ -285,6 +245,9 @@
     <div class="map">
       Map container
     </div> -->
+    <div class="map" *ngIf="showMap">
+      <app-map [mapProvider]="mapProvider"></app-map>
+    </div>
   </section>
 
   <!-- Footer navigation -->
