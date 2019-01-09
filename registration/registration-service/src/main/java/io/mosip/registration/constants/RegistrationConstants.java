@@ -821,7 +821,7 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
 
 	public enum mappedCodeForLang {
-		en("ENG");
+		en("ENG"),ar("AR");
 		private String langCode;
 
 		mappedCodeForLang(String langCode) {

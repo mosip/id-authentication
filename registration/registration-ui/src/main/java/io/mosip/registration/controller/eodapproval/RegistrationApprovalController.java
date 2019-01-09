@@ -244,7 +244,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		
 		
 		if (!listData.isEmpty()) {
-			eodController.getPendingApprovalTitledPane().setText("Pending Approval ( "+listData.size()+" )");
+			eodController.getPendingApprovalTitledPane().setText(eodController.getPendingApprovalTitledPane().getText()+"( "+listData.size()+" )");
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {

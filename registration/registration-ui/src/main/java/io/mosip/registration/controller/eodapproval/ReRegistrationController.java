@@ -252,9 +252,9 @@ public class ReRegistrationController extends BaseController implements Initiali
 			ObservableList<PacketStatusDTO> observableList = FXCollections
 					.observableArrayList(reRegistrationPacketsList);
 			table.setItems(observableList);
-			eodController.getReRegisterTitledPane().setText("Re-Register ( " + reRegistrationPacketsList.size() + " )");
+			eodController.getReRegisterTitledPane().setText(eodController.getReRegisterTitledPane().getText()+"( " + reRegistrationPacketsList.size() + " )");
 		} else {
-			eodController.getReRegisterTitledPane().setText("Re-Register");
+			eodController.getReRegisterTitledPane().setText(eodController.getReRegisterTitledPane().getText());
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
 		}
