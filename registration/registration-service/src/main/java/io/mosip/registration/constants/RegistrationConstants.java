@@ -827,5 +827,15 @@ public class RegistrationConstants {
 		}
 
 	}
+	
+	// user on boarding
+	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
+	public static final String USER_ON_BOARDING_SUCCESS_RESPONSE = "success";
+	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
+	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
+	public static final String USER_ON_BOARDING_SUCCESS_CODE="REG-URE‌-002";
+	public static final String USER_ON_BOARDING_SUCCESS_MSG="User on-boarded successfully.";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE="REG-URE‌-008";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG="Threshold for number of successful authentications not met.";
 
 }

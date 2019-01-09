@@ -25,6 +25,7 @@ public class LoggerConstants {
 	private static final String USER_REGISTRATION = APP_NAME + "USER_REGISTRATION - ";
 	private static final String MASTER_SYNC = APP_NAME + "MASTER_SYNC - ";
 	private static final String UIN_UPDATE = APP_NAME + "UIN_UPDATE - ";
+	private static final String USER_ONBOARD = APP_NAME + "USER_ONBOARD - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -60,5 +61,6 @@ public class LoggerConstants {
 	public static final String LOG_REG_IRIS_VALIDATOR = USER_REGISTRATION + "IRIS_VALIDATOR_IMPL";
 	public static final String LOG_REG_FACE_VALIDATOR = USER_REGISTRATION + "FACE_VALIDATOR_IMPL";
 	public static final String LOG_REG_FACE_FACADE = USER_REGISTRATION + "FACE_FACADE";
+	public static final String LOG_REG_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_IMLP";
 
 }
