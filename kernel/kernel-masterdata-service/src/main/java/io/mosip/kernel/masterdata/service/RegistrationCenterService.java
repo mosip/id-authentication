@@ -115,15 +115,28 @@ public interface RegistrationCenterService {
 	 * @return the id response dto.
 	 */
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
-	
+
 	/**
-	 * This method would validate timestamp and id whether
-	 * the given date in timestamp is a holiday. Also,checks time in the timestamp whether it is between
-	 * working hours.
-	 * @param id - registration id
-	 * @param timeStamp - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
+	 * This method would validate timestamp and id whether the given date in
+	 * timestamp is a holiday. Also,checks time in the timestamp whether it is
+	 * between working hours.
+	 * 
+	 * @param id
+	 *            - registration id
+	 * @param timeStamp
+	 *            - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id,String timeStamp);
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
+
+	/**
+	 * This method updates the registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            - the updated registration center DTO.
+	 * 
+	 * @return - the id response DTO.
+	 */
+	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
 
 }

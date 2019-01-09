@@ -333,8 +333,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
 			/**
-			 * a query is written in RegistrationCenterRepository which would check if the date 
-			 * is not a holiday for that center
+			 * a query is written in RegistrationCenterRepository which would check if the
+			 * date is not a holiday for that center
 			 *
 			 */
 			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
@@ -356,7 +356,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					boolean isAfterStartTime = locatime.isAfter(startTime);
 					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
 					/*
-					 * below is the validation to check if the time that is sent is between start and end time
+					 * below is the validation to check if the time that is sent is between start
+					 * and end time
 					 */
 					if (isAfterStartTime && isBeforeEndTime) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
@@ -378,5 +379,35 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		return resgistrationCenterStatusResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
+		RegistrationCenterDto registrationCenter = registrationCenterDto.getRequest();
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.mapFieldValues(registrationCenter, idResponseDto);
+		try {
+			RegistrationCenter registrationCenterEntity = registrationCenterRepository
+					.findByIdAndIsDeletedFalseOrNull(registrationCenterDto.getRequest().getId());
+			if (registrationCenterEntity != null) {
+				MetaDataUtils.setUpdateMetaData(registrationCenter, registrationCenterEntity, false);
+				registrationCenterRepository.update(registrationCenterEntity);
+			} else {
+				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		return idResponseDto;
 	}
 }
