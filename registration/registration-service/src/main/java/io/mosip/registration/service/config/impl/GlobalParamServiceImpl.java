@@ -7,11 +7,14 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
@@ -80,21 +83,44 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		//TODO Should be removed 
 		String registrationCenterID = "1234";
 		
-		System.out.println(HashMap.class.getName());
 		
 		Map<String, String> requestParamMap = new HashMap<String, String>();
 		requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, registrationCenterID);
 
 		try {
-			HashMap<String,Object>  globalConfigParam = (HashMap<String, Object>) serviceDelegateUtil.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap,true);
+			HashMap<String,Object>  map = (HashMap<String, Object>) serviceDelegateUtil.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap,true);
 		
-			//System.out.println(globalConfigParam.values());
+			HashMap<String,String> globalParam =new HashMap<>();
 			
-		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException exception) {
-			// TODO Auto-generated catch block
 			
+			parseToMap(map, globalParam);
+			
+			/*for (Entry<String, String> entry : globalParam.entrySet()) {
+				 System.out.println("Key = " + entry.getKey() + 
+	                    ", Value = " + entry.getValue());
+			}
+
+	           
+			System.out.println(globalParam.size());*/
+			
+		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException |ResourceAccessException exception) {
+			exception.printStackTrace();
 		}
 		
 		return null;
+	}
+	
+	private void parseToMap(HashMap<String,Object> map,HashMap<String, String> globalParamMap) {
+		for (Entry<String, Object> entry : map.entrySet()) {
+				String key = entry.getKey();
+			
+			 if(entry.getValue() instanceof HashMap) {
+				 parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
+			 } else {
+				 globalParamMap.put(key, entry.getValue().toString());
+			 }
+			 
+			
+		}
 	}
 }
