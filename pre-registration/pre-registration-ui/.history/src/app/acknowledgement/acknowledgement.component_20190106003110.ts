@@ -1,5 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 
+export interface UserInfo {
+  name: string;
+  preRegId: string;
+  regCenter: string;
+  centreContactNumber: number;
+  appointmentDTime: string;
+}
+
 @Component({
   selector: "app-acknowledgement",
   templateUrl: "./acknowledgement.component.html",
@@ -63,6 +71,13 @@ export class AcknowledgementComponent implements OnInit {
       guidelines : ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6', 'Item 7', 'Item 8', 'Item 9', 'Item 10']
     }
   ];
+  userInfo: UserInfo = {
+    name: 'Deepak Sharma',
+    preRegId: '#LI12345678',
+    regCenter: 'Gopalan Arcade, Mysore Road',
+    centreContactNumber: 1234567890,
+    appointmentDTime: '09 Jan 2019, 4:00 pm'
+  };
 
   constructor() {}
 

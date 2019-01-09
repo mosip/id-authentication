@@ -8,8 +8,8 @@ import { DataStorageService } from 'src/app/shared/data-storage.service';
 })
 export class PreviewComponent implements OnInit {
 
-  previewData = {};
-  secondaryLanguagelabels = {};
+  previewData : any;
+  secondaryLanguagelabels : any ;
   secondaryLanguage;
 
   constructor(private dataStorageService: DataStorageService ) { }
