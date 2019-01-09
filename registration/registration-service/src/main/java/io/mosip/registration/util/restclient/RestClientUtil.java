@@ -7,8 +7,6 @@ import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -78,19 +75,8 @@ public class RestClientUtil {
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 
-		if (responseEntity != null) {
-			if (responseEntity.hasBody()) {
-				if (requestHTTPDTO.isPregRegSync()) {
-					Map<String, Object> preRegData = new HashMap<>();
-					preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME,
-							responseEntity.getHeaders().getContentDisposition().getFilename());
-					preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, responseEntity.getBody());
-					responseBody = preRegData;
-				} else {
-					responseBody = responseEntity.getBody();
-				}
-
-			}
+		if (responseEntity != null && responseEntity.hasBody()) {
+			responseBody = responseEntity.getBody();
 		}
 
 		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,

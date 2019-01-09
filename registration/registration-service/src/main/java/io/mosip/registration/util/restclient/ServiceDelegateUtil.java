@@ -1,7 +1,6 @@
 package io.mosip.registration.util.restclient;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
@@ -21,10 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.web.util.UriTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -163,12 +159,6 @@ public class ServiceDelegateUtil {
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare Get request method called");
 
-		
-		if (requestParams!=null && requestParams.containsKey(RegistrationConstants.IS_PRE_REG_SYNC)) {
-			requestHTTPDTO.setPregRegSync(true);
-			requestParams.remove(RegistrationConstants.IS_PRE_REG_SYNC);
-		}
-		
 		// prepare httpDTO except rquest type and uri build
 		requestHTTPDTO = prepareRequest(requestHTTPDTO, serviceName, null);
 

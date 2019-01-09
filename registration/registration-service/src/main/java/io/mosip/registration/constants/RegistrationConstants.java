@@ -522,10 +522,10 @@ public class RegistrationConstants {
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
 
 	// Documents
-	public static final String POA_DOCUMENT = "PoA";
-	public static final String POI_DOCUMENT = "PoI";
-	public static final String POR_DOCUMENT = "PoR";
-	public static final String DOB_DOCUMENT = "DoB";
+	public static final String POA_DOCUMENT = "POA";
+	public static final String POI_DOCUMENT = "POI";
+	public static final String POR_DOCUMENT = "POR";
+	public static final String DOB_DOCUMENT = "DOB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
 

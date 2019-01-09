@@ -142,7 +142,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getCnieNumber(), null));
 			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_LOCAL_LANG_LABEL,
-					localProperties.getString("cnie_number"));
+					localProperties.getString("cniOrPinNumber"));
 
 			boolean isChild = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 					.getParentOrGuardianRIDOrUIN() != null
@@ -155,9 +155,9 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN, getValue(registration.getDemographicDTO()
 						.getDemographicInfoDTO().getIdentity().getParentOrGuardianRIDOrUIN(), null));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
-						localProperties.getString("parent_name"));
+						localProperties.getString("parentName"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("parent_uin"));
+						localProperties.getString("uinId"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getParentOrGuardianName(), localLanguageCode));
@@ -277,29 +277,29 @@ public class TemplateGenerator extends BaseService {
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
-					localProperties.getString("full_name"));
+					localProperties.getString("fullName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOB_LOCAL_LANG_LABEL,
-					localProperties.getString("date_of_birth"));
+					localProperties.getString("age/dob"));
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG_LABEL,
 					localProperties.getString("gender"));
 			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG_LABEL,
-					localProperties.getString("address_line1"));
+					localProperties.getString("addressLine1"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG_LABEL,
-					localProperties.getString("address_line2"));
+					localProperties.getString("addressLine2"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG_LABEL,
-					localProperties.getString("address_line3"));
+					localProperties.getString("addressLine3"));
 			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
 							localLanguageCode));
@@ -318,16 +318,16 @@ public class TemplateGenerator extends BaseService {
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getRegion(),
 							localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG_LABEL,
-					localProperties.getString("local_authority"));
+					localProperties.getString("localAdminAuthority"));
 			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.getLocalAdministrativeAuthority(), localLanguageCode));
 			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_LOCAL_LANG_LABEL,
-					localProperties.getString("postal_code"));
+					localProperties.getString("postalCode"));
 			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_LOCAL_LANG_LABEL,
-					localProperties.getString("email"));
+					localProperties.getString("emailId"));
 			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_LOCAL_LANG_LABEL,
-					localProperties.getString("mobile"));
+					localProperties.getString("mobileNo"));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG_LABEL,
 					localProperties.getString("documents"));
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_LOCAL_LANG, documentsList.toString());
