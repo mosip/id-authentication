@@ -94,6 +94,9 @@ export class DashBoardComponent implements OnInit {
             };
             this.users.push(applicant);
           }
+        } else {
+          sessionStorage.setItem('newApplicant', 'true');
+          this.onNewApplication();
         }
       },
       error => {

@@ -244,6 +244,6 @@ export class FileUploadComponent implements OnInit {
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
-    this.router.navigate(['../pick-center'], { relativeTo: this.route });
+    this.router.navigate(['../preview'], { relativeTo: this.route });
   }
 }

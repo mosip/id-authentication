@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationService } from '../registration.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-preview',
@@ -14,13 +15,14 @@ export class PreviewComponent implements OnInit {
   secondaryLanguage;
   preRegId: string;
 
-  constructor(private dataStorageService: DataStorageService, private registrationService: RegistrationService ) { }
+  constructor(private dataStorageService: DataStorageService, private route: ActivatedRoute, private router: Router, private registrationService: RegistrationService ) { }
 
   ngOnInit() {
 
     this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
     console.log(this.preRegId)
     this.dataStorageService.getPreviewData(this.preRegId).subscribe(response => {
+      console.log(response);
       this.previewData = response['response'][0].demographicDetails.identity;
       console.log(this.previewData);
       if (this.previewData['fullName'][1].language === 'arb') {
@@ -34,6 +36,20 @@ export class PreviewComponent implements OnInit {
 
 
 
+  }
+
+  navigateDashboard() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate(['dashboard', routeParams[2]]);
+  }
+
+  navigateBack() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate([routeParams[1], routeParams[2], 'pick-center']);
+  }
+
+  navigateNext() {
+    this.router.navigate(['../pick-center'], {relativeTo: this.route});
   }
 
 }
