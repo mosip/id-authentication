@@ -67,5 +67,10 @@
 			<artifactId>java-uuid-generator</artifactId>
 			<version>3.1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>${jsonsimple.version}</version>
+		</dependency>
 	</dependencies>
 </project>

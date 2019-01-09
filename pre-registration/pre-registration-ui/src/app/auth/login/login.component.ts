@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-
+import {FormControl, Validators} from '@angular/forms';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  
 
   languages: string[] = [
     'English',
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
   inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
   timer: any;
-  inputContactDetails: string;
+  inputContactDetails = '';
   inputOTP: string;
   selectedLanguage = '';
   langCode = 'en';
@@ -28,6 +29,16 @@ export class LoginComponent implements OnInit {
   showVerify = false;
   showContactDetails = true;
   showOTP = false;
+
+  email = new FormControl('', [Validators.required, Validators.email]);
+
+  getErrorMessage() {
+    
+    return this.email.hasError('required') ? 'You must enter a value' :
+        this.email.hasError('email') ? 'Not a valid email' :
+            '';
+            
+  }
 
   constructor(private router: Router, private translate: TranslateService) {
     translate.addLangs(['en', 'fr', 'ar']);

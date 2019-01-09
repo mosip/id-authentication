@@ -15,7 +15,7 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
  * @since 1.0.0
  * 
  */
-public class ConnectionUnavailableException extends BaseUncheckedException {
+public class CephConnectionUnavailableException extends BaseUncheckedException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class ConnectionUnavailableException extends BaseUncheckedException {
 	/**
 	 * Default constructor
 	 */
-	public ConnectionUnavailableException() {
+	public CephConnectionUnavailableException() {
 		super();
 	}
 
@@ -31,7 +31,7 @@ public class ConnectionUnavailableException extends BaseUncheckedException {
 	 * @param message
 	 *            pass Error Message
 	 */
-	public ConnectionUnavailableException(String message) {
+	public CephConnectionUnavailableException(String message) {
 		super(ErrorCodes.PRG_PAM_DOC_017.toString(), message);
 	}
 
@@ -41,7 +41,7 @@ public class ConnectionUnavailableException extends BaseUncheckedException {
 	 * @param cause
 	 *            pass cause
 	 */
-	public ConnectionUnavailableException(String message, Throwable cause) {
+	public CephConnectionUnavailableException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM_DOC_017.toString(), message, cause);
 
 	}
@@ -54,7 +54,7 @@ public class ConnectionUnavailableException extends BaseUncheckedException {
 	 * @param cause
 	 *            pass Error cause
 	 */
-	public ConnectionUnavailableException(String errorCode, String message, Throwable cause) {
+	public CephConnectionUnavailableException(String errorCode, String message, Throwable cause) {
 		super(errorCode, message, cause);
 	}
 
@@ -64,7 +64,7 @@ public class ConnectionUnavailableException extends BaseUncheckedException {
 	 * @param message
 	 *            pass Error Message
 	 */
-	public ConnectionUnavailableException(String errorCode, String message) {
+	public CephConnectionUnavailableException(String errorCode, String message) {
 		super(errorCode, message);
 	}
 }

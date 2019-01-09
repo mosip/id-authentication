@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.booking.repository;
 
 import java.sql.Date;
@@ -14,18 +18,32 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 
 /**
- * Registration Repository
+ * This repository interface is used to define the JPA methods for Booking application.
  * 
- * @author M1037462
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
+ * @since 1.0.0
  *
  */
-@Repository("BookingRepository")
+@Repository("bookingAvailabilityRepository")
 @Transactional
 public interface BookingAvailabilityRepository extends BaseRepository<AvailibityEntity, String> {
 	
 
+	/**
+	 * @param Registration center id
+	 * @param Registration date
+	 * @return List AvailibityEntity based registration id and registration date.
+	 */
 	public List<AvailibityEntity> findByRegcntrIdAndRegDateOrderByFromTimeAsc(String regcntrId, LocalDate regDate);
 
+	/**
+	 * @param regcntrId
+	 * @param fromDate
+	 * @param toDate
+	 * @return List of LocalDate based on date
+	 */
 	public List<LocalDate> findDate(@Param("regcntrId") String regcntrId, @Param("fromDate") LocalDate fromDate,
 			@Param("toDate") LocalDate toDate);
 

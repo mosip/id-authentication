@@ -92,14 +92,24 @@ public class TransliterationService {
 	public MainResponseDTO<TransliterationDTO> translitratorService(
 		MainRequestDTO<TransliterationDTO> requestDTO) {
 		MainResponseDTO<TransliterationDTO> responseDTO = new MainResponseDTO<>();
+		String languageId=null;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(requestDTO), requiredRequestMap)) {
 				TransliterationDTO transliterationRequestDTO = requestDTO.getRequest();
 				if (serviceUtil.isEntryFieldsNull(transliterationRequestDTO)) {
-//					String languageId = idRepository
-//							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(), transliterationRequestDTO.getToFieldLang())
-//							.getLanguageId();
-					String toFieldValue = translitrator.translitrator("Latin-Arabic", transliterationRequestDTO.getFromFieldValue());
+					
+					/*String languageId = idRepository
+							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(), transliterationRequestDTO.getToFieldLang())
+							.getLanguageId();*/
+					System.out.println("fromLang"+transliterationRequestDTO.getFromFieldLang());
+					System.out.println("tolang"+transliterationRequestDTO.getToFieldLang());
+					if(transliterationRequestDTO.getFromFieldLang().equals("English") && transliterationRequestDTO.getToFieldLang().equals("Arabic")) {
+						languageId="Latin-Arabic";
+					}
+					else if(transliterationRequestDTO.getFromFieldLang().equals("Arabic") && transliterationRequestDTO.getToFieldLang().equals("English")){
+						languageId="Arabic-Latin";
+					}
+					String toFieldValue = translitrator.translitrator(languageId, transliterationRequestDTO.getFromFieldValue());
 					responseDTO.setResponse(serviceUtil.responseSetter(toFieldValue,transliterationRequestDTO));
 					responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
 					responseDTO.setStatus(trueStatus);

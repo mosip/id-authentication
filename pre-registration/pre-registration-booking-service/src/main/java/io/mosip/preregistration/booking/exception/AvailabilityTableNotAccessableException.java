@@ -10,19 +10,23 @@ public class AvailabilityTableNotAccessableException extends BaseUncheckedExcept
 	 */
 	private static final long serialVersionUID = 5135952690225019228L;
 
-	public AvailabilityTableNotAccessableException(String message) {
-		super(ErrorCodes.PRG_BOOK_RCI_002.toString(), message);
+	public AvailabilityTableNotAccessableException(String msg) {
+		super("", msg);
+	}
+
+	public AvailabilityTableNotAccessableException(String msg, Throwable cause) {
+		super("", msg, cause);
 	}
 
 	public AvailabilityTableNotAccessableException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
-	public AvailabilityTableNotAccessableException(String errorMessage, Throwable rootCause) {
-		super(ErrorCodes.PRG_BOOK_RCI_002.toString(), errorMessage, rootCause);
-	}
-
 	public AvailabilityTableNotAccessableException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
+	}
+
+	public AvailabilityTableNotAccessableException() {
+		super();
 	}
 }
