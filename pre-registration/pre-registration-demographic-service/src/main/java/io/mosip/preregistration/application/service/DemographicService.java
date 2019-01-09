@@ -456,14 +456,14 @@ public class DemographicService {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl)
 					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
-			HttpEntity<BookingRegistrationDTO> httpEntity = new HttpEntity<>(headers);
+			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
 			log.info("sessionId", "idType", "id", "In callGetAppointmentDetailsRestService method URL- " + uriBuilder);
 			ResponseEntity<MainResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
 					MainResponseDTO.class);
 			if (respEntity.getBody().isStatus()) {
 				ObjectMapper mapper = new ObjectMapper();
-				bookingRegistrationDTO = mapper.convertValue(respEntity.getBody(), BookingRegistrationDTO.class);
+				bookingRegistrationDTO = mapper.convertValue(respEntity.getBody().getResponse(), BookingRegistrationDTO.class);
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",

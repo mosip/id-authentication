@@ -47,7 +47,6 @@ import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.booking.code.StatusCodes;
-import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
@@ -80,6 +79,7 @@ import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 
 /**
  * This class provides the utility methods for Booking application.

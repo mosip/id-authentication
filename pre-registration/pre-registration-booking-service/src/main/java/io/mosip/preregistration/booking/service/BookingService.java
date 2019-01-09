@@ -27,7 +27,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
-import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
@@ -49,7 +48,6 @@ import io.mosip.preregistration.booking.exception.AppointmentBookingFailedExcept
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeBookedException;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
@@ -58,6 +56,7 @@ import io.mosip.preregistration.booking.repository.RegistrationBookingRepository
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingLock;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
