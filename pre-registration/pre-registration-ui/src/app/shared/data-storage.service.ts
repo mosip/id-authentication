@@ -160,4 +160,17 @@ export class DataStorageService {
       params: new HttpParams().append('documentId', documentId)
     });
   }
+
+  getPreviewData(preRegId: string) {
+    return this.httpClient.get(this.BASE_URL + appConstants.PREVIEW_DATA_APPEND_URL, {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('preRegId', preRegId)
+    })
+  }
+
+  getSecondaryLanguageLabels(langCode: string) {
+    return this.httpClient.get(`./assets/i18n/${langCode}.json`);
+  }
+
 }

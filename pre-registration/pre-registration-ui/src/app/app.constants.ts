@@ -67,3 +67,5 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request DTO';
+
+export const PREVIEW_DATA_APPEND_URL = 'demographic/v0.1/pre-registration/applicationData';
