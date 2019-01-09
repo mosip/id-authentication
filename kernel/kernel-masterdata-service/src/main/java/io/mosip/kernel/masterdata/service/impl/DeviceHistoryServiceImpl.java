@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.constant.DeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceHistoryDto;
@@ -82,12 +81,8 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 	@Transactional(propagation=Propagation.MANDATORY)
 	public IdResponseDto createDeviceHistory(DeviceHistory entityHistory) {
 		DeviceHistory createdHistory;
-		try {
 			createdHistory = deviceHistoryRepository.create(entityHistory);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
-		}
+
 		IdResponseDto idResponseDto = new IdResponseDto();
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;

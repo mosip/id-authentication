@@ -121,7 +121,9 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), DeviceHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
+		
 		try {
+			
 			device = deviceRepository.create(entity);
 			deviceHistoryService.createDeviceHistory(entityHistory);
 		
