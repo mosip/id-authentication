@@ -3,7 +3,6 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -103,7 +102,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@FXML
 	private Text registrationNavLabel;
-	
+
 	@Autowired
 	private Environment environment;
 
@@ -124,8 +123,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			
-			if(getRegistrationData().getSelectionListDTO()!=null) {
+
+			if (getRegistrationData().getSelectionListDTO() != null) {
 				registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 				newRegistration.setVisible(false);
 			}
@@ -225,6 +224,27 @@ public class AckReceiptController extends BaseController implements Initializabl
 		ResponseDTO response = packetHandlerService.handle(registrationData);
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
+
+			try {
+				// Generate the file path for storing the Encrypted Packet and Acknowledgement
+				// Receipt
+				String seperator = "/";
+				String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+						+ formatDate(new Date(),
+								environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
+										.concat(seperator).concat(registrationData.getRegistrationId());
+
+				// Storing the Registration Acknowledge Receipt Image
+				FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
+						new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
+
+				LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+						"Registration's Acknowledgement Receipt saved");
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage());
+			}
+
 			if (registrationData.getSelectionListDTO() == null) {
 
 				Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
@@ -251,40 +271,19 @@ public class AckReceiptController extends BaseController implements Initializabl
 	}
 
 	@FXML
-	public void saveReceipt(ActionEvent event) throws RegBaseCheckedException {
-		try {
-			// Generate the file path for storing the Encrypted Packet and Acknowledgement
-			// Receipt
-			Button button = (Button) event.getSource();
-			String seperator = "/";
-			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
-					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
-							.concat(seperator).concat(registrationData.getRegistrationId());
-
-			// Storing the Registration Acknowledge Receipt Image
-			FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
-					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
-
-			LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
-					"Registration's Acknowledgement Receipt saved");
-
-			/*PrinterJob job = PrinterJob.createPrinterJob();
-			if (job != null) {
-				webView.getEngine().print(job);
-				job.endJob();
-			} */
-
-			if (button.getId().equals(print.getId())) {
-				generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
-				goToHomePageFromRegistration();
-			}
-			if (button.getId().equals(newRegistration.getId())) {
-				clearRegistrationData();
-				packetController.createPacket();
-			}
-
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
+	public void saveReceipt(ActionEvent event) {
+		Button button = (Button) event.getSource();
+		/*
+		 * PrinterJob job = PrinterJob.createPrinterJob(); if (job != null) {
+		 * webView.getEngine().print(job); job.endJob(); }
+		 */
+		if (button.getId().equals(print.getId())) {
+			generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
+			goToHomePageFromRegistration();
+		}
+		if (button.getId().equals(newRegistration.getId())) {
+			clearRegistrationData();
+			packetController.createPacket();
 		}
 	}
 

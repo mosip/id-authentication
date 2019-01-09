@@ -306,6 +306,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "Biometrics";
 	public static final String TEMPLATE_RO_NAME = "ROName";
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
+	public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_HANDS_IMAGE_PATH = "/images/hands.jpg";
 	public static final String TEMPLATE_QRCODE_IMAGE_PATH = "/images/QRCode.jpg";

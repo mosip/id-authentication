@@ -28,12 +28,17 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
+import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -66,11 +71,15 @@ public class TemplateGenerator extends BaseService {
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
+	@Autowired
+	QrCodeGenerator<QrVersion> qrCodeGenerator;
+
 	/**
-	 * @param templateText - string which contains the data of template that is used
-	 *                     to generate acknowledgement
-	 * @param registration - RegistrationDTO to display required fields on the
-	 *                     template
+	 * @param templateText
+	 *            - string which contains the data of template that is used to
+	 *            generate acknowledgement
+	 * @param registration
+	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 * @throws RegBaseCheckedException
@@ -250,29 +259,59 @@ public class TemplateGenerator extends BaseService {
 					}
 				}
 			}
+
+			// QR Code Generation
+			String name = "N : "
+					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
+							platformLanguageCode);
+
+			String dateOfBirth;
+
+			if (dob == "") {
+				dateOfBirth = "DOB: " + getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null);
+			} else {
+				dateOfBirth = "DOB: " + DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY");
+			}
+
+			String completeAddress = getValue(
+					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
+					platformLanguageCode)
+					+ "\n "
+					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
+							platformLanguageCode)
+					+ "\n"
+					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
+							platformLanguageCode);
+
+			String address = "A : " + completeAddress;
+
+			String regId = "RID : " + registration.getRegistrationId();
+
+			String gender = "G : "
+					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
+							platformLanguageCode);
+
 			try {
-				BufferedImage qrCodeImage = ImageIO
-						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_QRCODE_IMAGE_PATH));
-				byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(qrCodeImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
-				byte[] qrCodeImageBytes = byteArrayOutputStream.toByteArray();
-				String qrCodeImageEncodedBytes = StringUtils
-						.newStringUtf8(Base64.encodeBase64(qrCodeImageBytes, false));
-				templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
-						RegistrationConstants.TEMPLATE_IMAGE_ENCODING + qrCodeImageEncodedBytes);
-			} catch (IOException ioException) {
-				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-			} finally {
-				if (byteArrayOutputStream != null) {
-					try {
-						byteArrayOutputStream.close();
-					} catch (IOException exception) {
-						setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION,
-								null);
-						LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
-					}
+				byte[] qrCodeInBytes;
+				if (registration.getDemographicDTO().getApplicantDocumentDTO().getCompressedFacePhoto() != null) {
+					byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
+							.getCompressedFacePhoto();
+
+					qrCodeInBytes = qrCodeGenerator.generateQrCode(name + "\n" + dateOfBirth + "\n" + address + "\n"
+							+ regId + "\n" + gender + "\n" + "I:" + CryptoUtil.encodeBase64(applicantPhoto),
+							QrVersion.V25);
+				} else {
+					qrCodeInBytes = qrCodeGenerator.generateQrCode(
+							name + "\n" + dateOfBirth + "\n" + address + "\n" + regId + "\n" + gender, QrVersion.V25);
 				}
+
+				String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
+				templateValues.put(RegistrationConstants.TEMPLATE_QRCODE_SOURCE,
+						RegistrationConstants.TEMPLATE_PNG_IMAGE_ENCODING + qrCodeImageEncodedBytes);
+			} catch (IOException | QrcodeGenerationException exception) {
+				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
@@ -396,10 +435,11 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param templateText - string which contains the data of template that is used
-	 *                     to generate notification
-	 * @param registration - RegistrationDTO to display required fields on the
-	 *                     template
+	 * @param templateText
+	 *            - string which contains the data of template that is used to
+	 *            generate notification
+	 * @param registration
+	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 * @throws RegBaseCheckedException
@@ -485,7 +525,8 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * @param enrolment - EnrolmentDTO to get the biometric details
+	 * @param enrolment
+	 *            - EnrolmentDTO to get the biometric details
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */
@@ -560,7 +601,7 @@ public class TemplateGenerator extends BaseService {
 		} else if (fieldValue instanceof ArrayPropertiesDTO) {
 			Optional<ValuesDTO> demoValueInRequiredLang = ((ArrayPropertiesDTO) fieldValue).getValues().stream()
 					.filter(demoValue -> demoValue.getLanguage().equals(lang)).findFirst();
-			if (demoValueInRequiredLang.isPresent() && demoValueInRequiredLang.get().getValue()!=null) {
+			if (demoValueInRequiredLang.isPresent() && demoValueInRequiredLang.get().getValue() != null) {
 				value = demoValueInRequiredLang.get().getValue();
 			}
 		}

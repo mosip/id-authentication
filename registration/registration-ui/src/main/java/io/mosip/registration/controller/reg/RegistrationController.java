@@ -11,14 +11,23 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 
+import org.openimaj.image.FImage;
+import org.openimaj.image.ImageUtilities;
+import org.openimaj.image.processing.face.detection.DetectedFace;
+import org.openimaj.image.processing.face.detection.HaarCascadeDetector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -132,37 +141,37 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label ageFieldLocalLanguageLabel;
-	
+
 	@FXML
 	private Label genderLocalLanguageLabel;
-	
+
 	@FXML
 	private Label regionLocalLanguageLabel;
-	
+
 	@FXML
 	private Label cityLocalLanguageLabel;
-	
+
 	@FXML
 	private Label provinceLocalLanguageLabel;
-	
+
 	@FXML
 	private Label localAdminAuthorityLocalLanguageLabel;
-	
+
 	@FXML
 	private Label postalCodeLocalLanguageLabel;
-	
+
 	@FXML
 	private Label mobileNoLocalLanguageLabel;
-	
+
 	@FXML
 	private Label emailIdLocalLanguageLabel;
-	
+
 	@FXML
 	private Label cniOrPinNumberLocalLanguageLabel;
-	
+
 	@FXML
 	private Label parentNameLocalLanguageLabel;
-	
+
 	@FXML
 	private Label uinIdLocalLanguageLabel;
 
@@ -191,7 +200,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane childSpecificFieldsLocal;
-	
+
 	@FXML
 	private ScrollPane demoScrollPane;
 
@@ -474,7 +483,7 @@ public class RegistrationController extends BaseController {
 
 			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
 					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
-			
+
 			childSpecificFieldsLocal.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
 					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
 
@@ -578,7 +587,6 @@ public class RegistrationController extends BaseController {
 			mobileNo.setText(demo.getIdentity().getPhone().getValue());
 			emailId.setText(demo.getIdentity().getEmail().getValue());
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber());
-			
 
 			populateFieldValue(localAdminAuthority, null,
 					demo.getIdentity().getLocalAdministrativeAuthority().getValues());
@@ -1086,7 +1094,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1143,6 +1152,68 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
+	/**
+	 * To detect the face part from the applicant photograph to use it for QR Code
+	 * generation
+	 * 
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
+	 * @return BufferedImage the face that is detected from the applicant photograph
+	 */
+	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
+		BufferedImage detectedFace = null;
+		HaarCascadeDetector detector = new HaarCascadeDetector();
+		List<DetectedFace> faces = null;
+		faces = detector.detectFaces(ImageUtilities.createFImage(applicantImage));
+		if (!faces.isEmpty()) {
+			Iterator<DetectedFace> dfi = faces.iterator();
+			while (dfi.hasNext()) {
+				DetectedFace face = dfi.next();
+				FImage image1 = face.getFacePatch();
+				detectedFace = ImageUtilities.createBufferedImage(image1);
+			}
+		}
+		return detectedFace;
+	}
+
+	/**
+	 * To compress the detected face from the image of applicant and store it in DTO
+	 * to use it for QR Code generation
+	 * 
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
+	 */
+	private void compressImageForQRCode(BufferedImage applicantImage) {
+		BufferedImage detectedFace = detectApplicantFace(applicantImage);
+		try {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+			Iterator<ImageWriter> writers = ImageIO
+					.getImageWritersByFormatName(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
+			ImageWriter writer = writers.next();
+
+			ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(byteArrayOutputStream);
+			writer.setOutput(imageOutputStream);
+
+			ImageWriteParam param = writer.getDefaultWriteParam();
+
+			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			param.setCompressionQuality(0); // Change the quality value you prefer
+			writer.write(null, new IIOImage(detectedFace, null, null), param);
+
+			byte[] compressedPhoto = byteArrayOutputStream.toByteArray();
+			ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+					.getApplicantDocumentDTO();
+			applicantDocumentDTO.setCompressedFacePhoto(compressedPhoto);
+			byteArrayOutputStream.close();
+			imageOutputStream.close();
+			writer.dispose();
+		} catch (IOException ioException) {
+			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+		}
+	}
+
 	@FXML
 	private void saveBiometricDetails() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1161,6 +1232,7 @@ public class RegistrationController extends BaseController {
 			if (capturePhotoUsingDevice.equals("Y")) {
 				if (validateApplicantImage()) {
 					try {
+						compressImageForQRCode(applicantBufferedImage);
 						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 						ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 								byteArrayOutputStream);
@@ -1451,11 +1523,10 @@ public class RegistrationController extends BaseController {
 		excludedIds.add("cityLocalLanguage");
 		excludedIds.add("provinceLocalLanguage");
 		excludedIds.add("localAdminAuthorityLocalLanguage");
-		
-		
+
 		validation.setChild(isChild);
 		validation.setValidationMessage();
-		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync );
+		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
 		displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1484,13 +1555,13 @@ public class RegistrationController extends BaseController {
 			cityLocalLanguageLabel.setText(localProperties.getString("city"));
 			provinceLocalLanguageLabel.setText(localProperties.getString("province"));
 			localAdminAuthorityLocalLanguageLabel.setText(localProperties.getString("localAdminAuthority"));
-			//cniOrPinNumberLocalLanguageLabel.setText(localProperties.getString("cniOrPinNumber"));
+			// cniOrPinNumberLocalLanguageLabel.setText(localProperties.getString("cniOrPinNumber"));
 			postalCodeLocalLanguageLabel.setText(localProperties.getString("postalCode"));
 			mobileNoLocalLanguageLabel.setText(localProperties.getString("mobileNo"));
 			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
 			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
-			
+
 			String userlangTitle = demoGraphicTitlePane.getText();
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -1664,7 +1735,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1695,7 +1767,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1760,7 +1833,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1769,7 +1843,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
