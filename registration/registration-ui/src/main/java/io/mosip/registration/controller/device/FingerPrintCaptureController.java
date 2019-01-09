@@ -379,7 +379,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					"Navigating to Iris capture page for user registration started");
 
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-				if (!validateFingerPrints()) {
+				if (validateFingerPrints()) {
 					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
 						registrationController.toggleFingerprintCaptureVisibility(false);
 						registrationController.toggleIrisCaptureVisibility(true);

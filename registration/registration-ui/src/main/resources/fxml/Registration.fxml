@@ -137,7 +137,7 @@
                                  	 <TextField fx:id="emailId" layoutX="46.0" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
                                     <Label fx:id="emailIdLabel" layoutX="46.0" layoutY="587.0" text="%emailId" />
                                  	<TextField fx:id="cniOrPinNumber" layoutX="220.0" layoutY="593.0" prefHeight="39.0" prefWidth="147.0" />
-                                    <Label layoutX="620.0" layoutY="587.0" text="%cniOrPinNumber" />
+                                    <Label fx:id="cnieLabel" layoutX="620.0" layoutY="587.0" text="%cniOrPinNumber" />
                                     <AnchorPane fx:id="childSpecificFields" layoutX="38.0" layoutY="652.0" prefHeight="124.0" prefWidth="345.0">
                                        <children>
                                           <Label layoutX="5.0" layoutY="1.0" text="%parentName" />
