@@ -94,8 +94,6 @@ public class Validations extends BaseController {
 				.getAllBlackListedWords(RegistrationConstants.mappedCodeForLang
 						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
-		
-		System.out.println(this.blackListedWords.size()+"hello");
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}
