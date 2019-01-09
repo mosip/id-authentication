@@ -25,7 +25,7 @@ import io.mosip.registration.processor.message.sender.exception.ConfigurationNot
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
-import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 
 /**
  * The Class TriggerNotificationForUIN.
@@ -34,9 +34,7 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 @Component
 public class TriggerNotificationForUIN {
 
-	/** The notification types. */
-	@Value("${registration.processor.globalconfigjson}")
-	private String getGlobalConfigJson;
+	
 
 	/** The notification emails. */
 	@Value("${registration.processor.notification.emails}")
@@ -51,7 +49,7 @@ public class TriggerNotificationForUIN {
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
 	
 	@Autowired
-	private Utilities utility;
+	private MessageSenderUtil utility;
 
 	/** The Constant SMS_TEMPLATE_CODE. */
 	private static final String SMS_TEMPLATE_CODE = "SMS_TEMP_FOR_UIN_GEN";
@@ -80,8 +78,8 @@ public class TriggerNotificationForUIN {
 		Map<String, Object> attributes = new HashMap<>();
 		String[] ccEMailList = null;
 		try {
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					getGlobalConfigJson);
+			String getIdentityJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
+					utility.getGetGlobalConfigJson());
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			GlobalConfig jsonObject = mapIdentityJsonStringToObject.readValue(getIdentityJsonString, GlobalConfig.class);
 			String notificationTypes= jsonObject.getNotificationtype();
