@@ -1,4 +1,4 @@
-<div class="preview__container">
+<div *ngIf="previewData !== undefined && secondaryLanguagelabels !== undefined" class="preview__container">
   <mat-card class="preview__header-container">
     <mat-card-header class="preview__header-container">
         <div class="preview__header">
@@ -16,7 +16,7 @@
             <hr />
           </div>
           <div>
-            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+            <table *ngIf="previewData !== undefined" class="preview__personal-info-table">
               <tr><td>Full Name</td><td>: {{previewData.fullName[0].value}}</td></tr>
               <tr><td>DOB</td><td>: {{previewData.dateOfBirth[0].value}}</td></tr>
               <tr><td>Age</td><td>: years</td></tr>
@@ -50,7 +50,7 @@
             <hr />
           </div>
           <div>
-            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+            <table *ngIf="secondaryLanguagelabels !== undefined" class="preview__personal-info-table">
               <tr><td>{{secondaryLanguagelabels.label_name}}</td><td>: {{previewData.fullName[1].value}}</td></tr>
               <tr><td>DOB</td><td>: {{previewData.dateOfBirth[1].value}}</td></tr>
               <tr><td>{{secondaryLanguagelabels.label_age}}</td><td>: {{secondaryLanguagelabels.text_years}}</td></tr>
@@ -85,3 +85,12 @@
     </mat-card-footer>
   </mat-card>
 </div>
+
+<div>
+    <mat-card class="center-selection__button-container">
+      <button mat-button (click)="navigateBack()" class="user-back-btn">Back</button>
+      <span class="spacer"></span>
+      <button mat-button (click)="navigateDashboard()" class="user-book_later-btn">Book Later</button>
+      <button mat-button (click)="navigateNext()" class="user-continue-btn">Continue</button>
+    </mat-card>
+  </div>

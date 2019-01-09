@@ -20,7 +20,7 @@ export class DataStorageService {
   SEND_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/getDocument';
-  MASTER_DATA_URL = 'https://cors-anywhere.herokuapp.com/' + this.BASE_URL + 'masterdata/v1.0/';
+  MASTER_DATA_URL = 'https://integ.mosip.io/' + 'masterdata/v1.0/';
   AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   LOCATION_URL = this.BASE_URL + 'masterdata/';
@@ -120,7 +120,7 @@ export class DataStorageService {
     return this.httpClient.get(this.AVAILABILITY_URL, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('RegCenterId', registrationCenterId)
+      params: new HttpParams().append('registration_center_id', registrationCenterId)
     });
   }
 
@@ -178,7 +178,7 @@ export class DataStorageService {
     return this.httpClient.get(this.BASE_URL + appConstants.PREVIEW_DATA_APPEND_URL, {
       observe: 'body',
       responseType: 'json',
-      params: new HttpParams().append('preRegId', preRegId)
+      params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
     });
   }
 
