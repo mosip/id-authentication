@@ -184,6 +184,9 @@ public class RegistrationController extends BaseController {
 	private TextField ageField;
 
 	@FXML
+	private TextField ageFieldLocalLanguage;
+
+	@FXML
 	private Label bioExceptionToggleLabel1;
 
 	@FXML
@@ -212,6 +215,9 @@ public class RegistrationController extends BaseController {
 	private ComboBox<String> gender;
 
 	@FXML
+	private ComboBox<String> genderLocalLanguage;
+
+	@FXML
 	private TextField addressLine1;
 
 	@FXML
@@ -237,31 +243,61 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label addressLine3LocalLanguagelabel;
-
+	
 	@FXML
 	private TextField emailId;
+
+	@FXML
+	private TextField emailIdLocalLanguage;
 
 	@FXML
 	private TextField mobileNo;
 
 	@FXML
+	private TextField mobileNoLocalLanguage;
+
+	@FXML
 	private ComboBox<String> region;
+
+	@FXML
+	private ComboBox<String> regionLocalLanguage;
 
 	@FXML
 	private ComboBox<String> city;
 
 	@FXML
+	private ComboBox<String> cityLocalLanguage;
+
+	@FXML
 	private ComboBox<String> province;
+
+	@FXML
+	private ComboBox<String> provinceLocalLanguage;
 
 	@FXML
 	private TextField postalCode;
 
 	@FXML
+	private TextField postalCodeLocalLanguage;
+
+	@FXML
 	private ComboBox<String> localAdminAuthority;
+
+	@FXML
+	private ComboBox<String> localAdminAuthorityLocalLanguage;
 
 	@FXML
 	private TextField cniOrPinNumber;
 
+	@FXML
+	private TextField cniOrPinNumberLocalLanguage;
+
+	@FXML
+	private TextField uinIdLocalLanguage;
+	
+	@FXML
+	private TextField parentNameLocalLanguage;
+	
 	@FXML
 	private TextField parentName;
 
@@ -1376,11 +1412,18 @@ public class RegistrationController extends BaseController {
 			fxUtils.validateOnType(addressLine1, validation, addressLine1LocalLanguage);
 			fxUtils.validateOnType(addressLine2, validation, addressLine2LocalLanguage);
 			fxUtils.validateOnType(addressLine3, validation, addressLine3LocalLanguage);
-			fxUtils.validateOnType(mobileNo, validation);
-			fxUtils.validateOnType(postalCode, validation);
-			fxUtils.validateOnType(emailId, validation);
-			fxUtils.validateOnType(cniOrPinNumber, validation);
+			fxUtils.validateOnType(mobileNo, validation, mobileNoLocalLanguage);
+			fxUtils.validateOnType(postalCode, validation, postalCodeLocalLanguage);
+			fxUtils.validateOnType(emailId, validation, emailIdLocalLanguage);
+			fxUtils.validateOnType(cniOrPinNumber, validation, cniOrPinNumberLocalLanguage);
+			fxUtils.validateOnType(parentName, validation, parentNameLocalLanguage);
+			fxUtils.validateOnType(uinId, validation, uinIdLocalLanguage);
 			fxUtils.validateOnType(fullNameLocalLanguage, validation);
+			fxUtils.populateLocalComboBox(gender, genderLocalLanguage);
+			fxUtils.populateLocalComboBox(city, cityLocalLanguage);
+			fxUtils.populateLocalComboBox(region, regionLocalLanguage);
+			fxUtils.populateLocalComboBox(province, provinceLocalLanguage);
+			fxUtils.populateLocalComboBox(localAdminAuthority, localAdminAuthorityLocalLanguage);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
@@ -1402,6 +1445,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
+				ageFieldLocalLanguage.setText(newValue);
 				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype",
 						RegistrationConstants.INDIVIDUAL_VALIDATION)) {
 					ageField.setText(oldValue);
@@ -1512,12 +1556,7 @@ public class RegistrationController extends BaseController {
 		boolean gotoNext = true;
 		List<String> excludedIds = new ArrayList<String>();
 		excludedIds.add("preRegistrationId");
-		excludedIds.add("region");
-		excludedIds.add("city");
-		excludedIds.add("province");
-		excludedIds.add("localAdminAuthority");
 		excludedIds.add("virtualKeyboard");
-
 		excludedIds.add("genderLocalLanguage");
 		excludedIds.add("regionLocalLanguage");
 		excludedIds.add("cityLocalLanguage");
@@ -1555,12 +1594,18 @@ public class RegistrationController extends BaseController {
 			cityLocalLanguageLabel.setText(localProperties.getString("city"));
 			provinceLocalLanguageLabel.setText(localProperties.getString("province"));
 			localAdminAuthorityLocalLanguageLabel.setText(localProperties.getString("localAdminAuthority"));
-			// cniOrPinNumberLocalLanguageLabel.setText(localProperties.getString("cniOrPinNumber"));
+			cniOrPinNumberLocalLanguageLabel.setText(localProperties.getString("cniOrPinNumber"));
 			postalCodeLocalLanguageLabel.setText(localProperties.getString("postalCode"));
 			mobileNoLocalLanguageLabel.setText(localProperties.getString("mobileNo"));
 			emailIdLocalLanguageLabel.setText(localProperties.getString("emailId"));
 			parentNameLocalLanguageLabel.setText(localProperties.getString("parentName"));
 			uinIdLocalLanguageLabel.setText(localProperties.getString("uinId"));
+			genderLocalLanguage.setPromptText(localProperties.getString("select"));
+			localAdminAuthorityLocalLanguage.setPromptText(localProperties.getString("select"));
+			cityLocalLanguage.setPromptText(localProperties.getString("select"));
+			regionLocalLanguage.setPromptText(localProperties.getString("select"));
+			provinceLocalLanguage.setPromptText(localProperties.getString("select"));
+
 
 			String userlangTitle = demoGraphicTitlePane.getText();
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
@@ -1917,7 +1962,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language code
+	 * To load the localAdminAuthorities selection list based on the language
+	 * code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {

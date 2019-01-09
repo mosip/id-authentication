@@ -11,6 +11,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -48,6 +49,12 @@ public class FXUtils {
 					(String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			}
+		});
+	}
+	
+	public void populateLocalComboBox(ComboBox<String> applicationField, ComboBox<String> localField) {
+		applicationField.getSelectionModel().selectedItemProperty().addListener((options,oldValue,newValue)->{
+			localField.setValue(applicationField.getValue());
 		});
 	}
 

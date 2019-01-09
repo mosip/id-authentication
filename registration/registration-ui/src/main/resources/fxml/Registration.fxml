@@ -86,13 +86,13 @@
                                        <Label layoutX="17.0" layoutY="112.0" text="%addressLine3" />
                                        <TextField fx:id="addressLine3" layoutX="14.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
                                 	   <Label layoutX="17.0" layoutY="170.0" text="%region" />
-                                       <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" onAction="#addProvince" prefHeight="25.0" prefWidth="155.0" />
-                                       <Label layoutX="180.0" layoutY="170.0" text="%city" />
-                                       <ComboBox fx:id="city" layoutX="180.0" layoutY="187.0" onAction="#addlocalAdminAuthority" prefHeight="25.0" prefWidth="155.0" />
-                                       <Label layoutX="17.0" layoutY="218.0" text="%province" />
-                                       <ComboBox fx:id="province" layoutX="17.0" layoutY="235.0" onAction="#addCity" prefHeight="25.0" prefWidth="153.0" />
+                                       <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" onAction="#addProvince" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
+                                       <Label layoutX="180.0" layoutY="170.0" text="%province" />
+                                       <ComboBox fx:id="province" layoutX="180.0" layoutY="187.0" onAction="#addCity" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
+                                       <Label layoutX="17.0" layoutY="218.0" text="%city" />
+                                       <ComboBox fx:id="city" layoutX="17.0" layoutY="235.0" onAction="#addlocalAdminAuthority" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                        <Label layoutX="180.0" layoutY="218.0" text="%localAdminAuthority" />
-                                       <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                       <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                        <Label layoutX="17.0" layoutY="270.0" text="%postalCode" />
                                        <TextField fx:id="postalCode" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
                                        <Label fx:id="postalCodeLocalLanguageLabel" layoutX="410" layoutY="270.0" text="%postalCode" />
@@ -104,13 +104,13 @@
                                        <Label fx:id="addressLine3LocalLanguagelabel" layoutX="410.0" layoutY="110.0" text="" />
                                        <TextField fx:id="addressLine3LocalLanguage" layoutX="410.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
                                         <Label fx:id="regionLocalLanguageLabel" layoutX="410.0" layoutY="170.0" text="%region" />
-                                       <ComboBox fx:id="regionLocalLanguage" layoutX="410.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" />
-                                       <Label fx:id="cityLocalLanguageLabel" layoutX="580" layoutY="170.0" text="%city" />
-                                       <ComboBox fx:id="cityLocalLanguage" layoutX="580.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" />
-                                       <Label fx:id="provinceLocalLanguageLabel" layoutX="410.0" layoutY="218.0" text="%province" />
-                                       <ComboBox fx:id="provinceLocalLanguage" layoutX="410.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                       <ComboBox fx:id="regionLocalLanguage" layoutX="410.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
+                                       <Label fx:id="provinceLocalLanguageLabel" layoutX="580" layoutY="170.0" text="%province" />
+                                       <ComboBox fx:id="provinceLocalLanguage" layoutX="580.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
+                                       <Label fx:id="cityLocalLanguageLabel" layoutX="410.0" layoutY="218.0" text="%city" />
+                                       <ComboBox fx:id="cityLocalLanguage" layoutX="410.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                         <Label fx:id="localAdminAuthorityLocalLanguageLabel" layoutX="580" layoutY="218.0" text="%localAdminAuthority" />
-                                       <ComboBox fx:id="localAdminAuthorityLocalLanguage" layoutX="580" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" />
+                                       <ComboBox fx:id="localAdminAuthorityLocalLanguage" layoutX="580" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                    
                                        <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="40.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                        	<image>
@@ -137,7 +137,7 @@
                                  	 <TextField fx:id="emailId" layoutX="46.0" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
                                     <Label fx:id="emailIdLabel" layoutX="46.0" layoutY="587.0" text="%emailId" />
                                  	<TextField fx:id="cniOrPinNumber" layoutX="220.0" layoutY="593.0" prefHeight="39.0" prefWidth="147.0" />
-                                    <Label fx:id="cnieLabel" layoutX="620.0" layoutY="587.0" text="%cniOrPinNumber" />
+                                   	<Label fx:id="cnieLabel" layoutX="220.0" layoutY="587.0" text="%cniOrPinNumber" />
                                     <AnchorPane fx:id="childSpecificFields" layoutX="38.0" layoutY="652.0" prefHeight="124.0" prefWidth="345.0" visible="false" disable="true">
                                        <children>
                                           <Label layoutX="5.0" layoutY="1.0" text="%parentName" />
@@ -178,7 +178,7 @@
                                     <TextField fx:id="emailIdLocalLanguage" layoutX="440.00" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
                                     <Label fx:id="emailIdLocalLanguageLabel" layoutX="440.00" layoutY="584.0" text="%emailId" />
                                     <TextField fx:id="cniOrPinNumberLocalLanguage" layoutX="620.0" layoutY="602.0" prefHeight="30.0" prefWidth="147.0" />
-                                    <Label fx:id="cniOrPinNumberLocalLanguageLabel" layoutX="220.0" layoutY="587.0" text="%cniOrPinNumber" />
+                                      <Label fx:id="cniOrPinNumberLocalLanguageLabel" layoutX="620.0" layoutY="587.0" text="%cniOrPinNumber" />
                                     <ImageView fx:id="copyAddressImage" fitHeight="20.0" fitWidth="27.0" layoutX="382.0" layoutY="220.0" onMouseClicked="#loadAddressFromPreviousEntry" pickOnBounds="true" preserveRatio="true">
                                       <image>
                     						<Image url="@../images/CopyAddress.png" />
