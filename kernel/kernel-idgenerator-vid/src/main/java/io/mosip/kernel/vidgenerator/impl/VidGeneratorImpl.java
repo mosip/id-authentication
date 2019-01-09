@@ -36,11 +36,6 @@ public class VidGeneratorImpl implements VidGenerator<String> {
 	VidFilterUtils vidFilterUtils;
 
 	/**
-	 * VId Validity in hour
-	 */
-	@Value("${mosip.kernel.vid.validity-in-hr}")
-	private int vidValidityHr;
-	/**
 	 * The length of the VId
 	 */
 	@Value("${mosip.kernel.vid.length}")
