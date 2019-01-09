@@ -18,7 +18,7 @@ div {
 
 @media (min-width: 670px) {
   div.ack-appointmentConfirm {
-    padding-left: 15px;
+    padding-left: 20px;
     border-bottom: 1px solid #fd518c;
     vertical-align: middle;
     height: 60.52px;
@@ -31,7 +31,6 @@ div {
   }
 
   div.ack-appointmentMessage {
-    padding-left: 15px;
     vertical-align: middle;
     height: 45px;
     color: #577b0a;
@@ -59,7 +58,6 @@ div {
     /* max-height: 410px; */
     /* overflow: scroll; */
     /* overflow-y: auto; */
-    padding-left: 15px;
     margin-left: 10px;
     height: 58vh;
     overflow-x: auto;

@@ -2,7 +2,7 @@
   background-color: #f4f4f4;
   z-index: -1;
   /* position: relative; */
-  padding: 20px;
+  padding: 16px;
   padding-bottom: 0;
   color: #000000;
 }
@@ -18,7 +18,7 @@ div {
 
 @media (min-width: 670px) {
   div.ack-appointmentConfirm {
-    padding-left: 15px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #fd518c;
     vertical-align: middle;
     height: 60.52px;
@@ -31,13 +31,12 @@ div {
   }
 
   div.ack-appointmentMessage {
-    padding-left: 15px;
     vertical-align: middle;
     height: 45px;
     color: #577b0a;
     background: #e8f4d0;
     /* border: 1px solid #676767; */
-    padding-left: 20px;
+
     display: flex;
     flex-shrink: unset;
     align-items: center;
@@ -59,7 +58,6 @@ div {
     /* max-height: 410px; */
     /* overflow: scroll; */
     /* overflow-y: auto; */
-    padding-left: 15px;
     margin-left: 10px;
     height: 58vh;
     overflow-x: auto;
