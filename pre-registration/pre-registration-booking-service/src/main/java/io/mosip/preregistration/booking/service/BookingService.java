@@ -225,6 +225,7 @@ public class BookingService {
 
 				}
 			}
+
 		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
 		}
@@ -258,6 +259,7 @@ public class BookingService {
 				responseDto.setStatus(true);
 				responseDto.setErr(null);
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+
 		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
 		}
@@ -279,6 +281,7 @@ public class BookingService {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(requestdto), requiredRequestMap)) {
 				responseDto.setResponse(cancelBooking(requestdto.getRequest()));
 			}
+
 		} catch (Exception e) {
 			new BookingExceptionCatcher().handle(e);
 		}

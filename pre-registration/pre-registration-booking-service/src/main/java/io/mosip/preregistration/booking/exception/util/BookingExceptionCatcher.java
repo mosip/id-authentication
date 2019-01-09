@@ -58,6 +58,7 @@ public class BookingExceptionCatcher {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),
 					((DocumentNotFoundException) ex).getErrorText(), ex.getCause());
 		} else if (ex instanceof DataAccessLayerException) {
+
 			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
 					((DataAccessLayerException) ex).getErrorText());
 		}else if(ex instanceof BookingDataNotFoundException) {
@@ -104,7 +105,6 @@ public class BookingExceptionCatcher {
 			throw new AvailablityNotFoundException(((AvailablityNotFoundException) ex).getErrorCode(),
 					((AvailablityNotFoundException) ex).getErrorText());
 		}
-		
 
 	}
 

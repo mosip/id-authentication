@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,22 +37,24 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.datasync.code.RequestCodes;
 import io.mosip.preregistration.datasync.code.StatusCodes;
-import io.mosip.preregistration.datasync.dto.BookingRegistrationDTO;
-import io.mosip.preregistration.datasync.dto.CreateDemographicDTO;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
-import io.mosip.preregistration.datasync.dto.DocumentServiceDTO;
-import io.mosip.preregistration.datasync.dto.MainListResponseDTO;
-import io.mosip.preregistration.datasync.dto.MainRequestDTO;
-import io.mosip.preregistration.datasync.dto.MainResponseDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
-import io.mosip.preregistration.datasync.dto.PreRegIdsByRegCenterIdDTO;
-import io.mosip.preregistration.datasync.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
@@ -60,8 +63,8 @@ import io.mosip.preregistration.datasync.entity.InterfaceDataSyncTablePK;
 import io.mosip.preregistration.datasync.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
 import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
-import io.mosip.preregistration.datasync.exception.DataSyncRecordNotFoundException;
 import io.mosip.preregistration.datasync.exception.DemographicGetDetailsException;
+import io.mosip.preregistration.datasync.exception.DocumentGetDetailsException;
 import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
@@ -76,6 +79,7 @@ import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
  */
 @Component
 public class DataSyncServiceUtil {
+
 	/**
 	 * Autowired reference for {@link #DataSyncRepository}
 	 */
@@ -116,6 +120,8 @@ public class DataSyncServiceUtil {
 
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+	private static Logger log = LoggerConfiguration.logConfig(DataSyncServiceUtil.class);
+
 	/**
 	 * This method is used to add the initial request values into a map for input
 	 * validations.
@@ -124,6 +130,8 @@ public class DataSyncServiceUtil {
 	 * @return a map for request input validation
 	 */
 	public Map<String, String> prepareRequestParamMap(MainRequestDTO<?> requestDto) {
+		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of datasync service util");
+
 		Map<String, String> inputValidation = new HashMap<>();
 		inputValidation.put(RequestCodes.ID.getCode(), requestDto.getId());
 		inputValidation.put(RequestCodes.VER.getCode(), requestDto.getVer());
@@ -133,6 +141,7 @@ public class DataSyncServiceUtil {
 	}
 
 	public boolean validateDataSyncRequest(DataSyncRequestDTO dataSyncRequest) {
+		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
 		String regId = dataSyncRequest.getRegClientId();
 		String fromDate = dataSyncRequest.getFromDate();
 		String toDate = dataSyncRequest.getToDate();
@@ -145,6 +154,7 @@ public class DataSyncServiceUtil {
 		}
 
 		if (fromDate == null || isNull(fromDate) || !parseDate(fromDate, format)) {
+
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
@@ -163,6 +173,7 @@ public class DataSyncServiceUtil {
 	}
 
 	public boolean validateReverseDataSyncRequest(ReverseDataSyncRequestDTO reverseDataSyncRequest) {
+		log.info("sessionId", "idType", "id", "In validateReverseDataSyncRequest method of datasync service util");
 		List<String> preRegIdsList = reverseDataSyncRequest.getPreRegistrationIds();
 		String langCode = reverseDataSyncRequest.getLangCode();
 		String createdBy = reverseDataSyncRequest.getCreatedBy();
@@ -192,6 +203,8 @@ public class DataSyncServiceUtil {
 			try {
 				new SimpleDateFormat(dateTimeFormat).format(createdDateTime);
 			} catch (Exception ex) {
+				log.error("sessionId", "idType", "id",
+						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 						ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
 			}
@@ -209,6 +222,9 @@ public class DataSyncServiceUtil {
 			try {
 				new SimpleDateFormat(dateTimeFormat).format(updatedDateTime);
 			} catch (Exception ex) {
+				log.error("sessionId", "idType", "id",
+						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());
+
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 						ErrorMessages.INVALID_REQUESTED_UPDATED_DATE.toString());
 			}
@@ -218,36 +234,46 @@ public class DataSyncServiceUtil {
 	}
 
 	public List<String> callGetPreIdsRestService(String fromDate, String toDate) {
+		log.info("sessionId", "idType", "id", "In callGetPreIdsRestService method of datasync service util");
 		List<String> responseList = new LinkedList<>();
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
-					.fromHttpUrl(demographicResourceUrl + "/applicationDataByDateTime").queryParam("fromDate", fromDate)
-					.queryParam("toDate", toDate);
+					.fromHttpUrl(demographicResourceUrl + "/applicationDataByDateTime")
+					.queryParam("from_date", fromDate).queryParam("to_date", toDate);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			System.out.println(uriBuilder);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
-			for (Object obj : respEntity.getBody().getResponse()) {
-				responseList.add(mapper.convertValue(obj, String.class));
+			if (!respEntity.getBody().isStatus()) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
+			} else {
+				for (Object obj : respEntity.getBody().getResponse()) {
+					responseList.add(mapper.convertValue(obj, String.class));
+				}
+				if (responseList.isEmpty()) {
+					throw new RecordNotFoundForDateRange(ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+				}
 			}
-			if (responseList.isEmpty()) {
-				throw new RecordNotFoundForDateRange(ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
-			}
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetPreIdsRestService method of datasync service util - " + ex.getMessage());
+
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), e.getCause());
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
 		}
 		return responseList;
 	}
 
 	public PreRegIdsByRegCenterIdResponseDTO callGetPreIdsByRegCenterIdRestService(String regCenterId,
 			List<String> preRegIds) {
-		PreRegIdsByRegCenterIdResponseDTO idResponseDTO = null;
+		log.info("sessionId", "idType", "id",
+				"In callGetPreIdsByRegCenterIdRestService method of datasync service util");
+		PreRegIdsByRegCenterIdResponseDTO idResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
@@ -265,21 +291,30 @@ public class DataSyncServiceUtil {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.POST,
 					httpEntity, MainListResponseDTO.class);
-			idResponseDTO = mapper.convertValue(respEntity.getBody().getResponse().get(0),
-					PreRegIdsByRegCenterIdResponseDTO.class);
-		} catch (RestClientException e) {
+			if (!respEntity.getBody().isStatus()) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
+			} else {
+				idResponseDTO = mapper.convertValue(respEntity.getBody().getResponse().get(0),
+						PreRegIdsByRegCenterIdResponseDTO.class);
+			}
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetPreIdsByRegCenterIdRestService method of datasync service util - " + ex.getMessage());
+
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_013.toString(),
-					ErrorMessages.FAILED_TO_GET_PRE_REG_ID_BY_REG_CLIENT_ID.toString(), e.getCause());
+					ErrorMessages.FAILED_TO_GET_PRE_REG_ID_BY_REG_CLIENT_ID.toString(), ex.getCause());
 		}
 		return idResponseDTO;
 	}
 
-	public List<DocumentServiceDTO> callGetDocRestService(String preId) {
-		List<DocumentServiceDTO> responsestatusDto = new ArrayList<>();
+	public List<DocumentMultipartResponseDTO> callGetDocRestService(String preId) {
+		log.info("sessionId", "idType", "id", "In callGetDocRestService method of datasync service util");
+		List<DocumentMultipartResponseDTO> responsestatusDto = new ArrayList<>();
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentResourceUrl + "/getDocument")
-					.queryParam("preId", preId);
+					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
@@ -287,18 +322,29 @@ public class DataSyncServiceUtil {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
-			for (Object obj : respEntity.getBody().getResponse()) {
-				responsestatusDto.add(mapper.convertValue(obj, DocumentServiceDTO.class));
+			if (!respEntity.getBody().isStatus()) {
+				throw new DocumentGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
+			} else {
+				for (Object obj : respEntity.getBody().getResponse()) {
+					responsestatusDto.add(mapper.convertValue(obj, DocumentMultipartResponseDTO.class));
+				}
 			}
-		} catch (RestClientException e) {
-			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_006.toString(),
-					ErrorMessages.FAILED_TO_FETCH_DOCUMENT.toString(), e.getCause());
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetDocRestService method of datasync service util - " + ex.getMessage());
+
+			throw new DocumentGetDetailsException(ErrorCodes.PRG_DATA_SYNC_006.toString(),
+					ErrorMessages.FAILED_TO_FETCH_DOCUMENT.toString(), ex.getCause());
 		}
 		return responsestatusDto;
 	}
 
-	public CreateDemographicDTO callGetPreRegInfoRestService(String preId) {
+	public DemographicResponseDTO callGetPreRegInfoRestService(String preId) {
+		log.info("sessionId", "idType", "id", "In callGetPreRegInfoRestService method of datasync service util");
+		DemographicResponseDTO responsestatusDto = new DemographicResponseDTO();
 		try {
+
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(demographicResourceUrl + "/applicationData")
 					.queryParam("preRegId", preId);
@@ -309,18 +355,21 @@ public class DataSyncServiceUtil {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
-			CreateDemographicDTO responsestatusDto = mapper.convertValue(respEntity.getBody().getResponse().get(0),
-					CreateDemographicDTO.class);
-			if (responsestatusDto == null) {
-				throw new DataSyncRecordNotFoundException(ErrorCodes.PRG_DATA_SYNC_004.toString(),
-						ErrorMessages.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
+			if (!respEntity.getBody().isStatus()) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
 			} else {
-				return responsestatusDto;
+				responsestatusDto = mapper.convertValue(respEntity.getBody().getResponse().get(0),
+						DemographicResponseDTO.class);
 			}
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetPreRegInfoRestService method of datasync service util - " + ex.getMessage());
+
 			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), e.getCause());
+					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
 		}
+		return responsestatusDto;
 	}
 
 	/**
@@ -331,11 +380,13 @@ public class DataSyncServiceUtil {
 	 * 
 	 */
 	public BookingRegistrationDTO callGetAppointmentDetailsRestService(String preId) {
+		log.info("sessionId", "idType", "id",
+				"In callGetAppointmentDetailsRestService method of datasync service util");
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(bookingResourceUrl + "/appointmentDetails")
-					.queryParam("preRegID", preId);
+					.queryParam("pre_registration_id", preId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			@SuppressWarnings("rawtypes")
@@ -344,15 +395,23 @@ public class DataSyncServiceUtil {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
 					MainResponseDTO.class);
-			bookingRegistrationDTO = mapper.convertValue(respEntity.getBody().getResponse(),
-					BookingRegistrationDTO.class);
-			if (bookingRegistrationDTO == null) {
-				throw new RecordNotFoundForDateRange(ErrorCodes.PRG_DATA_SYNC_001.toString(),
-						ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+			if (!respEntity.getBody().isStatus()) {
+				throw new DemographicGetDetailsException(respEntity.getBody().getErr().getErrorCode(),
+						respEntity.getBody().getErr().getMessage());
+			} else {
+				bookingRegistrationDTO = mapper.convertValue(respEntity.getBody().getResponse(),
+						BookingRegistrationDTO.class);
+				if (bookingRegistrationDTO == null) {
+					throw new RecordNotFoundForDateRange(ErrorCodes.PRG_DATA_SYNC_001.toString(),
+							ErrorMessages.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+				}
 			}
-		} catch (RestClientException e) {
-			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_007.toString(),
-					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), e.getCause());
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetAppointmentDetailsRestService method of datasync service util - " + ex.getMessage());
+
+			throw new DemographicGetDetailsException(ErrorCodes.PRG_DATA_SYNC_016.toString(),
+					ErrorMessages.BOOKING_NOT_FOUND.toString(), ex.getCause());
 		}
 		return bookingRegistrationDTO;
 	}
@@ -362,23 +421,15 @@ public class DataSyncServiceUtil {
 	 * @param documentEntityList
 	 * @return zipped file's byte array
 	 */
-	public PreRegArchiveDTO archivingFiles(CreateDemographicDTO preRegistrationDTO,
-			BookingRegistrationDTO bookingRegistrationDTO, List<DocumentServiceDTO> documentEntityList) {
-		File fileDoc = null;
+	public PreRegArchiveDTO archivingFiles(DemographicResponseDTO preRegistrationDTO,
+			BookingRegistrationDTO bookingRegistrationDTO, List<DocumentMultipartResponseDTO> documentEntityList) {
+		log.info("sessionId", "idType", "id", "In archivingFiles method of datasync service util");
 		List<String> inputMultiFileList = new ArrayList<>();
-		Path pathDoc = null;
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
 		try {
-			preRegArchiveDTO.setPreRegistrationId(preRegistrationDTO.getPreRegistrationId());
-			preRegArchiveDTO.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
-			preRegArchiveDTO.setAppointmentDate(bookingRegistrationDTO.getRegDate());
-			preRegArchiveDTO.setTimeSlotFrom(bookingRegistrationDTO.getSlotFromTime());
-			preRegArchiveDTO.setTimeSlotTo(bookingRegistrationDTO.getSlotToTime());
-
+			preRegArchiveDTO = preparePreRegArchiveDTO(preRegistrationDTO, bookingRegistrationDTO);
 			JSONObject demographicJsonObject = preRegistrationDTO.getDemographicDetails();
-
-			pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
-					+ preRegistrationDTO.getPreRegistrationId().trim() + "_Demographic" + ".json");
+			Path pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "id.json");
 
 			File jsonFile = new File(pathDoc.toString());
 			if (jsonFile.exists()) {
@@ -396,13 +447,12 @@ public class DataSyncServiceUtil {
 							+ documentEntityList.get(i).getDoc_cat_code() + "_"
 							+ documentEntityList.get(i).getDoc_name());
 
-					fileDoc = new File(pathDoc.toString());
-					byte[] docBytes = documentEntityList.get(i).getMultipartFile();
+					File fileDoc = new File(pathDoc.toString());
 					if (fileDoc.exists()) {
-						 FileUtils.forceDelete(fileDoc);
+						FileUtils.forceDelete(fileDoc);
 					}
 					if (fileDoc.createNewFile()) {
-						outputStream(fileDoc, docBytes, inputMultiFileList);
+						outputStream(fileDoc, documentEntityList.get(i).getMultipartFile(), inputMultiFileList);
 					}
 				}
 
@@ -415,12 +465,26 @@ public class DataSyncServiceUtil {
 					FileUtils.forceDelete(Paths.get(filePath).toFile());
 				}
 			}
-		} catch (Exception e) {
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In archivingFiles method of datasync service util - " + ex.getMessage());
 			throw new ZipFileCreationException(ErrorCodes.PRG_DATA_SYNC_005.toString(),
-					ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.toString(),e.getCause());
+					ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.toString(), ex.getCause());
 		} finally {
 			inputMultiFileList.clear();
 		}
+		return preRegArchiveDTO;
+	}
+
+	private PreRegArchiveDTO preparePreRegArchiveDTO(DemographicResponseDTO preRegistrationDTO,
+			BookingRegistrationDTO bookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In preparePreRegArchiveDTO method of datasync service util");
+		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+		preRegArchiveDTO.setPreRegistrationId(preRegistrationDTO.getPreRegistrationId());
+		preRegArchiveDTO.setRegistrationCenterId(bookingRegistrationDTO.getRegistrationCenterId());
+		preRegArchiveDTO.setAppointmentDate(bookingRegistrationDTO.getRegDate());
+		preRegArchiveDTO.setTimeSlotFrom(bookingRegistrationDTO.getSlotFromTime());
+		preRegArchiveDTO.setTimeSlotTo(bookingRegistrationDTO.getSlotToTime());
 		return preRegArchiveDTO;
 	}
 
@@ -430,27 +494,48 @@ public class DataSyncServiceUtil {
 	 * @throws IOException
 	 */
 	private static byte[] getCompressed(List<String> inputFIle) {
+		log.info("sessionId", "idType", "id", "In getCompressed method of datasync service util");
 		File fileToZip = null;
 		List<String> srcFiles = new ArrayList<>();
 		srcFiles.addAll(inputFIle);
+		byte[] byteArray = null;
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
-		for (String srcFile : srcFiles) {
-			fileToZip = new File(srcFile);
-			try (FileInputStream fileInputStream = new FileInputStream(fileToZip);
-					BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, 1024)) {
-				ZipEntry entry = new ZipEntry(fileToZip.getName());
-				zipOutputStream.putNextEntry(entry);
-				readFile(zipOutputStream, fileInputStream);
-			} catch (FileNotFoundException e) {
-				throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
-						ErrorMessages.FILE_NOT_FOUND.toString(),e.getCause());
-			} catch (IOException e) {
-				throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-						ErrorMessages.FILE_IO_EXCEPTION.toString(),e.getCause());
+		try {
+			for (String srcFile : srcFiles) {
+				fileToZip = new File(srcFile);
+				zipping(fileToZip, zipOutputStream);
 			}
+			zipOutputStream.close();
+			byteArray = byteArrayOutputStream.toByteArray();
+		} catch (IOException ex) {
+			log.error("sessionId", "idType", "id",
+					"In getCompressed method of datasync service util for FileNotFoundException - " + ex.getMessage());
+			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
+					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
 		}
-		return byteArrayOutputStream.toByteArray();
+
+		return byteArray;
+	}
+
+	private static void zipping(File fileToZip, ZipOutputStream zipOutputStream) {
+		log.info("sessionId", "idType", "id", "In zipping method of datasync service util");
+		try (FileInputStream fileInputStream = new FileInputStream(fileToZip);
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, 1024)) {
+			ZipEntry entry = new ZipEntry(fileToZip.getName());
+			zipOutputStream.putNextEntry(entry);
+			readFile(zipOutputStream, fileInputStream);
+		} catch (FileNotFoundException ex) {
+			log.error("sessionId", "idType", "id",
+					"In zipping method of datasync service util for FileNotFoundException - " + ex.getMessage());
+			throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
+					ErrorMessages.FILE_NOT_FOUND.toString(), ex.getCause());
+		} catch (IOException ex) {
+			log.error("sessionId", "idType", "id",
+					"In zipping method of datasync service util for IOException - " + ex.getMessage());
+			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
+					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
+		}
 	}
 
 	/**
@@ -459,6 +544,7 @@ public class DataSyncServiceUtil {
 	 * @throws IOException
 	 */
 	private static void readFile(ZipOutputStream zipOut, FileInputStream fis) throws IOException {
+		log.info("sessionId", "idType", "id", "In readFile method of datasync service util");
 		final byte[] bytes = new byte[1024];
 		int length;
 		while ((length = fis.read(bytes)) >= 0) {
@@ -468,9 +554,11 @@ public class DataSyncServiceUtil {
 	}
 
 	public boolean parseDate(String reqDate, String format) {
+		log.info("sessionId", "idType", "id", "In parseDate method of datasync service util");
 		try {
 			new SimpleDateFormat(format).parse(reqDate);
 		} catch (Exception e) {
+			log.error("sessionId", "idType", "id", "In parseDate method of datasync service util - " + e.getCause());
 			return false;
 		}
 		return true;
@@ -483,6 +571,7 @@ public class DataSyncServiceUtil {
 	 * @return true if key not null and return false if key is null.
 	 */
 	public boolean isNull(Object key) {
+		log.info("sessionId", "idType", "id", "In isNull method of datasync service util");
 		if (key instanceof String) {
 			if (key.equals(""))
 				return true;
@@ -498,23 +587,29 @@ public class DataSyncServiceUtil {
 	}
 
 	private void outputStream(File file, byte[] docBytes, List<String> inputMultiFileList) {
+		log.info("sessionId", "idType", "id", "In outputStream method of datasync service util");
 		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
 			fileOutputStream.write(docBytes);
 			inputMultiFileList.add(file.getAbsolutePath());
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException ex) {
+			log.error("sessionId", "idType", "id",
+					"In outputStream method of datasync service util for FileNotFoundException - " + ex.getMessage());
 			throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
-					ErrorMessages.FILE_NOT_FOUND.toString(),e.getCause());
-		} catch (IOException e) {
+					ErrorMessages.FILE_NOT_FOUND.toString(), ex.getCause());
+		} catch (IOException ex) {
+			log.error("sessionId", "idType", "id",
+					"In outputStream method of datasync service util for IOException - " + ex.getMessage());
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-					ErrorMessages.FILE_IO_EXCEPTION.toString(),e.getCause());
+					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
 		}
 	}
 
 	public PreRegistrationIdsDTO getLastUpdateTimeStamp(List<String> preRegIds) {
+		log.info("sessionId", "idType", "id", "In getLastUpdateTimeStamp method of datasync service util");
 		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		Map<String, String> preRegMap = new HashMap<>();
 		for (String preRegId : preRegIds) {
-			CreateDemographicDTO demographicDTO = callGetPreRegInfoRestService(preRegId);
+			DemographicResponseDTO demographicDTO = callGetPreRegInfoRestService(preRegId);
 			preRegMap.put(preRegId, new SimpleDateFormat(dateTimeFormat).format(demographicDTO.getUpdatedDateTime()));
 		}
 		preRegistrationIdsDTO.setCountOfPreRegIds(String.valueOf(preRegMap.size()));
@@ -524,6 +619,7 @@ public class DataSyncServiceUtil {
 	}
 
 	public ReverseDatasyncReponseDTO reverseDateSyncSave(Date reqDateTime, ReverseDataSyncRequestDTO request) {
+		log.info("sessionId", "idType", "id", "In reverseDateSyncSave method of datasync service util");
 		List<InterfaceDataSyncEntity> entityList = new ArrayList<>();
 		List<ProcessedPreRegEntity> processedEntityList = new ArrayList<>();
 		List<String> preIdList = request.getPreRegistrationIds();
@@ -559,6 +655,7 @@ public class DataSyncServiceUtil {
 
 	public ReverseDatasyncReponseDTO storeReverseDataSync(List<InterfaceDataSyncEntity> entityList,
 			List<ProcessedPreRegEntity> processedEntityList) {
+		log.info("sessionId", "idType", "id", "In storeReverseDataSync method of datasync service util");
 		int savedListSize = 0;
 		int alreadyProcessedSize = 0;
 		ReverseDatasyncReponseDTO reponseDTO = new ReverseDatasyncReponseDTO();
@@ -579,17 +676,21 @@ public class DataSyncServiceUtil {
 					reponseDTO.setTransactionId(UUIDGeneratorUtil.generateId());
 				}
 			}
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException ex) {
+			log.error("sessionId", "idType", "id",
+					"In storeReverseDataSync method of datasync service util - " + ex.getMessage());
 			throw new ReverseDataFailedToStoreException(ErrorMessages.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
 		}
 		return reponseDTO;
 	}
 
 	public String getCurrentResponseTime() {
+		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of datasync service util");
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
 	}
 
 	public String getDateString(Date date) {
+		log.info("sessionId", "idType", "id", "In getDateString method of datasync service util");
 		return DateUtils.formatDate(date, dateTimeFormat);
 	}
 }

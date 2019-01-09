@@ -75,6 +75,7 @@ import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+
 /**
  * Booking service Test
  * 

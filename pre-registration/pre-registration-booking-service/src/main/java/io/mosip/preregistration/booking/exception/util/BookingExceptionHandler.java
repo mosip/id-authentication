@@ -418,7 +418,8 @@ public class BookingExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AvailablityNotFoundException.class)
-	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
@@ -435,6 +436,7 @@ public class BookingExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(TableNotAccessibleException.class)
+
 	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TableNotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
@@ -451,7 +453,8 @@ public class BookingExceptionHandler {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentBookingFailedException.class)
-	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e, WebRequest request) {
+	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();

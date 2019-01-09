@@ -27,7 +27,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
-import io.mosip.preregistration.application.dto.DemographicResponseDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
@@ -36,6 +35,7 @@ import io.mosip.preregistration.application.exception.OperationNotAllowedExcepti
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
