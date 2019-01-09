@@ -104,11 +104,15 @@ mat-select:focus {
 }
 
 .file-upload__body__1 {
-  width: 65%;
+  width: 70%;
 }
 
 .file-upload__body__2 {
-  width: 35%;
+  width: 30%;
+}
+
+.file-upload__body__2 > p {
+  margin: 0px;
 }
 
 .file-upload__message {
@@ -121,7 +125,7 @@ mat-select:focus {
 }
 
 .file-upload__body__document-name {
-  width: 65%;
+  max-width: 59%;
   padding: 0.6em;
   font-size: 0.7em;
   position: relative;
@@ -143,7 +147,7 @@ mat-select:focus {
 }
 .file-upload__button {
   height: 32px;
-  width: 50%;
+  width: 40%;
   display: inline-flex;
   justify-content: center;
 }
