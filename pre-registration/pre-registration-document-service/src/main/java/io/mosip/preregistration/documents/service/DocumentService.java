@@ -216,6 +216,7 @@ public class DocumentService {
 	 *            pass destination preRegistrationId
 	 * @return ResponseDTO
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentCopyResponseDTO> copyDoucment(String catCode, String sourcePreId,
 			String destinationPreId) {
 		log.info("sessionId", "idType", "id", "In copyDoucment method of document service");
@@ -237,6 +238,7 @@ public class DocumentService {
 					if (copyDocumentEntity != null) {
 						destinationBucketName = copyDocumentEntity.getPreregId();
 						destinationKey = copyDocumentEntity.getDocCatCode() + "_" + copyDocumentEntity.getDocumentId();
+						System.out.println("name "+sourceBucketName);
 						boolean isStoreSuccess = ceph.copyFile(sourceBucketName, sourceKey, destinationBucketName,
 								destinationKey);
 						if (!isStoreSuccess) {
@@ -329,6 +331,7 @@ public class DocumentService {
 	 *            pass documentID
 	 * @return ResponseDTO
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId) {
 		log.info("sessionId", "idType", "id", "In deleteDocument method of document service");
 		List<DocumentDeleteResponseDTO> deleteDocList = new ArrayList<>();
@@ -375,6 +378,7 @@ public class DocumentService {
 	 *            pass preRegistrationId
 	 * @return ResponseDTO
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();

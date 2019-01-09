@@ -13,9 +13,9 @@ import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 public class ValidationUtil {
-	
-	private static Logger log= LoggerConfiguration.logConfig(ValidationUtil.class);
-	
+
+	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
+
 	private ValidationUtil() {
 	}
 
@@ -34,8 +34,8 @@ public class ValidationUtil {
 	}
 
 	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
-		log.info("sessionId","idType","id","In requestValidator method of pre-registration core with requestMap "+requestMap + 
-				" againt requiredRequestMap "+requiredRequestMap);
+		log.info("sessionId", "idType", "id", "In requestValidator method of pre-registration core with requestMap "
+				+ requestMap + " againt requiredRequestMap " + requiredRequestMap);
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.ID) && (requestMap.get(RequestCodes.ID) == null
 					|| !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
@@ -65,7 +65,8 @@ public class ValidationUtil {
 	}
 
 	public static boolean requstParamValidator(Map<String, String> requestMap) {
-		log.info("sessionId","idType","id","In requstParamValidator method of pre-registration core with requestMap "+requestMap );
+		log.info("sessionId", "idType", "id",
+				"In requstParamValidator method of pre-registration core with requestMap " + requestMap);
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.USER_ID) && (requestMap.get(RequestCodes.USER_ID) == null
 					|| requestMap.get(RequestCodes.USER_ID).equals(""))) {
@@ -84,12 +85,24 @@ public class ValidationUtil {
 					|| requestMap.get(RequestCodes.FROM_DATE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 						ErrorMessages.INVALID_DATE.toString());
-			}
-
-			else if (key.equals(RequestCodes.TO_DATE) && (requestMap.get(RequestCodes.TO_DATE) == null
+			} else if (key.equals(RequestCodes.FROM_DATE) && requestMap.get(RequestCodes.FROM_DATE) != null) {
+				try {
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(requestMap.get(RequestCodes.FROM_DATE));
+				} catch (Exception ex) {
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
+							ErrorMessages.INVALID_REQUEST_DATETIME.toString()+"_FORMAT --> yyyy-MM-dd HH:mm:ss");
+				}
+			} else if (key.equals(RequestCodes.TO_DATE) && (requestMap.get(RequestCodes.TO_DATE) == null
 					|| requestMap.get(RequestCodes.TO_DATE).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 						ErrorMessages.INVALID_DATE.toString());
+			} else if (key.equals(RequestCodes.TO_DATE) && requestMap.get(RequestCodes.TO_DATE) != null) {
+				try {
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(requestMap.get(RequestCodes.TO_DATE));
+				} catch (Exception ex) {
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.toString(),
+							ErrorMessages.INVALID_REQUEST_DATETIME.toString()+"_FORMAT --> yyyy-MM-dd HH:mm:ss");
+				}
 			}
 
 		}
@@ -99,7 +112,7 @@ public class ValidationUtil {
 	public static boolean isvalidPreRegId(String preRegId) {
 		if (preRegId.matches("[0-9]+") && preRegId.length() == 14) {
 			return true;
-		}else {
+		} else {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
 					ErrorMessages.INVALID_PRE_REGISTRATION_ID.toString());
 		}

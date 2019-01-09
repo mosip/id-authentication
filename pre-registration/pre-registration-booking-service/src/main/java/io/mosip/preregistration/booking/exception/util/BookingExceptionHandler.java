@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.booking.exception.util;
 
 import java.util.Date;
@@ -38,55 +42,78 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
- * Exception Handler
+ * Exception Handler for Booking application.
  * 
- * @author M1037717
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
+ * @since 1.0.0
  *
  */
 @RestControllerAdvice
 public class BookingExceptionHandler {
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(DemographicStatusUpdationException.class)
 	public ResponseEntity<MainResponseDTO<?>> updateStatusException(final DemographicStatusUpdationException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_011.toString(),
-				ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
 		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(AvailabilityTableNotAccessableException.class)
 	public ResponseEntity<MainResponseDTO<?>> availabilityTableNotAccessableException(
 			final AvailabilityTableNotAccessableException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-				ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
 		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(DemographicGetStatusException.class)
 	public ResponseEntity<MainResponseDTO<?>> getStatusException(final DemographicGetStatusException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_012.toString(),
-				ErrorMessages.DEMOGRAPHIC_GET_STATUS_FAILED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
 		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(MasterDataNotAvailableException.class)
 	public ResponseEntity<MainResponseDTO<?>> masterDataNotAvailableException(final MasterDataNotAvailableException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_020.toString(),
-				ErrorMessages.MASTER_DATA_NOT_FOUND.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
@@ -94,22 +121,32 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(RestCallException.class)
 	public ResponseEntity<MainResponseDTO<?>> databaseerror(final RestCallException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_002.toString(),
-				"HTTP_CLIENT_EXCEPTION");
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 		MainResponseDTO<?> errorRes = new MainResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
 		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(BookingTimeSlotNotSeletectedException.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSlotNotSelected(final BookingTimeSlotNotSeletectedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_003.toString(),
-				ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 
@@ -120,11 +157,16 @@ public class BookingExceptionHandler {
 
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(AppointmentCannotBeBookedException.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSlotNotSelected(final AppointmentCannotBeBookedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_005.toString(),
-				ErrorMessages.APPOINTMENT_CANNOT_BE_BOOKED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 
@@ -135,10 +177,15 @@ public class BookingExceptionHandler {
 
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(BookingPreIdNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> preIdNotFound(final BookingPreIdNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_006.toString(),
-				ErrorMessages.PREREGISTRATION_ID_NOT_ENTERED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(false);
@@ -147,6 +194,11 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(BookingRegistrationCenterIdNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> regCenterNotFound(final BookingRegistrationCenterIdNotFoundException e,
 			WebRequest request) {
@@ -160,11 +212,16 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(InvalidDateTimeFormatException.class)
 	public ResponseEntity<MainResponseDTO<?>> invalidDateTimeException(final InvalidDateTimeFormatException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_009.toString(),
-				ErrorMessages.INVALID_DATE_TIME_FORMAT.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(false);
@@ -173,6 +230,11 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(BookingTimeSlotAlreadyBooked.class)
 	public ResponseEntity<MainResponseDTO<?>> timeSlotAlreadyBooked(final BookingTimeSlotAlreadyBooked e,
 			WebRequest request) {
@@ -186,11 +248,16 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(BookingDateNotSeletectedException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDateNotSelected(final BookingDateNotSeletectedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_008.toString(),
-				ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(false);
@@ -199,6 +266,11 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDateNotSelected(final InvalidRequestParameterException e,
 			WebRequest request) {
@@ -210,11 +282,16 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(BookingDataNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> bookingDataNotFound(final BookingDataNotFoundException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-				ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(false);
@@ -223,10 +300,15 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> recordNotFound(final RecordNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_015.toString(),
-				ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(false);
@@ -235,12 +317,17 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentAlreadyCanceledException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentAlreadyCanceledException(
 			final AppointmentAlreadyCanceledException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_017.toString(),
-				ErrorMessages.APPOINTMENT_TIME_SLOT_IS_ALREADY_CANCELED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
 
@@ -250,12 +337,17 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentCannotBeCanceledException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentCanNotCanceledException(
 			final AppointmentCannotBeCanceledException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_018.toString(),
-				ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
 		responseDto.setStatus(false);
@@ -264,12 +356,17 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(CancelAppointmentFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentCancelFailedException(final CancelAppointmentFailedException e,
 			WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_019.toString(),
-				ErrorMessages.APPOINTMENT_CANCEL_FAILED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
 		responseDto.setStatus(false);
@@ -278,12 +375,17 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentReBookingFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentReBookingFailedException(
 			final AppointmentReBookingFailedException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_BOOK_RCI_021.toString(),
-				ErrorMessages.APPOINTMENT_REBOOKING_FAILED.toString());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(),
+				e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
 		responseDto.setStatus(false);
@@ -292,6 +394,11 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
@@ -304,6 +411,11 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AvailablityNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> availablityNotFound(final AvailablityNotFoundException e,
@@ -317,10 +429,15 @@ public class BookingExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(TableNotAccessibleException.class)
-	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TableNotAccessibleException e,
-			WebRequest request) {
+
+	public ResponseEntity<MainResponseDTO<?>> tablenotAccessible(final TableNotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 
 		MainResponseDTO responseDto = new MainResponseDTO();
@@ -329,7 +446,11 @@ public class BookingExceptionHandler {
 		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
-
+	/**
+	 * @param e
+	 * @param request
+	 * @return error response
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	@ExceptionHandler(AppointmentBookingFailedException.class)
 	public ResponseEntity<MainResponseDTO<?>> appointmentBookingFailed(final AppointmentBookingFailedException e,
@@ -342,7 +463,10 @@ public class BookingExceptionHandler {
 		responseDto.setResTime(getCurrentResponseTime());
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
-
+	
+	/**
+	 * @return Date time format
+	 */
 	public String getCurrentResponseTime() {
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}

@@ -20,7 +20,8 @@
 
       <div *ngIf="showContactDetails">
         <mat-form-field appearance="outline">
-          <input required matInput [(ngModel)]="inputContactDetails" placeholder="{{'login.label_email_num' | translate}}"  id="inputFieldContact"  />
+          <input matInput [(ngModel)]="inputContactDetails" placeholder="{{'login.label_email_num' | translate}}"  id="inputFieldContact" required />
+          <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
 
@@ -32,7 +33,7 @@
 
       <div *ngIf="showSendOTP">
         <button mat-raised-button class="pinkBg whiteText boldText"
-        disabled="{{disableBtn}}" (click)="submit()"> {{'login.action_send' | translate}} </button>
+        [disabled]="inputContactDetails.length > 0 ? false : true" (click)="submit()"> {{'login.action_send' | translate}} </button>
       </div>
 
       <div *ngIf="showVerify">
