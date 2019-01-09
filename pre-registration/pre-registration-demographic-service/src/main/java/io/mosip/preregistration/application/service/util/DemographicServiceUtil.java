@@ -76,7 +76,7 @@ public class DemographicServiceUtil {
 			createDto.setCreatedBy(demographicEntity.getCreatedBy());
 			createDto.setCreatedDateTime(getLocalDateString(demographicEntity.getCreateDateTime()));
 			createDto.setUpdatedBy(demographicEntity.getUpdatedBy());
-			createDto.setUpdatedDateTime(getLocalDateString(demographicEntity.getUpdateDateTime()));
+			createDto.setUpdatedDateTime(getLocalDateString(LocalDateTime.now()));
 		} catch (ParseException ex) {
 			log.error("sessionId","idType","id","In setterForCreateDTO method of pre-registration service- "+ex.getCause());
 			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
@@ -291,4 +291,12 @@ public class DemographicServiceUtil {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
 		return date.format(dateTimeFormatter);
 	}
+	
+	 public boolean isStatusValid(String status)
+	  {
+	      for(StatusCodes choice:StatusCodes.values())
+	           if (choice.name().equals(status)) 
+	              return true;
+	      return false;
+	  } 
 }

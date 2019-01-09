@@ -46,6 +46,7 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
+import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
@@ -260,7 +261,7 @@ public class DemographicService {
 					response.setStatus(Boolean.TRUE);
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-							ErrorMessages.NO_RECORD_FOUND_FOR_USER_ID.name());
+							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
 				}
 			}
 		} catch (Exception ex) {
@@ -306,7 +307,7 @@ public class DemographicService {
 					}
 				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-							ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
+							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
 				}
 			}
 		} catch (Exception ex) {
@@ -375,11 +376,21 @@ public class DemographicService {
 			requestParamMap.put(RequestCodes.statusCode.toString(), status);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
-				demographicEntity.setStatusCode(StatusCodes.valueOf(status).toString());
-				demographicRepository.update(demographicEntity);
-				response.setResponse("STATUS_UPDATED_SUCESSFULLY");
-				response.setResTime(new Timestamp(System.currentTimeMillis()));
-				response.setStatus("true");
+				if (demographicEntity != null) {
+					if(serviceUtil.isStatusValid(status)) {
+						demographicEntity.setStatusCode(StatusCodes.valueOf(status).toString());
+						demographicRepository.update(demographicEntity);
+						response.setResponse("STATUS_UPDATED_SUCESSFULLY");
+						response.setResTime(new Timestamp(System.currentTimeMillis()));
+						response.setStatus("true");
+					}else {
+						throw new RecordFailedToUpdateException(ErrorCodes.PRG_PAM_APP_005.name(),
+								ErrorMessages.INVALID_STATUS_CODE.name());
+					}
+				}else {
+					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
+							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+				}
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -514,7 +525,7 @@ public class DemographicService {
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId").queryParam("preId", preregId);
+					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId").queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);

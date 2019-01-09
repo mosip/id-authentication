@@ -107,5 +107,15 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_APP_012
 	 */
-	MISSING_REQUEST_PARAMETER;
+	MISSING_REQUEST_PARAMETER,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_APP_005
+	 */
+	INVALID_PRE_REGISTRATION_ID,
+	
+	/**
+	 * ErrorMessage for PRG_PAM_APP_005
+	 */
+	INVALID_STATUS_CODE;
 }
