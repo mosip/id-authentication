@@ -198,7 +198,7 @@ public class DemographicService {
 		try {
 			requestParamMap.put(RequestCodes.userId.toString(), userId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId);
+				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId,StatusCodes.Consumed.toString());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						String identityValue = serviceUtil.getValueFromIdentity(
@@ -507,10 +507,10 @@ public class DemographicService {
 	 * @return boolean
 	 * 
 	 */
-	private boolean callDocumentServiceToDeleteAllByPreId(String preregId) {
+	private void callDocumentServiceToDeleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id",
 				"In callDocumentServiceToDeleteAllByPreId method of pre-registration service ");
-		ResponseEntity<?> responseEntity = null;
+		ResponseEntity<MainListResponseDTO> responseEntity = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
@@ -524,11 +524,11 @@ public class DemographicService {
 			responseEntity = restTemplate.exchange(strUriBuilder, HttpMethod.DELETE, httpEntity,
 					MainListResponseDTO.class);
 
-			if (responseEntity.getStatusCode() == HttpStatus.OK) {
-				return true;
-			} else {
-				throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
-						ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
+			if (!responseEntity.getBody().isStatus()) {
+				if(!responseEntity.getBody().getErr().getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
+					throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
+							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
+				}
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",

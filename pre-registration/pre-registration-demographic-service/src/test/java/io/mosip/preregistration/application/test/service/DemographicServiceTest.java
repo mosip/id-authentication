@@ -417,7 +417,7 @@ public class DemographicServiceTest {
 	@Test(expected = RecordNotFoundException.class)
 	public void getApplicationDetailsFailureTest() {
 		String userId = "12345";
-		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString()))
+		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(),Mockito.anyString()))
 				.thenThrow(RecordNotFoundException.class);
 		preRegistrationService.getAllApplicationDetails(userId);
 
@@ -427,7 +427,7 @@ public class DemographicServiceTest {
 	public void getApplicationDetailsInvalidRequestTest() {
 		InvalidRequestParameterException exception = new InvalidRequestParameterException(
 				ErrorCodes.PRG_PAM_APP_012.name(), ErrorMessages.MISSING_REQUEST_PARAMETER.name());
-		Mockito.when(demographicRepository.findByCreatedBy("")).thenThrow(exception);
+		Mockito.when(demographicRepository.findByCreatedBy("","")).thenThrow(exception);
 		preRegistrationService.getAllApplicationDetails("");
 	}
 
@@ -473,7 +473,7 @@ public class DemographicServiceTest {
 		String userId = "9988905444";
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
-		Mockito.when(demographicRepository.findByCreatedBy(ArgumentMatchers.any())).thenThrow(exception);
+		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(),Mockito.anyString())).thenThrow(exception);
 		preRegistrationService.getAllApplicationDetails(userId);
 	}
 
