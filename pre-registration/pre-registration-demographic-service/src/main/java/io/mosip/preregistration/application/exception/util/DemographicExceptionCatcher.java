@@ -28,17 +28,18 @@ import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
 /**
- * This class is used to handle all the exceptions that occur while creating
- * the pre-registration
+ * This class is used to catch the exceptions that occur while creating the
+ * pre-registration
  * 
- * @author M1046462
+ * @author Ravi C Balaji
+ * @since 1.0.0
  *
  */
 public class DemographicExceptionCatcher {
 	/**
 	 * Method to handle the respective exceptions
 	 * 
-	 * @param ex
+	 * @param ex pass the exception
 	 */
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {
@@ -84,6 +85,9 @@ public class DemographicExceptionCatcher {
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
 		} else if (ex instanceof DateParseException) {
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+		} else if (ex instanceof java.text.ParseException) {
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
 					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
 		}

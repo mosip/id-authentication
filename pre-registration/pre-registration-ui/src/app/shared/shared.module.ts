@@ -6,6 +6,7 @@ import { MaterialModule } from '../material.module';
 
 import { MapComponent } from './map/map.component';
 import { DialougComponent } from './dialoug/dialoug.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import { DialougComponent } from './dialoug/dialoug.component';
     BrowserAnimationsModule,
     MaterialModule,
   ],
-  declarations: [MapComponent, DialougComponent],
+  declarations: [MapComponent, DialougComponent, ErrorComponent],
   exports: [MapComponent, DialougComponent]
 })
 export class SharedModule { }

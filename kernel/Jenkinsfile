@@ -36,7 +36,7 @@ node {
   }
  }
 
-/* stage('--------- Artifactory configuration ----------------') {
+ stage('--------- Artifactory configuration ----------------') {
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
   rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
   rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
@@ -47,9 +47,8 @@ node {
  stage('---------- mvn-clean-install ---------------') {
   rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
  }
-*/
 
-/*stage('---------- SonarQube Analysis --------------') {
+stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
@@ -58,7 +57,7 @@ node {
 
  stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
- }*/
+ }
 
   stage('------ Docker Images : Push & Cleanup -------') {
   if ("${env.BUIILD_OPTION}" == "Build All") {
@@ -235,10 +234,10 @@ node {
 def getChangedModules() {
  Set changedModules = [] as TreeSet
  def changeLogSets = currentBuild.changeSets
- print "changelogsets are>>>>>>>>>>>>>>  " +changeLogSets[0]
+ println(changeLogSets)
  for (int i = 0; i < changeLogSets.size(); i++) {
   def entries = changeLogSets[i].items
-  print "entries>>>>>>>>>>>>>>  " +entries[0]
+  println(entries)	 
   for (int j = 0; j < entries.length; j++) {
    def entry = entries[j]
    echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"

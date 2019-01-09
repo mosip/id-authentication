@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.dto;
 
 import java.io.Serializable;
@@ -11,7 +15,11 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author M1046129
+ * This DTO class defines the variables to accept the input parameter from
+ * request.
+ * 
+ * @author Rajath KR
+ * @since 1.0.0
  *
  */
 @Getter
@@ -38,11 +46,18 @@ public class CreateDemographicDTO implements Serializable {
 	/** The update date time. */
 	private Date updatedDateTime;
 
+	/**
+	 * status code
+	 */
 	private String statusCode;
 
-	private String langCode;
 	/**
-	 * Demographic details
+	 * language code
+	 */
+	private String langCode;
+
+	/**
+	 * Demographic Json details
 	 */
 	private JSONObject demographicDetails;
 

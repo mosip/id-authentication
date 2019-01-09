@@ -11,11 +11,10 @@ export class IdentityModel {
     public region: AttributeModel[],
     public province: AttributeModel[],
     public city: AttributeModel[],
-    public postalcode: AttributeModel[],
     public localAdministrativeAuthority: AttributeModel[],
-    public emailId: AttributeModel[],
+    public postalcode: AttributeModel[],
     public mobileNumber: AttributeModel[],
-    public CNEOrPINNumber: AttributeModel[],
-    public age: AttributeModel[]
+    public emailId: AttributeModel[],
+    public CNEOrPINNumber: AttributeModel[]
   ) {}
 }
