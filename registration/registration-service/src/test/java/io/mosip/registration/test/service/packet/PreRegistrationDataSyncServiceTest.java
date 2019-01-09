@@ -27,6 +27,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
+import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -101,11 +102,13 @@ public class PreRegistrationDataSyncServiceTest {
 
 		responseData.put("response", map);
 
+		
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any())).thenReturn(responseData);
 		Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
 		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(null);
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean())).thenReturn(preRegData);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+				.thenReturn(getTestPacketData());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
@@ -116,13 +119,23 @@ public class PreRegistrationDataSyncServiceTest {
 
 	}
 
+	private MainResponseDTO<LinkedHashMap<String, Object>> getTestPacketData() {
+		MainResponseDTO<LinkedHashMap<String, Object>> testData = new MainResponseDTO<>();
+		LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
+		linkedHashMap.put("zip-bytes", preRegData);
+		return testData;
+	}
+
 	@Test
 	public void getPreRegistrationTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean())).thenReturn(preRegData);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
+				.thenReturn(getTestPacketData());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
+		// Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new
+		// PreRegistrationList());
 
 		mockEncryptedPacket();
 
@@ -135,7 +148,7 @@ public class PreRegistrationDataSyncServiceTest {
 	public void getPreRegistrationNegativeTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(),Mockito.anyBoolean()))
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
 				.thenThrow(HttpClientErrorException.class);
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");

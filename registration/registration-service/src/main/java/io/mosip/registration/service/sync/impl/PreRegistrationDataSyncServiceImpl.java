@@ -14,12 +14,15 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -28,6 +31,8 @@ import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
+import io.mosip.registration.dto.MainResponseDTO;
+import io.mosip.registration.dto.PreRegArchiveDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncRequestDTO;
@@ -188,13 +193,16 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			try {
 				/** REST call to get packet */
-				requestParamMap.put(RegistrationConstants.IS_PRE_REG_SYNC, "true");
-				Map<String, Object> packet = (Map<String, Object>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap,false);
 
-				if (packet != null && !packet.isEmpty()) {
+				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
+						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
 
-					decryptedPacket = (byte[]) packet.get(RegistrationConstants.PRE_REG_FILE_CONTENT);
+				if (mainResponseDTO.getResponse() != null && mainResponseDTO.getResponse().get("zip-bytes") != null) {
+
+					PreRegArchiveDTO preRegArchiveDTO = new ObjectMapper().readValue(
+							new JSONObject(mainResponseDTO.getResponse()).toString(), PreRegArchiveDTO.class);
+
+					decryptedPacket = preRegArchiveDTO.getZipBytes();
 
 					/** Get PreRegistrationDTO by taking packet Information */
 					PreRegistrationDTO preRegistrationDTO = preRegZipHandlingService
@@ -208,12 +216,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					// save in Pre-Reg List
 					PreRegistrationList preRegistrationList = preparePreRegistration(syncTransaction,
 							preRegistrationDTO, lastUpdatedTimeStamp);
-					String fileName = (String) packet.get(RegistrationConstants.PRE_REG_FILE_NAME);
-					String appointmentDate = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
+					String appointmentDate = preRegArchiveDTO.getAppointmentDate();
 
 					/** TODO Check the Date format */
-					preRegistrationList.setAppointmentDate(DateUtils.parseUTCToDate(appointmentDate,
-							RegistrationConstants.PRE_REG_APPOINMENT_DATE_FORMAT));
+					preRegistrationList.setAppointmentDate(DateUtils.parseUTCToDate(appointmentDate, "yyyy-MM-dd"));
 
 					if (preRegistration == null) {
 						preRegistrationDAO.save(preRegistrationList);
@@ -235,7 +241,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					return;
 				}
 
-			} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException exception) {
+			} catch (HttpClientErrorException | RegBaseCheckedException | java.io.IOException exception) {
 
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
