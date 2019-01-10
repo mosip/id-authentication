@@ -25,7 +25,7 @@ export class DataStorageService {
   DISTANCE = 2000;
 
   getUsers(value: string) {
-    return this.httpClient.get<Applicant[]>(this.BASE_URL + appConstants.APPEND_URL.APPLICANTS, {
+    return this.httpClient.get<Applicant[]>(this.BASE_URL + appConstants.APPEND_URL.applicants, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUsers, value)
@@ -33,7 +33,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.GET_APPLICANT, {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.get_applicant, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
@@ -48,7 +48,7 @@ export class DataStorageService {
       request: request
     };
 
-    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.TRANSLITERATION, obj);
+    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.transliteration, obj);
   }
 
   getUserDocuments(preRegId) {
@@ -70,7 +70,7 @@ export class DataStorageService {
     };
     console.log('data being sent', obj);
 
-    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.APPLICANTS, obj);
+    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.applicants, obj);
   }
 
   sendFile(formdata: FormData) {
@@ -143,7 +143,7 @@ export class DataStorageService {
 
   getLocationMetadataHirearchy(value: string) {
     return this.httpClient.get(
-      this.BASE_URL + appConstants.APPEND_URL.LOCATION + appConstants.APPEND_URL.LOCATION_METADATA + value,
+      this.BASE_URL + appConstants.APPEND_URL.location + appConstants.APPEND_URL.location_metadata + value,
       {
         params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
       }
@@ -153,8 +153,8 @@ export class DataStorageService {
   getLocationImmediateHierearchy(lang: string, location: string) {
     return this.httpClient.get(
       this.BASE_URL +
-        appConstants.APPEND_URL.LOCATION +
-        appConstants.APPEND_URL.LOCATION_IMMEDIATE_CHILDREN +
+        appConstants.APPEND_URL.location +
+        appConstants.APPEND_URL.location_immediate_children +
         location +
         '/' +
         lang

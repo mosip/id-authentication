@@ -19,12 +19,12 @@ export const LANGUAGE_CODE = {
 };
 
 export const APPEND_URL = {
-  LOCATION_METADATA: 'v1.0/locations/locationhierarchy/',
-  LOCATION_IMMEDIATE_CHILDREN: 'v1.0/locations/immediatechildren/',
-  GET_APPLICANT: 'demographic/v0.1/pre-registration/applicationData',
-  APPLICANTS: 'demographic/v0.1/pre-registration/applications',
-  LOCATION: 'masterdata/',
-  TRANSLITERATION: 'translitrate/v0.1/pre-registration/translitrate'
+  location_metadata: 'v1.0/locations/locationhierarchy/',
+  location_immediate_children: 'v1.0/locations/immediatechildren/',
+  get_applicant: 'demographic/v0.1/pre-registration/applicationData',
+  applicants: 'demographic/v0.1/pre-registration/applications',
+  location: 'masterdata/',
+  transliteration: 'translitrate/v0.1/pre-registration/translitrate'
 };
 
 export const PARAMS_KEYS = {
