@@ -95,17 +95,12 @@
                                        <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                        <Label layoutX="17.0" layoutY="270.0" text="%postalCode" />
                                        <TextField fx:id="postalCode" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
-                                          <Label fx:id="addressLine1LocalLanguagelabel" layoutX="410.0" layoutY="13.0" text="" />
-                                       <Label fx:id="addressLine2LocalLanguagelabel" layoutX="410.0" layoutY="62.0" text="" />
-                                       <Label fx:id="addressLine3LocalLanguagelabel" layoutX="410.0" layoutY="110.0" text="" />
                                     </children>
                                  </AnchorPane>
                                  <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
-                                   <TextField fx:id="mobileNo" layoutX="43.0" layoutY="542.0" prefHeight="39.0" prefWidth="145.0" />
+                                   <TextField fx:id="mobileNo" layoutX="43.0" layoutY="542.0" prefHeight="39.0" prefWidth="325.0" />
                                     <Label fx:id="mobileNoLabel" layoutX="46.0" layoutY="537.0" text="%mobileNo" />
-                                 	 <TextField fx:id="alternateMobileNo" layoutX="220.0" layoutY="542.0" prefHeight="39.0" prefWidth="145.0" />
-                                    <Label fx:id="alternateMobileNoLabel" layoutX="220.0" layoutY="537.0" text="Alternative Mobile No (Optional)" />
-                                 	 <TextField fx:id="emailId" layoutX="46.0" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
+                                 	<TextField fx:id="emailId" layoutX="46.0" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
                                     <Label fx:id="emailIdLabel" layoutX="46.0" layoutY="587.0" text="%emailId" />
                                  	<TextField fx:id="cniOrPinNumber" layoutX="220.0" layoutY="593.0" prefHeight="39.0" prefWidth="147.0" />
                                    	<Label fx:id="cnieLabel" layoutX="220.0" layoutY="587.0" text="%cniOrPinNumber" />
@@ -117,23 +112,23 @@
                                           <Label layoutX="5.0" layoutY="60.0" text="%uinId" />
                                        </children>
                                     </AnchorPane>
-                                    <Label fx:id="fullNameLocalLanguageLabel" layoutX="435.0" layoutY="75.0" prefHeight="10.0" prefWidth="320.0" text="" />
-                                 <TextField id="fullNameLocalLanguage" fx:id="fullNameLocalLanguage" layoutX="435.0" layoutY="90.00" prefHeight="10.0" prefWidth="320.0" />
-                                 <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="768.0" layoutY="100.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                    <Label fx:id="fullNameLocalLanguageLabel" layoutX="470.0" layoutY="75.0" prefHeight="10.0" prefWidth="320.0" text="" />
+                                 <TextField id="fullNameLocalLanguage" fx:id="fullNameLocalLanguage" layoutX="465.0" layoutY="90.00" prefHeight="10.0" prefWidth="320.0" />
+                                 <ImageView id="fullName" fitHeight="20.0" fitWidth="27.0" layoutX="435.0" layoutY="100.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                  <image>
                  					<Image url="@../images/keyboard.png" />
                			 			</image>
 	                           </ImageView>
 	                           <AnchorPane fx:id="dateAnchorPaneLocalLanguage" layoutX="440.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">
                                     <children>
-                                       <Label fx:id="ageFieldLocalLanguageLabel" layoutX="5.0" layoutY="9.0" text="%ageField" />
-                                       <TextField fx:id="ageFieldLocalLanguage" layoutX="5.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
+                                       <Label fx:id="ageFieldLocalLanguageLabel" layoutX="25.0" layoutY="9.0" text="%ageField" />
+                                       <TextField fx:id="ageFieldLocalLanguage" layoutX="25.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
                                        <Label id="toggleLabel1" fx:id="toggleLabel1LocalLanguage" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.1" text="" />
                                        <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                     </children>
                                  </AnchorPane>
-                                 <Label fx:id="genderLocalLanguageLabel" layoutX="440.0" layoutY="175.0" text="%gender" />
-                                 <ComboBox fx:id="genderLocalLanguage" layoutX="440.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="%select">
+                                 <Label fx:id="genderLocalLanguageLabel" layoutX="465.0" layoutY="175.0" text="%gender" />
+                                 <ComboBox fx:id="genderLocalLanguage" layoutX="465.0" layoutY="190.0" prefHeight="20.0" prefWidth="100.0" promptText="%select">
                                     <items>
                                        <FXCollections fx:factory="observableArrayList">
                                           <String fx:value="Male" />
@@ -142,14 +137,48 @@
                                        </FXCollections>
                                     </items>
                                  </ComboBox>
-                                    <TextField fx:id="mobileNoLocalLanguage" layoutX="440.0" layoutY="542.0" prefHeight="39.0" prefWidth="145.0" />
-                                    <Label fx:id="mobileNoLocalLanguageLabel" layoutX="440.0" layoutY="537.0" text="%mobileNo" />
-                                    <TextField fx:id="alternateMobileNoLocalLanguage" layoutX="620.0" layoutY="543.0" prefHeight="39.0" prefWidth="145.0" />
-                                    <Label fx:id="alternateMobileNoLabelLocal" layoutX="620.0" layoutY="537.0" text="Alternative Mobile No (Optional)" />
-                                    <TextField fx:id="emailIdLocalLanguage" layoutX="440.00" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
-                                    <Label fx:id="emailIdLocalLanguageLabel" layoutX="440.00" layoutY="584.0" text="%emailId" />
-                                    <TextField fx:id="cniOrPinNumberLocalLanguage" layoutX="620.0" layoutY="602.0" prefHeight="30.0" prefWidth="147.0" />
-                                      <Label fx:id="cniOrPinNumberLocalLanguageLabel" layoutX="620.0" layoutY="587.0" text="%cniOrPinNumber" />
+                                 <AnchorPane fx:id="localLanguageAddressAnchorPane" layoutX="410.0" layoutY="209.0" prefHeight="332.0" prefWidth="392.0">
+                                       <children>
+                                          <Label fx:id="addressLine1LocalLanguagelabel" layoutX="55.0" layoutY="11.0" text="%addressLine1" />
+                                          <TextField fx:id="addressLine1LocalLanguage" layoutX="55.0" layoutY="28.0" prefHeight="20.0" prefWidth="320.0" />
+                                          <Label fx:id="addressLine2LocalLanguagelabel" layoutX="55.0" layoutY="60.0" text="%addressLine2" />
+                                          <TextField fx:id="addressLine2LocalLanguage" layoutX="55.0" layoutY="77.0" prefHeight="20.0" prefWidth="320.0" />
+                                          <Label fx:id="addressLine3LocalLanguagelabel" layoutX="55.0" layoutY="110.0" text="%addressLine1" />
+                                          <TextField fx:id="addressLine3LocalLanguage" layoutX="55.0" layoutY="133.0" prefHeight="30.0" prefWidth="320.0" />
+                                          <Label fx:id="regionLocalLanguageLabel" layoutX="55.0" layoutY="170.0" text="%region" />
+                                          <ComboBox fx:id="regionLocalLanguage" layoutX="55.0" layoutY="188.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
+                                          <Label fx:id="provinceLocalLanguageLabel" layoutX="220.0" layoutY="170.0" text="%province" />
+                                          <ComboBox fx:id="provinceLocalLanguage" layoutX="220.0" layoutY="187.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
+                                          <Label fx:id="cityLocalLanguageLabel" layoutX="55.0" layoutY="218.0" text="%city" />
+                                          <ComboBox fx:id="cityLocalLanguage" layoutX="55.0" layoutY="236.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
+                                          <Label fx:id="localAdminAuthorityLocalLanguageLabel" layoutX="220.0" layoutY="218.0" text="%localAdminAuthority" />
+                                          <ComboBox fx:id="localAdminAuthorityLocalLanguage" layoutX="220.0" layoutY="234.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
+                                           <Label fx:id="postalCodeLocalLanguageLabel" layoutX="55.0" layoutY="278.0" text="%postalCode" />
+                                          <TextField fx:id="postalCodeLocalLanguage" layoutX="55.0" layoutY="292.0" prefHeight="30.0" prefWidth="320.0" />
+                                          <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="25.0" layoutY="36.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/keyboard.png" />
+                                             </image>
+                                          </ImageView>
+                                          <ImageView id="addressLine2" fitHeight="21.0" fitWidth="34.0" layoutX="25.0" layoutY="85.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/keyboard.png" />
+                                             </image>
+                                          </ImageView>
+                                          <ImageView id="addressLine3" fitHeight="21.0" fitWidth="34.0" layoutX="25.0" layoutY="147.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/keyboard.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                 
+                                    <TextField fx:id="mobileNoLocalLanguage" layoutX="465.0" layoutY="542.0" prefHeight="39.0" prefWidth="325.0" />
+                                    <Label fx:id="mobileNoLocalLanguageLabel" layoutX="465.0" layoutY="537.0" text="%mobileNo" />
+                                    <TextField fx:id="emailIdLocalLanguage" layoutX="465.0" layoutY="593.0" prefHeight="39.0" prefWidth="144.0" />
+                                    <Label fx:id="emailIdLocalLanguageLabel" layoutX="465.0" layoutY="584.0" text="%emailId" />
+                                    <TextField fx:id="cniOrPinNumberLocalLanguage" layoutX="645.0" layoutY="602.0" prefHeight="30.0" prefWidth="145.0" />
+                                      <Label fx:id="cniOrPinNumberLocalLanguageLabel" layoutX="645.0" layoutY="587.0" text="%cniOrPinNumber" />
                                     <ImageView fx:id="copyAddressImage" fitHeight="20.0" fitWidth="27.0" layoutX="382.0" layoutY="220.0" onMouseClicked="#loadAddressFromPreviousEntry" pickOnBounds="true" preserveRatio="true">
                                       <image>
                     						<Image url="@../images/CopyAddress.png" />
@@ -160,54 +189,19 @@
                                     <AnchorPane fx:id="childSpecificFieldsLocal" disable="true" layoutX="435.0" layoutY="652.0" prefHeight="124.0" prefWidth="398.0" visible="false">
                                        <children>
                                           <Label fx:id="parentNameLocalLanguageLabel" layoutX="5.0" layoutY="1.0" text="%parentName" />
-                                          <TextField fx:id="parentNameLocalLanguage" layoutY="21.0" prefHeight="30.0" prefWidth="320.0" />
-                                           <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="340.0" layoutY="30.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
+                                          <TextField fx:id="parentNameLocalLanguage" layoutX="30.0" layoutY="21.0" prefHeight="30.0" prefWidth="320.0" />
+                                           <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutY="35.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
                                        	<image>
                      						<Image url="@../images/keyboard.png" />
                   			 			</image>
                                        </ImageView>
                                           <Label fx:id="uinIdLocalLanguageLabel" layoutX="5.0" layoutY="60.0" text="%uinId" />
-                                          <TextField fx:id="uinIdLocalLanguage" layoutY="85.0" prefHeight="30.0" prefWidth="320.0" />
+                                          <TextField fx:id="uinIdLocalLanguage" layoutX="30.0" layoutY="85.0" prefHeight="30.0" prefWidth="320.0" />
                                        </children>
                                     </AnchorPane>
                                          <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                                     <Button fx:id="nextBtn" layoutX="700.0" layoutY="783.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
-                                    <AnchorPane fx:id="localLanguageAddressAnchorPane" layoutX="410.0" layoutY="209.0" prefHeight="332.0" prefWidth="392.0">
-                                       <children>
-                                          <Label fx:id="postalCodeLocalLanguageLabel" layoutX="30.0" layoutY="268.0" text="%postalCode" />
-                                          <TextField fx:id="postalCodeLocalLanguage" layoutX="30.0" layoutY="283.0" prefHeight="30.0" prefWidth="320.0" />
-                                          <Label fx:id="addressLine1LocalLanguagelabel1" layoutX="30.0" layoutY="11.0" text="" />
-                                          <TextField fx:id="addressLine1LocalLanguage" layoutX="30.0" layoutY="25.0" prefHeight="30.0" prefWidth="320.0" />
-                                          <Label fx:id="addressLine2LocalLanguagelabel1" layoutX="30.0" layoutY="60.0" text="" />
-                                          <TextField fx:id="addressLine2LocalLanguage" layoutX="30.0" layoutY="73.0" prefHeight="30.0" prefWidth="320.0" />
-                                          <Label fx:id="addressLine3LocalLanguagelabel1" layoutX="30.0" layoutY="108.0" text="" />
-                                          <TextField fx:id="addressLine3LocalLanguage" layoutX="30.0" layoutY="128.0" prefHeight="30.0" prefWidth="320.0" />
-                                          <Label fx:id="regionLocalLanguageLabel" layoutX="30.0" layoutY="168.0" text="%region" />
-                                          <ComboBox fx:id="regionLocalLanguage" layoutX="30.0" layoutY="185.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
-                                          <Label fx:id="provinceLocalLanguageLabel" layoutX="200.0" layoutY="168.0" text="%province" />
-                                          <ComboBox fx:id="provinceLocalLanguage" layoutX="200.0" layoutY="185.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
-                                          <Label fx:id="cityLocalLanguageLabel" layoutX="30.0" layoutY="216.0" text="%city" />
-                                          <ComboBox fx:id="cityLocalLanguage" layoutX="30.0" layoutY="233.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
-                                          <Label fx:id="localAdminAuthorityLocalLanguageLabel" layoutX="200.0" layoutY="216.0" text="%localAdminAuthority" />
-                                          <ComboBox fx:id="localAdminAuthorityLocalLanguage" layoutX="200.0" layoutY="233.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
-                                          <ImageView id="addressLine1" fitHeight="21.0" fitWidth="34.0" layoutX="359.0" layoutY="38.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/keyboard.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView id="addressLine2" fitHeight="21.0" fitWidth="34.0" layoutX="358.0" layoutY="84.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/keyboard.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ImageView id="addressLine3" fitHeight="21.0" fitWidth="34.0" layoutX="359.0" layoutY="140.0" onMouseClicked="#setFocusonLocalField" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/keyboard.png" />
-                                             </image>
-                                          </ImageView>
-                                       </children>
-                                    </AnchorPane>
-                              </children>
+                                                                  </children>
                            </AnchorPane>
                         </content>
                         </TitledPane>

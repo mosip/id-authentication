@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -256,6 +258,31 @@ public class Validations extends BaseController {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
+		return true;
+	}
+
+	public boolean validateUinOrRid(TextField field, boolean isChild, IdValidator<String> uinValidator,
+			RidValidator<String> ridValidator) {
+		if (!isChild)
+			return true;
+		if (field.getText().length() <= Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+			try {
+				uinValidator.validateId(field.getText());
+			} catch (InvalidIDException invalidUinException) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, invalidUinException.getErrorText());
+				field.requestFocus();
+				return false;
+			}
+		} else {
+			try {
+				ridValidator.validateId(field.getText());
+			} catch (InvalidIDException invalidRidException) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, invalidRidException.getErrorText());
+				field.requestFocus();
+				return false;
+			}
+		}
+
 		return true;
 	}
 

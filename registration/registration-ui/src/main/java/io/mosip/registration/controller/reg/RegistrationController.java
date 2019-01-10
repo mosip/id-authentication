@@ -34,6 +34,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
@@ -405,6 +406,10 @@ public class RegistrationController extends BaseController {
 
 	@Autowired
 	private IdValidator<String> pridValidatorImpl;
+	@Autowired
+	private IdValidator<String> uinValidator;
+	@Autowired
+	private RidValidator<String> ridValidator;
 	@Autowired
 	private Validations validation;
 	@Autowired
@@ -1612,7 +1617,9 @@ public class RegistrationController extends BaseController {
 		validation.setChild(isChild);
 		validation.setValidationMessage();
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
-		displayValidationMessage(validation.getValidationMessage().toString());
+	/*	if(gotoNext)
+			gotoNext = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
+	*/	displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
