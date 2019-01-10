@@ -11,10 +11,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
@@ -38,21 +40,89 @@ public class AbisServiceImpl {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 	
+	@Autowired
+	private Environment env;
+	
 	private static final String DUPLICATE = "duplicate";
+	private static final String INSERT="insert";
+	private static final String IDENTIFY="Identify";
+	public AbisInsertResponceDto insert(AbisInsertRequestDto abisInsertRequestDto) throws ApisResourceAccessException,
+	IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
+	
+		boolean isduplicate = false;
+		String TESTFINGERPRINT = env.getProperty("TESTFINGERPRINT");
+		String TESTIRIS=env.getProperty("TESTIRIS");
+		String TESTFACE=env.getProperty("TESTFACE");
+		String referenceId = abisInsertRequestDto.getReferenceId();
+	//	String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
+		List<String> pathSegments = new ArrayList<>();
+	//	pathSegments.add(regId);
 
-	public AbisInsertResponceDto insert(AbisInsertRequestDto abisInsertRequestDto) {
-		AbisInsertResponceDto abisInsertResponceDto = new AbisInsertResponceDto();
-		abisInsertResponceDto.setFailureReason(1);
-		abisInsertResponceDto.setId("insert");
-		abisInsertResponceDto.setTimestamp("1539777717");
-		abisInsertResponceDto.setReturnValue("1");
-		abisInsertResponceDto.setRequestId("01234567-89AB-CDEF-0123-456789ABCDEF");
-		return abisInsertResponceDto;
+		//byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
+				//byte[].class);
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File testCbeff = new File(classLoader.getResource("TestCbeff.xml").getFile());
+		//File testCbeff = new File("TestCbeff.xml");
+		//try (FileOutputStream fos = new FileOutputStream(testCbeff)) {
+		//	fos.write(bytefile);
+		//}
+
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(testCbeff);
+		
+		NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
+		for(int i = 0; i<fingerNodeList.getLength(); i++) {
+			String value = fingerNodeList.item(i).getTextContent();
+			if(value.equalsIgnoreCase(DUPLICATE)) {
+				isduplicate = true;
+				break;
+			}
+		}
+		
+		NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
+		for(int i = 0; i<irisNodeList.getLength(); i++) {
+			String value = irisNodeList.item(i).getTextContent();
+			if(value.equalsIgnoreCase(DUPLICATE)) {
+				isduplicate = true;
+				break;
+			}
+		}
+		
+		NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
+		for(int i = 0; i<faceNodeList.getLength(); i++) {
+			String value = faceNodeList.item(i).getTextContent();
+			if(value.equalsIgnoreCase(DUPLICATE)) {
+				isduplicate = true;
+				break;
+			}
+		}
+		
+		AbisInsertResponceDto response = new AbisInsertResponceDto();
+		response.setId(INSERT);
+		response.setRequestId(abisInsertRequestDto.getRequestId());
+		response.setTimestamp(abisInsertRequestDto.getTimestamp());
+		response.setReturnValue(1);
+		
+		if (!isduplicate) {
+			response.setReturnValue(2);			
+			}		
+
+		
+		
+		
+		return response;
 	}
+	
 
 	public IdentityResponceDto performDedupe(IdentityRequestDto identityRequest) throws ApisResourceAccessException,
 			IOException, ClassNotFoundException, ParserConfigurationException, SAXException {
 		boolean duplicate = false;
+		String TESTFINGERPRINT = env.getProperty("TESTFINGERPRINT");
+		String TESTIRIS=env.getProperty("TESTIRIS");
+		String TESTFACE=env.getProperty("TESTFACE");
+		
 		int count = 0;
 		String referenceId = identityRequest.getReferenceId();
 	//	String regId = packetInfoManager.getRidByReferenceId(referenceId).get(0);
@@ -73,7 +143,7 @@ public class AbisServiceImpl {
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(testCbeff);
 		
-		NodeList fingerNodeList = doc.getElementsByTagName("TestFingerPrint");
+		NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
 		for(int i = 0; i<fingerNodeList.getLength(); i++) {
 			String value = fingerNodeList.item(i).getTextContent();
 			if(value.equalsIgnoreCase(DUPLICATE)) {
@@ -82,7 +152,7 @@ public class AbisServiceImpl {
 			}
 		}
 		
-		NodeList irisNodeList = doc.getElementsByTagName("TestIRIS");
+		NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
 		for(int i = 0; i<irisNodeList.getLength(); i++) {
 			String value = irisNodeList.item(i).getTextContent();
 			if(value.equalsIgnoreCase(DUPLICATE)) {
@@ -91,7 +161,7 @@ public class AbisServiceImpl {
 			}
 		}
 		
-		NodeList faceNodeList = doc.getElementsByTagName("TestFace");
+		NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
 		for(int i = 0; i<faceNodeList.getLength(); i++) {
 			String value = faceNodeList.item(i).getTextContent();
 			if(value.equalsIgnoreCase(DUPLICATE)) {
@@ -101,7 +171,7 @@ public class AbisServiceImpl {
 		}
 		
 		IdentityResponceDto response = new IdentityResponceDto();
-		response.setId("Identify");
+		response.setId(IDENTIFY);
 		response.setRequestId(identityRequest.getRequestId());
 		response.setTimestamp(identityRequest.getTimestamp());
 		response.setReturnValue(1);
@@ -114,13 +184,11 @@ public class AbisServiceImpl {
 				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
 				candidatesDto[i].setScaledScore(100 - i + "");
 				count++;
-			}
+			}		
 			cd.setCount(count + "");
 			cd.setCandidates(candidatesDto);
 			response.setCandidateList(cd);
-		}
-		
+		}		
 		return response;
 	}
-
 }
