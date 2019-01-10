@@ -137,6 +137,11 @@ export class DemographicComponent implements OnInit {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
+    if (sessionStorage.getItem('modifyUser') === 'true') {
+      this.step = this.regService.getUsers().length - 1;
+    } else {
+      this.step = this.regService.getUsers().length;
+    }
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
