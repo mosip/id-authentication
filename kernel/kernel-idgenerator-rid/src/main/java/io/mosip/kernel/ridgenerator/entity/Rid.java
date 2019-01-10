@@ -21,7 +21,7 @@ public class Rid {
 	 */
 	@Id
 	@Column(name = "dongle_Id")
-	private String dongleId;
+	private String machineId;
 
 	/**
 	 * the sequenceId.
@@ -35,8 +35,8 @@ public class Rid {
 	 * 
 	 * @return dongleId
 	 */
-	public String getDongleId() {
-		return dongleId;
+	public String getMachineId() {
+		return machineId;
 	}
 
 	/**
@@ -45,8 +45,8 @@ public class Rid {
 	 * @param dongleId
 	 *            dongleId
 	 */
-	public void setDongleId(String dongleId) {
-		this.dongleId = dongleId;
+	public void setMachineId(String dongleId) {
+		this.machineId = dongleId;
 	}
 
 	/**
