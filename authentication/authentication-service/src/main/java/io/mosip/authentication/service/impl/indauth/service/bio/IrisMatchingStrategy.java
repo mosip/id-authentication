@@ -11,14 +11,16 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 public enum IrisMatchingStrategy implements MatchingStrategy {
+	/** The Constant idvid. */
 	
 	PARTIAL(MatchingStrategyType.PARTIAL,(Object reqInfo,Object entityInfo,Map<String,Object> props)->{
 		 
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
 			Object object = props.get(IrisProvider.class.getSimpleName());
 			if (object instanceof BiFunction) {
-				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String, String>, Double>) object;
-				return (int) func.apply((Map<String, String>) reqInfo, (Map<String, String>) entityInfo).doubleValue();
+				BiFunction<Map<String, String>, Map<String, Object>, Double> func = (BiFunction<Map<String, String>, Map<String, Object>, Double>) object;
+				
+				return (int) func.apply((Map<String, String>) reqInfo, props).doubleValue();
 			}else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 			}
@@ -41,6 +43,8 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 		this.matchFunction=matchFunction;
 		
 	}
+	
+
 	
 	private MatchingStrategyType matchStrategyType;
 	

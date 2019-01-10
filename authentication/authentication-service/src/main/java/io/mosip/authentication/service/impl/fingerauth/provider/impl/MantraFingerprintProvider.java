@@ -18,7 +18,7 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
  *
  * @author Manoj SP
  */
-@Component
+
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
 
 	/** The fp device. */

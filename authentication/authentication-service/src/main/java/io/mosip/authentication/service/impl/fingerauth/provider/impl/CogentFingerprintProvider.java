@@ -14,7 +14,7 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
  *
  * @author Manoj SP , Arun Bose S
  */
-@Component
+
 public class CogentFingerprintProvider extends FingerprintProvider {
 
 	/*
