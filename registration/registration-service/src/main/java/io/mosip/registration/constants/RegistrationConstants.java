@@ -484,6 +484,7 @@ public class RegistrationConstants {
 	// Global configuration parameters
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
+	public static final String REGISTARTION_CENTER="REGISTARTION_CENTER";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -840,5 +841,6 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARDING_SUCCESS_MSG="User on-boarded successfully.";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE="REG-URE‌-008";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG="Threshold for number of successful authentications not met.";
-
+	public static final String USER_STATION_ID="stationId";
+	public static final String USER_CENTER_ID="centerId";
 }

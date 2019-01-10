@@ -49,6 +49,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.UserOnboardService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.event.ActionEvent;
@@ -153,6 +154,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private SchedulerUtil schedulerUtil;
+	
+	@Autowired
+	private UserOnboardService userOnboardService;
 
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
@@ -226,7 +230,15 @@ public class LoginController extends BaseController implements Initializable {
 		} else if (userId.getText().length() > usernamePwdLength) {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_LENGTH);
 		} else {
+			
 			UserDetail userDetail = loginService.getUserDetail(userId.getText());
+			
+			String regCenter = (String) applicationContext.getApplicationMap().get(RegistrationConstants.REGISTARTION_CENTER);
+			
+			if(regCenter.equals(userOnboardService.getMachineCenterId().get("centerId"))) {
+				
+				String stationID=userOnboardService.getMachineCenterId().get("stationId");
+				
 			if(userDetail == null) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
 			} else if(userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
@@ -252,6 +264,8 @@ public class LoginController extends BaseController implements Initializable {
 						if (SessionContext.getInstance().getMapObject() == null) {
 							
 							SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+							
+							SessionContext.getInstance().getMapObject().put("stationId", stationID);
 							
 							if(getCenterMachineStatus(userDetail)) {
 								SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, isNewUser);
@@ -292,8 +306,10 @@ public class LoginController extends BaseController implements Initializable {
 							}
 					} 
 				}
+		}else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 		}
-	}
+		}}
 
 
 	/**

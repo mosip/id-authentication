@@ -4,10 +4,9 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOA
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +21,10 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
-import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * @author Sreekar Chukka
@@ -61,7 +60,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		if (null != biometricDTO) {
 
-			List<IrisDetailsDTO> iries = biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO();
+			biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO();
 
 			FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
 			
@@ -102,7 +101,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		
 		ResponseDTO responseDTO = null;
 		String onBoardingResponse = RegistrationConstants.EMPTY;
-
+		
 		try {
 			
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
@@ -164,6 +163,35 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		response.setErrorResponseDTOs(errorResponses);
 
 		return response;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.UserOnboardService#getStationID(java.lang.String)
+	 */
+	@Override
+	public Map<String,String> getMachineCenterId() {
+
+		Map<String,String> centerIdMap = new HashMap<>();
+		String stationID = "";
+		String centerID = "";
+
+		try {
+			
+			String macId = RegistrationSystemPropertiesChecker.getMachineId();
+			// get stationID
+			stationID = userOnBoardDao.getStationID(macId);
+			// get CenterID
+			centerID = userOnBoardDao.getCenterID(stationID);
+			
+			centerIdMap.put(RegistrationConstants.USER_STATION_ID, stationID);
+			centerIdMap.put(RegistrationConstants.USER_CENTER_ID, centerID);
+			
+			
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, regBaseCheckedException.getMessage());
+		}
+
+		return centerIdMap;
 	}
 
 }

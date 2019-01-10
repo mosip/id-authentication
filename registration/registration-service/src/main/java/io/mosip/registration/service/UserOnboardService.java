@@ -1,5 +1,7 @@
 package io.mosip.registration.service;
 
+import java.util.Map;
+
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 
@@ -17,6 +19,13 @@ public interface UserOnboardService {
 	 * @return the response DTO
 	 */
 	ResponseDTO validate(BiometricDTO biometricDTO);
+	
+	/**
+	 * Gets the station ID.
+	 *
+	 * @return the station ID
+	 */
+	Map<String,String> getMachineCenterId();
 		
 	
 	
