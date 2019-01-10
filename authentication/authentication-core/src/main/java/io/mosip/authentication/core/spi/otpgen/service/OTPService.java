@@ -12,11 +12,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface OTPService {
 
 	/**
-	 * Method to generate Otp
-	 * 
-	 * @param otpKey
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Method to generate Otp.
+	 *
+	 * @param otpKey the otp key
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException;
 
