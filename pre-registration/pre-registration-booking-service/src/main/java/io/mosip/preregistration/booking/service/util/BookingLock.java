@@ -46,24 +46,31 @@ public class  BookingLock {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
+		
 		 BookingLock other = ( BookingLock) obj;
 		if (date == null) {
 			if (other.date != null)
 				return false;
-		} else if (!date.equals(other.date))
+		} else if (!date.equals(other.date)) {
 			return false;
+		}
 		if (registrationCenter == null) {
 			if (other.registrationCenter != null)
 				return false;
-		} else if (!registrationCenter.equals(other.registrationCenter))
+		} else 
+			if (!registrationCenter.equals(other.registrationCenter)) {
 			return false;
+		}
 		if (timeslot == null) {
 			if (other.timeslot != null)
 				return false;
-		} else if (!timeslot.equals(other.timeslot))
-			return false;
+		} else if (!timeslot.equals(other.timeslot)) {
+			return false;	
+		}
+			
 		return true;
 	}
 

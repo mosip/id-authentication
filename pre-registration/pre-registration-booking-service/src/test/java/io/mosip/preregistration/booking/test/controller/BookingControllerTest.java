@@ -30,8 +30,11 @@ import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.MainListRequestDTO;
+import io.mosip.preregistration.booking.dto.MainListResponseDTO;
 import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.MainResponseDTO;
+import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
+import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
@@ -67,7 +70,11 @@ public class BookingControllerTest {
 	CancelBookingResponseDTO cancelBookingResponseDTO=new CancelBookingResponseDTO();
 	CancelBookingDTO cancelbookingDto=new CancelBookingDTO();
 	MainRequestDTO<CancelBookingDTO> dto=new MainRequestDTO<>();
-
+	MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO=new MainRequestDTO<>();
+	PreRegIdsByRegCenterIdResponseDTO preRegIdsResponseDTO=new PreRegIdsByRegCenterIdResponseDTO();
+	List<PreRegIdsByRegCenterIdResponseDTO> respList = new ArrayList<>();
+	PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO=new PreRegIdsByRegCenterIdDTO();
+	
 	@SuppressWarnings({ "deprecation" })
 	@Before
 	public void setup() throws FileNotFoundException, ParseException, URISyntaxException {
@@ -83,20 +90,12 @@ public class BookingControllerTest {
 		bookingRequestDTO.setPreRegistrationId("23587986034785");
 		bookingRequestDTO.setNewBookingDetails(new BookingRegistrationDTO());
 		bookingRequestDTO.setOldBookingDetails(new BookingRegistrationDTO());
-//		bookingRequestDTOA.setSlotFromTime("09:00");
-//		bookingRequestDTOA.setSlotToTime("09:13");
-//		bookingRequestDTOA.setReg_date("2018-12-06");
 
-
-		//bookingRequestDTOB.setPre_registration_id("31496715428069");
-//		bookingRequestDTOB.setRegistration_center_id("1");
-//		bookingRequestDTOB.setSlotFromTime("09:00");
-//		bookingRequestDTOB.setSlotToTime("09:13");
-//		bookingRequestDTOB.setReg_date("2018-12-06");
 
 
 		bookingDTO.setRequest(bookingList);
-
+		
+		
 		responseDto.setErr(null);
 		
 		URI cancelUri = new URI(
@@ -112,6 +111,11 @@ public class BookingControllerTest {
 		cancelbookingDto.setRegDate(restime);
 		
 		dto.setRequest(cancelbookingDto);
+		requestDTO.setRequest(preRegIdsByRegCenterIdDTO);
+		List<String> respList = new ArrayList<>();
+		respList.add("Reterived all pre-registration ids successfully");
+		preRegIdsResponseDTO.setRegistrationCenterId("1");
+		preRegIdsResponseDTO.setPreRegistrationIds(respList);
 	}
 
 	@Test
@@ -205,5 +209,32 @@ public class BookingControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	@Test
+	public void getAppointmentDetails() throws Exception {
+		MainResponseDTO<BookingRegistrationDTO> response=new MainResponseDTO<>();
+		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking//appointmentDetails")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "12345");
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void getPreIdsByRegCenterId() throws Exception {
+		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> response=new MainListResponseDTO<>();
+response.setErr(null);
+response.setStatus(false);
+response.setResTime(serviceUtil.getCurrentResponseTime());
+
+		response.setResponse(respList);
+
+		Mockito.when(service.getPreIdsByRegCenterId(requestDTO)).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/booking/bookedPreIdsByRegId")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject1.toString());
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
 
 }
