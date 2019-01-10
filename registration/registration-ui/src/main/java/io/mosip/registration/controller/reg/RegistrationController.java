@@ -1180,22 +1180,26 @@ public class RegistrationController extends BaseController {
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
-		try {
-			Stage primaryStage = new Stage();
-			FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
-			Parent webCamRoot = loader.load();
+		if(webCameraController.isWebcamPluggedIn()) {
+			try {
+				Stage primaryStage = new Stage();
+				FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+				Parent webCamRoot = loader.load();
 
-			WebCameraController cameraController = loader.getController();
-			cameraController.init(this, imageType);
+				WebCameraController cameraController = loader.getController();
+				cameraController.init(this, imageType);
 
-			primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
-			Scene scene = new Scene(webCamRoot);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException ioException) {
-			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-		}
+				primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
+				Scene scene = new Scene(webCamRoot);
+				primaryStage.setScene(scene);
+				primaryStage.show();
+			} catch (IOException ioException) {
+				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+			}
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
+		}	
 	}
 
 	@Override
