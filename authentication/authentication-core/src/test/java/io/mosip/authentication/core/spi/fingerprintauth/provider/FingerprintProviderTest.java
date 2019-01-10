@@ -83,6 +83,12 @@ public class FingerprintProviderTest {
 			// TODO Auto-generated method stub
 			return 0;
 		}
+
+		@Override
+		public double matchMultiImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	};
 
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
@@ -113,6 +119,12 @@ public class FingerprintProviderTest {
 
 		@Override
 		public double matchImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public double matchMultiImage(Object reqInfo, Object entityInfo) {
 			// TODO Auto-generated method stub
 			return 0;
 		}
