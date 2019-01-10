@@ -28,6 +28,7 @@ import io.mosip.authentication.service.integration.dto.CryptomanagerRequestDto;
 import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 
 /**
  * The Class KeyManager.
@@ -107,7 +108,8 @@ public class KeyManager {
 				try {
 					cryptoManagerRequestDto.setApplicationId(appId);
 					cryptoManagerRequestDto.setReferenceId(tspId);
-					cryptoManagerRequestDto.setTimeStamp(LocalDateTime.now());
+					LocalDateTime utcTime = DateUtils.getUTCCurrentDateTime();
+					cryptoManagerRequestDto.setTimeStamp(utcTime);
 					cryptoManagerRequestDto.setData(CryptoUtil.encodeBase64(
 							CryptoUtil.combineByteArray(encryptedRequest, encyptedSessionkey, keySplitter)));
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,

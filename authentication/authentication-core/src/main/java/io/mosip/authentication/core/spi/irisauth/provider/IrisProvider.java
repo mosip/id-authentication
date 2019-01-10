@@ -15,8 +15,11 @@ import org.springframework.stereotype.Component;
 public abstract class IrisProvider implements MosipIrisProvider {
 
 	/** The environment. */
-	@Autowired
-	protected Environment environment;
+	private Environment environment;
+	
+	public IrisProvider(Environment environment) {
+		this.environment=environment;
+		}
 
 	/** The Constant IRISIMG_LEFT_MATCH_VALUE. */
 	private static final String IRISIMG_LEFT_MATCH_VALUE = ".irisimg.left.match.value";

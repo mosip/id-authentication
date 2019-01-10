@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.iris;
 
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
@@ -12,8 +13,13 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
  * 
  * The Class MorphoIrisProvider.
  */
-@Component
+
 public class MorphoIrisProvider extends IrisProvider {
+
+	public MorphoIrisProvider(Environment environment) {
+		super(environment);
+		// TODO Auto-generated constructor stub
+	}
 
 	/* (non-Javadoc)
 	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#createMinutiae(byte[])

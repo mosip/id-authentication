@@ -9,8 +9,6 @@ import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class FingerprintProvider - An Abstract class which contains default
  * implementation for calculating score based on ISO Template and Fingerprint
