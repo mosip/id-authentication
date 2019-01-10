@@ -45,11 +45,11 @@ export class PreviewComponent implements OnInit {
     // this.router.navigate(['dashboard', routeParams[2]]);
     this.router.navigate(['../demographic'], { relativeTo: this.route });
     sessionStorage.setItem('newApplicant', 'true');
+    sessionStorage.setItem('modifyUser', 'false');
   }
 
   navigateBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'pick-center']);
+    this.router.navigate(['../file-upload'], { relativeTo: this.route });
   }
 
   navigateNext() {

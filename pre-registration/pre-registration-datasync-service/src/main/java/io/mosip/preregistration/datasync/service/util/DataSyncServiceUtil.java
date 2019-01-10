@@ -7,16 +7,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -159,7 +161,7 @@ public class DataSyncServiceUtil {
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
 
-		if (toDate == null || isNull(toDate) || !parseDate(toDate, format)) {
+		if (toDate != null && !isNull(toDate) && !parseDate(toDate, format)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
@@ -237,6 +239,9 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In callGetPreIdsRestService method of datasync service util");
 		List<String> responseList = new LinkedList<>();
 		try {
+			if (isNull(toDate)) {
+				toDate = assignDate(fromDate, toDate);
+			}
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder
 					.fromHttpUrl(demographicResourceUrl + "/applicationDataByDateTime")
@@ -244,7 +249,7 @@ public class DataSyncServiceUtil {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<?>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
+			String uriBuilder = builder.build().encode(StandardCharsets.UTF_8).toUriString();
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -267,6 +272,26 @@ public class DataSyncServiceUtil {
 					ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString(), ex.getCause());
 		}
 		return responseList;
+	}
+
+	private String assignDate(String fromDate, String toDate) {
+		try {
+			toDate = fromDate;
+			Date date = DateUtils.parseToDate(toDate, "yyyy-MM-dd HH:mm:ss");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			cal.set(Calendar.SECOND, 59);
+			date = cal.getTime();
+			toDate = DateUtils.formatDate(date, "yyyy-MM-dd HH:mm:ss");
+		} catch (ParseException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetPreIdsRestService method of datasync service util" + ex.getMessage());
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
+					ErrorMessages.INVALID_REQUESTED_DATE.toString());
+		}
+		return toDate;
 	}
 
 	public PreRegIdsByRegCenterIdResponseDTO callGetPreIdsByRegCenterIdRestService(String regCenterId,
@@ -429,7 +454,8 @@ public class DataSyncServiceUtil {
 		try {
 			preRegArchiveDTO = preparePreRegArchiveDTO(preRegistrationDTO, bookingRegistrationDTO);
 			JSONObject demographicJsonObject = preRegistrationDTO.getDemographicDetails();
-			Path pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "id.json");
+			Path pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
+					+ preRegistrationDTO.getPreRegistrationId() + "id.json");
 
 			File jsonFile = new File(pathDoc.toString());
 			if (jsonFile.exists()) {
@@ -610,7 +636,7 @@ public class DataSyncServiceUtil {
 		Map<String, String> preRegMap = new HashMap<>();
 		for (String preRegId : preRegIds) {
 			DemographicResponseDTO demographicDTO = callGetPreRegInfoRestService(preRegId);
-			preRegMap.put(preRegId, new SimpleDateFormat(dateTimeFormat).format(demographicDTO.getUpdatedDateTime()));
+			preRegMap.put(preRegId, demographicDTO.getUpdatedDateTime());
 		}
 		preRegistrationIdsDTO.setCountOfPreRegIds(String.valueOf(preRegMap.size()));
 		preRegistrationIdsDTO.setPreRegistrationIds(preRegMap);

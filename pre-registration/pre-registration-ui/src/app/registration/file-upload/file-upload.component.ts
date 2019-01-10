@@ -105,7 +105,8 @@ export class FileUploadComponent implements OnInit {
   // disabled = true;
 
   step = 0;
-
+  multipleApplicants = false;
+  allApplicants: UserModel[] = [];
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -115,11 +116,16 @@ export class FileUploadComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.allApplicants = this.registration.getUsers();
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       if (!this.users[0].files[0]) {
         this.users[0].files[0] = [];
       }
+    }
+    if (this.registration.getUsers().length > 1) {
+      this.multipleApplicants = true;
+      console.log('all Applicants', this.allApplicants);
     }
     console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
@@ -141,13 +147,17 @@ export class FileUploadComponent implements OnInit {
     console.log('event', event.target.files);
 
     if (event.target.files[0].type === 'application/pdf') {
-      this.getBase64(event.target.files[0]).then(data => {
-        this.fileByteArray = data;
-        this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-      });
-      this.setJsonString(event);
-      this.sendFile(event);
-      this.browseDisabled = false;
+      if (event.target.files[0].size < 1000000) {
+        this.getBase64(event.target.files[0]).then(data => {
+          this.fileByteArray = data;
+          this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+        });
+        this.setJsonString(event);
+        this.sendFile(event);
+        this.browseDisabled = false;
+      } else {
+        alert('file too big');
+      }
     } else {
       alert('Wrong file type, please upload again');
     }
@@ -181,10 +191,14 @@ export class FileUploadComponent implements OnInit {
 
   removeFile(applicantIndex, fileIndex) {
     console.log(applicantIndex, ' ; ', fileIndex);
-
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
       console.log(res);
       this.users[applicantIndex].files[0][fileIndex] = '';
+      if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
+        this.fileName = '';
+        this.fileByteArray = '';
+      }
+      // this.documentIndex = fileIndex;
     });
     // this.applicants[applicantIndex].files[fileIndex] = '';
   }
@@ -252,8 +266,10 @@ export class FileUploadComponent implements OnInit {
     window.open(fileUrl);
   }
 
+  sameAsChange(event) {}
+
   onBack() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
