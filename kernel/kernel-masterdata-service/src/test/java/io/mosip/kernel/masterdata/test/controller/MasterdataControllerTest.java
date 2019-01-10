@@ -960,7 +960,7 @@ public class MasterdataControllerTest {
 	public void validateTimestampWithRegistrationCenter() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(resgistrationCenterStatusResponseDto);
 
 		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
