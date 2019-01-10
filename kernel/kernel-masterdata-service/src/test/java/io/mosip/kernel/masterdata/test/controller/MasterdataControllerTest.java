@@ -386,20 +386,20 @@ public class MasterdataControllerTest {
 		applicationDto.setCode("101");
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
-		applicationDto.setLangCode("ENG");
+		applicationDto.setLangCode("eng");
 
 		applicationDtoList.add(applicationDto);
 
 		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("101");
-		codeAndLanguageCodeId.setLangCode("ENG");
+		codeAndLanguageCodeId.setLangCode("eng");
 	}
 
 	private void biometricTypeSetup() {
 		biometricTypeDto1.setCode("1");
 		biometricTypeDto1.setName("DNA MATCHING");
 		biometricTypeDto1.setDescription(null);
-		biometricTypeDto1.setLangCode("ENG");
+		biometricTypeDto1.setLangCode("eng");
 
 		biometricTypeDto2.setCode("3");
 		biometricTypeDto2.setName("EYE SCAN");
@@ -509,7 +509,7 @@ public class MasterdataControllerTest {
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:15:06.724Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"101\",\n" + "    \"description\": \"Pre-registration Application Form\",\n"
-						+ "    \"isActive\": true,\n" + "    \"langCode\": \"ENG\",\n"
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\",\n"
 						+ "    \"name\": \"pre-registeration\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
