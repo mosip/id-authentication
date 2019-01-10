@@ -334,7 +334,7 @@ public class LoginController extends BaseController implements Initializable {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
 						APPLICATION_ID, "Loading next login screen");
 
-				loadNextScreen(userDetail, RegistrationConstants.LOGIN_METHOD_PWORD);
+				loadNextScreen(userDetail, RegistrationConstants.PWORD);
 
 			} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -400,7 +400,7 @@ public class LoginController extends BaseController implements Initializable {
 				if (otpLoginStatus) {
 						try {
 							
-							loadNextScreen(userDetail, RegistrationConstants.LOGIN_METHOD_OTP);
+							loadNextScreen(userDetail, RegistrationConstants.OTP);
 
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -443,7 +443,7 @@ public class LoginController extends BaseController implements Initializable {
 				
 				if (bioLoginStatus) {
 						try {
-							loadNextScreen(detail, RegistrationConstants.LOGIN_METHOD_BIO);
+							loadNextScreen(detail, RegistrationConstants.BIO);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -482,7 +482,7 @@ public class LoginController extends BaseController implements Initializable {
 				
 				if (irisLoginStatus) {
 						try {
-							loadNextScreen(detail, RegistrationConstants.LOGIN_METHOD_IRIS);
+							loadNextScreen(detail, RegistrationConstants.IRIS);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -521,7 +521,7 @@ public class LoginController extends BaseController implements Initializable {
 				
 				if (faceLoginStatus) {
 						try {
-							loadNextScreen(detail, RegistrationConstants.LOGIN_METHOD_FACE);
+							loadNextScreen(detail, RegistrationConstants.FACE);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
 							LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -713,19 +713,19 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void loadLoginScreen(String loginMode) {
 		switch (loginMode) {
-		case RegistrationConstants.LOGIN_METHOD_OTP:
+		case RegistrationConstants.OTP:
 			enableOTP();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_PWORD:
+		case RegistrationConstants.PWORD:
 			enablePWD();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_BIO:
+		case RegistrationConstants.BIO:
 			enableFingerPrint();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_IRIS:
+		case RegistrationConstants.IRIS:
 			enableIris();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_FACE:
+		case RegistrationConstants.FACE:
 			enableFace();
 			break;
 		default:
@@ -909,7 +909,7 @@ public class LoginController extends BaseController implements Initializable {
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId.getText());
 				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fingerPrintStatus = authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FP,
+				fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
 						authenticationValidatorDTO);
 
 			} else if (!RegistrationConstants.EMPTY.equals(fingerprintFacade.getErrorMessage())) {
@@ -945,7 +945,7 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug("REGISTRATION - SCAN_IRIS", APPLICATION_NAME, APPLICATION_ID,
 				"Iris scan done");
 
-		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_IRIS,
+		return authService.authValidator(RegistrationConstants.IRIS,
 				authenticationValidatorDTO);
 	}
 	
@@ -967,7 +967,7 @@ public class LoginController extends BaseController implements Initializable {
 		LOGGER.debug("REGISTRATION - SCAN_FACE", APPLICATION_NAME, APPLICATION_ID,
 				"Face scan done");
 		
-		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
+		return authService.authValidator(RegistrationConstants.FACE,
 				authenticationValidatorDTO);
 	}
 	

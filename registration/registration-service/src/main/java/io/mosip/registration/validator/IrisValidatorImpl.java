@@ -38,7 +38,7 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 				"Stubbing iris details for user registration");
 		
 		List<UserBiometric> userIrisDetails = userDetailDAO
-				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.VALIDATION_TYPE_IRIS);
+				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.IRIS);
 		
 		LOGGER.debug(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating iris details for user registration");

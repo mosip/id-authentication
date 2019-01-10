@@ -35,7 +35,7 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 				"Stubbing face capture details for user registration");
 		
 		List<UserBiometric> userFaceDetails = userDetailDAO
-				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.VALIDATION_TYPE_FACE);
+				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.FACE);
 		
 		LOGGER.debug(LOG_REG_FACE_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating face details for user registration");

@@ -80,12 +80,14 @@ public class RegistrationConstants {
 	public static final String IRIS_STUB = "leftIris";
 	public static final String FACE_STUB = "face";
 
+	//Authentication Methods
+	public static final String PWORD = "PWD";
+	public static final String OTP = "OTP";
+	public static final String BIO = "BIO";
+	public static final String FACE = "FACE";
+	public static final String IRIS = "IRIS";
+	
 	// Login
-	public static final String LOGIN_METHOD_PWORD = "PWD";
-	public static final String LOGIN_METHOD_OTP = "OTP";
-	public static final String LOGIN_METHOD_BIO = "BIO";
-	public static final String LOGIN_METHOD_IRIS = "IRIS";
-	public static final String LOGIN_METHOD_FACE = "FACE";
 	public static final String USR_TEXT = "Enter your Username";
 	public static final String PWORD_TEXT = "Enter your Password";
 	public static final String OTP_TEXT = "Enter OTP";
@@ -202,9 +204,6 @@ public class RegistrationConstants {
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
 
 	// Validation Types
-	public static final String VALIDATION_TYPE_FP = "Fingerprint";
-	public static final String VALIDATION_TYPE_IRIS = "Iris";
-	public static final String VALIDATION_TYPE_FACE = "Face";
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
 
 	// Supervisor Authentication
@@ -277,7 +276,6 @@ public class RegistrationConstants {
 	// OTP Related Details
 	public static final String OTP_GENERATOR_SERVICE_NAME = "otp_generator";
 	public static final String USERNAME_KEY = "key";
-	public static final String OTP_GENERATED = "otp";
 	public static final String OTP_VALIDATOR_SERVICE_NAME = "otp_validator";
 	public static final String OTP_GENERATOR_RESPONSE_DTO = "otpGeneratorResponseDTO";
 	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";

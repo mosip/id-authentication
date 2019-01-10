@@ -72,7 +72,7 @@ public class OTPManager extends BaseService{
 
 		Map<String, String> requestParamMap = new HashMap<String, String>();
 		requestParamMap.put(RegistrationConstants.USERNAME_KEY, userId);
-		requestParamMap.put(RegistrationConstants.OTP_GENERATED, otp);
+		requestParamMap.put(RegistrationConstants.OTP, otp);
 
 		try {
 			// Obtain otpValidatorResponseDto from service delegate util

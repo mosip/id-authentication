@@ -383,19 +383,19 @@ public class AuthenticationController extends BaseController {
 				"Loading the respective authentication screen in UI");
 
 		switch (loginMode) {
-		case RegistrationConstants.LOGIN_METHOD_OTP:
+		case RegistrationConstants.OTP:
 			enableOTP();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_PWORD:
+		case RegistrationConstants.PWORD:
 			enablePWD();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_BIO:
+		case RegistrationConstants.BIO:
 			enableFingerPrint();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_IRIS:
+		case RegistrationConstants.IRIS:
 			enableIris();
 			break;
-		case RegistrationConstants.LOGIN_METHOD_FACE:
+		case RegistrationConstants.FACE:
 			enableFace();
 			break;
 		default:
@@ -603,7 +603,7 @@ public class AuthenticationController extends BaseController {
 				authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 				authenticationValidatorDTO.setUserId(userId);
 				authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-				fpMatchStatus = authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FP,
+				fpMatchStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
 						authenticationValidatorDTO);
 
 				if (fpMatchStatus) {
@@ -651,7 +651,7 @@ public class AuthenticationController extends BaseController {
 		}
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
 		authenticationValidatorDTO.setUserId(userId);
-		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.VALIDATION_TYPE_IRIS,
+		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS,
 				authenticationValidatorDTO);
 
 		if (irisMatchStatus) {
@@ -696,7 +696,7 @@ public class AuthenticationController extends BaseController {
 		
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		authenticationValidatorDTO.setUserId(userId);
-		return authService.authValidator(RegistrationConstants.VALIDATION_TYPE_FACE,
+		return authService.authValidator(RegistrationConstants.FACE,
 				authenticationValidatorDTO);
 	}
 

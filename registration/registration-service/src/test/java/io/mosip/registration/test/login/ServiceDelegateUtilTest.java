@@ -65,7 +65,7 @@ public class ServiceDelegateUtilTest {
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(response);
 		Map<String, String> requestParamMap = new HashMap<String, String>();
 		requestParamMap.put(RegistrationConstants.USERNAME_KEY, "yashReddy");
-		requestParamMap.put(RegistrationConstants.OTP_GENERATED, "099886");
+		requestParamMap.put(RegistrationConstants.OTP, "099886");
 		
 		assertNotNull(delegateUtil.get("otp_validator", requestParamMap,false));
 		assertNotNull(delegateUtil.get("otp_validator", requestParamMap,true));
