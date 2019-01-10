@@ -15,11 +15,7 @@ import { UserModel } from './modal/user.modal';
 import { SharedService } from 'src/app/shared/shared.service';
 import * as appConstants from '../../app.constants';
 import Utils from 'src/app/app.util';
-
-export interface DropDown {
-  locationCode: string;
-  locationName: string;
-}
+import { LocationModal } from './modal/location.modal';
 
 @Component({
   selector: 'app-demographic',
@@ -55,26 +51,28 @@ export class DemographicComponent implements OnInit {
   @ViewChild('yyyy') yyyy: ElementRef;
   @ViewChild('age') age: ElementRef;
 
-  regions: DropDown[] = [];
-  provinces: DropDown[] = [];
-  cities: DropDown[] = [];
-  localAdministrativeAuthorities: DropDown[] = [];
-  transRegions: DropDown[] = [
+  regions: LocationModal[] = [];
+  provinces: LocationModal[] = [];
+  cities: LocationModal[] = [];
+  localAdministrativeAuthorities: LocationModal[] = [];
+  locations: LocationModal[] = [];
+
+  transRegions: LocationModal[] = [
     { locationCode: 'BLR', locationName: '(trans) BLR' },
     { locationCode: 'TN', locationName: '(trans) TN' },
     { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
-  transProvinces: DropDown[] = [
+  transProvinces: LocationModal[] = [
     { locationCode: 'BLR', locationName: '(trans) BLR' },
     { locationCode: 'TN', locationName: '(trans) TN' },
     { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
-  transCities: DropDown[] = [
+  transCities: LocationModal[] = [
     { locationCode: 'BLR', locationName: '(trans) BLR' },
     { locationCode: 'TN', locationName: '(trans) TN' },
     { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
-  transLocalAdministrativeAuthorities: DropDown[] = [
+  transLocalAdministrativeAuthorities: LocationModal[] = [
     { locationCode: 'BLR', locationName: '(trans) BLR' },
     { locationCode: 'TN', locationName: '(trans) TN' },
     { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
@@ -276,6 +274,9 @@ export class DemographicComponent implements OnInit {
         this.uppermostLocationHierarchy[0].code,
         this.localAdministrativeAuthorities
       );
+      // await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces);
+      // await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities);
+      // await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities);
     }
   }
 
@@ -295,22 +296,28 @@ export class DemographicComponent implements OnInit {
     });
   }
 
-  onLocationSelect(event: MatSelectChange, nextEntity: DropDown[]) {
+  onLocationSelect(event: MatSelectChange, nextEntity: LocationModal[]) {
     // const locationCode = event.value;
+    const locationName = event.source.triggerValue;
     const locationCode = 'IND';
     if (nextEntity) this.getLocationImmediateHierearchy(this.primaryLang, locationCode, nextEntity);
+    let location = {} as LocationModal;
+    event.source.triggerValue;
+    location.locationCode = locationCode;
+    location.locationName = locationName;
+    this.locations.push(location);
   }
 
-  getLocationImmediateHierearchy(lang: string, location: string, entity: DropDown[]) {
+  getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[]) {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
-            let dropDown: DropDown = {
+            let locationModal: LocationModal = {
               locationCode: element.code,
               locationName: element.name
             };
-            entity.push(dropDown);
+            entity.push(locationModal);
           });
           return resolve(true);
         },
@@ -407,7 +414,7 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.transUserForm.controls);
+    console.log(this.locations);
 
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
@@ -416,7 +423,7 @@ export class DemographicComponent implements OnInit {
         if (this.regService.getUser(this.step) != null) {
           this.regService.updateUser(
             this.step,
-            new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step))
+            new UserModel(this.preRegId, request, this.regService.getUserFiles(this.step), this.locations)
           );
           this.sharedService.updateNameList(this.step, {
             fullName: this.userForm.controls.fullName.value,
@@ -424,16 +431,14 @@ export class DemographicComponent implements OnInit {
           });
         } else if (response !== null) {
           console.log(response);
-
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
-          this.regService.addUser(new UserModel(this.preRegId, request, []));
+          this.regService.addUser(new UserModel(this.preRegId, request, [], this.locations));
           this.sharedService.addNameList({
             fullName: this.userForm.controls.fullName.value,
             preRegId: this.preRegId
           });
         } else {
           console.log('Response is null');
-
           this.router.navigate(['error']);
         }
       },
