@@ -105,7 +105,8 @@ export class FileUploadComponent implements OnInit {
   // disabled = true;
 
   step = 0;
-
+  multipleApplicants = false;
+  allApplicants: UserModel[] = [];
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -115,11 +116,16 @@ export class FileUploadComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.allApplicants = this.registration.getUsers();
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       if (!this.users[0].files[0]) {
         this.users[0].files[0] = [];
       }
+    }
+    if (this.registration.getUsers().length > 1) {
+      this.multipleApplicants = true;
+      console.log('all Applicants', this.allApplicants);
     }
     console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
@@ -259,6 +265,8 @@ export class FileUploadComponent implements OnInit {
     const fileUrl = URL.createObjectURL(file);
     window.open(fileUrl);
   }
+
+  sameAsChange(event) {}
 
   onBack() {
     this.router.navigate(['../demographic'], { relativeTo: this.route });
