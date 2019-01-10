@@ -36,6 +36,7 @@ import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
@@ -173,6 +174,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				
 				validateDeviceInfo(bioInfo,errors);
 				
+				validateBioType(bioInfo,errors);
+				
 				validateFinger(authRequestDTO, bioInfo, errors);
 
 				validateIris(authRequestDTO, bioInfo, errors);
@@ -186,6 +189,21 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
+	}
+
+	private void validateBioType(List<BioInfo> bioInfo, Errors errors) {
+		AuthType[] authTypes = BioAuthType.values();
+		Set<String> availableAuthTypeInfos = new HashSet<>();
+		for(AuthType authType:authTypes) {
+			availableAuthTypeInfos.add(authType.getType());
+		}
+		for(BioInfo bioInfos: bioInfo) {
+			if(!availableAuthTypeInfos.contains(bioInfos.getBioType())) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(),
+						new Object[] { bioInfos.getBioType() },IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
+			}
+		}
+		
 	}
 
 	private void validateDeviceInfo(List<BioInfo> bioInfo, Errors errors) {
@@ -562,7 +580,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			Set<String> availableAuthTypeInfos) {
 		for (AuthType authType : authTypes) {
 			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
-				checkAvailableAuthType(errors, availableAuthTypeInfos, authType);
+				addMissingAuthTypeError(errors, availableAuthTypeInfos, authType);
 
 				checkAvailableMatchingStrategy(authRequest, errors, authType);
 
@@ -668,7 +686,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param availableAuthTypeInfos the available auth type infos
 	 * @param authType               the auth type
 	 */
-	private void checkAvailableAuthType(Errors errors, Set<String> availableAuthTypeInfos, AuthType authType) {
+	private void addMissingAuthTypeError(Errors errors, Set<String> availableAuthTypeInfos, AuthType authType) {
 		if (!availableAuthTypeInfos.contains(authType.getType())) {
 			if ((authType.equals(DemoAuthType.FAD_PRI)) || (authType.equals(DemoAuthType.FAD_SEC))) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,

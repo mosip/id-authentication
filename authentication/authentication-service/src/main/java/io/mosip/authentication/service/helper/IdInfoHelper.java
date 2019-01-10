@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -370,9 +371,14 @@ public class IdInfoHelper implements IdInfoFetcher {
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, this);
-
-			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties);
+			Optional<DeviceInfo> deviceInfoOptional=getDeviceInfo(authRequestDTO.getBioInfo());
+			DeviceInfo deviceInfo = deviceInfoOptional.orElse(null);
+			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, deviceInfo);
 		}
+	}
+
+	private Optional<DeviceInfo> getDeviceInfo(List<BioInfo> bioInfo) {
+		return  bioInfo.stream().findAny().map(BioInfo::getDeviceInfo);
 	}
 
 	/**
@@ -391,10 +397,36 @@ public class IdInfoHelper implements IdInfoFetcher {
 		statusInfoBuilder.setStatus(demoMatched);
 
 		buildMatchInfos(listMatchInputs, statusInfoBuilder, authTypes);
+		
+		buildBioInfos(listMatchInputs, statusInfoBuilder, authTypes);
 
 		buildUsageDataBits(listMatchOutputs, statusInfoBuilder);
 
 		return statusInfoBuilder.build();
+	}
+	/**
+	 * Builds the Bio info
+	 * 
+	 * @param listMatchInputs
+	 * @param statusInfoBuilder
+	 * @param authTypes
+	 */
+	private void buildBioInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder,
+			AuthType[] authTypes) {
+		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
+			MatchType matchType = matchInput.getMatchType();
+			boolean hasPartialMatch = matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL).isPresent();
+			Category category = matchType.getCategory();
+			if (hasPartialMatch && category.equals(Category.BIO)) {
+				AuthType authType = matchInput.getAuthType();
+				String bioTypeStr = authType.getType();
+				DeviceInfo deviceInfo = matchInput.getDeviceInfo();
+				statusInfoBuilder.addBioInfo(bioTypeStr, deviceInfo);
+			}
+
+			statusInfoBuilder.addAuthUsageDataBits(matchType.getUsedBit());
+		});
+		
 	}
 
 	/**
@@ -436,7 +468,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 				AuthType authType = matchInput.getAuthType();
 				String authTypeStr = authType.getType();
 
-				statusInfoBuilder.addMessageInfo(authTypeStr, ms, mt, getLanguageCode(matchType.getLanguageType()));
+				statusInfoBuilder.addMatchInfo(authTypeStr, ms, mt, getLanguageCode(matchType.getLanguageType()));
 			}
 
 			statusInfoBuilder.addAuthUsageDataBits(matchType.getUsedBit());

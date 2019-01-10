@@ -6,6 +6,8 @@ import java.util.Arrays;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 /**
@@ -51,7 +53,7 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the message info.
+	 * Adds the match info.
 	 *
 	 * @param authType the auth type
 	 * @param matchingStrategy the matching strategy
@@ -59,13 +61,30 @@ public class AuthStatusInfoBuilder {
 	 * @param language the language
 	 * @return the auth status info builder
 	 */
-	public AuthStatusInfoBuilder addMessageInfo(String authType, String matchingStrategy, Integer matchingThreshold,
+	public AuthStatusInfoBuilder addMatchInfo(String authType, String matchingStrategy, Integer matchingThreshold,
 			String language) {
 		assertNotBuilt();
 		if (authStatusInfo.getMatchInfos() == null) {
 			authStatusInfo.setMatchInfos(new ArrayList<>());
 		}
 		authStatusInfo.getMatchInfos().add(new MatchInfo(authType, language, matchingStrategy, matchingThreshold));
+		return this;
+	}
+	/**
+	 * Adds the bio info.
+	 * 
+	 * @param authType
+	 * @param matchingStrategy
+	 * @param matchingThreshold
+	 * @param language
+	 * @return
+	 */
+	public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo) {
+		assertNotBuilt();
+		if (authStatusInfo.getBioInfos() == null) {
+			authStatusInfo.setBioInfos(new ArrayList<>());
+		}
+		authStatusInfo.getBioInfos().add(new BioInfo(bioType,deviceInfo));
 		return this;
 	}
 

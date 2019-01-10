@@ -1345,6 +1345,7 @@ public class BaseAuthRequestValidatorTest {
 	@Test
 	public void testValidateDeviceInfo() {
 		BioInfo bioinfo = new BioInfo();
+	
 		DeviceInfo deviceInfo = new DeviceInfo();
 		deviceInfo.setDeviceId("test1");
 		deviceInfo.setMake("test");
@@ -1367,6 +1368,34 @@ public class BaseAuthRequestValidatorTest {
 
 		 ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
 				"validateDeviceInfo", deviceInfoList,error);
+		assertTrue(error.hasErrors());
+	}
+	@Test
+	public void testValidateBioType() {
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType("test");
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("test1");
+		deviceInfo.setMake("test");
+		deviceInfo.setModel("M123");
+		DeviceInfo deviceInfo1 = new DeviceInfo();
+		deviceInfo1.setDeviceId(null);
+		deviceInfo1.setMake(null);
+		deviceInfo1.setModel("M123");
+		DeviceInfo deviceInfo2 = new DeviceInfo();
+		deviceInfo2.setDeviceId("");
+		deviceInfo2.setMake("");
+		deviceInfo2.setModel("M123");
+		DeviceInfo deviceInfo3 = new DeviceInfo();
+		deviceInfo3.setDeviceId(null);
+		deviceInfo3.setMake("");
+		deviceInfo3.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo1);
+		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
+		deviceInfoList.add(bioinfo);
+
+		 ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
+				"validateBioType", deviceInfoList,error);
 		assertTrue(error.hasErrors());
 	}
 	

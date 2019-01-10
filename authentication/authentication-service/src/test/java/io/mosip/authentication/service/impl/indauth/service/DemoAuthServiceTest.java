@@ -35,6 +35,9 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.BioType;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
@@ -102,6 +105,18 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setIdvId("426789089018");
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
@@ -143,8 +158,9 @@ public class DemoAuthServiceTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		DeviceInfo deviceInfo1=null;
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_SEC,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties));
+				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties,deviceInfo));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -162,6 +178,18 @@ public class DemoAuthServiceTest {
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setAddress(true);
 		authType.setFullAddress(false);
@@ -243,19 +271,20 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		DeviceInfo deviceInfo1=null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -277,6 +306,18 @@ public class DemoAuthServiceTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setAddress(false);
 		authType.setFullAddress(false);
@@ -321,19 +362,20 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		DeviceInfo deviceInfo1=null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -506,6 +548,17 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIdvId("274390482564");
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setKey(new AuthSecureDTO());
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
 		List<MatchInfo> matchInfoList = new ArrayList<>();
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
@@ -515,6 +568,7 @@ public class DemoAuthServiceTest {
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
 		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setBioInfo(bioInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
@@ -575,6 +629,17 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIdvId("274390482564");
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setKey(new AuthSecureDTO());
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
 		List<MatchInfo> matchInfoList = new ArrayList<>();
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
@@ -584,6 +649,7 @@ public class DemoAuthServiceTest {
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
 		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setBioInfo(bioInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());

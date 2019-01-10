@@ -100,6 +100,7 @@ public enum IdAuthenticationErrorConstants {
 	// Bio validation
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request.", "A0145"),
 	DUPLICATE_IRIS("IDA-BIA-016", "Duplicate Irises in request", "A0149"),
+	INVALID_BIOTYPE("IDA-BIA-013","Invalid bioType - %s"),
 	FINGER_EXCEEDING("IDA-BIA-006", "Number of fgerMin / fgerImg should not exceed 10."),
 	IRIS_EXCEEDING("IDA-BIA-017", "Number of irisImg should not exceed 2"),
 	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
