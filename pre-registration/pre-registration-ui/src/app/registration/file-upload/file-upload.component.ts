@@ -22,7 +22,6 @@ export class FileUploadComponent implements OnInit {
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
-
   documentType;
   loginId;
   documentIndex;
@@ -140,13 +139,26 @@ export class FileUploadComponent implements OnInit {
 
   handleFileInput(event) {
     console.log('event', event.target.files);
+
     if (event.target.files[0].type === 'application/pdf') {
+      this.getBase64(event.target.files[0]).then(data => {
+        this.fileByteArray = data;
+      });
       this.setJsonString(event);
       this.sendFile(event);
       this.browseDisabled = false;
     } else {
       alert('Wrong file type, please upload again');
     }
+  }
+
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 
   handleFileDrop(fileList) {}
@@ -201,7 +213,7 @@ export class FileUploadComponent implements OnInit {
     this.userFiles.doc_id = fileResponse.response[0].documnetId;
     this.userFiles.doc_name = event.target.files[0].name;
     this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
-    this.userFiles.multipartFile = event.target.files[0];
+    this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     console.log('step:', this.step);
 

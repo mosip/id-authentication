@@ -9,18 +9,21 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./preview.component.css']
 })
 export class PreviewComponent implements OnInit {
-
-  previewData : any;
-  secondaryLanguagelabels : any ;
+  previewData: any;
+  secondaryLanguagelabels: any;
   secondaryLanguage;
   preRegId: string;
 
-  constructor(private dataStorageService: DataStorageService, private route: ActivatedRoute, private router: Router, private registrationService: RegistrationService ) { }
+  constructor(
+    private dataStorageService: DataStorageService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private registrationService: RegistrationService
+  ) {}
 
   ngOnInit() {
-
     this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
-    console.log(this.preRegId)
+    console.log(this.preRegId);
     this.dataStorageService.getPreviewData(this.preRegId).subscribe(response => {
       console.log(response);
       this.previewData = response['response'][0].demographicDetails.identity;
@@ -28,19 +31,20 @@ export class PreviewComponent implements OnInit {
       if (this.previewData['fullName'][1].language === 'arb') {
         this.secondaryLanguage = 'ar';
       }
-    this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language).subscribe(response => {
-      this.secondaryLanguagelabels = response['preview'];
-      console.log(this.secondaryLanguagelabels);
-    })
+      this.dataStorageService
+        .getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language)
+        .subscribe(response => {
+          this.secondaryLanguagelabels = response['preview'];
+          console.log(this.secondaryLanguagelabels);
+        });
     });
-
-
-
   }
 
   navigateDashboard() {
     const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard', routeParams[2]]);
+    // this.router.navigate(['dashboard', routeParams[2]]);
+    this.router.navigate(['../demographic'], { relativeTo: this.route });
+    sessionStorage.setItem('newApplicant', 'true');
   }
 
   navigateBack() {
@@ -49,7 +53,6 @@ export class PreviewComponent implements OnInit {
   }
 
   navigateNext() {
-    this.router.navigate(['../pick-center'], {relativeTo: this.route});
+    this.router.navigate(['../pick-center'], { relativeTo: this.route });
   }
-
 }

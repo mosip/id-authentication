@@ -9,7 +9,7 @@
 
 div,
 button {
-  font-family: "Roboto", Regular;
+  font-family: 'Roboto', Regular;
 }
 
 div {
@@ -138,7 +138,7 @@ div {
   }
 
   ul li::before {
-    content: "\2022";
+    content: '\2022';
     color: black;
     font-weight: bold;
     display: inline-block;
@@ -226,8 +226,8 @@ div {
     /* max-height: 410px; */
     /* overflow: auto; */
     height: 60vh;
-    overflow-y: auto;
-    overflow-x: hidden;
+    /* overflow-y: auto; */
+    /* overflow-x: hidden; */
   }
 
   .ack-userInfo-container {
@@ -349,7 +349,7 @@ div {
   }
 
   ul li::before {
-    content: "\2022";
+    content: '\2022';
     color: black;
     font-weight: bold;
     display: inline-block;
