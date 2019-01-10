@@ -23,7 +23,8 @@ export const APPEND_URL = {
   LOCATION_IMMEDIATE_CHILDREN: 'v1.0/locations/immediatechildren/',
   GET_APPLICANT: 'demographic/v0.1/pre-registration/applicationData',
   APPLICANTS: 'demographic/v0.1/pre-registration/applications',
-  LOCATION: 'masterdata/'
+  LOCATION: 'masterdata/',
+  TRANSLITERATION: 'translitrate/v0.1/pre-registration/translitrate'
 };
 
 export const PARAMS_KEYS = {

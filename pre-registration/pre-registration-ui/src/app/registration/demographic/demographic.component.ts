@@ -387,12 +387,11 @@ export class DemographicComponent implements OnInit {
         to_field_name: toControl.name,
         to_field_value: ''
       };
-      this.transUserForm.controls[toControl.name].patchValue('dummyValue');
+      // this.transUserForm.controls[toControl.name].patchValue('dummyValue');
 
-      // this.dataStorageService.getTransliteration(request).subscribe(response => {
-      //   console.log(response);
-      // this.transForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
-      // });
+      this.dataStorageService.getTransliteration(request).subscribe(response => {
+        this.transUserForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
+      });
     }
   }
 
