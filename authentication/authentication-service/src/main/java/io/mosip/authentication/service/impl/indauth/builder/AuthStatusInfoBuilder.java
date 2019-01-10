@@ -70,14 +70,13 @@ public class AuthStatusInfoBuilder {
 		authStatusInfo.getMatchInfos().add(new MatchInfo(authType, language, matchingStrategy, matchingThreshold));
 		return this;
 	}
+	
 	/**
 	 * Adds the bio info.
-	 * 
-	 * @param authType
-	 * @param matchingStrategy
-	 * @param matchingThreshold
-	 * @param language
-	 * @return
+	 *
+	 * @param bioType the bio type
+	 * @param deviceInfo the device info
+	 * @return the auth status info builder
 	 */
 	public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo) {
 		assertNotBuilt();

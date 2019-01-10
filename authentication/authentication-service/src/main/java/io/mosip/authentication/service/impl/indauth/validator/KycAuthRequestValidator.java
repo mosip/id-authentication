@@ -17,15 +17,16 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * 
+ * The Class KycAuthRequestValidator.
+ *
  * @author Prem Kumar
  * @author Dinesh Karuppiah.T
- *
  */
 
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
+	/** The auth request validator. */
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
 
@@ -66,18 +67,19 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	@Autowired
 	private Environment environment;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#supports(java.lang.Class)
+	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
 	
 	/**
-	 * Validates the KycAuthRequest
-	 * 
-	 * @param target 
-	 * 
-	 * @param errors
-	 * 
+	 * Validates the KycAuthRequest.
+	 *
+	 * @param target the target
+	 * @param errors the errors
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
@@ -119,10 +121,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validates the KycAuthrequest against the MUACode on the request
-	 * 
-	 * @param errors
-	 * @param kycAuthRequestDTO
+	 * Validates the KycAuthrequest against the MUACode on the request.
+	 *
+	 * @param errors the errors
+	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
@@ -138,10 +140,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validates the KycAuthrequest against the Authtype on the request
-	 * 
-	 * @param errors
-	 * @param kycAuthRequestDTO
+	 * Validates the KycAuthrequest against the Authtype on the request.
+	 *
+	 * @param errors the errors
+	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		if (kycAuthRequestDTO.getEKycAuthType() != null) {
@@ -165,10 +167,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validates the ConsentRequest on KycAuthrequest
-	 * 
-	 * @param kycAuthRequestDTO
-	 * @param errors
+	 * Validates the ConsentRequest on KycAuthrequest.
+	 *
+	 * @param kycAuthRequestDTO the kyc auth request DTO
+	 * @param errors the errors
 	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.isConsentReq()) {

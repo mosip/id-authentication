@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.validator;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -27,10 +26,13 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @Component
 public abstract class IdAuthValidator implements Validator {
 
+	/** The Constant TSP_ID. */
 	private static final String TSP_ID = "tspID";
 
+	/** The Constant IDV_ID_TYPE. */
 	private static final String IDV_ID_TYPE = "idvIdType";
 
+	/** The Constant IDV_ID. */
 	private static final String IDV_ID = "idvId";
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
@@ -53,9 +55,6 @@ public abstract class IdAuthValidator implements Validator {
 
 	/** The Constant TXN_ID. */
 	private static final String TXN_ID = "txnID";
-
-	/** The Constant MUA_CODE. */
-	private static final String MUA_CODE = "muaCode";
 
 	/** The Constant ID. */
 	private static final String ID = "id";
@@ -143,6 +142,12 @@ public abstract class IdAuthValidator implements Validator {
 		}
 	}
 
+	/**
+	 * Check future req time.
+	 *
+	 * @param reqTime the req time
+	 * @param errors the errors
+	 */
 	private void checkFutureReqTime(String reqTime, Errors errors) {
 
 		Date reqDateAndTime = null;
@@ -168,8 +173,6 @@ public abstract class IdAuthValidator implements Validator {
 	 *
 	 * @param id              the id
 	 * @param idType          the id type
-	 * @param idFieldName     the id field name
-	 * @param idTypeFieldName the id type field name
 	 * @param errors          the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
@@ -201,10 +204,12 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
+	
 	/**
-	 * Validation for TspId
-	 * @param tspID
-	 * @param errors
+	 * Validation for TspId.
+	 *
+	 * @param tspID the tsp ID
+	 * @param errors the errors
 	 */
 	protected void validateTspId(String tspID, Errors errors) {
 		if (Objects.isNull(tspID)) {
