@@ -50,7 +50,8 @@ public class DateValidation extends BaseController {
 			}
 			if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 				if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-					generateAlert("wrong");
+					generateAlert("Date","Please enter the appropriate value");
+					date.setText(oldValue);
 				}
 			}
 			validateTheDate(date, month, year);
@@ -68,7 +69,7 @@ public class DateValidation extends BaseController {
 				}
 				if (date.getText().matches("\\d+") && month.getText().matches("\\d+")) {
 					if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
-						generateAlert("wrong");
+						generateAlert("Please enter the appropriate value");
 						date.clear();
 					}
 				}
@@ -131,7 +132,7 @@ public class DateValidation extends BaseController {
 
 					if (Integer.parseInt(date.getText()) > Integer.parseInt(dateMapper.get(month.getText()))) {
 						date.clear();
-						generateAlert("wrong");
+						generateAlert("Please enter the appropriate value");
 					}
 
 				}

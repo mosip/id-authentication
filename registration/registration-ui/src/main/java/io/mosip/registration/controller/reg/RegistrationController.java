@@ -1255,7 +1255,7 @@ public class RegistrationController extends BaseController {
 			if (yyyy.getText().matches("\\d{4}")) {
 				int year = Integer.parseInt(yyyy.getText());
 				int age = LocalDate.now().getYear() - year;
-				if(age>=0)
+				if(age>=0&&age<=118)
 					ageField.setText("" + age);
 			}
 		});

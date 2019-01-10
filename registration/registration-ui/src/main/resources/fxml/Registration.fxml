@@ -75,7 +75,7 @@
                                              <children>
                                                 <TextField fx:id="dd" layoutX="20.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
                                                 <TextField fx:id="mm" layoutX="80.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
-                                                <TextField fx:id="yyyy" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
+                                                <TextField fx:id="yyyy" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="60.0" />
                                              </children>
                                           </AnchorPane>
                                     </children>
