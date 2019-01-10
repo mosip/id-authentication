@@ -512,3 +512,8 @@
 	-fx-pref-height: 359px; 
 	-fx-pref-width: 477px;
 }
+.borderStyle{
+	-fx-border-color:black; 
+	-fx-border-width: 1.0; 
+	-fx-border-style: solid;
+}

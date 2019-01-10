@@ -7,6 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -19,13 +20,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.UserOnBoardDao;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserBiometricId;
+import io.mosip.registration.entity.mastersync.MasterApplication;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.UserBiometricRepository;
+import io.mosip.registration.util.mastersync.MetaDataUtils;
 
 /**
  * @author Sreekar Chukka
@@ -34,7 +37,7 @@ import io.mosip.registration.repositories.UserBiometricRepository;
  */
 @Repository
 @Transactional
-public class UserOnBoardDaoImpl implements UserOnBoardDao {
+public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 	@Autowired
 	private UserBiometricRepository userBiometricRepository;
@@ -42,7 +45,7 @@ public class UserOnBoardDaoImpl implements UserOnBoardDao {
 	/**
 	 * logger for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(UserOnBoardDaoImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -57,11 +60,14 @@ public class UserOnBoardDaoImpl implements UserOnBoardDao {
 		String response = RegistrationConstants.EMPTY;
 
 		try {
+						
+			List<UserBiometric> bioMetricsList = new ArrayList<>(); 
 			
-			List<FingerprintDetailsDTO> fingerPrints = biometricDTO.getOperatorBiometricDTO()
-					.getFingerprintDetailsDTO();
-
-			fingerPrints.forEach(fingerPrintData -> {
+			List<FingerprintDetailsDTO> fingerPrint=biometricDTO.getOperatorBiometricDTO()
+					.getFingerprintDetailsDTO().stream().flatMap(o -> o.getSegmentedFingerprints().stream())
+					.collect(Collectors.toList());
+			
+			fingerPrint.forEach(fingerPrintData -> {
 
 				UserBiometric bioMetrics = new UserBiometric();
 				UserBiometricId biometricId = new UserBiometricId();
@@ -77,10 +83,53 @@ public class UserOnBoardDaoImpl implements UserOnBoardDao {
 				bioMetrics.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
 				bioMetrics.setIsActive(true);
-
-				userBiometricRepository.save(bioMetrics);
+				
+				bioMetricsList.add(bioMetrics);
 
 			});
+			
+			biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO().forEach(iries->{
+				
+				UserBiometric bioMetrics = new UserBiometric();
+				UserBiometricId biometricId = new UserBiometricId();
+
+				biometricId.setBioAttributeCode(iries.getIrisImageName());
+				biometricId.setBioTypeCode(iries.getIrisType());
+				biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());
+				bioMetrics.setBioIsoImage(iries.getIris());
+				bioMetrics.setNumberOfRetry(iries.getNumOfIrisRetry());
+				bioMetrics.setUserBiometricId(biometricId);
+				Double qualitySocre = iries.getQualityScore();
+				bioMetrics.setQualityScore(qualitySocre.intValue());
+				bioMetrics.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+				bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+				bioMetrics.setIsActive(true);
+				
+				bioMetricsList.add(bioMetrics);
+				
+			});
+			
+			biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
+
+			UserBiometric bioMetrics = new UserBiometric();
+			UserBiometricId biometricId = new UserBiometricId();
+
+			biometricId.setBioAttributeCode("photo");
+			biometricId.setBioTypeCode("photo");
+			biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			bioMetrics.setBioIsoImage(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getFace());
+			bioMetrics.setNumberOfRetry(biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getNumOfRetries());
+			bioMetrics.setUserBiometricId(biometricId);
+			Double qualitySocre = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getQualityScore();
+			bioMetrics.setQualityScore(qualitySocre.intValue());
+			bioMetrics.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			bioMetrics.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			bioMetrics.setIsActive(true);
+			
+			bioMetricsList.add(bioMetrics);
+			
+			userBiometricRepository.saveAll(bioMetricsList);
+			
 
 			response=RegistrationConstants.USER_ON_BOARDING_SUCCESS_RESPONSE;
 			

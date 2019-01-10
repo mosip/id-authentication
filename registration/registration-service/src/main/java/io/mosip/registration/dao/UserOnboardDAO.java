@@ -7,7 +7,7 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
  *
  * @since 1.0.0
  */
-public interface UserOnBoardDao {
+public interface UserOnboardDAO {
 
 	/**
 	 * Insert.

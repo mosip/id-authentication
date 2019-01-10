@@ -4,8 +4,10 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOA
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.UserOnBoardDao;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -34,7 +36,7 @@ import io.mosip.registration.service.UserOnboardService;
 public class UserOnboardServiceImpl implements UserOnboardService {
 	
 	@Autowired
-	private UserOnBoardDao userOnBoardDao;
+	private UserOnboardDAO userOnBoardDao;
 	
 	@Value("${USER_ON_BOARD_THRESHOLD_LIMIT}")
 	private int UserOnBoardThresholdLimit;
@@ -59,24 +61,20 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		if (null != biometricDTO) {
 
-			int count = 0;
-
-			List<FingerprintDetailsDTO> fingerPrints = biometricDTO.getOperatorBiometricDTO()
-					.getFingerprintDetailsDTO();
-
 			List<IrisDetailsDTO> iries = biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO();
 
 			FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
-
-			if (null != photoDetails) {
-
-				count = fingerPrints.size() + iries.size() + 1;
-
-			} else {
-
-				count = fingerPrints.size() + iries.size();
-			}
-
+			
+			
+			long count = biometricDTO.getOperatorBiometricDTO()
+					.getFingerprintDetailsDTO().stream()
+			.flatMap(o -> o.getSegmentedFingerprints().stream())
+			.count();
+			
+			count =count+ biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO().size();
+			
+			count =count  + (photoDetails == null ? 0 : 1);
+			
 			// API for validating biometrics need to be implemented
 
 			if (count >= UserOnBoardThresholdLimit) {

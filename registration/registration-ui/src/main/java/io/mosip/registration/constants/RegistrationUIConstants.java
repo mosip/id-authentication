@@ -154,10 +154,13 @@ public class RegistrationUIConstants {
 			.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
 	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
 	public static final String IRIS_QUALITY_SCORE_ERROR = bundle.getString("IRIS_QUALITY_SCORE_ERROR");
-	
-	//UIN update
+
+	// UIN update
 	public static final String UPDATE_UIN_VALIDATION_ALERT = bundle.getString("UPDATE_UIN_VALIDATION_ALERT");
-	
-	//Biometric Exception
+
+	// Biometric Exception
 	public static final String BIOMETRIC_EXCEPTION_ALERT = bundle.getString("BIOMETRIC_EXCEPTION_ALERT");
+
+	// User Onboard
+	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
 }
