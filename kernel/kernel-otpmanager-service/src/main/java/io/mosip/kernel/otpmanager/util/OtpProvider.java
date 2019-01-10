@@ -40,12 +40,12 @@ public class OtpProvider {
 
 	/**
 	 * @param secret
-	 * @param authenticationCode
+	 * @param macAlgo
 	 * @return
 	 */
-	static Signer getSigning(String secret, String authenticationCode) {
+	static Signer getSigning(String secret, String macAlgo) {
 		try {
-			final Mac mac = Mac.getInstance(authenticationCode);
+			final Mac mac = Mac.getInstance(macAlgo);
 			mac.init(new SecretKeySpec(secret.getBytes(), ""));
 
 			return new Signer() {
