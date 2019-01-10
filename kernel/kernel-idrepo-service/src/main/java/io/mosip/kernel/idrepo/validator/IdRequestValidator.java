@@ -24,7 +24,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
@@ -53,7 +52,7 @@ public class IdRequestValidator implements Validator {
 	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
 
 	/** The Constant VER. */
-	private static final String VER = "ver";
+	private static final String VER = "version";
 
 	/** The Constant APPLICATION_VERSION. */
 	private static final String APPLICATION_VERSION = "application.version";
@@ -106,9 +105,6 @@ public class IdRequestValidator implements Validator {
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "status";
 
-	/** The Constant UIN. */
-	private static final String UIN = "uin";
-
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
@@ -123,10 +119,6 @@ public class IdRequestValidator implements Validator {
 	/** The status. */
 	@Resource
 	private List<String> status;
-
-	/** The uin validator. */
-	@Autowired
-	private IdValidator<String> uinValidatorImpl;
 
 	/** The uin validator. */
 	@Autowired
@@ -164,8 +156,7 @@ public class IdRequestValidator implements Validator {
 
 		if (!errors.hasErrors()) {
 			validateId(request.getId(), errors);
-			validateVer(request.getVer(), errors);
-			validateUin(request.getUin(), errors);
+			validateVer(request.getVersion(), errors);
 		}
 
 		if (!errors.hasErrors()) {
@@ -216,28 +207,6 @@ public class IdRequestValidator implements Validator {
 		} else if (!ver.equals(env.getProperty(APPLICATION_VERSION))) {
 			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
-		}
-	}
-
-	/**
-	 * Validate uin.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param errors
-	 *            the errors
-	 */
-	private void validateUin(String uin, Errors errors) {
-		if (Objects.isNull(uin)) {
-			errors.rejectValue(UIN, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), UIN));
-		} else {
-			try {
-				uinValidatorImpl.validateId(uin);
-			} catch (InvalidIDException e) {
-				errors.rejectValue(UIN, IdRepoErrorConstants.INVALID_UIN.getErrorCode(),
-						IdRepoErrorConstants.INVALID_UIN.getErrorMessage());
-			}
 		}
 	}
 

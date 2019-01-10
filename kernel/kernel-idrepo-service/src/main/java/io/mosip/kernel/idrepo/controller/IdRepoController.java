@@ -42,6 +42,14 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoController {
 
+	private static final String UPDATE = "update";
+
+	private static final String READ = "read";
+
+	private static final String TYPE = "type";
+
+	private static final String CREATE = "create";
+
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
@@ -80,14 +88,17 @@ public class IdRepoController {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@PostMapping(path = "/v1.0/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request,
+	@PostMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<IdResponseDTO> addIdentity(@PathVariable String uin, @Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
+			uinValidatorImpl.validateId(uin);
 			DataValidationUtil.validate(errors);
-			return new ResponseEntity<>(idRepoService.addIdentity(request), HttpStatus.CREATED);
+			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.CREATED);
+		} catch (InvalidIDException e) {
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(CREATE));
 		} catch (IdRepoDataValidationException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get("create"));
+			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(CREATE));
 		}
 	}
 
@@ -104,19 +115,19 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(name = "type", required = false) String type, HttpServletRequest request)
+			@RequestParam(name = TYPE, required = false) String type, HttpServletRequest request)
 			throws IdRepoAppException {
 		if (request.getParameterMap().size() > 1
-				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey("type"))) {
+				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE))) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST);
 		}
 		try {
 			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get("read"));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(READ));
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get("read"));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(READ));
 		}
 	}
 
@@ -137,12 +148,11 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> updateIdentity(@PathVariable String uin, @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
-			request.setUin(uin);
 			validator.validate(request, errors);
 			DataValidationUtil.validate(errors);
-			return new ResponseEntity<>(idRepoService.updateIdentity(request), HttpStatus.OK);
+			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get("update"));
+			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(UPDATE));
 		}
 	}
 }

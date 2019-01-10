@@ -14,9 +14,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class IdRequestDTO extends BaseIdRequestResponseDTO {
 	
-	/** The uin. */
-	private String uin;
-	
 	/** The status. */
 	private String status;
 	

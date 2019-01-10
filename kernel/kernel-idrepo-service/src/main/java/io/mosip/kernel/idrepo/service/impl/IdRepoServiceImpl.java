@@ -104,7 +104,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private static final String ENTITY = "entity";
 
 	/** The Constant ERR. */
-	private static final String ERR = "err";
+	private static final String ERR = "error";
 
 	/** The Constant RESPONSE_FILTER. */
 	private static final String RESPONSE_FILTER = "responseFilter";
@@ -229,11 +229,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * io.mosip.kernel.core.idrepo.spi.IdRepoService#addIdentity(java.lang.Object)
 	 */
 	@Override
-	public IdResponseDTO addIdentity(IdRequestDTO request) throws IdRepoAppException {
+	public IdResponseDTO addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
-			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(request.getUin()));
+			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			return constructIdResponse(this.id.get(CREATE),
-					addIdentity(request.getUin(), request.getRegistrationId(),
+					addIdentity(uin, request.getRegistrationId(),
 							convertToBytes(request.getRequest().getIdentity()), request.getRequest().getDocuments()),
 					null);
 		} catch (IdRepoAppException e) {
@@ -270,38 +270,38 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 				if (Objects.nonNull(documents) && !documents.isEmpty()) {
 					ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
-					if (documents.stream().filter(doc -> identityObject.has(doc.getDocCat())).anyMatch(doc -> {
-						JsonNode docType = identityObject.get(doc.getDocCat());
+					if (documents.stream().filter(doc -> identityObject.has(doc.getCategory())).anyMatch(doc -> {
+						JsonNode docType = identityObject.get(doc.getCategory());
 						try {
 							if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
 								String fileRefId = UUID.randomUUID().toString();
 
 								storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-										CryptoUtil.decodeBase64(doc.getDocValue()));
+										CryptoUtil.decodeBase64(doc.getValue()));
 
-								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, doc.getDocCat(),
-										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
+								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
+										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
-								uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getDocCat(),
-										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
+								uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
+										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 							} else {
 								String fileRefId = UUID.randomUUID().toString();
 
 								storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-										CryptoUtil.decodeBase64(doc.getDocValue()));
+										CryptoUtil.decodeBase64(doc.getValue()));
 
 								uinDocRepo.save(new UinDocument(uinRefId, docType.get("category").asText(),
-										doc.getDocCat(), fileRefId, docType.get(VALUE).asText(),
-										docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
+										doc.getCategory(), fileRefId, docType.get(VALUE).asText(),
+										docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 								uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(),
-										docType.get("category").asText(), doc.getDocCat(), fileRefId,
+										docType.get("category").asText(), doc.getCategory(), fileRefId,
 										docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-										hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE, CREATED_BY, now(),
+										hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(),
 										UPDATED_BY, now(), false, now()));
 							}
 							return false;
@@ -501,10 +501,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public IdResponseDTO updateIdentity(IdRequestDTO request) throws IdRepoAppException {
+	public IdResponseDTO updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
-			validateUIN(request.getUin());
-			Uin dbUinData = retrieveIdentityByUin(request.getUin());
+			validateUIN(uin);
+			Uin dbUinData = retrieveIdentityByUin(uin);
 			Uin uinObject = null;
 			if (!request.getStatus().equals(dbUinData.getStatusCode())) {
 				uinObject = updateUinStatus(dbUinData, request.getStatus());
@@ -652,11 +652,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 		idResponse.setId(id);
 
-		idResponse.setVer(env.getProperty(APPLICATION_VERSION));
+		idResponse.setVersion(env.getProperty(APPLICATION_VERSION));
 
 		idResponse.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-
-		idResponse.setUin(uin.getUin());
 
 		idResponse.setStatus(uin.getStatusCode());
 

@@ -191,7 +191,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setErr(errors);
+			response.setError(errors);
 		}
 
 		if (e instanceof BaseUncheckedException) {
@@ -202,15 +202,15 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					.map(errMsg -> new ErrorDTO(errorCodes.get(errorTexts.indexOf(errMsg)), errMsg)).distinct()
 					.collect(Collectors.toList());
 
-			response.setErr(errors);
+			response.setError(errors);
 		}
 
 		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 
-		response.setVer(env.getProperty(APPLICATION_VERSION));
+		response.setVersion(env.getProperty(APPLICATION_VERSION));
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response", "uin")));
+				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
 
 		return response;
 	}
