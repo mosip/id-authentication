@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.abis.dto;
 
-public class IdentityResponceDto {
+public class IdentifyResponseDto {
 
 	private String id;
 	private String requestId;

@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.abis.dto;
 
-public class AbisInsertResponceDto {
+public class AbisInsertResponseDto {
 	private String id;
 	private String requestId;
 	private String timestamp;

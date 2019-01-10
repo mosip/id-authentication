@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.xml.sax.SAXException;
 
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
-import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
-import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
+import io.mosip.registration.processor.abis.dto.IdentifyRequestDto;
+import io.mosip.registration.processor.abis.dto.IdentifyResponseDto;
 import io.mosip.registration.processor.abis.service.impl.AbisServiceImpl;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.swagger.annotations.Api;
@@ -34,55 +34,43 @@ public class AbisController {
 
 	@Autowired
 	private AbisServiceImpl abisServiceImpl;
-	
+
 	@PostMapping(path = "/insert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "insert biometric data of an Individual", response = AbisInsertResponceDto.class)
+	@ApiOperation(value = "insert biometric data of an Individual", response = AbisInsertResponseDto.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Biometric data inserted successfully"),
 			@ApiResponse(code = 400, message = "Uable to insert biometric data") })
-	public ResponseEntity<AbisInsertResponceDto> insert(@RequestBody(required = true) AbisInsertRequestDto abisInsertRequestDto) {
-		
-		AbisInsertResponceDto abisInsertResponceDto = null;
-		
-		try {
-			abisInsertResponceDto = abisServiceImpl.insert(abisInsertRequestDto);
-			
-		} catch (ApisResourceAccessException | ClassNotFoundException | IOException | ParserConfigurationException
-				| SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public ResponseEntity<AbisInsertResponseDto> insert(
+			@RequestBody(required = true) AbisInsertRequestDto abisInsertRequestDto)
+			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+
+		AbisInsertResponseDto abisInsertResponseDto = abisServiceImpl.insert(abisInsertRequestDto);
+
+		if (abisInsertRequestDto.getId().equalsIgnoreCase("insert")) {
+			return ResponseEntity.status(HttpStatus.OK).body(abisInsertResponseDto);
+		} else {
+			abisInsertResponseDto.setFailureReason(2);
+			abisInsertResponseDto.setReturnValue(2);
+			return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(abisInsertResponseDto);
 		}
-		
-		if(abisInsertRequestDto.getId().equals("insert")) {
-			return ResponseEntity.status(HttpStatus.OK).body(abisInsertResponceDto);
-		}
-		abisInsertResponceDto.setFailureReason(2);
-		abisInsertResponceDto.setReturnValue(2);
-		 return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(abisInsertResponceDto);
-		
 	}
-	
-	
+
 	@PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "identify duplicate biometric data of an Individual", response = IdentityResponceDto.class)
+	@ApiOperation(value = "identify duplicate biometric data of an Individual", response = IdentifyResponseDto.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "unique biometric data"),
 			@ApiResponse(code = 400, message = "duplicate biometric data") })
-	public ResponseEntity<IdentityResponceDto> identity(@RequestBody(required = true) IdentityRequestDto identityRequestDto) {
-		IdentityResponceDto identityResponceDto = null;
-		try {
-			identityResponceDto = abisServiceImpl.performDedupe(identityRequestDto);
-		} catch (ApisResourceAccessException | ClassNotFoundException | IOException | ParserConfigurationException
-				| SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//IdentityResponceDto identityResponceDto = abisServiceImpl.deDupeCheck(identityRequestDto);
+	public ResponseEntity<IdentifyResponseDto> identity(
+			@RequestBody(required = true) IdentifyRequestDto identifyRequestDto)
+			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 
-		if (identityRequestDto.getId().equals("identify")) {
-			return ResponseEntity.status(HttpStatus.OK).body(identityResponceDto);
+		IdentifyResponseDto identifyResponseDto = abisServiceImpl.performDedupe(identifyRequestDto);
+
+		if (identifyRequestDto.getId().equalsIgnoreCase("identify")) {
+			return ResponseEntity.status(HttpStatus.OK).body(identifyResponseDto);
+		} else {
+			identifyResponseDto.setCandidateList(null);
+			identifyResponseDto.setReturnValue(2);
+			identifyResponseDto.setFailureReason(1);
+			return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(identifyResponseDto);
 		}
-		identityResponceDto.setCandidateList(null);
-		identityResponceDto.setReturnValue(2);
-		identityResponceDto.setFailureReason(1);
-		return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(identityResponceDto);
 	}
 }

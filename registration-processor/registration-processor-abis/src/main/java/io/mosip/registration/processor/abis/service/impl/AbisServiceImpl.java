@@ -18,11 +18,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
-import io.mosip.registration.processor.abis.dto.AbisInsertResponceDto;
+import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
-import io.mosip.registration.processor.abis.dto.IdentityRequestDto;
-import io.mosip.registration.processor.abis.dto.IdentityResponceDto;
+import io.mosip.registration.processor.abis.dto.IdentifyRequestDto;
+import io.mosip.registration.processor.abis.dto.IdentifyResponseDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -76,7 +76,7 @@ public class AbisServiceImpl {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public AbisInsertResponceDto insert(AbisInsertRequestDto abisInsertRequestDto)
+	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 		boolean isPresent = false;
 
@@ -91,7 +91,7 @@ public class AbisServiceImpl {
 			isPresent = true;
 		}
 
-		AbisInsertResponceDto response = new AbisInsertResponceDto();
+		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		response.setId(INSERT);
 		response.setRequestId(abisInsertRequestDto.getRequestId());
 		response.setTimestamp(abisInsertRequestDto.getTimestamp());
@@ -137,19 +137,19 @@ public class AbisServiceImpl {
 	/**
 	 * Perform dedupe.
 	 *
-	 * @param identityRequest the identity request
+	 * @param identifyRequest the identity request
 	 * @return the identity responce dto
 	 * @throws ApisResourceAccessException the apis resource access exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public IdentityResponceDto performDedupe(IdentityRequestDto identityRequest)
+	public IdentifyResponseDto performDedupe(IdentifyRequestDto identifyRequest)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 		boolean duplicate = false;
 
 		int count = 0;
-		String referenceId = identityRequest.getReferenceId();
+		String referenceId = identifyRequest.getReferenceId();
 		Document doc = getCbeffDocument(referenceId);
 
 		NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
@@ -161,16 +161,16 @@ public class AbisServiceImpl {
 		NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
 		duplicate = checkDuplicate(duplicate, faceNodeList);
 
-		IdentityResponceDto response = new IdentityResponceDto();
+		IdentifyResponseDto response = new IdentifyResponseDto();
 		response.setId(IDENTIFY);
-		response.setRequestId(identityRequest.getRequestId());
-		response.setTimestamp(identityRequest.getTimestamp());
+		response.setRequestId(identifyRequest.getRequestId());
+		response.setTimestamp(identifyRequest.getTimestamp());
 		response.setReturnValue(1);
 
 		if (duplicate) {
 			CandidateListDto cd = new CandidateListDto();
 			CandidatesDto[] candidatesDto = new CandidatesDto[10];
-			for (int i = 1; i <= identityRequest.getMaxResults(); i++) {
+			for (int i = 1; i <= identifyRequest.getMaxResults(); i++) {
 				candidatesDto[i] = new CandidatesDto();
 				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
 				candidatesDto[i].setScaledScore(100 - i + "");
