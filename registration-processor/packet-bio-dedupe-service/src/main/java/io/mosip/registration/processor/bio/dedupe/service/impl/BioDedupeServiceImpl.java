@@ -31,6 +31,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -184,25 +185,44 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 			}
 
 			if (responsedto.getCandidateList() != null) {
-				CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
-
-				for (CandidatesDto candidate : candidateList) {
-					if (Integer.parseInt(candidate.getScaledScore()) >= threshold) {
-						String regId = packetInfoManager.getRidByReferenceId(candidate.getReferenceId()).get(0);
-						abisResponseDuplicates.add(regId);
-					}
-				}
-
-				for (String duplicateReg : abisResponseDuplicates) {
-					String uin = packetInfoManager.findDemoById(duplicateReg).get(0).getUin();
-					if (!uin.isEmpty()) {
-						duplicates.add(duplicateReg);
-					}
-				}
+				getDuplicateCandidates(duplicates, abisResponseDuplicates, responsedto);
 			}
 		}
 
 		return duplicates;
+	}
+
+	/**
+	 * Gets the duplicate candidates.
+	 *
+	 * @param duplicates the duplicates
+	 * @param abisResponseDuplicates the abis response duplicates
+	 * @param responsedto the responsedto
+	 * @return the duplicate candidates
+	 */
+	private void getDuplicateCandidates(List<String> duplicates, List<String> abisResponseDuplicates,
+			IdentityResponceDto responsedto) {
+		CandidatesDto[] candidateList = responsedto.getCandidateList().getCandidates();
+
+		for (CandidatesDto candidate : candidateList) {
+			if (Integer.parseInt(candidate.getScaledScore()) >= threshold) {
+				List<String> regIdList = packetInfoManager.getRidByReferenceId(candidate.getReferenceId());
+				if (!regIdList.isEmpty()) {
+					String regId = regIdList.get(0);
+					abisResponseDuplicates.add(regId);
+				}
+			}
+		}
+
+		for (String duplicateReg : abisResponseDuplicates) {
+			List<DemographicInfoDto> demoList = packetInfoManager.findDemoById(duplicateReg);
+			if (!demoList.isEmpty()) {
+				String uin = demoList.get(0).getUin();
+				if (!uin.isEmpty()) {
+					duplicates.add(duplicateReg);
+				}
+			}
+		}
 	}
 
 	/**
