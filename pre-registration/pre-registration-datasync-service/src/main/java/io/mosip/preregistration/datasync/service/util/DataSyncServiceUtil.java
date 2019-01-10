@@ -286,8 +286,7 @@ public class DataSyncServiceUtil {
 			date = cal.getTime();
 			toDate = DateUtils.formatDate(date, "yyyy-MM-dd HH:mm:ss");
 		} catch (ParseException ex) {
-			log.error("sessionId", "idType", "id",
-					"In callGetPreIdsRestService method of datasync service util" + ex.getMessage());
+			log.error("sessionId", "idType", "id", "In assignDate method of datasync service util" + ex.getMessage());
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.toString());
 		}
@@ -308,7 +307,13 @@ public class DataSyncServiceUtil {
 			PreRegIdsByRegCenterIdDTO preRegIdsByRegCenterIdDTO = new PreRegIdsByRegCenterIdDTO();
 			preRegIdsByRegCenterIdDTO.setRegistrationCenterId(regCenterId);
 			preRegIdsByRegCenterIdDTO.setPreRegistrationIds(preRegIds);
+
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDto = new MainRequestDTO<>();
+			requestDto.setId("mosip.pre-registration.booking.book");
+			requestDto.setVer("1.0");
+
+			requestDto.setReqTime(new SimpleDateFormat(dateTimeFormat).parse(getDateString(new Date())));
+
 			requestDto.setRequest(preRegIdsByRegCenterIdDTO);
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			HttpEntity<MainResponseDTO<?>> httpEntity = new HttpEntity(requestDto, headers);
@@ -323,6 +328,8 @@ public class DataSyncServiceUtil {
 				idResponseDTO = mapper.convertValue(respEntity.getBody().getResponse().get(0),
 						PreRegIdsByRegCenterIdResponseDTO.class);
 			}
+		} catch (ParseException e) {
+			e.printStackTrace();
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreIdsByRegCenterIdRestService method of datasync service util - " + ex.getMessage());
