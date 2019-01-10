@@ -120,7 +120,6 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<!-- FTP Packet Upload -->
 		<dependency>
@@ -209,20 +208,18 @@
 		<dependency>
 			<groupId>com.github.sarxos</groupId>
 			<artifactId>webcam-capture</artifactId>
-			<version>0.3.12</version>
+			<version>${webcam-capture.version}</version>
 		</dependency>
 		
 		<dependency>
 			<artifactId>faces</artifactId>
 			<groupId>org.openimaj</groupId>
-			<version>1.3.5</version>
-			<scope>compile</scope>
+			<version>${org.openimaj.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- scanner dependencies -->
