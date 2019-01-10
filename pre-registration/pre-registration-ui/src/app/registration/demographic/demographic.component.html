@@ -299,15 +299,12 @@
             <div class="user__date">
               <mat-form-field>
                 <input readonly [value]="userForm.get('date').value" matInput placeholder="{{ demo1.date }}" />
-                <!-- formControlName="t_date" -->
               </mat-form-field>
               <mat-form-field>
                 <input readonly [value]="userForm.get('month').value" matInput placeholder="{{ demo1.month }}" />
-                <!-- formControlName="t_month" -->
               </mat-form-field>
               <mat-form-field>
                 <input readonly [value]="userForm.get('year').value" matInput placeholder="{{ demo1.year }}" />
-                <!-- formControlName="t_year" -->
               </mat-form-field>
             </div>
 
@@ -315,7 +312,6 @@
             <div class="user__age">
               <mat-form-field>
                 <input readonly [value]="userForm.get('age').value" matInput placeholder="{{ demo1.age }}" />
-                <!-- formControlName="t_age" -->
               </mat-form-field>
               <span class="user__age--disabled">Years</span>
             </div>
@@ -354,7 +350,6 @@
           <div class="user__gender">
             Gender
             <mat-button-toggle-group appearance="legacy" aria-label="Font Style" [value]="userForm.get('gender').value">
-              <!-- formControlName="t_gender" -->
               <mat-button-toggle value="male">Male</mat-button-toggle>
               <mat-button-toggle value="female">Female</mat-button-toggle>
             </mat-button-toggle-group>
@@ -403,7 +398,6 @@
 
           <div class="user__dropdown">
             <mat-form-field>
-              <!-- formControlName="t_region" -->
               <mat-select
                 name="t_region"
                 [value]="userForm.get('region').value"
@@ -463,41 +457,40 @@
           <div class="user__dropdown">
             <mat-form-field>
               <input
+                readonly
                 matInput
                 [value]="userForm.get('postalCode').value"
                 type="text"
                 placeholder="{{ demo1.postalCode }}"
               />
-              <!-- formControlName="t_postalCode" -->
             </mat-form-field>
           </div>
 
           <div class="user__dropdown">
             <mat-form-field>
               <input
+                readonly
                 matInput
                 type="text"
                 placeholder="{{ demo1.mobileNumber }}"
                 [value]="userForm.get('mobileNumber').value"
               />
-              <!-- formControlName="t_mobileNumber" -->
             </mat-form-field>
           </div>
           <div class="user__dropdown">
             <mat-form-field>
-              <input matInput placeholder="{{ demo1.emailId }}" [value]="userForm.get('email').value" />
-              <!-- formControlName="t_email" -->
+              <input matInput readonly placeholder="{{ demo1.emailId }}" [value]="userForm.get('email').value" />
             </mat-form-field>
           </div>
           <div class="user__dropdown">
             <mat-form-field>
               <input
+                readonly
                 matInput
                 type="text"
                 placeholder="{{ demo1.CNEOrPINNumber }}"
                 [value]="userForm.get('pin').value"
               />
-              <!-- formControlName="t_pin" -->
             </mat-form-field>
           </div>
         </form>

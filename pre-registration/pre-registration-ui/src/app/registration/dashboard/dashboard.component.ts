@@ -46,7 +46,7 @@ export class DashBoardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    sessionStorage.clear();
+    // sessionStorage.clear();
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -64,12 +64,12 @@ export class DashBoardComponent implements OnInit {
           applicants[appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
             appConstants.ERROR_CODES.noApplicantEnrolled
         ) {
-          sessionStorage.setItem('newApplicant', 'true');
+          localStorage.setItem('newApplicant', 'true');
           this.onNewApplication();
         }
 
         if (applicants[appConstants.RESPONSE] !== null) {
-          sessionStorage.setItem('newApplicant', 'false');
+          localStorage.setItem('newApplicant', 'false');
           for (let index = 0; index < applicants[appConstants.RESPONSE].length; index++) {
             const bookingRegistrationDTO =
               applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto];
@@ -108,7 +108,7 @@ export class DashBoardComponent implements OnInit {
             this.users.push(applicant);
           }
         } else {
-          sessionStorage.setItem('newApplicant', 'true');
+          localStorage.setItem('newApplicant', 'true');
           this.onNewApplication();
         }
       },
