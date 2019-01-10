@@ -143,6 +143,7 @@ export class FileUploadComponent implements OnInit {
     if (event.target.files[0].type === 'application/pdf') {
       this.getBase64(event.target.files[0]).then(data => {
         this.fileByteArray = data;
+        this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
       });
       this.setJsonString(event);
       this.sendFile(event);
