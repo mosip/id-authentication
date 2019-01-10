@@ -5,12 +5,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.hamcrest.core.IsInstanceOf;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,7 +19,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -88,28 +84,24 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, registrationCenterID);
 
 		try {
+			@SuppressWarnings("unchecked")
 			HashMap<String,Object>  map = (HashMap<String, Object>) serviceDelegateUtil.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap,true);
 		
-			HashMap<String,String> globalParam =new HashMap<>();
+			HashMap<String,String> globalParam =new HashMap<>(); 
 			
 			
 			parseToMap(map, globalParam);
 			
-			/*for (Entry<String, String> entry : globalParam.entrySet()) {
-				 System.out.println("Key = " + entry.getKey() + 
-	                    ", Value = " + entry.getValue());
-			}
-
-	           
-			System.out.println(globalParam.size());*/
+			
 			
 		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException |ResourceAccessException exception) {
-			exception.printStackTrace();
+			//exception.printStackTrace();
 		}
 		
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void parseToMap(HashMap<String,Object> map,HashMap<String, String> globalParamMap) {
 		for (Entry<String, Object> entry : map.entrySet()) {
 				String key = entry.getKey();

@@ -88,24 +88,5 @@ public class ServiceDelegateUtilTest {
 		assertNotNull(delegateUtil.post("otp_generator", generatorRequestDto));		
 	}
 
-	//@Test(expected = ClassNotFoundException.class)
-	public void getRequestExceptionTest() throws RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException, ClassNotFoundException {
-		
-		ResponseDTO response = new ResponseDTO();
-		when(environment.getProperty("otp_validator.service.httpmethod")).thenReturn("GET");
-		when(environment.getProperty("otp_validator.service.url")).thenReturn("URL");
-		when(environment.getProperty("otp_validator.service.responseType")).thenReturn("io.mosip.registration.dto.OtpValidatorResponseDTO");
-		when(environment.getProperty("otp_validator.service.headers")).thenReturn("Content-Type:APPLICATION/JSON");
-		when(environment.getProperty("otp_validator.service.authrequired")).thenReturn("false");
-		when(environment.getProperty("otp_validator.service.authheader")).thenReturn("Authorization:BASIC");
-		when(Class.forName(Mockito.anyString())).thenThrow(ClassNotFoundException.class);
-		
-		when(restClientUtil.invoke(Mockito.any())).thenReturn(response);
-		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegistrationConstants.USERNAME_KEY, "yashReddy");
-		requestParamMap.put(RegistrationConstants.OTP_GENERATED, "099886");
-		
-		assertNotNull(delegateUtil.get("otp_validator", requestParamMap,false));
-		
-	}
+	
 }
