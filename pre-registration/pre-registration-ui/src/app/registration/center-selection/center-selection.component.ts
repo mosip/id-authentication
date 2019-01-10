@@ -50,7 +50,7 @@ export class CenterSelectionComponent implements OnInit {
   showDescription = false;
   mapProvider = "OSM";
   searchTextFlag = false;
-  displayMessage = null;
+  displayMessage = 'Showing nearby registration centers';
   constructor(
     private dialog: MatDialog,
     private service: SharedService,
@@ -61,7 +61,7 @@ export class CenterSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  //  this.getLocation();
+    this.getLocation();
   }
   setSearchClick(flag: boolean) {
     this.searchClick = flag;
@@ -91,6 +91,7 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   showResults() {
+    console.log(this.locationType, this.searchText);
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
       this.dataService
@@ -186,7 +187,7 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   routeNext() {
-    this.registrationService.setRegCenterId("1");
+    this.registrationService.setRegCenterId(this.selectedCentre.id);
     this.router.navigate(["../pick-time"], { relativeTo: this.route });
   }
 

@@ -17,7 +17,7 @@ import { RegistrationService } from '../registration.service';
 export class TimeSelectionComponent implements OnInit {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
-  registrationCenter = 1;
+  registrationCenter: String;
   selectedCard = 0;
   selectedTile = 0;
   limit = [];
@@ -45,6 +45,8 @@ export class TimeSelectionComponent implements OnInit {
   ngOnInit() {
     this.names = [...this.sharedService.getNameList()];
     this.sharedService.resetNameList();
+    this.registrationCenter = this.registrationService.getRegCenterId();
+    console.log(this.registrationCenter);
     console.log('in onInit', this.names);
     this.getSlotsforCenter(this.registrationCenter);
   }
