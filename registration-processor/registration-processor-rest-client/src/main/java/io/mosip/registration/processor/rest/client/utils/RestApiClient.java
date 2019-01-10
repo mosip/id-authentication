@@ -83,21 +83,15 @@ public class RestApiClient {
 		RestTemplate restTemplate;
 		T result = null;
 		try {
-			System.out.println("Your URl is to change ::   " + uri);
 			restTemplate = getRestTemplate();
 
 			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
-		} catch (HttpClientErrorException e) {
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			result = (T) e.getResponseBodyAsString();
-			logger.error(e.getMessage());
-			System.out.println(e.getResponseBodyAsString() + " *****************");
-		} catch (HttpServerErrorException e) {
-			result = (T) e.getResponseBodyAsString();
-			logger.error(e.getMessage());
-			System.out.println(e.getResponseBodyAsString() + " *****************");
+			logger.error("Error : {}", e);
 		} catch (Exception e) {
 
-			logger.error(e.getMessage());
+			logger.error("Error: {}", e);
 		}
 		return result;
 	}
