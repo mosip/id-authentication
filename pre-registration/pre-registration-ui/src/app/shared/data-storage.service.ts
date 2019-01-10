@@ -13,17 +13,12 @@ export class DataStorageService {
   constructor(private httpClient: HttpClient) {}
 
   BASE_URL = environment.BASE_URL;
-  // GET_APPLICANT = this.BASE_URL + 'demographic/v0.1/pre-registration/applicationData';
-  // APPLICANTS = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
-  GET_APPLICANT = this.BASE_URL + 'demographic/v0.1/pre-registration/applicationData';
-  APPLICANTS = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   SEND_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/getDocument';
   MASTER_DATA_URL = 'https://integ.mosip.io/' + 'masterdata/v1.0/';
   AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
-  LOCATION_URL = this.BASE_URL + 'masterdata/';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   TEST_URL = 'http://A2ML27085:9092/';
   LANGUAGE_CODE = 'ENG';
