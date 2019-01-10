@@ -5,20 +5,27 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -30,6 +37,8 @@ import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class PacketEncryptionServiceTest {
 
 	@Rule
@@ -55,6 +64,14 @@ public class PacketEncryptionServiceTest {
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		
+		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.when(ApplicationContext.getInstance()).thenReturn(applicationContext);
+		
+		Map<String, Object> globalParams = new HashMap<>();
+		globalParams.put("MAX_REG_PACKET_SIZE", "1");
+		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,6 +104,17 @@ public class PacketEncryptionServiceTest {
 		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.anyString());
 		when(auditDAO.updateSyncAudits(Mockito.anyList())).thenReturn(2);
 		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseCheckedException.class)
+	public void packetSizeExceededTets() throws RegBaseCheckedException {
+		byte[] encryptedData = new byte[1050576];
+		when(aesEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn(encryptedData);
+		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
+		when(auditDAO.updateSyncAudits(Mockito.anyList())).thenReturn(2);
+		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.anyString());
+		packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
 	}
 
 }

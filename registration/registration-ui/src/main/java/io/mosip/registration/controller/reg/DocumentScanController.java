@@ -292,7 +292,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setDateOfBirthProof(documentDetailsDTO);
+							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
 					break;
@@ -383,7 +383,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setDateOfBirthProof(documentDetailsDTO);
+							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
 					break;
@@ -499,7 +499,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case "dobBox":
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setDateOfBirthProof(null);
+							.setProofOfDateOfBirth(null);
 					break;
 				default:
 				}
@@ -553,7 +553,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case "dobBox":
 					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
-							.getIdentity().getDateOfBirthProof();
+							.getIdentity().getProofOfDateOfBirth();
 					break;
 				default:
 				}
@@ -586,8 +586,8 @@ public class DocumentScanController extends BaseController {
 			if (identity.getProofOfRelationship() != null) {
 				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
 			}
-			if (identity.getDateOfBirthProof() != null) {
-				addDocumentsToScreen(identity.getDateOfBirthProof().getValue(), dobBox);
+			if (identity.getProofOfDateOfBirth() != null) {
+				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(), dobBox);
 			}
 
 		}
@@ -637,8 +637,8 @@ public class DocumentScanController extends BaseController {
 			if (identity.getProofOfRelationship() != null) {
 				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
 			}
-			if (identity.getDateOfBirthProof() != null) {
-				addDocumentsToScreen(identity.getDateOfBirthProof().getValue(), dobBox);
+			if (identity.getProofOfDateOfBirth() != null) {
+				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(), dobBox);
 			}
 		}
 		poaDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poa"));

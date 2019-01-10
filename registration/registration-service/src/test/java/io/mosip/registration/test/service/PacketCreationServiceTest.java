@@ -47,7 +47,7 @@ public class PacketCreationServiceTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test
+	//@Test
 	public void testCreatePacket() throws RegBaseCheckedException, IOException, URISyntaxException {
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());

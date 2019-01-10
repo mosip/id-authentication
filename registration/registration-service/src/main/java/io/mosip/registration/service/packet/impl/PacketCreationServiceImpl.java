@@ -1,5 +1,8 @@
 package io.mosip.registration.service.packet.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
@@ -16,6 +20,16 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.dto.cbeff.BDBInfo;
+import io.mosip.registration.dto.cbeff.BIR;
+import io.mosip.registration.dto.cbeff.BIRInfo;
+import io.mosip.registration.dto.cbeff.jaxbclasses.ProcessedLevelType;
+import io.mosip.registration.dto.cbeff.jaxbclasses.PurposeType;
+import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
+import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
@@ -28,6 +42,8 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
+import io.mosip.registration.util.kernal.cbeff.constant.CbeffConstant;
+import io.mosip.registration.util.kernal.cbeff.service.impl.CbeffImpl;
 
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
@@ -64,63 +80,139 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 * registration.dto.RegistrationDTO)
 	 */
 	@Override
-	public byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
+	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
-		
+
 		try {
 			String rid = registrationDTO.getRegistrationId();
+			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
+
 			// Fetch unsync'ed audit logs from DB
 			// TODO: Commented below line intentionally. Will be updated
-			//registrationDTO.setAuditDTOs(MAPPER_FACADE.mapAsList(auditDAO.getAllUnsyncAudits(), AuditDTO.class));
+			// registrationDTO.setAuditDTOs(MAPPER_FACADE.mapAsList(auditDAO.getAllUnsyncAudits(),
+			// AuditDTO.class));
 
 			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
 			// Packet Meta-Data and Audit
-			Map<String, byte[]> jsonsMap = new HashMap<>();
+			Map<String, byte[]> filesGeneratedForPacket = new HashMap<>();
+
+			filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
+					createCBEFFXML(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(), true));
+
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
+			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
+					REGISTRATION_ID, rid);
+
+			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
+				byte[] introducerCBEFFInBytes = createCBEFFXML(
+						registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), false);
+
+				if (introducerCBEFFInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
+							introducerCBEFFInBytes);
+
+					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME));
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
+							REGISTRATION_ID, rid);
+				}
+			}
+
+			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
+				byte[] operatorCBEFFInBytes = createCBEFFXML(
+						registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), false);
+
+				if (operatorCBEFFInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME,
+							operatorCBEFFInBytes);
+
+					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME));
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
+							REGISTRATION_ID, rid);
+				}
+			}
+
+			if (registrationDTO.getBiometricDTO().getSupervisorBiometricDTO() != null) {
+				byte[] supervisorCBEFFInBytes = createCBEFFXML(
+						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), false);
+
+				if (supervisorCBEFFInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME,
+							supervisorCBEFFInBytes);
+
+					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME));
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
+							REGISTRATION_ID, rid);
+				}
+			}
 
 			// Generating Demographic JSON as byte array
-			jsonsMap.put(DEMOGRPAHIC_JSON_NAME,
+			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic Json created successfully");
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME));
 			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, Components.PACKET_CREATOR,
-					"Demographic JSON created successfully", REGISTRATION_ID, rid);
+					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME), REGISTRATION_ID,
+					rid);
+
+			// Generating Audit JSON as byte array
+			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,
+					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
+							.getBytes());
+
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE));
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE), REGISTRATION_ID, rid);
 
 			// Generating HMAC File as byte array
 			HashSequence hashSequence = new HashSequence(
 					new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
 					new DemographicSequence(new LinkedList<String>()));
-			jsonsMap.put(RegistrationConstants.HASHING_JSON_NAME, HMACGeneration.generatePacketDTOHash(registrationDTO,
-					jsonsMap.get(DEMOGRPAHIC_JSON_NAME), hashSequence));
+			filesGeneratedForPacket.put(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
+					HMACGeneration.generatePacketDTOHash(registrationDTO, filesGeneratedForPacket, hashSequence));
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC File generated successfully");
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME));
 			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
-					"Packet HMAC File created successfully", REGISTRATION_ID, rid);
+					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME),
+					REGISTRATION_ID, rid);
+
+			// Generating packet_osi_hash text file as byte array
+			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
+					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket));
+
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
+					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME),
+					REGISTRATION_ID, rid);
 
 			// Generating Packet Meta-Info JSON as byte array
 			PacketMetaInfo packetInfo = MAPPER_FACADE.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
-			
+
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
-			
-			jsonsMap.put(RegistrationConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
+
+			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
+					javaObjectToJsonString(packetInfo).getBytes());
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Packet Meta-Info JSON generated successfully");
+					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_META_JSON_NAME));
 			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
-					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
-
-			// Generating Audit JSON as byte array
-			jsonsMap.put(RegistrationConstants.AUDIT_JSON_FILE,
-					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
-							.getBytes());
-
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Packet Meta-Info JSON generated successfully");
-			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
-					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
+					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_META_JSON_NAME), REGISTRATION_ID,
+					rid);
 
 			// Creating in-memory zip file for Packet Encryption
-			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, jsonsMap);
+			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been ended");
 			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ZIP, Components.PACKET_CREATOR,
@@ -128,7 +220,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			return packetZipBytes;
 		} catch (JsonProcessingException mosipJsonProcessingException) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
@@ -137,7 +230,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	}
 
 	
-	private List<FieldValueArray> buildHashSequence(HashSequence hashSequence) {
+	private List<FieldValueArray> buildHashSequence(final HashSequence hashSequence) {
 		List<FieldValueArray> hashSequenceList = new LinkedList<>();
 		// Add Sequence of Applicant Biometric
 		FieldValueArray fieldValueArray = new FieldValueArray();
@@ -159,4 +252,95 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		
 		return hashSequenceList;
 	}
+
+	private byte[] createCBEFFXML(final BiometricInfoDTO biometricInfoDTO, boolean isApplicantBiometric) throws RegBaseCheckedException {
+		try {
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Creating CBEFF file as bytes");
+
+			List<BIR> birs = new ArrayList<>();
+
+			if (biometricInfoDTO.getFingerprintDetailsDTO() != null
+					&& !biometricInfoDTO.getFingerprintDetailsDTO().isEmpty()) {
+				createFingerprintsBIR(isApplicantBiometric, biometricInfoDTO.getFingerprintDetailsDTO(), birs);
+			}
+
+			if (biometricInfoDTO.getIrisDetailsDTO() != null && !biometricInfoDTO.getIrisDetailsDTO().isEmpty()) {
+				for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
+					birs.add(new BIR.BIRBuilder().withBdb(iris.getIris())
+							.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+							.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
+									.withFormatType(CbeffConstant.FORMAT_TYPE_IRIS)
+									.withQuality((int) Math.round(iris.getQualityScore()))
+									.withType(Arrays.asList(SingleType.IRIS))
+									.withSubtype(Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye") ? SingleAnySubtypeType.LEFT.value() : SingleAnySubtypeType.RIGHT.value()))
+									.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.INTERMEDIATE)
+									.withCreationDate(new Date()).build())
+							.build());
+				}
+			}
+
+			byte[] cbeffXMLInBytes = null;
+
+			if (!birs.isEmpty()) {
+				cbeffXMLInBytes = new CbeffImpl().createXML(birs);
+			}
+
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					"Creating CBEFF file as bytes has been completed");
+
+			return cbeffXMLInBytes;
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException();
+		} catch (Exception exception) {
+			throw new RegBaseCheckedException();
+		}
+	}
+
+	private void createFingerprintsBIR(boolean isApplicantBiometric, List<FingerprintDetailsDTO> fingerprints,
+			List<BIR> birs) {
+		for (FingerprintDetailsDTO fingerprint : fingerprints) {
+			if (isApplicantBiometric && fingerprint.getSegmentedFingerprints() != null
+					&& !fingerprint.getSegmentedFingerprints().isEmpty()) {
+				for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
+					birs.add(buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage()));
+				}
+			} else {
+				birs.add(buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint()));
+			}
+		}
+	}
+
+	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes ) {
+		return new BIR.BIRBuilder().withBdb(fingerprintImageInBytes)
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
+						.withFormatType(CbeffConstant.FORMAT_TYPE_FINGER)
+						.withQuality((int) Math.round(fingerprint.getQualityScore()))
+						.withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(getFingerSubType(fingerprint.getFingerType())).withPurpose(PurposeType.ENROLL)
+						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(new Date()).build())
+				.build();
+	}
+
+	private List<String> getFingerSubType(String fingerType) {
+		List<String> fingerSubTypes = new ArrayList<>();
+
+		if (fingerType.startsWith("left")) {
+			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
+			fingerType = fingerType.replace("left", "");
+		} else if (fingerType.startsWith("right")) {
+			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
+			fingerType = fingerType.replace("right", "");
+		}
+
+		if (fingerType.equalsIgnoreCase("thumb")) {
+			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
+		} else {
+			fingerSubTypes.add(SingleAnySubtypeType
+					.fromValue(StringUtils.capitalizeFirstLetter(fingerType).concat("Finger")).value());
+		}
+
+		return fingerSubTypes;
+	}
+
 }

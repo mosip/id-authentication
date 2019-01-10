@@ -2,6 +2,7 @@ package io.mosip.registration.test.util.hmac;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.junit.Assert;
@@ -21,7 +22,7 @@ public class HMACGenerationTest {
 	public void generatePacketDTOTest() throws IOException, URISyntaxException, RegBaseCheckedException {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		byte[] demographicJsonBytes = "demographicJsonBytes".getBytes();
-		byte[] hashArray = HMACGeneration.generatePacketDTOHash(registrationDTO, demographicJsonBytes, new HashSequence(
+		byte[] hashArray = HMACGeneration.generatePacketDTOHash(registrationDTO, new HashMap<>(), new HashSequence(
 				new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
 				new DemographicSequence(new LinkedList<String>())));
 		Assert.assertNotNull(hashArray);

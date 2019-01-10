@@ -147,7 +147,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 								notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
 						String number = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getPhone().getValue();
+								.getPhone();
 						String rid = getRegistrationData() == null ? "RID"
 								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
 										RegistrationConstants.MACHINE_ID_GEN);
@@ -164,7 +164,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 
 						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getEmail().getValue();
+								.getEmail();
 
 						if (!emailId.isEmpty() && notificationServiceName
 								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
@@ -250,17 +250,17 @@ public class AckReceiptController extends BaseController implements Initializabl
 				Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
 				AddressDTO addressDTO = Builder.build(AddressDTO.class)
 						.with(address -> address
-								.setAddressLine1(identity.getAddressLine1().getValues().getFirst().getValue()))
+								.setAddressLine1(identity.getAddressLine1().get(0).getValue()))
 						.with(address -> address
-								.setAddressLine2(identity.getAddressLine2().getValues().getFirst().getValue()))
-						.with(address -> address.setLine3(identity.getAddressLine3().getValues().getFirst().getValue()))
+								.setAddressLine2(identity.getAddressLine2().get(0).getValue()))
+						.with(address -> address.setLine3(identity.getAddressLine3().get(0).getValue()))
 						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
 								.with(location -> location
-										.setCity(identity.getCity().getValues().getFirst().getValue()))
+										.setCity(identity.getCity().get(0).getValue()))
 								.with(location -> location
-										.setProvince(identity.getProvince().getValues().getFirst().getValue()))
+										.setProvince(identity.getProvince().get(0).getValue()))
 								.with(location -> location
-										.setRegion(identity.getRegion().getValues().getFirst().getValue()))
+										.setRegion(identity.getRegion().get(0).getValue()))
 								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
 						.get();
 				Map<String, Object> addr = SessionContext.getInstance().getMapObject();
