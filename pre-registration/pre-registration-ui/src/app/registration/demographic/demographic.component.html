@@ -501,7 +501,7 @@
     <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">
       {{ 'demographic.action_back' | translate }}
     </button>
-    <button class="user__btn" type="button" [disabled]="!dataUploadComplete" (click)="onSubmit()">
+    <button class="user__btn" type="button" [disabled]="!dataUploadComplete || !userForm.valid" (click)="onSubmit()">
       {{ 'demographic.action_continue' | translate }}
     </button>
   </div>
