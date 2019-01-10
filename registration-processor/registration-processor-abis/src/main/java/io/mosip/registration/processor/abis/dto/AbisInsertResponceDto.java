@@ -4,7 +4,7 @@ public class AbisInsertResponceDto {
 	private String id;
 	private String requestId;
 	private String timestamp;
-	private String returnValue;
+	private int returnValue;
 	private Integer failureReason;
 
 	public String getId() {
@@ -31,12 +31,12 @@ public class AbisInsertResponceDto {
 		this.timestamp = timestamp;
 	}
 
-	public String getReturnValue() {
+	public int getReturnValue() {
 		return returnValue;
 	}
 
-	public void setReturnValue(String returnValue) {
-		this.returnValue = returnValue;
+	public void setReturnValue(int i) {
+		this.returnValue = i;
 	}
 
 	public Integer getFailureReason() {
