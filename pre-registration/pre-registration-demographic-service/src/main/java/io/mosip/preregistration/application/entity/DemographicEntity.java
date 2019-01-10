@@ -37,7 +37,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId")
+@NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId and e.statusCode <>:statusCode ")
 @NamedQuery(name = "DemographicEntity.noOfGroupIds", query = "SELECT DISTINCT groupId  FROM DemographicEntity where crAppuserId=:userId")
 @NamedQuery(name = "DemographicEntity.findBypreRegistrationId", query = "SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
 public class DemographicEntity implements Serializable {

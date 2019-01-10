@@ -5,6 +5,7 @@
 package io.mosip.preregistration.application.repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -33,9 +34,11 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	/**
 	 * @param userId 
 	 * 			pass userId
+	 * @param statusCode 
+	 * 			pass statusCode
 	 * @return list of preregistration data for the created date
 	 */
-	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
+	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId ,@Param("statusCode") String statusCode);
 
 	/**
 	 * @param userId pass userId
@@ -60,6 +63,6 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	 * @param end pass endTime
 	 * @return list of preregistration data between start and end date
 	 */
-	public List<DemographicEntity> findBycreateDateTimeBetween(Timestamp start, Timestamp end);
+	public List<DemographicEntity> findBycreateDateTimeBetween(LocalDateTime start, LocalDateTime end);
 
 }

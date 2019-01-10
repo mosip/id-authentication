@@ -7,15 +7,23 @@ package io.mosip.registration.dto.mastersync;
  *
  */
 
-public class DocumentTypeDto {
+public class DocumentTypeDto extends MasterSyncBaseDto{
 
+	
 	private String code;
 
+	
 	private String name;
 
+	
 	private String description;
 
+	
 	private String langCode;
+
+	
+	private Boolean isActive;
+
 
 	/**
 	 * @return the code
@@ -24,12 +32,14 @@ public class DocumentTypeDto {
 		return code;
 	}
 
+
 	/**
 	 * @param code the code to set
 	 */
 	public void setCode(String code) {
 		this.code = code;
 	}
+
 
 	/**
 	 * @return the name
@@ -38,12 +48,14 @@ public class DocumentTypeDto {
 		return name;
 	}
 
+
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 
 	/**
 	 * @return the description
@@ -52,12 +64,14 @@ public class DocumentTypeDto {
 		return description;
 	}
 
+
 	/**
 	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 
 	/**
 	 * @return the langCode
@@ -66,14 +80,30 @@ public class DocumentTypeDto {
 		return langCode;
 	}
 
+
 	/**
 	 * @param langCode the langCode to set
 	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-	
-	
 
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	
 
 }

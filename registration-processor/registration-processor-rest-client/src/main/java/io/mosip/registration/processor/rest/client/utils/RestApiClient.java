@@ -72,14 +72,14 @@ public class RestApiClient {
 	 * @param responseClass            the response class
 	 * @return the t
 	 */
-	public <T> T postApi(String uri, T requestType, Class<?> responseClass) {
+	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) {
 
 		RestTemplate restTemplate;
 		try {
 			System.out.println("Your URl is to change ::   " + uri);
 			restTemplate = getRestTemplate();
 
-			T result = (T) restTemplate.postForObject("https://integ.mosip.io/identity/auth/internal", requestType, responseClass);
+			T result = (T) restTemplate.postForObject(uri, requestType, responseClass);
 			return result;
 		} catch (Exception e) {
 

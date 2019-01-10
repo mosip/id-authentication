@@ -13,6 +13,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
+ k8DevContext = 'dev-k8-cluster'
 
 
  stage('------- Checkout --------') {
@@ -270,6 +271,18 @@ stage('---------- SonarQube Analysis --------------') {
     */
         sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
     }
+    stage('Kubernetes Deploy : DEV-INT'){
+      //this stage will rollout the changes on Kubernetes Cluster
+      sh "kubectl config use-context $k8DevContext"
+      for(int i = 0; i<updatedDockerImages.size(); i++){
+        def updatedDockerImage = updatedDockerImages[i]
+        def updatedService = updatedServices[i]
+        echo "Updating [ Service:$updatedService, Image:$updatedDockerImage ]"
+        sh "kubectl set image deployment/$updatedService $updatedService=$updatedDockerImage"
+      }
+      echo "Getting list of all services" 
+      sh "kubectl get services"
+    }
 }
 
 /*This function will return paths all the Submodules which have been changed and 
@@ -295,6 +308,12 @@ def getChangedModulesPaths() {
    affectedPaths.addAll(entry.affectedPaths);
    }
   }
+  /*
+  Filtering all the modules from affected path that do not belong to project to build
+  */
+  echo "affected paths are :" + affectedPaths
+  affectedPaths.retainAll{it.startsWith(projectToBuild)}
+  echo "affected paths after retaining only kernel modules are --------:" + affectedPaths
 for (int i = 0; i < locationOfDockerFiles.size(); i++) {
         /*
         If there is no Dockerfile present in the Services

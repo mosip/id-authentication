@@ -8,6 +8,7 @@ import { CenterSelectionComponent } from './center-selection/center-selection.co
 import { ParentComponent } from './parent/parent.component';
 import { AcknowledgementComponent } from '../acknowledgement/acknowledgement.component';
 import { TimeSelectionComponent } from './time-selection/time-selection.component';
+import { PreviewComponent } from './preview/preview.component';
 
 const registrationRoutes: Routes = [
   {
@@ -17,6 +18,7 @@ const registrationRoutes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: '/' },
       { path: 'demographic', component: DemographicComponent },
       { path: 'file-upload', component: FileUploadComponent },
+      { path: 'preview', component: PreviewComponent },
       { path: 'pick-center', component: CenterSelectionComponent },
       { path: 'pick-time', component: TimeSelectionComponent },
       { path: 'acknowledgement', component: AcknowledgementComponent }

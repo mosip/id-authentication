@@ -1,4 +1,4 @@
-package io.mosip.preregistration.batchjobservices.service.impl;
+/*package io.mosip.preregistration.batchjobservices.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -21,41 +21,41 @@ import io.mosip.preregistration.batchjobservices.repository.PreRegistrationHisto
 import io.mosip.preregistration.batchjobservices.service.ArchivingConsumedStatusService;
 import io.mosip.preregistration.core.exception.TablenotAccessibleException;
 
-/**
+*//**
  * @author M1043008
  *
- */
+ *//*
 @Component
 public class ArchivingConsumedStatusServiceImpl implements ArchivingConsumedStatusService {
 	
-	/** The Constant LOGGER. */
+	*//** The Constant LOGGER. *//*
 	private static final Logger LOGGER = LoggerFactory.getLogger(ArchivingConsumedStatusServiceImpl.class);
 
-	/** The Constant USER. */
+	*//** The Constant USER. *//*
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The Constant LOGDISPLAY. */
+	*//** The Constant LOGDISPLAY. *//*
 	private static final String LOGDISPLAY = "{} - {}";
 
-	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
+	*//** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. *//*
 	private static final String HISTORY_STATUS_TABLE_NOT_ACCESSIBLE = "The demographic history table is not accessible";
 
-	/**
+	*//**
 	 * The PreRegistration History Table Repository.
-	 */
+	 *//*
 	@Autowired
 	private PreRegistrationHistoryTableRepository historyTableRepository;
 
-	/**
+	*//**
 	 * The PreRegistration Applicant Demographic Table Repository.
-	 */
+	 *//*
 	@Autowired
 	private PreRegistrationDemographicRepository demographicRepository;
 	
 	
-	/* (non-Javadoc)
+	 (non-Javadoc)
 	 * @see io.mosip.preregistration.batchjobservices.service.ArchivingConsumedStatusService#archivingConsumed()
-	 */
+	 
 	@Override
 	public ResponseDto<String> archivingConsumed(){
 		
@@ -111,3 +111,4 @@ public class ArchivingConsumedStatusServiceImpl implements ArchivingConsumedStat
 	}
 
 }
+*/

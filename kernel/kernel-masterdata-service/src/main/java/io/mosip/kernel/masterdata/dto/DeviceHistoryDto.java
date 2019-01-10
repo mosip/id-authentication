@@ -7,9 +7,9 @@
 
 	import java.time.LocalDateTime;
 
-	import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-	import lombok.Data;
+import lombok.Data;
 
 	/**
 	 * Response dto for Machine History Detail

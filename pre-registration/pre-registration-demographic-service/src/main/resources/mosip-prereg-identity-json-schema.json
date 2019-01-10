@@ -66,7 +66,6 @@
 				"type": "object",
 				"required": [
 					"language",
-					"label",
 					"value"
 				],
 				"additionalProperties": false,
@@ -74,9 +73,7 @@
 					"language": {
 						"type": "string"
 					},
-					"label": {
-						"type": "string"
-					},
+					
 					"value": {
 						"type": "string"
 					}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -17,6 +18,7 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.json.metadata.Applicant;
 import io.mosip.registration.dto.json.metadata.Biometric;
@@ -79,7 +81,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					buildPhotograph("label", language, 0, documentDTO.getExceptionPhotoName(), 0));
 
 			// Set Documents
-			identity.setDocuments(buildDocuments(documentDTO));
+			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
 			
 			// Add Biometric Details
 			BiometricInfoDTO biometricInfoDTO = source.getBiometricDTO().getApplicantBiometricDTO();
@@ -180,31 +182,57 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return photograph;
 	}
 	
-	private List<Document> buildDocuments(ApplicantDocumentDTO documentDTO) {
+	private List<Document> buildDocuments(DemographicDTO demographicDTO) {
 		List<Document> documents = new ArrayList<>();
-		if (documentDTO.getDocumentDetailsDTO() != null) {
-			for (DocumentDetailsDTO documentDetailsDTO : documentDTO.getDocumentDetailsDTO()) {
-				Document document = new Document();
-				document.setDocumentCategory(documentDetailsDTO.getDocumentCategory());
-				document.setDocumentName(removeFileExt(documentDetailsDTO.getDocumentName()));
-				document.setDocumentOwner(documentDetailsDTO.getDocumentOwner());
-				document.setDocumentType(documentDetailsDTO.getDocumentType());
-				
-				documents.add(document);
-			}
+
+		DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
+				.getProofOfIdentity();
+
+		if (documentDetailsDTO != null) {
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
 		}
-		
-		// Create Document object for Applicant Acknowledgement Receipt
-		Document document = new Document();
-		document.setDocumentCategory(RegistrationConstants.ACK_RECEIPT);
-		document.setDocumentName(removeFileExt(documentDTO.getAcknowledgeReceiptName()));
-		document.setDocumentOwner("Self");
-		document.setDocumentType(RegistrationConstants.ACK_RECEIPT);
-		
-		// Add the Acknowledgement Receipt
-		documents.add(document);
-		
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+
+		if (documentDetailsDTO != null) {
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+
+		if (documentDetailsDTO != null) {
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getDateOfBirthProof();
+
+		if (documentDetailsDTO != null) {
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+		}
+
+		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
+			// Add the Acknowledgement Receipt
+			documents.add(
+					getDocument(removeFileExt(demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName()),
+							RegistrationConstants.ACK_RECEIPT, RegistrationConstants.ACK_RECEIPT, "Self"));
+		}
+
 		return documents;
+	}
+
+	private Document getDocument(String documentName, String documentType, String documentCategory,
+			String documentOwner) {
+		Document document = new Document();
+		document.setDocumentName(documentName);
+		document.setDocumentType(documentType);
+		document.setDocumentCategory(documentCategory);
+		document.setDocumentOwner(documentOwner);
+
+		return document;
 	}
 
 	private BiometricDetails getBiometric(BaseDTO biometricDTO, String language, String biometricType) {
@@ -296,14 +324,29 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("previousRID", metaDataDTO.getPreviousRID()));
 		// Add Introducer Type
 		metaData.add(buildFieldValue("introducerType", registrationDTO.getOsiDataDTO().getIntroducerType()));
+		
+		// Validate whether Introducer has provided UIN or RID
+		String introducerRID = null;
+		String introducerUIN = null;
+		String introducerRIDorUIN = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+				.getParentOrGuardianRIDOrUIN();
+		if (introducerRIDorUIN != null && !introducerRIDorUIN.isEmpty()) {
+			if (introducerRIDorUIN.length() == Integer
+					.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+				introducerRID = introducerRIDorUIN;
+			} else {
+				introducerUIN = introducerRIDorUIN;
+			}
+		}
+		
 		// Add Introducer RID
-		metaData.add(buildFieldValue("introducerRID", registrationDTO.getDemographicDTO().getIntroducerRID()));
+		metaData.add(buildFieldValue("introducerRID", introducerRID));
 		// Add Hash of Introducer RID
-		metaData.add(buildFieldValue("introducerRIDHash", getHash(registrationDTO.getDemographicDTO().getIntroducerRID())));
+		metaData.add(buildFieldValue("introducerRIDHash", getHash(introducerRID)));
 		// Add Introducer UIN
-		metaData.add(buildFieldValue("introducerUIN", registrationDTO.getDemographicDTO().getIntroducerUIN()));
+		metaData.add(buildFieldValue("introducerUIN", introducerUIN));
 		// Add Hash of Introducer UIN
-		metaData.add(buildFieldValue("introducerUINHash", getHash(registrationDTO.getDemographicDTO().getIntroducerUIN())));
+		metaData.add(buildFieldValue("introducerUINHash", getHash(introducerUIN)));
 		// Add Officer Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
 				"officer", RegistrationConstants.BIOMETRIC_TYPE));

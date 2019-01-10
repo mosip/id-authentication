@@ -1,0 +1,87 @@
+<div class="preview__container">
+  <mat-card class="preview__header-container">
+    <mat-card-header class="preview__header-container">
+        <div class="preview__header">
+          <p>Preview</p>
+          <hr />
+        </div>
+        <hr />
+    </mat-card-header>
+    <mat-card-content>
+      <div class="preview__body-content-container">
+        <div class="preview__body-content-div">
+          <div>
+            <p>Language - English</p>
+            <h3>Personal Information</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+              <tr><td>Full Name</td><td>: {{previewData.fullName[0].value}}</td></tr>
+              <tr><td>DOB</td><td>: {{previewData.dateOfBirth[0].value}}</td></tr>
+              <tr><td>Age</td><td>: years</td></tr>
+              <tr><td>Gender</td><td>: {{previewData.gender[0].value}}</td></tr>
+            </table>
+          </div>
+          <div>
+            <h3>Contact Details</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+              <tr><td>Address</td><td>: {{previewData.addressLine1[0].value}}, {{previewData.addressLine2[0].value}}, {{previewData.addressLine3[0].value}}</td></tr>
+              <tr><td>Region</td><td>: {{previewData.region[0].value}}</td></tr>
+              <tr><td>Province</td><td>: {{previewData.province[0].value}}</td></tr>
+              <tr><td>City</td><td>: {{previewData.city[0].value}}</td></tr>
+              <tr><td>Local Admin Authority</td><td>: {{previewData.localAdministrativeAuthority[0].value}}</td></tr>
+              <tr><td>Mobile Number</td><td>: {{previewData.mobileNumber[0].value}}</td></tr>
+              <tr><td>Email ID</td><td>: {{previewData.emailId[0].value}}</td></tr>
+              <tr><td>CNIE/PIN Number</td><td>: {{previewData.CNEOrPINNumber[0].value}}</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="preview__body-content-div">
+          <div>
+            <div class="preview__modify-div">
+                <span>Language - {{secondaryLanguagelabels.language}}</span>
+                <span class="preview__modify-div-span"><img src="assets/edit.png" /> Modify</span>
+            </div>
+            <h3>{{secondaryLanguagelabels.subheading_information}}</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+              <tr><td>{{secondaryLanguagelabels.label_name}}</td><td>: {{previewData.fullName[1].value}}</td></tr>
+              <tr><td>DOB</td><td>: {{previewData.dateOfBirth[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_age}}</td><td>: {{secondaryLanguagelabels.text_years}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.text_gender}}</td><td>: {{previewData.gender[1].value}}</td></tr>
+            </table>
+          </div>
+          <div>
+            <h3>{{secondaryLanguagelabels.subheading_contact}}</h3>
+            <hr />
+          </div>
+          <div>
+            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
+              <tr><td>{{secondaryLanguagelabels.label_address}}</td><td>: {{previewData.addressLine1[1].value}}, {{previewData.addressLine2[1].value}}, {{previewData.addressLine3[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_region}}</td><td>: {{previewData.region[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_province}}</td><td>: {{previewData.province[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_city}}</td><td>: {{previewData.city[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_local_administrative_authority}}</td><td>: {{previewData.localAdministrativeAuthority[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_mob_num}}</td><td>: {{previewData.mobileNumber[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_email_id}}</td><td>: {{previewData.emailId[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_pin}}</td><td>: {{previewData.CNEOrPINNumber[1].value}}</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-footer class="preview__footer-container">
+          <hr />
+          <div class="preview__footer">
+            <p>Documents Preview</p>
+            <hr />
+          </div>
+    </mat-card-footer>
+  </mat-card>
+</div>
