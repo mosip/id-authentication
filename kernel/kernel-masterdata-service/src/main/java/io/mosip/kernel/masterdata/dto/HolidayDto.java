@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -47,6 +48,7 @@ public class HolidayDto {
 	private String holidayDesc;
 
 	@Size(min = 1, max = 3)
+	@ValidLangCode
 	@NotBlank
 	private String langCode;
 
