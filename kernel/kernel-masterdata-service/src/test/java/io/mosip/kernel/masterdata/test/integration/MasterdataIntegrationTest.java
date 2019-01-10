@@ -186,10 +186,8 @@ public class MasterdataIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-
 	@MockBean
 	private RestTemplate restTemplate;
-
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
 
@@ -1581,6 +1579,14 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void addHolidayTypeLanguageValidationTest() throws Exception {
+		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"asd\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
+		when(holidayRepository.create(Mockito.any())).thenReturn(holiday);
+		mockMvc.perform(post("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	public void addHolidayTypeExceptionTest() throws Exception {
 
 		String json = "{ \"id\": \"string\", \"request\": { \"holidayDate\": \"2019-01-01\", \"holidayDay\": \"Sunday\", \"holidayDesc\": \"New Year\", \"holidayMonth\": \"January\", \"holidayName\": \"New Year\", \"holidayYear\": \"2019\", \"id\": 1, \"isActive\": true, \"langCode\": \"eng\", \"locationCode\": \"BLR\" }, \"timestamp\": \"2018-12-06T08:49:32.190Z\", \"ver\": \"string\"}";
@@ -2150,6 +2156,13 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void createTitleLangCodeValidationTest() throws Exception {
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"dfg\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		mockMvc.perform(post("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	public void saveTitleExceptionTest() throws Exception {
 
 		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"eng\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
@@ -2177,6 +2190,13 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
 
+	}
+
+	@Test
+	public void updateTitleLangCodeValidationTest() throws Exception {
+		String content = "{ \"id\": \"string\", \"request\": { \"code\": \"43\", \"isActive\": true, \"langCode\": \"dfg\", \"titleDescription\": \"string\", \"titleName\": \"string\" }, \"timestamp\": \"2018-12-17T09:10:25.829Z\", \"ver\": \"string\"}";
+		mockMvc.perform(put("/v1.0/title").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -2636,6 +2656,18 @@ public class MasterdataIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON).content(machineSpecificationJson))
 				.andExpect(status().isInternalServerError());
 
+	}
+
+	@Test
+	public void createMachineSpecificationLangCodeValidationTest() throws Exception {
+		RequestDto<MachineSpecificationDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.match.regcentr.machineSpecificationcode");
+		requestDto.setVer("1.0.0");
+		machineSpecificationDto.setLangCode("akk");
+		requestDto.setRequest(machineSpecificationDto);
+		String machineSpecificationJson = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/machinespecifications").contentType(MediaType.APPLICATION_JSON)
+				.content(machineSpecificationJson)).andExpect(status().isBadRequest());
 	}
 
 	// -------------------------------------------------------------------------
@@ -3204,6 +3236,22 @@ public class MasterdataIntegrationTest {
 		Mockito.when(wordsRepository.create(Mockito.any())).thenReturn(blacklistedWords);
 		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void createBlacklistedWordsLangValidationExceptionTest() throws Exception {
+		RequestDto<BlacklistedWordsDto> requestDto = new RequestDto<BlacklistedWordsDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setWord("test  word");
+		blacklistedWordsDto.setLangCode("akk");
+		blacklistedWordsDto.setDescription("test description");
+		blacklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blacklistedWordsDto);
+		String content = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
@@ -4052,16 +4100,24 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
-	public void updateHolidaySuccess() throws Exception {
-		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+	public void updateHolidaySuccessTest() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"eng\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
 		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
 		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void updateHolidaySuccessNewNameAndDate() throws Exception {
-		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\",\"newHolidayDate\": \"2019-01-01\",\"newHolidayDesc\": \"New Year Desc\",\"newHolidayName\": \"New Year\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+	public void updateHolidayLanguageValidationTest() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"asd\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
+		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void updateHolidaySuccessNewNameAndDateTest() throws Exception {
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"eng\",\"locationCode\": \"LOC01\",\"newHolidayDate\": \"2019-01-01\",\"newHolidayDesc\": \"New Year Desc\",\"newHolidayName\": \"New Year\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
 		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
 		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
 				.andExpect(status().isOk());
@@ -4069,7 +4125,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void updateHolidaySuccessNewData() throws Exception {
-		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\",\"newHolidayDate\": null,\"newHolidayDesc\": \" \",\"newHolidayName\": \" \"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"eng\",\"locationCode\": \"LOC01\",\"newHolidayDate\": null,\"newHolidayDesc\": \" \",\"newHolidayName\": \" \"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
 		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenReturn(1);
 		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
 				.andExpect(status().isOk());
@@ -4086,7 +4142,7 @@ public class MasterdataIntegrationTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void updateHolidayNoHolidayFailure() throws Exception {
-		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"ENG\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
+		String input = "{\"id\": \"string\",\"request\":{\"holidayDate\": \"2018-01-01\", \"holidayDesc\": \"New Year\",\"holidayName\": \"New Year\",\"id\": 1,\"isActive\": false,\"langCode\": \"eng\",\"locationCode\": \"LOC01\"},\"timestamp\": \"2018-12-24T06:26:18.807Z\",\"ver\": \"string\"}";
 		when(holidayRepository.createQueryUpdateOrDelete(any(), any())).thenThrow(DataRetrievalFailureException.class,
 				DataAccessLayerException.class);
 		mockMvc.perform(put("/v1.0/holidays").contentType(MediaType.APPLICATION_JSON).content(input))
@@ -4122,6 +4178,22 @@ public class MasterdataIntegrationTest {
 		when(wordsRepository.update(any())).thenReturn(words.get(0));
 		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(input))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateBlacklistedWordsLangValidationExceptionTest() throws Exception {
+		RequestDto<BlacklistedWordsDto> requestDto = new RequestDto<BlacklistedWordsDto>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		BlacklistedWordsDto blacklistedWordsDto = new BlacklistedWordsDto();
+		blacklistedWordsDto.setWord("test  word");
+		blacklistedWordsDto.setLangCode("akk");
+		blacklistedWordsDto.setDescription("test description");
+		blacklistedWordsDto.setIsActive(true);
+		requestDto.setRequest(blacklistedWordsDto);
+		String content = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(put("/v1.0/blacklistedwords").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
