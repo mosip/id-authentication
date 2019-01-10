@@ -3,8 +3,6 @@ package io.mosip.authentication.service.impl.fingerauth.provider.impl;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
-
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
@@ -111,6 +109,12 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 
 	@Override
 	public double matchImage(Object reqInfo, Object entityInfo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -48,7 +48,7 @@ public class CogentIrisProvider extends IrisProvider {
 	}
 
 	@Override
-	public double matchMultiImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
+	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
