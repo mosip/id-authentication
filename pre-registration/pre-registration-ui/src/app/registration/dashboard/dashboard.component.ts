@@ -319,25 +319,8 @@ export class DashBoardComponent implements OnInit {
         regDto: regDto,
         status: status
       });
-      this.dataStorageService.getUser(preId).subscribe(
-        response => {
-          const request = this.createRequestJSON(response[appConstants.RESPONSE][0]);
-          this.disableModifyDataButton = true;
-          this.regService.addUser(new UserModel(preId, request, this.userFiles));
-        },
-        error => {
-          console.log('error', error);
-          this.disableModifyDataButton = false;
-          this.fetchedDetails = true;
-          return this.router.navigate(['error']);
-        },
-        () => {
-          this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
-          // this.fetchedDetails = true;
-          // this.router.navigate(['pre-registration', this.loginId, 'demographic']);
-        }
-      );
     }
+    this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
   }
   private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(
