@@ -55,25 +55,26 @@ public class KeyPolicySyncJob extends BaseJob {
 
 			}
 
+			// Run the Parent JOB always first
+
+			String centerId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+					.getRegistrationCenterId();
+
+			// Run the Parent JOB always first
+			this.responseDTO = policySyncService.fetchPolicy(centerId);
+
+			// To run the child jobs after the parent job Success
+			if (responseDTO.getSuccessResponseDTO() != null) {
+				executeChildJob(jobId, jobMap);
+			}
+
+			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
+
 		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
-
-		// Run the Parent JOB always first
-		
-		String centerId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
-
-		// Run the Parent JOB always first
-		this.responseDTO = policySyncService.fetchPolicy(centerId);
-
-		// To run the child jobs after the parent job Success
-		if (responseDTO.getSuccessResponseDTO() != null) {
-			executeChildJob(jobId, jobMap);
-		}
-
-		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");

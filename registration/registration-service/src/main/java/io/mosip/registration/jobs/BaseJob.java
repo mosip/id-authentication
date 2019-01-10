@@ -185,6 +185,8 @@ public abstract class BaseJob extends QuartzJobBean {
 
 			// Job Manager
 			jobManager = this.applicationContext.getBean(JobManager.class);
+			
+			triggerPoint = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 
 			// Get Job Map
 			if (jobMap == null) {
