@@ -28,10 +28,10 @@ import javafx.scene.layout.Pane;
 public class BiometricExceptionController extends BaseController implements Initializable {
 
 	@FXML
-	private ImageView leftIris;
+	private ImageView leftEye;
 
 	@FXML
-	private ImageView rightIris;
+	private ImageView rightEye;
 
 	@FXML
 	private Label leftLittle;
@@ -58,12 +58,12 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Pane rightHandPane;
 	@FXML
-	private Pane leftIrisPane;
+	private Pane leftEyePane;
 	@FXML
-	private Pane rightIrisPane;
+	private Pane rightEyePane;
 	@FXML
 	private AnchorPane biometricException;
-	
+
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -84,8 +84,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(rightMiddle);
 		fingerExceptionListener(rightRing);
 		fingerExceptionListener(rightThumb);
-		irisExceptionListener(leftIris);
-		irisExceptionListener(rightIris);
+		irisExceptionListener(leftEye);
+		irisExceptionListener(rightEye);
 
 	}
 
@@ -149,7 +149,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	public void goToNextPage() {
 		exceptionDTOCreation();
-		if(fingerList.isEmpty() && irisList.isEmpty()) {
+		if (fingerList.isEmpty() && irisList.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 		} else {
 			registrationController.toggleBiometricExceptionVisibility(false);
@@ -177,12 +177,12 @@ public class BiometricExceptionController extends BaseController implements Init
 				biometricExceptionDTO.setMissingBiometric(bioType);
 				biometricExceptionList.add(biometricExceptionDTO);
 			});
-		} 
+		}
 	}
-	
+
 	public void goToPreviousPage() {
 		exceptionDTOCreation();
-		if(fingerList.isEmpty() && irisList.isEmpty()) {
+		if (fingerList.isEmpty() && irisList.isEmpty()) {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 		} else {
 			registrationController.getDemoGraphicTitlePane().setExpanded(true);

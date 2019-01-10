@@ -7,18 +7,18 @@
 
 <AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="578.0" prefWidth="903.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
    <children>
-      <Pane fx:id="leftIrisPane" layoutX="462.0" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
+      <Pane fx:id="leftEyePane" layoutX="462.0" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
          <children>
-            <ImageView fx:id="leftIris" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="leftEye" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/leftIris.png" />
                </image>
             </ImageView>
          </children>
       </Pane>
-      <Pane fx:id="rightIrisPane" layoutX="668.0" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
+      <Pane fx:id="rightEyePane" layoutX="668.0" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
          <children>
-            <ImageView fx:id="rightIris" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="rightEye" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/rightIris.png" />
                </image>

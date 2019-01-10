@@ -938,11 +938,16 @@ public class RegistrationController extends BaseController {
 
 				if (registrationDTO.getSelectionListDTO() != null) {
 
-					if (registrationDTO.getSelectionListDTO().isBiometricFingerprint()) {
+				if(registrationDTO.getSelectionListDTO().isBiometricException()) {
+					toggleBiometricExceptionVisibility(true);
+					toggleFingerprintCaptureVisibility(false);
+					toggleIrisCaptureVisibility(false);
+					togglePhotoCaptureVisibility(false);
+				} else if (registrationDTO.getSelectionListDTO().isBiometricFingerprint() && !registrationDTO.getSelectionListDTO().isBiometricException()) {
 						toggleFingerprintCaptureVisibility(true);
 						toggleIrisCaptureVisibility(false);
 						togglePhotoCaptureVisibility(false);
-					} else if (registrationDTO.getSelectionListDTO().isBiometricIris()) {
+					} else if (registrationDTO.getSelectionListDTO().isBiometricIris() && !registrationDTO.getSelectionListDTO().isBiometricException()) {
 						toggleFingerprintCaptureVisibility(false);
 						toggleIrisCaptureVisibility(true);
 						togglePhotoCaptureVisibility(false);

@@ -25,6 +25,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -133,6 +134,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	@FXML
 	private Button scanBtn;
 
+	private int leftSlapCount;
+	private int rightSlapCount;
+	private int thumbCount;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -154,19 +159,28 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					scanBtn.setDisable(true);
 					duplicateCheckLbl.setText("");
 
+					exceptionFingersCount();
+
 					// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
-					if (fpDetailsDTO == null
-							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)
+					if ((leftHandPalmPane.getId().equals(selectedPane.getId()) && leftSlapCount < 4)
+							&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+									.equals(RegistrationConstants.LEFTPALM)
 									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
-											RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)))
-							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)
-									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
-											RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)))
-							|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)
-									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
-											RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)))) {
+											RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))))
+							|| (rightHandPalmPane.getId().equals(selectedPane.getId()) && rightSlapCount < 4)
+									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+											.equals(RegistrationConstants.RIGHTPALM)
+											&& fpDetailsDTO.getQualityScore() < Double
+													.parseDouble(getValueFromSessionMap(
+															RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))))
+							|| (thumbPane.getId().equals(selectedPane.getId()) && thumbCount < 2)
+									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+											.equals(RegistrationConstants.THUMBS)
+											&& fpDetailsDTO.getQualityScore() < Double
+													.parseDouble(getValueFromSessionMap(
+															RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))))) {
 						scanBtn.setDisable(false);
 					}
 				}
@@ -189,7 +203,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading of FingerprintCapture screen ended");
-		} catch (RuntimeException runtimeException) {
+		} catch (
+
+		RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
 							"%s -> Exception while initializing Fingerprint Capture page for user registration  %s",
@@ -198,6 +214,29 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP,
 					String.format("Exception while initializing Fingerprint Capture page for user registration  %s",
 							runtimeException.getMessage()));
+		}
+	}
+
+	private void exceptionFingersCount() {
+		leftSlapCount = 0;
+		rightSlapCount = 0;
+		thumbCount = 0;
+
+		List<BiometricExceptionDTO> biometricExceptionDTOs = getRegistrationDTOFromSession()
+				.getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO();
+		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
+
+			if (biometricExceptionDTO.getMissingBiometric().contains("left")
+					&& !biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+				leftSlapCount++;
+			}
+			if (biometricExceptionDTO.getMissingBiometric().contains("right")
+					&& !biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+				rightSlapCount++;
+			}
+			if (biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+				thumbCount++;
+			}
 		}
 	}
 
@@ -378,6 +417,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Iris capture page for user registration started");
 
+
+			exceptionFingersCount();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				if (validateFingerPrints()) {
 					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
@@ -389,7 +430,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					}
 				}
 			} else {
-
 				if (validateFingerPrints()) {
 					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 					registrationController.toggleFingerprintCaptureVisibility(false);
@@ -417,6 +457,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigating to Demographic capture page for user registration started");
+
+			exceptionFingersCount();
 			if (validateFingerPrints()) {
 				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 				if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
@@ -469,18 +511,28 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
 				if (validateQualityScore(fingerprintDetailsDTO)) {
-					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM)) {
+					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM)
+							|| leftSlapCount >= 4) {
 						isleftHandSlapCaptured = true;
-					} else if (fingerprintDetailsDTO.getFingerType()
-							.equalsIgnoreCase(RegistrationConstants.RIGHTPALM)) {
+					}
+					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.RIGHTPALM)
+							|| rightSlapCount >= 4) {
 						isrightHandSlapCaptured = true;
-					} else if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS)) {
+					} 
+					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS)
+							|| thumbCount >= 2) {
 						isthumbsCaptured = true;
 					}
 				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
+			}
+			
+			if(fingerprintDetailsDTOs.isEmpty() && leftSlapCount >= 4 && rightSlapCount >= 4 && thumbCount>=2) {
+				isleftHandSlapCaptured=true;
+				isrightHandSlapCaptured=true;
+				isthumbsCaptured=true;
 			}
 
 			if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
@@ -520,8 +572,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/**
 	 * Validating quality score of captured fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO
-	 *            the fingerprint details DTO
+	 * @param fingerprintDetailsDTO the fingerprint details DTO
 	 * @return true, if successful
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {

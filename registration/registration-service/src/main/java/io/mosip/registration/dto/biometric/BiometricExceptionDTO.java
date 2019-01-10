@@ -12,6 +12,7 @@ public class BiometricExceptionDTO extends BaseDTO {
 	// Fingerprint or Iris
 	protected String biometricType;
 	protected String missingBiometric;
+	protected byte[] biometricISOImage;
 	protected String exceptionDescription;
 	// Permanent or Temporary
 	protected String exceptionType;
@@ -38,6 +39,18 @@ public class BiometricExceptionDTO extends BaseDTO {
 	}
 	public void setExceptionType(String exceptionType) {
 		this.exceptionType = exceptionType;
+	}
+	/**
+	 * @return the biometricISOImage
+	 */
+	public byte[] getBiometricISOImage() {
+		return biometricISOImage;
+	}
+	/**
+	 * @param biometricISOImage the biometricISOImage to set
+	 */
+	public void setBiometricISOImage(byte[] biometricISOImage) {
+		this.biometricISOImage = biometricISOImage;
 	}
 	
 }
