@@ -22,5 +22,4 @@ public interface IdValidator<T> {
 	 * @return true if Id is valid
 	 */
 	boolean validateId(T id);
-
 }

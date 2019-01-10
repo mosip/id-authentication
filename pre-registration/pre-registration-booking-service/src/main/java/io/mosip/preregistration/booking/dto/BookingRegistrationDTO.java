@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
