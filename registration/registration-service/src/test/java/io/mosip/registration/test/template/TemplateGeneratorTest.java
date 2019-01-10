@@ -20,12 +20,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
+import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
+import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
@@ -49,6 +53,9 @@ public class TemplateGeneratorTest {
 
 	@Mock
 	ApplicationContext applicationContext;
+	
+	@Mock
+	QrCodeGenerator<QrVersion> qrCodeGenerator;
 
 	ResourceBundle dummyResourceBundle = new ResourceBundle() {
 		@Override
@@ -63,7 +70,7 @@ public class TemplateGeneratorTest {
 	};
 
 	@Test
-	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
+	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException, QrcodeGenerationException {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
 		segmentedFingerprints.add(new FingerprintDetailsDTO());
@@ -78,6 +85,7 @@ public class TemplateGeneratorTest {
 						.thenReturn(image);
 		when(applicationContext.getLocalLanguageProperty()).thenReturn(dummyResourceBundle);
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);
+		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
 		assertNotNull(response.getSuccessResponseDTO());
 	}
 

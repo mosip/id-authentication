@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.impl.SyncJobControlDAOImpl;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.repositories.SyncJobRepository;
+import io.mosip.registration.repositories.SyncJobControlRepository;
 
 public class SyncJobControlDAOTest {
 
@@ -24,7 +24,7 @@ public class SyncJobControlDAOTest {
 	SyncJobControlDAOImpl syncJobDAOImpl;
 	
 	@Mock
-	SyncJobRepository syncJobRepository;
+	SyncJobControlRepository syncJobRepository;
 	
 	@Test
 	public void updateTest() {
