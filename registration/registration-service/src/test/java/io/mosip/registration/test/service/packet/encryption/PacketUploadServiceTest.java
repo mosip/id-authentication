@@ -31,7 +31,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -64,12 +63,9 @@ public class PacketUploadServiceTest {
 	@InjectMocks
 	private PacketUploadServiceImpl packetUploadServiceImpl;
 	
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
-	
 	@Before
 	public void initialize() {
 		ReflectionTestUtils.setField(packetUploadServiceImpl, "urlPath", "http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets");
-		applicationContext.setApplicationMessagesBundle();
 	}
 	
 	@SuppressWarnings("unchecked")

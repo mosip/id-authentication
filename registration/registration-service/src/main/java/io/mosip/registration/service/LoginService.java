@@ -1,10 +1,9 @@
 package io.mosip.registration.service;
 
-import java.util.Map;
+import java.util.List;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 
 /**
@@ -21,7 +20,7 @@ public interface LoginService {
 	 * 
 	 * @return Map of login modes along with sequence
 	 */
-	Map<String, Object> getModesOfLogin(String authType);
+	List<String> getModesOfLogin(String authType);
 
 	/**
 	 * fetching user details
@@ -44,32 +43,11 @@ public interface LoginService {
 	/**
 	 * fetching registration screen authorization details
 	 * 
-	 * @param userId
-	 *            entered userId
+	 * @param roleCode
+	 *            list of roles
 	 * @return AuthorizationDTO authorization details
 	 */
-	AuthorizationDTO getScreenAuthorizationDetails(String userId);
-
-	/**
-	 * get otp
-	 * 
-	 * @param key
-	 *            eoUserName to generate OTP
-	 * @return Response success or Error
-	 */
-	ResponseDTO getOTP(String key);
-
-	/**
-	 * OTP validation entered by user
-	 * 
-	 * @param key
-	 *            is eoUsername
-	 * @param otp
-	 *            user entered
-	 * @return Response success or error
-	 */
-
-	ResponseDTO validateOTP(String key, String otp);
+	AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode);
 	
 	/**
 	 *updating login params on invalid login attempts

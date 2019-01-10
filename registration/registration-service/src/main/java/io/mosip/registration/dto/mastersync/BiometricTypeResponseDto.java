@@ -25,7 +25,6 @@ public class BiometricTypeResponseDto {
 	 */
 	public void setBiometrictype(List<BiometricTypeDto> biometrictype) {
 		this.biometrictype = biometrictype;
-		System.out.println();
 	}
 
 }

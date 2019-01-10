@@ -1,7 +1,9 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
+import java.util.Map;
 import java.util.Optional;
 
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;;
 
 /**
@@ -26,6 +28,8 @@ public interface IdInfoFetcher {
 	 * @return language name
 	 */
 	public Optional<String> getLanguageName(String languageCode);
+
+	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity);
 	
 
 }

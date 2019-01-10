@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.constant;
-
-// TODO: Auto-generated Javadoc
+	
 /**
  * The Enum JsonConstant.
  * 

@@ -36,8 +36,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
-	private static final String ERR_CODE_OTP_NOT_GENERATED = "KER-OTV-005";
-
 	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
 
 	private static final String OTP_EXPIRED = "OTP_EXPIRED";
@@ -45,6 +43,8 @@ public class OTPManager {
 	private static final String STATUS_SUCCESS = "success";
 
 	private static final String STATUS_FAILURE = "failure";
+
+	private static final String USER_BLOCKED = "USER_BLOCKED";
 
 	@Autowired
 	private RestHelper restHelper;
@@ -72,14 +72,33 @@ public class OTPManager {
 		RestRequestDTO restRequestDTO = null;
 		String response = null;
 		try {
+
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = otpGeneratorResponsetDto.getOtp();
 			logger.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
+
 		} catch (RestServiceException e) {
+
+			Optional<Object> responseBody = e.getResponseBody();
+			if (responseBody.isPresent()) {
+				otpGeneratorResponsetDto = (OtpGeneratorResponseDto) responseBody.get();
+				String status = otpGeneratorResponsetDto.getStatus();
+				String message = otpGeneratorResponsetDto.getMessage();
+				if (status != null && status.equalsIgnoreCase(STATUS_FAILURE)
+						&& message.equalsIgnoreCase(USER_BLOCKED)) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.BLOCKED_OTP_TO_GENERATE);
+
+				}
+			} else {
+				// FIXME Could not validate OTP -OTP - Request could not be processed. Please
+				// try again
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+			}
+
 			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+
 		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
@@ -117,7 +136,10 @@ public class OTPManager {
 				String message = otpvalidateresponsedto.getMessage();
 				if (status != null) {
 					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
-						if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+						if (message.equalsIgnoreCase(USER_BLOCKED)) {
+							throw new IdAuthenticationBusinessException(
+									IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
+						} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
 						} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
@@ -127,8 +149,12 @@ public class OTPManager {
 					}
 				} else {
 					Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
-					// Do not throw server error for OTP not generated, throw invalid OTP error instead
-					if(errorCode.filter(code -> code.equals(ERR_CODE_OTP_NOT_GENERATED)).isPresent()) {
+					// Do not throw server error for OTP not generated, throw invalid OTP error
+					// instead
+					if (errorCode
+							.filter(code -> code.equals(
+									IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+							.isPresent()) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 					}
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
@@ -141,7 +167,7 @@ public class OTPManager {
 		}
 		return isValidOtp;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Optional<String> getErrorCode(String resBody) {
 		return Optional.of(resBody).map(str -> {
@@ -153,16 +179,9 @@ public class OTPManager {
 				logger.error("NA", "NA", "Error parsing response body", null);
 			}
 			return res;
-		})
-		.map(map -> map.get("errors"))
-		.filter(obj -> obj instanceof List)
-		.flatMap(obj -> ((List) obj)
-				.stream()
-				.filter(obj1 -> obj1 instanceof Map)
-				.map(map1 -> (((Map) map1).get("errorCode")))
-				.findAny())
-		.map(String::valueOf);
+		}).map(map -> map.get("errors")).filter(obj -> obj instanceof List).flatMap(obj -> ((List) obj).stream()
+				.filter(obj1 -> obj1 instanceof Map).map(map1 -> (((Map) map1).get("errorCode"))).findAny())
+				.map(String::valueOf);
 	}
-	
 
 }

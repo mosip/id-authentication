@@ -20,8 +20,8 @@ public class IdResponseDTO extends BaseIdRequestResponseDTO {
 	/** The err. */
 	private List<ErrorDTO> err;
 	
-	/** The registration id. */
-	private String registrationId;
+	/** The uin id. */
+	private String uin;
 	
 	/** The status. */
 	private String status;

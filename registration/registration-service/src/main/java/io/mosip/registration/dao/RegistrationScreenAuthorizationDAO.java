@@ -1,5 +1,7 @@
 package io.mosip.registration.dao;
 
+import java.util.List;
+
 import io.mosip.registration.dto.AuthorizationDTO;
 
 /**
@@ -16,5 +18,5 @@ public interface RegistrationScreenAuthorizationDAO {
 	 * 
 	 * @return AuthorizationDTO of authorization details
 	 */
-	AuthorizationDTO getScreenAuthorizationDetails(String roleCode);
+	AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode);
 }

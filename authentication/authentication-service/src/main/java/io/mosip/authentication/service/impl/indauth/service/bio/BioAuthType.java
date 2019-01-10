@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -37,16 +38,16 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE, BioMatchType.FGRMIN_RIGHT_THUMB,
 					BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE, BioMatchType.FGRMIN_RIGHT_RING,
 					BioMatchType.FGRMIN_RIGHT_LITTLE),
-			AuthTypeDTO::isBio, "Fingerprint") {
+		 "Fingerprint", 1) {
 
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-				IdInfoFetcher idInfoFetcher) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
 						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchMinutiea;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
 			return valueMap;
 		}
@@ -56,7 +57,23 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE, BioMatchType.FGRIMG_RIGHT_THUMB,
 					BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE, BioMatchType.FGRIMG_RIGHT_RING,
 					BioMatchType.FGRIMG_RIGHT_LITTLE),
-			AuthTypeDTO::isBio, "Fingerprint") {
+			"Fingerprint", 1) {
+
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
+					.forEach((BioInfo bioinfovalue) -> {
+						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchImage;
+						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
+						valueMap.put(BioAuthType.class.getSimpleName(), this);
+					});
+			return valueMap;
+		}
+	},
+	FGR_MIN_MULTI("fgrMin",
+			setOf(BioMatchType.FGRMIN_MULTI),
+			"Fingerprint", 2) {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
@@ -64,20 +81,20 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction<String, String, Double> func = getFingerPrintProvider(bioinfovalue)::matchImage;
+						BiFunction< Map<String, String>,  Map<String, String>, Double> func = getFingerPrintProvider(bioinfovalue)::matchMultiImage;
 						valueMap.put(FingerprintProvider.class.getSimpleName(), func);
 					});
 			return valueMap;
 		}
 	},
-	IRIS_IMG("irisImg", Collections.emptySet(), AuthTypeDTO::isBio, "Iris"),
-	FACE_IMG("faceImg", Collections.emptySet(), AuthTypeDTO::isBio, "Face");
+	IRIS_IMG("irisImg", Collections.emptySet(), "Iris", 1),
+	FACE_IMG("faceImg", Collections.emptySet(), "Face", 1);
 	private String type;
 
 	/**  */
 	private Set<MatchType> associatedMatchTypes;
 
-	private Predicate<? super AuthTypeDTO> authTypePredicate;
+	
 
 	private String displayName;
 
@@ -85,12 +102,20 @@ public enum BioAuthType implements AuthType {
 
 	private static CogentFingerprintProvider cogentFingerprintProvider = new CogentFingerprintProvider();
 
+	private int count;
+
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes,
-			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
+			String displayName, int count) {
 		this.type = type;
-		this.authTypePredicate = authTypePredicate;
+	
 		this.displayName = displayName;
+		this.count = count;
 		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
+	}
+
+	private Long getFPValuesCountInIdentity(AuthRequestDTO reqDTO, IdInfoFetcher helper) {
+		Long count = (long) helper.getIdentityInfo(BioMatchType.FGRMIN_MULTI, reqDTO.getRequest().getIdentity()).size();
+		return count;
 	}
 
 	@Override
@@ -109,8 +134,13 @@ public enum BioAuthType implements AuthType {
 	}
 
 	@Override
-	public boolean isAuthTypeEnabled(AuthRequestDTO authReq) {
-		return Optional.of(authReq).map(AuthRequestDTO::getAuthType).filter(authTypePredicate).isPresent();
+	public boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper) {
+		return  authReq.getAuthType().isBio() && getFPValuesCountInIdentity(authReq, helper) == getCount();
+	}
+
+
+	private int getCount() {
+		return count;
 	}
 
 	@Override

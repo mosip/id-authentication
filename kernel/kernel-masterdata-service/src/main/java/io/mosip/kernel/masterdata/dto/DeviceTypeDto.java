@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -19,18 +20,19 @@ import lombok.Data;
 @ApiModel(value = "Device Type", description = "Device Type Detail resource")
 public class DeviceTypeDto {
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 
-	@NotNull
+//	@ValidLangCode
+	@NotBlank
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 
 	
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 64)
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;

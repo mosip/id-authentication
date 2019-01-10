@@ -5,12 +5,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.RequestCodes;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 public class ValidationUtil {
+	
+	private static Logger log= LoggerConfiguration.logConfig(ValidationUtil.class);
+	
 	private ValidationUtil() {
 	}
 
@@ -29,6 +34,8 @@ public class ValidationUtil {
 	}
 
 	public static boolean requestValidator(Map<String, String> requestMap, Map<String, String> requiredRequestMap) {
+		log.info("sessionId","idType","id","In requestValidator method of pre-registration core with requestMap "+requestMap + 
+				" againt requiredRequestMap "+requiredRequestMap);
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.ID) && (requestMap.get(RequestCodes.ID) == null
 					|| !requestMap.get(RequestCodes.ID).equals(requiredRequestMap.get(RequestCodes.ID)))) {
@@ -58,11 +65,12 @@ public class ValidationUtil {
 	}
 
 	public static boolean requstParamValidator(Map<String, String> requestMap) {
+		log.info("sessionId","idType","id","In requstParamValidator method of pre-registration core with requestMap "+requestMap );
 		for (String key : requestMap.keySet()) {
 			if (key.equals(RequestCodes.USER_ID) && (requestMap.get(RequestCodes.USER_ID) == null
 					|| requestMap.get(RequestCodes.USER_ID).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_001.toString(),
-						ErrorMessages.INVALID_REQUEST_ID.toString());
+						ErrorMessages.INVALID_REQUEST_USER_ID.toString());
 			} else if (key.equals(RequestCodes.PRE_REGISTRATION_ID)
 					&& (requestMap.get(RequestCodes.PRE_REGISTRATION_ID) == null
 							|| requestMap.get(RequestCodes.PRE_REGISTRATION_ID).equals(""))) {

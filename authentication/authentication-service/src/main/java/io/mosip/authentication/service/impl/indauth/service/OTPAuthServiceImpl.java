@@ -61,23 +61,23 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * Validates generated OTP via OTP Manager.
 	 *
 	 * @param authreqdto the authreqdto
-	 * @param refId      the ref id
+	 * @param uin      the ref id
 	 * @return true - when the OTP is Valid.
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	@Override
-	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String refId)
+	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String uin)
 			throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
 		String txnId = authreqdto.getTxnID();
 		String tspCode = authreqdto.getMuaCode();
 		Optional<String> otp = getOtpValue(authreqdto);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnId(txnId, refId);
+			boolean isValidRequest = validateTxnId(txnId, uin);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-				String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, tspCode);
+				String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnId, tspCode);
 				String key = Optional.ofNullable(otpKey).orElseThrow(
 						() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
 				isOtpValid = otpManager.validateOtp(otp.get(), key);
@@ -124,15 +124,15 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * Validates Transaction ID and Unique ID.
 	 *
 	 * @param txnId the txn id
-	 * @param uIN   the u IN
+	 * @param uin   the uin
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 
-	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
+	public boolean validateTxnId(String txnId, String uin) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
-		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTrnIdAndRefId(txnId, uIN);
+		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTrnIdAndRefId(txnId, uin);
 		if (authtxns != null && !authtxns.isEmpty() && authtxns.get(0) != null) {
 			isValidTxn = true;
 		} else {

@@ -2,17 +2,23 @@ package io.mosip.registration.processor.camel.bridge;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
-import org.apache.ignite.configuration.IgniteConfiguration;
-import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
-import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
+import org.apache.camel.CamelContext;
+import org.apache.camel.component.vertx.VertxComponent;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.model.RoutesDefinition;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.camel.bridge.util.PropertyFileUtil;
+import io.vertx.camel.CamelBridge;
+import io.vertx.camel.CamelBridgeOptions;
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -20,33 +26,22 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 
 /**
- * This class provides
+ * This class provides.
  *
  * @author Mukul Puspam
- *
  */
-public class MosipBridgeFactory {
+public class MosipBridgeFactory extends AbstractVerticle {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipBridgeFactory.class);
-
-
-	private MosipBridgeFactory() {
-
-	}
 
 	/**
 	 * Gets the event bus.
 	 *
 	 * @return the event bus
-	 * @throws InterruptedException
-	 *             the interrupted exception
-	 * @throws ExecutionException
-	 *             the execution exception
 	 */
 	public static void getEventBus() {
-
-		String configServerUri = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "vertx.ignite.configuration");
+		String configServerUri = BridgeUtil.getPropertyFromConfigServer("vertx.ignite.configuration");
 		URL url = null;
 		try {
 			url = new URL(configServerUri);
@@ -59,11 +54,27 @@ public class MosipBridgeFactory {
 
 		Vertx.clusteredVertx(options, vertx -> {
 			if (vertx.succeeded()) {
-				vertx.result().deployVerticle(MosipCamelBridge.class.getName(),
+				vertx.result().deployVerticle(MosipBridgeFactory.class.getName(),
 						new DeploymentOptions().setHa(true).setWorker(true));
 			} else {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"failed : ",vertx.cause().toString());
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), "failed : ", vertx.cause().toString());
 			}
 		});
+	}
+
+	@Override
+	public void start() throws Exception {
+		CamelContext camelContext = new DefaultCamelContext();
+		VertxComponent vertxComponent = new VertxComponent();
+		vertxComponent.setVertx(vertx);
+		RestTemplate restTemplate = new RestTemplate();
+		String url = BridgeUtil.getPropertyFromConfigServer("camel.routes.configuration");
+		ResponseEntity<Resource> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, Resource.class);
+		RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+		camelContext.addRouteDefinitions(routes.getRoutes());
+		camelContext.addComponent("vertx", vertxComponent);
+		camelContext.start();
+		CamelBridge.create(vertx, new CamelBridgeOptions(camelContext)).start();
 	}
 }

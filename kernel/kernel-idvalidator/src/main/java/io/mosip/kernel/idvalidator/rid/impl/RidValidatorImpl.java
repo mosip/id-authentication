@@ -58,7 +58,7 @@ public class RidValidatorImpl implements RidValidator<String> {
 
 		if (id.length() != ridLength) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(),
-					RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
+					RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage() + ridLength);
 		}
 
 		if (!StringUtils.isNumeric(id)) {

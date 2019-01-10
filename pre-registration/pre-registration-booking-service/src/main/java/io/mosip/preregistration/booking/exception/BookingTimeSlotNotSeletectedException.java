@@ -11,19 +11,23 @@ public class BookingTimeSlotNotSeletectedException extends BaseUncheckedExceptio
 
 	private static final long serialVersionUID = -4543476272744645661L;
 
-	public BookingTimeSlotNotSeletectedException(String message) {
-		super(ErrorCodes.PRG_BOOK_RCI_003.toString(), message);
+	public BookingTimeSlotNotSeletectedException(String msg) {
+		super("", msg);
+	}
+
+	public BookingTimeSlotNotSeletectedException(String msg, Throwable cause) {
+		super("", msg, cause);
 	}
 
 	public BookingTimeSlotNotSeletectedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
-	public BookingTimeSlotNotSeletectedException(String errorMessage, Throwable rootCause) {
-		super(ErrorCodes.PRG_BOOK_RCI_003.toString(), errorMessage, rootCause);
-	}
-
 	public BookingTimeSlotNotSeletectedException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
+	}
+
+	public BookingTimeSlotNotSeletectedException() {
+		super();
 	}
 }

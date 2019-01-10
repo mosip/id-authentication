@@ -55,5 +55,6 @@ public class DeviceTypeController {
 			@Valid @RequestBody RequestDto<DeviceTypeDto> deviceTypes) {
 		return new ResponseEntity<>(deviceTypeService.createDeviceType(deviceTypes), HttpStatus.CREATED);
 	}
+	 
 
 }

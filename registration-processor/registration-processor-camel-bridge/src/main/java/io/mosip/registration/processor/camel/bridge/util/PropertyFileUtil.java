@@ -17,8 +17,11 @@ public class PropertyFileUtil {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PropertyFileUtil.class);
-	
 
+
+	/**
+	 * Instantiates a new property file util.
+	 */
 	private PropertyFileUtil() {
 
 	}
@@ -44,7 +47,7 @@ public class PropertyFileUtil {
 			prop.load(input);
 			value = prop.getProperty(key);
 		} catch (IOException ex) {
-			
+
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"Failed to read properties : ",ex.getCause().toString());
 
 		}

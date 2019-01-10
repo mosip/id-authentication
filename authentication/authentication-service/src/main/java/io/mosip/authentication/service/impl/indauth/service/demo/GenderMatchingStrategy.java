@@ -5,6 +5,8 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -20,7 +22,7 @@ public enum GenderMatchingStrategy implements MatchingStrategy {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			return 0;
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.GENDER_MISMATCH);
 		}
 	});
 

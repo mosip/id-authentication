@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.preregistration.batchjob.tasklets.ArchivingConsumedPreIdTasklet;
 import io.mosip.preregistration.batchjob.tasklets.BookingTasklet;
 import io.mosip.preregistration.batchjob.tasklets.ExpiredStatusTasklet;
 import io.mosip.preregistration.batchjob.tasklets.UpdateConsumedStatusTasklet;
@@ -38,8 +37,8 @@ public class PreRegistrationBatchJobConfig {
 	@Autowired
 	private UpdateConsumedStatusTasklet updateTableTasklet;
 	
-	@Autowired
-	private ArchivingConsumedPreIdTasklet archivingTasklet;
+	/*@Autowired
+	private ArchivingConsumedPreIdTasklet archivingTasklet;*/
 	
 	@Autowired
 	private BookingTasklet bookingtasklet;
@@ -53,10 +52,10 @@ public class PreRegistrationBatchJobConfig {
 		return stepBuilderFactory.get("updateTableStep").tasklet(updateTableTasklet).build();
 	}
 	
-	@Bean
+	/*@Bean
 	public Step archivingStep() {
 		return stepBuilderFactory.get("archivingStep").tasklet(archivingTasklet).build();
-	}
+	}*/
 	
 	@Bean
 	public Step bookingStep() {
@@ -80,7 +79,6 @@ public class PreRegistrationBatchJobConfig {
 		return this.jobBuilderFactory.get("consumedStatusJob")
 				   .incrementer(new RunIdIncrementer())
 				   .start(updateTableStep())
-				   .next(archivingStep())
 				   .build();
 	}
 	

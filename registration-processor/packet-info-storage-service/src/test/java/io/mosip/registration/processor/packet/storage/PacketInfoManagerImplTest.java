@@ -683,5 +683,16 @@ public class PacketInfoManagerImplTest {
 				"Fetching applicant iris images from db. verifing image name of first record, expected value is LeftEye",
 				"LeftEye", resultList.get(0));
 	}
+	
+	@Test
+	public void testGetRegIdbyUIN() {
+		String uin = "123456789";
+		List<String> regIdlist = new ArrayList<>();
+		regIdlist.add("27847657360002520181208094056");
+		Mockito.when(packetInfoDao.getRegIdByUIN(uin)).thenReturn(regIdlist);
+		
+		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
+		assertEquals("27847657360002520181208094056", ridList.get(0));
+	}
 
 }

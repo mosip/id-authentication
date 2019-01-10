@@ -11,20 +11,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.datasync.dto.BookingRegistrationDTO;
-import io.mosip.preregistration.datasync.dto.CreateDemographicDTO;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
-import io.mosip.preregistration.datasync.dto.DocumentServiceDTO;
-import io.mosip.preregistration.datasync.dto.MainRequestDTO;
-import io.mosip.preregistration.datasync.dto.MainResponseDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
-import io.mosip.preregistration.datasync.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.datasync.dto.PreRegistrationIdsDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.ReverseDatasyncReponseDTO;
 import io.mosip.preregistration.datasync.errorcodes.ErrorMessages;
+import io.mosip.preregistration.datasync.exception.util.DataSyncExceptionCatcher;
 import io.mosip.preregistration.datasync.service.util.DataSyncServiceUtil;
 
 /**
@@ -61,6 +64,8 @@ public class DataSyncService {
 	 */
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
+	private Logger log = LoggerConfiguration.logConfig(DataSyncService.class);
+
 	/**
 	 * This method acts as a post constructor to initialize the required request
 	 * parameters.
@@ -73,9 +78,10 @@ public class DataSyncService {
 
 	public MainResponseDTO<PreRegistrationIdsDTO> retrieveAllPreRegIds(
 			MainRequestDTO<DataSyncRequestDTO> dataSyncRequest) {
-		PreRegistrationIdsDTO preRegistrationIdsDTO = null;
+		PreRegistrationIdsDTO preRegistrationIdsDTO = new PreRegistrationIdsDTO();
 		MainResponseDTO<PreRegistrationIdsDTO> responseDto = new MainResponseDTO<>();
 		List<String> preregIds;
+		log.info("sessionId", "idType", "id", "In retrieveAllPreRegIds method of datasync service ");
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(dataSyncRequest), requiredRequestMap)
 					&& serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest())) {
@@ -90,8 +96,16 @@ public class DataSyncService {
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setResponse(preRegistrationIdsDTO);
 			}
-		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(ErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+		} catch (DataAccessLayerException ex) {
+			log.error("sessionId", "idType", "id",
+					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
+
+			throw new TableNotAccessibleException(ErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In retrieveAllPreRegIds method of datasync service - " + ex.getMessage());
+
+			new DataSyncExceptionCatcher().handle(ex);
 		}
 		return responseDto;
 	}
@@ -103,18 +117,21 @@ public class DataSyncService {
 	 */
 	public MainResponseDTO<PreRegArchiveDTO> getPreRegistrationData(String preId) {
 		MainResponseDTO<PreRegArchiveDTO> responseDto = new MainResponseDTO<>();
-		PreRegArchiveDTO preRegArchiveDTO = null;
-		try{
-		
-			CreateDemographicDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId);
-			List<DocumentServiceDTO> documentlist = serviceUtil.callGetDocRestService(preId);
+		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+		log.info("sessionId", "idType", "id", "In getPreRegistrationData method of datasync service ");
+		try {
+			DemographicResponseDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId);
+			List<DocumentMultipartResponseDTO> documentlist = serviceUtil.callGetDocRestService(preId);
 			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil.callGetAppointmentDetailsRestService(preId);
 			preRegArchiveDTO = serviceUtil.archivingFiles(preRegistrationDTO, bookingRegistrationDTO, documentlist);
 			responseDto.setStatus(Boolean.TRUE);
 			responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 			responseDto.setResponse(preRegArchiveDTO);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In getPreRegistrationData method of datasync service - " + ex.getMessage());
+
+			new DataSyncExceptionCatcher().handle(ex);
 		}
 		return responseDto;
 	}
@@ -126,7 +143,8 @@ public class DataSyncService {
 	public MainResponseDTO<ReverseDatasyncReponseDTO> storeConsumedPreRegistrations(
 			MainRequestDTO<ReverseDataSyncRequestDTO> reverseDataSyncRequest) {
 		MainResponseDTO<ReverseDatasyncReponseDTO> responseDto = new MainResponseDTO<>();
-		ReverseDatasyncReponseDTO reverseDatasyncReponse = null;
+		ReverseDatasyncReponseDTO reverseDatasyncReponse = new ReverseDatasyncReponseDTO();
+		log.info("sessionId", "idType", "id", "In storeConsumedPreRegistrations method of datasync service ");
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(reverseDataSyncRequest),
 					requiredRequestMap)
@@ -138,8 +156,11 @@ public class DataSyncService {
 				responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				responseDto.setErr(null);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In storeConsumedPreRegistrations method of datasync service - " + ex.getMessage());
+
+			new DataSyncExceptionCatcher().handle(ex);
 		}
 		return responseDto;
 	}
