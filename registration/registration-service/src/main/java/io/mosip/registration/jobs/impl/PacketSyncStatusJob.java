@@ -48,11 +48,9 @@ public class PacketSyncStatusJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (context != null) {
-				this.jobId = loadContext(context);
-				packetStatusService = applicationContext.getBean(RegPacketStatusService.class);
-
-			}
+			
+			this.jobId = loadContext(context);
+			packetStatusService = applicationContext.getBean(RegPacketStatusService.class);
 
 			// Run the Parent JOB always first
 			this.responseDTO = packetStatusService.packetSyncStatus();

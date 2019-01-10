@@ -49,11 +49,9 @@ public class KeyPolicySyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (context != null) {
-				this.jobId = loadContext(context);
-				policySyncService = applicationContext.getBean(PolicySyncService.class);
 
-			}
+			this.jobId = loadContext(context);
+			policySyncService = applicationContext.getBean(PolicySyncService.class);
 
 			// Run the Parent JOB always first
 

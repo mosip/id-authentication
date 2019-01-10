@@ -67,10 +67,8 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (context != null) {
-				this.jobId = loadContext(context);
-				preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
-			}
+			this.jobId = loadContext(context);
+			preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
 
 			try {
 				// Run the Parent JOB always first

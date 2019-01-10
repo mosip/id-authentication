@@ -42,11 +42,8 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (context != null) {
-				this.jobId = loadContext(context);
-				preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
-
-			}
+			this.jobId = loadContext(context);
+			preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
 
 			// Run the Parent JOB always first
 			this.responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(jobId);

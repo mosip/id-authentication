@@ -52,11 +52,9 @@ public class MasterSyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (context != null) {
-				this.jobId = loadContext(context);
-				masterSyncService = applicationContext.getBean(MasterSyncService.class);
+			this.jobId = loadContext(context);
+			masterSyncService = applicationContext.getBean(MasterSyncService.class);
 
-			}
 			// Run the Parent JOB always first
 			this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
 
