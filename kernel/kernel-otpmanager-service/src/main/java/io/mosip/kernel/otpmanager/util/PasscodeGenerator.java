@@ -36,16 +36,13 @@ public class PasscodeGenerator {
 		byte[] sign(byte[] data) throws GeneralSecurityException;
 	}
 
-	/**
-	 * @param mac
-	 *            A {@link Mac} used to generate passcodes
-	 */
 	public PasscodeGenerator(Mac mac) {
 		this(mac, PASS_CODE_LENGTH);
 	}
 
 	public PasscodeGenerator(Signer signer) {
 		this(signer, PASS_CODE_LENGTH);
+
 	}
 
 	/**
