@@ -48,7 +48,7 @@ export class DataStorageService {
       request: request
     };
 
-    return this.httpClient.post(this.TRANSLITERATION_URL, obj);
+    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.TRANSLITERATION, obj);
   }
 
   getUserDocuments(preRegId) {
