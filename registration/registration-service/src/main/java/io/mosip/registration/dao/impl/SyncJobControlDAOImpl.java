@@ -21,7 +21,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
-import io.mosip.registration.repositories.SyncJobRepository;
+import io.mosip.registration.repositories.SyncJobControlRepository;
 
 /**
  * The implementation class for {@link SyncJobControlDAO}.
@@ -41,7 +41,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 
 	/** Object for Sync Status Repository. */
 	@Autowired
-	private SyncJobRepository syncStatusRepository;
+	private SyncJobControlRepository syncJobRepository;
 
 	/** Object for Registration Repository. */
 	@Autowired
@@ -74,7 +74,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 					"SyncJobInfo containing the synccontrol list and yet to exportpacket count fetched successfully",
 					"refId", "refIdType");
 
-			return new SyncJobInfo(syncStatusRepository.findAll(), registrationsList.size());
+			return new SyncJobInfo(syncJobRepository.findAll(), registrationsList.size());
 
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
@@ -89,7 +89,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	public SyncControl update(SyncControl syncControl) {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 				"updating sync details from databse started");
-		return syncStatusRepository.update(syncControl);
+		return syncJobRepository.update(syncControl);
 	}
 
 	/* (non-Javadoc)
@@ -99,7 +99,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	public SyncControl save(SyncControl syncControl) {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 				"saving sync details to databse started");
-		return syncStatusRepository.save(syncControl);
+		return syncJobRepository.save(syncControl);
 	}
 
 	/* (non-Javadoc)
@@ -109,7 +109,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	public SyncControl findBySyncJobId(String syncJobId) {	
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the sync details from databse started");
-		return syncStatusRepository.findBySyncJobId(syncJobId);		
+		return syncJobRepository.findBySyncJobId(syncJobId);		
 	}
 	
 	/* (non-Javadoc)
@@ -119,7 +119,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	public List<SyncControl> findAll() {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the list of sync details from databse started");
-		return syncStatusRepository.findAll();	
+		return syncJobRepository.findAll();	
 	}
 
 }

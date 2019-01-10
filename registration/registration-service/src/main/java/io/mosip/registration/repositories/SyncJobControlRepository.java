@@ -10,7 +10,7 @@ import io.mosip.registration.entity.SyncControl;
  *
  * @author Sreekar Chukka
  */
-public interface SyncJobRepository extends BaseRepository<SyncControl, String>{
+public interface SyncJobControlRepository extends BaseRepository<SyncControl, String>{
 
 	/* (non-Javadoc)
 	 * @see org.springframework.data.jpa.repository.JpaRepository#findAll()

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Rule;
@@ -26,16 +27,16 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
-import io.mosip.registration.repositories.SyncJobRepository;
+import io.mosip.registration.repositories.SyncJobControlRepository;
 
-public class SyncJobDAOImplTest {
+public class SyncJobControlDAOImplTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
 	private SyncJobControlDAOImpl syncJobDAOImpl;
 	@Mock
-	private SyncJobRepository syncStatusRepository;
+	private SyncJobControlRepository syncStatusRepository;
 	@Mock
 	private RegistrationRepository registrationRepository;
 	@Mock
@@ -92,5 +93,47 @@ public class SyncJobDAOImplTest {
 	public void testValidateException() throws RegBaseCheckedException {
 		when(registrationRepository.findByClientStatusCodeIn(Mockito.anyList())).thenThrow(RegBaseUncheckedException.class);
 		syncJobDAOImpl.getSyncStatus();
+	}
+	
+	
+	@Test
+	public void updateAndSaveTest() {
+		
+		SyncControl syncControl=new SyncControl();
+		
+		when(syncStatusRepository.update(Mockito.any())).thenReturn(syncControl);
+		when(syncStatusRepository.save(Mockito.any())).thenReturn(syncControl);
+		
+		assertEquals(syncJobDAOImpl.update(syncControl), syncControl);
+		assertEquals(syncJobDAOImpl.save(syncControl), syncControl);
+		
+		
+	}
+	
+	@Test
+	public void findBySyncJobIdTest() {
+		
+		SyncControl syncControl=new SyncControl();
+		
+		when(syncStatusRepository.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
+		
+		assertEquals(syncJobDAOImpl.findBySyncJobId(Mockito.anyString()), syncControl);
+		
+		
+	}
+	
+	@Test
+	public void findAllTest() {
+		
+		List<SyncControl> controls=new LinkedList<>();
+		SyncControl syncControl=new SyncControl();
+		controls.add(syncControl);
+		
+		
+		when(syncStatusRepository.findAll()).thenReturn(controls);
+		
+		assertEquals(syncJobDAOImpl.findAll(), controls);
+		
+		
 	}
 }

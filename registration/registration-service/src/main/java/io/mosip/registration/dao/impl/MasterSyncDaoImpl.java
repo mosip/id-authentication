@@ -65,7 +65,7 @@ import io.mosip.registration.entity.mastersync.MasterTemplateType;
 import io.mosip.registration.entity.mastersync.MasterTitle;
 import io.mosip.registration.entity.mastersync.MasterValidDocument;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.repositories.SyncJobRepository;
+import io.mosip.registration.repositories.SyncJobControlRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncApplicationRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncBiometricAttributeRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncBiometricTypeRepository;
@@ -102,7 +102,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 	/** Object for Sync Status Repository. */
 	@Autowired
-	private SyncJobRepository syncStatusRepository;
+	private SyncJobControlRepository syncStatusRepository;
 
 	/** Object for Sync Application Repository. */
 	@Autowired

@@ -86,7 +86,7 @@ import io.mosip.registration.entity.mastersync.id.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.mastersync.id.HolidayID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.repositories.SyncJobRepository;
+import io.mosip.registration.repositories.SyncJobControlRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncApplicationRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncBiometricAttributeRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncBiometricTypeRepository;
@@ -131,7 +131,7 @@ public class MasterSyncDaoImplTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	private SyncJobRepository syncStatusRepository;
+	private SyncJobControlRepository syncStatusRepository;
 
 	@Mock
 	private MasterSyncApplicationRepository masterSyncApplicationRepository;
