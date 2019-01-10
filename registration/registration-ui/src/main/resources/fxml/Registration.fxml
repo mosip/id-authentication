@@ -69,10 +69,15 @@
                                     <children>
                                        <Label layoutX="5.0" layoutY="9.0" text="%ageField" />
                                        <TextField fx:id="ageField" layoutX="5.0" layoutY="25.0" prefHeight="7.0" prefWidth="72.0" />
-                                       <Label layoutX="130.0" layoutY="9.0" text="%ageDatePicker" />
-                                       <DatePicker fx:id="ageDatePicker" editable="false" layoutX="130.0" layoutY="25.0" onAction="#ageValidationInDatePicker" prefHeight="10.0" prefWidth="200.0" />
                                        <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.1" text="" />
                                        <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
+                                          <AnchorPane fx:id="dob" layoutX="139.0" layoutY="20.0" prefHeight="50.0" prefWidth="186.0">
+                                             <children>
+                                                <TextField fx:id="dd" layoutX="20.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
+                                                <TextField fx:id="mm" layoutX="80.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
+                                                <TextField fx:id="yyyy" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
+                                             </children>
+                                          </AnchorPane>
                                     </children>
                                  </AnchorPane>
                                  <Label fx:id="genderLabel" layoutX="47.0" layoutY="175.0" text="%gender" />
