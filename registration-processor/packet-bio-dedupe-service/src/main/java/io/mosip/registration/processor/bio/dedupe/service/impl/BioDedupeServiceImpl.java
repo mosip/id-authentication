@@ -25,6 +25,7 @@ import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequest
 import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -195,9 +196,12 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	/**
 	 * Gets the duplicate candidates.
 	 *
-	 * @param duplicates the duplicates
-	 * @param abisResponseDuplicates the abis response duplicates
-	 * @param responsedto the responsedto
+	 * @param duplicates
+	 *            the duplicates
+	 * @param abisResponseDuplicates
+	 *            the abis response duplicates
+	 * @param responsedto
+	 *            the responsedto
 	 * @return the duplicate candidates
 	 */
 	private void getDuplicateCandidates(List<String> duplicates, List<String> abisResponseDuplicates,
@@ -245,8 +249,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	public byte[] getFile(String registrationId) {
 		byte[] file = null;
 
-		// To do provide CBEF file name
-		InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId, PacketStructure.PACKETMETAINFO);
+		InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId,
+				PacketStructure.APPLICANTBIOMETRIC + PacketFiles.APPLICANT_BIO_CBEF.name());
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
