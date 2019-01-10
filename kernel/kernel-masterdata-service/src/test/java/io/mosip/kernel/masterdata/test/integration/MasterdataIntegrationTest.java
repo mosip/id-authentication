@@ -3573,7 +3573,7 @@ public class MasterdataIntegrationTest {
 		requestDto.setVer("1.0");
 		ValidDocumentDto validDocumentDto = new ValidDocumentDto();
 		validDocumentDto.setIsActive(true);
-		validDocumentDto.setLangCode("ENG");
+		validDocumentDto.setLangCode("eng");
 		validDocumentDto.setDocTypeCode("TEST");
 		validDocumentDto.setDocCategoryCode("TSC");
 		requestDto.setRequest(validDocumentDto);
