@@ -34,7 +34,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  * The Class AbisServiceImpl.
  */
 @Service
-public class AbisServiceImpl {
+public class AbisServiceImpl implements AbisService{
 
 	/** The packet info manager. */
 	@Autowired
