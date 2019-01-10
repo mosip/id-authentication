@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.booking.controller.BookingController;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
-import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
@@ -34,6 +33,7 @@ import io.mosip.preregistration.booking.dto.MainListRequestDTO;
 import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -120,7 +120,7 @@ public class BookingControllerTest {
 		Mockito.when(service.getAvailability(Mockito.any())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/availability")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("RegCenterId", "1");
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("registration_center_id", "1");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

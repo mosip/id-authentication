@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
-import io.mosip.preregistration.booking.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.BookingStatusDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
@@ -31,6 +30,7 @@ import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.service.BookingService;
+import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.swagger.annotations.Api;
