@@ -25,7 +25,7 @@ export class DataStorageService {
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   LOCATION_URL = this.BASE_URL + 'masterdata/';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
-  // const TEST_URL = 'http://A2ML27085:9092/';
+  TEST_URL = 'http://A2ML27085:9092/';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
@@ -148,7 +148,7 @@ export class DataStorageService {
 
   getLocationMetadataHirearchy(value: string) {
     return this.httpClient.get(
-      this.BASE_URL + appConstants.APPEND_URL.LOCATION + appConstants.APPEND_URL.LOCATION_METADATA,
+      this.BASE_URL + appConstants.APPEND_URL.LOCATION + appConstants.APPEND_URL.LOCATION_METADATA + value,
       {
         params: new HttpParams().append(appConstants.PARAMS_KEYS.locationHierarchyName, value)
       }
