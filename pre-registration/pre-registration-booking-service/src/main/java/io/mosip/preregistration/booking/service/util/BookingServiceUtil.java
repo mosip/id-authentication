@@ -52,7 +52,6 @@ import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.DocumentGetAllDTO;
 import io.mosip.preregistration.booking.dto.HolidayDto;
-import io.mosip.preregistration.booking.dto.MainListRequestDTO;
 import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
@@ -78,6 +77,7 @@ import io.mosip.preregistration.booking.exception.MasterDataNotAvailableExceptio
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
+import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
