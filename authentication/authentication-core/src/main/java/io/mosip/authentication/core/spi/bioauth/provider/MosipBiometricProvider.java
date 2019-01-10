@@ -71,6 +71,6 @@ public interface MosipBiometricProvider {
 	 * @param entityInfo the entity info
 	 * @return the double
 	 */
-	double matchMultiImage( Map<String, String> reqInfo, Map<String, String> entityInfo);
+	double matchMultiImage( Object reqInfo, Object entityInfo);
 
 }

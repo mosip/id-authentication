@@ -129,7 +129,7 @@ public enum BioMatchType implements MatchType {
 	LEFT_IRIS(IdaIdMapping.LEFTEYE,setOf(IrisMatchingStrategy.PARTIAL),IdentityDTO::getLeftEye,
 			AuthUsageDataBit.USED_BIO_IRIS, AuthUsageDataBit.MATCHED_BIO_IRIS),
 	
-	IRIS_COMP(IdaIdMapping.IRIS, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
+	IRIS_COMP(IdaIdMapping.IRIS, setOf(CompositeIrisMatchingStrategy.PARTIAL),
 			AuthUsageDataBit.USED_BIO_IRIS, AuthUsageDataBit.MATCHED_BIO_IRIS, t -> {
 				Map<String, List<IdentityInfoDTO>> compositeIrisMap = new HashMap<>();
 				if (null != t.getLeftEye() && !t.getLeftEye().isEmpty()) {

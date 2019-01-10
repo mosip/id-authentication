@@ -21,10 +21,6 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
-import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
-import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
-import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
-import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
 /**
  * The Enum BioAuthType.
@@ -129,7 +125,7 @@ public enum BioAuthType implements AuthType {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getBioInfo().stream().filter(bioinfo -> bioinfo.getBioType().equals(this.getType()))
 					.forEach((BioInfo bioinfovalue) -> {
-						BiFunction< Map<String, String>,  Map<String, String>, Double> func = idInfoFetcher.getFingerPrintProvider(bioinfovalue)::matchMultiImage;//TODO add provider
+						BiFunction< Map<String, String>,  Map<String, String>, Double> func = idInfoFetcher.getIrisProvider(bioinfovalue)::matchMultiImage;//TODO add provider
 						valueMap.put(IrisProvider.class.getSimpleName(), func);
 					});
 			valueMap.put("idvid", authRequestDTO.getIdvId());

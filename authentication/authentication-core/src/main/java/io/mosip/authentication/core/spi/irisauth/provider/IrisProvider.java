@@ -2,9 +2,7 @@ package io.mosip.authentication.core.spi.irisauth.provider;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -28,10 +26,10 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	private static final String IRISIMG_RIGHT_MATCH_VALUE = ".irisimg.right.match.value";
 	
 	/** The Constant LEFTTEYE. */
-	static final String LEFTTEYE = "leftEye";
+	static final String LEFTTEYE = "lefteye";
 	
 	/** The Constant RIGHTEYE. */
-	static final String RIGHTEYE = "rightEye";
+	static final String RIGHTEYE = "righteye";
 
 	/** The Constant idvid. */
 	private static final String IDVID = "idvid";
@@ -62,6 +60,9 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 	
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#matchImage(java.lang.Object, java.lang.Object)
+	 */
 	@Override
 	public double matchImage(Object reqInfo, Object entityInfo) {
 		
@@ -85,28 +86,22 @@ public abstract class IrisProvider implements MosipIrisProvider {
 			return 0;
 	}
 
-	
-
-	/**
-	 * Match multiMatch Iris Image
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
-	 * @return the double
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#matchMultiImage(java.lang.Object, java.lang.Object)
 	 */
-	public double matchMultiIrisImage(Map<String, String> reqInfo, Map<String, String> entityInfo) {
+	@Override
+	public double matchMultiImage(Object reqInfo, Object props) {
 		double match = 0;
-		String uin = reqInfo.get(IDVID);
-		if (entityInfo.containsKey(LEFTTEYE)) {
-			match += environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
-		}
-		if (entityInfo.containsKey(RIGHTEYE)) {
-			match += environment.getProperty(uin + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
+		if(reqInfo instanceof Map && props instanceof Map) {
+			String uin = ((Map<String,String>) props).get(IDVID);
+			Map<String,String> reqInfoDetail = (Map<String,String>) reqInfo;
+			if (reqInfoDetail.containsKey(LEFTTEYE)) {
+				match += environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
+			}
+			if (reqInfoDetail.containsKey(RIGHTEYE)) {
+				match += environment.getProperty(uin + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
+			}			
 		}
 		return match;
 	}
-
-
-	
-
 }
