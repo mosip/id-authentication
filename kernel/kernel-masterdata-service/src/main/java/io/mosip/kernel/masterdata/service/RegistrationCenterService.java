@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -115,15 +117,37 @@ public interface RegistrationCenterService {
 	 * @return the id response dto.
 	 */
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
-	
+
 	/**
-	 * This method would validate timestamp and id whether
-	 * the given date in timestamp is a holiday. Also,checks time in the timestamp whether it is between
-	 * working hours.
-	 * @param id - registration id
-	 * @param timeStamp - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
+	 * This method would validate timestamp and id whether the given date in
+	 * timestamp is a holiday. Also,checks time in the timestamp whether it is
+	 * between working hours.
+	 * 
+	 * @param id
+	 *            - registration id
+	 * @param timeStamp
+	 *            - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id,String timeStamp);
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
+
+	/**
+	 * Function to fetch list of registration centers based on hierarchy level,text
+	 * input and language code
+	 * 
+	 * @param hierarchyLevel
+	 *            input from user
+	 * @param texts
+	 *            input from user
+	 * @param languageCode
+	 *            input from user
+	 * @return list of registration centers
+	 * @throws MasterDataServiceException
+	 *             when data not fetched from DB
+	 * @throws DataNotFoundException
+	 *             when data not found
+	 */
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			String languageCode, Integer hierarchyLevel, List<String> texts);
 
 }
