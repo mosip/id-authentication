@@ -678,7 +678,7 @@ public class AuthenticationController extends BaseController {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace(RegistrationConstants.FACE_STUB.getBytes());
+		faceDetailsDTO.setFace(RegistrationConstants.FACE.toLowerCase().getBytes());
 		
 		if (!isEODAuthentication) {
 			if (isSupervisor) {

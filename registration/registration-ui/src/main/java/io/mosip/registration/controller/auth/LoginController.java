@@ -960,7 +960,7 @@ public class LoginController extends BaseController implements Initializable {
 				"Scanning Face");
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace(RegistrationConstants.FACE_STUB.getBytes());
+		faceDetailsDTO.setFace(RegistrationConstants.FACE.toLowerCase().getBytes());
 		authenticationValidatorDTO.setUserId(userId.getText());
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		
