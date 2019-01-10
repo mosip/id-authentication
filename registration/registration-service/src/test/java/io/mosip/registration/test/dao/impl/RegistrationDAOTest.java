@@ -29,7 +29,7 @@ import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegTransactionRepository;
@@ -163,7 +163,7 @@ public class RegistrationDAOTest {
 
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();
-		RegistrationUserDetail regUserDetail = new RegistrationUserDetail();
+		UserDetail regUserDetail=new UserDetail();
 
 		regUserDetail.setId("Mosip123");
 		regUserDetail.setName("RegistrationOfficer");

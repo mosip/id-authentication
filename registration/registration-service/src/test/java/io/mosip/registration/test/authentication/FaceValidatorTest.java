@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
@@ -31,7 +31,7 @@ public class FaceValidatorTest {
 	private FaceFacade faceFacade;
 	
 	@Mock
-	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	private UserDetailDAO userDetailDAO;
 	
 	private AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 

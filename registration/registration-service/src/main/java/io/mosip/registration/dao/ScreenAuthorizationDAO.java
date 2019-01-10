@@ -11,7 +11,7 @@ import io.mosip.registration.dto.AuthorizationDTO;
  * @since 1.0.0
  *
  */
-public interface RegistrationScreenAuthorizationDAO {
+public interface ScreenAuthorizationDAO {
 
 	/**
 	 * This method is used to get the screen authorization

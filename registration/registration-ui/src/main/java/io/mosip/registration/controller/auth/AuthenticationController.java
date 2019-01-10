@@ -30,7 +30,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.common.OTPManager;
@@ -548,10 +548,10 @@ public class AuthenticationController extends BaseController {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the user role in case of Supervisor Authentication");
 
-		RegistrationUserDetail registrationUserDetail = loginService.getUserDetail(userId);
-		if (registrationUserDetail != null) {
-			return registrationUserDetail.getUserRole().stream().anyMatch(userRole -> userRole
-					.getRegistrationUserRoleID().getRoleCode().equalsIgnoreCase(RegistrationConstants.SUPERVISOR_NAME));
+		UserDetail userDetail = loginService.getUserDetail(userId);
+		if (userDetail != null) {
+			return userDetail.getUserRole().stream().anyMatch(userRole -> userRole
+					.getUserRoleID().getRoleCode().equalsIgnoreCase(RegistrationConstants.SUPERVISOR_NAME));
 		}
 		return false;
 	}

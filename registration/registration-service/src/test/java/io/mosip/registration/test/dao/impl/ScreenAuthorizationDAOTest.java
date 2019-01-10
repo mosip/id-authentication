@@ -16,30 +16,30 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.ScreenAuthorizationDetails;
-import io.mosip.registration.dao.impl.RegistrationScreenAuthorizationDAOImpl;
-import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
+import io.mosip.registration.dao.impl.ScreenAuthorizationDAOImpl;
+import io.mosip.registration.repositories.ScreenAuthorizationRepository;
 
-public class RegistrationScreenAuthorizationDAOTest {
+public class ScreenAuthorizationDAOTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@InjectMocks
-	private RegistrationScreenAuthorizationDAOImpl registrationScreenAuthorizationDAOImpl;
+	private ScreenAuthorizationDAOImpl screenAuthorizationDAOImpl;
 
 	@Mock
-	private RegistrationScreenAuthorizationRepository registrationScreenAuthorizationRepository;
+	private ScreenAuthorizationRepository screenAuthorizationRepository;
 
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
 
 		Set<ScreenAuthorizationDetails> authorizationList = new HashSet<>();
 		List<String> roleList = new ArrayList<>();
-		Mockito.when(registrationScreenAuthorizationRepository
-				.findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))
+		Mockito.when(screenAuthorizationRepository
+				.findByScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))
 				.thenReturn(authorizationList);
 		//assertFalse(authorizationList.isEmpty());
-		assertNotNull(registrationScreenAuthorizationDAOImpl.getScreenAuthorizationDetails(roleList));
+		assertNotNull(screenAuthorizationDAOImpl.getScreenAuthorizationDetails(roleList));
 
 	}
 

@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationCenterDAO;
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.repositories.RegistrationUserDetailRepository;
+import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserBiometricRepository;
 
 /**
@@ -26,16 +26,16 @@ import io.mosip.registration.repositories.UserBiometricRepository;
  */
 @Repository
 @Transactional
-public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO {
+public class UserDetailDAOImpl implements UserDetailDAO {
 
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationUserDetailDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(UserDetailDAOImpl.class);
 
-	/** The registrationUserDetail repository. */
+	/** The userDetail repository. */
 	@Autowired
-	private RegistrationUserDetailRepository registrationUserDetailRepository;
+	private UserDetailRepository userDetailRepository;
 	
 	@Autowired
 	private UserBiometricRepository userBiometricRepository;
@@ -47,34 +47,34 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 	 * org.mosip.registration.dao.RegistrationUserDetailDAO#getUserDetail(java.lang.
 	 * String)
 	 */
-	public RegistrationUserDetail getUserDetail(String userId) {
+	public UserDetail getUserDetail(String userId) {
 
 		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Fetching User details");
 
-		List<RegistrationUserDetail> registrationUserDetail = registrationUserDetailRepository
+		List<UserDetail> userDetail = userDetailRepository
 				.findByIdIgnoreCaseAndIsActiveTrue(userId);
 		
 		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID,
 				"User details fetched successfully");
 
-		return !registrationUserDetail.isEmpty() ? registrationUserDetail.get(0) : null;
+		return !userDetail.isEmpty() ? userDetail.get(0) : null;
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.registration.dao.RegistrationUserDetailDAO#updateLoginParams(io.
-	 * mosip.registration.entity.RegistrationUserDetail)
+	 * io.mosip.registration.dao.UserDetailDAO#updateLoginParams(io.
+	 * mosip.registration.entity.UserDetail)
 	 */
-	public void updateLoginParams(RegistrationUserDetail registrationUserDetail) {
+	public void updateLoginParams(UserDetail userDetail) {
 		
 		LOGGER.debug("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Updating Login params");
 
-		registrationUserDetailRepository.save(registrationUserDetail);
+		userDetailRepository.save(userDetail);
 		
 		LOGGER.debug("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Updated Login params successfully");

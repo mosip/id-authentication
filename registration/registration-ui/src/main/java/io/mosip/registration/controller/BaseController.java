@@ -25,7 +25,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
@@ -454,8 +454,8 @@ public class BaseController {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating credentials using database");
 
-		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
+		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+		if (userDetail.getUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {
 			return RegistrationConstants.PWD_MISMATCH;

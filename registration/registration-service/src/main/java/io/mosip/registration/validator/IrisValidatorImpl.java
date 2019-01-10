@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
@@ -23,7 +23,7 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 	private static final Logger LOGGER = AppConfig.getLogger(IrisValidatorImpl.class);
 	
 	@Autowired
-	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	private UserDetailDAO userDetailDAO;
 
 	@Autowired
 	private IrisFacade irisFacade;
@@ -37,7 +37,7 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 		LOGGER.debug(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Stubbing iris details for user registration");
 		
-		List<UserBiometric> userIrisDetails = registrationUserDetailDAO
+		List<UserBiometric> userIrisDetails = userDetailDAO
 				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.VALIDATION_TYPE_IRIS);
 		
 		LOGGER.debug(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,

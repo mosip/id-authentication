@@ -80,7 +80,7 @@ public class Registration extends RegistrationCommonFields {
 
 	@ManyToOne
 	@JoinColumn(name = "CR_BY", referencedColumnName = "id", insertable = false, updatable = false)
-	private RegistrationUserDetail userdetail;
+	private UserDetail userdetail;
 
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "REG_ID")
@@ -302,11 +302,11 @@ public class Registration extends RegistrationCommonFields {
 		this.latestRegTrnTimestamp = latestRegTrnTimestamp;
 	}
 
-	public RegistrationUserDetail getUserdetail() {
+	public UserDetail getUserdetail() {
 		return userdetail;
 	}
 
-	public void setUserdetail(RegistrationUserDetail userdetail) {
+	public void setUserdetail(UserDetail userdetail) {
 		this.userdetail = userdetail;
 	}
 

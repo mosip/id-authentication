@@ -19,7 +19,7 @@ public interface AppAuthenticationDetails {
 	 */
 	interface AppAuthentication{
 		String getProcessName();
-		String getLoginMethod();
+		String getAuthMethodCode();
 	}
 
 }

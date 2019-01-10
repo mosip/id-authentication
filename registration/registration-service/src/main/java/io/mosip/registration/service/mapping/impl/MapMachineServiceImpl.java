@@ -37,7 +37,7 @@ import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
 import io.mosip.registration.entity.RegCentreMachineDeviceId;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -155,14 +155,14 @@ public class MapMachineServiceImpl implements MapMachineService {
 			/* get center id */
 			String centerID = machineMappingDAO.getCenterID(stationID);
 			/* get user list */
-			List<RegistrationUserDetail> registrationUserDetails = machineMappingDAO.getUsers(centerID);
+			List<UserDetail> userDetails = machineMappingDAO.getUsers(centerID);
 
-			if (registrationUserDetails != null && !registrationUserDetails.isEmpty()) {
+			if (userDetails != null && !userDetails.isEmpty()) {
 				/* create success response */
 				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 				successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
 				successResponseDTO
-						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, registrationUserDetails));
+						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, userDetails));
 
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 				LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
@@ -189,15 +189,15 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 * @param machineID
 	 * @param stationID
 	 * @param centreID
-	 * @param registrationUserDetails
+	 * @param userDetails
 	 * @return
 	 */
 	private Map<String, Object> constructDTOs(String machineID, String stationID, String centreID,
-			List<RegistrationUserDetail> registrationUserDetails) {
+			List<UserDetail> userDetails) {
 		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTOs() method called");
 		Map<String, Object> userDetailMap = new HashMap<>();
 		try {
-			List<UserMachineMappingDTO> userMachineMappingDTOs = registrationUserDetails.stream()
+			List<UserMachineMappingDTO> userMachineMappingDTOs = userDetails.stream()
 					.map(registrationUserDetail -> {
 						UserMachineMappingDTO userMachineMappingDTO = null;
 						if (registrationUserDetail != null) {
@@ -223,25 +223,25 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 * @param registrationUserDetails
 	 * @return
 	 */
-	private UserMachineMappingDTO constructDTO(RegistrationUserDetail registrationUserDetail, String machineID,
+	private UserMachineMappingDTO constructDTO(UserDetail userDetail, String machineID,
 			String stationID, String centreID) {
 		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
-		String userID = registrationUserDetail.getId();
-		String userName = registrationUserDetail.getName();
+		String userID = userDetail.getId();
+		String userName = userDetail.getName();
 		StringBuilder role = new StringBuilder();
 		String roleCode = "";
 		String status = RegistrationConstants.USER_IN_ACTIVE;
 
-		if (!registrationUserDetail.getUserRole().isEmpty()) {
+		if (!userDetail.getUserRole().isEmpty()) {
 			/* List of roles with comma separated */
-			registrationUserDetail.getUserRole().forEach(registrationUserRole -> role
-					.append(registrationUserRole.getRegistrationUserRoleID().getRoleCode() + ","));
+			userDetail.getUserRole().forEach(registrationUserRole -> role
+					.append(registrationUserRole.getUserRoleID().getRoleCode() + ","));
 			if (role.length() > 0) {
 				roleCode = role.substring(0, role.lastIndexOf(","));
 			}
 		}
-		if (!registrationUserDetail.getUserMachineMapping().isEmpty()) {
-			for (UserMachineMapping userMachineMapping : registrationUserDetail.getUserMachineMapping()) {
+		if (!userDetail.getUserMachineMapping().isEmpty()) {
+			for (UserMachineMapping userMachineMapping : userDetail.getUserMachineMapping()) {
 				if (userMachineMapping.getUserMachineMappingId().getMachineID().equals(stationID)) {
 					status = userMachineMapping.getIsActive() ? RegistrationConstants.USER_ACTIVE
 							: RegistrationConstants.USER_IN_ACTIVE;

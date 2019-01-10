@@ -29,17 +29,17 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.AppAuthenticationDetails;
 import io.mosip.registration.dao.RegistrationCenterDAO;
-import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.ScreenAuthorizationDAO;
+import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDetails;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.RegistrationCenter;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.repositories.AppAuthenticationRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
-import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
-import io.mosip.registration.repositories.RegistrationUserDetailRepository;
+import io.mosip.registration.repositories.ScreenAuthorizationRepository;
+import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.service.impl.LoginServiceImpl;
 
 public class LoginServiceTest {
@@ -60,10 +60,10 @@ public class LoginServiceTest {
 	private AppAuthenticationDAO appAuthenticationDAO;
 
 	@Mock
-	private RegistrationUserDetailRepository registrationUserDetailRepository;
+	private UserDetailRepository userDetailRepository;
 
 	@Mock
-	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	private UserDetailDAO userDetailDAO;
 
 	@Mock
 	private RegistrationCenterRepository registrationCenterRepository;
@@ -72,10 +72,10 @@ public class LoginServiceTest {
 	private RegistrationCenterDAO registrationCenterDAO;
 	
 	@Mock
-	private RegistrationScreenAuthorizationRepository registrationScreenAuthorizationRepository;
+	private ScreenAuthorizationRepository screenAuthorizationRepository;
 
 	@Mock
-	private RegistrationScreenAuthorizationDAO registrationScreenAuthorizationDAO;
+	private ScreenAuthorizationDAO screenAuthorizationDAO;
 	
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
@@ -90,7 +90,7 @@ public class LoginServiceTest {
 		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq(Mockito.anyString(), Mockito.anyString())).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
-		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
+		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 
 		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq("LOGIN","*")).thenReturn(loginList);
 		
@@ -104,15 +104,15 @@ public class LoginServiceTest {
 	@Test
 	public void getUserDetailTest() {
 
-		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
-		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
-		registrationUserDetailList.add(registrationUserDetail);
-		Mockito.when(registrationUserDetailRepository.findByIdIgnoreCaseAndIsActiveTrue(Mockito.anyString()))
-				.thenReturn(registrationUserDetailList);
+		UserDetail userDetail = new UserDetail();
+		List<UserDetail> userDetailList = new ArrayList<UserDetail>();
+		userDetailList.add(userDetail);
+		Mockito.when(userDetailRepository.findByIdIgnoreCaseAndIsActiveTrue(Mockito.anyString()))
+				.thenReturn(userDetailList);
 		
-		Mockito.when(registrationUserDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(registrationUserDetail);
+		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
 		
-		assertEquals(registrationUserDetail,loginServiceImpl.getUserDetail("mosip"));		
+		assertEquals(userDetail,loginServiceImpl.getUserDetail("mosip"));		
 	}
 
 	@Test
@@ -135,11 +135,11 @@ public class LoginServiceTest {
 
 		Set<ScreenAuthorizationDetails> authorizationList = new HashSet<>();
 		List<String> roleList = new ArrayList<>();
-		Mockito.when(registrationScreenAuthorizationRepository
-				.findByRegistrationScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))
+		Mockito.when(screenAuthorizationRepository
+				.findByScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleList))
 				.thenReturn(authorizationList);
 		AuthorizationDTO authorizationDTO = new AuthorizationDTO();
-		Mockito.when(registrationScreenAuthorizationDAO.getScreenAuthorizationDetails(roleList)).thenReturn(authorizationDTO);
+		Mockito.when(screenAuthorizationDAO.getScreenAuthorizationDetails(roleList)).thenReturn(authorizationDTO);
 		assertNotNull(loginServiceImpl.getScreenAuthorizationDetails(roleList));
 
 	}
@@ -148,14 +148,14 @@ public class LoginServiceTest {
 	public void updateLoginParamsTest() {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
+		doNothing().when(userDetailDAO).updateLoginParams(Mockito.any(UserDetail.class));
 		
-		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
-		registrationUserDetail.setId("mosip");
-		registrationUserDetail.setUnsuccessfulLoginCount(0);
-		registrationUserDetail.setLastLoginDtimes(new Timestamp(System.currentTimeMillis()));
-		registrationUserDetail.setLastLoginMethod("PWD");
+		UserDetail userDetail = new UserDetail();
+		userDetail.setId("mosip");
+		userDetail.setUnsuccessfulLoginCount(0);
+		userDetail.setLastLoginDtimes(new Timestamp(System.currentTimeMillis()));
+		userDetail.setLastLoginMethod("PWD");
 		
-		loginServiceImpl.updateLoginParams(registrationUserDetail);
+		loginServiceImpl.updateLoginParams(userDetail);
 	}
 }

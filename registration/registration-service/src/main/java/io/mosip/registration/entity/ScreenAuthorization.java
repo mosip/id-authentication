@@ -11,27 +11,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Global parame entity details
+ * ScreenAuthorization entity details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
  */
 @Entity
-@Table(schema = "master", name = "global_param")
+@Table(schema = "reg", name = "screen_authorization")
 @Getter
 @Setter
-public class GlobalParam extends RegistrationCommonFields {
+public class ScreenAuthorization extends RegistrationCommonFields {
 
 	@EmbeddedId
-	@Column(name = "pk_glbp_code")
-	private GlobalParamId globalParamId;
+	private ScreenAuthorizationId screenAuthorizationId;
 
-	@Column(name = "name")
-	private String name;
-	@Column(name = "val")
-	private String val;
-	@Column(name = "typ")
-	private String typ;
+	@Column(name = "lang_code")
+	private String langCode;
+	@Column(name = "is_permitted")
+	private Boolean isPermitted;
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")

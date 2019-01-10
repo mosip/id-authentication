@@ -16,11 +16,11 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
-import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.ScreenAuthorizationDAO;
+import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.service.LoginService;
 
 /**
@@ -51,10 +51,10 @@ public class LoginServiceImpl implements LoginService {
 	private AppAuthenticationDAO appAuthenticationDAO;
 
 	/**
-	 * Class to retrieve the Registration Officer Details from DB
+	 * Class to retrieve the Officer Details from DB
 	 */
 	@Autowired
-	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	private UserDetailDAO userDetailDAO;
 
 	/**
 	 * Class to retrieve the Registration Center details from DB
@@ -63,10 +63,10 @@ public class LoginServiceImpl implements LoginService {
 	private RegistrationCenterDAO registrationCenterDAO;
 
 	/**
-	 * Class to retrieve the Registration screen authorization from DB
+	 * Class to retrieve the Screen authorization from DB
 	 */
 	@Autowired
-	private RegistrationScreenAuthorizationDAO registrationScreenAuthorizationDAO;
+	private ScreenAuthorizationDAO screenAuthorizationDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -94,8 +94,8 @@ public class LoginServiceImpl implements LoginService {
 	 * String)
 	 */
 	@Override
-	public RegistrationUserDetail getUserDetail(String userId) {
-		// Retrieving Registration Officer details
+	public UserDetail getUserDetail(String userId) {
+		// Retrieving Officer details
 
 		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
@@ -103,7 +103,7 @@ public class LoginServiceImpl implements LoginService {
 		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, "Fetching User details", "refId",
 				"refIdType");
 
-		return registrationUserDetailDAO.getUserDetail(userId);
+		return userDetailDAO.getUserDetail(userId);
 	}
 
 	/*
@@ -141,21 +141,21 @@ public class LoginServiceImpl implements LoginService {
 		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, Components.SCREEN_AUTH,
 				"Fetching list of Screens to be Authorized", "refId", "refIdType");
 
-		return registrationScreenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
+		return screenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
-	 * registration.entity.RegistrationUserDetail)
+	 * registration.entity.UserDetail)
 	 */
-	public void updateLoginParams(RegistrationUserDetail registrationUserDetail) {
+	public void updateLoginParams(UserDetail userDetail) {
 
 		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating Login Params");
 
-		registrationUserDetailDAO.updateLoginParams(registrationUserDetail);
+		userDetailDAO.updateLoginParams(userDetail);
 		
 		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updated Login Params");

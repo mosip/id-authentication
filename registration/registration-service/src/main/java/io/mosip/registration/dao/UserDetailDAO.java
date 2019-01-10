@@ -2,33 +2,33 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserBiometric;
 
 /**
- * DAO class for RegistrationUserDetail
+ * DAO class for UserDetail
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
  *
  */
 
-public interface RegistrationUserDetailDAO {
+public interface UserDetailDAO {
 
 	/**
 	 * This method is used to get the User Details
 	 * 
-	 * @return {@link RegistrationUserDetail} based on the userId
+	 * @return {@link UserDetail} based on the userId
 	 */
-	RegistrationUserDetail getUserDetail(String userId);
+	UserDetail getUserDetail(String userId);
 
 	/**
 	 * This method is used update login params
 	 * 
-	 * @param registrationUserDetail
+	 * @param userDetail
 	 *            user details
 	 */
-	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
+	void updateLoginParams(UserDetail userDetail);
 	
 	List<UserBiometric> getAllActiveUsers(String attrCode);
 	

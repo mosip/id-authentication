@@ -8,9 +8,8 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
-
 /**
- * Composite key for GlobalParam entity
+ * Composite key for RegCenterUser entity
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -18,13 +17,13 @@ import lombok.Setter;
 @Embeddable
 @Getter
 @Setter
-public class GlobalParamId implements Serializable{
+public class RegCenterUserId implements Serializable {
 
-	private static final long serialVersionUID = 4798525506099635089L;
-	
-	@Column(name = "code")
-	private String code;
-	@Column(name = "lang_code")
-	private String langCode;	
+	private static final long serialVersionUID = -7306845601917592413L;
+
+	@Column(name = "regcntr_id")
+	private String regcntrId;
+	@Column(name = "usr_id")
+	private String usrId;
 
 }

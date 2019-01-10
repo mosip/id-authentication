@@ -63,6 +63,6 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");
 		
-		return loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
+		return loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 	}
 }

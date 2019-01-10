@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,11 +35,11 @@ import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.entity.RegistrationUserRole;
-import io.mosip.registration.entity.RegistrationUserRoleID;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
+import io.mosip.registration.entity.UserRole;
+import io.mosip.registration.entity.UserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
@@ -49,7 +48,7 @@ import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
-import io.mosip.registration.repositories.RegistrationUserDetailRepository;
+import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 
 public class UserClientMachineMappingDAOTest {
@@ -65,7 +64,7 @@ public class UserClientMachineMappingDAOTest {
 	@Mock
 	private MachineMasterRepository machineMasterRepository;
 	@Mock
-	private RegistrationUserDetailRepository userDetailRepository;
+	private UserDetailRepository userDetailRepository;
 	@Mock
 	private AuditFactoryImpl auditFactory;
 	@Mock
@@ -189,7 +188,7 @@ public class UserClientMachineMappingDAOTest {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
 		Mockito.when(userDetailRepository
-				.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
+				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
 						"Center123", RegistrationConstants.BLACKLISTED, userContext.getUserId()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getUsers("Center123");
@@ -200,10 +199,10 @@ public class UserClientMachineMappingDAOTest {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
 
-		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<>();
+		List<UserDetail> userDetailList = new ArrayList<>();
 
 		// Sample Data 1
-		Set<RegistrationUserRole> registrationUserRolesList = new HashSet<>();
+		Set<UserRole> userRolesList = new HashSet<>();
 		Set<UserMachineMapping> regUserMachineMappingList = new HashSet<>();
 		UserMachineMappingID userMachineMappingID = new UserMachineMappingID();
 		userMachineMappingID.setCentreID("Center123");
@@ -214,24 +213,24 @@ public class UserClientMachineMappingDAOTest {
 		userMachineMapping.setUserMachineMappingId(userMachineMappingID);
 		regUserMachineMappingList.add(userMachineMapping);
 
-		RegistrationUserRoleID registrationUserRoleID = new RegistrationUserRoleID();
+		UserRoleID registrationUserRoleID = new UserRoleID();
 		registrationUserRoleID.setRoleCode("Super Admin");
 		registrationUserRoleID.setUsrId("ID007");
 
-		RegistrationUserRole registrationUserRole = new RegistrationUserRole();
+		UserRole registrationUserRole = new UserRole();
 		registrationUserRole.setIsActive(true);
-		registrationUserRole.setRegistrationUserRoleID(registrationUserRoleID);
-		registrationUserRolesList.add(registrationUserRole);
+		registrationUserRole.setUserRoleID(registrationUserRoleID);
+		userRolesList.add(registrationUserRole);
 
-		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
+		UserDetail registrationUserDetail = new UserDetail();
 		registrationUserDetail.setId("ID007");
 		registrationUserDetail.setName("testName");
 		registrationUserDetail.setStatusCode("Active");
 		registrationUserDetail.setUserMachineMapping(regUserMachineMappingList);
-		registrationUserDetail.setUserRole(registrationUserRolesList);
+		registrationUserDetail.setUserRole(userRolesList);
 
 		// Sample Data2
-		Set<RegistrationUserRole> registrationUserRolesList1 = new HashSet<>();
+		Set<UserRole> registrationUserRolesList1 = new HashSet<>();
 		Set<UserMachineMapping> regUserMachineMappingList2 = new HashSet<>();
 		UserMachineMappingID userMachineMappingID1 = new UserMachineMappingID();
 		userMachineMappingID1.setCentreID("Center123");
@@ -242,32 +241,32 @@ public class UserClientMachineMappingDAOTest {
 		userMachineMapping1.setUserMachineMappingId(userMachineMappingID1);
 		regUserMachineMappingList2.add(userMachineMapping1);
 
-		RegistrationUserRoleID registrationUserRoleID1 = new RegistrationUserRoleID();
+		UserRoleID registrationUserRoleID1 = new UserRoleID();
 		registrationUserRoleID1.setRoleCode("Supervisor");
 		registrationUserRoleID1.setUsrId("ID008");
 
-		RegistrationUserRole registrationUserRole1 = new RegistrationUserRole();
+		UserRole registrationUserRole1 = new UserRole();
 		registrationUserRole1.setIsActive(true);
-		registrationUserRole1.setRegistrationUserRoleID(registrationUserRoleID1);
+		registrationUserRole1.setUserRoleID(registrationUserRoleID1);
 
 		registrationUserRolesList1.add(registrationUserRole1);
 
-		RegistrationUserDetail registrationUserDetail1 = new RegistrationUserDetail();
+		UserDetail registrationUserDetail1 = new UserDetail();
 		registrationUserDetail1.setId("ID008");
 		registrationUserDetail1.setName("testName1");
 		registrationUserDetail1.setStatusCode("Active");
 		registrationUserDetail1.setUserMachineMapping(regUserMachineMappingList2);
 		registrationUserDetail1.setUserRole(registrationUserRolesList1);
 
-		registrationUserDetailList.add(registrationUserDetail);
-		registrationUserDetailList.add(registrationUserDetail1);
+		userDetailList.add(registrationUserDetail);
+		userDetailList.add(registrationUserDetail1);
 
 		Mockito.when(userDetailRepository
-				.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
+				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
 						"Center123", RegistrationConstants.BLACKLISTED, userContext.getUserId()))
-				.thenReturn(registrationUserDetailList);
+				.thenReturn(userDetailList);
 
-		List<RegistrationUserDetail> details = machineMappingDAOImpl.getUsers("Center123");
+		List<UserDetail> details = machineMappingDAOImpl.getUsers("Center123");
 
 		Assert.assertSame("ID007", details.get(0).getId());
 	}

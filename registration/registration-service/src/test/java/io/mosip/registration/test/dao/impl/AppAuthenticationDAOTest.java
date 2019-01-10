@@ -52,7 +52,7 @@ public class AppAuthenticationDAOTest {
 		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq("login",role)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
-		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
+		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 		
 		assertEquals(modes, appAuthenticationDAOImpl.getModesOfLogin("login", roleSet));
 	}
@@ -73,7 +73,7 @@ public class AppAuthenticationDAOTest {
 		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq("login",role)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
-		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
+		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 		
 		assertEquals(modes, appAuthenticationDAOImpl.getModesOfLogin("login", roleSet));
 	}
@@ -92,7 +92,7 @@ public class AppAuthenticationDAOTest {
 		Mockito.when(appAuthenticationRepository.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq("login",role)).thenReturn(loginList);
 
 		List<String> modes = new ArrayList<>();
-		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getLoginMethod()).collect(Collectors.toList());
+		loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());
 		
 		assertEquals(modes, appAuthenticationDAOImpl.getModesOfLogin("login", roleSet));
 	}
