@@ -270,8 +270,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 				if (Objects.nonNull(documents) && !documents.isEmpty()) {
 					ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
-					if (documents.stream().filter(doc -> identityObject.has(doc.getDocType())).anyMatch(doc -> {
-						JsonNode docType = identityObject.get(doc.getDocType());
+					if (documents.stream().filter(doc -> identityObject.has(doc.getDocCat())).anyMatch(doc -> {
+						JsonNode docType = identityObject.get(doc.getDocCat());
 						try {
 							if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
 								String fileRefId = UUID.randomUUID().toString();
@@ -279,11 +279,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 								storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 										CryptoUtil.decodeBase64(doc.getDocValue()));
 
-								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, doc.getDocType(),
+								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, doc.getDocCat(),
 										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
-								uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getDocType(),
+								uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getDocCat(),
 										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
@@ -294,12 +294,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 										CryptoUtil.decodeBase64(doc.getDocValue()));
 
 								uinDocRepo.save(new UinDocument(uinRefId, docType.get("category").asText(),
-										doc.getDocType(), fileRefId, docType.get(VALUE).asText(),
+										doc.getDocCat(), fileRefId, docType.get(VALUE).asText(),
 										docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getDocValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 								uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(),
-										docType.get("category").asText(), doc.getDocType(), fileRefId,
+										docType.get("category").asText(), doc.getDocCat(), fileRefId,
 										docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
 										hash(CryptoUtil.decodeBase64(doc.getDocValue())), LANG_CODE, CREATED_BY, now(),
 										UPDATED_BY, now(), false, now()));
@@ -354,7 +354,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		} catch (SdkClientException e) {
 			mosipLogger.error("IdRepoService", ID_REPO_SERVICE_IMPL, "storeFile",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 		}
 		return true;
 	}
@@ -401,9 +401,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, this.id.get(READ));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, this.id.get(READ));
 		} catch (IdRepoAppUncheckedException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
 
@@ -431,7 +431,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 							documents.add(new Documents("individualBiometrics", data));
 						}
 					} catch (IdRepoAppException e) {
-						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+						throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 					}
 				}
 			});
@@ -448,7 +448,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						documents.add(new Documents(demo.getDoctypCode(), data));
 					}
 				} catch (IdRepoAppException e) {
-					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 				}
 			});
 		}

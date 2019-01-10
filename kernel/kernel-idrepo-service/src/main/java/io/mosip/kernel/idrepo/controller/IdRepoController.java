@@ -113,8 +113,10 @@ public class IdRepoController {
 		try {
 			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, type), HttpStatus.OK);
-		} catch (InvalidIDException | IdRepoAppException e) {
+		} catch (InvalidIDException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get("read"));
+		} catch (IdRepoAppException e) {
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get("read"));
 		}
 	}
 

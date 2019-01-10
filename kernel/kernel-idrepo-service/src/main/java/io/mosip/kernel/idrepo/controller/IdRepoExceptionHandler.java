@@ -45,6 +45,8 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private static final String APPLICATION_VERSION = "application.version";
+
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
 	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
 
@@ -126,7 +128,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
-
+		System.err.println();
 		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
@@ -164,26 +166,24 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 		Throwable e = ex;
 		while (e.getCause() != null) {
-			if (e.getCause() instanceof IdRepoAppException) {
-				if (Objects.nonNull(((IdRepoAppException) e).getId())) {
-					response.setId(((IdRepoAppException) e).getId());
-				}
-				e = e.getCause();
-			} else if (e.getCause() instanceof IdRepoAppUncheckedException) {
-				if (Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
-					response.setId(((IdRepoAppUncheckedException) e).getId());
-				}
-				e = e.getCause();
+			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
+				response.setId(((IdRepoAppException) e).getId());
+			} else if (e instanceof IdRepoAppUncheckedException
+					&& Objects.nonNull(((IdRepoAppUncheckedException) e).getId())) {
+				response.setId(((IdRepoAppUncheckedException) e).getId());
 			} else {
 				break;
 			}
+			e = e.getCause();
 		}
 
 		if (Objects.isNull(response.getId())) {
 			response.setId("mosip.id.error");
 		}
 
-		if (e instanceof BaseCheckedException) {
+		if (e instanceof BaseCheckedException)
+
+		{
 			List<String> errorCodes = ((BaseCheckedException) e).getCodes();
 			List<String> errorTexts = ((BaseCheckedException) e).getErrorTexts();
 
@@ -206,6 +206,8 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 
 		response.setTimestamp(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+
+		response.setVer(env.getProperty(APPLICATION_VERSION));
 
 		mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 				SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response", "uin")));

@@ -48,6 +48,8 @@ import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 @Component
 public class IdRequestValidator implements Validator {
 
+	private static final String JSON_SCHEMA_FILE_NAME = "mosip.kernel.idrepo.json-schema-fileName";
+
 	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
 
 	/** The Constant VER. */
@@ -57,7 +59,7 @@ public class IdRequestValidator implements Validator {
 	private static final String APPLICATION_VERSION = "application.version";
 
 	/** The Constant DOC_TYPE. */
-	private static final String DOC_TYPE = "docType";
+	private static final String DOC_CAT = "docCat";
 
 	/** The Constant DOCUMENTS. */
 	private static final String DOCUMENTS = "documents";
@@ -109,9 +111,6 @@ public class IdRequestValidator implements Validator {
 
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
-
-	/** The Constant SCHEMA_NAME. */
-	private static final String SCHEMA_NAME = "mosip-identity-json-schema.json";
 
 	/** The env. */
 	@Autowired
@@ -306,7 +305,8 @@ public class IdRequestValidator implements Validator {
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 				} else {
-					jsonValidator.validateJson(mapper.writeValueAsString(requestMap), SCHEMA_NAME);
+					jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
+							env.getProperty(JSON_SCHEMA_FILE_NAME));
 				}
 			}
 		} catch (IdRepoAppException | UnidentifiedJsonException | IOException | JsonValidationProcessingException
@@ -339,15 +339,17 @@ public class IdRequestValidator implements Validator {
 		Map<String, Object> identityMap;
 		try {
 			identityMap = convertToMap(identity);
-			if (documents instanceof List) {
-				((List<Map<String, String>>) documents).parallelStream().filter(doc -> doc.containsKey(DOC_TYPE))
+			if (Objects.nonNull(documents) && documents instanceof List
+					&& !((List<Map<String, String>>) documents).isEmpty()) {
+				((List<Map<String, String>>) documents).parallelStream()
+						.filter(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
 						.forEach(doc -> {
-							if (!identityMap.containsKey(doc.get(DOC_TYPE))) {
+							if (!identityMap.containsKey(doc.get(DOC_CAT))) {
 								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
-										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_TYPE)));
+										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												doc.get(DOC_TYPE)));
+												doc.get(DOC_CAT)));
 							}
 						});
 			}
