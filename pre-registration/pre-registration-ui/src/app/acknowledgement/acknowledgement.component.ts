@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { RegistrationService } from "../registration/registration.service";
 
 @Component({
   selector: "app-acknowledgement",
@@ -64,8 +65,9 @@ export class AcknowledgementComponent implements OnInit {
     }
   ];
 
-  constructor() {}
+  constructor(private registrationService: RegistrationService) {}
 
   ngOnInit() {
+    console.log('acknowledgement component', this.registrationService.getUsers());
   }
 }

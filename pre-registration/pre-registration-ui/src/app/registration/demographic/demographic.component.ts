@@ -123,6 +123,7 @@ export class DemographicComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('oninit', sessionStorage.getItem('newApplicant'));
     if (sessionStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }

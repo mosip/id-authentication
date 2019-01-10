@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { BookingModel } from '../center-selection/booking.model';
 import { RegistrationService } from '../registration.service';
+import { UserModel } from '../demographic/modal/user.modal';
 
 @Component({
   selector: 'app-time-selection',
@@ -32,6 +33,7 @@ export class TimeSelectionComponent implements OnInit {
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
+  users: UserModel[];
 
   constructor(
     private sharedService: SharedService,
@@ -44,6 +46,7 @@ export class TimeSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.names = [...this.sharedService.getNameList()];
+    this.users = this.registrationService.getUsers();
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);
@@ -162,6 +165,7 @@ export class TimeSelectionComponent implements OnInit {
         if (slot.names.length !== 0) {
           slot.names.forEach(name => {
             const bookingData = new BookingModel(this.registrationCenter.toString(), data.date, slot.fromTime, slot.toTime);
+          //  this.registrationService.updateBookingDetails(name.preRegId, bookingData);
             const requestObject = {
               newBookingDetails: bookingData,
               oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,

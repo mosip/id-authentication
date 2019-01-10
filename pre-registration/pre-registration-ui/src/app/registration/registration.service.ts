@@ -55,4 +55,26 @@ export class RegistrationService {
   getRegCenterId() {
     return this.regCenterId;
   }
+
+  getIndexByPreId(preId: string):number {
+    let index = -1;
+    this.users.forEach(user => {
+      if (user.preRegId ===  preId) {
+        index = this.users.indexOf(user);
+      }
+    });
+    return index;
+  }
+
+  updateRegistrationCenterData(preId: string, registrationCenter: any) {
+    const index = this.getIndexByPreId(preId);
+    this.users[index].registrationCenter = registrationCenter;
+    this.usersChanged.next(this.users.slice());
+  }
+
+  updateBookingDetails(preId: string, bookingDetails: any) {
+    const index = this.getIndexByPreId(preId);
+    this.users[index].bookingData = bookingDetails;
+    this.usersChanged.next(this.users.slice());
+  }
 }

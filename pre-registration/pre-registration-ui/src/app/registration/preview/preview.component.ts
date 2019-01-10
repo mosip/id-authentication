@@ -14,14 +14,15 @@ export class PreviewComponent implements OnInit {
   secondaryLanguagelabels : any ;
   secondaryLanguage;
   preRegId: string;
+  files = [];
 
   constructor(private dataStorageService: DataStorageService, private route: ActivatedRoute, private router: Router, private registrationService: RegistrationService ) { }
 
   ngOnInit() {
 
-    this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
-    console.log(this.preRegId)
-    this.dataStorageService.getPreviewData(this.preRegId).subscribe(response => {
+    // this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
+    // console.log(this.preRegId)
+    this.dataStorageService.getPreviewData('25368956035901').subscribe(response => {
       console.log(response);
       this.previewData = response['response'][0].demographicDetails.identity;
       console.log(this.previewData);
@@ -33,19 +34,27 @@ export class PreviewComponent implements OnInit {
       console.log(this.secondaryLanguagelabels);
     })
     });
+    this.files = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].files[0];
+  }
 
+  modifyDemographic() {
+    const routeParams = this.router.url.split('/');
+    this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
+  }
 
-
+  modifyDocument() {
+    this.navigateBack();
   }
 
   navigateDashboard() {
     const routeParams = this.router.url.split('/');
-    this.router.navigate(['dashboard', routeParams[2]]);
+    sessionStorage.setItem('newApplicant', 'true');
+    this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
   }
 
   navigateBack() {
     const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'pick-center']);
+    this.router.navigate([routeParams[1], routeParams[2], 'file-upload']);
   }
 
   navigateNext() {
