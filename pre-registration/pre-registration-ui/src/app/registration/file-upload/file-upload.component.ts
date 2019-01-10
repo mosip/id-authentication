@@ -181,10 +181,14 @@ export class FileUploadComponent implements OnInit {
 
   removeFile(applicantIndex, fileIndex) {
     console.log(applicantIndex, ' ; ', fileIndex);
-
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
       console.log(res);
       this.users[applicantIndex].files[0][fileIndex] = '';
+      if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
+        this.fileName = '';
+        this.fileByteArray = '';
+      }
+      // this.documentIndex = fileIndex;
     });
     // this.applicants[applicantIndex].files[fileIndex] = '';
   }
@@ -253,7 +257,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
