@@ -74,6 +74,16 @@ Refer to the [Abis api spce](https://github.com/mosip/mosip/wiki/ABIS-APIs) for 
 	10. Configuration - maxResults : Dummy ABIS will store max 30 mocked records for response. The max results can be changed between 1 to 30 in config and ABIS should return same number of records as configured.
 	11. Configuration - targetFPIR : The scaledScore score can be set from 1 to 100 and Dummy abis will return same scaledScore for Candidates in response.
 
+### Dummy supported functionalities and logic
+Functionality	|	Outcome	|	Abis Logic
+----------------|---------------|----------------------------------------------------
+Insert	|	Insert Success	|	The dummy abis system will check if any one of the biometric type(Fingerprint/Iris/Face) is present in the CBEFF file. The CBEFF file should have any one of the biometric for successful insertion in dummy abis.
+Insert	|	Insert Failure	|	The dummy abis system will check if any one of the biometric type(Fingerprint/Iris/Face) is present in the CBEFF file. The CBEFF file should have none of the biometric for insertion failure in dummy abis.
+Identify	|	Identify - no duplicate	|	The dummy abis will check the test tag (TestFingerPrint, TestIRIS, TestFace) inside CBEFF file. All of the values should be "Unique" for no duplicate.
+Identify	|	Identify - duplicate	|	The dummy abis will check the test tag (TestFingerPrint, TestIRIS, TestFace) inside CBEFF file. Any one of the value should be "Duplicate".
+Identify Configuration - maxResults	|	Check max results	|	Dummy ABIS will store max 30 mocked records for response. The max results can be changed between 1 to 30 in config and ABIS should return same number of records as configured.
+Identify Configuration - targetFPIR	|	The targetFPIR score	|	The scaledScore score can be set from 1 to 100 and Dummy abis will return same scaledScore for Candidates in response.
+
 
 **Class Diagram**
 

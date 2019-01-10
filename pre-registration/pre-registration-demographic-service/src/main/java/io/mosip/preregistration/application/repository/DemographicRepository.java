@@ -34,9 +34,11 @@ public interface DemographicRepository extends BaseRepository<DemographicEntity,
 	/**
 	 * @param userId 
 	 * 			pass userId
+	 * @param statusCode 
+	 * 			pass statusCode
 	 * @return list of preregistration data for the created date
 	 */
-	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId);
+	public List<DemographicEntity> findByCreatedBy(@Param("userId") String userId ,@Param("statusCode") String statusCode);
 
 	/**
 	 * @param userId pass userId

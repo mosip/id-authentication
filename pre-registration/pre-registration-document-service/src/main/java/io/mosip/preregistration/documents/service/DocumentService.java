@@ -24,15 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
-import io.mosip.preregistration.documents.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
-import io.mosip.preregistration.documents.dto.MainListResponseDTO;
-import io.mosip.preregistration.documents.dto.MainRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
@@ -47,8 +49,6 @@ import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatche
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-
 
 /**
  * This class provides the service implementation for Document
@@ -102,6 +102,11 @@ public class DocumentService {
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
 	/**
+	 * Logger configuration for document service
+	 */
+	private static Logger log = LoggerConfiguration.logConfig(DocumentService.class);
+
+	/**
 	 * This method acts as a post constructor to initialize the required request
 	 * parameters.
 	 */
@@ -123,6 +128,7 @@ public class DocumentService {
 	 */
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentResponseDTO> uploadDoucment(MultipartFile file, String documentJsonString) {
+		log.info("sessionId", "idType", "id", "In uploadDoucment method of document service");
 		MainListResponseDTO<DocumentResponseDTO> responseDto = new MainListResponseDTO<>();
 		try {
 			MainRequestDTO<DocumentRequestDTO> docReqDto = serviceUtil.createUploadDto(documentJsonString);
@@ -139,6 +145,8 @@ public class DocumentService {
 				}
 			}
 		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In uploadDoucment method of document service - " + ex.getMessage());
+
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return responseDto;
@@ -157,6 +165,7 @@ public class DocumentService {
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
 	private List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
+		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (!serviceUtil.isNull(document.getPreregId()) && !serviceUtil.isNull(document.getStatusCode())
@@ -209,6 +218,7 @@ public class DocumentService {
 	 */
 	public MainListResponseDTO<DocumentCopyResponseDTO> copyDoucment(String catCode, String sourcePreId,
 			String destinationPreId) {
+		log.info("sessionId", "idType", "id", "In copyDoucment method of document service");
 		String sourceBucketName;
 		String sourceKey;
 		String destinationBucketName;
@@ -223,12 +233,12 @@ public class DocumentService {
 					DocumentEntity copyDocumentEntity = documentRepository
 							.save(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-					sourceBucketName=documentEntity.getPreregId();	
+					sourceBucketName = documentEntity.getPreregId();
 					if (copyDocumentEntity != null) {
-						destinationBucketName=copyDocumentEntity.getPreregId();
+						destinationBucketName = copyDocumentEntity.getPreregId();
 						destinationKey = copyDocumentEntity.getDocCatCode() + "_" + copyDocumentEntity.getDocumentId();
-						boolean isStoreSuccess = ceph.copyFile(sourceBucketName, sourceKey,
-					            destinationBucketName, destinationKey);
+						boolean isStoreSuccess = ceph.copyFile(sourceBucketName, sourceKey, destinationBucketName,
+								destinationKey);
 						if (!isStoreSuccess) {
 
 							throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
@@ -253,10 +263,12 @@ public class DocumentService {
 				}
 			}
 
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException ex) {
+			log.error("sessionId", "idType", "id", "In copyDoucment method of document service - " + ex.getMessage());
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString(), e.getCause());
+					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString(), ex.getCause());
 		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In copyDoucment method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return responseDto;
@@ -271,6 +283,7 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	public MainListResponseDTO<DocumentMultipartResponseDTO> getAllDocumentForPreId(String preId) {
+		log.info("sessionId", "idType", "id", "In getAllDocumentForPreId method of document service");
 		MainListResponseDTO<DocumentMultipartResponseDTO> responseDto = new MainListResponseDTO<>();
 		List<DocumentMultipartResponseDTO> allDocRes = new ArrayList<>();
 		try {
@@ -301,8 +314,10 @@ public class DocumentService {
 					throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 				}
 			}
-		} catch (Exception e) {
-			new DocumentExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In getAllDocumentForPreId method of document service - " + ex.getMessage());
+			new DocumentExceptionCatcher().handle(ex);
 		}
 		return responseDto;
 	}
@@ -315,6 +330,7 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId) {
+		log.info("sessionId", "idType", "id", "In deleteDocument method of document service");
 		List<DocumentDeleteResponseDTO> deleteDocList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		try {
@@ -339,10 +355,14 @@ public class DocumentService {
 			} else {
 				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 			}
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException ex) {
+			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
+
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), e.getCause());
+					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), ex.getCause());
 		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
+
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return delResponseDto;
@@ -356,6 +376,7 @@ public class DocumentService {
 	 * @return ResponseDTO
 	 */
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
+		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		try {
@@ -379,10 +400,17 @@ public class DocumentService {
 					throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
 				}
 			}
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException ex) {
+			log.error("sessionId", "idType", "id",
+					"In deleteAllByPreId method of document service - " + ex.getMessage());
+
 			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), e.getCause());
+					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), ex.getCause());
 		} catch (Exception ex) {
+
+			log.error("sessionId", "idType", "id",
+					"In deleteAllByPreId method of document service - " + ex.getMessage());
+
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return delResponseDto;

@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
-import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 import io.mosip.kernel.core.datavalidator.spi.PhoneValidator;
 
 /**
@@ -32,7 +31,7 @@ import io.mosip.kernel.core.datavalidator.spi.PhoneValidator;
 public class PhoneValidatorImplTest {
 
 	@Autowired
-	PhoneValidator phonevalidatorImpl;
+	PhoneValidator<String> phonevalidatorImpl;
 	
 	@Value("${mosip.kernel.phone.test.null}")
 	String phoneNull;

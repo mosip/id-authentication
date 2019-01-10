@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.booking.dto;
 
 import java.io.Serializable;
@@ -41,4 +42,39 @@ public class BookingRegistrationDTO implements Serializable{
 	@JsonProperty("time_slot_to")
 	@ApiModelProperty(value = "To Time Slot", position = 4)
 	private String slotToTime;
+	@Override
+	public int hashCode() {
+		return 1;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BookingRegistrationDTO other = (BookingRegistrationDTO) obj;
+		if (regDate == null) {
+			if (other.regDate != null)
+				return false;
+		} else if (!regDate.equals(other.regDate))
+			return false;
+		if (registrationCenterId == null) {
+			if (other.registrationCenterId != null)
+				return false;
+		} else if (!registrationCenterId.equals(other.registrationCenterId))
+			return false;
+		if (slotFromTime == null) {
+			if (other.slotFromTime != null)
+				return false;
+		} else if (!slotFromTime.equals(other.slotFromTime))
+			return false;
+		if (slotToTime == null) {
+			if (other.slotToTime != null)
+				return false;
+		} else if (!slotToTime.equals(other.slotToTime))
+			return false;
+		return true;
+	}
 }

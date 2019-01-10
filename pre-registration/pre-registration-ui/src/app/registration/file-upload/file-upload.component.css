@@ -16,7 +16,16 @@
   height: 50%;
 }
 .browseInput {
-  height: 10%;
+  width: 30%;
+  background: none;
+  border: 1px solid rgba(253, 81, 140, 1);
+  color: rgba(253, 81, 140, 1);
+  border-radius: 2px;
+}
+
+.browseInput[disabled] {
+  border: 1px solid rgba(253, 81, 140, 0.35);
+  color: rgba(253, 81, 140, 0.35);
 }
 .documentWrapper {
   width: 100%;
@@ -90,17 +99,33 @@ mat-select:focus {
 .file-upload__body {
   padding: 20px 25px 10px 25px;
   font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.file-upload__body__1 {
+  width: 70%;
+}
+
+.file-upload__body__2 {
+  width: 30%;
+}
+
+.file-upload__body__2 > p {
+  margin: 0px;
+}
+
+.file-upload__message {
+  padding: 20px 25px 10px 25px;
+  font-size: 12px;
 }
 
 .file-upload__body__document-type {
-}
-
-.file-upload__body__document-browse {
+  padding: 10px 0px;
 }
 
 .file-upload__body__document-name {
-  background: #e0e0e0;
-  width: fit-content;
+  max-width: 59%;
   padding: 0.6em;
   font-size: 0.7em;
   position: relative;
@@ -111,9 +136,63 @@ mat-select:focus {
 }
 
 .file-upload__body__document-name .cross {
-  position: absolute;
-  top: 0px;
   font-size: 1.5em;
   right: 0px;
   text-align: right;
+}
+
+.file-uplaoad__body__document-name__view {
+  float: right;
+  padding-right: 12%;
+}
+
+.file-uplaoad__body__document-name__view img {
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  filter: grayscale(100%);
+}
+.file-upload__button {
+  height: 32px;
+  width: 40%;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.file-uplaoad__body__2__preview {
+  height: 95%;
+  width: 100%;
+}
+.user__buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.user__btn {
+  /* padding: 0px 53px;
+  border: 1px solid red;
+  margin: 5px; */
+  background-color: #ff4081;
+  border: none;
+  color: white;
+  padding: 0.8rem 4rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.user__btn:disabled,
+.user__btn:active {
+  border: 1px solid gray;
+  background-color: white;
+  color: #ff4081;
+  cursor: default;
+}
+.file-upload__input {
+  width: 33%;
 }

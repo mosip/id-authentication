@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material';
 import { MatButtonModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
 import { MatOptionModule } from '@angular/material';
+import { I18nModule } from '../i18n.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MatOptionModule } from '@angular/material';
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    I18nModule
   ]
 })
 export class AuthModule {}
