@@ -1185,8 +1185,8 @@ public class RegistrationController extends BaseController {
 			fxUtils.validateOnType(emailId, validation);
 			fxUtils.validateOnType(cniOrPinNumber, validation);
 			fxUtils.validateOnType(fullNameLocalLanguage, validation);
-			dateValidation.validateDate(dd, mm, validation, fxUtils);
-			dateValidation.validateMonth(dd, mm, validation, fxUtils);
+			dateValidation.validateDate(dd, mm,yyyy, validation, fxUtils);
+			dateValidation.validateMonth(dd, mm,yyyy, validation, fxUtils);
 			dateValidation.validateYear(dd, mm, yyyy, validation, fxUtils);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
@@ -1218,9 +1218,9 @@ public class RegistrationController extends BaseController {
 					if (Integer.parseInt(ageField.getText()) > Integer
 							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 						ageField.setText(oldValue);
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
+					/*	generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
-					} else {
+				*/	} else {
 						age = Integer.parseInt(ageField.getText());
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 						dateOfBirth  = Date.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant()); ;

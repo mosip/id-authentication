@@ -3,10 +3,12 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -14,12 +16,12 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.service.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -46,9 +48,20 @@ public class Validations extends BaseController {
 	private ResourceBundle labelBundle;
 	private String isConsolidated;
 	private StringBuilder validationMessage;
+	private List<String> blackListedWords;
+	private List<String> noAlert;
 
 	public Validations() {
 		try {
+			noAlert = new ArrayList<String>();
+			noAlert.add("ageField");
+			noAlert.add("dd");
+			noAlert.add("mm");
+			noAlert.add("yyyy");
+			noAlert.add("mobileNo");
+			noAlert.add("postalCode");
+			noAlert.add("postalCode");
+			noAlert.add("cniOrPinNumber");
 			validationMessage = new StringBuilder();
 			validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
 			messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
@@ -142,23 +155,36 @@ public class Validations extends BaseController {
 			int length = Integer.parseInt(validationProperty[1]);
 			String isMandetory = validationProperty[2];
 			String isFixed = validationProperty[3];
+			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
 			if (isMandetory.equals("false") && node.getText().isEmpty())
 				return true;
 			if (node.isDisabled())
 				return true;
 			if (!id.contains(RegistrationConstants.ON_TYPE) && isMandetory.equals("true") && node.getText().isEmpty()) {
-				generateAlert(labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
+				if(!showAlert)
+					generateAlert(labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 			if (node.getText().matches(regex)) {
+				
+				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
+					if(!showAlert)
+						generateAlert(
+								node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
+								isConsolidated, validationMessage);
+					node.requestFocus();
+					return false;
+				}
+				
 				if (isFixed.equals("false")) {
 					if (node.getText().length() <= length) {
 						return true;
 					} else {
-						generateAlert(
-								labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_2)),
-								isConsolidated, validationMessage);
+						if(!showAlert)
+							generateAlert(
+									labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_002_2)),
+									isConsolidated, validationMessage);
 						node.requestFocus();
 						return false;
 					}
@@ -167,18 +193,20 @@ public class Validations extends BaseController {
 					if (node.getText().length() == length) {
 						return true;
 					} else {
-						generateAlert(
-								labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_2)),
-								isConsolidated, validationMessage);
+						if(!showAlert)
+							generateAlert(
+									labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_1)).concat(" "+length+" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_003_2)),
+									isConsolidated, validationMessage);
 						node.requestFocus();
 						return false;
 					}
 				}
 
 			}
-			generateAlert(
-					labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_1)).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_2)),
-					isConsolidated, validationMessage);
+			if(!showAlert)
+				generateAlert(
+						labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_1)).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_2)),
+						isConsolidated, validationMessage);
 			node.requestFocus();
 			return false;
 		} catch (RuntimeException exception) {

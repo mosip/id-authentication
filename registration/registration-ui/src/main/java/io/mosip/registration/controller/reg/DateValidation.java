@@ -19,7 +19,7 @@ public class DateValidation extends BaseController {
 
 	private Map<String, String> dateMapper;
 
-	public  DateValidation() {
+	public DateValidation() {
 		dateMapper = new HashMap<String, String>();
 		dateMapper.put("1", "31");
 		dateMapper.put("2", "29");
@@ -36,13 +36,14 @@ public class DateValidation extends BaseController {
 		dateMapper.put("12", "31");
 	}
 
-	public void validateDate(TextField date, TextField month,Validations validations,FXUtils fxUtils) {
+	public void validateDate(TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils) {
 
 		fxUtils.validateOnType(date, validation);
 		date.textProperty().addListener((obsValue, oldValue, newValue) -> {
-
+			int dateVal = 1;
 			if (date.getText().matches("\\d+")) {
-				int dateVal = Integer.parseInt(date.getText());
+				dateVal = Integer.parseInt(date.getText());
 				if (dateVal > 31 || dateVal < 1) {
 					date.setText(oldValue);
 				}
@@ -52,10 +53,12 @@ public class DateValidation extends BaseController {
 					generateAlert("wrong");
 				}
 			}
+			validateTheDate(date, month, year);
 		});
 	}
 
-	public void validateMonth(TextField date, TextField month,Validations validations,FXUtils fxUtils) {
+	public void validateMonth(TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils) {
 		fxUtils.validateOnType(month, validation);
 		month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (month.getText().matches("\\d+")) {
@@ -70,19 +73,52 @@ public class DateValidation extends BaseController {
 					}
 				}
 			}
+			validateTheDate(date, month, year);
 		});
 
 	}
 
-	public void validateYear(TextField date, TextField month, TextField year,Validations validations,FXUtils fxUtils) {
+	private void validateTheDate(TextField date, TextField month, TextField year) {
+		int yearVal;
+		int monthVal;
+		int dateVal;
+		LocalDate localDate = LocalDate.now();
+		if (year != null) {
+			if (year.getText().matches("\\d{4}")) {
+				yearVal = Integer.parseInt(year.getText());
+				if (yearVal == localDate.getYear()) {
+					if (month != null) {
+						if (month.getText().matches("\\d+")) {
+							monthVal = Integer.parseInt(month.getText());
+							if (monthVal > localDate.getMonth().getValue()) {
+								month.setText("1");
+							}
+							if (monthVal == localDate.getMonth().getValue()) {
+								if (date != null) {
+									if (date.getText().matches("\\d+")) {
+										dateVal = Integer.parseInt(date.getText());
+										if (dateVal > localDate.getDayOfMonth()) {
+											date.setText("1");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	public void validateYear(TextField date, TextField month, TextField year, Validations validations,
+			FXUtils fxUtils) {
 		fxUtils.validateOnType(year, validation);
 		year.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (year.getText().matches("\\d{4}")) {
 				int yearVal = Integer.parseInt(year.getText());
-				int monthVal=Integer.parseInt(month.getText());
-				int dateVal=Integer.parseInt(date.getText());
-				LocalDate localDate=LocalDate.now();
-				if (yearVal < 1900 || yearVal > localDate.getYear()||monthVal>localDate.getMonthValue()||dateVal>localDate.getDayOfMonth()) {
+				LocalDate localDate = LocalDate.now();
+				if (yearVal < 1900 || yearVal > localDate.getYear()) {
 					year.setText(oldValue);
 				}
 				if (!(yearVal % 4 == 0)) {
@@ -100,9 +136,9 @@ public class DateValidation extends BaseController {
 
 				}
 			}
+			validateTheDate(date, month, year);
 		});
 
 	}
-
 
 }
