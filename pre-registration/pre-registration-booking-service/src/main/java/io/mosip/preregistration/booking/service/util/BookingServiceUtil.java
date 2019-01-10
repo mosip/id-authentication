@@ -54,9 +54,7 @@ import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.DocumentGetAllDTO;
 import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.MainListRequestDTO;
-import io.mosip.preregistration.booking.dto.MainListResponseDTO;
 import io.mosip.preregistration.booking.dto.MainRequestDTO;
-import io.mosip.preregistration.booking.dto.MainResponseDTO;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
@@ -80,6 +78,8 @@ import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 
 /**
  * This class provides the utility methods for Booking application.
@@ -211,12 +211,12 @@ public class BookingServiceUtil {
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<MainResponseDTO> bookingResponse = restTemplate.exchange(uriBuilder, HttpMethod.PUT,
 					httpEntity, MainResponseDTO.class);
-			if (!bookingResponse.getBody().getStatus()) {
-				throw new DemographicStatusUpdationException(bookingResponse.getBody().getErr().getErrorcode(),
+			if (!bookingResponse.getBody().isStatus()) {
+				throw new DemographicStatusUpdationException(bookingResponse.getBody().getErr().getErrorCode(),
 						bookingResponse.getBody().getErr().getMessage());
 			}
 
-			return bookingResponse.getBody().getStatus();
+			return bookingResponse.getBody().isStatus();
 
 		} catch (RestClientException e) {
 			throw new DemographicStatusUpdationException(ErrorCodes.PRG_BOOK_RCI_011.toString(),
@@ -244,14 +244,14 @@ public class BookingServiceUtil {
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
 
-			if (respEntity.getBody().getStatus()) {
+			if (respEntity.getBody().isStatus()) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
 
 				statusCode = preRegResponsestatusDto.getStatusCode().trim();
 			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorcode(),
+				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
 						respEntity.getBody().getErr().getMessage());
 			}
 		} catch (RestClientException e) {
@@ -280,7 +280,7 @@ public class BookingServiceUtil {
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
 
-			if (respEntity.getBody().getStatus()) {
+			if (respEntity.getBody().isStatus()) {
 				ObjectMapper mapper = new ObjectMapper();
 				PreRegistartionStatusDTO preRegResponsestatusDto = mapper
 						.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class);
@@ -292,7 +292,7 @@ public class BookingServiceUtil {
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
 				}
 			} else {
-				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorcode(),
+				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
 						respEntity.getBody().getErr().getMessage());
 			}
 		} catch (RestClientException e) {

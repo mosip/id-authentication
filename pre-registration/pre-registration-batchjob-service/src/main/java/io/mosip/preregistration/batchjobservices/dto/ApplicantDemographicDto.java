@@ -1,6 +1,7 @@
 package io.mosip.preregistration.batchjobservices.dto;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,11 +40,11 @@ public class ApplicantDemographicDto {
 
 	private String updatedBy;
 
-	private Timestamp updateDateTime;
+	private LocalDate updateDateTime;
 
 	private boolean isDeleted;
 
-	private Timestamp deletedDateTime;
+	private LocalDate deletedDateTime;
 	
 	
 

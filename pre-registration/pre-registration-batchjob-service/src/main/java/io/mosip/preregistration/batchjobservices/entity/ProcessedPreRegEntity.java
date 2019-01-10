@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * The persistent class Processed PreReg List database table.
+ * 
  * @author Kishan Rathore
  * @since 1.0.0
- *
- * The persistent class Processed PreReg List database table.
  */
 @Component
 @Entity
@@ -28,10 +28,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProcessedPreRegEntity implements Serializable{
 	
-	/**
-	 * The constant serialVersionUID
-	 */
-	private static final long serialVersionUID = 6401286049521632681L;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -4642077019557115876L;
 
 	/**
 	 * The PreRegistration Id.
