@@ -56,6 +56,7 @@ export class DashBoardComponent implements OnInit {
 
   initUsers() {
     this.regService.flushUsers();
+    this.sharedService.flushNameList();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         if (
