@@ -116,7 +116,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 				.parseInt(RidGeneratorPropertyConstant.SEQUENCE_END_VALUE.getProperty())) {
 
 			entity = new Rid();
-			entity.setDongleId(machineId);
+			entity.setMachineId(machineId);
 			entity.setSequenceId(initialValue);
 
 		} else {
