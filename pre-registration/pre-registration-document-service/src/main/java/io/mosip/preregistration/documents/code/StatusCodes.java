@@ -1,9 +1,15 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.documents.code;
 
 /**
  * 
- * Various Status codes for Document status table.
- * @author M1043008
+ * This Enum provides constants to define Status codes for Document service.
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 public enum StatusCodes {
@@ -17,6 +23,7 @@ public enum StatusCodes {
 	DOCUMENT_IS_MISSING,
 	DOCUMENT_DELETE_SUCCESSFUL,
 	DOCUMENT_TABLE_NOTACCESSIBLE,
-	DOCUMENT_COPY_SUCCESSFUL
+	DOCUMENT_COPY_SUCCESSFUL,
+	Pending_Appointment
 
 }

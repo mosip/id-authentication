@@ -1,43 +1,42 @@
 package io.mosip.registration.dto.demographic;
 
-import java.util.List;
-
 import io.mosip.registration.dto.BaseDTO;
 
 /**
  * This class used to capture the documents, photograph, exceptional photograph
- * and Acknowledgement Receipt of the Individual
- * 
+ * and Acknowledgement Receipt of the Individual.
+ *
  * @author Dinesh Asokan
  * @since 1.0.0
  */
 public class ApplicantDocumentDTO extends BaseDTO {
 
-	private List<DocumentDetailsDTO> documentDetailsDTO;
+	/** The photograph name. */
 	private String photographName;
+
+	/** The photo. */
 	private byte[] photo;
+
+	/** The has exception photo. */
 	private boolean hasExceptionPhoto;
+
+	/** The exception photo. */
 	private byte[] exceptionPhoto;
+
+	/** The exception photo name. */
 	private String exceptionPhotoName;
+
+	/** The quality score. */
 	private double qualityScore;
+
+	/** The num retry. */
 	private int numRetry;
+
+	/** The acknowledge receipt. */
 	private byte[] acknowledgeReceipt;
+
+	/** The acknowledge receipt name. */
 	private String acknowledgeReceiptName;
-
-	/**
-	 * @return the documentDetailsDTO
-	 */
-	public List<DocumentDetailsDTO> getDocumentDetailsDTO() {
-		return documentDetailsDTO;
-	}
-
-	/**
-	 * @param documentDetailsDTO
-	 *            the documentDetailsDTO to set
-	 */
-	public void setDocumentDetailsDTO(List<DocumentDetailsDTO> documentDetailsDTO) {
-		this.documentDetailsDTO = documentDetailsDTO;
-	}
 
 	/**
 	 * @return the photographName

@@ -3,7 +3,9 @@ package io.mosip.registration.constants;
 public enum ProcessNames {
 	LOGIN("login authentication"), 
 	PACKET("packet authentication"),
+	EOD("eod authentication"),
 	EXCEPTION("exception authentication"); 
+	
 	
 	/**
 	 * @param type

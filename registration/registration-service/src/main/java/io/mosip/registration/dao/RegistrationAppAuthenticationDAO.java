@@ -1,6 +1,6 @@
 package io.mosip.registration.dao;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * DAO class for RegistrationAppLogin
@@ -17,7 +17,7 @@ public interface RegistrationAppAuthenticationDAO {
 	 * 
 	 * @return Map of Login modes along with the sequence
 	 */
-	Map<String, Object> getModesOfLogin(String authType);
+	List<String> getModesOfLogin(String authType);
 	
 }
 

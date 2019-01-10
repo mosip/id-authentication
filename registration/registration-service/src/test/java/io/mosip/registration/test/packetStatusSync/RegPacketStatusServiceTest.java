@@ -36,13 +36,6 @@ public class RegPacketStatusServiceTest {
 	RegPacketStatusDAO packetStatusDao;
 	@InjectMocks
 	RegPacketStatusServiceImpl packetStatusService;
-	
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
-	
-	@Before
-	public void initialize() throws IOException, URISyntaxException {
-		applicationContext.setApplicationMessagesBundle();
-	}
 
 	@Test
 	public void packetSyncStatusSuccessTest() throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {

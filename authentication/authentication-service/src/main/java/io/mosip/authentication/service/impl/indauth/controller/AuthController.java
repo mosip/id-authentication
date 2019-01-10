@@ -100,7 +100,7 @@ public class AuthController {
 	 * @throws IdAuthenticationDaoException
 	 */
 
-	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/v1.0/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
@@ -133,7 +133,7 @@ public class AuthController {
 	 * 
 	 * 
 	 */
-	@PostMapping(path = "/ekyc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/v1.0/ekyc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })

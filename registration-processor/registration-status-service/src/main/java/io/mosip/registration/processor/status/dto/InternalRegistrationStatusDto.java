@@ -2,7 +2,7 @@ package io.mosip.registration.processor.status.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
+	
 /**
  * The Class RegistrationStatusDto.
  */

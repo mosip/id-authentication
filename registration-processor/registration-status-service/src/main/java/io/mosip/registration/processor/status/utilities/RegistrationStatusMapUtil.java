@@ -7,17 +7,31 @@ import java.util.Map;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 
+/**
+ * The Class RegistrationStatusMapUtil.
+ */
 public class RegistrationStatusMapUtil {
+	
+	/** The status map. */
 	private static EnumMap<RegistrationStatusCode, RegistrationExternalStatusCode> statusMap = new EnumMap<>(
 			RegistrationStatusCode.class);
 
+	/** The unmodifiable map. */
 	private static Map<RegistrationStatusCode, RegistrationExternalStatusCode> unmodifiableMap = Collections
 			.unmodifiableMap(statusMap);
 
+	/**
+	 * Instantiates a new registration status map util.
+	 */
 	private RegistrationStatusMapUtil() {
 		super();
 	}
 
+	/**
+	 * Status mapper.
+	 *
+	 * @return the map
+	 */
 	public static Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMapper() {
 
 		statusMap.put(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE,

@@ -1,16 +1,20 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
@@ -20,10 +24,12 @@ import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
+import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
+import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.repository.UinRepository;
+import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -38,6 +44,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+
+	/** The env. */
+	@Autowired
+	private Environment env;
 
 	/** The rest helper. */
 	@Autowired
@@ -54,16 +64,19 @@ public class IdAuthServiceImpl implements IdAuthService {
 	@Autowired
 	private AuditRequestFactory auditFactory;
 
-	/** The uin repository. */
-	@Autowired
-	UinRepository uinRepository;
-
 	/** The vid repository. */
 	@Autowired
 	private VIDRepository vidRepository;
 
 	@Autowired
 	private IdRepoService idRepoService;
+
+	@Autowired
+	private DateHelper dateHelper;
+
+	/** The autntxnrepository. */
+	@Autowired
+	private AutnTxnRepository autntxnrepository;
 
 	/*
 	 * (non-Javadoc)
@@ -109,7 +122,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.
 	 * String)
 	 */
-    @Override
+	@Override
 	public Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = getIdRepoByVidAsRequest(vid);
 
@@ -127,23 +140,15 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 */
 	Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
-		String refId = null;
 
-		Optional<String> findRefIdByVid = vidRepository.findRefIdByVid(vid);
-		if (findRefIdByVid.isPresent()) {
-
-			refId = findRefIdByVid.get().trim();
-			Optional<String> findUinByRefId = uinRepository.findUinByRefId(refId);
-
-			if (findUinByRefId.isPresent()) {
-				String uin = findUinByRefId.get().trim();
-				try {
-					idRepo = idRepoService.getIdRepo(uin);
-				} catch (IdAuthenticationBusinessException e) {
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR,e);
-				}
+		Optional<String> findUinByRefId = vidRepository.findUinByVid(vid);
+		if (findUinByRefId.isPresent()) {
+			String uin = findUinByRefId.get().trim();
+			try {
+				idRepo = idRepoService.getIdRepo(uin);
+			} catch (IdAuthenticationBusinessException e) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 			}
-
 		}
 
 		return idRepo;
@@ -155,11 +160,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @param uinEntityOpt the uin entity opt
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	/*private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
-		if (!uinEntity.isActive()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-		}
-	}*/
+	/*
+	 * private static void doValidateUIN(UinEntity uinEntity) throws
+	 * IdValidationFailedException { if (!uinEntity.isActive()) { throw new
+	 * IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+	 * } }
+	 */
 
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id
@@ -191,6 +197,51 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 
 		return idResDTO;
+	}
+
+	/**
+	 * Store entry in Auth_txn table for all authentications.
+	 * 
+	 * @param idvId       idvId
+	 * @param idvIdType   idvIdType(D/V)
+	 * @param reqTime     reqTime
+	 * @param txnId       txnId
+	 * @param status      status('Y'/'N')
+	 * @param comment     comment
+	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @throws IdAuthenticationBusinessException 
+	 */
+	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
+			RequestType requestType) throws IdAuthenticationBusinessException {
+
+		AutnTxn autnTxn = new AutnTxn();
+		autnTxn.setRefId(idvId);
+		autnTxn.setRefIdType(idvIdType);
+
+		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
+
+		// TODO check
+		autnTxn.setCrBy("OTP Authenticate - MOSIP");
+		autnTxn.setCrDTimes(new Date());
+		// FIXME utilize Instant
+		Date convertStringToDate = null;
+		try {
+			convertStringToDate = dateHelper.convertStringToDate(reqTime);
+		} catch (IDDataValidationException e) {
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP, e);
+		}
+
+		autnTxn.setRequestDTtimes(convertStringToDate);
+		autnTxn.setResponseDTimes(new Date()); // TODO check this
+		autnTxn.setAuthTypeCode(requestType.getRequestType());
+		autnTxn.setRequestTrnId(txnId);
+		autnTxn.setStatusCode(status);
+		autnTxn.setStatusComment(comment);
+		// FIXME
+		autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
+
+		autntxnrepository.saveAndFlush(autnTxn);
 	}
 
 }

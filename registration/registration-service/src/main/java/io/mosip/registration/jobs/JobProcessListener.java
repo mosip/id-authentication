@@ -47,7 +47,7 @@ public class JobProcessListener extends JobListenerSupport {
 	 */
 	@Override
 	public String getName() {
-		return "jobProcessListener";
+		return this.getClass().getName();
 	}
 
 	/*

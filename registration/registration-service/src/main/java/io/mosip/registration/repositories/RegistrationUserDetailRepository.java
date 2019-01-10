@@ -22,7 +22,7 @@ public interface RegistrationUserDetailRepository extends BaseRepository<Registr
 	 *            the registration user id
 	 * @return the list of {@link RegistrationUserDetail}
 	 */
-	List<RegistrationUserDetail> findByIdAndIsActiveTrue(String userId);
+	List<RegistrationUserDetail> findByIdIgnoreCaseAndIsActiveTrue(String userId);
 	
 	
 	/**

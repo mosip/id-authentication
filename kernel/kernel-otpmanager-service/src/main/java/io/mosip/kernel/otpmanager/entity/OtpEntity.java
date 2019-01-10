@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -91,7 +92,7 @@ public class OtpEntity {
 	 * The default constructor for OtpEntity.
 	 */
 	public OtpEntity() {
-		generatedDtimes = LocalDateTime.now();
+		generatedDtimes = LocalDateTime.now(ZoneId.of("UTC"));
 		updatedDtimes = generatedDtimes;
 		statusCode = OtpStatusConstants.UNUSED_OTP.getProperty();
 	}

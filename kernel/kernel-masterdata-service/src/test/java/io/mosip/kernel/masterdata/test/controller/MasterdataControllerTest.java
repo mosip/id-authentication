@@ -906,7 +906,7 @@ public class MasterdataControllerTest {
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:19:33.655Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"xml\",\n" + "    \"description\": \"string\",\n"
-						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\"\n" + "  }\n" + "}"))
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"FRE\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 
@@ -960,7 +960,7 @@ public class MasterdataControllerTest {
 	public void validateTimestampWithRegistrationCenter() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
+		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(resgistrationCenterStatusResponseDto);
 
 		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))

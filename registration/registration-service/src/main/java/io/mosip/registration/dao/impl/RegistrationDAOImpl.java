@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_SAVE_PKT;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;

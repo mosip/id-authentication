@@ -12,8 +12,7 @@ public class DemographicDTO extends BaseDTO {
 	private ApplicantDocumentDTO applicantDocumentDTO;
 	private String introducerRID;
 	private String introducerUIN;
-	private DemographicInfoDTO demoInLocalLang;
-	private DemographicInfoDTO demoInUserLang;
+	private DemographicInfoDTO demographicInfoDTO;
 
 	/**
 	 * @return the applicantDocumentDTO
@@ -61,33 +60,18 @@ public class DemographicDTO extends BaseDTO {
 	}
 
 	/**
-	 * @return the demoInLocalLang
+	 * @return the demographicInfoDTO
 	 */
-	public DemographicInfoDTO getDemoInLocalLang() {
-		return demoInLocalLang;
+	public DemographicInfoDTO getDemographicInfoDTO() {
+		return demographicInfoDTO;
 	}
 
 	/**
-	 * @param demoInLocalLang
-	 *            the demoInLocalLang to set
+	 * @param demographicInfoDTO
+	 *            the demographicInfoDTO to set
 	 */
-	public void setDemoInLocalLang(DemographicInfoDTO demoInLocalLang) {
-		this.demoInLocalLang = demoInLocalLang;
-	}
-
-	/**
-	 * @return the demoInUserLang
-	 */
-	public DemographicInfoDTO getDemoInUserLang() {
-		return demoInUserLang;
-	}
-
-	/**
-	 * @param demoInUserLang
-	 *            the demoInUserLang to set
-	 */
-	public void setDemoInUserLang(DemographicInfoDTO demoInUserLang) {
-		this.demoInUserLang = demoInUserLang;
+	public void setDemographicInfoDTO(DemographicInfoDTO demographicInfoDTO) {
+		this.demographicInfoDTO = demographicInfoDTO;
 	}
 
 }

@@ -12,7 +12,7 @@ mvn javadoc:javadoc
 
 **The inputs which have to be provided are:**
 1. Data provided to encryption should be encoded to BASE64 encoding before requesting to encrypt and decrypt.
-2. Data received after encrypting should be decoded from BASE64 encoding.
+2. Data received should be decoded from BASE64 encoding.
 
 
 **Usage Sample**

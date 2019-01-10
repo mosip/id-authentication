@@ -44,6 +44,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdRepoService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.helper.IdInfoHelper;
@@ -138,7 +139,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
@@ -239,7 +240,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identity);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -317,7 +318,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
 		Map<String, Object> matchProperties = new HashMap<>();
@@ -467,7 +468,7 @@ public class DemoAuthServiceTest {
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		return authRequestDTO;
 
 	}
@@ -490,9 +491,9 @@ public class DemoAuthServiceTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = null;
-		String refId = "";
+		String uin = "";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoAuthServiceImpl.getDemoStatus(authRequestDTO, refId, demoEntity);
+		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
 	}
 
 	@Test
@@ -519,7 +520,7 @@ public class DemoAuthServiceTest {
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		//authRequestDTO.setVer("1.0");
+		// authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
@@ -538,14 +539,71 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		demoIdentity.put("firstName", identityList);
-		String refId = "274390482564";
+		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("mosip.primary.lang-code", "FR");
 		mockenv.setProperty("mosip.secondary.lang-code", "AR");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
-		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, refId, demoIdentity);
+		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
 		assertTrue(validateBioDetails.isStatus());
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestcontstructMatchInputisNull() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = null;
+		String uin = null;
+		Map<String, List<IdentityInfoDTO>> demoEntity = null;
+		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestcontstructMatchInputisEmpty() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		String uin = null;
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
+	}
+
+	@Test
+	public void TestgetDemoStatus() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("274390482564");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setKey(new AuthSecureDTO());
+		List<MatchInfo> matchInfoList = new ArrayList<>();
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("personalIdentity");
+		matchInfo.setLanguage("FR");
+		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		matchInfo.setMatchingThreshold(60);
+		matchInfoList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matchInfoList);
+		authRequestDTO.setMuaCode("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		// authRequestDTO.setVer("1.0");
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		String value = "Ibrahim";
+		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setValue(value);
+		nameList.add(identityInfoDTO);
+		identity.setName(nameList);
+		requestDTO.setIdentity(identity);
+		authRequestDTO.setRequest(requestDTO);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		demoEntity.put("name", nameList);
+		AuthStatusInfo demoStatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "274390482564", demoEntity);
 
 	}
 

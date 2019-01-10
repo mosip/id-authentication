@@ -327,16 +327,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timestamp) {
+	public ResgistrationCenterStatusResponseDto validateTimestampWithRegistrationCenter(String id, String timestamp) {
 		LocalDateTime localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
 		LocalDate localDate = localDateTime.toLocalDate();
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
-			/**
-			 * a query is written in RegistrationCenterRepository which would check if the date 
-			 * is not a holiday for that center
-			 *
-			 */
 			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
 			if (isTrue) {
 				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
@@ -355,9 +350,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					LocalTime locatime = localDateTime.toLocalTime();
 					boolean isAfterStartTime = locatime.isAfter(startTime);
 					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
-					/*
-					 * below is the validation to check if the time that is sent is between start and end time
-					 */
 					if (isAfterStartTime && isBeforeEndTime) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {

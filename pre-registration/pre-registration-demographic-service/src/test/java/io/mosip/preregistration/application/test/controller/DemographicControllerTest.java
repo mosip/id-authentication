@@ -27,28 +27,43 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import io.mosip.preregistration.application.controller.DemographicController;
-import io.mosip.preregistration.application.dto.CreateDemographicDTO;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
+import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.application.dto.PreRegistrationViewDTO;
-import io.mosip.preregistration.application.dto.ResponseDTO;
 import io.mosip.preregistration.application.dto.UpdateResponseDTO;
 import io.mosip.preregistration.application.service.DemographicService;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
 /**
- * @author M1046129
- *
+ * Test class to test the PreRegistration Controller methods
+ * 
+ * @author Rajath KR
+ * @author Sanober Noor
+ * @author Tapaswini Bahera
+ * @author Jagadishwari S
+ * @author Ravi C Balaji
+ * @since 1.0.0
+ * 
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(DemographicController.class)
 public class DemographicControllerTest {
 
+	/**
+	 * Autowired reference for {@link #MockMvc}
+	 */
 	@Autowired
 	private MockMvc mockMvc;
 
+	/**
+	 * Creating Mock Bean for DemographicService
+	 */
 	@MockBean
 	private DemographicService preRegistrationService;
 
@@ -58,8 +73,11 @@ public class DemographicControllerTest {
 
 	/**
 	 * @throws FileNotFoundException
+	 *             when file not found
 	 * @throws IOException
+	 *             on input error
 	 * @throws ParseException
+	 *             on json parsing error
 	 */
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
@@ -70,12 +88,21 @@ public class DemographicControllerTest {
 
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");
-		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
-		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
-		CreateDemographicDTO createDto = new CreateDemographicDTO();
+		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
+		List<DemographicResponseDTO> saveList = new ArrayList<DemographicResponseDTO>();
+		DemographicResponseDTO createDto = new DemographicResponseDTO();
+
+		MainRequestDTO<DemographicRequestDTO> request = new MainRequestDTO<>();
+		DemographicRequestDTO demo = new DemographicRequestDTO();
+		demo.setPreRegistrationId("22893647484937");
+		request.setRequest(demo);
 
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
@@ -85,30 +112,38 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "").content(jsonObject.toString());
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 		logger.info("Resonse " + response);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");
-		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService)
+		Mockito.doThrow(new TableNotAccessibleException("ex")).when(preRegistrationService)
 				.addPreRegistration(Mockito.any());
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "").content(jsonObject.toString());
-		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");
 
-		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
-		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
-		CreateDemographicDTO createDto = new CreateDemographicDTO();
+		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
+		List<DemographicResponseDTO> saveList = new ArrayList<DemographicResponseDTO>();
+		DemographicResponseDTO createDto = new DemographicResponseDTO();
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
 		response.setResponse(saveList);
@@ -116,17 +151,20 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "22893647484937")
-				.content(jsonObject.toString());
+				.accept(MediaType.APPLICATION_JSON_VALUE).content(jsonObject.toString());
 		logger.info("Resonse " + response);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void getAllApplicationTest() throws Exception {
 
 		String userId = "9988905333";
-		ResponseDTO<PreRegistrationViewDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<PreRegistrationViewDTO> response = new MainListResponseDTO<>();
 		List<PreRegistrationViewDTO> viewList = new ArrayList<>();
 		PreRegistrationViewDTO viewDto = new PreRegistrationViewDTO();
 		viewDto.setPreId("1234");
@@ -138,16 +176,20 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applications/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("userId", userId);
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("user_id", userId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void getApplicationStatusTest() throws Exception {
 		String preId = "14532456789";
-		ResponseDTO<PreRegistartionStatusDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<PreRegistartionStatusDTO> response = new MainListResponseDTO<>();
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<PreRegistartionStatusDTO>();
 		PreRegistartionStatusDTO statusDto = new PreRegistartionStatusDTO();
 		statusDto.setPreRegistartionId(preId);
@@ -158,15 +200,19 @@ public class DemographicControllerTest {
 		Mockito.when(preRegistrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationStatus/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("preId", preId);
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void discardIndividualTest() throws Exception {
 		String preId = "3";
-		ResponseDTO<DeletePreRegistartionDTO> response = new ResponseDTO<>();
+		MainListResponseDTO<DeletePreRegistartionDTO> response = new MainListResponseDTO<>();
 		List<DeletePreRegistartionDTO> DeleteList = new ArrayList<DeletePreRegistartionDTO>();
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 
@@ -178,35 +224,19 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("preId", preId);
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", preId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	// @Test
-	// public void discardGroupTest() throws Exception {
-	// String groupId= "33";
-	// ResponseDto response= new ResponseDto();
-	// response.setPrId("3");
-	// response.setGroupId("33");
-	// List<ResponseDto> resList= new ArrayList<>();
-	// resList.add(response);
-	// Mockito.when(registrationService.deleteGroup(ArgumentMatchers.any())).thenReturn(resList);
-	//
-	// RequestBuilder requestBuilder =
-	// MockMvcRequestBuilders.delete("/v0.1/pre-registration/discardGroup")
-	// .contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-	// .param("groupId", groupId);
-	// mockMvc.perform(requestBuilder).andExpect(status().isOk());
-	// }
-
 	/**
 	 * @throws Exception
+	 *             on error
 	 */
 	@Test
 	public void getApplicationSuccessTest() throws Exception {
-		ResponseDTO<CreateDemographicDTO> response = new ResponseDTO<>();
-		List<CreateDemographicDTO> saveList = new ArrayList<CreateDemographicDTO>();
-		CreateDemographicDTO createDto = new CreateDemographicDTO();
+		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
+		List<DemographicResponseDTO> saveList = new ArrayList<DemographicResponseDTO>();
+		DemographicResponseDTO createDto = new DemographicResponseDTO();
 
 		createDto.setPreRegistrationId("22893647484937");
 		saveList.add(createDto);
@@ -216,11 +246,16 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationData")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegId", createDto.getPreRegistrationId());
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("pre_registration_id", createDto.getPreRegistrationId());
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void updateApplicationStatusTest() throws Exception {
 		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
@@ -233,17 +268,22 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("preRegId", "1234").param("status", "Booked");
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "1234")
+				.param("status_code", "Booked");
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
+	/**
+	 * @throws Exception
+	 *             on error
+	 */
 	@Test
 	public void getAllApplicationByDateTest() throws Exception {
 
 		String fromDate = "2018-12-06 09:49:29";
 		String toDate = "2018-12-06 12:59:29";
-		ResponseDTO<String> response = new ResponseDTO<>();
+		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		preIds.add("1234");
 		response.setResponse(preIds);
@@ -253,8 +293,8 @@ public class DemographicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationDataByDateTime/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("fromDate", fromDate)
-				.accept(MediaType.APPLICATION_JSON_VALUE).param("toDate", toDate);
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("from_date", fromDate)
+				.accept(MediaType.APPLICATION_JSON_VALUE).param("to_date", toDate);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 

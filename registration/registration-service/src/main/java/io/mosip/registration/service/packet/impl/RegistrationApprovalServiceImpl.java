@@ -28,7 +28,7 @@ import io.mosip.registration.service.packet.RegistrationApprovalService;
  * @author Mahesh Kumar
  */
 @Service
-public class RegistrationApprovalServiceImpl implements RegistrationApprovalService{
+public class RegistrationApprovalServiceImpl implements RegistrationApprovalService {
 
 	/**
 	 * Object for Registration DAO
@@ -47,9 +47,11 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	@Autowired
 	private AuditFactory auditFactory;
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.RegistrationApprovalService#getEnrollmentByStatus(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.RegistrationApprovalService#
+	 * getEnrollmentByStatus(java.lang.String)
 	 */
 	public List<RegistrationApprovalDTO> getEnrollmentByStatus(String status) {
 		LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
@@ -64,9 +66,8 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					"Packets which are in given state are retrived", "refId", "refIdType");
-			details.forEach(detail -> {
-				list.add(new RegistrationApprovalDTO(detail.getId(),detail.getAckFilename()));
-			});
+			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(), detail.getAckFilename(),
+					detail.getClientStatusComments())));
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
@@ -89,7 +90,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 		LOGGER.debug("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME, APPLICATION_ID, "Updating status of Packet");
 		auditFactory.audit(AuditEvent.PACKET_UPDATE, Components.PACKET_UPDATE,
 				"Packets which are in created state are updated according to desired status", "refId", "refIdType");
-		
+
 		return registrationDAO.updateRegistration(registrationID, statusComments, clientStatusCode);
 	}
 

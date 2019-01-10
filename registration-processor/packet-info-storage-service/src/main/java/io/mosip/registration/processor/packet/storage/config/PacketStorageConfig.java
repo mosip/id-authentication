@@ -9,10 +9,18 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@Configuration
+/**
+ * The Class PacketStorageConfig.
+ */
+@Configuration	
 @EnableSwagger2
 public class PacketStorageConfig {
 
+	/**
+	 * Registration status bean.
+	 *
+	 * @return the docket
+	 */
 	@Bean
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Packet Storage").select()

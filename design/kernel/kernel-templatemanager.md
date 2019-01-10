@@ -1,4 +1,4 @@
-# Template Manager
+# Template Manager:
 
 ## Background
 

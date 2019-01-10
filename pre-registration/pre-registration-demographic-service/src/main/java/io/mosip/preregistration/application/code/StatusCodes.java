@@ -1,12 +1,28 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.code;
 
 /**
  * 
- * Various Status codes for Pre-Registration.
+ * This Enum provides constants to define Status codes for Pre-Registration.
  * 
- * @author M1043008
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 public enum StatusCodes {
-	Pending_Appointment, Booked, Expired, Consumed;
+
+	/* Pending Appointment */
+	Pending_Appointment,
+
+	/* Booked */
+	Booked,
+
+	/* Expired */
+	Expired,
+
+	/* Consumed */
+	Consumed;
 }

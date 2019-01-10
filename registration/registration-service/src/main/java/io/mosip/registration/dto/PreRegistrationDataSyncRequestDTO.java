@@ -10,12 +10,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @author M1043226
- *
+ * PreRegistrationDataSync RequestDTO
+ * @author YASWANTH S
+ * @since 1.0.0
  */
-@Getter
-@Setter
-@NoArgsConstructor
+
 public class PreRegistrationDataSyncRequestDTO implements Serializable{
 	
 	/** The Constant serialVersionUID. */
@@ -27,13 +26,49 @@ public class PreRegistrationDataSyncRequestDTO implements Serializable{
 	
 	/** The from-date. */
 	@JsonProperty("from-date")
-	private Timestamp fromDate;
+	private String fromDate;
 	
 	/** The To-date. */
 	@JsonProperty("to-date")
-	private Timestamp toDate;
+	private String toDate;
 	
 	/** The UserId. */
 	@JsonProperty("user-id")
 	private String userId;
+
+	public String getRegClientId() {
+		return regClientId;
+	}
+
+	public void setRegClientId(String regClientId) {
+		this.regClientId = regClientId;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 }

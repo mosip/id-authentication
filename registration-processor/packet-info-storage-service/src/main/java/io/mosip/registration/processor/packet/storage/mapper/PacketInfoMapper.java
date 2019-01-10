@@ -60,8 +60,13 @@ public class PacketInfoMapper {
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoMapper.class);
 
+	/** The Constant REGISTRATION_ID. */
 	private static final String REGISTRATION_ID = "registrationId";
+	
+	/** The Constant PRE_REGISTRATION_ID. */
 	private static final String PRE_REGISTRATION_ID = "preRegistrationId";
+	
+	/** The languages. */
 	private static StringBuilder languages = new StringBuilder();
 
 	/**
@@ -189,10 +194,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert biometric exc to biometric exc entity.
 	 *
-	 * @param exceptionFingerprint
-	 *            the exception fingerprint
-	 * @param metaData
-	 *            the meta data
+	 * @param exception the exception
+	 * @param metaData            the meta data
 	 * @return the biometric exception entity
 	 */
 	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricExceptionDto exception,
@@ -226,11 +229,9 @@ public class PacketInfoMapper {
 	/**
 	 * Convert photo graph data to photo graph entity.
 	 *
-	 * @param photoGraphData
-	 *            the photo graph data
-	 * @param exceptionPhotographData
-	 * @param metaData
-	 *            the meta data
+	 * @param photoGraphData            the photo graph data
+	 * @param exceptionPhotographData the exception photograph data
+	 * @param metaData            the meta data
 	 * @return the applicant photograph entity
 	 */
 	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData,
@@ -271,11 +272,9 @@ public class PacketInfoMapper {
 	/**
 	 * Convert osi data to osi entity.
 	 *
-	 * @param osiData
-	 *            the osi data
-	 * @param introducer
-	 *            the meta data
-	 * @param metaData
+	 * @param osiData            the osi data
+	 * @param introducer            the meta data
+	 * @param metaData the meta data
 	 * @return the reg osi entity
 	 */
 	public static RegOsiEntity convertOsiDataToEntity(List<FieldValue> osiData, Introducer introducer,
@@ -335,6 +334,12 @@ public class PacketInfoMapper {
 		return regOsiEntity;
 	}
 
+	/**
+	 * Convert reg center machine to entity.
+	 *
+	 * @param metaData the meta data
+	 * @return the reg center machine entity
+	 */
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
 		IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
@@ -359,6 +364,13 @@ public class PacketInfoMapper {
 		return regCenterMachineEntity;
 	}
 
+	/**
+	 * Gets the json values.
+	 *
+	 * @param jsonNode the json node
+	 * @param language the language
+	 * @return the json values
+	 */
 	private static String getJsonValues(JsonValue[] jsonNode, String language) {
 		String value = null;
 		if (jsonNode != null) {
@@ -372,6 +384,12 @@ public class PacketInfoMapper {
 		return value;
 	}
 
+	/**
+	 * Gets the languages.
+	 *
+	 * @param jsonNode the json node
+	 * @return the languages
+	 */
 	private static String[] getLanguages(JsonValue[] jsonNode) {
 		if (jsonNode != null) {
 			for (int i = 0; i < jsonNode.length; i++) {
@@ -384,6 +402,13 @@ public class PacketInfoMapper {
 		return languages.toString().split(",");
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @param jsonValueList the json value list
+	 * @param language the language
+	 * @return the name
+	 */
 	private static String getName(List<JsonValue[]> jsonValueList, String language) {
 		StringBuilder name = new StringBuilder();
 		for (int i = 0; i < jsonValueList.size(); i++) {
@@ -399,6 +424,13 @@ public class PacketInfoMapper {
 		return name.toString();
 	}
 
+	/**
+	 * Conver demographic dedupe dto to entity.
+	 *
+	 * @param demoDto the demo dto
+	 * @param regId the reg id
+	 * @return the list
+	 */
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
 			IndividualDemographicDedupe demoDto, String regId) {
 		IndividualDemographicDedupeEntity entity;
@@ -458,6 +490,12 @@ public class PacketInfoMapper {
 		return demogrphicDedupeEntities;
 	}
 
+	/**
+	 * Convert demographic info json to entity.
+	 *
+	 * @param infoJson the info json
+	 * @return the applicant demographic info json entity
+	 */
 	public static ApplicantDemographicInfoJsonEntity convertDemographicInfoJsonToEntity(DemographicInfoJson infoJson) {
 		ApplicantDemographicInfoJsonEntity applicantDemographicDataEntity = new ApplicantDemographicInfoJsonEntity();
 		ApplicantDemographicInfoJsonPKEntity applicantDemographicDataPKEntity = new ApplicantDemographicInfoJsonPKEntity();

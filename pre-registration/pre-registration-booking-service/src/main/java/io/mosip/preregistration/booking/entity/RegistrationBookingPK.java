@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.booking.entity;
 
 import java.io.Serializable;
@@ -6,19 +10,28 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** 
- * To define the composite primary key
- * @author M1046129
+/**
+ * This entity class defines the database table details for Booking application.
+ * 
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
+ * @since 1.0.0
  *
  */
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationBookingPK implements Serializable{
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4604149554069906933L;
 
 	/**
@@ -32,4 +45,5 @@ public class RegistrationBookingPK implements Serializable{
 	 */
 	@Column(name="booking_dtimes")
 	private LocalDateTime bookingDateTime;
+	
 }
