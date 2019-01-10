@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
   }
 
   showVerifyBtn() {
-    if (this.inputOTP.length > 0) {
+    if (this.inputOTP.length > 3) {
       this.showVerify = true;
       this.showResend = false;
     } else {
