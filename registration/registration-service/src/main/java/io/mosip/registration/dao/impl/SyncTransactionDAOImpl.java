@@ -51,7 +51,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	@Override
 	public List<SyncTransaction> getAll() {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
-				"saving sync details to databse started");
+				"Fetch all sync details from databse started");
 		return syncTranscRepository.findAll();
 	}
 
@@ -61,7 +61,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	@Override
 	public List<SyncTransaction> getSyncTransactions(Timestamp req) {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
-				"saving sync details to databse started");
+				"Fetch  sync details based on crDtime from databse started");
 		return syncTranscRepository.findByCrDtimeAfter(req);
 	}
 

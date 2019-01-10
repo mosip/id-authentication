@@ -1,5 +1,10 @@
 package io.mosip.registration.test.jobs;
 
+import static org.junit.Assert.assertEquals;
+
+import java.sql.Timestamp;
+import java.util.LinkedList;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -31,6 +36,29 @@ public class SyncTransactionDAOTest {
 		SyncTransaction syncTransaction=new SyncTransaction();
 		Mockito.when(syncTranscRepository.save(Mockito.any())).thenReturn(new SyncTransaction());
 		jobTransactionDAOImpl.save(syncTransaction);
+	}
+	
+	@Test
+	public void getAllTest()  {
+		SyncTransaction syncTransaction=new SyncTransaction();
+		LinkedList<SyncTransaction> syncTransactions= new LinkedList<>();
+		syncTransactions.add(syncTransaction);
+		Mockito.when(syncTranscRepository.findAll()).thenReturn(syncTransactions);
+		
+		assertEquals(jobTransactionDAOImpl.getAll(), syncTransactions);
+	}
+	
+	@Test
+	public void getSyncTransactionsTest()  {
+		SyncTransaction syncTransaction=new SyncTransaction();
+		LinkedList<SyncTransaction> syncTransactions= new LinkedList<>();
+		syncTransactions.add(syncTransaction);
+		
+		Mockito.when(syncTranscRepository.findByCrDtimeAfter(new Timestamp(Mockito.anyLong()))).thenReturn(syncTransactions);
+
+		assertEquals(jobTransactionDAOImpl.getSyncTransactions(new Timestamp(Mockito.anyLong())), syncTransactions);
+
+		
 	}
 
 	
