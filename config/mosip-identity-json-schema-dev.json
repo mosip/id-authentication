@@ -1,115 +1,97 @@
 {
-	"$id": "http://mosip.io/schemas/mosip-id-schema.json",
+	"$id": "http://mosip.io/id_object/1.0/id_object.json",
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"title": "MOSIP ID schema",
-	"description": "Sample ID schema to refer to",
+	"description": "Sample ID schema",
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {
 		"identity": {
 			"title": "identity",
-			"description": "This holds all the attributes of an Identity",
+			"description": "This schema holds all the attributes of an Identity",
 			"type": "object",
 			"additionalProperties": false,
 			"properties": {
-				"firstName": {
-					"$ref": "#/definitions/values"
+				"IDSchemaVersion": {
+					"type": "number"
 				},
-				"middleName": {
-					"$ref": "#/definitions/values"
+				"UIN": {
+					"type": "number"
 				},
-				"lastName": {
-					"$ref": "#/definitions/values"
+				"fullName": {
+					"$ref": "#/definitions/simpleType"
 				},
 				"dateOfBirth": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/dateOfBirthType"
 				},
-				"dateOfBirthType": {
-					"$ref": "#/definitions/values"
+				"age": {
+					"type": "number"
 				},
 				"gender": {
-					"$ref": "#/definitions/values"
-				},
-				"mobileNumber": {
-					"$ref": "#/definitions/values"
-				},
-				"emailId": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"addressLine1": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"addressLine2": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"addressLine3": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"region": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"province": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"city": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
+				},
+				"postalCode": {
+					"$ref": "#/definitions/postalCodeType"
+				},
+				"phone": {
+					"$ref": "#/definitions/phoneType"
+				},
+				"email": {
+					"$ref": "#/definitions/emailType"
+				},
+				"CNIENumber": {
+					"type": "number"
 				},
 				"localAdministrativeAuthority": {
-					"$ref": "#/definitions/values"
-				},
-				"CNEOrPINNumber": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"parentOrGuardianName": {
-					"$ref": "#/definitions/values"
+					"$ref": "#/definitions/simpleType"
 				},
 				"parentOrGuardianRIDOrUIN": {
-					"$ref": "#/definitions/values"
+					"type": "number"
 				},
-				"leftEye": {
-					"$ref": "#/definitions/values"
+				"proofOfAddress": {
+					"$ref": "#/definitions/documentType"
+				},                               
+				"proofOfIdentity": {
+					"$ref": "#/definitions/documentType"
 				},
-				"rightEye": {
-					"$ref": "#/definitions/values"
+				"proofOfRelationship": {
+					"$ref": "#/definitions/documentType"
 				},
-				"leftIndex": {
-					"$ref": "#/definitions/values"
+				"proofOfDateOfBirth": {
+					"$ref": "#/definitions/documentType"
 				},
-				"leftLittle": {
-					"$ref": "#/definitions/values"
+				"individualBiometrics": {
+					"$ref": "#/definitions/biometricsType"
 				},
-				"leftMiddle": {
-					"$ref": "#/definitions/values"
-				},
-				"leftRing": {
-					"$ref": "#/definitions/values"
-				},
-				"leftThumb": {
-					"$ref": "#/definitions/values"
-				},
-				"rightIndex": {
-					"$ref": "#/definitions/values"
-				},
-				"rightLittle": {
-					"$ref": "#/definitions/values"
-				},
-				"rightMiddle": {
-					"$ref": "#/definitions/values"
-				},
-				"rightRing": {
-					"$ref": "#/definitions/values"
-				},
-				"rightThumb": {
-					"$ref": "#/definitions/values"
-				},
-				"face": {
-					"$ref": "#/definitions/values"
+				"parentOrGuardianBiometrics": {
+					"$ref": "#/definitions/biometricsType"
 				}
 			}
 		}
 	},
 	"definitions": {
-		"values": {
+		"simpleType": {
 			"type": "array",
 			"additionalItems": false,
 			"uniqueItems": true,
@@ -117,20 +99,61 @@
 				"type": "object",
 				"required": [
 					"language",
-					"label",
 					"value"
 				],
 				"additionalProperties": false,
 				"properties": {
 					"language": {
-						"type": "string"
-					},
-					"label": {
-						"type": "string"
+						"type": "string",
+						"pattern": "^[(?i)a-z]{3}$"
 					},
 					"value": {
 						"type": "string"
 					}
+				}
+			}
+		},
+		"dateOfBirthType": {
+			"type": "string",
+			"pattern": "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$"
+		},
+		"phoneType": {		
+			"type": "string",
+			"pattern": "^([9]{1})([234789]{1})([0-9]{8})$"
+		},
+		"postalCodeType": {		
+			"type": "string",
+			"pattern": "^[(?i)A-Z0-9]{6}$"
+		},
+		"emailType": {
+			"type": "string",
+			"pattern": "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"
+		},
+		"documentType": {
+			"type": "object",
+			"properties": {
+				"format": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"fileReference": {
+					"type": "string"
+				}
+			}
+		},
+		"biometricsType": {
+			"type": "object",
+			"properties": {
+				"format": {
+					"type": "string"
+				},
+				"version": {
+					"type": "number"
+				},
+				"fileReference": {
+					"type": "string"
 				}
 			}
 		}

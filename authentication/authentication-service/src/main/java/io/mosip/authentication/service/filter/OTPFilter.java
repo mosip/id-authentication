@@ -21,7 +21,7 @@ public class OTPFilter extends BaseAuthFilter {
 	 * Map, java.util.Map)
 	 */
 	@Override
-	protected Map<String, Object> setTxnId(Map<String, Object> requestBody,
+	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody,
 			Map<String, Object> responseBody) {
 		responseBody.put("txnID", requestBody.get("txnID"));
 		return responseBody;
@@ -54,13 +54,9 @@ public class OTPFilter extends BaseAuthFilter {
 			throws IdAuthenticationAppException {
 		return responseBody;
 	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.filter.BaseAuthFilter#validateSignature(java.util.Map, java.lang.String)
-	 */
+	
 	@Override
-	protected boolean validateSignature(Map<String, Object> requestBody, String signature) throws IdAuthenticationAppException {
-		//TODO to be included
+	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 

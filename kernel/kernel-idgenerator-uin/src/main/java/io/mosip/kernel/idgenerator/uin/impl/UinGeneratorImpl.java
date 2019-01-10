@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,11 @@ import io.mosip.kernel.idgenerator.uin.util.UinFilterUtils;
  */
 @Component
 public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
+	/**
+	 * instance of {@link UinGeneratorImpl}
+	 */
+	@Autowired
+	private UinFilterUtils uinFilterUtils;
 
 	/**
 	 * The logger instance
@@ -73,7 +79,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
-			if (UinFilterUtils.isValidId(generatedUIN)) {
+			if (uinFilterUtils.isValidId(generatedUIN)) {
 				UinEntity uinBean = new UinEntity(generatedUIN, false);
 				uins.add(uinBean);
 			}

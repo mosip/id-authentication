@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.status.entity;
-
+	
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;

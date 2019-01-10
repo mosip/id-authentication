@@ -34,9 +34,9 @@ public class BiometricTypeDto {
 	@ApiModelProperty(value = "Application description", required = false, dataType = "java.lang.String")
 	private String description;
 
+	@ValidLangCode
 	@NotBlank
 	@Size(min = 1, max = 3)
-	@ValidLangCode
 	@ApiModelProperty(value = "Language Code", required = true, dataType = "java.lang.String")
 	private String langCode;
 	

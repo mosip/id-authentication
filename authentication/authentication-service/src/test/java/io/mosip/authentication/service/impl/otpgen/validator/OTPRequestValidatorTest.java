@@ -98,8 +98,12 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setMuaCode("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
-		OtpRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		
+		OtpRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) //  offset
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		
+		//OtpRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		//		.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIdvIdType(IdType.UIN.getType());
 		OtpRequestDTO.setIdvId("426789089018");
 		otpRequestValidator.validate(OtpRequestDTO, errors);

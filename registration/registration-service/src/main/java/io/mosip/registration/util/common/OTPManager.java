@@ -2,34 +2,25 @@ package io.mosip.registration.util.common;
 
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import io.mosip.registration.validator.AuthenticationService;
-import io.mosip.registration.validator.AuthenticationValidatorImplementation;
+import io.mosip.registration.service.BaseService;
+
 
 @Component
-public class OTPManager {
+public class OTPManager extends BaseService{
 	
-	@Autowired
-	ServiceDelegateUtil serviceDelegateUtil;
-	
-	@Autowired
-	private AuthenticationService validator;
-
 	public ResponseDTO getOTP(final String key) {
 		// Create Response to return to UI layer
 		ResponseDTO response = new ResponseDTO();
@@ -55,42 +46,53 @@ public class OTPManager {
 				response.setSuccessResponseDTO(successResponse);
 			} else {
 				 // create Error Response
-                getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
+                setErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE,null);
 			}
 
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException
 				| ResourceAccessException exception) {
 			// create Error Response
-			 getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
+			 setErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE,null);
 
+		} catch(IllegalStateException exception) {
+			setErrorResponse(response, RegistrationConstants.CONNECTION_ERROR, null);
+			
 		}
 
 		return response;
 
 	}
 	
-	private static ResponseDTO getErrorResponse(ResponseDTO response, final String message) {
-		// Create list of Error Response
-		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<ErrorResponseDTO>();
-
-		// Error response
-		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-
-		errorResponse.setCode(RegistrationConstants.ALERT_ERROR);
-		errorResponse.setMessage(message);
-		errorResponses.add(errorResponse);
-
-		// Assing list of error responses to response
-		response.setErrorResponseDTOs(errorResponses);
-		return response;
-
-	}
+	
 	
 	public boolean validateOTP(String userId, String otp) {
-		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		authenticationValidatorDTO.setOtp(otp);
-		authenticationValidatorDTO.setUserId(userId);
-		AuthenticationValidatorImplementation authenticationValidatorImplementation = validator.getValidator("otp");
-		return authenticationValidatorImplementation.validate(authenticationValidatorDTO);
+
+		boolean status = false;
+		OtpValidatorResponseDTO otpValidatorResponseDto = null;
+
+		Map<String, String> requestParamMap = new HashMap<String, String>();
+		requestParamMap.put(RegistrationConstants.USERNAME_KEY, userId);
+		requestParamMap.put(RegistrationConstants.OTP_GENERATED, otp);
+
+		try {
+			// Obtain otpValidatorResponseDto from service delegate util
+			otpValidatorResponseDto = (OtpValidatorResponseDTO) serviceDelegateUtil
+					.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap);
+			if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
+					&& RegistrationConstants.OTP_VALIDATION_SUCCESS.equals(otpValidatorResponseDto.getStatus())) {
+
+				status = true;
+
+			} else {
+				status = false;
+			}
+
+		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException
+				| ResourceAccessException exception) {
+			status = false;
+		}
+
+		return status;
+
 	}
 }

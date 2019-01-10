@@ -32,7 +32,6 @@ import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
 import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
-import io.mosip.authentication.service.repository.UinRepository;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -62,9 +61,6 @@ public class InternalAuthControllerTest {
 
 	@InjectMocks
 	private AuditRequestFactory auditFactory;
-	
-	@Mock
-	private UinRepository uinRepository;
 	
 	@InjectMocks
 	private InternalAuthRequestValidator internalAuthRequestValidator;

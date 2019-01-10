@@ -1,7 +1,12 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.application.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,11 +21,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Registration entity
+ * This entity class defines the database table details for PreRegistration.
  * 
  * @author Rajath KR
  * @author Sanober Noor
- * @author Tapaswini Bahera
+ * @author Tapaswini Behera
  * @author Jagadishwari S
  * @author Ravi C Balaji
  * @since 1.0.0
@@ -32,7 +37,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId")
+@NamedQuery(name = "DemographicEntity.findByCreatedBy", query = "SELECT e FROM DemographicEntity e  WHERE e.createdBy=:userId and e.statusCode <>:statusCode ")
 @NamedQuery(name = "DemographicEntity.noOfGroupIds", query = "SELECT DISTINCT groupId  FROM DemographicEntity where crAppuserId=:userId")
 @NamedQuery(name = "DemographicEntity.findBypreRegistrationId", query = "SELECT r FROM DemographicEntity r  WHERE r.preRegistrationId=:preRegId")
 public class DemographicEntity implements Serializable {
@@ -71,7 +76,7 @@ public class DemographicEntity implements Serializable {
 
 	/** The create date time. */
 	@Column(name = "cr_dtimes")
-	private Timestamp createDateTime;
+	private LocalDateTime createDateTime;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -79,7 +84,7 @@ public class DemographicEntity implements Serializable {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	private Timestamp updateDateTime;
+	private LocalDateTime updateDateTime;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -87,6 +92,6 @@ public class DemographicEntity implements Serializable {
 
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	private Timestamp deletedDateTime;
+	private LocalDateTime deletedDateTime;
 
 }

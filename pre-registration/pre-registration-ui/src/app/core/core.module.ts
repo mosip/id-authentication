@@ -7,9 +7,10 @@ import { FooterComponent } from './footer/footer.component';
 import { ContactComponent } from './contact/contact.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { MaterialModule } from '../material.module';
+import { I18nModule } from '../i18n.module';
 
 @NgModule({
-  imports: [CommonModule, AppRoutingModule, MaterialModule],
+  imports: [CommonModule, AppRoutingModule, MaterialModule, I18nModule],
   declarations: [HeaderComponent, FooterComponent, AboutUsComponent, FaqComponent, ContactComponent],
   exports: [HeaderComponent, FooterComponent]
 })

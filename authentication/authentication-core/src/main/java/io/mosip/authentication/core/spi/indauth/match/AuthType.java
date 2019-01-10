@@ -41,7 +41,7 @@ public interface AuthType {
 	 */
 	boolean isAssociatedMatchType(MatchType matchType);
 
-	boolean isAuthTypeEnabled(AuthRequestDTO authReq);
+	boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher helper);
 
 	Optional<String> getMatchingStrategy(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher);
 
@@ -65,5 +65,5 @@ public interface AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
-	
+
 }

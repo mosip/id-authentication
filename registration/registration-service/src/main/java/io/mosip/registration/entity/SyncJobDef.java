@@ -22,20 +22,20 @@ public class SyncJobDef extends RegistrationCommonFields {
 	@Id
 	@Column(name = "id")
 	private String id;
-	@Column(name = "name", length = 64, nullable = false)
+	@Column(name = "name")
 	private String name;
-	@Column(name = "api_name", length = 64)
+	@Column(name = "api_name")
 	private String apiName;
-	@Column(name = "parent_syncjob_id", length = 36)
+	@Column(name = "parent_syncjob_id")
 	private String parentSyncJobId;
-	@Column(name = "sync_freq", length = 36)
+	@Column(name = "sync_freq")
 	private String syncFrequency;
-	@Column(name = "lock_duration", length = 36)
+	@Column(name = "lock_duration")
 	private String lockDuration;
-	@Column(name = "lang_code", length = 3)
+	@Column(name = "lang_code")
 	private String langCode;
 
-	@Column(name = "is_deleted", nullable = false, updatable = true)
+	@Column(name = "is_deleted")
 	@Type(type = "true_false")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
@@ -64,8 +64,6 @@ public class SyncJobDef extends RegistrationCommonFields {
 	public void setApiName(String apiName) {
 		this.apiName = apiName;
 	}
-
-	
 
 	public String getParentSyncJobId() {
 		return parentSyncJobId;
