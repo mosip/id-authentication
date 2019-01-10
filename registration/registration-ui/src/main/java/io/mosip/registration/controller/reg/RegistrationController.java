@@ -243,7 +243,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label addressLine3LocalLanguagelabel;
-	
+
 	@FXML
 	private TextField emailId;
 
@@ -252,6 +252,12 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TextField mobileNo;
+
+	@FXML
+	private TextField alternateMobileNo;
+
+	@FXML
+	private TextField alternateMobileNoLocalLanguage;
 
 	@FXML
 	private TextField mobileNoLocalLanguage;
@@ -294,10 +300,10 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TextField uinIdLocalLanguage;
-	
+
 	@FXML
 	private TextField parentNameLocalLanguage;
-	
+
 	@FXML
 	private TextField parentName;
 
@@ -408,7 +414,11 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane dateAnchorPane;
 	@FXML
-	private AnchorPane addressAnchorPane;
+	private AnchorPane dateAnchorPaneLocalLanguage;
+	@FXML
+	private AnchorPane applicationLanguageAddressAnchorPane;
+	@FXML
+	private AnchorPane localLanguageAddressAnchorPane;
 	@FXML
 	private Label preRegistrationLabel;
 	@FXML
@@ -417,6 +427,10 @@ public class RegistrationController extends BaseController {
 	private Label genderLabel;
 	@FXML
 	private Label mobileNoLabel;
+	@FXML
+	private Label alternateMobileNoLabel;
+	@FXML
+	private Label alternateMobileNoLabelLocal;
 	@FXML
 	private Label emailIdLabel;
 	@FXML
@@ -528,27 +542,47 @@ public class RegistrationController extends BaseController {
 
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
+			fullNameLocalLanguageLabel.setDisable(false);
 			fullNameLabel.setDisable(false);
 
 			dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
+			dateAnchorPaneLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
 
 			gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
 			genderLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+			genderLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+			genderLocalLanguageLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
 
-			addressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
+			applicationLanguageAddressAnchorPane
+					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
+			localLanguageAddressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
 
 			mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			mobileNoLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			mobileNoLocalLanguageLabel
+					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			alternateMobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			alternateMobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			alternateMobileNoLocalLanguage
+					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			alternateMobileNoLabelLocal
+					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 
 			emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			emailIdLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			emailIdLocalLanguageLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 
 			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumberLocalLanguageLabel
+					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 
-			parentName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
+			childSpecificFields.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
 					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
-			uinId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
+			childSpecificFieldsLocal.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
 					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
 
 			if (getRegistrationDtoContent().getSelectionListDTO().isBiometricException()) {
@@ -1141,8 +1175,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1203,8 +1236,7 @@ public class RegistrationController extends BaseController {
 	 * To detect the face part from the applicant photograph to use it for QR Code
 	 * generation
 	 * 
-	 * @param applicantImage
-	 *            the image that is captured as applicant photograph
+	 * @param applicantImage the image that is captured as applicant photograph
 	 * @return BufferedImage the face that is detected from the applicant photograph
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
@@ -1227,8 +1259,7 @@ public class RegistrationController extends BaseController {
 	 * To compress the detected face from the image of applicant and store it in DTO
 	 * to use it for QR Code generation
 	 * 
-	 * @param applicantImage
-	 *            the image that is captured as applicant photograph
+	 * @param applicantImage the image that is captured as applicant photograph
 	 */
 	private void compressImageForQRCode(BufferedImage applicantImage) {
 		BufferedImage detectedFace = detectApplicantFace(applicantImage);
@@ -1617,7 +1648,6 @@ public class RegistrationController extends BaseController {
 			regionLocalLanguage.setPromptText(localProperties.getString("select"));
 			provinceLocalLanguage.setPromptText(localProperties.getString("select"));
 
-
 			String userlangTitle = demoGraphicTitlePane.getText();
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -1791,8 +1821,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane
-	 *            the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1823,8 +1852,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1871,6 +1899,12 @@ public class RegistrationController extends BaseController {
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
+		registrationMetaDataDTO.setGeoLatitudeLoc(Double.parseDouble(SessionContext.getInstance().getUserContext()
+				.getRegistrationCenterDetailDTO().getRegistrationCenterLatitude()));
+		registrationMetaDataDTO.setGeoLongitudeLoc(Double.parseDouble(SessionContext.getInstance().getUserContext()
+				.getRegistrationCenterDetailDTO().getRegistrationCenterLongitude()));
+		registrationMetaDataDTO.setCenterId(String.valueOf(SessionContext.getInstance().getUserContext()
+				.getRegistrationCenterDetailDTO().getRegistrationCenterId()));
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
@@ -1888,8 +1922,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1898,8 +1931,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
@@ -1908,13 +1940,12 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the BiometricException Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleBiometricExceptionVisibility(boolean visibility) {
 		this.biometricException.setVisible(visibility);
 	}
-	
+
 	/**
 	 * To load the regions in the selection list based on the language code
 	 */
@@ -1982,8 +2013,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
