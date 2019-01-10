@@ -235,9 +235,9 @@ public class LoginController extends BaseController implements Initializable {
 			
 			String regCenter = (String) applicationContext.getApplicationMap().get(RegistrationConstants.REGISTARTION_CENTER);
 			
-			if(regCenter.equals(userOnboardService.getMachineCenterId().get("centerId"))) {
+			if(regCenter.equals(userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID))) {
 				
-				String stationID=userOnboardService.getMachineCenterId().get("stationId");
+				String stationID=userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_STATION_ID);
 				
 			if(userDetail == null) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
@@ -265,7 +265,7 @@ public class LoginController extends BaseController implements Initializable {
 							
 							SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
 							
-							SessionContext.getInstance().getMapObject().put("stationId", stationID);
+							SessionContext.getInstance().getMapObject().put(RegistrationConstants.USER_STATION_ID, stationID);
 							
 							if(getCenterMachineStatus(userDetail)) {
 								SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, isNewUser);
