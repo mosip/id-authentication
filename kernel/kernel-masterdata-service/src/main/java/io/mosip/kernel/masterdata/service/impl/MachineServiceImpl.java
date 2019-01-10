@@ -189,6 +189,7 @@ public class MachineServiceImpl implements MachineService {
 			if (renmachine != null) {
 				MetaDataUtils.setUpdateMetaData(machine.getRequest(), renmachine, false);
 				updMachine = machineRepository.update(renmachine);
+				
 				MachineHistory machineHistory = new MachineHistory();
 				MapperUtils.map(updMachine, machineHistory);
 				MapperUtils.setBaseFieldValue(updMachine, machineHistory);

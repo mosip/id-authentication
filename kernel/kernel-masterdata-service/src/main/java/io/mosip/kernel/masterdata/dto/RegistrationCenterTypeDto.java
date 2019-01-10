@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class RegistrationCenterTypeDto {
 	/**
 	 * language code of the registration center type.
 	 */
+	@ValidLangCode
 	@NotBlank
 	@Size(min = 1, max = 3)
 	private String langCode;
