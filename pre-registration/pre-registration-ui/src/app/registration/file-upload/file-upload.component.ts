@@ -141,13 +141,17 @@ export class FileUploadComponent implements OnInit {
     console.log('event', event.target.files);
 
     if (event.target.files[0].type === 'application/pdf') {
-      this.getBase64(event.target.files[0]).then(data => {
-        this.fileByteArray = data;
-        this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-      });
-      this.setJsonString(event);
-      this.sendFile(event);
-      this.browseDisabled = false;
+      if (event.target.files[0].size < 1000000) {
+        this.getBase64(event.target.files[0]).then(data => {
+          this.fileByteArray = data;
+          this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+        });
+        this.setJsonString(event);
+        this.sendFile(event);
+        this.browseDisabled = false;
+      } else {
+        alert('file too big');
+      }
     } else {
       alert('Wrong file type, please upload again');
     }

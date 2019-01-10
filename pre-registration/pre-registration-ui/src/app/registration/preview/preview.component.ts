@@ -49,8 +49,7 @@ export class PreviewComponent implements OnInit {
   }
 
   navigateBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'pick-center']);
+    this.router.navigate(['../file-upload'], { relativeTo: this.route });
   }
 
   navigateNext() {
