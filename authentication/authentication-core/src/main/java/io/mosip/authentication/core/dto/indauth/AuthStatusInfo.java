@@ -16,7 +16,7 @@ public class AuthStatusInfo {
 	/** The match infos. */
 	private List<MatchInfo> matchInfos;
 	
-	/** The match infos. */
+	/** The bio infos. */
 	private List<BioInfo> bioInfos;
 	
 	/** The usage data bits. */

@@ -727,7 +727,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setBioInfo(info);
 		boolean isAuth = true;
 		IdType idType = IdType.VID;
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processBioAuthType", authRequestDTO, isAuth, idType);
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, idType,true);
 	}
 
 	@Test
@@ -770,7 +770,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setBioInfo(info);
 		boolean isAuth = true;
 		IdType idType = IdType.VID;
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processBioAuthType", authRequestDTO, isAuth, idType);
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, idType,true);
 	}
 
 	private Map<String, Object> repoDetails() {

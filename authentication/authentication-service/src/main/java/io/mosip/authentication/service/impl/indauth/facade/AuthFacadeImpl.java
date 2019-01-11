@@ -31,7 +31,6 @@ import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -184,18 +183,22 @@ public class AuthFacadeImpl implements AuthFacade {
 
 		return authStatusList;
 	}
-
+	/**
+	 * process the BioAuth
+	 * 
+	 * @param authRequestDTO
+	 * @param idInfo
+	 * @param isAuth
+	 * @param authStatusList
+	 * @param idType
+	 * @throws IdAuthenticationBusinessException
+	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, boolean isAuth,
 			List<AuthStatusInfo> authStatusList,
 			IdType idType) throws IdAuthenticationBusinessException {
+	
 		
-		String idvId = authRequestDTO.getIdvId();
-		String idvIdType = authRequestDTO.getIdvIdType();
-		String reqTime = authRequestDTO.getReqTime();
-		String txnId = authRequestDTO.getTxnID();
 		
-		String status;
-		String comment;
 		AuthStatusInfo statusInfo = null;
 		if (authRequestDTO.getAuthType().isBio()) {
 			AuthStatusInfo bioValidationStatus;
@@ -207,13 +210,12 @@ public class AuthFacadeImpl implements AuthFacade {
 			} finally {
 				
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-				status = isStatus ? "Y" : "N";
+				
 				
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "BioMetric Authentication status :" + statusInfo);
-				processBioAuthType(authRequestDTO, isAuth, idType);
+				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, idType,isStatus);
 				
-				comment = isStatus ? "Bio  Authenticated Success" : "Bio  Authenticated Failed";
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.BIO_AUTH);
+				
 			}
 		}
 	}
@@ -312,26 +314,44 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param authRequestDTO authRequestDTO
 	 * @param isAuth         boolean value for verify is auth type request or not.
 	 * @param idType         idtype
-	 * @throws IDDataValidationException exception
+	 * @param isStatus 
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private void processBioAuthType(AuthRequestDTO authRequestDTO, boolean isAuth, IdType idType)
-			throws IDDataValidationException {
+	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, boolean isAuth, IdType idType, boolean isStatus)
+			throws IdAuthenticationBusinessException {
+		
+		String idvId = authRequestDTO.getIdvId();
+		String idvIdType = authRequestDTO.getIdvIdType();
+		String reqTime = authRequestDTO.getReqTime();
+		String txnId = authRequestDTO.getTxnID();
 		String desc;
+		String comment;
+		String status;
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
 						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
 			desc = "Fingerprint Authentication requested";
 			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
+			status = isStatus ? "Y" : "N";
+			comment = isStatus ? "Finger  Authentication Success" : "Finger  Authentication Failed";
+
+			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.FINGER_AUTH);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
 			desc = "Iris Authentication requested";
 			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
+			status = isStatus ? "Y" : "N";
+			comment = isStatus ? "Iris  Authentication Success" : "Iris  Authentication Failed";
+			idAuthService.saveAutnTxn(idvId, idvIdType,  reqTime, txnId, status, comment, RequestType.IRIS_AUTH);
 		}
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
 			desc = "Face Authentication requested";
 			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
+			status = isStatus ? "Y" : "N";
+			comment = isStatus ? "Face  Authentication Success" : "Face  Authentication Failed";
+			idAuthService.saveAutnTxn(idvId, idvIdType,  reqTime, txnId, status, comment, RequestType.FACE_AUTH);
 		}
 	}
 
