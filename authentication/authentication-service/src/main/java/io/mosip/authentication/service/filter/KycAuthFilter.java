@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,10 +65,13 @@ public class KycAuthFilter extends BaseAuthFilter {
 		try {
 			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
 			if (response != null) {
-				Object kyc = response.get(KYC);
-				
-				if (kyc != null) {
-					response.replace(KYC, encode(toJsonString(kyc)));
+				if(null != publicKey) {
+					encryptKycResponse(response);
+				}else {
+					Object kyc = response.get(KYC);					
+					if (kyc != null) {
+						response.replace(KYC, encode(toJsonString(kyc)));
+					}
 				}
 				
 				Object auth = response.get(AUTH);
@@ -80,6 +85,22 @@ public class KycAuthFilter extends BaseAuthFilter {
 		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+		}
+	}
+
+	private void encryptKycResponse(Map<String, Object> response) throws JsonProcessingException {
+		Object kycDetail = response.get(KYC); 
+		byte[] symmetricDataEncrypt = null;
+		byte[] asymmetricKeyEncrypt = null;
+		if(kycDetail != null) {
+			SecretKey symmetricKey = keyManager.getSymmetricKey();
+			symmetricDataEncrypt = encryptor.symmetricEncrypt(symmetricKey, toJsonString(kycDetail).getBytes());
+			asymmetricKeyEncrypt = encryptor.asymmetricPublicEncrypt(publicKey,symmetricKey.getEncoded());
+		}
+		
+		if (null != asymmetricKeyEncrypt && null != symmetricDataEncrypt) {
+			response.replace(KYC, org.apache.commons.codec.binary.Base64.encodeBase64String(asymmetricKeyEncrypt)
+					.concat(org.apache.commons.codec.binary.Base64.encodeBase64String(symmetricDataEncrypt)));
 		}
 	}
 

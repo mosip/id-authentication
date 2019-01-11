@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -54,7 +55,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
+import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
 /**
  * The Class BaseAuthFilter - The Base Auth Filter that does all necessary
@@ -80,7 +81,7 @@ public abstract class BaseAuthFilter implements Filter {
 	protected Environment env;
 
 	@Autowired
-	protected DecryptorImpl decryptor;
+	protected EncryptorImpl encryptor;
 
 	@Autowired
 	protected KeyManager keyManager;
@@ -115,6 +116,8 @@ public abstract class BaseAuthFilter implements Filter {
 
 	/** The Constant MOSIP_JWS_CERTIFICATE_ALGO. */
 	private static final String MOSIP_JWS_CERTIFICATE_ALGO = "mosip.jws.certificate.algo";
+	
+	protected PublicKey publicKey;
 
 	/*
 	 * (non-Javadoc)
@@ -127,7 +130,7 @@ public abstract class BaseAuthFilter implements Filter {
 				.getRequiredWebApplicationContext(filterConfig.getServletContext());
 		env = context.getBean(Environment.class);
 		mapper = context.getBean(ObjectMapper.class);
-		decryptor = context.getBean(DecryptorImpl.class);
+		encryptor = context.getBean(EncryptorImpl.class);
 		keyManager = context.getBean(KeyManager.class);
 		timeFormatter = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
 	}
@@ -447,8 +450,9 @@ public abstract class BaseAuthFilter implements Filter {
 					&& jws.getAlgorithmHeaderValue().equals(env.getProperty(MOSIP_JWS_CERTIFICATE_ALGO))) {
 				X509Certificate certificate = certificateChainHeaderValue.get(0);
 				certificate.checkValidity();
-				certificate.verify(certificate.getPublicKey());
-				jws.setKey(certificate.getPublicKey());
+				publicKey = certificate.getPublicKey();
+				certificate.verify(publicKey);
+				jws.setKey(publicKey);
 				isSigned = checkValidSign(requestAsByte, isSigned, certificate, jws);
 			} else {
 				mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "certificate not present");
@@ -456,8 +460,7 @@ public abstract class BaseAuthFilter implements Filter {
 						IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorMessage());
 			}
-		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
-				| NoSuchProviderException | SignatureException e) {
+		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException | SignatureException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorMessage());

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.crypto.SecretKey;
+
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +31,8 @@ import io.mosip.authentication.service.integration.dto.CryptomanagerResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
+import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 
 /**
  * The Class KeyManager.
@@ -66,6 +70,9 @@ public class KeyManager {
 	/** The rest request factory. */
 	@Autowired
 	private RestRequestFactory restRequestFactory;
+	
+	@Autowired
+	private KeyGenerator keyGenerator;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(KeyManager.class);
@@ -132,6 +139,10 @@ public class KeyManager {
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 		return request;
+	}
+	
+	public SecretKey getSymmetricKey() {
+		return keyGenerator.getSymmetricKey();	
 	}
 
 }
