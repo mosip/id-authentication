@@ -535,7 +535,7 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT = "POA";
 	public static final String POI_DOCUMENT = "POI";
 	public static final String POR_DOCUMENT = "POR";
-	public static final String DOB_DOCUMENT = "DOB";
+	public static final String DOB_DOCUMENT = "POB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
 
@@ -598,6 +598,7 @@ public class RegistrationConstants {
 			"/fingerprints/Srighthand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
+	public static final String THUMB = "Thumb";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";

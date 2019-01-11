@@ -664,6 +664,10 @@ public class RegistrationController extends BaseController {
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber().toString());
+			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
+			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
+			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
+			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber().toString());
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
@@ -972,9 +976,9 @@ public class RegistrationController extends BaseController {
 				.getIdentity();
 
 		return Builder.build(DemographicInfoDTO.class)
-				.with(demographicInfo -> demographicInfo.setIdentity(Builder.build(Identity.class)
+				.with(demographicInfo -> demographicInfo.setIdentity((Identity)Builder.build(Identity.class)
 						.with(identity -> identity.setFullName(fullName.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(fullName.getText())).get()))
@@ -990,7 +994,7 @@ public class RegistrationController extends BaseController {
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? 0 : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(gender.getValue())).get()))
@@ -999,7 +1003,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setValue(genderLocalLanguage.getValue())).get()))
 										.get()))
 						.with(identity -> identity.setAddressLine1(addressLine1.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(addressLine1.getText())).get()))
@@ -1009,7 +1013,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 						.with(identity -> identity.setAddressLine2(addressLine2.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(addressLine2.getText())).get()))
@@ -1019,7 +1023,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 						.with(identity -> identity.setAddressLine3(addressLine3.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(addressLine3.getText())).get()))
@@ -1029,7 +1033,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 						.with(identity -> identity.setRegion(region.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(region.getValue())).get()))
@@ -1038,7 +1042,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setValue(regionLocalLanguage.getValue())).get()))
 										.get()))
 						.with(identity -> identity.setProvince(province.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(province.getValue())).get()))
@@ -1047,7 +1051,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setValue(provinceLocalLanguage.getValue())).get()))
 										.get()))
 						.with(identity -> identity.setCity(city.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(city.getValue())).get()))
@@ -1062,7 +1066,7 @@ public class RegistrationController extends BaseController {
 								cniOrPinNumber.isDisabled() ? null : new BigInteger(cniOrPinNumber.getText())))
 						.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled()
 								? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
@@ -1073,7 +1077,7 @@ public class RegistrationController extends BaseController {
 						.with(identity -> identity.setParentOrGuardianRIDOrUIN(
 								uinId.isDisabled() ? null : new BigInteger(uinId.getText())))
 						.with(identity -> identity.setParentOrGuardianName(parentName.isDisabled() ? null
-								: Builder.build(LinkedList.class)
+								: (List<ValuesDTO>)Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(parentName.getText())).get()))

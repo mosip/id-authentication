@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -587,18 +588,18 @@ public class TemplateGenerator extends BaseService {
 		return fingersQualityRanking;
 	}
 
+	@SuppressWarnings("unchecked")
 	private String getValue(Object fieldValue, String lang) {
 		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Getting values of demographic fields in given specific language");
 		String value = RegistrationConstants.EMPTY;
 
-		if (fieldValue instanceof String) {
+		if (fieldValue instanceof String || fieldValue instanceof Integer || fieldValue instanceof BigInteger || fieldValue instanceof Double) {
 			value = String.valueOf(fieldValue);
-		} else if (fieldValue instanceof SimplePropertiesDTO) {
-			value = ((SimplePropertiesDTO) fieldValue).getValue();
-		} else if (fieldValue instanceof ArrayPropertiesDTO) {
-			Optional<ValuesDTO> demoValueInRequiredLang = ((ArrayPropertiesDTO) fieldValue).getValues().stream()
-					.filter(demoValue -> demoValue.getLanguage().equals(lang)).findFirst();
+		} else if (fieldValue instanceof List<?>) {
+			Optional<ValuesDTO> demoValueInRequiredLang = ((List<ValuesDTO>) fieldValue).stream()
+					.filter(valueDTO -> valueDTO.getLanguage().equals(lang)).findFirst();
+
 			if (demoValueInRequiredLang.isPresent() && demoValueInRequiredLang.get().getValue() != null) {
 				value = demoValueInRequiredLang.get().getValue();
 			}

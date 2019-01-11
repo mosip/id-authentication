@@ -1,6 +1,5 @@
 package io.mosip.registration.service.external.impl;
 
-import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -11,19 +10,15 @@ import static java.io.File.separator;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Base64;
-import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.crypto.SecretKey;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -133,9 +128,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			String docCatgory) throws IOException {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
 		documentDetailsDTO.setCategory(RegistrationConstants.POI_DOCUMENT);
-		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(".") + 1));
-		documentDetailsDTO.setValue(RegistrationConstants.POI_DOCUMENT.concat("_")
-				.concat(fileName.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf(".") + 1)));
+		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
+		documentDetailsDTO.setValue(RegistrationConstants.POI_DOCUMENT.concat("_").concat(fileName
+				.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf(RegistrationConstants.DOT) + 1)));
 	}
 
 	/**
@@ -144,44 +139,20 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * 
 	 * @param zipInputStream
 	 * @param zipEntry
-	 * @return RegistrationDTO
 	 * @throws IOException
 	 * @throws RegBaseCheckedException
 	 */
 	private void parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry) throws RegBaseCheckedException {
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
-		try {
+		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream))) {
 			String value;
 			while ((value = bufferedReader.readLine()) != null) {
-				
-				/*TODO - stub to be removed */
-				String preRegJsonPath = "C:/Users/M1046540/Desktop/response_1546927994502.json";
-				BufferedReader bufferedReader1 = new BufferedReader(new FileReader(new File(preRegJsonPath)));
 
-				StringBuilder jsonBuilder = new StringBuilder();
-
-				String value1;
-				while ((value1 = bufferedReader1.readLine()) != null) {
-
-					jsonBuilder.append(value1);
-				}
-				bufferedReader1.close();
-				//The section one to be deleted
-				
-
-				JSONObject jsonObject = new JSONObject(value);
-
-				JSONObject demographicContentJson = jsonObject.getJSONObject("demographic-details")
-						.getJSONObject("identity");
-
-				DemographicInfoDTO demographicInfoDTO = new ObjectMapper().readValue(demographicContentJson.toString(),
-						DemographicInfoDTO.class);
-
-				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
+				getRegistrationDtoContent().getDemographicDTO()
+						.setDemographicInfoDTO(new ObjectMapper().readValue(value, DemographicInfoDTO.class));
 
 			}
-		} catch (JSONException | IOException exception) {
+		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
@@ -235,8 +206,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
-			String filePath = preRegPacketLocation + separator + formatDate(new Date(), preRegLocationDateFormat)
-					.concat(separator).concat(PreRegistrationId).concat(ZIP_FILE_EXTENSION);
+			String filePath = preRegPacketLocation.concat(separator).concat(PreRegistrationId)
+					.concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));
 
