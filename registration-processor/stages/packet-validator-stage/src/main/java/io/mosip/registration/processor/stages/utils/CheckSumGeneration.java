@@ -1,8 +1,9 @@
 package io.mosip.registration.processor.stages.utils;
-	
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -12,7 +13,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-
 
 /**
  * The Class CheckSumGeneration.
@@ -27,7 +27,7 @@ public class CheckSumGeneration {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(CheckSumGeneration.class);
-	
+
 	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
@@ -44,8 +44,10 @@ public class CheckSumGeneration {
 	/**
 	 * Generate packet info hash.
 	 *
-	 * @param hashSequence the hash sequence
-	 * @param registrationId            the registration id
+	 * @param hashSequence
+	 *            the hash sequence
+	 * @param registrationId
+	 *            the registration id
 	 * @return the byte[]
 	 */
 	public byte[] generateIdentityHash(List<FieldValueArray> hashSequence, String registrationId) {
@@ -54,11 +56,11 @@ public class CheckSumGeneration {
 
 			if (PacketFiles.APPLICANTBIOMETRICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
 
-				generateBiometricInfosHash(fieldValueArray.getValue(), registrationId, PacketFiles.APPLICANT.name());
+				generateBiometricInfosHash(fieldValueArray.getValue(), registrationId);
 
 			} else if (PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
 
-				generateBiometricInfosHash(fieldValueArray.getValue(), registrationId, PacketFiles.INTRODUCER.name());
+				generateBiometricInfosHash(fieldValueArray.getValue(), registrationId);
 
 			} else if (PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
 
@@ -81,15 +83,17 @@ public class CheckSumGeneration {
 	 * @param personType
 	 *            the person type
 	 */
-	private void generateBiometricInfosHash(List<String> hashOrder, String registrationId, String personType) {
+	private void generateBiometricInfosHash(List<String> hashOrder, String registrationId) {
 		hashOrder.forEach(file -> {
 			byte[] filebyte = null;
 			try {
-				InputStream fileStream = adapter.getFile(registrationId, PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
-						+ personType + FILE_SEPARATOR + file.toUpperCase());
+				InputStream fileStream = adapter.getFile(registrationId,
+						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + file.toUpperCase());
 				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),StatusMessage.INPUTSTREAM_NOT_READABLE,e.getMessage());
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
+						e.getMessage());
 
 			}
 			generateHash(filebyte);
@@ -100,8 +104,10 @@ public class CheckSumGeneration {
 	/**
 	 * Generate demographic hash.
 	 *
-	 * @param fieldValueArray the field value array
-	 * @param registrationId            the registration id
+	 * @param fieldValueArray
+	 *            the field value array
+	 * @param registrationId
+	 *            the registration id
 	 */
 	private void generateDemographicHash(FieldValueArray fieldValueArray, String registrationId) {
 		List<String> hashOrder = fieldValueArray.getValue();
@@ -110,16 +116,15 @@ public class CheckSumGeneration {
 			InputStream fileStream = null;
 			byte[] filebyte = null;
 			try {
-				if (document.equalsIgnoreCase(PacketFiles.ID.name())) {
-					fileStream = adapter.getFile(registrationId,
-							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-				} else {
-					fileStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
-							+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR + document.toUpperCase());
-				}
+
+				fileStream = adapter.getFile(registrationId,
+						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + document.toUpperCase());
+
 				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),StatusMessage.INPUTSTREAM_NOT_READABLE,e.getMessage());
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
+						e.getMessage());
 
 			}
 
