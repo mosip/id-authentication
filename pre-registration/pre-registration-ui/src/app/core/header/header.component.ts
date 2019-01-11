@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
+import { Router } from '@angular/router';
 
 export interface Language {
   value: string;
@@ -12,13 +13,13 @@ export interface Language {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  languages: Language[] = [
-    { value: 'English', viewValue: 'English' },
-    { value: 'French', viewValue: 'French' },
-    { value: 'Arabic', viewValue: 'Arabic' }
-  ];
+  // languages: Language[] = [
+  //   { value: 'English', viewValue: 'English' },
+  //   { value: 'French', viewValue: 'French' },
+  //   { value: 'Arabic', viewValue: 'Arabic' }
+  // ];
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private router: Router) {}
 
   ngOnInit() {}
 
@@ -26,4 +27,14 @@ export class HeaderComponent implements OnInit {
     console.log('Logging out');
   }
 
+  onHome() {
+    let homeURL = '';
+    const route_parts = this.router.url.split('/');
+    if (route_parts[2]) {
+      homeURL = 'dashboard/' + route_parts[2];
+    } else {
+      homeURL = '/';
+    }
+    this.router.navigate([homeURL]);
+  }
 }

@@ -26,7 +26,7 @@ export class DashBoardComponent implements OnInit {
   userFile: FileModel;
   userFiles: any[] = [];
   tempFiles;
-  disableModifyDataButton = true;
+  disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
   modify = false;
@@ -135,8 +135,12 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
-    this.isNewApplication = true;
+    if (this.loginId) {
+      this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+      this.isNewApplication = true;
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   openDialog(data, width) {
@@ -261,7 +265,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   onModifyInformation(preId: string) {
-    sessionStorage.setItem('modifyUser', 'true');
+    this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => {

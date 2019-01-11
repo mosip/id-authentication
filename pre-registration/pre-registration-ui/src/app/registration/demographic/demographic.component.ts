@@ -13,9 +13,9 @@ import { RequestModel } from './modal/request.modal';
 import { DemoIdentityModel } from './modal/demo.identity.modal';
 import { UserModel } from './modal/user.modal';
 import { SharedService } from 'src/app/shared/shared.service';
+import { LocationModal } from './modal/location.modal';
 import * as appConstants from '../../app.constants';
 import Utils from 'src/app/app.util';
-import { LocationModal } from './modal/location.modal';
 
 @Component({
   selector: 'app-demographic',
@@ -45,6 +45,7 @@ export class DemographicComponent implements OnInit {
   user: UserModel;
 
   uppermostLocationHierarchy: any;
+  message = {};
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -135,7 +136,8 @@ export class DemographicComponent implements OnInit {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
-    if (sessionStorage.getItem('modifyUser') === 'true') {
+    this.regService.currentMessage.subscribe(message => (this.message = message));
+    if (this.message['modifyUser'] === 'true') {
       this.step = this.regService.getUsers().length - 1;
     } else {
       this.step = this.regService.getUsers().length;
@@ -274,6 +276,7 @@ export class DemographicComponent implements OnInit {
         this.uppermostLocationHierarchy[0].code,
         this.localAdministrativeAuthorities
       );
+      console.log(this.locations);
       // await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces);
       // await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities);
       // await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities);
@@ -318,6 +321,8 @@ export class DemographicComponent implements OnInit {
               locationName: element.name
             };
             entity.push(locationModal);
+            // after location integration with proper data need to uncomment
+            // if (locationModal.locationCode === location) this.locations.push(locationModal);
           });
           return resolve(true);
         },
