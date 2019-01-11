@@ -1612,18 +1612,6 @@ public class MasterDataServiceTest {
 
 	}
 
-	@Test
-	public void createRegCenterMachineDeviceHistoryTest() {
-		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
-		registrationCenterMachineDeviceHistoryService.createRegCenterMachineDeviceHistoryMapping(registrationCenterMachineDeviceHistory);
-
-	}
 	
-	@Test(expected=MasterDataServiceException.class)
-	public void createRegCenterMachineDeviceHistoryServiceExceptionTest() {
-		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		registrationCenterMachineDeviceHistoryService.createRegCenterMachineDeviceHistoryMapping(registrationCenterMachineDeviceHistory);
-
-	}
 
 }
