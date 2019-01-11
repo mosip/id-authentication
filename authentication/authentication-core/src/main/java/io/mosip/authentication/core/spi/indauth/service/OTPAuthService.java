@@ -22,5 +22,5 @@ public interface OTPAuthService {
 	 * @return AuthStatusInfo
 	 * @throws IdAuthenticationBusinessException exception
 	 */
-	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
+	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto,String uin) throws IdAuthenticationBusinessException;
 }

@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 @Component
 public class FXComponents {
+		
 	private Stage stage;
 	private Scene scene;
 	private Timer timer;
@@ -31,4 +32,5 @@ public class FXComponents {
 	public void setTimer(Timer timer) {
 		this.timer = timer;
 	}
+	
 }

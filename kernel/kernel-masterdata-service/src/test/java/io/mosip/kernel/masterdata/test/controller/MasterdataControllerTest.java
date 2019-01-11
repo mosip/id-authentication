@@ -906,7 +906,7 @@ public class MasterdataControllerTest {
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:19:33.655Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"xml\",\n" + "    \"description\": \"string\",\n"
-						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\"\n" + "  }\n" + "}"))
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"FRE\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
 

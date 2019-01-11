@@ -1,12 +1,14 @@
 package io.mosip.registration.dto.mastersync;
 
+import java.time.LocalTime;
+
 /**
  * @author Sreekar Chukka
  * @since 1.0.0
  *
  */
 
-public class RegistrationCenterDto {
+public class RegistrationCenterDto extends MasterSyncBaseDto{
 
 	private String id;
 
@@ -35,6 +37,24 @@ public class RegistrationCenterDto {
 	private String workingHours;
 
 	private String languageCode;
+
+	private Short numberOfKiosks;
+
+	private LocalTime perKioskProcessTime;
+
+	private LocalTime centerStartTime;
+
+	private LocalTime centerEndTime;
+
+	private String timeZone;
+
+	private String contactPerson;
+
+	private LocalTime lunchStartTime;
+
+	private LocalTime lunchEndTime;
+
+	private Boolean isActive;
 
 	/**
 	 * @return the id
@@ -230,6 +250,132 @@ public class RegistrationCenterDto {
 	 */
 	public void setLanguageCode(String languageCode) {
 		this.languageCode = languageCode;
+	}
+
+	/**
+	 * @return the numberOfKiosks
+	 */
+	public Short getNumberOfKiosks() {
+		return numberOfKiosks;
+	}
+
+	/**
+	 * @param numberOfKiosks the numberOfKiosks to set
+	 */
+	public void setNumberOfKiosks(Short numberOfKiosks) {
+		this.numberOfKiosks = numberOfKiosks;
+	}
+
+	/**
+	 * @return the perKioskProcessTime
+	 */
+	public LocalTime getPerKioskProcessTime() {
+		return perKioskProcessTime;
+	}
+
+	/**
+	 * @param perKioskProcessTime the perKioskProcessTime to set
+	 */
+	public void setPerKioskProcessTime(LocalTime perKioskProcessTime) {
+		this.perKioskProcessTime = perKioskProcessTime;
+	}
+
+	/**
+	 * @return the centerStartTime
+	 */
+	public LocalTime getCenterStartTime() {
+		return centerStartTime;
+	}
+
+	/**
+	 * @param centerStartTime the centerStartTime to set
+	 */
+	public void setCenterStartTime(LocalTime centerStartTime) {
+		this.centerStartTime = centerStartTime;
+	}
+
+	/**
+	 * @return the centerEndTime
+	 */
+	public LocalTime getCenterEndTime() {
+		return centerEndTime;
+	}
+
+	/**
+	 * @param centerEndTime the centerEndTime to set
+	 */
+	public void setCenterEndTime(LocalTime centerEndTime) {
+		this.centerEndTime = centerEndTime;
+	}
+
+	/**
+	 * @return the timeZone
+	 */
+	public String getTimeZone() {
+		return timeZone;
+	}
+
+	/**
+	 * @param timeZone the timeZone to set
+	 */
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+
+	/**
+	 * @return the contactPerson
+	 */
+	public String getContactPerson() {
+		return contactPerson;
+	}
+
+	/**
+	 * @param contactPerson the contactPerson to set
+	 */
+	public void setContactPerson(String contactPerson) {
+		this.contactPerson = contactPerson;
+	}
+
+	/**
+	 * @return the lunchStartTime
+	 */
+	public LocalTime getLunchStartTime() {
+		return lunchStartTime;
+	}
+
+	/**
+	 * @param lunchStartTime the lunchStartTime to set
+	 */
+	public void setLunchStartTime(LocalTime lunchStartTime) {
+		this.lunchStartTime = lunchStartTime;
+	}
+
+	/**
+	 * @return the lunchEndTime
+	 */
+	public LocalTime getLunchEndTime() {
+		return lunchEndTime;
+	}
+
+	/**
+	 * @param lunchEndTime the lunchEndTime to set
+	 */
+	public void setLunchEndTime(LocalTime lunchEndTime) {
+		this.lunchEndTime = lunchEndTime;
+	}
+
+	/**
+	 * @return the isActive
+	 */
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

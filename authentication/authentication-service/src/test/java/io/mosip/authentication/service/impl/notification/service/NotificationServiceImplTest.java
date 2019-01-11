@@ -136,13 +136,18 @@ public class NotificationServiceImplTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		
+
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+		
+		//authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("N");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		String refId = "274390482564";
+		String uin = "274390482564";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -153,9 +158,9 @@ public class NotificationServiceImplTest {
 		Optional<String> uinOpt = Optional.of("426789089018");
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any())).thenReturn("test");
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.auth.notification.type", "email,sms");
@@ -171,7 +176,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.auth.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		notificationService.sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo, false);
+		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -179,13 +184,17 @@ public class NotificationServiceImplTest {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authRequestDTO.setReqTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+		
+		//authRequestDTO.setReqTime(ZonedDateTime.now()
+		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("y");
 		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
-		String refId = "4667732";
+		String uin = "4667732";
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -195,9 +204,9 @@ public class NotificationServiceImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("");
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.EMAIL, idInfo)).thenReturn(" mosip ");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo)).thenReturn("mosip");
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		Map<String, Object> values = new HashMap<>();
@@ -219,7 +228,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.mail.content.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		notificationService.sendAuthNotification(authRequestDTO, refId, authResponseDTO, idInfo, true);
+		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
 	}
 
 	private Map<String, Object> repoDetails() {
@@ -234,13 +243,16 @@ public class NotificationServiceImplTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setIdvId("8765");
 		String otp = "987654";
-		String refId = "274390482564";
+		String uin = "274390482564";
 		String date = "";
 		String time = "";
 		String email = "abc@gmail.cpm";
 		String mobileNumber = "";
-		otpRequestDto.setReqTime(ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		
+		otpRequestDto.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+		//otpRequestDto.setReqTime(ZonedDateTime.now()
+		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -248,7 +260,7 @@ public class NotificationServiceImplTest {
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
-		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
+		Mockito.when(demoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo)).thenReturn("mosip");
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 		Optional<String> uinOpt = Optional.of("426789089018");
@@ -258,7 +270,9 @@ public class NotificationServiceImplTest {
 		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any()))
 				.thenThrow(idAuthenticationBusinessException.getCause());
 		String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
-				environment.getProperty("datetime.pattern"));
+				"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		//String[] dateAndTime = DateHelper.getDateAndTime(otpRequestDto.getReqTime(),
+		//		environment.getProperty("datetime.pattern"));
 		date = dateAndTime[0];
 		time = dateAndTime[1];
 
@@ -273,7 +287,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
 		mockenv.setProperty("mosip.otp.sms.template", "test");
 		ReflectionTestUtils.setField(notificationService, "env", mockenv);
-		ReflectionTestUtils.invokeMethod(notificationService, "sendOtpNotification", otpRequestDto, otp, refId, email,
+		ReflectionTestUtils.invokeMethod(notificationService, "sendOtpNotification", otpRequestDto, otp, uin, email,
 				mobileNumber, idInfo);
 	}
 

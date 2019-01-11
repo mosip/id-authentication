@@ -38,9 +38,9 @@ Table : vid
 
 2.Logic behind generating vid
   1. _The  Id should not be generated sequentially._
-  2. _cannot not have repeated numbers,cannot contain any repeating numbers for 2 or more than 2 digits._
-  3. _cannot have repeated block of numbers for 2 or more than 2 digits._ 
-  4. _cannot contain any sequential number for 3 or more than 3 digits and cannot contain alphanumeric values._
+  2. _cannot not have repeated numbers,cannot contain any repeating numbers for configured number of digit or more than configured number of digits in property file._
+  3. _cannot have repeated block of numbers for configured number of digits in property file._ 
+  4. _cannot contain any sequential number for configured number of digits or more than configured number of  digits in property file and cannot contain alphanumeric values._
   5. _The last digit of the generated id should be reserved for checksum_  
   6. _The number should not contain '0' or '1' as the first digit._
   
@@ -53,9 +53,9 @@ Table : vid
 	  private VidGenerator<String> vidGeneratorImpl;
 	
      //Call generateId from autowired vidGenerator instance to generateId.
-     //The input parameter would be UIN in String format.
      
-	  String generatedVid = vidGeneratorImpl.generateId("375326789911"));
+     
+	  String generatedVid = vidGeneratorImpl.generateId());
 	  
 	  
 	 

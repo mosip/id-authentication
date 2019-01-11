@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -56,9 +58,11 @@ public class NameMatchingStrategyTest {
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
-	public void TestValidExactMatchingStrategyFunction() {
+	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 
 		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", null);
@@ -68,15 +72,17 @@ public class NameMatchingStrategyTest {
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test
-	public void TestInvalidExactMatchingStrategyFunction() {
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-
-		int value = matchFunction.match(2, "2", null);
+		Map<String, Object> matchProperties = new HashMap<>();
+		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.match(2, "dinesh", null);
+		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
 	}
 
@@ -116,9 +122,11 @@ public class NameMatchingStrategyTest {
 
 	/**
 	 * Assert the Partial Match Function with Do-Match Method
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
-	public void TestValidPartialMatchingStrategyFunction() {
+	public void TestValidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		int value = matchFunction.match("dinesh thiagarajan", "dinesh karuppiah", null);
 		assertEquals(33, value);
@@ -126,17 +134,104 @@ public class NameMatchingStrategyTest {
 
 	/**
 	 * Assert the Partial Match Function not matched via Do-Match Method
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test
-	public void TestInvalidPartialMatchingStrategyFunction() {
-
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 
-		int value = matchFunction.match(2, "2", null);
+		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.match(2, "dinesh", null);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchingStrategyFunction1() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		matchProperties.put("languageType", "test");
+		int value2 = matchFunction.match(2, "invalid", matchProperties);
+		assertEquals(0, value2);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "dinesh", matchProperties);
+		assertEquals(0, value1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalid() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		matchProperties.put("languageType", "test");
+		int value2 = matchFunction.match(2, "invalid", matchProperties);
+		assertEquals(0, value2);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.match(2, "2", matchProperties);
+		assertEquals(0, value);
+
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhoneticsMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
+		int value1 = matchFunction.match(2, "dinesh", matchProperties);
+		assertEquals(0, value1);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidPhonetics() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		matchProperties.put("languageType", "test");
+		int value2 = matchFunction.match(2, "invalid", matchProperties);
+		assertEquals(0, value2);
 	}
 
 	/**
@@ -157,34 +252,43 @@ public class NameMatchingStrategyTest {
 
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test
-	public void TestPhoneticsMatchValueWithoutLanguageName_Return_NotMatched() {
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestPhoneticsMatchValueWithoutLanguageName_Return_NotMatched()
+			throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.match(2, "2", null);
+		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
 	}
 
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Test
-	public void TestPhoneticsMatchValueWithLanguageCode_Return_NotMatched() {
-
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestPhoneticsMatchValueWithLanguageCode_Return_NotMatched() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.match(2, "ar", null);
+		int value = matchFunction.match(2, "ar", matchProperties);
 		assertEquals(0, value);
 
 	}
 
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 
 	@Test
-	public void TestPhoneticsMatchValueWithLanguageName_ReturnWithMatchValue() {
+	public void TestPhoneticsMatchValueWithLanguageName_ReturnWithMatchValue()
+			throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("language", "arabic");
@@ -194,11 +298,24 @@ public class NameMatchingStrategyTest {
 
 	/**
 	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test
-	public void TestPhoneticsMatchWithLanguageNameAndReqInfoAsInteger_Return_NotMatched() {
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestPhoneticsMatchWithLanguageNameAndReqInfoAsInteger_Return_NotMatched()
+			throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.match(5, "arabic", null);
+		int value = matchFunction.match(5, "arabic", matchProperties);
 		assertEquals(0, value);
 	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategy() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match(5, 1, matchProperties);
+		assertEquals(0, value);
+	}
+
 }

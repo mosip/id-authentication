@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.code;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Enum ApiName.
  * 
@@ -16,7 +16,7 @@ public enum ApiName {
 	AUTHINTERNAL,
 	
 	/** The master data. */
-	MASTER, 
+	MASTER,
 	
 	/** The iam. */
 	IAM, 
@@ -41,11 +41,11 @@ public enum ApiName {
 	
 	/** The center-machine-user history. */
 	CENTERUSERMACHINEHISTORY,
-	
+
 	/** The sms notifier. */
 	SMSNOTIFIER,
-	
-	/** The email notifier. */ 
+
+	/** The email notifier. */
 	EMAILNOTIFIER
-	
+
 }

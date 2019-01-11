@@ -10,10 +10,12 @@ import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 import { SharedService } from './shared/shared.service';
+import { AcknowledgementComponent} from './acknowledgement/acknowledgement.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AcknowledgementComponent
   ],
   imports: [
     BrowserModule,

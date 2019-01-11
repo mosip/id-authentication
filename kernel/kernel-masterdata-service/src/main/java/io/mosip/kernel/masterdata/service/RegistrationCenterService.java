@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -130,6 +132,15 @@ public interface RegistrationCenterService {
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
 
 	/**
+	 * This method deletes the registration center.
+	 * 
+	 * @param registrationCenterId
+	 *            - the id of the registration center to be deleted.
+	 * @return - the id response DTO.
+	 */
+	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
+
+	/**
 	 * This method updates the registration center.
 	 * 
 	 * @param registrationCenterDto
@@ -140,12 +151,22 @@ public interface RegistrationCenterService {
 	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
 
 	/**
-	 * This method deletes the registration center.
+	 * Function to fetch list of registration centers based on hierarchy level,text
+	 * input and language code
 	 * 
-	 * @param registrationCenterId
-	 *            - the id of the registration center to be deleted.
-	 * @return - the id response DTO.
+	 * @param hierarchyLevel
+	 *            input from user
+	 * @param texts
+	 *            input from user
+	 * @param languageCode
+	 *            input from user
+	 * @return list of registration centers
+	 * @throws MasterDataServiceException
+	 *             when data not fetched from DB
+	 * @throws DataNotFoundException
+	 *             when data not found
 	 */
-	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			String languageCode, Integer hierarchyLevel, List<String> texts);
 
 }

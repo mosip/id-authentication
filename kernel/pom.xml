@@ -41,6 +41,7 @@
 		<modelmapper.version>2.1.1</modelmapper.version>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
@@ -145,6 +146,10 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
 
+		<module>kernel-idvalidator-prid</module>
+		<module>kernel-idvalidator-rid</module>
+		<module>kernel-idvalidator-uin</module>
+		<module>kernel-idvalidator-vid</module>
 	</modules>
 
 	<dependencies>

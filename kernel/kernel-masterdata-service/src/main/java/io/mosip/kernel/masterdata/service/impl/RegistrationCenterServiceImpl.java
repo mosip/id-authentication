@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -439,5 +440,32 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(registrationCenterId);
 		return idResponseDto;
+	}
+
+	@Override
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			String languageCode, Integer hierarchyLevel, List<String> texts) {
+		List<RegistrationCenterDto> registrationCentersDtoList = null;
+		List<String> names = texts.stream().map(String::toUpperCase).collect(Collectors.toList());
+		List<RegistrationCenter> registrationCentersList = null;
+		try {
+			registrationCentersList = registrationCenterRepository
+					.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(languageCode, hierarchyLevel, names);
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (registrationCentersList.isEmpty()) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
+
+		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
+		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
+		return registrationCenterResponseDto;
 	}
 }

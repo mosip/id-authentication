@@ -64,8 +64,6 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 			registrationCenterDetailDTO.setRegistrationCenterNumberOfKiosks(registrationCenter.get().getNumberOfKiosks());
 			registrationCenterDetailDTO.setRegistrationCenterPerKioskProcessTime(registrationCenter.get().getPerKioskProcessTime());
 			registrationCenterDetailDTO.setRegistrationCenterHolidayLocCode(registrationCenter.get().getHolidayLocCode());
-			registrationCenterDetailDTO.setRegistrationCenterProcessEndTime(registrationCenter.get().getProcessStartTime());
-			registrationCenterDetailDTO.setRegistrationCenterProcessEndTime(registrationCenter.get().getProcessEndTime());
 		}
 
 		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,

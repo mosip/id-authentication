@@ -1,4 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+  background-color: #696f7c !important;
+}
+
+.mat-error {
+  color: #e44c29;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple,
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple.mat-accent {
+  background-color: #f19f8c;
+}
+
+.user__gender mat-button-toggle-group .mat-button-toggle .mat-button-toggle-button .mat-button-toggle-label-content {
+  padding: 0;
+  line-height: 30px;
+}

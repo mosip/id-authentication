@@ -4,7 +4,6 @@
 *.ear
 hs_err_pid*
 target/
-META-INF/
 .springBeans
 .metadata
 .factorypath
@@ -25,5 +24,5 @@ test.txt
 .settings/
 .sonarlint/
 .recommenders/
-META-INF/
 /.recommenders/
+**/*.iml

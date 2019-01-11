@@ -14,19 +14,23 @@ public class AppointmentBookingFailedException extends BaseUncheckedException {
 	 */
 	private static final long serialVersionUID = 5135952690225019228L;
 
-	public AppointmentBookingFailedException(String message) {
-		super(ErrorCodes.PRG_BOOK_RCI_005.toString(), message);
+	public AppointmentBookingFailedException(String msg) {
+		super("", msg);
+	}
+
+	public AppointmentBookingFailedException(String msg, Throwable cause) {
+		super("", msg, cause);
 	}
 
 	public AppointmentBookingFailedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
-	public AppointmentBookingFailedException(String errorMessage, Throwable rootCause) {
-		super(ErrorCodes.PRG_BOOK_RCI_005.toString(), errorMessage, rootCause);
-	}
-
 	public AppointmentBookingFailedException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
+	}
+
+	public AppointmentBookingFailedException() {
+		super();
 	}
 }

@@ -30,7 +30,7 @@ public class MatchOutput {
 	private String matchStrategyType;
 	
 	/** The demo match type. */
-	private MatchType demoMatchType;
+	private MatchType matchType;
 	
 	
 }	

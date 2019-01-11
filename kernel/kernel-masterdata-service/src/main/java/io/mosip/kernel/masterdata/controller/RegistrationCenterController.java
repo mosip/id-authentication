@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
@@ -201,6 +204,27 @@ public class RegistrationCenterController {
 		return new ResponseEntity<>(registrationCenterService.deleteRegistrationCenter(registrationCenterId),
 				HttpStatus.OK);
 
+	}
+
+
+	/**
+	 * Function to fetch list of registration centers based on hierarchy level,List
+	 * of text and language code
+	 * 
+	 * @param langCode
+	 *            input from user
+	 * @param hierarchyLevel
+	 *            input from user
+	 * @param texts
+	 *            input from user
+	 * @return {@link RegistrationCenterResponseDto}
+	 */
+	@GetMapping("/v1.0/registrationcenters/names/{langcode}/{hierarchylevel}")
+	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@RequestParam("name") List<String> texts) {
+		return registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode,
+				hierarchyLevel, texts);
 	}
 
 }
