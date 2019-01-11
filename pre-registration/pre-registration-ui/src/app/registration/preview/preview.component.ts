@@ -38,17 +38,19 @@ export class PreviewComponent implements OnInit {
         this.secondaryLanguage = 'ar';
       }
     this.dataStorageService
-        .getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language)
-        .subscribe(response => {
-          this.secondaryLanguagelabels = response['preview'];
-          console.log(this.secondaryLanguagelabels);
-    });
+      .getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language)
+      .subscribe(response => {
+        this.secondaryLanguagelabels = response['preview'];
+        console.log(this.secondaryLanguagelabels);
+      });
     this.files = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].files[0];
   }
 
   modifyDemographic() {
     const routeParams = this.router.url.split('/');
     this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
+    localStorage.setItem('newApplicant', 'false');
+    this.registrationService.changeMessage({ modifyUser: 'true' });
   }
 
   modifyDocument() {

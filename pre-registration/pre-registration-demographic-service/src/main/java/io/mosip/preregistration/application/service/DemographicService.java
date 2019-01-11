@@ -34,7 +34,6 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.preregistration.application.code.RequestCodes;
-import io.mosip.preregistration.application.code.StatusCodes;
 import io.mosip.preregistration.application.config.LoggerConfiguration;
 import io.mosip.preregistration.application.dto.DeletePreRegistartionDTO;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
@@ -51,6 +50,7 @@ import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
@@ -200,7 +200,7 @@ public class DemographicService {
 			requestParamMap.put(RequestCodes.userId.toString(), userId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId,
-						StatusCodes.Consumed.toString());
+						StatusCodes.CONSUMED.getCode());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						String identityValue = serviceUtil.getValueFromIdentity(

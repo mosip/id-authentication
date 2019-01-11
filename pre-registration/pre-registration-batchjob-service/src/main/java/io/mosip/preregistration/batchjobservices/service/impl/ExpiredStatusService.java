@@ -1,8 +1,8 @@
 package io.mosip.preregistration.batchjobservices.service.impl;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.code.ErrorCode;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessage;
-import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
+import io.mosip.preregistration.batchjobservices.code.StatusCodes;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistartionExpiredStatusRepository;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
@@ -36,16 +38,7 @@ public class ExpiredStatusService {
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
-
-	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
-	private static final String REGISTRATION_APPOINTMENT_TABLE_NOT_ACCESSIBLE = "The resgistration appointment table is not accessible";
-
-	/** The Constant old Status. */
-	private static final String OLD_STATUS = "Booked";
-
-	/** The Constant Status. */
-	private static final String NEW_STATUS = "Expired";
-
+	
 	@Autowired
 	@Qualifier("preRegistartionExpiredStatusRepository")
 	private PreRegistartionExpiredStatusRepository expiredStatusRepository;
@@ -53,15 +46,21 @@ public class ExpiredStatusService {
 	/**
 	 * @return Response dto
 	 */
-	public ResponseDto<String> bookedPreIds() {
+	public MainResponseDTO<String> bookedPreIds() {
 
 		LocalDate currentDate = LocalDate.now();
+		System.out.println("@@@@@ "+currentDate);
 
-		ResponseDto<String> response = new ResponseDto<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 
 		List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
-		bookedPreIdList = expiredStatusRepository.findByRegDateBefore(currentDate);
-
+		try {
+			bookedPreIdList = expiredStatusRepository.findByRegDateBefore(currentDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new TableNotAccessibleException(ErrorCode.PRG_PAM_BAT_005.toString(),
+					ErrorMessage.REG_APPOINTMENT_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+		}
 		if (!bookedPreIdList.isEmpty()) {
 
 			bookedPreIdList.forEach(iterate -> {
@@ -70,20 +69,26 @@ public class ExpiredStatusService {
 
 				String preRegId = iterate.getBookingPK().getPreregistrationId();
 
-				if (status.equalsIgnoreCase(OLD_STATUS)) {
+				if (status.equals(StatusCodes.BOOKED.getCode()) || status.equals(StatusCodes.CANCELED.getCode())) {
 
 					try {
 						RegistrationBookingEntity entity = expiredStatusRepository.getPreRegId(preRegId);
 
-						entity.setStatusCode(NEW_STATUS);
+						if(entity!=null) {
+							entity.setStatusCode(StatusCodes.EXPIRED.getCode());
+							expiredStatusRepository.save(entity);
 
-						expiredStatusRepository.save(entity);
-
-						LOGGER.info(LOGDISPLAY, "Update the status successfully into Registration Appointment table");
+							LOGGER.info(LOGDISPLAY, "Update the status successfully into Registration Appointment table");
+						}
+						else {
+							throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_003.toString(),
+									ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.toString());
+						}
+						
 
 					} catch (DataAccessLayerException e) {
 						throw new TableNotAccessibleException(ErrorCode.PRG_PAM_BAT_004.toString(),
-								ErrorMessage.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+								ErrorMessage.DEMOGRAPHIC_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 					}
 
 				} else {
@@ -96,10 +101,13 @@ public class ExpiredStatusService {
 			throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_003.name(),
 					ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.name());
 		}
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setResTime(getCurrentResponseTime());
 		response.setStatus(true);
 		response.setResponse("Registration appointment status updated to expired successfully");
 		return response;
+	}
+	public String getCurrentResponseTime() {
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 }

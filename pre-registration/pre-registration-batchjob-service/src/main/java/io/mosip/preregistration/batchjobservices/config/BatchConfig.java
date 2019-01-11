@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class batchConfig {
+public class BatchConfig {
 	
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
@@ -56,7 +56,7 @@ public class batchConfig {
 
 		Docket docket = new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-batchjob-Service").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.batchjobservices.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/batch/*")).build();
+				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");

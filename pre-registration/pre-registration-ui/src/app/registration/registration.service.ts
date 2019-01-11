@@ -30,7 +30,7 @@ export class RegistrationService {
 
   addUser(user: UserModel) {
     this.users.push(user);
-    console.log('users after being pushed', this.users);
+    // console.log('users after being pushed', this.users);
 
     this.usersChanged.next(this.users.slice());
   }

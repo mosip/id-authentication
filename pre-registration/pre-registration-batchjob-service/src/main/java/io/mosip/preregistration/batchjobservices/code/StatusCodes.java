@@ -2,15 +2,13 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.core.code;
+package io.mosip.preregistration.batchjobservices.code;
 
 /**
  * 
  * This Enum provides the constant variables to accept input request.
  * 
  * @author Kishan Rathore
- * @author Jagadishwari
- * @author Ravi C. Balaji
  * @since 1.0.0
  *
  */
