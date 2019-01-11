@@ -33,7 +33,7 @@ public class RegistrationCenterIdServiceTest {
 		entity.setRcid(1000);
 		when(repository.findMaxRegistrationCenterId()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateRegistrationCenterId(), is("1000"));
+		assertThat(service.generateRegistrationCenterId(), is(1000));
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class RegistrationCenterIdServiceTest {
 		entityResponse.setRcid(1001);
 		when(repository.findMaxRegistrationCenterId()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateRegistrationCenterId(), is("1001"));
+		assertThat(service.generateRegistrationCenterId(), is(1001));
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
