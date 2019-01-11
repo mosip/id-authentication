@@ -59,24 +59,24 @@ export class DemographicComponent implements OnInit {
   locations: LocationModal[] = [];
 
   transRegions: LocationModal[] = [
-    { locationCode: 'BLR', locationName: '(trans) BLR' },
-    { locationCode: 'TN', locationName: '(trans) TN' },
-    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+    // { locationCode: 'BLR', locationName: '(trans) BLR' },
+    // { locationCode: 'TN', locationName: '(trans) TN' },
+    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
   transProvinces: LocationModal[] = [
-    { locationCode: 'BLR', locationName: '(trans) BLR' },
-    { locationCode: 'TN', locationName: '(trans) TN' },
-    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+    // { locationCode: 'BLR', locationName: '(trans) BLR' },
+    // { locationCode: 'TN', locationName: '(trans) TN' },
+    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
   transCities: LocationModal[] = [
-    { locationCode: 'BLR', locationName: '(trans) BLR' },
-    { locationCode: 'TN', locationName: '(trans) TN' },
-    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+    // { locationCode: 'BLR', locationName: '(trans) BLR' },
+    // { locationCode: 'TN', locationName: '(trans) TN' },
+    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
   transLocalAdministrativeAuthorities: LocationModal[] = [
-    { locationCode: 'BLR', locationName: '(trans) BLR' },
-    { locationCode: 'TN', locationName: '(trans) TN' },
-    { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
+    // { locationCode: 'BLR', locationName: '(trans) BLR' },
+    // { locationCode: 'TN', locationName: '(trans) TN' },
+    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
   ];
 
   formControlNames = {
@@ -263,23 +263,31 @@ export class DemographicComponent implements OnInit {
 
     await this.getLocationMetadataHirearchy();
     await this.getLocationImmediateHierearchy(this.primaryLang, this.uppermostLocationHierarchy[0].code, this.regions);
+    await this.getLocationImmediateHierearchy(
+      this.secondaryLang,
+      this.uppermostLocationHierarchy[0].code,
+      this.transRegions
+    );
 
     if (this.regService.getUser(this.step) != null) {
-      await this.getLocationImmediateHierearchy(
-        this.primaryLang,
-        this.uppermostLocationHierarchy[0].code,
-        this.provinces
-      );
-      await this.getLocationImmediateHierearchy(this.primaryLang, this.uppermostLocationHierarchy[0].code, this.cities);
-      await this.getLocationImmediateHierearchy(
-        this.primaryLang,
-        this.uppermostLocationHierarchy[0].code,
-        this.localAdministrativeAuthorities
-      );
+      // await this.getLocationImmediateHierearchy(
+      //   this.primaryLang,
+      //   this.uppermostLocationHierarchy[0].code,
+      //   this.provinces
+      // );
+      // await this.getLocationImmediateHierearchy(this.primaryLang, this.uppermostLocationHierarchy[0].code, this.cities);
+      // await this.getLocationImmediateHierearchy(
+      //   this.primaryLang,
+      //   this.uppermostLocationHierarchy[0].code,
+      //   this.localAdministrativeAuthorities
+      // );
+      await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces);
+      await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces);
+      await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities);
+      await this.getLocationImmediateHierearchy(this.secondaryLang, province, this.transCities);
+      await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities);
+      await this.getLocationImmediateHierearchy(this.secondaryLang, city, this.transLocalAdministrativeAuthorities);
       console.log(this.locations);
-      // await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces);
-      // await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities);
-      // await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities);
     }
   }
 
@@ -299,11 +307,12 @@ export class DemographicComponent implements OnInit {
     });
   }
 
-  onLocationSelect(event: MatSelectChange, nextEntity: LocationModal[]) {
-    // const locationCode = event.value;
+  onLocationSelect(event: MatSelectChange, nextEntity: LocationModal[], transNextEntity: LocationModal[]) {
+    const locationCode = event.value;
     const locationName = event.source.triggerValue;
-    const locationCode = 'IND';
+    // const locationCode = 'IND';
     if (nextEntity) this.getLocationImmediateHierearchy(this.primaryLang, locationCode, nextEntity);
+    if (transNextEntity) this.getLocationImmediateHierearchy(this.secondaryLang, locationCode, transNextEntity);
     let location = {} as LocationModal;
     event.source.triggerValue;
     location.locationCode = locationCode;
@@ -315,6 +324,8 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
+          console.log('location response ', response);
+
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
               locationCode: element.code,
@@ -322,8 +333,12 @@ export class DemographicComponent implements OnInit {
             };
             entity.push(locationModal);
             // after location integration with proper data need to uncomment
+            console.log(locationModal.locationCode, location);
+
             // if (locationModal.locationCode === location) this.locations.push(locationModal);
           });
+          console.log('LOCATIONS', this.locations);
+
           return resolve(true);
         },
         error => console.log('Unable to fetch Below Hierearchy')
