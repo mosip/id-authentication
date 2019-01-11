@@ -40,7 +40,7 @@ public enum PacketFiles {
 	/** The proofofidentity. */
 	PROOFOFIDENTITY,
 	/** The packetmetainfo. */
-	PACKETMETAINFO,
+	PACKET_META_INFO,
 	/** The officerid. */
 	OFFICERID,
 	/** The officerfingerprintimage. */
