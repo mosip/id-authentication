@@ -19,10 +19,12 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
-			Object object = props.get(IrisProvider.class.getSimpleName()); //TODO add iris provider
+			Object object = props.get(IrisProvider.class.getSimpleName()); 
 			if (object instanceof BiFunction) {
-				BiFunction<Map<String, String>, Map<String, Object>, Double> func = (BiFunction<Map<String, String>, Map<String,Object>, Double>) object;
-				return (int) func.apply((Map<String, String>) reqInfo, props).doubleValue();
+				BiFunction<Map<String, String>, Map<String, String>, Double> func = (BiFunction<Map<String, String>, Map<String,String>, Double>) object;
+				Map<String, String> reqInfoMap=(Map<String, String>) reqInfo;
+				reqInfoMap.put(getIdvid(), (String)props.get(getIdvid()));  //FIXME will be removed when iris sdk is provided
+				return (int) func.apply(reqInfoMap, (Map<String, String>)entityInfo).doubleValue();
 			}else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 			}
@@ -30,6 +32,10 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 		return 0;
 	});
 
+	
+	private static final String IDVID = "idvid";
+	
+	
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
 
@@ -70,6 +76,10 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 	public int match(Map<String, String> reqValues, Map<String, String> entityValues,
 			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
 		return matchFunction.match(reqValues, entityValues, matchProperties);
+	}
+	
+	public static String getIdvid() {
+		return IDVID;
 	}
 
 }

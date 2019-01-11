@@ -42,10 +42,6 @@ public class MorphoIrisProvider extends IrisProvider {
 		return 0;
 	}
 
-	@Override
-	public double matchMultiImage(Object reqInfo, Object entityInfo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 
 }

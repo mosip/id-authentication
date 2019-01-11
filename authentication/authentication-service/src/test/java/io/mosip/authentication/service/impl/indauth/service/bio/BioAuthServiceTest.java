@@ -81,6 +81,7 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "biometricProviderFactory", biometricProviderFactory);
 		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "environment", environment);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
