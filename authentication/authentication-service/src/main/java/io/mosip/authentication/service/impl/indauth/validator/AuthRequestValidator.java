@@ -113,7 +113,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				
 //				validateTspId(authRequestDto.getTspID(),errors);
 
-//				validateReqHmac(authRequestDto.getReqHmac(), errors);
+
 
 				validateBioDetails(authRequestDto, errors);
 
@@ -128,20 +128,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		}
 	}
 
-	/**
-	 * Validate req hmac.
-	 *
-	 * @param reqHmac the req hmac
-	 * @param errors  the errors
-	 */
-	private void validateReqHmac(String reqHmac, Errors errors) {
-		if (Objects.isNull(reqHmac)) {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + REQ_HMAC);
-			errors.rejectValue(REQ_HMAC, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { REQ_HMAC },
-					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-		}
-	}
 
 	/**
 	 * Validate request timed out.

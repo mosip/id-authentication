@@ -190,7 +190,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 
 	}
-
+	/**
+	 * Validates the BioType value
+	 * @param bioInfo
+	 * @param errors
+	 */
 	private void validateBioType(List<BioInfo> bioInfo, Errors errors) {
 		AuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
@@ -205,7 +209,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 		
 	}
-
+	/**
+	 * validates the DeviceInfo
+	 * @param bioInfo
+	 * @param errors
+	 */
 	private void validateDeviceInfo(List<BioInfo> bioInfo, Errors errors) {
 		if(!isContainDeviceId(bioInfo)) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric Device id Info request");
@@ -219,11 +227,19 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 		
 	}
-
+	/**
+	 * check the value of Make present or not from the list
+	 * @param deviceInfoList
+	 * @return
+	 */
 	private boolean isContainDeviceMake(List<BioInfo> deviceInfoList) {
 		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getMake()!=null &&!deviceInfo.getDeviceInfo().getMake().isEmpty());
 	}
-
+	/**
+	 * check the deviceId value null or empty
+	 * @param deviceInfoList
+	 * @return
+	 */
 	private boolean isContainDeviceId(List<BioInfo> deviceInfoList) {
 		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getDeviceId()!=null &&!deviceInfo.getDeviceInfo().getDeviceId().isEmpty());
 	}
