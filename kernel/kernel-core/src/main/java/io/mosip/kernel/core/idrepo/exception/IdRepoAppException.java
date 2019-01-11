@@ -52,6 +52,19 @@ public class IdRepoAppException extends BaseCheckedException {
 	public IdRepoAppException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+	
+	/**
+	 * Instantiates a new id repo app exception.
+	 *
+	 * @param errorCode the error code
+	 * @param errorMessage the error message
+	 * @param rootCause the root cause
+	 * @param id the id
+	 */
+	public IdRepoAppException(String errorCode, String errorMessage, Throwable rootCause, String id) {
+		super(errorCode, errorMessage, rootCause);
+		this.id = id;
+	}
 
 	/**
 	 * Instantiates a new id repo app exception.

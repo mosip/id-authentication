@@ -31,7 +31,7 @@ import io.mosip.kernel.core.datavalidator.spi.EmailValidator;
 public class EmailValidatorImplTest {
 
 	@Autowired
-	EmailValidator emailValidatorImpl;
+	EmailValidator<String> emailValidatorImpl;
 
 	@Value("${mosip.kernel.email.test.true}")
 	String emailTrue;

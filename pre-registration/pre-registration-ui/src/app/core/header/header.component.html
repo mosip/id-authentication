@@ -1,46 +1,9 @@
-<!-- <nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li routerLinkActive="active"><a style="cursor: pointer;" routerLink="/about-us">About us</a></li>
-        <li routerLinkActive="active"><a style="cursor: pointer;" routerLink="/faq">FAQ</a></li>
-        <li routerLinkActive="active"><a style="cursor: pointer;" routerLink="/contact">Contact</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <ng-template [ngIf]="!authService.isAuthenticated()">
-          <li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-              Select Language <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-              <li *ngFor="let language of languages" [value]="language.value">{{ language.viewValue }}</li>
-            </ul>
-          </li>
-        </ng-template>
-        <li><a style="cursor: pointer;" (click)="onLogout()" *ngIf="authService.isAuthenticated()">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav> -->
-<!--
-  <mat-toolbar>
-    <mat-toolbar-row style="background: #d9d9d9;">
-      <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/about-us">About us</a></span>
-      <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/faq">FAQ</a></span>
-      <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/contact">Contact</a></span>
-    </mat-toolbar-row>
-  </mat-toolbar>
--->
-
 <mat-sidenav-container>
-  <mat-sidenav #sidenav 
-    role="navigation"  
-    position="start"
-    mode="push">
+  <mat-sidenav #sidenav role="navigation" position="start" mode="push">
     <mat-nav-list class="sidenav-list">
-      <a mat-list-item routerLink="/about-us" (click)="sidenav.toggle()">About us</a>
-      <a mat-list-item routerLink="/faq" (click)="sidenav.toggle()">FAQ</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.toggle()">Contact</a>
+      <a mat-list-item routerLink="/about-us" (click)="sidenav.toggle()"> {{ 'header.link_about' | translate }}</a>
+      <a mat-list-item routerLink="/faq" (click)="sidenav.toggle()">{{ 'header.link_faq' | translate }}</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.toggle()">{{ 'header.link_contact' | translate }}</a>
       <a mat-list-item routerLink="#" (click)="sidenav.toggle()">help</a>
       <a mat-list-item routerLink="#" (click)="sidenav.toggle()">home</a>
       <a mat-list-item routerLink="#" (click)="sidenav.toggle()">profile</a>
@@ -49,28 +12,20 @@
   <mat-sidenav-content>
     <mat-toolbar>
       <div class="sidenav-button">
-        <button mat-icon-button (click)="sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
+        <button mat-icon-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
       </div>
-      <a><img  src="assets\logo-final.png" style="max-height: 50px;"></a>
-      <div style="margin-left:5px;"><a routerLink="/" class="logo">logo</a></div> 
+      <a><img src="assets\logo-final.png" style="max-height: 50px;"/></a>
+      <div style="margin-left:5px;"><a routerLink="/" class="logo">logo</a></div>
       <mat-nav-list class="list-item">
-        <a mat-list-item routerLink="/about-us">About us</a>
-        <a mat-list-item routerLink="/faq" >FAQ</a>
-        <a mat-list-item routerLink="/contact">Contact</a>
+        <a mat-list-item routerLink="/about-us">{{ 'header.link_about' | translate }}</a>
+        <a mat-list-item routerLink="/faq">{{ 'header.link_faq' | translate }}</a>
+        <a mat-list-item routerLink="/contact">{{ 'header.link_contact' | translate }}</a>
       </mat-nav-list>
       <span class="spacer"></span>
       <mat-nav-list class="list-item">
-        <a mat-list-item routerLink="#">
-          <mat-icon class="icon">help</mat-icon>
-        </a>
-        <a mat-list-item routerLink="#">
-          <mat-icon class="icon">home</mat-icon>
-        </a>
-        <a mat-list-item routerLink="#">
-          <mat-icon class="icon">account_circle</mat-icon>
-        </a>
+        <a mat-list-item routerLink="#"> <mat-icon class="icon">help</mat-icon> </a>
+        <a mat-list-item (click)="onHome()"> <mat-icon class="icon">home</mat-icon> </a>
+        <a mat-list-item routerLink="#"> <mat-icon class="icon">account_circle</mat-icon> </a>
       </mat-nav-list>
     </mat-toolbar>
     <main>

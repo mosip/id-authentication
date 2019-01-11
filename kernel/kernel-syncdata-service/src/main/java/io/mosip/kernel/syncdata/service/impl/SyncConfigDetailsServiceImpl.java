@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
+import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import net.minidev.json.JSONObject;
@@ -42,6 +43,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.syncdata.service.SyncConfigDetailsService#
+	 * getGlobalConfigDetails()
+	 */
 	@Override
 	public JSONObject getGlobalConfigDetails() {
 
@@ -49,11 +56,25 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.syncdata.service.SyncConfigDetailsService#
+	 * getRegistrationCenterConfigDetails(java.lang.String)
+	 */
 	@Override
 	public JSONObject getRegistrationCenterConfigDetails(String regId) {
 
 		return getConfigDetailsResponse(regCenterfileName);
 
+	}
+
+	public ConfigDto getConfiguration(String registrationCenterId) {
+		ConfigDto configDto = null;
+		configDto = new ConfigDto();
+		configDto.setGlobalConfig(getGlobalConfigDetails());
+		configDto.setRegistrationCenterConfiguration(getRegistrationCenterConfigDetails(registrationCenterId));
+		return configDto;
 	}
 
 	/**

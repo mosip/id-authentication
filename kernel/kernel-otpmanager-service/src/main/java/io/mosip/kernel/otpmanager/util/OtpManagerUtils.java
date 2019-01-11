@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.util;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class OtpManagerUtils {
 	 * @return The current local date and time.
 	 */
 	public static LocalDateTime getCurrentLocalDateTime() {
-		return LocalDateTime.now();
+		return LocalDateTime.now(ZoneId.of("UTC"));
 	}
 
 	/**

@@ -41,6 +41,7 @@ import com.google.common.io.Files;
 
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
+import io.mosip.kernel.idrepo.dto.RequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
@@ -80,7 +81,6 @@ public class IdRepoServiceTest {
 	/** The uin repo. */
 	@Mock
 	private UinRepo uinRepo;
-
 
 	/** The uin history repo. */
 	@Mock
@@ -147,12 +147,14 @@ public class IdRepoServiceTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				ObjectNode.class);
-		request.setRequest(obj);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.kernel.uingen.url"), HttpMethod.GET, null,
 				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
-		service.addIdentity(request);
+		service.addIdentity(request, "1234");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -166,13 +168,15 @@ public class IdRepoServiceTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				ObjectNode.class);
-		request.setRequest(obj);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(uinRepo.existsById(Mockito.anyString())).thenReturn(true);
 		when(uinRepo.save(Mockito.any())).thenReturn(uinObj);
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.kernel.uingen.url"), HttpMethod.GET, null,
 				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
-		service.addIdentity(request);
+		service.addIdentity(request, "1234");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -186,13 +190,15 @@ public class IdRepoServiceTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				ObjectNode.class);
-		request.setRequest(obj);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		ObjectNode response = mapper.readValue("{\"uin\":\"1234\"}", ObjectNode.class);
 		when(uinRepo.existsById(Mockito.anyString())).thenReturn(true);
 		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.kernel.uingen.url"), HttpMethod.GET, null,
 				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
-		service.addIdentity(request);
+		service.addIdentity(request, "1234");
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -229,7 +235,7 @@ public class IdRepoServiceTest {
 				ObjectNode.class);
 		Mockito.when(restTemplate.exchange(env.getProperty("mosip.kernel.uingen.url"), HttpMethod.GET, null,
 				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
-		service.addIdentity(request);
+		service.addIdentity(request, "1234");
 	}
 
 	/**
@@ -259,7 +265,7 @@ public class IdRepoServiceTest {
 				ObjectNode.class)).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 	}
 
-//	@Test(expected = IdRepoAppException.class)
+	// @Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityNullUinOject()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 	}
@@ -268,10 +274,13 @@ public class IdRepoServiceTest {
 	@Ignore
 	public void testUpdateIdentity() throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		request.setStatus("REGISTERED");
-		request.setRequest(mapper.readValue(
+		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
-				Object.class));
+				Object.class);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -282,7 +291,7 @@ public class IdRepoServiceTest {
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-//		service.updateIdentity(request);
+		// service.updateIdentity(request);
 	}
 
 	@Test
@@ -290,10 +299,14 @@ public class IdRepoServiceTest {
 	public void testUpdateIdentityStatus()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		request.setStatus("BLOCKED");
-		request.setRequest(mapper.readValue(
+		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
-				Object.class));
+				Object.class);
+
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -312,10 +325,14 @@ public class IdRepoServiceTest {
 	public void testUpdateIdentityWithDiff()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		request.setStatus("REGISTERED");
-		request.setRequest(mapper.readValue(
+		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
 						.getBytes(),
-				Object.class));
+				Object.class);
+
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -333,10 +350,13 @@ public class IdRepoServiceTest {
 	public void testUpdateIdentityInvalidRequest()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		request.setStatus("REGISTERED");
-		request.setRequest(mapper.readValue(
+		Object obj = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
 						.getBytes(),
-				Object.class));
+				Object.class);
+		RequestDTO req = new RequestDTO();
+		req.setIdentity(obj);
+		request.setRequest(req);
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -361,7 +381,7 @@ public class IdRepoServiceTest {
 	}
 
 	/**
-	 * @throws Throwable 
+	 * @throws Throwable
 	 * 
 	 */
 	@Test(expected = IdRepoAppException.class)
