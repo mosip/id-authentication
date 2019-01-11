@@ -9,7 +9,8 @@ package io.mosip.kernel.idvalidator.tspid.constant;
  *
  */
 public enum TspIdExceptionProperty {
-	INVALID_TSPID_LENGTH("KER-IDV-401", "Tspid Length Must Be ");
+	INVALID_TSPID_LENGTH("KER-IDV-401", "Tspid Length Must Be "), 
+	INVALID_TSPID("", "Tspid cannot be null or empty");
 
 	/**
 	 * the errorCode.

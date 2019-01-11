@@ -31,6 +31,10 @@ public class TspIdValidatorImpl implements IdValidator<String> {
 	 */
 	@Override
 	public boolean validateId(String id) {
+		if (id == null || id == "") {
+			throw new InvalidIDException(TspIdExceptionProperty.INVALID_TSPID.getErrorCode(),
+					TspIdExceptionProperty.INVALID_TSPID.getErrorMessage());
+		}
 
 		if (id.length() != tspidLength) {
 			throw new InvalidIDException(TspIdExceptionProperty.INVALID_TSPID_LENGTH.getErrorCode(),

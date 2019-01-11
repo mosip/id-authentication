@@ -29,5 +29,14 @@ public class TspIdValidatorTest {
 
 		tspIdValidatorImpl.validateId("100");
 	}
+	
+	@Test(expected = InvalidIDException.class)
+	public void nullTspIdTest() {
+		tspIdValidatorImpl.validateId(null);
+	}
 
+	@Test(expected = InvalidIDException.class)
+	public void emptyTspIdTest() {
+		tspIdValidatorImpl.validateId("");
+	}
 }
