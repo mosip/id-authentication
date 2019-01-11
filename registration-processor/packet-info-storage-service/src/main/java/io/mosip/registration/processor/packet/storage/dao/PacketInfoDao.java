@@ -288,7 +288,7 @@ public class PacketInfoDao {
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
 		StringBuilder query = new StringBuilder();
-		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uinRefId "
+		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin "
 				+ IS_NOT_NULL + AND);
 		if (phoneticName != null) {
 			query.append(alias + ".phoneticName=:phoneticName ").append(AND);
