@@ -4,9 +4,24 @@
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.collections.*?>
+<?import javafx.stage.Screen?>
 
 <AnchorPane fx:id="biometricException" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="578.0" prefWidth="903.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.BiometricExceptionController">
    <children>
+   <AnchorPane fx:id="biometricExceptionLayout" prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
+         <children>
+         <ImageView fx:id="homePageImg" fitHeight="20.0" fitWidth="20.0" layoutX="14.0" layoutY="10.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+  	 			<image>
+					<Image url="@../images/Home.png" />
+		 		</image>	
+    		</ImageView>    		
+    		<Text id="homeReg" fx:id="homePageLbl" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" />
       <Pane fx:id="leftEyePane" layoutX="462.0" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" styleClass="biometricExceptionPane">
          <children>
             <ImageView fx:id="leftEye" fitHeight="150.0" fitWidth="200.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
@@ -103,5 +118,7 @@
       </Pane>
       <Button fx:id="nextBtn" layoutX="773.0" layoutY="510.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="RegbuttonStyle" text="Next" />
       <Button fx:id="previousBtn" layoutX="695.0" layoutY="510.0" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="RegbuttonStyle" text="Previous" />
+ 	</children>
+	</AnchorPane>
    </children>
 </AnchorPane>

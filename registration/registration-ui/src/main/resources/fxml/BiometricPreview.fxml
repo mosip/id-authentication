@@ -76,8 +76,8 @@
                                        <children>
                                           <AnchorPane layoutX="267.0" layoutY="19.0" prefHeight="251.0" prefWidth="244.0">
                                              <children>
-                                                <Label fx:id="exceptionLabel" layoutX="49.0" layoutY="203.0" text="%exceptionphoto" />
-                                                <ImageView fx:id="exceptionPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="19.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                                                <Label fx:id="exceptionLabel" layoutX="52.0" layoutY="202.0" text="%exceptionphoto" />
+                                                <ImageView fx:id="exceptionPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="22.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../images/ApplicantPhoto.png" />
                                                    </image>
@@ -99,18 +99,7 @@
                                        </children></AnchorPane>
                                     <AnchorPane fx:id="irisAnchorPane" layoutX="14.0" layoutY="303.0" prefHeight="289.0" prefWidth="765.0">
                                        <children>
-                                          <AnchorPane>
-                                             <children>
-                                                <Label layoutX="24.0" layoutY="231.0" text="%quality" />
-                                                <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
-                                                <Text fx:id="rightEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%percentageValue" />
-                                                <Text fx:id="rightIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%percentageValue" />
-                                                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
-                                                <Label layoutX="88.0" layoutY="189.0" text="%righteye" />
-                                                <ImageView fx:id="leftEye" fitHeight="177.0" fitWidth="217.0" layoutX="20.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane layoutX="262.0">
+                                          <AnchorPane layoutY="7.0">
                                              <children>
                                                 <Label layoutX="24.0" layoutY="231.0" text="%quality" />
                                                 <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
@@ -119,6 +108,17 @@
                                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
                                                 <Label layoutX="85.0" layoutY="189.0" text="%lefteye" />
                                                 <ImageView fx:id="rightEye" fitHeight="176.0" fitWidth="218.0" layoutX="19.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane layoutX="258.0" layoutY="7.0">
+                                             <children>
+                                                <Label layoutX="24.0" layoutY="231.0" text="%quality" />
+                                                <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
+                                                <Text fx:id="rightEyeQualityScore" layoutX="160.0" layoutY="251.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%percentageValue" />
+                                                <Text fx:id="rightIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%percentageValue" />
+                                                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
+                                                <Label layoutX="88.0" layoutY="189.0" text="%righteye" />
+                                                <ImageView fx:id="leftEye" fitHeight="177.0" fitWidth="217.0" layoutX="20.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </AnchorPane>
                                        </children></AnchorPane>

@@ -344,7 +344,8 @@ public class UserOnboardController extends BaseController implements Initializab
 		rightSlapCount = 0;
 		thumbCount = 0;
 
-		List<BiometricExceptionDTO> biometricExceptionDTOs = biometricDTO.getOperatorBiometricDTO().getBiometricExceptionDTO();
+		List<BiometricExceptionDTO> biometricExceptionDTOs = biometricDTO.getOperatorBiometricDTO()
+				.getBiometricExceptionDTO();
 		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 
 			if (biometricExceptionDTO.getMissingBiometric().contains("left")
@@ -361,7 +362,6 @@ public class UserOnboardController extends BaseController implements Initializab
 		}
 	}
 
-	
 	@FXML
 	private void initUserOnboard() {
 		loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
@@ -449,23 +449,23 @@ public class UserOnboardController extends BaseController implements Initializab
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.RIGHTPALM)
 							|| rightSlapCount >= 4) {
 						isrightHandSlapCaptured = true;
-					} 
+					}
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS)
 							|| thumbCount >= 2) {
 						isthumbsCaptured = true;
 					}
-				}else {
+				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
 
-			if(fingerprintDetailsDTOs.isEmpty() && leftSlapCount >= 4 && rightSlapCount >= 4 && thumbCount>=2) {
-				isleftHandSlapCaptured=true;
-				isrightHandSlapCaptured=true;
-				isthumbsCaptured=true;
+			if (fingerprintDetailsDTOs.isEmpty() && leftSlapCount >= 4 && rightSlapCount >= 4 && thumbCount >= 2) {
+				isleftHandSlapCaptured = true;
+				isrightHandSlapCaptured = true;
+				isthumbsCaptured = true;
 			}
-			
+
 			if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
 				isValid = true;
 			} else {
@@ -579,14 +579,14 @@ public class UserOnboardController extends BaseController implements Initializab
 			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
 		}
 	}
-	
-	public void goToPrevPage() {		
+
+	public void goToPrevPage() {
 		if (validateFingerPrints()) {
 			pageName = "";
 			loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
 		}
 	}
-		
+
 	/**
 	 * This method will be invoked when Next button is clicked. The next section
 	 * will be displayed.
@@ -1040,66 +1040,80 @@ public class UserOnboardController extends BaseController implements Initializab
 	@FXML
 	private void submit() {
 
-		ResponseDTO response = userOnboardService.validate(biometricDTO);
-		if (response != null && response.getErrorResponseDTOs() != null
-				&& response.getErrorResponseDTOs().get(0) != null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, response.getErrorResponseDTOs().get(0).getMessage());
-		} else if (response != null && response.getSuccessResponseDTO() != null) {
-			try {
-				popupStage = new Stage();
-				popupStage.initStyle(StageStyle.DECORATED);
-				Parent scanPopup = BaseController.load(getClass().getResource("/fxml/UserOnboardSuccess.fxml"));
-				popupStage.setResizable(false);
-				Scene scene = new Scene(scanPopup);
-				ClassLoader loader = Thread.currentThread().getContextClassLoader();
-				scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-				popupStage.setScene(scene);
-				popupStage.initModality(Modality.WINDOW_MODAL);
-				popupStage.initOwner(fXComponents.getStage());
-				popupStage.show();
-			} catch (IOException exception) {
-				LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-						exception.getMessage());
-				generateAlert(RegistrationConstants.ALERT_ERROR,
-						RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
+		if (validatePhoto()) {
+			ResponseDTO response = userOnboardService.validate(biometricDTO);
+			if (response != null && response.getErrorResponseDTOs() != null
+					&& response.getErrorResponseDTOs().get(0) != null) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+			} else if (response != null && response.getSuccessResponseDTO() != null) {
+				try {
+					popupStage = new Stage();
+					popupStage.initStyle(StageStyle.DECORATED);
+					Parent scanPopup = BaseController.load(getClass().getResource("/fxml/UserOnboardSuccess.fxml"));
+					popupStage.setResizable(false);
+					Scene scene = new Scene(scanPopup);
+					ClassLoader loader = Thread.currentThread().getContextClassLoader();
+					scene.getStylesheets()
+							.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+					popupStage.setScene(scene);
+					popupStage.initModality(Modality.WINDOW_MODAL);
+					popupStage.initOwner(fXComponents.getStage());
+					popupStage.show();
+				} catch (IOException exception) {
+					LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+							exception.getMessage());
+					generateAlert(RegistrationConstants.ALERT_ERROR,
+							RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
+				}
 			}
+		}
+	}
+
+	private boolean validatePhoto() {
+		if (biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
+			return true;
+		} else {
+			generateAlert(RegistrationConstants.ALERT_ERROR, "Please capture the photo");
+			return true;
 		}
 	}
 
 	@FXML
 	private void loadLoginScreen() {
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, false);
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, false);
 		if (popupStage.isShowing()) {
 			popupStage.close();
 			goToHomePage();
 		}
 	}
-	
+
 	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath)
 			throws RegBaseCheckedException {
 
 		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath);
 	}
+
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
 			throws RegBaseCheckedException {
- 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has started");
 
 		try {
 
-			List<BiometricExceptionDTO> biometricExceptionDTOs =biometricDTO.getOperatorBiometricDTO().getBiometricExceptionDTO();
-			
+			List<BiometricExceptionDTO> biometricExceptionDTOs = biometricDTO.getOperatorBiometricDTO()
+					.getBiometricExceptionDTO();
+
 			List<String> filePaths = Arrays.asList(path);
 
 			boolean isExceptionFinger = false;
 			BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
-			
+
 			for (String folderPath : filePaths) {
 				isExceptionFinger = false;
 				String[] imageFileName = folderPath.split("/");
 
 				for (BiometricExceptionDTO exceptionDTO : biometricExceptionDTOs) {
-					
+
 					if (imageFileName[3].equals(exceptionDTO.getMissingBiometric())) {
 						isExceptionFinger = true;
 						biometricExceptionDTO = exceptionDTO;
@@ -1128,11 +1142,11 @@ public class UserOnboardController extends BaseController implements Initializab
 						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
 					}
 					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-				}else {
+				} else {
 					byte[] isoExceptionImageBytes = IOUtils
 							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
 					biometricExceptionDTO.setBiometricISOImage(isoExceptionImageBytes);
-					
+
 				}
 			}
 		} catch (IOException ioException) {
@@ -1150,6 +1164,5 @@ public class UserOnboardController extends BaseController implements Initializab
 		}
 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
 	}
-
 
 }

@@ -421,7 +421,12 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			exceptionFingersCount();
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				if (validateFingerPrints()) {
-					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris()) {
+					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
+					
+					long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
+							.filter(bio -> bio.getBiometricType().equals("iris")).count();
+					
+					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount > 0) {
 						registrationController.toggleFingerprintCaptureVisibility(false);
 						registrationController.toggleIrisCaptureVisibility(true);
 					} else {
@@ -553,7 +558,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							}
 						}
 					}
-					duplicateCheckLbl.setText(duplicateFinger.getFingerType().toUpperCase() + " "
+					String finger;
+					if(duplicateFinger.getFingerType().contains("left")) {
+						finger = duplicateFinger.getFingerType().replace("left", "Left hand ");
+					}else {
+						finger = duplicateFinger.getFingerType().replace("right", "Right hand ");
+					}
+					duplicateCheckLbl.setText(finger + " "
 							+ RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);
 				}
 			} else {

@@ -609,10 +609,10 @@ public class AuthenticationController extends BaseController {
 				if (fpMatchStatus) {
 					if (isSupervisor) {
 						fingerprintDetailsDTO
-								.setFingerprintImageName("supervisor".concat(fingerprintDetailsDTO.getFingerType()));
+								.setFingerprintImageName("supervisor".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
 					} else {
 						fingerprintDetailsDTO
-								.setFingerprintImageName("officer".concat(fingerprintDetailsDTO.getFingerType()));
+								.setFingerprintImageName("officer".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
 					}
 				}
 			}
@@ -656,9 +656,9 @@ public class AuthenticationController extends BaseController {
 
 		if (irisMatchStatus) {
 			if (isSupervisor) {
-				irisDetailsDTO.setIrisImageName("supervisor".concat(irisDetailsDTO.getIrisType()));
+				irisDetailsDTO.setIrisImageName("supervisor".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
 			} else {
-				irisDetailsDTO.setIrisImageName("officer".concat(irisDetailsDTO.getIrisType()));
+				irisDetailsDTO.setIrisImageName("officer".concat(irisDetailsDTO.getIrisType()).concat(".jpg"));
 			}
 		}
 		return irisMatchStatus;

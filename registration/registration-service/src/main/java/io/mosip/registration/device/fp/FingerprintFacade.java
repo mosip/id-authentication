@@ -292,7 +292,7 @@ public class FingerprintFacade {
 			if (fingerprintProvider.scoreCalculator(minutiae,
 					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {
 				fingerprintDetailsDTO
-						.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode() + ".jpg");
+						.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode());
 			}
 		});
 		return userFingerprintDetails.stream()

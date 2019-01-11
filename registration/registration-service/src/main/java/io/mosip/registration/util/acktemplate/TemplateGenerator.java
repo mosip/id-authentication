@@ -48,8 +48,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.ArrayPropertiesDTO;
-import io.mosip.registration.dto.demographic.SimplePropertiesDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -196,7 +194,8 @@ public class TemplateGenerator extends BaseService {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 						.getProofOfRelationship().getValue()).append(", ");
 			}
-			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth() != null) {
+			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					.getProofOfDateOfBirth() != null) {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 						.getProofOfDateOfBirth().getValue());
 			}
@@ -260,36 +259,41 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			// QR Code Generation
-			String name = "N : "
-					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
-							platformLanguageCode);
-
-			String dateOfBirth;
+			StringBuilder qrCodeString = new StringBuilder();
+			qrCodeString.append("N: ")
+					.append(getValue(
+							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
+							platformLanguageCode));
+			qrCodeString.append("\n");
+			qrCodeString.append("DOB: ");
 
 			if (dob == "") {
-				dateOfBirth = "DOB: " + getValue(
-						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null);
+				qrCodeString.append(getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
 			} else {
-				dateOfBirth = "DOB: " + DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY");
+				qrCodeString.append(DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
 			}
 
-			String completeAddress = getValue(
-					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
-					platformLanguageCode)
-					+ "\n "
-					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
-							platformLanguageCode)
-					+ "\n"
-					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
-							platformLanguageCode);
-
-			String address = "A : " + completeAddress;
-
-			String regId = "RID : " + registration.getRegistrationId();
-
-			String gender = "G : "
-					+ getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
-							platformLanguageCode);
+			qrCodeString.append("\n");
+			qrCodeString.append("A: ");
+			qrCodeString.append(
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
+							platformLanguageCode));
+			qrCodeString.append("\n");
+			qrCodeString.append(
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine2(),
+							platformLanguageCode));
+			qrCodeString.append("\n");
+			qrCodeString.append(
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
+							platformLanguageCode));
+			qrCodeString.append("\n");
+			qrCodeString.append("RID: ").append(registration.getRegistrationId());
+			qrCodeString.append("\n");
+			qrCodeString.append("G: ")
+					.append(getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
+							platformLanguageCode));
+			qrCodeString.append("\n");
 
 			try {
 				byte[] qrCodeInBytes;
@@ -297,12 +301,11 @@ public class TemplateGenerator extends BaseService {
 					byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
 							.getCompressedFacePhoto();
 
-					qrCodeInBytes = qrCodeGenerator.generateQrCode(name + "\n" + dateOfBirth + "\n" + address + "\n"
-							+ regId + "\n" + gender + "\n" + "I:" + CryptoUtil.encodeBase64(applicantPhoto),
-							QrVersion.V25);
+					qrCodeString.append("I: ").append(CryptoUtil.encodeBase64(applicantPhoto));
+
+					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 				} else {
-					qrCodeInBytes = qrCodeGenerator.generateQrCode(
-							name + "\n" + dateOfBirth + "\n" + address + "\n" + regId + "\n" + gender, QrVersion.V25);
+					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 				}
 
 				String qrCodeImageEncodedBytes = CryptoUtil.encodeBase64(qrCodeInBytes);
@@ -594,7 +597,8 @@ public class TemplateGenerator extends BaseService {
 				"Getting values of demographic fields in given specific language");
 		String value = RegistrationConstants.EMPTY;
 
-		if (fieldValue instanceof String || fieldValue instanceof Integer || fieldValue instanceof BigInteger || fieldValue instanceof Double) {
+		if (fieldValue instanceof String || fieldValue instanceof Integer || fieldValue instanceof BigInteger
+				|| fieldValue instanceof Double) {
 			value = String.valueOf(fieldValue);
 		} else if (fieldValue instanceof List<?>) {
 			Optional<ValuesDTO> demoValueInRequiredLang = ((List<ValuesDTO>) fieldValue).stream()
