@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.dto.AvailabilityDto;
@@ -58,6 +59,7 @@ import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
@@ -117,6 +119,8 @@ public class BookingService {
 
 	}
 
+	private Logger log = LoggerConfiguration.logConfig(BookingService.class);
+
 	/**
 	 * It will sync the registration center details
 	 * 
@@ -124,6 +128,7 @@ public class BookingService {
 	 */
 	@Transactional
 	public MainResponseDTO<String> addAvailability() {
+		log.info("sessionId", "idType", "id", "In addAvailability method of Booking Service");
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 		try {
 			LocalDate endDate = LocalDate.now().plusDays(noOfDays);
@@ -135,8 +140,9 @@ public class BookingService {
 					serviceUtil.timeSlotCalculator(regDto, holidaylist, sDate, bookingDAO);
 				}
 			}
-		} catch (Exception e) {
-			new BookingExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In addAvailability method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
 		response.setStatus(true);
@@ -152,6 +158,7 @@ public class BookingService {
 	 * @return ResponseDto<AvailabilityDto>
 	 */
 	public MainResponseDTO<AvailabilityDto> getAvailability(String regID) {
+		log.info("sessionId", "idType", "id", "In getAvailability method of Booking Service");
 		MainResponseDTO<AvailabilityDto> response = new MainResponseDTO<>();
 		LocalDate endDate = LocalDate.now().plusDays(Math.addExact(noOfDays, 2));
 		LocalDate fromDate = LocalDate.now().plusDays(2);
@@ -170,6 +177,7 @@ public class BookingService {
 			availability.setCenterDetails(dateTimeList);
 			availability.setRegCenterId(regID);
 		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In getAvailability method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex);
 		}
 		response.setResTime(serviceUtil.getCurrentResponseTime());
@@ -190,6 +198,7 @@ public class BookingService {
 			AvailablityNotFoundException.class, AppointmentCannotBeBookedException.class })
 	public MainResponseDTO<List<BookingStatusDTO>> bookAppointment(
 			MainListRequestDTO<BookingRequestDTO> bookingRequestDTOs) {
+		log.info("sessionId", "idType", "id", "In bookAppointment method of Booking Service");
 		MainResponseDTO<List<BookingStatusDTO>> responseDTO = new MainResponseDTO<>();
 		List<BookingStatusDTO> respList = new ArrayList<>();
 		BookingStatusDTO statusDTO;
@@ -227,9 +236,9 @@ public class BookingService {
 				}
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			new BookingExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In bookAppointment method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
 		responseDTO.setStatus(true);
 		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
@@ -238,6 +247,7 @@ public class BookingService {
 	}
 
 	private boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In cancel method of Booking Service");
 		cancelBooking(serviceUtil.cancelBookingDtoSetter(preRegistrationId, oldBookingRegistrationDTO));
 		return true;
 	}
@@ -249,6 +259,7 @@ public class BookingService {
 	 * @return MainResponseDTO
 	 */
 	public MainResponseDTO<BookingRegistrationDTO> getAppointmentDetails(String preRegID) {
+		log.info("sessionId", "idType", "id", "In getAppointmentDetails method of Booking Service");
 		BookingRegistrationDTO bookingRegistrationDTO = new BookingRegistrationDTO();
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
@@ -263,8 +274,10 @@ public class BookingService {
 			responseDto.setErr(null);
 			responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 
-		} catch (Exception e) {
-			new BookingExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In getAppointmentDetails method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
 
 		return responseDto;
@@ -280,14 +293,17 @@ public class BookingService {
 			CancelAppointmentFailedException.class, AppointmentAlreadyCanceledException.class,
 			AvailablityNotFoundException.class, AppointmentCannotBeCanceledException.class })
 	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointment(MainRequestDTO<CancelBookingDTO> requestdto) {
+		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(requestdto), requiredRequestMap)) {
 				responseDto.setResponse(cancelBooking(requestdto.getRequest()));
 			}
 
-		} catch (Exception e) {
-			new BookingExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In cancelAppointment method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
 		responseDto.setStatus(true);
 		responseDto.setResTime(serviceUtil.getCurrentResponseTime());
@@ -302,6 +318,7 @@ public class BookingService {
 	 */
 	public MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> getPreIdsByRegCenterId(
 			MainRequestDTO<PreRegIdsByRegCenterIdDTO> requestDTO) {
+		log.info("sessionId", "idType", "id", "In getPreIdsByRegCenterId method of Booking Service");
 		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> responseDto = new MainListResponseDTO<>();
 		PreRegIdsByRegCenterIdResponseDTO preRegIdsByRegCenterIdResponseDTO = new PreRegIdsByRegCenterIdResponseDTO();
 		List<PreRegIdsByRegCenterIdResponseDTO> preRegIdsByRegCenterIdResponseDTOList = new ArrayList<>();
@@ -335,11 +352,16 @@ public class BookingService {
 							ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 				}
 			}
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException ex) {
+			log.error("sessionId", "idType", "id",
+					"In getPreIdsByRegCenterId method of Booking Service for DataAccessLayerException- "
+							+ ex.getMessage());
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
-		} catch (Exception e) {
-			new BookingExceptionCatcher().handle(e);
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), ex.getCause());
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In getPreIdsByRegCenterId method of Booking Service for Exception- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
 		return responseDto;
 	}
@@ -352,6 +374,7 @@ public class BookingService {
 	 * @return BookingStatusDTO
 	 */
 	public BookingStatusDTO book(String preRegistrationId, BookingRegistrationDTO bookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In book method of Booking Service");
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
 		BookingLock bookingLock = new BookingLock(bookingRegistrationDTO.getRegistrationCenterId(),
 				bookingRegistrationDTO.getRegDate(), bookingRegistrationDTO.getSlotFromTime());
@@ -384,6 +407,7 @@ public class BookingService {
 	 * @return response with status code
 	 */
 	public CancelBookingResponseDTO cancelBooking(CancelBookingDTO cancelBookingDTO) {
+		log.info("sessionId", "idType", "id", "In cancelBooking method of Booking Service");
 		CancelBookingResponseDTO cancelBookingResponseDTO = new CancelBookingResponseDTO();
 		AvailibityEntity availableEntity;
 		try {
@@ -415,8 +439,9 @@ public class BookingService {
 
 				}
 			}
-		} catch (Exception e) {
-			new BookingExceptionCatcher().handle(e);
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In cancelBooking method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
 		return cancelBookingResponseDTO;
 	}
