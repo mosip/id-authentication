@@ -1,5 +1,6 @@
 package io.mosip.registration.service.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOARD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -93,7 +94,13 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		ResponseDTO responseDTO = null;
 		String onBoardingResponse = RegistrationConstants.EMPTY;
 		
+		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+				"Entering save method");
+		
 		try {
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"Entering insert method");
 			
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
@@ -107,6 +114,9 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 				responseDTO.setSuccessResponseDTO(sucessResponse);
 
 			}
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"user onbaording sucessful");
 
 		} catch (RegBaseUncheckedException uncheckedException) {
 
@@ -163,8 +173,8 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	public Map<String,String> getMachineCenterId() {
 
 		Map<String,String> centerIdMap = new HashMap<>();
-		String stationID = "";
-		String centerID = "";
+		String stationID = RegistrationConstants.EMPTY;
+		String centerID = RegistrationConstants.EMPTY;
 
 		try {
 			

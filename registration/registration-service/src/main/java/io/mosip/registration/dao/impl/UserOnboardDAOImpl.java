@@ -81,11 +81,17 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	 */
 	@Override
 	public String insert(BiometricDTO biometricDTO) {
+		
+		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+				"Entering insert method");
 
 		String response = RegistrationConstants.EMPTY;
 		
 		try {
-
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"Biometric information insertion into table");
+			
 			List<UserBiometric> bioMetricsList = new ArrayList<>();
 
 			List<FingerprintDetailsDTO> fingerPrint = biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO()
@@ -153,8 +159,15 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			bioMetricsList.add(bioMetrics);
 
 			userBiometricRepository.saveAll(bioMetricsList);
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"Biometric information insertion succesful");
 
 			// find user
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"Fetching User and machine information to insertion");
+			
 			UserMachineMapping user = new UserMachineMapping();
 			UserMachineMappingID userID = new UserMachineMappingID();
 			userID.setUserID(SessionContext.getInstance().getUserContext().getUserId());
@@ -170,8 +183,14 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			user.setIsActive(true);
 
 			machineMappingDAO.save(user);
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"User and machine information insertion sucessful");
 
 			response = RegistrationConstants.USER_ON_BOARDING_SUCCESS_RESPONSE;
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"Leaving insert method");
 
 		} catch (RuntimeException runtimeException) {
 			
