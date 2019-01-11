@@ -281,12 +281,27 @@ export class DemographicComponent implements OnInit {
       //   this.uppermostLocationHierarchy[0].code,
       //   this.localAdministrativeAuthorities
       // );
-      await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces);
-      await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces);
-      await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities);
-      await this.getLocationImmediateHierearchy(this.secondaryLang, province, this.transCities);
-      await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities);
-      await this.getLocationImmediateHierearchy(this.secondaryLang, city, this.transLocalAdministrativeAuthorities);
+      await this.getLocationImmediateHierearchy(
+        this.primaryLang,
+        region,
+        this.provinces,
+        this.uppermostLocationHierarchy[0].code
+      );
+      await this.getLocationImmediateHierearchy(
+        this.secondaryLang,
+        region,
+        this.transProvinces,
+        this.uppermostLocationHierarchy[0].code
+      );
+      await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities, region);
+      await this.getLocationImmediateHierearchy(this.secondaryLang, province, this.transCities, region);
+      await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities, province);
+      await this.getLocationImmediateHierearchy(
+        this.secondaryLang,
+        city,
+        this.transLocalAdministrativeAuthorities,
+        province
+      );
       console.log(this.locations);
     }
   }
@@ -324,7 +339,8 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
-          console.log('location response ', response);
+          // console.log('location response ', response);
+          // console.log('parent location', parent);
 
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
@@ -333,11 +349,11 @@ export class DemographicComponent implements OnInit {
             };
             entity.push(locationModal);
             // after location integration with proper data need to uncomment
-            console.log(locationModal.locationCode, location);
+            // console.log(locationModal.locationCode, location);
 
-            // if (locationModal.locationCode === location) this.locations.push(locationModal);
+            // if (locationModal.locationCode === parentLocation) this.locations.push(locationModal);
           });
-          console.log('LOCATIONS', this.locations);
+          // console.log('LOCATIONS', this.locations);
 
           return resolve(true);
         },
@@ -577,6 +593,7 @@ export class DemographicComponent implements OnInit {
     let updatedDateTime = '';
     let statusCode = appConstants.APPLICATION_STATUS_CODES.pending;
     let langCode = this.primaryLang;
+
     if (this.user) {
       preRegistrationId = this.user.preRegId;
       createdBy = this.user.request.createdBy;
