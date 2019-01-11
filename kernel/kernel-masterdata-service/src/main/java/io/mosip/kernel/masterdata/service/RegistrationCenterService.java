@@ -132,6 +132,25 @@ public interface RegistrationCenterService {
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
 
 	/**
+	 * This method deletes the registration center.
+	 * 
+	 * @param registrationCenterId
+	 *            - the id of the registration center to be deleted.
+	 * @return - the id response DTO.
+	 */
+	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
+
+	/**
+	 * This method updates the registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            - the updated registration center DTO.
+	 * 
+	 * @return - the id response DTO.
+	 */
+	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
+
+	/**
 	 * Function to fetch list of registration centers based on hierarchy level,text
 	 * input and language code
 	 * 
