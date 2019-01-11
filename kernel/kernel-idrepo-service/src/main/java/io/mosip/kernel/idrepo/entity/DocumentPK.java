@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class HistoryPK.
+ * The Class DocumentPK.
  *
  * @author Manoj SP
  */
@@ -22,7 +22,6 @@ public class DocumentPK implements Serializable {
 	
 	private String uinRefId;
 	
-	/** The effective date time. */
 	private String doccatCode;
 	
 	private String doctypCode;

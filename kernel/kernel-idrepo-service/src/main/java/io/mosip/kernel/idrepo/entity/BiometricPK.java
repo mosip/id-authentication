@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class HistoryPK.
+ * The Class BiometricPK.
  *
  * @author Manoj SP
  */
