@@ -47,7 +47,6 @@ public class DemodedupeStage extends MosipVerticleManager {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemodedupeStage.class);
 	
-
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 

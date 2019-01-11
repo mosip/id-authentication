@@ -110,9 +110,9 @@ public class CheckSumGeneration {
 			InputStream fileStream = null;
 			byte[] filebyte = null;
 			try {
-				if (document.equalsIgnoreCase(PacketFiles.DEMOGRAPHICINFO.name())) {
+				if (document.equalsIgnoreCase(PacketFiles.ID.name())) {
 					fileStream = adapter.getFile(registrationId,
-							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 				} else {
 					fileStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 							+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR + document.toUpperCase());

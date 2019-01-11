@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,9 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
@@ -185,11 +181,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
 
-	/** The Constant LABEL. */
-	private static final String LABEL = "label";
-
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
+
+
 
 	/*
 	 * (non-Javadoc)
@@ -355,8 +350,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				metaData);
 
 		String fileName;
-		if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
+		if (PacketFiles.ID.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name();
 		} else {
 			fileName = DEMOGRAPHIC_APPLICANT + documentDetail.getDocumentName().toUpperCase();
 		}
@@ -450,9 +445,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @return the t[]
 	 */
 	@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
+	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType,JSONArray demographicJsonNode) {
 		String language;
-		String label;
 		String value;
 		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
 		try {
@@ -462,12 +456,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
 				language = (String) objects.get(LANGUAGE);
-				label = (String) objects.get(LABEL);
 				value = (String) objects.get(VALUE);
-
-				Field labelField = jsonNodeElement.getClass().getDeclaredField(LABEL);
-				labelField.setAccessible(true);
-				labelField.set(jsonNodeElement, label);
 
 				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
 				languageField.setAccessible(true);
@@ -501,14 +490,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @return the json values
 	 */
 	private JsonValue[] getJsonValues(Object identityKey) {
-		JSONArray demographicJsonNode = null;
+		JSONArray demographicJsonNode=null;
+
 		if (demographicIdentity != null)
 			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
 		return (demographicJsonNode != null)
 				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
-				: null;
+						: null;
 
 	}
+
 
 	/**
 	 * Gets the identity keys and fetch values from JSON.
@@ -516,13 +507,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param demographicJsonString the demographic json string
 	 * @return the identity keys and fetch values from JSON
 	 */
-	private IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
+	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
-
+			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -532,20 +521,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			List<JsonValue[]> jsonNameList = new ArrayList<>();
-
-			String[] nameArray = regProcessorIdentityJson.getIdentity().getName().getValue().split("\\+");
-			for (int i = 0; i < nameArray.length; i++) {
-				JsonValue[] name = getJsonValues(nameArray[i]);
-				if (name != null) {
-					jsonNameList.add(getJsonValues(nameArray[i]));
-
-				}
-
-			}
-
-			demographicData.setName(jsonNameList.isEmpty() ? null : jsonNameList);
-			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob().getValue()));
+			demographicData.setName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
+			demographicData.setDateOfBirth((String)(demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue())));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
@@ -559,7 +536,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return demographicData;
 
 	}
-
+	
 	/**
 	 * Gets the registration id.
 	 *
@@ -709,7 +686,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<String> getRegIdByUIN(String uin) {
 		return packetInfoDao.getRegIdByUIN(uin);
 	}
-	
+
 	@Override
 	public List<ApplicantDocument> getDocumentsByRegId(String regId) {
 		return packetInfoDao.getDocumentsByRegId(regId);

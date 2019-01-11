@@ -437,12 +437,9 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
 		if (demoDto.getName() != null) {
-			for (int i = 0; i < demoDto.getName().size(); i++) {
-				getLanguages(demoDto.getName().get(i));
-
-			}
+				getLanguages(demoDto.getName());
 		}
-		getLanguages(demoDto.getDateOfBirth());
+		//getLanguages(demoDto.getDateOfBirth());
 		String[] languageArray = getLanguages(demoDto.getGender());
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
@@ -455,8 +452,8 @@ public class PacketInfoMapper {
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
 			String applicantName = null;
-			if (demoDto.getName() != null)
-				applicantName = getName(demoDto.getName(), languageArray[i]);
+			//if (demoDto.getName() != null)
+				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
 			entity.setName(applicantName);
 
 			Locale loc = new Locale(languageArray[i]);
@@ -472,10 +469,12 @@ public class PacketInfoMapper {
 			entity.setPhoneticName(
 					!soundex.encode(encodedInputString).isEmpty() ? soundex.encode(encodedInputString) : null);
 
-			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
-			if (dob != null) {
+			//String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
+			if (demoDto.getDateOfBirth() != null) {
 				try {
-					Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
+					//Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
+					Date date = new SimpleDateFormat("yyyy/MM/dd").parse(demoDto.getDateOfBirth());
+					
 					entity.setDob(date);
 				} catch (ParseException e) {
 					LOGGER.error("ErrorWhile Parsing Date");
