@@ -144,6 +144,8 @@
 		<module>kernel-packetserver-http</module>
 
 		<module>kernel-idgenerator-tspid</module>
+		<module>kernel-idgenerator-machineid</module>
+		<module>kernel-idgenerator-registrationcenterid</module>
 	</modules>
 
 	<dependencies>
