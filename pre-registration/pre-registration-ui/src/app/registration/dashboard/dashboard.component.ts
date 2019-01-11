@@ -59,6 +59,7 @@ export class DashBoardComponent implements OnInit {
     this.sharedService.flushNameList();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
+        console.log(applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
@@ -412,10 +413,10 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
-    console.log('user files fetched', response);
+    // console.log('user files fetched', response);
     this.userFile = response[appConstants.RESPONSE];
     this.userFiles.push(this.userFile);
-    console.log('user files after pushing', this.userFiles);
+    // console.log('user files after pushing', this.userFiles);
   }
 
   getColor(value: string) {

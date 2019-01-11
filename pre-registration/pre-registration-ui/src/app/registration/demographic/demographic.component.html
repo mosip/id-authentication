@@ -101,7 +101,7 @@
                 (userForm.get('age').touched && !userForm.get('age').valid)
               "
             >
-              Enter Valid DOB or age (Age should be less than 150)
+              Enter Valid DOB or age (Age should be less than 150 and whole number)
             </div>
 
             <div class="user__gender">
@@ -163,7 +163,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, provinces, transProvinces )"
+                  (selectionChange)="onLocationSelect($event, provinces, transProvinces, transRegions)"
                   placeholder="{{ 'demographic.label_region' | translate }}"
                   formControlName="region"
                   #region
@@ -179,7 +179,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, cities, transCities)"
+                  (selectionChange)="onLocationSelect($event, cities, transCities, transProvinces)"
                   placeholder="{{ 'demographic.label_province' | translate }}"
                   formControlName="province"
                   #province
@@ -194,7 +194,14 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities, transLocalAdministrativeAuthorities)"
+                  (selectionChange)="
+                    onLocationSelect(
+                      $event,
+                      localAdministrativeAuthorities,
+                      transLocalAdministrativeAuthorities,
+                      transCities
+                    )
+                  "
                   placeholder="{{ 'demographic.label_city' | translate }}"
                   formControlName="city"
                   #city
@@ -209,7 +216,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, null, null)"
+                  (selectionChange)="onLocationSelect($event, null, null, transLocalAdministrativeAuthorities)"
                   placeholder="{{ 'demographic.label_local_ administrative_authority' | translate }}"
                   formControlName="localAdministrativeAuthority"
                   #authority

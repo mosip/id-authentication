@@ -14,7 +14,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -91,5 +93,7 @@ public class RegistrationBookingEntity implements Serializable {
 	/** delete date timee. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime delTime;
+	
+	
 
 }

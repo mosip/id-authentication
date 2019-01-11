@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.controller.DocumentController;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -133,11 +133,11 @@ public class DocumentControllerTest {
 		flag = true;
 
 		List responseCopyList = new ArrayList<>();
-		responseCopyList.add(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL);
+		responseCopyList.add(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL);
 		responseCopy.setResponse(responseCopyList);
 
 		List responseDeleteList = new ArrayList<>();
-		responseCopyList.add(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
+		responseCopyList.add(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL);
 		responseDelete.setResponse(responseDeleteList);
 
 	}

@@ -30,7 +30,7 @@ export const APPEND_URL = {
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
   getUser: PRE_REGISTRATION_ID,
-  deleteUser: 'preId',
+  deleteUser: 'pre_registration_id',
   locationHierarchyName: 'hierarchyName'
 };
 
