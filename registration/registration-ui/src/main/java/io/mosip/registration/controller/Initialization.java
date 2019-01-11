@@ -4,6 +4,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,9 +16,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.dao.GlobalParamDAO;
+import io.mosip.registration.dao.SynchConfigDAO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.jobs.impl.SynchConfigDataJob;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.impl.SyncConfigService;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -27,7 +35,7 @@ import javafx.stage.Stage;
  * @since 1.0.0
  *
  */
-@Component 
+@Component
 public class Initialization extends Application {
 
 	/**
@@ -36,9 +44,7 @@ public class Initialization extends Application {
 	private static final Logger LOGGER = AppConfig.getLogger(Initialization.class);
 
 	private static ApplicationContext applicationContext;
-	
-	@Autowired
-	private static GlobalParamService globalParamService;
+
 
 	@Override
 	public void start(Stage primaryStage) throws RegBaseCheckedException {
@@ -58,16 +64,28 @@ public class Initialization extends Application {
 	public static void main(String[] args) {
 		System.setProperty("java.net.useSystemProxies", "true");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+
+		BaseController baseController = applicationContext.getBean("baseController", BaseController.class);
+		GlobalParamService globalParamService=applicationContext.getBean(GlobalParamService.class);
+		GlobalParamDAO globalParamDAO=applicationContext.getBean(GlobalParamDAO.class);
+		SynchConfigDataJob synchConfigDataJob=applicationContext.getBean(SynchConfigDataJob.class);
+		Map<String, Object> map = globalParamDAO.getGlobalParams();
 		
-		globalParamService = applicationContext.getBean(GlobalParamService.class);
-		ResponseDTO res= globalParamService.getGlobalParamsFromServer();
 		
+		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && map.isEmpty()) {
+				baseController.generateAlert("please synch the data before starting the application");
+		}else {
+			//TODO: Update the Global Param to DB for config
+			String centerId=(String)map.get("REGISTARTIONmo_CENTER");
+			globalParamService.synchConfigData(centerId);
+		}
+
 		launch(args);
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Application Initilization"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 	}
-	
+
 	@Override
 	public void stop() throws Exception {
 		super.stop();

@@ -12,6 +12,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.GlobalParamName;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.repositories.GlobalParamRepository;
 
 /**
@@ -50,5 +51,13 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 				RegistrationConstants.APPLICATION_ID, "List of global params fetched successfully");
 
 		return globalParamMap;
+	}
+
+	@Override
+	public void saveAll(List<GlobalParam> list) {
+		Iterable<GlobalParam> iterable = list;
+
+		globalParamRepository.saveAll(iterable);
+
 	}
 }

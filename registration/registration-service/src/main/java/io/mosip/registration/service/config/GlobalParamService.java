@@ -25,6 +25,6 @@ public interface GlobalParamService {
 	 * 
 	 * @return response
 	 */
-	ResponseDTO getGlobalParamsFromServer();
+	ResponseDTO synchConfigData(String centerId);
 
 }
