@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
@@ -23,13 +22,16 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The Class Uin.
  *
  * @author Manoj SP
  */
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"biometrics", "documents"})
 @Entity
 @NoArgsConstructor
 @Table(schema = "idrepo")
@@ -108,7 +110,7 @@ public class Uin {
 	@NotFound(action=NotFoundAction.IGNORE)
 	private List<UinBiometric> biometrics;
 
-	@OneToMany(mappedBy = "uin", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "uin", cascade = CascadeType.ALL)
 	@NotFound(action=NotFoundAction.IGNORE)
 	private List<UinDocument> documents;
 

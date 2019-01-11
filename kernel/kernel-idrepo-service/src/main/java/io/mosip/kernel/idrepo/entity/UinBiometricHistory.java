@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UinBiometricHistory.
  *
@@ -37,7 +36,10 @@ public class UinBiometricHistory {
 	private LocalDateTime effectiveDateTime;
 	
 	/** The bio file id. */
-	private String bioFileId;
+	private String bioFileId;	
+	
+	/** The bio file id. */
+	private String biometricFileType;
 	
 	/** The biometric file name. */
 	private String biometricFileName;
