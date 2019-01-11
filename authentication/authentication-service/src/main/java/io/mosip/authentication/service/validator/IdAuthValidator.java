@@ -80,7 +80,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	public void validateId(String id, Errors errors) {
-		if (Objects.isNull(id) || id.isEmpty()) {
+		if (checkNullOrEmpty(id)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + " - id");
 			errors.rejectValue(ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -96,7 +96,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors          the errors
 	 */
 	public void validateIdvId(String id, String idType, Errors errors) {
-		if (Objects.isNull(id) || id.isEmpty()) {
+		if (checkNullOrEmpty(id)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
 			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -112,7 +112,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors the errors
 	 */
 	protected void validateTxnId(String txnID, Errors errors) {
-		if (Objects.isNull(txnID)) {
+		if (checkNullOrEmpty(txnID)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
 			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { TXN_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
@@ -132,7 +132,7 @@ public abstract class IdAuthValidator implements Validator {
 	 */
 	protected void validateReqTime(String reqTime, Errors errors) {
 
-		if (Objects.isNull(reqTime)) {
+		if (checkNullOrEmpty(reqTime)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + REQ_TIME);
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
@@ -176,7 +176,7 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param errors          the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
-		if (Objects.isNull(idType)) {
+		if (checkNullOrEmpty(idType)) {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
 			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { IDV_ID_TYPE },
@@ -219,7 +219,15 @@ public abstract class IdAuthValidator implements Validator {
 		}
 		
 	}
-
-
+	
+	/**
+	 * Check null or empty.
+	 *
+	 * @param reqTime the req time
+	 * @return true, if successful
+	 */
+	private boolean checkNullOrEmpty(String reqTime) {
+		return Objects.isNull(reqTime) || reqTime.isEmpty();
+	}
 
 }
