@@ -6,6 +6,7 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.time.LocalDateTime;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -46,6 +47,7 @@ public class DeviceLangCodeDtypeDto {
 	/**
 	 * Field for language code
 	 */
+	@ValidLangCode
 	private String langCode;
 	/**
 	 * Field for is active

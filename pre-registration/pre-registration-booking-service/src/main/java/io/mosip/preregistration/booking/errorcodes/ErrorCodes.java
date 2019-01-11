@@ -1,10 +1,18 @@
+
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.booking.errorcodes;
 
 /**
- * Error codes
+ * This Enum provides the constant variables to define Error codes.
  * 
- * @author M1046129
- *@author M1044479
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
+ * @since 1.0.0
+ *
  */
 public enum ErrorCodes {
 	PRG_BOOK_RCI_001("PRG_BOOK_RCI_001"), // Appointment cannot be booked
@@ -30,13 +38,20 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_021("PRG_BOOK_RCI_021"), //Rebooking failed
 	PRG_BOOK_RCI_022("PRG_BOOK_RCI_022"),//Invalid request parameter
 	PRG_BOOK_RCI_023("PRG_BOOK_RCI_023"), // DOCUMENTS_NOT_FOUND_EXCEPTION
-	PRG_PAM_APP_002("PRG_PAM_APP_002"), PRG_BOOK_002("PRG_BOOK_002"), PRG_BOOK_001("PRG_BOOK_001");
+	PRG_BOOK_RCI_024("PRG_BOOK_RCI_024"), //AVAILABILITY_UPDATE_FAILED
+	PRG_BOOK_RCI_025("PRG_BOOK_RCI_024");//HTTP_CLIENT_EXCEPTION
 
 	
+	/**
+	 * @param code
+	 */
 	private ErrorCodes(String code) {
 		this.code = code;
 	}
 
+	/**
+	 * Code
+	 */
 	private final String code;
 
 	/**

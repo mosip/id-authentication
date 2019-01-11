@@ -278,7 +278,7 @@ public class SyncMasterDataServiceHelper {
 					e.getMessage());
 		}
 		if (list != null && !list.isEmpty()) {
-			registrationCenterList = mapper.mapRegistrationCenter(list);
+			registrationCenterList = MapperUtils.mapAll(list,RegistrationCenterDto.class);
 		}
 
 		return CompletableFuture.completedFuture(registrationCenterList);

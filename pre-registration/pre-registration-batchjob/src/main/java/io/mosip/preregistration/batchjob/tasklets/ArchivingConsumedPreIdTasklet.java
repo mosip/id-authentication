@@ -1,4 +1,4 @@
-package io.mosip.preregistration.batchjob.tasklets;
+/*package io.mosip.preregistration.batchjob.tasklets;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -47,3 +47,4 @@ public class ArchivingConsumedPreIdTasklet implements Tasklet {
 	}
 
 }
+*/

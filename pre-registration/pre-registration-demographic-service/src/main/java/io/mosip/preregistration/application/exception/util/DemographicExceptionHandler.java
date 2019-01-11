@@ -4,28 +4,23 @@
  */
 package io.mosip.preregistration.application.exception.util;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.application.dto.ExceptionJSONInfoDTO;
-import io.mosip.preregistration.application.dto.MainListResponseDTO;
-import io.mosip.preregistration.application.errorcodes.ErrorCodes;
-import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
+import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
  * Exception Handler for demographic service
@@ -39,7 +34,6 @@ import io.mosip.preregistration.core.exception.TablenotAccessibleException;
  */
 @RestControllerAdvice
 public class DemographicExceptionHandler {
-	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	/**
 	 * @param e
@@ -48,15 +42,15 @@ public class DemographicExceptionHandler {
 	 *            pass the request
 	 * @return response for TablenotAccessibleException
 	 */
-	@ExceptionHandler(TablenotAccessibleException.class)
-	public ResponseEntity<MainListResponseDTO<?>> databaseerror(final TablenotAccessibleException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_APP_002.toString(),
-				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+	@ExceptionHandler(TableNotAccessibleException.class)
+	public ResponseEntity<MainListResponseDTO<?>> databaseerror(final TableNotAccessibleException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -67,14 +61,14 @@ public class DemographicExceptionHandler {
 	 * @return response for JsonValidationException
 	 */
 	@ExceptionHandler(JsonValidationException.class)
-	public ResponseEntity<MainListResponseDTO<?>> jsonValidationException(final JsonValidationException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_APP_007.toString(),
-				e.getErrorText());
+	public ResponseEntity<MainListResponseDTO<?>> jsonValidationException(final JsonValidationException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -86,12 +80,12 @@ public class DemographicExceptionHandler {
 	 */
 	@ExceptionHandler(RecordNotFoundException.class)
 	public ResponseEntity<MainListResponseDTO<?>> recException(final RecordNotFoundException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getMessage());
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -108,8 +102,8 @@ public class DemographicExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -120,14 +114,14 @@ public class DemographicExceptionHandler {
 	 * @return response for DocumentFailedToDeleteException
 	 */
 	@ExceptionHandler(DocumentFailedToDeleteException.class)
-	public ResponseEntity<MainListResponseDTO<?>> documentFailedToDeleteException(final DocumentFailedToDeleteException e,
-			WebRequest request) {
+	public ResponseEntity<MainListResponseDTO<?>> documentFailedToDeleteException(
+			final DocumentFailedToDeleteException e, WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -144,8 +138,8 @@ public class DemographicExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -162,8 +156,8 @@ public class DemographicExceptionHandler {
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -174,16 +168,14 @@ public class DemographicExceptionHandler {
 	 * @return response for InvalidRequestParameterException
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
-	public ResponseEntity<MainListResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e, WebRequest request) {
+	public ResponseEntity<MainListResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e,
+			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(Boolean.FALSE);
-		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
-	
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), dateTimeFormat);
-	}
+
 }

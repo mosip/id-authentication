@@ -145,6 +145,8 @@ public enum PlatformErrorMessages {
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "004",
 			"Registration Id is null"),
 
+	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
+
 	/** The structural validation failed. */
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),

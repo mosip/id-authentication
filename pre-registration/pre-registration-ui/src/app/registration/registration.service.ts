@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
-import { UserModel } from './demographic/user.model';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
+import { UserModel } from './demographic/modal/user.modal';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationService {
-  private users: UserModel[] = [];
   usersChanged = new Subject<UserModel[]>();
+  private messageSource = new BehaviorSubject({});
+  currentMessage = this.messageSource.asObservable();
+  private users: UserModel[] = [];
+  private regCenterId: string;
+
+  changeMessage(message: Object) {
+    this.messageSource.next(message);
+  }
 
   flushUsers() {
     this.users.length = 0;
@@ -23,6 +30,8 @@ export class RegistrationService {
 
   addUser(user: UserModel) {
     this.users.push(user);
+    console.log('users after being pushed', this.users);
+
     this.usersChanged.next(this.users.slice());
   }
 
@@ -43,5 +52,13 @@ export class RegistrationService {
 
   getUserFiles(index: number) {
     return this.users[index].files.slice();
+  }
+
+  setRegCenterId(id: string) {
+    this.regCenterId = id;
+  }
+
+  getRegCenterId() {
+    return this.regCenterId;
   }
 }

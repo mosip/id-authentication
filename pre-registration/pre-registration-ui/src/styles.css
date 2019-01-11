@@ -1,10 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
-}
-body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
@@ -15,6 +17,10 @@ body {
 
 .mat-error {
   color: #e44c29;
+}
+
+.mat-button-toggle-focus-overlay {
+  border-bottom: none !important;
 }
 
 .mat-form-field.mat-form-field-invalid .mat-form-field-ripple,

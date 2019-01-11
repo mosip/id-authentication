@@ -1,4 +1,3 @@
-
 package io.mosip.registration.processor.stages.demodedupe;
 
 import java.io.IOException;
@@ -6,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -193,10 +191,8 @@ public class DemodedupeStage extends MosipVerticleManager {
 	/**
 	 * Save manual adjudication data.
 	 *
-	 * @param uniqueMatchedRefIds
-	 *            the unique matched ref ids
-	 * @param registrationId
-	 *            the registration id
+	 * @param uniqueMatchedRefIds the unique matched ref ids
+	 * @param registrationId the registration id
 	 */
 	private void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
 		boolean isTransactionSuccessful = false;

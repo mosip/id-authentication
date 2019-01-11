@@ -73,8 +73,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the packetsfor QC user.
 	 *
-	 * @param qcuserId
-	 *            the qcuser id
+	 * @param qcuserId the qcuser id
 	 * @return the packetsfor QC user
 	 */
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
@@ -111,8 +110,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the entitiesfor reg osi.
 	 *
-	 * @param regId
-	 *            the reg id
+	 * @param regId the reg id
 	 * @return the entitiesfor reg osi
 	 */
 	public RegOsiDto getEntitiesforRegOsi(String regId) {
@@ -127,8 +125,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the registration center machine.
 	 *
-	 * @param regid
-	 *            the regid
+	 * @param regid the regid
 	 * @return the registration center machine
 	 */
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
@@ -150,8 +147,7 @@ public class PacketInfoDao {
 	/**
 	 * Convert reg osi entity to dto.
 	 *
-	 * @param regOsiEntity
-	 *            the reg osi entity
+	 * @param regOsiEntity the reg osi entity
 	 * @return the reg osi dto
 	 */
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
@@ -193,8 +189,7 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to photograph dto.
 	 *
-	 * @param object
-	 *            the object
+	 * @param object the object
 	 * @return the photograph dto
 	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
@@ -218,8 +213,7 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to demographic dto.
 	 *
-	 * @param object
-	 *            the object
+	 * @param object the object
 	 * @return the demographic info dto
 	 */
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
@@ -238,8 +232,7 @@ public class PacketInfoDao {
 	/**
 	 * Find demo by id.
 	 *
-	 * @param regId
-	 *            the reg id
+	 * @param regId the reg id
 	 * @return the list
 	 */
 	public List<DemographicInfoDto> findDemoById(String regId) {
@@ -258,8 +251,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant iris image name by id.
 	 *
-	 * @param regId
-	 *            the reg id
+	 * @param regId the reg id
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId) {
@@ -269,8 +261,7 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant finger print image name by id.
 	 *
-	 * @param regId
-	 *            the reg id
+	 * @param regId the reg id
 	 * @return the applicant finger print image name by id
 	 */
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
@@ -280,8 +271,7 @@ public class PacketInfoDao {
 	/**
 	 * Update is active if duplicate found.
 	 *
-	 * @param regId
-	 *            the reg id
+	 * @param regId the reg id
 	 */
 	public void updateIsActiveIfDuplicateFound(String regId) {
 		demographicDedupeRepository.updateIsActiveIfDuplicateFound(regId);
@@ -291,14 +281,10 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic entities.
 	 *
-	 * @param phoneticName
-	 *            the phonetic name
-	 * @param gender
-	 *            the gender
-	 * @param dob
-	 *            the dob
-	 * @param langCode
-	 *            the lang code
+	 * @param phoneticName the phonetic name
+	 * @param gender the gender
+	 * @param dob the dob
+	 * @param langCode the lang code
 	 * @return the all demographic entities
 	 */
 	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String phoneticName, String gender,
@@ -331,14 +317,10 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic info dtos.
 	 *
-	 * @param phoneticName
-	 *            the phonetic name
-	 * @param gender
-	 *            the gender
-	 * @param dob
-	 *            the dob
-	 * @param langCode
-	 *            the lang code
+	 * @param phoneticName the phonetic name
+	 * @param gender the gender
+	 * @param dob the dob
+	 * @param langCode the lang code
 	 * @return the all demographic info dtos
 	 */
 	public List<DemographicInfoDto> getAllDemographicInfoDtos(String phoneticName, String gender, Date dob,

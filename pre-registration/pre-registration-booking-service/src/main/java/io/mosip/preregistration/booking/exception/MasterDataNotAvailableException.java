@@ -10,19 +10,23 @@ public class MasterDataNotAvailableException extends BaseUncheckedException {
 	 */
 	private static final long serialVersionUID = -2782261618399872549L;
 
-	public MasterDataNotAvailableException(String message) {
-		super(ErrorCodes.PRG_BOOK_RCI_020.toString(), message);
+	public MasterDataNotAvailableException(String msg) {
+		super("", msg);
+	}
+
+	public MasterDataNotAvailableException(String msg, Throwable cause) {
+		super("", msg, cause);
 	}
 
 	public MasterDataNotAvailableException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
-	public MasterDataNotAvailableException(String errorMessage, Throwable rootCause) {
-		super(ErrorCodes.PRG_BOOK_RCI_020.toString(), errorMessage, rootCause);
-	}
-
 	public MasterDataNotAvailableException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
+	}
+
+	public MasterDataNotAvailableException() {
+		super();
 	}
 }
