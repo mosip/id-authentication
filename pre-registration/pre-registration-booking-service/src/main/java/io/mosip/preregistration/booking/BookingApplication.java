@@ -19,13 +19,13 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = "io.mosip.*")
-public class PreRegistrationBooking {
+public class BookingApplication {
 	/**
 	 * Method to start the Booking API service
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(PreRegistrationBooking.class, args);
+		SpringApplication.run(BookingApplication.class, args);
 	}
 }

@@ -1,13 +1,12 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
 export const COUNTRY_NAME = 'INDIA';
-export const NEW_USER_ID = 'mosip.pre-registration.demographic.create';
-export const TRANSLITERATION_ID = 'mosip.pre-registration.transliteration.transliterate';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
 export const NESTED_ERROR = 'err';
 export const ERROR_CODE = 'errorCode';
+export const PRE_REGISTRATION_ID = 'pre_registration_id';
 
 export const IDS = {
   newUser: 'mosip.pre-registration.demographic.create',
@@ -20,17 +19,18 @@ export const LANGUAGE_CODE = {
 };
 
 export const APPEND_URL = {
-  LOCATION_METADATA: 'v1.0/locations/locationhierarchy/country',
-  LOCATION_IMMEDIATE_CHILDREN: 'v1.0/locations/immediatechildren/',
-  GET_APPLICANT: 'demographic/v0.1/pre-registration/applicationData',
-  APPLICANTS: 'demographic/v0.1/pre-registration/applications',
-  LOCATION: 'masterdata/'
+  location_metadata: 'v1.0/locations/locationhierarchy/',
+  location_immediate_children: 'v1.0/locations/immediatechildren/',
+  get_applicant: 'demographic/v0.1/pre-registration/applicationData',
+  applicants: 'demographic/v0.1/pre-registration/applications',
+  location: 'masterdata/',
+  transliteration: 'translitrate/v0.1/pre-registration/translitrate'
 };
 
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
-  getUser: 'pre_registration_id',
-  deleteUser: 'preId',
+  getUser: PRE_REGISTRATION_ID,
+  deleteUser: 'pre_registration_id',
   locationHierarchyName: 'hierarchyName'
 };
 

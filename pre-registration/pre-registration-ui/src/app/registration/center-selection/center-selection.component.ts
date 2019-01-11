@@ -193,7 +193,7 @@ export class CenterSelectionComponent implements OnInit {
   routeNext() {
     this.registrationService.setRegCenterId(this.selectedCentre.id);
     this.users.forEach(user => {
-      this.registrationService.updateRegistrationCenterData(user.preRegId, this.selectedCentre);
+      this.service.updateRegistrationCenterData(user.preRegId, this.selectedCentre);
     });
     console.log(this.users);
     this.router.navigate(["../pick-time"], { relativeTo: this.route });

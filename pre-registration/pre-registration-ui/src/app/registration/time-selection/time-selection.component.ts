@@ -33,7 +33,7 @@ export class TimeSelectionComponent implements OnInit {
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
-  users: UserModel[];
+  temp: NameList[];
 
   constructor(
     private sharedService: SharedService,
@@ -45,8 +45,9 @@ export class TimeSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.names = [...this.sharedService.getNameList()];
-    this.users = this.registrationService.getUsers();
+    this.names = this.sharedService.getNameList();
+    this.temp = this.sharedService.getNameList();
+    console.log(this.temp);
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);
@@ -165,7 +166,6 @@ export class TimeSelectionComponent implements OnInit {
         if (slot.names.length !== 0) {
           slot.names.forEach(name => {
             const bookingData = new BookingModel(this.registrationCenter.toString(), data.date, slot.fromTime, slot.toTime);
-          //  this.registrationService.updateBookingDetails(name.preRegId, bookingData);
             const requestObject = {
               newBookingDetails: bookingData,
               oldBookingDetails: name.status ? name.status.toLowerCase() !== 'booked' ? null : name.regDto : null ,
@@ -189,6 +189,15 @@ export class TimeSelectionComponent implements OnInit {
             width: '250px',
             data: data
           }).afterClosed().subscribe(() => {
+            this.temp.forEach(name => {
+              this.sharedService.addNameList(name);
+              const booking = this.bookingDataList.filter((element) => element.preRegistrationId === name.preRegId);
+              const date = booking[0].newBookingDetails.appointment_date.split('-');
+              let appointmentDateTime = date[2] + ' ' + this.MONTHS[Number(date[1])] + ', ' + date[0];
+              const time = booking[0].newBookingDetails.time_slot_from.split(':');
+              appointmentDateTime += ', ' + (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) + ':' + time[1] + (Number(time[0]) > 12 ? ' PM' : ' AM');
+              this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+            })
             this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
           });
         }, error => {

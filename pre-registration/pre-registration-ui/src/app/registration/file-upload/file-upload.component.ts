@@ -22,7 +22,6 @@ export class FileUploadComponent implements OnInit {
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
-
   documentType;
   loginId;
   documentIndex;
@@ -140,13 +139,31 @@ export class FileUploadComponent implements OnInit {
 
   handleFileInput(event) {
     console.log('event', event.target.files);
+
     if (event.target.files[0].type === 'application/pdf') {
-      this.setJsonString(event);
-      this.sendFile(event);
-      this.browseDisabled = false;
+      if (event.target.files[0].size < 1000000) {
+        this.getBase64(event.target.files[0]).then(data => {
+          this.fileByteArray = data;
+          this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+        });
+        this.setJsonString(event);
+        this.sendFile(event);
+        this.browseDisabled = false;
+      } else {
+        alert('file too big');
+      }
     } else {
       alert('Wrong file type, please upload again');
     }
+  }
+
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 
   handleFileDrop(fileList) {}
@@ -168,10 +185,14 @@ export class FileUploadComponent implements OnInit {
 
   removeFile(applicantIndex, fileIndex) {
     console.log(applicantIndex, ' ; ', fileIndex);
-
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
       console.log(res);
       this.users[applicantIndex].files[0][fileIndex] = '';
+      if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
+        this.fileName = '';
+        this.fileByteArray = '';
+      }
+      // this.documentIndex = fileIndex;
     });
     // this.applicants[applicantIndex].files[fileIndex] = '';
   }
@@ -201,7 +222,7 @@ export class FileUploadComponent implements OnInit {
     this.userFiles.doc_id = fileResponse.response[0].documnetId;
     this.userFiles.doc_name = event.target.files[0].name;
     this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
-    this.userFiles.multipartFile = event.target.files[0];
+    this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     console.log('step:', this.step);
 
@@ -240,7 +261,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);

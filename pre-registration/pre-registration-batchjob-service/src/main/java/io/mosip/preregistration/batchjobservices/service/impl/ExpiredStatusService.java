@@ -21,7 +21,8 @@ import io.mosip.preregistration.batchjobservices.repository.PreRegistartionExpir
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
- * @author M1043008
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @Component
@@ -65,7 +66,7 @@ public class ExpiredStatusService {
 
 			bookedPreIdList.forEach(iterate -> {
 
-				String status = iterate.getStatus_code();
+				String status = iterate.getStatusCode();
 
 				String preRegId = iterate.getBookingPK().getPreregistrationId();
 
@@ -74,7 +75,7 @@ public class ExpiredStatusService {
 					try {
 						RegistrationBookingEntity entity = expiredStatusRepository.getPreRegId(preRegId);
 
-						entity.setStatus_code(NEW_STATUS);
+						entity.setStatusCode(NEW_STATUS);
 
 						expiredStatusRepository.save(entity);
 

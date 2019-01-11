@@ -19,7 +19,7 @@
             <table *ngIf="previewData !== undefined" class="preview__personal-info-table">
               <tr><td>Full Name</td><td>: {{previewData.fullName[0].value}}</td></tr>
               <tr><td>DOB</td><td>: {{previewData.dateOfBirth[0].value}}</td></tr>
-              <tr><td>Age</td><td>: years</td></tr>
+              <tr><td>Age</td><td>: {{previewData.age}} years</td></tr>
               <tr><td>Gender</td><td>: {{previewData.gender[0].value}}</td></tr>
             </table>
           </div>
@@ -53,7 +53,7 @@
             <table *ngIf="secondaryLanguagelabels !== undefined" class="preview__personal-info-table">
               <tr><td>{{secondaryLanguagelabels.label_name}}</td><td>: {{previewData.fullName[1].value}}</td></tr>
               <tr><td>DOB</td><td>: {{previewData.dateOfBirth[1].value}}</td></tr>
-              <tr><td>{{secondaryLanguagelabels.label_age}}</td><td>: {{secondaryLanguagelabels.text_years}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_age}}</td><td>: {{previewData.age}} {{secondaryLanguagelabels.text_years}}</td></tr>
               <tr><td>{{secondaryLanguagelabels.text_gender}}</td><td>: {{previewData.gender[1].value}}</td></tr>
             </table>
           </div>

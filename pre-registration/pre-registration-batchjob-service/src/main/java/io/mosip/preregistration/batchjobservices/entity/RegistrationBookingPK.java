@@ -10,8 +10,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /** 
- * To define the composite primary key
- * @author M1046129
+ * This entity class defines the database table details for Booking application.
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
  *
  */
 @Embeddable
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Setter
 public class RegistrationBookingPK implements Serializable{
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4604149554069906933L;
 
 	/**

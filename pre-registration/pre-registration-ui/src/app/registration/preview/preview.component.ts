@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationService } from '../registration.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UserModel } from '../demographic/modal/user.modal';
 
 @Component({
   selector: 'app-preview',
@@ -9,30 +10,35 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./preview.component.css']
 })
 export class PreviewComponent implements OnInit {
-
-  previewData : any;
-  secondaryLanguagelabels : any ;
+  previewData: any;
+  secondaryLanguagelabels: any;
   secondaryLanguage;
-  preRegId: string;
+  user: UserModel;
   files = [];
 
-  constructor(private dataStorageService: DataStorageService, private route: ActivatedRoute, private router: Router, private registrationService: RegistrationService ) { }
+  constructor(
+    private dataStorageService: DataStorageService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private registrationService: RegistrationService
+  ) {}
 
   ngOnInit() {
-
-    // this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
-    // console.log(this.preRegId)
-    this.dataStorageService.getPreviewData('25368956035901').subscribe(response => {
-      console.log(response);
-      this.previewData = response['response'][0].demographicDetails.identity;
+   // this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
+   this.user = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1]; 
+   console.log(this.user);
+      // console.log(response);
+      this.previewData = this.user.request.demographicDetails.identity;
+      this.previewData.age = new Date().getFullYear() - Number(this.previewData.dateOfBirth[0].value.split('/')[2]);
       console.log(this.previewData);
       if (this.previewData['fullName'][1].language === 'arb') {
         this.secondaryLanguage = 'ar';
       }
-    this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language).subscribe(response => {
-      this.secondaryLanguagelabels = response['preview'];
-      console.log(this.secondaryLanguagelabels);
-    })
+    this.dataStorageService
+        .getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language)
+        .subscribe(response => {
+          this.secondaryLanguagelabels = response['preview'];
+          console.log(this.secondaryLanguagelabels);
     });
     this.files = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].files[0];
   }
@@ -48,17 +54,17 @@ export class PreviewComponent implements OnInit {
 
   navigateDashboard() {
     const routeParams = this.router.url.split('/');
+    // this.router.navigate(['dashboard', routeParams[2]]);
+    this.router.navigate(['../demographic'], { relativeTo: this.route });
     sessionStorage.setItem('newApplicant', 'true');
-    this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
+    sessionStorage.setItem('modifyUser', 'false');
   }
 
   navigateBack() {
-    const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'file-upload']);
+    this.router.navigate(['../file-upload'], { relativeTo: this.route });
   }
 
   navigateNext() {
-    this.router.navigate(['../pick-center'], {relativeTo: this.route});
+    this.router.navigate(['../pick-center'], { relativeTo: this.route });
   }
-
 }
