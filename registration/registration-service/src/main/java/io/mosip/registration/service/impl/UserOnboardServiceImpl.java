@@ -58,34 +58,25 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		ResponseDTO responseDTO = null;
 
-		if (null != biometricDTO) {
+		FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
 
-			biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO();
+		long count = biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO().stream()
+				.flatMap(o -> o.getSegmentedFingerprints().stream()).count();
 
-			FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO();
-			
-			
-			long count = biometricDTO.getOperatorBiometricDTO()
-					.getFingerprintDetailsDTO().stream()
-			.flatMap(o -> o.getSegmentedFingerprints().stream())
-			.count();
-			
-			count =count+ biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO().size();
-			
-			count =count  + (photoDetails == null ? 0 : 1);
-			
-			// API for validating biometrics need to be implemented
+		count = count + biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO().size();
 
-			if (count >= UserOnBoardThresholdLimit) {
+		count = count + (photoDetails == null ? 0 : 1);
 
-				responseDTO = save(biometricDTO);
+		// API for validating biometrics need to be implemented
 
-			} else {
+		if (count >= UserOnBoardThresholdLimit) {
 
-				responseDTO = buildErrorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
-						RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
-			}
+			responseDTO = save(biometricDTO);
 
+		} else {
+
+			responseDTO = buildErrorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
+					RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
 		}
 
 		return responseDTO;
