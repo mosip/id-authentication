@@ -32,9 +32,9 @@
                      <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="10.0" prefHeight="438.0" prefWidth="819.0" visible="false">
                     	<children>
                       <fx:include source="DocumentScan.fxml" />
-                      <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="250.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
-                  	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="250.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
-                           <AnchorPane id="biometricException" layoutX="50.0" layoutY="250.0">
+                      <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="280.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
+                  	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="280.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
+                           <AnchorPane id="biometricException" layoutX="50.0" layoutY="280.0">
                               <children>
                             <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="9.1" />
                             <Label text="%biometricexception" />

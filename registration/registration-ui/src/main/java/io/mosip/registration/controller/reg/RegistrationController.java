@@ -569,13 +569,6 @@ public class RegistrationController extends BaseController {
 			mobileNoLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			mobileNoLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			alternateMobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			alternateMobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			alternateMobileNoLocalLanguage
-					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-			alternateMobileNoLabelLocal
-					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
-
 			emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 			emailIdLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
@@ -832,6 +825,7 @@ public class RegistrationController extends BaseController {
 				demoGraphicTitlePane.setContent(null);
 				demoGraphicTitlePane.setExpanded(false);
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
+				demoGraphicTitlePane.setPrefHeight(500.00);
 				demoGraphicTitlePane.setExpanded(true);
 			}
 		} catch (RuntimeException runtimeException) {
