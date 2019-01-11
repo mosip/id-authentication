@@ -78,7 +78,7 @@ public class RestApiClient {
 	 *            the response class
 	 * @return the t
 	 */
-	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) {
+	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
 
 		RestTemplate restTemplate;
 		T result = null;
@@ -86,12 +86,10 @@ public class RestApiClient {
 			restTemplate = getRestTemplate();
 
 			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			result = (T) e.getResponseBodyAsString();
-			logger.error("Error : {}", e);
 		} catch (Exception e) {
 
 			logger.error("Error: {}", e);
+			throw e;
 		}
 		return result;
 	}

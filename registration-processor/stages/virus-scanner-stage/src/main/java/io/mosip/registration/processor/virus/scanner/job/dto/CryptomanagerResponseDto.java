@@ -12,8 +12,5 @@ import lombok.Data;
 @Data
 public class CryptomanagerResponseDto {
 	private String data;
-	private String timestamp;
-	private String status;
-	private List<ErrorDto> errors;
 
 }

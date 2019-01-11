@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
-
-import com.google.gson.Gson;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -77,15 +77,8 @@ public class Decryptor {
 			cryptomanagerRequestDto.setReferenceId("1001");
 			cryptomanagerRequestDto.setTimeStamp(LocalDateTime.now());
 
-			String response = (String) restClientService.postApi(ApiName.CRYPTOMANAGERDECRYPT, "", "",
-					cryptomanagerRequestDto, String.class);
-			Gson gson = new Gson();
-			CryptomanagerResponseDto cryptomanagerResponseDto = gson.fromJson(response, CryptomanagerResponseDto.class);
-			if (cryptomanagerResponseDto.getData() == null) {
-				logger.error("Error while getting the response from kernel ");
-				throw new PacketDecryptionFailureException(cryptomanagerResponseDto.getErrors().get(0).getErrorCode(),
-						cryptomanagerResponseDto.getErrors().get(0).getErrorMessage());
-			}
+			CryptomanagerResponseDto cryptomanagerResponseDto = (CryptomanagerResponseDto) restClientService.postApi(
+					ApiName.CRYPTOMANAGERDECRYPT, "", "", cryptomanagerRequestDto, CryptomanagerResponseDto.class);
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
 
@@ -95,12 +88,30 @@ public class Decryptor {
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					"Error Converting encrypted packet inputStream to string");
 		} catch (ApisResourceAccessException e) {
-			logger.error("Error from registartion-client-service while hitting the kernel cryptomanager : ", e);
+			logger.error("Error from registartion-client-service while hitting the kernel cryptomanager: ", e);
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 
-			throw new PacketDecryptionFailureException(
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-					"Error from registartion-client-service while hitting the kernel cryptomanager");
+				throw new PacketDecryptionFailureException(
+						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
+								.getErrorCode(),
+						httpClientException.getResponseBodyAsString());
+			} else if (e.getCause() instanceof HttpServerErrorException) {
+				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
+
+				throw new PacketDecryptionFailureException(
+						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
+								.getErrorCode(),
+						httpServerException.getResponseBodyAsString());
+			} else {
+				throw new PacketDecryptionFailureException(
+						PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
+								.getErrorCode(),
+						e.getMessage());
+			}
+
 		}
+
 		logger.info(DECRYPTION_SUCCESS, registrationId);
 		return outstream;
 	}
