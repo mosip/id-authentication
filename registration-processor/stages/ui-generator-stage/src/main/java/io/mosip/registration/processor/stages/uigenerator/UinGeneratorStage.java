@@ -306,8 +306,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		List<Documents> documentInfoDto = getAllDocumentsByRegId(regId);
 		idRequestDTO.setId(idRepoCreate);
 		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
-		idRequestDTO.setRegistrationId("27847657360002520181208094011");
-		idRequestDTO.setUin("284092194624");
+		idRequestDTO.setRegistrationId(regId);
+		idRequestDTO.setUin(uin);
 		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
 		idRequestDTO.setRequest(json);
 		idRequestDTO.setDocuments(documentInfoDto);
