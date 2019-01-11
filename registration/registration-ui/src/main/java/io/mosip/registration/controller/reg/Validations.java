@@ -6,9 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -16,7 +14,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.service.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -48,7 +45,6 @@ public class Validations extends BaseController {
 	private ResourceBundle labelBundle;
 	private String isConsolidated;
 	private StringBuilder validationMessage;
-	private List<String> blackListedWords;
 	private List<String> noAlert;
 
 	public Validations() {
@@ -58,16 +54,13 @@ public class Validations extends BaseController {
 			noAlert.add("dd");
 			noAlert.add("mm");
 			noAlert.add("yyyy");
-			noAlert.add("mobileNo");
-			noAlert.add("postalCode");
-			noAlert.add("postalCode");
-			noAlert.add("cniOrPinNumber");
 			validationMessage = new StringBuilder();
 			validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
 			messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
 			labelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
 		}
 	}
 
@@ -107,8 +100,8 @@ public class Validations extends BaseController {
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method
-	 * will be called for each field
+	 * Pass the node to check for the validation, specific validation method will be
+	 * called for each field
 	 */
 	public boolean validateTheNode(Node node, String id) {
 
@@ -136,7 +129,8 @@ public class Validations extends BaseController {
 			generateAlert(messageBundle.getString(id), isConsolidated, validationMessage);
 			node.requestFocus();
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
 			return false;
 		}
 		return false;
@@ -167,15 +161,6 @@ public class Validations extends BaseController {
 				return false;
 			}
 			if (node.getText().matches(regex)) {
-				
-				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
-					if(!showAlert)
-						generateAlert(
-								node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
-								isConsolidated, validationMessage);
-					node.requestFocus();
-					return false;
-				}
 				
 				if (isFixed.equals("false")) {
 					if (node.getText().length() <= length) {
@@ -210,7 +195,8 @@ public class Validations extends BaseController {
 			node.requestFocus();
 			return false;
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
 			return false;
 		}
 	}
@@ -223,12 +209,16 @@ public class Validations extends BaseController {
 			if (node.isDisabled())
 				return true;
 			if (node.getValue() == null) {
-				generateAlert(labelBundle.getString(id).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
+				generateAlert(
+						labelBundle.getString(id).concat(" ")
+								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
+						isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
 			return false;
 		}
 		return true;
@@ -244,12 +234,16 @@ public class Validations extends BaseController {
 			if (node.isDisabled())
 				return true;
 			if (node.getValue() == null) {
-				generateAlert(labelBundle.getString(id).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
+				generateAlert(
+						labelBundle.getString(id).concat(" ")
+								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
+						isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
 			return false;
 		}
 		return true;
