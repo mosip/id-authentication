@@ -31,7 +31,7 @@ export class PreviewComponent implements OnInit {
       this.previewData = this.user.request.demographicDetails.identity;
       this.previewData.age = new Date().getFullYear() - Number(this.previewData.dateOfBirth[0].value.split('/')[2]);
       console.log(this.previewData);
-      if (this.previewData['fullName'][1].language === 'arb') {
+      if (this.previewData['fullName'][1].language === 'ARB') {
         this.secondaryLanguage = 'ar';
       }
     this.dataStorageService
