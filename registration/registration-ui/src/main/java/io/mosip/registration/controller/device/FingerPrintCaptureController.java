@@ -157,7 +157,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					sourcePane.requestFocus();
 					selectedPane = sourcePane;
 					scanBtn.setDisable(true);
-					duplicateCheckLbl.setText("");
+					duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
 
 					exceptionFingersCount();
 
@@ -226,15 +226,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				.getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO();
 		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
 
-			if (biometricExceptionDTO.getMissingBiometric().contains("left")
-					&& !biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.LEFT.toLowerCase())
+					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB) && !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				leftSlapCount++;
 			}
-			if (biometricExceptionDTO.getMissingBiometric().contains("right")
-					&& !biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.RIGHT.toLowerCase())
+					&& !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB) && !biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.EYE)) {
 				rightSlapCount++;
 			}
-			if (biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+			if (biometricExceptionDTO.getMissingBiometric().contains(RegistrationConstants.THUMB)) {
 				thumbCount++;
 			}
 		}

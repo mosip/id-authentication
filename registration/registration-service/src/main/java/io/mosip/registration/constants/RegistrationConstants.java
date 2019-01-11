@@ -598,6 +598,7 @@ public class RegistrationConstants {
 			"/fingerprints/Srighthand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
+	public static final String THUMB = "Thumb";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
