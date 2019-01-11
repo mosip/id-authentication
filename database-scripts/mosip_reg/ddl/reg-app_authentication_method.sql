@@ -13,7 +13,7 @@ create schema if not exists reg
 create table reg.app_authentication_method (
 	
 	app_id 			  	character varying (36) not null,  	-- reg.app_detail.id
-	process_id 			character varying (64) not null,    -- reg.process_list.id -- login auth, packet auth, exception auth, eod auth, MV authentication..etc
+	process_id 			character varying (36) not null,    -- reg.process_list.id -- login auth, packet auth, exception auth, eod auth, MV authentication..etc
 	role_code 			character varying (36) not null,  	-- reg.role_list.code
 	auth_method_code 	character varying (36) not null,	-- reg.authentication_method.code
 	method_seq 			smallint,

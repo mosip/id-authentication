@@ -13,7 +13,7 @@ create schema if not exists master
 create table master.app_role_priority (
 	
 	app_id 			  	character varying (36) not null,  	-- master.app_detail.id
-	process_id 			character varying (64) not null,    -- master.process_list.id -- login auth, packet auth, exception auth, eod auth, MV authentication..etc
+	process_id 			character varying (36) not null,    -- master.process_list.id -- login auth, packet auth, exception auth, eod auth, MV authentication..etc
 	role_code 			character varying (36) not null,  	-- master.role_list.code
 	priority 			smallint,
 	
