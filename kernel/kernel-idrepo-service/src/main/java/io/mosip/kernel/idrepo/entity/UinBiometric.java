@@ -1,10 +1,12 @@
 package io.mosip.kernel.idrepo.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -22,8 +24,14 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
+@IdClass(BiometricPK.class)
 @Table(schema = "idrepo")
-public class UinBiometric {
+public class UinBiometric implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6571434413414922814L;
 
 	public UinBiometric(String uinRefId, String bioFileId, String biometricFileType, String biometricFileName,
 			String biometricFileHash, String langCode, String createdBy, LocalDateTime createdDateTime,
@@ -50,7 +58,7 @@ public class UinBiometric {
 	/** The bio file id. */
 	private String bioFileId;
 
-	/** The bio file id. */
+	@Id
 	private String biometricFileType;
 
 	/** The biometric file name. */

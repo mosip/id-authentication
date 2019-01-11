@@ -293,13 +293,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 								storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 										CryptoUtil.decodeBase64(doc.getValue()));
 
-								uinDocRepo.save(new UinDocument(uinRefId, docType.get("category").asText(),
+								uinDocRepo.save(new UinDocument(uinRefId, docType.get(TYPE).asText(),
 										doc.getCategory(), fileRefId, docType.get(VALUE).asText(),
 										docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 								uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(),
-										docType.get("category").asText(), doc.getCategory(), fileRefId,
+										docType.get(TYPE).asText(), doc.getCategory(), fileRefId,
 										docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
 										hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(),
 										UPDATED_BY, now(), false, now()));
@@ -425,10 +425,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					try {
 						ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
-								+ identityMap.get("individualBiometrics").get(FORMAT).asText();
+								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
 						String data = getFile(uinObject.getUin(), fileName);
 						if (Objects.nonNull(data)) {
-							documents.add(new Documents("individualBiometrics", data));
+							documents.add(new Documents(bio.getBiometricFileType(), data));
 						}
 					} catch (IdRepoAppException e) {
 						throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
