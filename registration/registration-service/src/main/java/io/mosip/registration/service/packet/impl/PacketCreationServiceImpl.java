@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -92,12 +94,17 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// registrationDTO.setAuditDTOs(MAPPER_FACADE.mapAsList(auditDAO.getAllUnsyncAudits(),
 			// AuditDTO.class));
 
+			// Map object to store the UUID's generated for BIR in CBEFF
+			Map<String, String> birUUIDs = new HashMap<>();
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
+
 			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
 			// Packet Meta-Data and Audit
 			Map<String, byte[]> filesGeneratedForPacket = new HashMap<>();
 
 			filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
-					createCBEFFXML(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(), true));
+					createCBEFFXML(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(),
+							RegistrationConstants.INDIVIDUAL, birUUIDs));
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
@@ -107,7 +114,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
 				byte[] introducerCBEFFInBytes = createCBEFFXML(
-						registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), false);
+						registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), RegistrationConstants.INTRODUCER,
+						birUUIDs);
 
 				if (introducerCBEFFInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
@@ -123,7 +131,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
 				byte[] operatorCBEFFInBytes = createCBEFFXML(
-						registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), false);
+						registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), RegistrationConstants.OFFICER,
+						birUUIDs);
 
 				if (operatorCBEFFInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME,
@@ -139,7 +148,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			if (registrationDTO.getBiometricDTO().getSupervisorBiometricDTO() != null) {
 				byte[] supervisorCBEFFInBytes = createCBEFFXML(
-						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), false);
+						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), RegistrationConstants.SUPERVISOR,
+						birUUIDs);
 
 				if (supervisorCBEFFInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME,
@@ -253,7 +263,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		return hashSequenceList;
 	}
 
-	private byte[] createCBEFFXML(final BiometricInfoDTO biometricInfoDTO, boolean isApplicantBiometric) throws RegBaseCheckedException {
+	private byte[] createCBEFFXML(final BiometricInfoDTO biometricInfoDTO, String personType,
+			Map<String, String> birUUIDs) throws RegBaseCheckedException {
 		try {
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Creating CBEFF file as bytes");
 
@@ -261,21 +272,25 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			if (biometricInfoDTO.getFingerprintDetailsDTO() != null
 					&& !biometricInfoDTO.getFingerprintDetailsDTO().isEmpty()) {
-				createFingerprintsBIR(isApplicantBiometric, biometricInfoDTO.getFingerprintDetailsDTO(), birs);
+				createFingerprintsBIR(personType, biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
 			}
 
 			if (biometricInfoDTO.getIrisDetailsDTO() != null && !biometricInfoDTO.getIrisDetailsDTO().isEmpty()) {
 				for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
-					birs.add(new BIR.BIRBuilder().withBdb(iris.getIris())
+					BIR bir = new BIR.BIRBuilder().withBdb(iris.getIris())
 							.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 							.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
 									.withFormatType(CbeffConstant.FORMAT_TYPE_IRIS)
 									.withQuality((int) Math.round(iris.getQualityScore()))
 									.withType(Arrays.asList(SingleType.IRIS))
-									.withSubtype(Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye") ? SingleAnySubtypeType.LEFT.value() : SingleAnySubtypeType.RIGHT.value()))
+									.withSubtype(Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
+											? SingleAnySubtypeType.LEFT.value()
+											: SingleAnySubtypeType.RIGHT.value()))
 									.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.INTERMEDIATE)
-									.withCreationDate(new Date()).build())
-							.build());
+									.withCreationDate(new Date()).withIndex(UUID.randomUUID().toString()).build())
+							.build();
+					birs.add(bir);
+					birUUIDs.put(personType.concat(iris.getIrisType()).toLowerCase(), bir.getBdbInfo().getIndex());
 				}
 			}
 
@@ -296,21 +311,25 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 	}
 
-	private void createFingerprintsBIR(boolean isApplicantBiometric, List<FingerprintDetailsDTO> fingerprints,
-			List<BIR> birs) {
+	private void createFingerprintsBIR(String personType, List<FingerprintDetailsDTO> fingerprints,
+			List<BIR> birs, Map<String, String> birUUIDs) {
 		for (FingerprintDetailsDTO fingerprint : fingerprints) {
-			if (isApplicantBiometric && fingerprint.getSegmentedFingerprints() != null
+			if (personType.equals(RegistrationConstants.INDIVIDUAL) && fingerprint.getSegmentedFingerprints() != null
 					&& !fingerprint.getSegmentedFingerprints().isEmpty()) {
 				for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-					birs.add(buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage()));
+					BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage());
+					birs.add(bir);
+					birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(), bir.getBdbInfo().getIndex());
 				}
 			} else {
-				birs.add(buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint()));
+				BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
+				birs.add(bir);
+				birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(), bir.getBdbInfo().getIndex());
 			}
 		}
 	}
 
-	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes ) {
+	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
 		return new BIR.BIRBuilder().withBdb(fingerprintImageInBytes)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
@@ -318,7 +337,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 						.withQuality((int) Math.round(fingerprint.getQualityScore()))
 						.withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(getFingerSubType(fingerprint.getFingerType())).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(new Date()).build())
+						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(new Date())
+						.withIndex(UUID.randomUUID().toString()).build())
 				.build();
 	}
 

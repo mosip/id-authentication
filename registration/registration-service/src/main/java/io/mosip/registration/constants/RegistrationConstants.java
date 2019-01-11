@@ -207,6 +207,10 @@ public class RegistrationConstants {
 	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
 	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
 	public static final String MAX_REG_PACKET_SIZE_IN_MB = "MAX_REG_PACKET_SIZE";
+	public static final String INDIVIDUAL = "INDIVIDUAL";
+	public static final String INTRODUCER = "INTRODUCER";
+	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
+	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";

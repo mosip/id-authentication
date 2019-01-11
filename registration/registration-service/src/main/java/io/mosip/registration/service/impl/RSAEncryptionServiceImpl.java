@@ -10,6 +10,7 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
@@ -42,6 +43,8 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	private PolicySyncDAO policySyncDAO;
 	@Autowired
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	@Autowired
+	private Environment environment;
 
 	/*
 	 * (non-Javadoc)
@@ -57,12 +60,13 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 					"Packet RSA Encryption had been called");
 
 			// encrypt AES Session Key using RSA public key
-			PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(
-					new X509EncodedKeySpec(
+			PublicKey publicKey = KeyFactory
+					.getInstance(environment.getProperty(RegistrationConstants.RSA))
+					.generatePublic(new X509EncodedKeySpec(
 							CryptoUtil.decodeBase64(new String(policySyncDAO.findByMaxExpireTime().getPublicKey()))));
 
 			return encryptor.asymmetricPublicEncrypt(publicKey, sessionKey);
-		}  catch (InvalidKeySpecException | NoSuchAlgorithmException compileTimeException) {
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException compileTimeException) {
 			throw new RegBaseCheckedException(RegistrationConstants.RSA_ENCRYPTION_MANAGER,
 					compileTimeException.toString(), compileTimeException);
 		} catch (RuntimeException runtimeException) {

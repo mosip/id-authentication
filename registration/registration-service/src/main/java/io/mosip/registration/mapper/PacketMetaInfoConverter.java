@@ -11,6 +11,7 @@ import java.util.Map;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
@@ -103,35 +104,35 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 
 			// Set Left Index Finger
-			String biometricType = "fingerprint";
-			applicant.setLeftIndex(getBiometric(fingerprintMap.get("LEFTINDEX"), language, biometricType));
+			String biometricType = RegistrationConstants.FINGERPRINT.toLowerCase();
+			applicant.setLeftIndex(getBiometric(fingerprintMap.get("LEFTINDEX"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Middle Finger
-			applicant.setLeftMiddle(getBiometric(fingerprintMap.get("LEFTMIDDLE"), language, biometricType));
+			applicant.setLeftMiddle(getBiometric(fingerprintMap.get("LEFTMIDDLE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Ring Finger
-			applicant.setLeftRing(getBiometric(fingerprintMap.get("LEFTRING"), language, biometricType));
+			applicant.setLeftRing(getBiometric(fingerprintMap.get("LEFTRING"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Little Finger
-			applicant.setLeftLittle(getBiometric(fingerprintMap.get("LEFTLITTLE"), language, biometricType));
+			applicant.setLeftLittle(getBiometric(fingerprintMap.get("LEFTLITTLE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Thumb Finger
-			applicant.setLeftThumb(getBiometric(fingerprintMap.get("LEFTTHUMB"), language, biometricType));
+			applicant.setLeftThumb(getBiometric(fingerprintMap.get("LEFTTHUMB"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Right Index Finger
-			applicant.setRightIndex(getBiometric(fingerprintMap.get("RIGHTINDEX"), language, biometricType));
+			applicant.setRightIndex(getBiometric(fingerprintMap.get("RIGHTINDEX"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Middle Finger
-			applicant.setRightMiddle(getBiometric(fingerprintMap.get("RIGHTMIDDLE"), language, biometricType));
+			applicant.setRightMiddle(getBiometric(fingerprintMap.get("RIGHTMIDDLE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Ring Finger
-			applicant.setRightRing(getBiometric(fingerprintMap.get("RIGHTRING"), language, biometricType));
+			applicant.setRightRing(getBiometric(fingerprintMap.get("RIGHTRING"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Little Finger
-			applicant.setRightLittle(getBiometric(fingerprintMap.get("RIGHTLITTLE"), language, biometricType));
+			applicant.setRightLittle(getBiometric(fingerprintMap.get("RIGHTLITTLE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Left Thumb Finger
-			applicant.setRightThumb(getBiometric(fingerprintMap.get("RIGHTTHUMB"), language, biometricType));
+			applicant.setRightThumb(getBiometric(fingerprintMap.get("RIGHTTHUMB"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Get captured Iris Details
 			List<IrisDetailsDTO> irisDetailsDTOs = biometricInfoDTO.getIrisDetailsDTO();
@@ -145,11 +146,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 
 			// Set Left Eye
-			biometricType = "iris";
-			applicant.setLeftEye(getBiometric(irisMap.get("LEFTEYE"), language, biometricType));
+			biometricType = RegistrationConstants.IRIS.toLowerCase();
+			applicant.setLeftEye(getBiometric(irisMap.get("LEFTEYE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Right Eye
-			applicant.setRightEye(getBiometric(irisMap.get("RIGHTEYE"), language, biometricType));
+			applicant.setRightEye(getBiometric(irisMap.get("RIGHTEYE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Add captured biometric exceptions
 			identity.getExceptionBiometrics()
@@ -160,14 +161,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			if (biometricInfoDTO != null) {
 				List<FingerprintDetailsDTO> fingerprints = biometricInfoDTO.getFingerprintDetailsDTO();
 				if (fingerprintDetailsDTOs != null && !fingerprints.isEmpty()) {
-					biometricType = "fingerprint";
-					introducer.setIntroducerFingerprint(getBiometric(fingerprints.get(0), language, biometricType));
+					biometricType = RegistrationConstants.FINGERPRINT.toLowerCase();
+					introducer.setIntroducerFingerprint(getBiometric(fingerprints.get(0), language, biometricType, RegistrationConstants.INTRODUCER));
 				}
 
 				List<IrisDetailsDTO> parentIris = biometricInfoDTO.getIrisDetailsDTO();
 				if (parentIris != null && !parentIris.isEmpty() ) {
-					biometricType = "iris";
-					introducer.setIntroducerIris(getBiometric(parentIris.get(0), language, biometricType));
+					biometricType = RegistrationConstants.IRIS.toLowerCase();
+					introducer.setIntroducerIris(getBiometric(parentIris.get(0), language, biometricType, RegistrationConstants.INTRODUCER));
 				}
 			}
 
@@ -238,7 +239,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "DoB",
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoB",
 					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
 		}
 
@@ -263,29 +264,32 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return document;
 	}
 
-	private BiometricDetails getBiometric(BaseDTO biometricDTO, String language, String biometricType) {
+	private BiometricDetails getBiometric(BaseDTO biometricDTO, String language, String biometricType,
+			String personType) {
 		BiometricDetails biometricDetails = null;
 		if (biometricDTO != null) {
 			if (biometricDTO instanceof FingerprintDetailsDTO) {
 				FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) biometricDTO;
-				biometricDetails = buildBiometric("label", language, biometricType, fingerprint.getFingerprintImageName(),
-						fingerprint.getQualityScore(), fingerprint.getNumRetry(), fingerprint.isForceCaptured());
+				biometricDetails = buildBiometric("label", language, biometricType,
+						getBIRUUID(personType, fingerprint.getFingerType()), fingerprint.getQualityScore(),
+						fingerprint.getNumRetry(), fingerprint.isForceCaptured());
 			} else if (biometricDTO instanceof IrisDetailsDTO) {
 				IrisDetailsDTO iris = (IrisDetailsDTO) biometricDTO;
-				biometricDetails = buildBiometric("label", language, biometricType, iris.getIrisImageName(),
-						iris.getQualityScore(), iris.getNumOfIrisRetry(), iris.isForceCaptured());
+				biometricDetails = buildBiometric("label", language, biometricType,
+						getBIRUUID(personType, iris.getIrisType()), iris.getQualityScore(), iris.getNumOfIrisRetry(),
+						iris.isForceCaptured());
 			}
 		}
 		return biometricDetails;
 	}
 
-	private BiometricDetails buildBiometric(String label, String language, String type, String imageName, double qualityScore,
+	private BiometricDetails buildBiometric(String label, String language, String type, String birIndex, double qualityScore,
 			int numRetry, boolean forceCaptured) {
 		BiometricDetails biometricDetails = new BiometricDetails();
 		biometricDetails.setLabel(label);
 		biometricDetails.setLanguage(language);
 		biometricDetails.setType(type);
-		biometricDetails.setImageName(removeFileExt(imageName));
+		biometricDetails.setImageName(birIndex);
 		biometricDetails.setQualityScore(qualityScore);
 		biometricDetails.setNumRetry(numRetry);
 		biometricDetails.setForceCaptured(forceCaptured);
@@ -381,12 +385,12 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("introducerUINHash", getHash(introducerUIN)));
 		// Add Officer Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
-				"officer", RegistrationConstants.BIOMETRIC_TYPE));
+				RegistrationConstants.OFFICER.toLowerCase(), RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Supervisor Biometrics
-		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), "supervisor",
+		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), RegistrationConstants.SUPERVISOR.toLowerCase(),
 				RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Introducer Biometrics
-		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), "introducer",
+		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), RegistrationConstants.INTRODUCER.toLowerCase(),
 				RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Registration Creation Date
 		metaData.add(buildFieldValue("creationDate", String.valueOf(LocalDateTime.now())));
@@ -399,13 +403,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Operator ID
 		osiData.add(buildFieldValue("officerId", registrationDTO.getOsiDataDTO().getOperatorID()));
 		// Add Name of Operator Fingerprint and Iris Images
-		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), "officer",
+		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), RegistrationConstants.OFFICER.toLowerCase(),
 				RegistrationConstants.BIOMETRIC_IMAGE));
 
 		// Add Supervisor ID
 		osiData.add(buildFieldValue("supervisorId", registrationDTO.getOsiDataDTO().getSupervisorID()));
 		// Add Name of Supervisor Fingerprint and Iris Images
-		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), "supervisor",
+		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), RegistrationConstants.SUPERVISOR.toLowerCase(),
 				RegistrationConstants.BIOMETRIC_IMAGE));
 		
 		// Add Supervisor Password
@@ -440,19 +444,17 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) getObjectAt(
 					officerBiometric.getFingerprintDetailsDTO(), 0);
 			if (fingerprint != null) {
+				fingerprintImageName = fingerprint.getFingerType();
 				if (field.equals(RegistrationConstants.BIOMETRIC_IMAGE)) {
-					fingerprintImageName = removeFileExt(fingerprint.getFingerprintImageName());
-				} else {
-					fingerprintImageName = fingerprint.getFingerType();
+					fingerprintImageName = getBIRUUID(officerType, fingerprintImageName);
 				}
 			}
 
 			IrisDetailsDTO iris = (IrisDetailsDTO) getObjectAt(officerBiometric.getIrisDetailsDTO(), 0);
 			if (iris != null) {
+				irisImageName = iris.getIrisType();
 				if (field.equals(RegistrationConstants.BIOMETRIC_IMAGE)) {
-					irisImageName = removeFileExt(iris.getIrisImageName());
-				} else {
-					irisImageName = iris.getIrisType();
+					irisImageName = getBIRUUID(officerType, irisImageName);
 				}
 			}
 		}
@@ -530,6 +532,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		registratedDevices.add(buildFieldValue("photo", "11331oiu31y8bahagyaftfafahfakhfagk"));
 
 		return registratedDevices;
+	}
+
+	@SuppressWarnings("unchecked")
+	private String getBIRUUID(String personType, String biometricType) {
+		return ((Map<String, String>) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))
+						.get(personType.concat(biometricType).toLowerCase());
 	}
 
 }
