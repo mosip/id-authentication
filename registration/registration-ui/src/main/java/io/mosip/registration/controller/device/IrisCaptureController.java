@@ -300,10 +300,17 @@ public class IrisCaptureController extends BaseController {
 
 			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				if (validateIris() && validateIrisLocalDedup()) {
-					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint()) {
+					
+					long fingerPrintCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
+							.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
+					
+					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricFingerprint() || fingerPrintCount > 0) {
 						registrationController.toggleFingerprintCaptureVisibility(true);
 						registrationController.toggleIrisCaptureVisibility(false);
-					} else {
+					}else if(getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException() && fingerPrintCount==0) {
+						registrationController.toggleBiometricExceptionVisibility(true);
+						registrationController.toggleIrisCaptureVisibility(false);
+					}else {
 						registrationController.getDemoGraphicTitlePane().setExpanded(true);
 					}
 				}
@@ -326,6 +333,11 @@ public class IrisCaptureController extends BaseController {
 		}
 	}
 
+	/**
+	 * Validate iris.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean validateIris() {
 		try {
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

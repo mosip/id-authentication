@@ -76,7 +76,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private RegistrationController registrationController;
-	
+
 	@Autowired
 	private UserOnboardController userOnboardController;
 
@@ -100,8 +100,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-			previousBtn.setVisible(false);			
-		}else {
+			previousBtn.setVisible(false);
+		} else {
 			previousBtn.setVisible(true);
 			homePageLbl.setVisible(false);
 			homePageImg.setVisible(false);
@@ -176,8 +176,28 @@ public class BiometricExceptionController extends BaseController implements Init
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 			} else {
-				registrationController.toggleBiometricExceptionVisibility(false);
-				registrationController.toggleFingerprintCaptureVisibility(true);
+				if (((RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO() != null) {
+
+					List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getInstance()
+							.getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
+									.getApplicantBiometricDTO().getBiometricExceptionDTO();
+
+					long fingerPrintCount = biometricExceptionDTOs.stream()
+							.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
+
+					if (fingerPrintCount > 0) {
+						registrationController.toggleBiometricExceptionVisibility(false);
+						registrationController.toggleFingerprintCaptureVisibility(true);
+					} else {
+						registrationController.toggleBiometricExceptionVisibility(false);
+						registrationController.toggleIrisCaptureVisibility(true);
+					}
+
+				} else {
+					registrationController.toggleBiometricExceptionVisibility(false);
+					registrationController.toggleFingerprintCaptureVisibility(true);
+				}
 			}
 		}
 	}
@@ -194,7 +214,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			biometricExceptionList.clear();
 			bioList.forEach(bioType -> {
 				BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
-				if (bioType.contains("iris")) {
+				if (bioType.contains("Eye")) {
 					biometricExceptionDTO.setBiometricType("iris");
 				} else {
 					biometricExceptionDTO.setBiometricType("fingerprint");

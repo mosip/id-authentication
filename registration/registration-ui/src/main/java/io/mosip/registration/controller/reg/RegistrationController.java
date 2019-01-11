@@ -257,12 +257,6 @@ public class RegistrationController extends BaseController {
 	private TextField mobileNo;
 
 	@FXML
-	private TextField alternateMobileNo;
-
-	@FXML
-	private TextField alternateMobileNoLocalLanguage;
-
-	@FXML
 	private TextField mobileNoLocalLanguage;
 
 	@FXML
@@ -434,10 +428,6 @@ public class RegistrationController extends BaseController {
 	private Label genderLabel;
 	@FXML
 	private Label mobileNoLabel;
-	@FXML
-	private Label alternateMobileNoLabel;
-	@FXML
-	private Label alternateMobileNoLabelLocal;
 	@FXML
 	private Label emailIdLabel;
 	@FXML
@@ -934,16 +924,18 @@ public class RegistrationController extends BaseController {
 
 				if (registrationDTO.getSelectionListDTO() != null) {
 
-				if(registrationDTO.getSelectionListDTO().isBiometricException()) {
-					toggleBiometricExceptionVisibility(true);
-					toggleFingerprintCaptureVisibility(false);
-					toggleIrisCaptureVisibility(false);
-					togglePhotoCaptureVisibility(false);
-				} else if (registrationDTO.getSelectionListDTO().isBiometricFingerprint() && !registrationDTO.getSelectionListDTO().isBiometricException()) {
+					if (registrationDTO.getSelectionListDTO().isBiometricException()) {
+						toggleBiometricExceptionVisibility(true);
+						toggleFingerprintCaptureVisibility(false);
+						toggleIrisCaptureVisibility(false);
+						togglePhotoCaptureVisibility(false);
+					} else if (registrationDTO.getSelectionListDTO().isBiometricFingerprint()
+							&& !registrationDTO.getSelectionListDTO().isBiometricException()) {
 						toggleFingerprintCaptureVisibility(true);
 						toggleIrisCaptureVisibility(false);
 						togglePhotoCaptureVisibility(false);
-					} else if (registrationDTO.getSelectionListDTO().isBiometricIris() && !registrationDTO.getSelectionListDTO().isBiometricException()) {
+					} else if (registrationDTO.getSelectionListDTO().isBiometricIris()
+							&& !registrationDTO.getSelectionListDTO().isBiometricException()) {
 						toggleFingerprintCaptureVisibility(false);
 						toggleIrisCaptureVisibility(true);
 						togglePhotoCaptureVisibility(false);
@@ -970,9 +962,9 @@ public class RegistrationController extends BaseController {
 				.getIdentity();
 
 		return Builder.build(DemographicInfoDTO.class)
-				.with(demographicInfo -> demographicInfo.setIdentity((Identity)Builder.build(Identity.class)
+				.with(demographicInfo -> demographicInfo.setIdentity((Identity) Builder.build(Identity.class)
 						.with(identity -> identity.setFullName(fullName.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(fullName.getText())).get()))
@@ -988,7 +980,7 @@ public class RegistrationController extends BaseController {
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? 0 : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(gender.getValue())).get()))
@@ -997,7 +989,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setValue(genderLocalLanguage.getValue())).get()))
 										.get()))
 						.with(identity -> identity.setAddressLine1(addressLine1.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(addressLine1.getText())).get()))
@@ -1007,7 +999,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 						.with(identity -> identity.setAddressLine2(addressLine2.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(addressLine2.getText())).get()))
@@ -1017,7 +1009,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 						.with(identity -> identity.setAddressLine3(addressLine3.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(addressLine3.getText())).get()))
@@ -1027,7 +1019,7 @@ public class RegistrationController extends BaseController {
 												.get()))
 										.get()))
 						.with(identity -> identity.setRegion(region.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(region.getValue())).get()))
@@ -1036,7 +1028,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setValue(regionLocalLanguage.getValue())).get()))
 										.get()))
 						.with(identity -> identity.setProvince(province.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(province.getValue())).get()))
@@ -1045,7 +1037,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setValue(provinceLocalLanguage.getValue())).get()))
 										.get()))
 						.with(identity -> identity.setCity(city.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(city.getValue())).get()))
@@ -1060,24 +1052,27 @@ public class RegistrationController extends BaseController {
 								cniOrPinNumber.isDisabled() ? null : new BigInteger(cniOrPinNumber.getText())))
 						.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled()
 								? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(localAdminAuthorityLocalLanguage.getValue())).get()))
+												.with(value -> value
+														.setValue(localAdminAuthorityLocalLanguage.getValue()))
+												.get()))
 										.get()))
 						.with(identity -> identity.setParentOrGuardianRIDOrUIN(
 								uinId.isDisabled() ? null : new BigInteger(uinId.getText())))
 						.with(identity -> identity.setParentOrGuardianName(parentName.isDisabled() ? null
-								: (List<ValuesDTO>)Builder.build(LinkedList.class)
+								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(platformLanguageCode))
 												.with(value -> value.setValue(parentName.getText())).get()))
 										.with(values -> values.add(Builder.build(ValuesDTO.class)
 												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue(parentNameLocalLanguage.getText())).get()))
+												.with(value -> value.setValue(parentNameLocalLanguage.getText()))
+												.get()))
 										.get()))
 						.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
 						.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
@@ -1090,7 +1085,8 @@ public class RegistrationController extends BaseController {
 												getRegistrationDtoContent().getRegistrationMetaDataDTO().getUin())))
 						.with(identity -> identity.setIndividualBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
 								.with(cbeff -> cbeff.setFormat("cbeff")).with(cbeff -> cbeff.setVersion(1.0))
-								.with(cbeff -> cbeff.setValue(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME.replace(".xml", "")))
+								.with(cbeff -> cbeff.setValue(
+										RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME.replace(".xml", "")))
 								.get()))
 						.get()))
 				.get();
@@ -1159,10 +1155,11 @@ public class RegistrationController extends BaseController {
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
-		if(webCameraController.isWebcamPluggedIn()) {
+		if (webCameraController.isWebcamPluggedIn()) {
 			try {
 				Stage primaryStage = new Stage();
-				FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+				FXMLLoader loader = BaseController
+						.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
 				Parent webCamRoot = loader.load();
 
 				WebCameraController cameraController = loader.getController();
@@ -1178,7 +1175,7 @@ public class RegistrationController extends BaseController {
 			}
 		} else {
 			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
-		}	
+		}
 	}
 
 	@Override
@@ -1591,9 +1588,10 @@ public class RegistrationController extends BaseController {
 		validation.setChild(isChild);
 		validation.setValidationMessage();
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
-	/*	if(gotoNext)
-			gotoNext = validation.validateUinOrRid(uinId, isChild, uinValidator, ridValidator);
-	*/	displayValidationMessage(validation.getValidationMessage().toString());
+		/*
+		 * if(gotoNext) gotoNext = validation.validateUinOrRid(uinId, isChild,
+		 * uinValidator, ridValidator);
+		 */ displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
