@@ -1,7 +1,8 @@
 package io.mosip.registration.controller.reg;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER;
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_CONTROLLER;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_FINGERPRINT_FACADE;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTURE_USER_ONBOARD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -11,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -18,6 +20,7 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -32,6 +35,7 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.iris.IrisFacade;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -41,6 +45,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.UserOnboardService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
@@ -147,7 +152,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	private ScanPopUpViewController scanPopUpViewController;
 
 	@Autowired
-	private FingerprintFacade fingerPrintFacade;	
+	private FingerprintFacade fingerPrintFacade;
 
 	private Boolean init = false;
 	private String pageName;
@@ -196,6 +201,10 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	private Stage popupStage;
 
+	private int leftSlapCount;
+	private int rightSlapCount;
+	private int thumbCount;
+
 	/**
 	 * This method initializes the Fingerprint,Iris and face Capture page.
 	 * 
@@ -209,7 +218,7 @@ public class UserOnboardController extends BaseController implements Initializab
 
 			if (pageName == RegistrationConstants.FINGERPRINT) {
 
-				LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 						"Loading of FingerprintCapture screen started");
 				try {
 					scanBtn.setDisable(true);
@@ -225,20 +234,25 @@ public class UserOnboardController extends BaseController implements Initializab
 							// Get the Fingerprint from RegistrationDTO based on selected Fingerprint Pane
 							FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst()
 									.orElse(null);
-
-							if (fpDetailsDTO == null
-									|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)
+							exceptionFingersCount();
+							if ((leftHandPalmPane.getId().equals(selectedPane.getId()) && leftSlapCount < 4)
+									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+											.equals(RegistrationConstants.LEFTPALM)
 											&& fpDetailsDTO.getQualityScore() < Double
 													.parseDouble(getValueFromSessionMap(
-															RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)))
-									|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)
-											&& fpDetailsDTO.getQualityScore() < Double
-													.parseDouble(getValueFromSessionMap(
-															RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)))
-									|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)
-											&& fpDetailsDTO.getQualityScore() < Double
-													.parseDouble(getValueFromSessionMap(
-															RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)))) {
+															RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))))
+									|| (rightHandPalmPane.getId().equals(selectedPane.getId()) && rightSlapCount < 4)
+											&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+													.equals(RegistrationConstants.RIGHTPALM)
+													&& fpDetailsDTO.getQualityScore() < Double
+															.parseDouble(getValueFromSessionMap(
+																	RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))))
+									|| (thumbPane.getId().equals(selectedPane.getId()) && thumbCount < 2)
+											&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+													.equals(RegistrationConstants.THUMBS)
+													&& fpDetailsDTO.getQualityScore() < Double
+															.parseDouble(getValueFromSessionMap(
+																	RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))))) {
 								scanBtn.setDisable(false);
 							}
 						}
@@ -259,10 +273,10 @@ public class UserOnboardController extends BaseController implements Initializab
 
 					loadingImageFromSessionContext();
 
-					LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							"Loading of FingerprintCapture screen ended");
 				} catch (RuntimeException runtimeException) {
-					LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							String.format(
 									"%s -> Exception while initializing Fingerprint Capture page for user registration  %s",
 									RegistrationConstants.USER_REG_FINGERPRINT_PAGE_LOAD_EXP,
@@ -275,7 +289,7 @@ public class UserOnboardController extends BaseController implements Initializab
 				}
 			} else if (pageName == RegistrationConstants.EYE) {
 				try {
-					LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							"Initializing Iris Capture page for user registration");
 
 					// Set Threshold
@@ -299,10 +313,10 @@ public class UserOnboardController extends BaseController implements Initializab
 						}
 					}
 
-					LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							"Initializing Iris Capture page for user registration completed");
 				} catch (RuntimeException runtimeException) {
-					LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+					LOGGER.error(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, String.format(
 							"%s -> Exception while initializing Iris Capture page for user registration  %s",
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_PAGE_LOAD_EXP, runtimeException.getMessage()));
 
@@ -325,19 +339,62 @@ public class UserOnboardController extends BaseController implements Initializab
 		}
 	}
 
+	private void exceptionFingersCount() {
+		leftSlapCount = 0;
+		rightSlapCount = 0;
+		thumbCount = 0;
+
+		List<BiometricExceptionDTO> biometricExceptionDTOs = biometricDTO.getOperatorBiometricDTO().getBiometricExceptionDTO();
+		for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
+
+			if (biometricExceptionDTO.getMissingBiometric().contains("left")
+					&& !biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+				leftSlapCount++;
+			}
+			if (biometricExceptionDTO.getMissingBiometric().contains("right")
+					&& !biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+				rightSlapCount++;
+			}
+			if (biometricExceptionDTO.getMissingBiometric().contains("Thumb")) {
+				thumbCount++;
+			}
+		}
+	}
+
+	
 	@FXML
 	private void initUserOnboard() {
-		loadPage("/fxml/BiometricException.fxml");
+		loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
 	}
 
 	/**
 	 * Method to load the biometric fingerprint page
 	 */
-	public void loadFingerPrint() {
+	public void loadFingerPrint(List<String> fingerException, List<String> irisException) {
+
 		init = true;
 		pageName = RegistrationConstants.FINGERPRINT;
 		biometricDTO = new BiometricDTO();
+
+		List<String> bioList = new ArrayList<>();
+		bioList.addAll(fingerException);
+		bioList.addAll(irisException);
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
+
+		List<BiometricExceptionDTO> biometricExceptionList = biometricDTO.getOperatorBiometricDTO()
+				.getBiometricExceptionDTO();
+		biometricExceptionList.clear();
+		bioList.forEach(bioType -> {
+			BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
+			if (bioType.contains("iris")) {
+				biometricExceptionDTO.setBiometricType("iris");
+			} else {
+				biometricExceptionDTO.setBiometricType("fingerprint");
+			}
+			biometricExceptionDTO.setMissingBiometric(bioType);
+			biometricExceptionList.add(biometricExceptionDTO);
+		});
+
 		loadPage(RegistrationConstants.USER_ONBOARD_FP);
 	}
 
@@ -364,7 +421,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	 */
 	private boolean validateFingerPrints() {
 		try {
-			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured started");
 
 			List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs = new ArrayList<>();
@@ -385,26 +442,36 @@ public class UserOnboardController extends BaseController implements Initializab
 
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
 				if (validateQualityScore(fingerprintDetailsDTO)) {
-					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM)) {
+					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM)
+							|| leftSlapCount >= 4) {
 						isleftHandSlapCaptured = true;
-					} else if (fingerprintDetailsDTO.getFingerType()
-							.equalsIgnoreCase(RegistrationConstants.RIGHTPALM)) {
+					}
+					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.RIGHTPALM)
+							|| rightSlapCount >= 4) {
 						isrightHandSlapCaptured = true;
-					} else if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS)) {
+					} 
+					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS)
+							|| thumbCount >= 2) {
 						isthumbsCaptured = true;
 					}
-				} else {
+				}else {
 					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
 
+			if(fingerprintDetailsDTOs.isEmpty() && leftSlapCount >= 4 && rightSlapCount >= 4 && thumbCount>=2) {
+				isleftHandSlapCaptured=true;
+				isrightHandSlapCaptured=true;
+				isthumbsCaptured=true;
+			}
+			
 			if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
 				isValid = true;
 			} else {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FINGERPRINT_SCAN_ALERT);
 			}
-			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating Fingerprints captured ended");
 			return isValid;
 		} catch (RuntimeException runtimeException) {
@@ -422,7 +489,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	 */
 	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
 		try {
-			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating quality score of captured fingerprints started");
 			if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
 				return fingerprintDetailsDTO.getQualityScore() >= Double
@@ -443,7 +510,7 @@ public class UserOnboardController extends BaseController implements Initializab
 								getValueFromSessionMap(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)))
 						|| fingerprintDetailsDTO.isForceCaptured();
 			}
-			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating quality score of captured fingerprints ended");
 			return false;
 		} catch (RuntimeException runtimeException) {
@@ -506,12 +573,20 @@ public class UserOnboardController extends BaseController implements Initializab
 	}
 
 	public void goToNextPage() {
+		exceptionFingersCount();
 		if (validateFingerPrints()) {
 			pageName = RegistrationConstants.EYE;
 			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
 		}
 	}
-
+	
+	public void goToPrevPage() {		
+		if (validateFingerPrints()) {
+			pageName = "";
+			loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
+		}
+	}
+		
 	/**
 	 * This method will be invoked when Next button is clicked. The next section
 	 * will be displayed.
@@ -593,7 +668,7 @@ public class UserOnboardController extends BaseController implements Initializab
 			}
 		} else if (pageName == RegistrationConstants.EYE) {
 			try {
-				LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 						"Scanning of iris details for user registration");
 
 				Optional<IrisDetailsDTO> captiredIrisDetailsDTO = getIrisBySelectedPane().findFirst();
@@ -628,12 +703,12 @@ public class UserOnboardController extends BaseController implements Initializab
 
 				popupStage.close();
 
-				LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 						"Scanning of iris details for user registration completed");
 			} catch (RegBaseCheckedException regBaseCheckedException) {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 			} catch (RuntimeException runtimeException) {
-				LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
+				LOGGER.error(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 						runtimeException.getCause()));
@@ -679,7 +754,7 @@ public class UserOnboardController extends BaseController implements Initializab
 		}
 		fingerPrintFacade.getFingerPrintImageAsDTO(detailsDTO, fingerType);
 
-		fingerPrintFacade.segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
+		segmentFingerPrintImage(detailsDTO, segmentedFingersPath);
 
 		scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 
@@ -701,7 +776,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	@FXML
 	private void enableScan(MouseEvent mouseEvent) {
 		try {
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Enabling scan button for user registration");
 
 			Pane sourcePane = (Pane) mouseEvent.getSource();
@@ -730,10 +805,10 @@ public class UserOnboardController extends BaseController implements Initializab
 				scanIris.setDisable(false);
 			}
 
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Enabling scan button for user registration completed");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while enabling scan button for user registration  %s %s",
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage(),
 							runtimeException.getStackTrace()));
@@ -768,7 +843,7 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	private boolean validateIris() {
 		try {
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the captured irises of individual");
 
 			boolean isValid = false;
@@ -806,7 +881,7 @@ public class UserOnboardController extends BaseController implements Initializab
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_VALIDATION_ERROR);
 			}
 
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the captured irises of individual completed");
 
 			return isValid;
@@ -819,13 +894,13 @@ public class UserOnboardController extends BaseController implements Initializab
 
 	private boolean validateIrisCapture(IrisDetailsDTO irisDetailsDTO) {
 		try {
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the quality score of the captured iris");
 
 			// Get Configured Threshold and Number of Retries from properties file
 			double irisThreshold = Double.parseDouble(getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD));
 
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the quality score of the captured iris completed");
 
 			return irisDetailsDTO.getQualityScore() >= irisThreshold
@@ -999,4 +1074,82 @@ public class UserOnboardController extends BaseController implements Initializab
 			goToHomePage();
 		}
 	}
+	
+	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath)
+			throws RegBaseCheckedException {
+
+		readSegmentedFingerPrintsSTUB(fingerprintDetailsDTO, filePath);
+	}
+	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
+			throws RegBaseCheckedException {
+ 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+				"Reading scanned Finger has started");
+
+		try {
+
+			List<BiometricExceptionDTO> biometricExceptionDTOs =biometricDTO.getOperatorBiometricDTO().getBiometricExceptionDTO();
+			
+			List<String> filePaths = Arrays.asList(path);
+
+			boolean isExceptionFinger = false;
+			BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
+			
+			for (String folderPath : filePaths) {
+				isExceptionFinger = false;
+				String[] imageFileName = folderPath.split("/");
+
+				for (BiometricExceptionDTO exceptionDTO : biometricExceptionDTOs) {
+					
+					if (imageFileName[3].equals(exceptionDTO.getMissingBiometric())) {
+						isExceptionFinger = true;
+						biometricExceptionDTO = exceptionDTO;
+						break;
+					}
+				}
+				if (!isExceptionFinger) {
+					FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
+
+					byte[] isoTemplateBytes = IOUtils
+							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_FILE));
+					segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+
+					byte[] isoImageBytes = IOUtils
+							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
+					segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
+
+					segmentedDetailsDTO.setFingerType(imageFileName[3]);
+					segmentedDetailsDTO.setFingerprintImageName(imageFileName[3]);
+					segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
+					segmentedDetailsDTO.setForceCaptured(false);
+					segmentedDetailsDTO.setQualityScore(90);
+
+					if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
+						List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
+						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
+					}
+					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
+				}else {
+					byte[] isoExceptionImageBytes = IOUtils
+							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
+					biometricExceptionDTO.setBiometricISOImage(isoExceptionImageBytes);
+					
+				}
+			}
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),
+					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorMessage());
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, String.format(
+					"Exception while reading scanned fingerprints details for user registration: %s caused by %s",
+					runtimeException.getMessage(), runtimeException.getCause()));
+
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_FINGERPRINT_SCAN_EXP, String.format(
+					"Exception while reading scanned fingerprints details for user registration: %s caused by %s",
+					runtimeException.getMessage(), runtimeException.getCause()));
+		}
+		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
+	}
+
+
 }

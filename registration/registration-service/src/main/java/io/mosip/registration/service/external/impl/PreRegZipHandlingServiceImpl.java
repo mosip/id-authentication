@@ -107,7 +107,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 								RegistrationConstants.POR_DOCUMENT);
 						break;
 					case RegistrationConstants.DOB_DOCUMENT:
-						getIdentityDto().setDateOfBirthProof(documentDetailsDTO);
+						getIdentityDto().setProofOfDateOfBirth(documentDetailsDTO);
 						attachDocument(documentDetailsDTO, zipInputStream, fileName,
 								RegistrationConstants.DOB_DOCUMENT);
 						break;

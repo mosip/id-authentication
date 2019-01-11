@@ -154,9 +154,7 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("cniOrPinNumber"));
 
 			boolean isChild = registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-					.getParentOrGuardianRIDOrUIN() != null
-					&& !registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.getParentOrGuardianRIDOrUIN().isEmpty();
+					.getParentOrGuardianRIDOrUIN() != null;
 
 			if (isChild) {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME, getValue(registration.getDemographicDTO()
@@ -197,9 +195,9 @@ public class TemplateGenerator extends BaseService {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 						.getProofOfRelationship().getValue()).append(", ");
 			}
-			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirthProof() != null) {
+			if (registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth() != null) {
 				documentsList.append(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-						.getDateOfBirthProof().getValue());
+						.getProofOfDateOfBirth().getValue());
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList.toString());

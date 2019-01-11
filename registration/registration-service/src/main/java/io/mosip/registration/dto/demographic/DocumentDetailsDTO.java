@@ -15,7 +15,7 @@ public class DocumentDetailsDTO extends BaseDTO {
 	@JsonIgnore
 	private byte[] document;
 	protected String value;
-	protected String category;
+	protected String type;
 	@JsonIgnore
 	protected String owner;
 	protected String format;
@@ -54,7 +54,7 @@ public class DocumentDetailsDTO extends BaseDTO {
 	 * @return the category
 	 */
 	public String getCategory() {
-		return category;
+		return type;
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class DocumentDetailsDTO extends BaseDTO {
 	 *            the category to set
 	 */
 	public void setCategory(String category) {
-		this.category = category;
+		this.type = category;
 	}
 
 	/**

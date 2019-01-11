@@ -55,6 +55,7 @@ public class RegistrationConstants {
 	public static final String USER_ONBOARD_FP = "/fxml/UserOnboardFPCapture.fxml";
 	public static final String USER_ONBOARD_IRIS = "/fxml/UserOnboardIrisCapture.fxml";
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
+	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -194,13 +195,18 @@ public class RegistrationConstants {
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
-	public static final String DEMOGRPAHIC_JSON_NAME = "demographicJson";
-	public static final String PACKET_META_JSON_NAME = "packetMetaJson";
-	public static final String ENROLLMENT_META_JSON_NAME = "enrollmentMetaJson";
-	public static final String HASHING_JSON_NAME = "hash";
+	public static final String DEMOGRPAHIC_JSON_NAME = "ID.json";
+	public static final String PACKET_META_JSON_NAME = "packet_meta_info.json";
+	public static final String PACKET_DATA_HASH_FILE_NAME = "packet_data_hash.txt";
+	public static final String PACKET_OSI_HASH_FILE_NAME = "packet_osi_hash.txt";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
+	public static final String APPLICANT_BIO_CBEFF_FILE_NAME = "applicant_bio_CBEFF.xml";
+	public static final String OFFICER_BIO_CBEFF_FILE_NAME = "officer_bio_CBEFF.xml";
+	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
+	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
+	public static final String MAX_REG_PACKET_SIZE_IN_MB = "MAX_REG_PACKET_SIZE";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";

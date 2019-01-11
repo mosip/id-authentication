@@ -1,5 +1,6 @@
 package io.mosip.registration.mapper;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.dto.json.metadata.Photograph;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.checksum.CheckSumUtil;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
@@ -93,19 +96,42 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			Map<String, FingerprintDetailsDTO> fingerprintMap = new HashMap<>();
 			if (fingerprintDetailsDTOs != null) {
 				for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-					fingerprintMap.put(fingerprintDetailsDTO.getFingerType().toUpperCase(), fingerprintDetailsDTO);
+					for (FingerprintDetailsDTO segmentedFingerprint : fingerprintDetailsDTO.getSegmentedFingerprints()) {
+						fingerprintMap.put(segmentedFingerprint.getFingerType().toUpperCase(), segmentedFingerprint);
+					}
 				}
 			}
 
-			// Set Left Slap
+			// Set Left Index Finger
 			String biometricType = "fingerprint";
-			applicant.setLeftSlap(getBiometric(fingerprintMap.get("LEFTSLAP"), language, biometricType));
+			applicant.setLeftIndex(getBiometric(fingerprintMap.get("LEFTINDEX"), language, biometricType));
 
-			// Set Right Slap
-			applicant.setRightSlap(getBiometric(fingerprintMap.get("RIGHTSLAP"), language, biometricType));
+			// Set Left Middle Finger
+			applicant.setLeftMiddle(getBiometric(fingerprintMap.get("LEFTMIDDLE"), language, biometricType));
 
-			// Set Thumbs
-			applicant.setThumbs(getBiometric(fingerprintMap.get("THUMBS"), language, biometricType));
+			// Set Left Ring Finger
+			applicant.setLeftRing(getBiometric(fingerprintMap.get("LEFTRING"), language, biometricType));
+
+			// Set Left Little Finger
+			applicant.setLeftLittle(getBiometric(fingerprintMap.get("LEFTLITTLE"), language, biometricType));
+
+			// Set Left Thumb Finger
+			applicant.setLeftThumb(getBiometric(fingerprintMap.get("LEFTTHUMB"), language, biometricType));
+
+			// Set Right Index Finger
+			applicant.setRightIndex(getBiometric(fingerprintMap.get("RIGHTINDEX"), language, biometricType));
+
+			// Set Left Middle Finger
+			applicant.setRightMiddle(getBiometric(fingerprintMap.get("RIGHTMIDDLE"), language, biometricType));
+
+			// Set Left Ring Finger
+			applicant.setRightRing(getBiometric(fingerprintMap.get("RIGHTRING"), language, biometricType));
+
+			// Set Left Little Finger
+			applicant.setRightLittle(getBiometric(fingerprintMap.get("RIGHTLITTLE"), language, biometricType));
+
+			// Set Left Thumb Finger
+			applicant.setRightThumb(getBiometric(fingerprintMap.get("RIGHTTHUMB"), language, biometricType));
 
 			// Get captured Iris Details
 			List<IrisDetailsDTO> irisDetailsDTOs = biometricInfoDTO.getIrisDetailsDTO();
@@ -123,7 +149,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			applicant.setLeftEye(getBiometric(irisMap.get("LEFTEYE"), language, biometricType));
 
 			// Set Right Eye
-			applicant.setRightEye(getBiometric(irisMap.get("RIGHTKEY"), language, biometricType));
+			applicant.setRightEye(getBiometric(irisMap.get("RIGHTEYE"), language, biometricType));
 
 			// Add captured biometric exceptions
 			identity.getExceptionBiometrics()
@@ -150,6 +176,12 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 			// Set OSIData
 			identity.setOsiData(getOSIData(source));
+
+			// Set Registered Device
+			identity.setCapturedRegisteredDevices(getRegisteredDevices());
+
+			// Set Registered Device
+			identity.setCapturedNonRegisteredDevices(getNonRegisteredDevices());
 			
 			// Set Checksum
 			List<FieldValue> checkSums = new LinkedList<>();
@@ -185,28 +217,28 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				.getProofOfIdentity();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoI",
 					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoA",
 					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoR",
 					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
 		}
 
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getDateOfBirthProof();
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "DoB",
 					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
 		}
 
@@ -312,6 +344,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(registrationDTO.getRegistrationId().getBytes()))));
 		// Add Machine ID
 		metaData.add(buildFieldValue("machineId", metaDataDTO.getMachineId()));
+		// Add Dongle ID
+		metaData.add(buildFieldValue("dongleId", null));
+		// Add MAC ID
+		metaData.add(buildFieldValue("macId", RegistrationSystemPropertiesChecker.getMachineId()));
 		// Add Center ID
 		metaData.add(buildFieldValue("centerId", metaDataDTO.getCenterId()));
 		// Add UIN
@@ -324,14 +360,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Validate whether Introducer has provided UIN or RID
 		String introducerRID = null;
 		String introducerUIN = null;
-		String introducerRIDorUIN = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+		BigInteger introducerRIDorUIN = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 				.getParentOrGuardianRIDOrUIN();
-		if (introducerRIDorUIN != null && !introducerRIDorUIN.isEmpty()) {
-			if (introducerRIDorUIN.length() == Integer
+		if (introducerRIDorUIN != null) {
+			if (introducerRIDorUIN.toString().length() == Integer
 					.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
-				introducerRID = introducerRIDorUIN;
+				introducerRID = introducerRIDorUIN.toString();
 			} else {
-				introducerUIN = introducerRIDorUIN;
+				introducerUIN = introducerRIDorUIN.toString();
 			}
 		}
 		
@@ -354,8 +390,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Registration Creation Date
 		metaData.add(buildFieldValue("creationDate", String.valueOf(LocalDateTime.now())));
-		// Add DOB Verified
-		metaData.add(buildFieldValue("isVerified", String.valueOf(false)));
 
 		return metaData;
 	}
@@ -384,10 +418,15 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Officer PIN
 		osiData.add(buildFieldValue("officerPIN", null));
 		
-		// Add Supervisor Authentication Image
-		osiData.add(buildFieldValue("supervisorAuthenticationImage", null));
-		// Add Officer Authentication Image
-		osiData.add(buildFieldValue("officerAuthenticationImage", null));
+		// Add Supervisor Face Image
+		osiData.add(buildFieldValue("supervisorFaceImage", null));
+		// Add Officer Face Image
+		osiData.add(buildFieldValue("officerFaceImage", null));
+		
+		// Add Supervisor OTP Authentication Image
+		osiData.add(buildFieldValue("supervisorOTPAuthentication", "false"));
+		// Add Officer Face Image
+		osiData.add(buildFieldValue("officerOTPAuthentication", "false"));
 
 		return osiData;
 	}
@@ -462,4 +501,35 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		}
 		return fileName;
 	}
+
+	private List<FieldValue> getRegisteredDevices() {
+		List<FieldValue> registratedDevices = new LinkedList<>();
+		
+		// Add fingerprint device
+		registratedDevices.add(buildFieldValue("fingerprint", "123455YRHTIFHKJI8U90U2334"));
+		// Add Iris Device
+		registratedDevices.add(buildFieldValue("iris", "123455YRHTIFHKJI8U9r2rrr3r3"));
+		// Add GPS Device
+		registratedDevices.add(buildFieldValue("gps", "123455YRHTIFHKJI8U90r3ttt4ttf"));
+		// Add Photo Camera Device
+		registratedDevices.add(buildFieldValue("photo", "12345ttt4tggrgrrwrgwgwgrggrggw"));
+
+		return registratedDevices;
+	}
+
+	private List<FieldValue> getNonRegisteredDevices() {
+		List<FieldValue> registratedDevices = new LinkedList<>();
+		
+		// Add fingerprint device
+		registratedDevices.add(buildFieldValue("fingerprint", "trergrfrfrfrfrw21313113"));
+		// Add Iris Device
+		registratedDevices.add(buildFieldValue("iris", "313rq342s4s3gg5g54bth5j4j64j64"));
+		// Add GPS Device
+		registratedDevices.add(buildFieldValue("gps", "8yjh98q78njh7t62hbkjkjqhkjqbqhhkh"));
+		// Add Photo Camera Device
+		registratedDevices.add(buildFieldValue("photo", "11331oiu31y8bahagyaftfafahfakhfagk"));
+
+		return registratedDevices;
+	}
+
 }

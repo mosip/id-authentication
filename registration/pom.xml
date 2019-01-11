@@ -234,6 +234,11 @@
 				<artifactId>javassist</artifactId>
 				<version>3.24.0-GA</version>
 			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-crypto-jce</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
