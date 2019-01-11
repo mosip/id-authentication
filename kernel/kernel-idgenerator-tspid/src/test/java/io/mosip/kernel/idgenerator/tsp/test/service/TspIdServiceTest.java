@@ -63,16 +63,16 @@ public class TspIdServiceTest {
 		service.generateId();
 	}
 
-	@Test(expected=TspIdServiceException.class)
-	public void TspIdServiceFetchExceptionTest() throws Exception {
+	@Test(expected = TspIdServiceException.class)
+	public void tspIdServiceFetchExceptionTest() throws Exception {
 
 		when(tspRepository.findMaxTspId())
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateId();
 	}
 
-	@Test(expected=TspIdServiceException.class)
-	public void TspIdServiceInsertExceptionTest() throws Exception {
+	@Test(expected = TspIdServiceException.class)
+	public void tspIdServiceInsertExceptionTest() throws Exception {
 		when(tspRepository.save(Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateId();
