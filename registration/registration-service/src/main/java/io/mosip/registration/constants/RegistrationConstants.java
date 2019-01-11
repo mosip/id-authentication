@@ -849,4 +849,6 @@ public class RegistrationConstants {
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG="Threshold for number of successful authentications not met.";
 	public static final String USER_STATION_ID="stationId";
 	public static final String USER_CENTER_ID="centerId";
+	public static final String USER_MACHINE_VALIDATION_CODE="REG-URE‌-009";
+	public static final String USER_MACHINE_VALIDATION_MSG="This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 }
