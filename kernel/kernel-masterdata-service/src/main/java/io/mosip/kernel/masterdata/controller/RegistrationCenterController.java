@@ -7,9 +7,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -171,7 +173,7 @@ public class RegistrationCenterController {
 	 * This method creates registration center.
 	 * 
 	 * @param registrationCenterDto
-	 *            the request dto for creating registration center.
+	 *            the request DTO for creating registration center.
 	 * @return the response i.e. the id of the registration center created.
 	 */
 	@PostMapping("/v1.0/registrationcenters")
@@ -180,6 +182,30 @@ public class RegistrationCenterController {
 		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
 				HttpStatus.CREATED);
 	}
+
+	/**
+	 * This method updates registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the request DTO for updating registration center.
+	 * @return the response i.e. the id of the registration center updated.
+	 */
+	@PutMapping("/v1.0/registrationcenters")
+	public ResponseEntity<IdResponseDto> updateRegistrationCenter(
+			@RequestBody @Valid RequestDto<RegistrationCenterDto> registrationCenterDto) {
+		return new ResponseEntity<>(registrationCenterService.updateRegistrationCenter(registrationCenterDto),
+				HttpStatus.OK);
+
+	}
+
+	@DeleteMapping("/v1.0/registrationcenters/{registrationCenterId}")
+	public ResponseEntity<IdResponseDto> deleteRegistrationCenter(
+			@PathVariable("registrationCenterId") String registrationCenterId) {
+		return new ResponseEntity<>(registrationCenterService.deleteRegistrationCenter(registrationCenterId),
+				HttpStatus.OK);
+
+	}
+
 
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,List
