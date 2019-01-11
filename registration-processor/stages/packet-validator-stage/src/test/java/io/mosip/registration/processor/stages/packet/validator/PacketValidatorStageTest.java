@@ -184,7 +184,7 @@ public class PacketValidatorStageTest {
 		FieldValueArray applicantDemographic = new FieldValueArray();
 		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 		List<String> applicantDemographicValues = new ArrayList<String>();
-		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
+		applicantDemographicValues.add(PacketFiles.ID.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
 		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfRelation");
@@ -300,7 +300,7 @@ public class PacketValidatorStageTest {
 		FieldValueArray applicantDemographic = new FieldValueArray();
 		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 		List<String> applicantDemographicValues = new ArrayList<String>();
-		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
+		applicantDemographicValues.add(PacketFiles.ID.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
 		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfAddress");
@@ -379,7 +379,7 @@ public class PacketValidatorStageTest {
 		FieldValueArray applicantDemographic = new FieldValueArray();
 		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 		List<String> applicantDemographicValues = new ArrayList<String>();
-		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
+		applicantDemographicValues.add(PacketFiles.ID.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
 		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfRelation");

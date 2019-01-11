@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
@@ -35,6 +36,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
+import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -80,6 +82,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
+
+	@Autowired
+	DocumentUtility documentUtility;
 
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
@@ -146,7 +151,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					isTransactionSuccessful = false;
 					try {
 						InputStream packetMetaInfoStream = adapter.getFile(registrationId,
-								PacketFiles.PACKETMETAINFO.name());
+								PacketFiles.PACKET_META_INFO.name());
 						PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
 								.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 
@@ -157,8 +162,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 								packetMetaInfo.getIdentity());
 						boolean isCheckSumValidated = false;
 						boolean isApplicantDocumentValidation = false;
+						InputStream demographicInfoStream = null;
+						List<Document> documentList = null;
 						if (isFilesValidated) {
-
+							demographicInfoStream = adapter.getFile(registrationId,
+									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+							documentList = documentUtility.getDocumentList(demographicInfoStream);
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
 							isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
@@ -168,7 +177,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
 										registrationStatusDto);
 								isApplicantDocumentValidation = applicantDocumentValidation
-										.validateDocument(packetMetaInfo.getIdentity(), registrationId);
+										.validateDocument(packetMetaInfo.getIdentity(), documentList, registrationId);
 
 							}
 
@@ -180,12 +189,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
-							InputStream demographicInfoStream = adapter.getFile(registrationId,
-									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
-											+ PacketFiles.DEMOGRAPHICINFO.name());
+
 							packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
 									packetMetaInfo.getIdentity().getMetaData());
-
+							packetInfoManager.saveDocuments(documentList);
 							object.setRid(dto.getRegistrationId());
 
 						} else {

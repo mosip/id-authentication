@@ -9,11 +9,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
@@ -39,6 +41,9 @@ public class PacketInfoDao {
 	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
+
+	@Autowired
+	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentEntity;
 
 	/** The applicant info. */
 	private List<Object[]> applicantInfo = new ArrayList<>();
@@ -68,7 +73,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the packetsfor QC user.
 	 *
-	 * @param qcuserId the qcuser id
+	 * @param qcuserId
+	 *            the qcuser id
 	 * @return the packetsfor QC user
 	 */
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
@@ -105,7 +111,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the entitiesfor reg osi.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the entitiesfor reg osi
 	 */
 	public RegOsiDto getEntitiesforRegOsi(String regId) {
@@ -120,7 +127,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the registration center machine.
 	 *
-	 * @param regid the regid
+	 * @param regid
+	 *            the regid
 	 * @return the registration center machine
 	 */
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
@@ -142,7 +150,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert reg osi entity to dto.
 	 *
-	 * @param regOsiEntity the reg osi entity
+	 * @param regOsiEntity
+	 *            the reg osi entity
 	 * @return the reg osi dto
 	 */
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
@@ -184,7 +193,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to photograph dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the photograph dto
 	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
@@ -208,7 +218,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to demographic dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the demographic info dto
 	 */
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
@@ -227,7 +238,8 @@ public class PacketInfoDao {
 	/**
 	 * Find demo by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	public List<DemographicInfoDto> findDemoById(String regId) {
@@ -246,7 +258,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant iris image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId) {
@@ -256,7 +269,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant finger print image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant finger print image name by id
 	 */
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
@@ -266,7 +280,8 @@ public class PacketInfoDao {
 	/**
 	 * Update is active if duplicate found.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 */
 	public void updateIsActiveIfDuplicateFound(String regId) {
 		demographicDedupeRepository.updateIsActiveIfDuplicateFound(regId);
@@ -276,10 +291,14 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic entities.
 	 *
-	 * @param phoneticName the phonetic name
-	 * @param gender the gender
-	 * @param dob the dob
-	 * @param langCode the lang code
+	 * @param phoneticName
+	 *            the phonetic name
+	 * @param gender
+	 *            the gender
+	 * @param dob
+	 *            the dob
+	 * @param langCode
+	 *            the lang code
 	 * @return the all demographic entities
 	 */
 	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String phoneticName, String gender,
@@ -288,8 +307,8 @@ public class PacketInfoDao {
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
 		String alias = IndividualDemographicDedupeEntity.class.getName().toLowerCase().substring(0, 1);
 		StringBuilder query = new StringBuilder();
-		query.append(SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin "
-				+ IS_NOT_NULL + AND);
+		query.append(
+				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin " + IS_NOT_NULL + AND);
 		if (phoneticName != null) {
 			query.append(alias + ".phoneticName=:phoneticName ").append(AND);
 			params.put("phoneticName", phoneticName);
@@ -312,10 +331,14 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic info dtos.
 	 *
-	 * @param phoneticName the phonetic name
-	 * @param gender the gender
-	 * @param dob the dob
-	 * @param langCode the lang code
+	 * @param phoneticName
+	 *            the phonetic name
+	 * @param gender
+	 *            the gender
+	 * @param dob
+	 *            the dob
+	 * @param langCode
+	 *            the lang code
 	 * @return the all demographic info dtos
 	 */
 	public List<DemographicInfoDto> getAllDemographicInfoDtos(String phoneticName, String gender, Date dob,
@@ -332,5 +355,22 @@ public class PacketInfoDao {
 
 	public List<String> getRegIdByUIN(String uin) {
 		return demographicDedupeRepository.getRegIdByUIN(uin);
+	}
+
+	public List<ApplicantDocument> getDocumentsByRegId(String regId) {
+		List<ApplicantDocument> applicantDocumentDtos = new ArrayList<>();
+
+		List<ApplicantDocumentEntity> applicantDocumentEntities = applicantDocumentEntity.getDocumentsByRegId(regId);
+		for (ApplicantDocumentEntity entity : applicantDocumentEntities) {
+			applicantDocumentDtos.add(convertEntityToApplicantDocumentDto(entity));
+		}
+		return applicantDocumentDtos;
+	}
+
+	private ApplicantDocument convertEntityToApplicantDocumentDto(ApplicantDocumentEntity entity) {
+		ApplicantDocument applicantDocumentDto = new ApplicantDocument();
+		applicantDocumentDto.setDocName(entity.getDocName());
+		applicantDocumentDto.setDocStore(entity.getDocStore());
+		return applicantDocumentDto;
 	}
 }

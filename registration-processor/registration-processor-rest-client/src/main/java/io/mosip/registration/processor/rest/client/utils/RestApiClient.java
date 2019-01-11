@@ -73,19 +73,19 @@ public class RestApiClient {
 	 * @return the t
 	 */
 	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) {
-
+        T result =null;
 		RestTemplate restTemplate;
 		try {
 			System.out.println("Your URl is to change ::   " + uri);
 			restTemplate = getRestTemplate();
 
-			T result = (T) restTemplate.postForObject(uri, requestType, responseClass);
+			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
 			return result;
 		} catch (Exception e) {
 
 			logger.error(e.getMessage());
 		}
-		return null;
+		return result;
 	}
 
 	/**

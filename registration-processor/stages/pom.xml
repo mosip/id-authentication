@@ -28,6 +28,7 @@
 		<module>manual-verification-stage</module>
 		<module>packet-receiver-stage</module>
         <module>bio-dedupe-stage</module>
+        <module>ui-generator-stage</module>
     </modules>
 
 </project>

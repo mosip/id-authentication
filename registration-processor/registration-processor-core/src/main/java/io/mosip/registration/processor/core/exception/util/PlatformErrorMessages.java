@@ -149,6 +149,9 @@ public enum PlatformErrorMessages {
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
 
+	//UIN check - JSON file encoding failed.
+	UNSUPPORTED_ENCODING("","json object parsing failed"),
+
 	/** The osi validation failed. */
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
