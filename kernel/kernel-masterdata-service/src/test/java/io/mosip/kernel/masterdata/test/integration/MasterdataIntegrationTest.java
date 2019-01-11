@@ -1829,6 +1829,46 @@ public class MasterdataIntegrationTest {
 
 	}
 
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndListTextAndLanguageCodeTest() throws Exception {
+		when(registrationCenterRepository.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+				Mockito.anyString(), Mockito.anyInt(), Mockito.anyList())).thenReturn(registrationCenters);
+		MvcResult result = mockMvc
+				.perform(get("/v1.0/registrationcenters/names/ENG/2").param("name", "bangalore")
+						.param("name", "Bangalore Central").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+				RegistrationCenterResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(2).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndListTextAndLanguageCodeFetchExceptionTest() throws Exception {
+
+		when(registrationCenterRepository.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+				Mockito.anyString(), Mockito.anyInt(), Mockito.anyList())).thenThrow(DataAccessLayerException.class);
+
+		mockMvc.perform(get("/v1.0/registrationcenters/names/ENG/5").param("name", "bangalore")
+				.param("name", "Bangalore Central").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndListTextAndLanguageCodeNotFoundExceptionTest()
+			throws Exception {
+
+		List<RegistrationCenter> emptyList = new ArrayList<>();
+		when(registrationCenterRepository.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+				Mockito.anyString(), Mockito.anyInt(), Mockito.anyList())).thenReturn(emptyList);
+
+		mockMvc.perform(get("/v1.0/registrationcenters/names/ENG/5").param("name", "bangalore")
+				.param("name", "Bangalore Central").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
 	// -----------------------------RegistrationCenterIntegrationTest----------------------------------
 
 	@Test
@@ -4038,7 +4078,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content(content)).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void updateTemplateFileFormatLanguageCodeValidationTest() throws Exception {
 		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
