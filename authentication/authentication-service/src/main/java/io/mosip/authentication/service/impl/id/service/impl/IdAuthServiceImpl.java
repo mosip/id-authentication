@@ -221,7 +221,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
 
 		// TODO check
-		autnTxn.setCrBy("OTP Authenticate - MOSIP");
+		autnTxn.setCrBy("IDA");
 		autnTxn.setCrDTimes(new Date());
 		// FIXME utilize Instant
 		Date convertStringToDate = null;
