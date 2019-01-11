@@ -192,7 +192,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 							packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
 									packetMetaInfo.getIdentity().getMetaData());
-
+							packetInfoManager.saveDocuments(documentList);
 							object.setRid(dto.getRegistrationId());
 
 						} else {
