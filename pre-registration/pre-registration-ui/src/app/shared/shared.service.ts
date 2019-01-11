@@ -24,8 +24,12 @@ export class SharedService {
     this.registrationCenterCoordinatesList.next(coordinates);
   }
 
+  flushNameList() {
+    this.nameList.length = 0;
+  }
+
   getNameList() {
-    return this.nameList.slice();
+    return [...this.nameList];
   }
 
   addNameList(nameList: NameList) {
@@ -38,5 +42,27 @@ export class SharedService {
 
   resetNameList() {
     this.nameList = [];
+  }
+
+  getIndexByPreId(preId: string):number {
+    let index = -1;
+    this.nameList.forEach(name => {
+      if (name.preRegId ===  preId) {
+        index = this.nameList.indexOf(name);
+      }
+    });
+    return index;
+  }
+
+  updateRegistrationCenterData(preId: string, registrationCenter: any) {
+    const index = this.getIndexByPreId(preId);
+    this.nameList[index].registrationCenter = registrationCenter;
+    return this.nameList.slice();
+  }
+
+  updateBookingDetails(preId: string, bookingDetails: any) {
+    const index = this.getIndexByPreId(preId);
+    this.nameList[index].bookingData = bookingDetails;
+    return this.nameList.slice();
   }
 }

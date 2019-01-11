@@ -25,6 +25,7 @@ import io.mosip.kernel.masterdata.httpfilter.CorsFilter;
  * Config class with beans for modelmapper and request logging
  * 
  * @author Dharmesh Khandelwal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */

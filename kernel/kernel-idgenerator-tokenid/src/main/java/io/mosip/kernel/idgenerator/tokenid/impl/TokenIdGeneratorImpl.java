@@ -5,17 +5,11 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.idgenerator.exception.TokenIdGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorConstant;
-import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorErrorCode;
-import io.mosip.kernel.idgenerator.tokenid.entity.TokenId;
-import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
 
 /**
@@ -23,19 +17,24 @@ import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
  * 
  * 
  * @author Srinivasan
+ * @author Megha Tanga
  *
  */
 @Component
 public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
+
+	/**
+	 * Field to hold TokenIdFilterUtils object
+	 */
+	@Autowired
+	private TokenIdFilterUtils tokenIdFilterUtils;
+
 	/**
 	 * Field that takes Integer.This field decides the length of the tokenId. It is
 	 * read from the properties file.
 	 */
 	@Value("${mosip.kernel.tokenid.length}")
 	private Integer tokenIdLength;
-
-	@Autowired
-	private TokenIdRepository tokenIdRepository;
 
 	private int generatedIdLength;
 
@@ -54,41 +53,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	 */
 	@Override
 	public String generateId() {
-
-		boolean unique = false;
-		String generatedTokenId = null;
-		while (!unique) {
-			generatedTokenId = this.generateTokenId();
-			unique = saveGeneratedTokenId(generatedTokenId);
-		}
-
-		return generatedTokenId;
-
-	}
-
-	/**
-	 * Method will save tokenId to the database and it will add tokenId to the list.
-	 * 
-	 * @param generatedTokenId-
-	 *            token id generated from the method
-	 * @return string
-	 */
-	private boolean saveGeneratedTokenId(String generatedTokenId) {
-		long currentTimestamp = System.currentTimeMillis();
-		try {
-			TokenId tokenId = new TokenId(generatedTokenId, currentTimestamp);
-			tokenIdRepository.save(tokenId);
-			return true;
-		}
-		/*
-		 * catch (DataAccessLayerException e) { 
-		 * // Check for PK constraint else throw
-		 * error return false; }
-		 */
-		catch (DataAccessException | DataAccessLayerException e) {
-			throw new TokenIdGenerationException(TokenIdGeneratorErrorCode.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
-					TokenIdGeneratorErrorCode.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
-		}
+		return generateTokenId();
 
 	}
 
@@ -102,7 +67,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	private String generateTokenId() {
 
 		String generatedTokenId = generateRandomId(generatedIdLength);
-		while (!TokenIdFilterUtils.isValidId(generatedTokenId)) {
+		while (!tokenIdFilterUtils.isValidId(generatedTokenId)) {
 			generatedTokenId = generateRandomId(generatedIdLength);
 		}
 

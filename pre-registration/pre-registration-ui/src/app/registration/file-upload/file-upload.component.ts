@@ -14,6 +14,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
+  fileName = '';
   fileByteArray;
   fileUrl;
   applicantPreRegId;
@@ -21,7 +22,6 @@ export class FileUploadComponent implements OnInit {
   formData = new FormData();
   user: UserModel = new UserModel();
   users: UserModel[] = [];
-
   documentType;
   loginId;
   documentIndex;
@@ -104,10 +104,9 @@ export class FileUploadComponent implements OnInit {
 
   // disabled = true;
 
-  documents = ['Document type POA', 'Document type POI', 'Document type POB', 'Document type POR'];
-
   step = 0;
-
+  multipleApplicants = false;
+  allApplicants: UserModel[] = [];
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -117,37 +116,27 @@ export class FileUploadComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // console.log('users length', this.registration.getUsers().length);
+    this.allApplicants = this.registration.getUsers();
+    this.allApplicants.splice(-1, 1);
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       if (!this.users[0].files[0]) {
         this.users[0].files[0] = [];
       }
     }
-    // else {
-    //   this.users[0] = this.user;
-    //   this.users[0].files[0] = [[]];
-    // }
+    if (this.registration.getUsers().length > 1) {
+      this.multipleApplicants = true;
+      console.log('all Applicants', this.allApplicants);
+    }
     console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
-
-      //document preview
     });
-    // this.users.forEach(element => {
-    //   let i = 0;
-    //   this.applicant.name = element.identity.FullName[0].value;
-    //   this.applicant.preId = element.preRegId;
-    //   element.files.forEach(fileElement => {
-    //     this.applicant.files[i] = fileElement;
-    //   });
-    //   this.applicants.push(this.applicant);
-    //   i++;
-    // });
   }
 
   viewFile(file) {
-    this.fileByteArray = file;
+    this.fileName = file.doc_name;
+    this.fileByteArray = file.multipartFile;
     if (this.fileByteArray) {
       this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
         'data:application/pdf;base64,' + this.fileByteArray
@@ -157,13 +146,31 @@ export class FileUploadComponent implements OnInit {
 
   handleFileInput(event) {
     console.log('event', event.target.files);
+
     if (event.target.files[0].type === 'application/pdf') {
-      this.setJsonString(event);
-      this.sendFile(event);
-      this.browseDisabled = false;
+      if (event.target.files[0].size < 1000000) {
+        this.getBase64(event.target.files[0]).then(data => {
+          this.fileByteArray = data;
+          this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+        });
+        this.setJsonString(event);
+        this.sendFile(event);
+        this.browseDisabled = false;
+      } else {
+        alert('file too big');
+      }
     } else {
       alert('Wrong file type, please upload again');
     }
+  }
+
+  getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 
   handleFileDrop(fileList) {}
@@ -185,10 +192,14 @@ export class FileUploadComponent implements OnInit {
 
   removeFile(applicantIndex, fileIndex) {
     console.log(applicantIndex, ' ; ', fileIndex);
-
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
       console.log(res);
       this.users[applicantIndex].files[0][fileIndex] = '';
+      if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
+        this.fileName = '';
+        this.fileByteArray = '';
+      }
+      // this.documentIndex = fileIndex;
     });
     // this.applicants[applicantIndex].files[fileIndex] = '';
   }
@@ -218,7 +229,7 @@ export class FileUploadComponent implements OnInit {
     this.userFiles.doc_id = fileResponse.response[0].documnetId;
     this.userFiles.doc_name = event.target.files[0].name;
     this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
-    this.userFiles.multipartFile = event.target.files[0];
+    this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
     console.log('step:', this.step);
 
@@ -256,11 +267,17 @@ export class FileUploadComponent implements OnInit {
     window.open(fileUrl);
   }
 
+  sameAsChange(event) {
+    this.dataStroage.copyDocument('POA', this.users[0].preRegId, event.value).subscribe(response => {
+      console.log('response from copy', response);
+    });
+  }
+
   onBack() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+    this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
-    this.router.navigate(['../pick-center'], { relativeTo: this.route });
+    this.router.navigate(['../preview'], { relativeTo: this.route });
   }
 }

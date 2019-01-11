@@ -7,6 +7,7 @@ import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RegistrationService } from '../registration.service';
+import { UserModel } from '../demographic/modal/user.modal';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -50,7 +51,9 @@ export class CenterSelectionComponent implements OnInit {
   showDescription = false;
   mapProvider = "OSM";
   searchTextFlag = false;
-  displayMessage = null;
+  displayMessage = 'Showing nearby registration centers';
+  users: UserModel[];
+
   constructor(
     private dialog: MatDialog,
     private service: SharedService,
@@ -61,7 +64,8 @@ export class CenterSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  //  this.getLocation();
+    this.getLocation();
+    this.users = this.registrationService.getUsers();
   }
   setSearchClick(flag: boolean) {
     this.searchClick = flag;
@@ -91,6 +95,7 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   showResults() {
+    console.log(this.locationType, this.searchText);
     if (this.locationType !== null && this.searchText !== null) {
       this.showMap = false;
       this.dataService
@@ -186,7 +191,11 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   routeNext() {
-    this.registrationService.setRegCenterId("1");
+    this.registrationService.setRegCenterId(this.selectedCentre.id);
+    this.users.forEach(user => {
+      this.service.updateRegistrationCenterData(user.preRegId, this.selectedCentre);
+    });
+    console.log(this.users);
     this.router.navigate(["../pick-time"], { relativeTo: this.route });
   }
 

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,8 +93,13 @@ import io.mosip.kernel.masterdata.service.TemplateService;
 @AutoConfigureMockMvc
 public class MasterdataControllerTest {
 
+	private static final String JSON_STRING_RESPONCE = "{\"uinLength\":24,\"numberOfWrongAttemptsForOtp\":5,\"accountFreezeTimeoutInHours\":10,\"mobilenumberlength\":10,\"archivalPolicy\":\"arc_policy_2\",\"tokenIdLength\":23,\"restrictedNumbers\":[\"8732\",\"321\",\"65\"],\"registrationCenterId\":\"KDUE83CJ3\",\"machineId\":\"MCBD3UI3\",\"supportedLanguages\":[\"eng\",\"hnd\",\"ara\",\"deu\",\"FRN\"],\"tspIdLength\":24,\"otpTimeOutInMinutes\":2,\"notificationtype\":\"SMS|EMAIL\",\"pridLength\":32,\"vidLength\":32}";
+
 	@Autowired
 	public MockMvc mockMvc;
+
+	@MockBean
+	private RestTemplate restTemplate;
 
 	@MockBean
 	private BiometricTypeService biometricTypeService;
@@ -196,6 +202,7 @@ public class MasterdataControllerTest {
 	@Before
 	public void setUp() {
 		mapper = new ObjectMapper();
+		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(JSON_STRING_RESPONCE);
 		biometricTypeSetup();
 
 		applicationSetup();
@@ -386,20 +393,20 @@ public class MasterdataControllerTest {
 		applicationDto.setCode("101");
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
-		applicationDto.setLangCode("ENG");
+		applicationDto.setLangCode("eng");
 
 		applicationDtoList.add(applicationDto);
 
 		codeAndLanguageCodeId = new CodeAndLanguageCodeID();
 		codeAndLanguageCodeId.setCode("101");
-		codeAndLanguageCodeId.setLangCode("ENG");
+		codeAndLanguageCodeId.setLangCode("eng");
 	}
 
 	private void biometricTypeSetup() {
 		biometricTypeDto1.setCode("1");
 		biometricTypeDto1.setName("DNA MATCHING");
 		biometricTypeDto1.setDescription(null);
-		biometricTypeDto1.setLangCode("ENG");
+		biometricTypeDto1.setLangCode("eng");
 
 		biometricTypeDto2.setCode("3");
 		biometricTypeDto2.setName("EYE SCAN");
@@ -467,8 +474,20 @@ public class MasterdataControllerTest {
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
-						+ "    \"langCode\": \"ENG\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
+						+ "    \"langCode\": \"eng\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addBiometricTypeLanguageValidationTest() throws Exception {
+		Mockito.when(biometricTypeService.createBiometricType(Mockito.any())).thenReturn(codeAndLanguageCodeId);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1.0/biometrictypes").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"2018-12-17T07:22:22.233Z\",\n" + "  \"request\": {\n"
+						+ "    \"code\": \"1\",\n" + "    \"description\": \"string\",\n" + "    \"isActive\": true,\n"
+						+ "    \"langCode\": \"akk\",\n" + "    \"name\": \"Abc\"\n" + "  }\n" + "}"))
+				.andExpect(status().isBadRequest());
 	}
 
 	// -------------------------------ApplicationControllerTest--------------------------//
@@ -509,7 +528,7 @@ public class MasterdataControllerTest {
 				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
 						+ "  \"timestamp\": \"2018-12-17T07:15:06.724Z\",\n" + "  \"request\": {\n"
 						+ "    \"code\": \"101\",\n" + "    \"description\": \"Pre-registration Application Form\",\n"
-						+ "    \"isActive\": true,\n" + "    \"langCode\": \"ENG\",\n"
+						+ "    \"isActive\": true,\n" + "    \"langCode\": \"eng\",\n"
 						+ "    \"name\": \"pre-registeration\"\n" + "  }\n" + "}"))
 				.andExpect(status().isCreated());
 	}
@@ -941,39 +960,36 @@ public class MasterdataControllerTest {
 	public void validateTimestampWithRegistrationCenter() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(resgistrationCenterStatusResponseDto);
-		
-		 mockMvc.perform(get(
-				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				 .andExpect(status().isOk());
-		
+
+		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				.andExpect(status().isOk());
+
 	}
-	
+
 	@Test
 	public void validateTimestampWithRegistrationCenterMasterDataExceptionTest() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(new MasterDataServiceException("11111","Database exception"));
-		
-		 mockMvc.perform(get(
-				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				 .andExpect(status().isInternalServerError());
-		
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(new MasterDataServiceException("11111", "Database exception"));
+
+		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				.andExpect(status().isInternalServerError());
+
 	}
-	
+
 	@Test
 	public void validateTimestampWithRegistrationCenterDataNotFoundExceptionTest() throws Exception {
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		resgistrationCenterStatusResponseDto.setStatus("Accepted");
-		Mockito.when(registrationCenterService.validateTimestampWithRegistrationCenter(Mockito.anyString(),
-				Mockito.anyString())).thenThrow(new DataNotFoundException("11111","Data not found exception"));
-		
-		 mockMvc.perform(get(
-				 "/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
-				 .andExpect(status().isNotFound());
-		
+		Mockito.when(registrationCenterService.validateTimeStampWithRegistrationCenter(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(new DataNotFoundException("11111", "Data not found exception"));
+
+		mockMvc.perform(get("/v1.0/registrationcenters/validate/1/2017-12-12T17:59:59.999Z"))
+				.andExpect(status().isNotFound());
+
 	}
 
 }

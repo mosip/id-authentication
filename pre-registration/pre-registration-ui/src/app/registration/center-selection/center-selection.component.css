@@ -100,9 +100,8 @@ input[type="radio"] {
 }
 
 .map{
-  width: 30vw;
-  background-color: lightgray;
-  height: 60vh;
+  width: 400px;
+  height: 700px;
   display: flex;
 }
 

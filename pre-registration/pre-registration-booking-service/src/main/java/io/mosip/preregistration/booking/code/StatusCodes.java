@@ -1,7 +1,4 @@
-/* 
- * Copyright
- * 
- */
+
 package io.mosip.preregistration.booking.code;
 
 /**

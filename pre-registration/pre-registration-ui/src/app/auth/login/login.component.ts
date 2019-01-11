@@ -1,20 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import {FormControl, Validators} from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  
-
-  languages: string[] = [
-    'English',
-    'French',
-    'Arabic'
-  ];
+  languages: string[] = ['English', 'French', 'Arabic'];
 
   inputPlaceholderContact = 'Email ID or Phone Number';
   inputPlaceholderOTP = 'Enter OTP';
@@ -24,6 +18,7 @@ export class LoginComponent implements OnInit {
   inputOTP: string;
   selectedLanguage = '';
   langCode = 'en';
+  dir = 'ltr';
   showSendOTP = true;
   showResend = false;
   showVerify = false;
@@ -33,11 +28,11 @@ export class LoginComponent implements OnInit {
   email = new FormControl('', [Validators.required, Validators.email]);
 
   getErrorMessage() {
-    
-    return this.email.hasError('required') ? 'You must enter a value' :
-        this.email.hasError('email') ? 'Not a valid email' :
-            '';
-            
+    return this.email.hasError('required')
+      ? 'You must enter a value'
+      : this.email.hasError('email')
+      ? 'Not a valid email'
+      : '';
   }
 
   constructor(private router: Router, private translate: TranslateService) {
@@ -59,29 +54,31 @@ export class LoginComponent implements OnInit {
   changeLanguage(): void {
     if (this.selectedLanguage === 'English') {
       this.langCode = 'en';
+      this.dir = 'ltr';
     } else if (this.selectedLanguage === 'French') {
       this.langCode = 'fr';
+      this.dir = 'ltr';
     } else if (this.selectedLanguage === 'Arabic') {
       this.langCode = 'ar';
+      this.dir = 'rtl';
     }
     this.translate.use(this.langCode);
     localStorage.setItem('langCode', this.langCode);
+    localStorage.setItem('dir', this.dir);
   }
 
   showVerifyBtn() {
-    if (this.inputOTP.length > 0) {
+    if (this.inputOTP.length > 3) {
       this.showVerify = true;
-      this.showResend= false;
+      this.showResend = false;
     } else {
-      this.showResend=true;
-      this.showVerify=false;
+      this.showResend = true;
+      this.showVerify = false;
     }
   }
 
-  submit(): void {  
-
+  submit(): void {
     if (this.showSendOTP || this.showResend) {
-
       this.showResend = true;
       this.showOTP = true;
       this.showSendOTP = false;
@@ -94,14 +91,13 @@ export class LoginComponent implements OnInit {
         if (secValue === 0) {
           secValue = 60;
           if (minValue === 0) {
-
             // redirecting to initial phase on completion of timer
             this.showContactDetails = true;
             this.showSendOTP = true;
             this.showResend = false;
             this.showOTP = false;
             this.showVerify = false;
-            document.getElementById('minutesSpan').innerText="02";
+            document.getElementById('minutesSpan').innerText = '02';
 
             document.getElementById('timer').style.visibility = 'hidden';
             clearInterval(this.timer);
@@ -112,7 +108,7 @@ export class LoginComponent implements OnInit {
         }
 
         if (secValue === 10 || secValue < 10) {
-          document.getElementById('secondsSpan').innerText = '0' + (--secValue);
+          document.getElementById('secondsSpan').innerText = '0' + --secValue;
         } else {
           document.getElementById('secondsSpan').innerText = --secValue + '';
         }
@@ -129,23 +125,10 @@ export class LoginComponent implements OnInit {
       }
 
       // dynamic update of button text for Resend and Verify
-
-
     } else if (this.showVerify) {
       clearInterval(this.timer);
       console.log(this.inputContactDetails);
       this.router.navigate(['dashboard', this.inputContactDetails]);
     }
-
-
   }
-
-
-
-
-
-
-
-
-
 }

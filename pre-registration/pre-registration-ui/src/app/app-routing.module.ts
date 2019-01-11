@@ -7,7 +7,7 @@ import { ErrorComponent } from './shared/error/error.component';
 import { DashBoardComponent } from './registration/dashboard/dashboard.component';
 
 const appRoutes: Routes = [
-  { path: 'dashboard/:id', component: DashBoardComponent},
+  { path: 'dashboard/:id', component: DashBoardComponent },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'contact', component: ContactComponent },

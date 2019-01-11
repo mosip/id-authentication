@@ -71,18 +71,15 @@ public enum PlatformErrorMessages {
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
- /** The rpr pis identity not found. */
- RPR_PIS_IDENTITY_NOT_FOUND(
-					PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "002",
-					"Identity field not found in DemographicInfo Json"),
- /** The rpr pis unable to insert data. */
- RPR_PIS_UNABLE_TO_INSERT_DATA(
-							PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003",
-							"Unable to insert data in db for registration Id :"),
- /** The rpr pis file not found in dfs. */
- RPR_PIS_FILE_NOT_FOUND_IN_DFS(
-									PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
-									"File not found in DFS"),
+	/** The rpr pis identity not found. */
+	RPR_PIS_IDENTITY_NOT_FOUND(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "002",
+			"Identity field not found in DemographicInfo Json"),
+	/** The rpr pis unable to insert data. */
+	RPR_PIS_UNABLE_TO_INSERT_DATA(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003",
+			"Unable to insert data in db for registration Id :"),
+	/** The rpr pis file not found in dfs. */
+	RPR_PIS_FILE_NOT_FOUND_IN_DFS(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004",
+			"File not found in DFS"),
 
 	/** The rpr fac connection not available. */
 	// File adaptor ceph Exception error code and message
@@ -137,6 +134,8 @@ public enum PlatformErrorMessages {
 	RPR_QCR_INVALID_REGISTRATION_ID(PlatformErrorConstants.RPR_QUALITY_CHECKER_MODULE + "004",
 			"Registration Id is null"),
 
+	PACKET_UPLOAD_FAILED("", "Packet Upload failed"),
+
 	/** The structural validation failed. */
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
@@ -144,76 +143,94 @@ public enum PlatformErrorMessages {
 	/** The osi validation failed. */
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
-	
+
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
 
 	/** The rpr psj dfs not accessible. */
-	//Packet scanner job Exception error code and message
-	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002","The Packet store set by the System is not accessible"),
+	// Packet scanner job Exception error code and message
+	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002",
+			"The Packet store set by the System is not accessible"),
 
 	/** The rpr psj retry folder not accessible. */
-	RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "003","The Retry folder set by the System is not accessible"),
+	RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "003",
+			"The Retry folder set by the System is not accessible"),
 
 	/** The rpr psj virus scan folder not accessible. */
-	RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "004","The Virus scanner set by the System is not accessible"),
+	RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "004",
+			"The Virus scanner set by the System is not accessible"),
 
 	/** The rpr psj space unavailable for retry folder. */
-	RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "005","There is no space available in retry folder to upload the packet"),
+	RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "005",
+			"There is no space available in retry folder to upload the packet"),
 
 	/** The rpr psj virus scan failed. */
-	RPR_PSJ_VIRUS_SCAN_FAILED(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "006","Virus scan is failed"),
+	RPR_PSJ_VIRUS_SCAN_FAILED(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "006", "Virus scan is failed"),
 
 	/** The rpr psj ftp folder not accessible. */
-	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007","The FTP folder set by the System is not accessible"),
+	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007",
+			"The FTP folder set by the System is not accessible"),
 
 	/** The rpr pdj packet not available. */
-	//packet decryption job Exception error code and message
-	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001", "Packet not available"),
+	// packet decryption job Exception error code and message
+	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001",
+			"Packet not available"),
 
 	/** The rpr pdj file path not accessible. */
-	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002", "The File path set by the System is not accessible"),
+	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002",
+			"The File path set by the System is not accessible"),
 
 	/** The rpr pdj packet decryption failure. */
-	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003","The Decryption for the Packet has failed"),
+	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003",
+			"The Decryption for the Packet has failed"),
 
 	/** The rpr rct unknown resource exception. */
-	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformErrorConstants.RPR_REST_CLIENT_MODULE + "001","Unknown resource provided"),
+	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformErrorConstants.RPR_REST_CLIENT_MODULE + "001",
+			"Unknown resource provided"),
 
 	/** The rpr mvs invalid file request. */
-	RPR_MVS_INVALID_FILE_REQUEST(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "001", "Invalid file requested"),
+	RPR_MVS_INVALID_FILE_REQUEST(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "001",
+			"Invalid file requested"),
 
 	/** The rpr mvs file not present. */
-	RPR_MVS_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "002", "Requested file is not present"),
+	RPR_MVS_FILE_NOT_PRESENT(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "002",
+			"Requested file is not present"),
 
 	/** The rpr mvs invalid status update. */
-	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003", "Invalid status update"),
+	RPR_MVS_INVALID_STATUS_UPDATE(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "003",
+			"Invalid status update"),
 
 	/** The rpr mvs no assigned record. */
-	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004", "No Assigned Record Found"),
+	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
+			"No Assigned Record Found"),
 
-	//Registration processor Message sender Exception error code
+	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
 
-	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "The Processing of Template Failed "),
+	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
+			"The Processing of Template Failed "),
 
-	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template Generation failed"),
+	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
+			"Template Generation failed"),
 
-	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002", "Phone number was not found"),
+	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
+			"Phone number was not found"),
 
 	RPR_EML_EMAILID_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Email Id was not found"),
 
-	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003", "The Configuration and Language code not found"),
+	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
+			"The Configuration and Language code not found"),
 
-	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "001", "Packet Not Found in Packet Store"),
+	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "001",
+			"Packet Not Found in Packet Store"),
 
-	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "002", "File is Already exists in DFS location And its now Deleted from Virus scanner job"),
+	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "002",
+			"File is Already exists in DFS location And its now Deleted from Virus scanner job"),
 
+	/***** System Exception *****/
 
-	/*****System Exception*****/
-
-	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Unexpected exception"),
+	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001", "Unexpected exception"),
 
 	/** The rpr sys bad gateway. */
 	RPR_SYS_BAD_GATEWAY(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "002", "Bad Gateway"),
@@ -228,25 +245,28 @@ public enum PlatformErrorMessages {
 	RPR_SYS_TIMEOUT_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "005", "Timeout Error"),
 
 	/** The rpr sys identity json mapping exception. */
-	RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "006","Error while mapping Identity Json"),
+	RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "006",
+			"Error while mapping Identity Json"),
 
 	/** The rpr sys instantiation exception. */
-	RPR_SYS_INSTANTIATION_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "007","Error while creating object of JsonValue class"),
+	RPR_SYS_INSTANTIATION_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "007",
+			"Error while creating object of JsonValue class"),
 
 	/** The rpr sys no such field exception. */
-	RPR_SYS_NO_SUCH_FIELD_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "008","Could not find the field"),
+	RPR_SYS_NO_SUCH_FIELD_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "008", "Could not find the field"),
 
 	/** The rpr sys json parsing exception. */
-	RPR_SYS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "009","Error while parsing Json"),
+	RPR_SYS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "009", "Error while parsing Json"),
 
 	/** The rpr sys unable to convert stream to bytes. */
-	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010","Error while converting inputstream to bytes"),
+	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "010",
+			"Error while converting inputstream to bytes"),
 
 	/** The rpr sys parsing date exception. */
 	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "011", "Error while parsing date "),
 
-    /** The rpr sys io exception. */
-    RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION ");
+	/** The rpr sys io exception. */
+	RPR_SYS_IO_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "012", "IO EXCEPTION ");
 	/** The error message. */
 	private final String errorMessage;
 
@@ -285,4 +305,3 @@ public enum PlatformErrorMessages {
 	}
 
 }
-

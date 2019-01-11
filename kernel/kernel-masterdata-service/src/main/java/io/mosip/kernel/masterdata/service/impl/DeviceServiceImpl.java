@@ -20,8 +20,8 @@ import io.mosip.kernel.masterdata.entity.DeviceHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.DeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
+import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -42,9 +42,11 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	DeviceRepository deviceRepository;
-
+	/**
+	 * Field to hold Device Service object
+	 */
 	@Autowired
-	DeviceHistoryRepository deviceHistoryRepository;
+	DeviceHistoryService deviceHistoryService;
 
 	/*
 	 * (non-Javadoc)
@@ -119,9 +121,12 @@ public class DeviceServiceImpl implements DeviceService {
 		DeviceHistory entityHistory = MetaDataUtils.setCreateMetaData(deviceDto.getRequest(), DeviceHistory.class);
 		entityHistory.setEffectDateTime(entity.getCreatedDateTime());
 		entityHistory.setCreatedDateTime(entity.getCreatedDateTime());
+		
 		try {
+			
 			device = deviceRepository.create(entity);
-			deviceHistoryRepository.create(entityHistory);
+			deviceHistoryService.createDeviceHistory(entityHistory);
+		
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_INSERT_EXCEPTION.getErrorMessage() + " " + ExceptionUtils.parseException(e));
@@ -156,7 +161,12 @@ public class DeviceServiceImpl implements DeviceService {
 				DeviceHistory deviceHistory = new DeviceHistory();
 				MapperUtils.map(updatedDevice, deviceHistory);
 				MapperUtils.setBaseFieldValue(updatedDevice, deviceHistory);
-				deviceHistoryRepository.create(deviceHistory);
+				
+				
+				deviceHistory.setEffectDateTime(updatedDevice.getUpdatedDateTime());
+				deviceHistory.setUpdatedDateTime(updatedDevice.getUpdatedDateTime());
+				
+				deviceHistoryService.createDeviceHistory(deviceHistory);
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -192,7 +202,8 @@ public class DeviceServiceImpl implements DeviceService {
 				MapperUtils.setBaseFieldValue(deletedDevice, deviceHistory);
 
 				deviceHistory.setEffectDateTime(deletedDevice.getDeletedDateTime());
-				deviceHistoryRepository.create(deviceHistory);
+				deviceHistory.setDeletedDateTime(deletedDevice.getDeletedDateTime());
+				deviceHistoryService.createDeviceHistory(deviceHistory);
 			} else {
 				throw new RequestException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());

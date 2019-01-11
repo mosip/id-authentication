@@ -77,8 +77,78 @@
   display: inline-block;
   width: 100%;
   margin-top: 9.5px;
+  cursor: pointer;
 }
 
 .preview__modify-div-span {
   float: right;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+.user-back-btn{
+  color: #FD518C;
+  background-color: white;
+  font-family: Roboto;
+  margin-right: 30px;
+  border: 1px solid #FD518C;
+  opacity:100%;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-radius: 0;
+}
+.user-book_later-btn{
+    color: #FD518C;
+    background-color: white;
+    font-family: Roboto;
+    margin-right: 30px;
+    border: 1px solid #FD518C;
+    opacity:100%;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 0;
+}
+.user-continue-btn {
+  background-color: #ff4081;
+  border-radius: 0;
+  color: white;
+  opacity:100%;
+  font-family: Roboto;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  
+}
+
+.center-selection__button-container {
+  width: 100%;
+  height: 70px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding-top: 10px;
+  display: flex;
+}
+
+.preview__file-container {
+  display: flex;
+  flex-wrap:wrap;
+}
+
+.preview__file-span {
+  margin: 0 10px 0 10px;
+  font-size: 12px;
+  color:black;
+}
+
+.preview__modify-file {
+  float: right;
+  font-size: 14px;
+  color: black;
+  margin-right: 30px;
+  padding-bottom: 20px;
+  cursor: pointer;
 }

@@ -30,6 +30,7 @@ import io.swagger.annotations.Api;
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -149,13 +150,13 @@ public class RegistrationCenterController {
 	/**
 	 * Check whether the time stamp sent for the given registration center id is not a holiday and 
 	 * is in between working hours.
-	 * @param regId
-	 * @param timeStamp
+	 * @param regId - registration id
+	 * @param timeStamp - timestamp based on the format  YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return RegistrationCenterStatusResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters/validate/{id}/{timestamp}")
 	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId ,@PathVariable("timestamp") String timeStamp) {
-		return registrationCenterService.validateTimestampWithRegistrationCenter(regId, timeStamp);
+		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, timeStamp);
 		
 	}
 
