@@ -34,6 +34,7 @@ public class RestApiClient {
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(RestApiClient.class);
 
+	/** The builder. */
 	@Autowired
 	RestTemplateBuilder builder;
 
@@ -65,18 +66,13 @@ public class RestApiClient {
 	/**
 	 * Post api.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param uri
-	 *            the uri
-	 * @param requestType
-	 *            the request type
-	 * @param responseClass
-	 *            the response class
+	 * @param <T>            the generic type
+	 * @param uri            the uri
+	 * @param requestType            the request type
+	 * @param responseClass            the response class
 	 * @return the t
-	 * @throws Exception
 	 */
-	public <T> T postApi(String uri, T requestType, Class<?> responseClass) {
+	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) {
 
 		RestTemplate restTemplate;
 		try {
@@ -92,6 +88,12 @@ public class RestApiClient {
 		return null;
 	}
 
+	/**
+	 * Gets the rest template.
+	 *
+	 * @return the rest template
+	 * @throws Exception the exception
+	 */
 	public static RestTemplate getRestTemplate() throws Exception {
 		SSLContext sslContext = SSLContext.getInstance("SSL");
 		// set up a TrustManager that trusts everything

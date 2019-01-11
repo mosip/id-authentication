@@ -62,14 +62,11 @@ public class UserClientMachineMappingServiceTest {
 	MapMachineServiceImpl mapMachineServiceImpl;
 	@Mock
 	private AuditFactoryImpl auditFactory;
-	
-	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		applicationContext.setApplicationMessagesBundle();
 	}
 
 	@Test

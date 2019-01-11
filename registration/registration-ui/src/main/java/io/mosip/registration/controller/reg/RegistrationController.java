@@ -1,6 +1,5 @@
 package io.mosip.registration.controller.reg;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
@@ -10,9 +9,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -20,79 +19,79 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
-import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
-import io.mosip.registration.controller.device.ScanController;
+import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SelectionListDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.dto.demographic.ArrayPropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
+import io.mosip.registration.dto.demographic.SimplePropertiesDTO;
+import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.external.PreRegZipHandlingService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import io.mosip.registration.util.kernal.RIDGenerator;
-import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 /**
  * Class for Registration Page Controller
@@ -110,6 +109,11 @@ public class RegistrationController extends BaseController {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
 
+	@Autowired
+	private DocumentScanController documentScanController;
+
+	@Autowired
+	private AuthenticationController authenticationController;
 	@FXML
 	private TextField preRegistrationId;
 
@@ -144,6 +148,9 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane childSpecificFields;
+
+	@FXML
+	private ScrollPane demoScrollPane;
 
 	private SimpleBooleanProperty switchedOn;
 
@@ -186,19 +193,19 @@ public class RegistrationController extends BaseController {
 	private TextField mobileNo;
 
 	@FXML
-	private TextField region;
+	private ComboBox<String> region;
 
 	@FXML
-	private TextField city;
+	private ComboBox<String> city;
 
 	@FXML
-	private TextField province;
+	private ComboBox<String> province;
 
 	@FXML
 	private TextField postalCode;
 
 	@FXML
-	private TextField localAdminAuthority;
+	private ComboBox<String> localAdminAuthority;
 
 	@FXML
 	private TextField cniOrPinNumber;
@@ -222,46 +229,7 @@ public class RegistrationController extends BaseController {
 	private AnchorPane demoGraphicPane1;
 
 	@FXML
-	private ComboBox<String> poaDocuments;
-
-	@FXML
-	private VBox poaBox;
-
-	@FXML
-	private ScrollPane poaScroll;
-
-	@FXML
-	private ComboBox<String> poiDocuments;
-
-	@FXML
-	private VBox poiBox;
-
-	@FXML
-	private ScrollPane poiScroll;
-
-	@FXML
 	private ImageView headerImage;
-
-	@FXML
-	private ComboBox<String> porDocuments;
-
-	@FXML
-	private ComboBox<String> dobDocuments;
-
-	@FXML
-	private VBox porBox;
-
-	@FXML
-	private VBox dobBox;
-
-	@FXML
-	private ScrollPane porScroll;
-
-	@FXML
-	private ScrollPane dobScroll;
-
-	@FXML
-	private AnchorPane documentFields;
 
 	@FXML
 	private Button nextBtn;
@@ -284,8 +252,6 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private ImageView copyAddressImage;
 
-	private boolean toggleAgeOrDobField;
-
 	private boolean isChild;
 
 	private Node keyboardNode;
@@ -293,11 +259,6 @@ public class RegistrationController extends BaseController {
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
 
-	@Value("${DOCUMENT_SIZE}")
-	public int documentSize;
-
-	@Value("${SCROLL_CHECK}")
-	public int scrollCheck;
 	@FXML
 	private AnchorPane biometricsPane;
 	@FXML
@@ -318,14 +279,6 @@ public class RegistrationController extends BaseController {
 	protected Button autoFillBtn;
 	@FXML
 	protected Button fetchBtn;
-	@FXML
-	protected Button poaScanBtn;
-	@FXML
-	protected Button poiScanBtn;
-	@FXML
-	protected Button porScanBtn;
-	@FXML
-	protected Button dobScanBtn;
 
 	@FXML
 	private AnchorPane fingerPrintCapturePane;
@@ -342,19 +295,8 @@ public class RegistrationController extends BaseController {
 
 	private Image defaultImage;
 
-	private String selectedDocument;
-
-	@Autowired
-	private ScanController scanController;
-
 	@FXML
 	private TitledPane authenticationTitlePane;
-
-	@Autowired
-	PreRegZipHandlingService preRegZipHandlingService;
-
-	@Autowired
-	private DocumentScanFacade documentScanFacade;
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
@@ -365,13 +307,39 @@ public class RegistrationController extends BaseController {
 	private boolean dobSelectionFromCalendar = true;
 
 	@Autowired
+
 	private IdValidator<String> pridValidatorImpl;
+	@Autowired
+	private Validations validation;
+	@FXML
+	private Text paneLabel;
+	@FXML
+	private AnchorPane dateAnchorPane;
+	@FXML
+	private AnchorPane addressAnchorPane;
+	@FXML
+	private Label preRegistrationLabel;
+	@FXML
+	private Label fullNameLabel;
+	@FXML
+	private Label genderLabel;
+	@FXML
+	private Label mobileNoLabel;
+	@FXML
+	private Label emailIdLabel;
+	@FXML
+	private Label cnieLabel;
+
+	FXUtils fxUtils;
+
 
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
+			demoScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
+
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
 					"initializing the registration controller",
 					SessionContext.getInstance().getUserContext().getUserId(),
@@ -379,7 +347,7 @@ public class RegistrationController extends BaseController {
 
 			// Create RegistrationDTO Object
 			if (getRegistrationDtoContent() == null) {
-				createRegistrationDTOObject();
+				createRegistrationDTOObject("New");
 			}
 
 			if (capturePhotoUsingDevice.equals("Y") && !isEditPage()) {
@@ -407,34 +375,93 @@ public class RegistrationController extends BaseController {
 							headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
 						}
 					});
-
+			fxUtils = FXUtils.getInstance();
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
+					RegistrationConstants.INDIVIDUAL_VALIDATION);
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
-			toggleAgeOrDobField = false;
 			isChild = true;
 			ageDatePicker.setDisable(false);
-			ageField.setDisable(true);
-			accord.setExpandedPane(demoGraphicTitlePane);
-			disableFutureDays();
 			toggleFunction();
 			toggleFunctionForBiometricException();
 			ageFieldValidations();
 			ageValidationInDatePicker();
-			dateFormatter();
-			populateTheLocalLangFields();
-			loadLanguageSpecificKeyboard();
+			listenerOnFields();
 			loadLocalLanguageFields();
-			loadListOfDocuments();
-			setScrollFalse();
 			loadKeyboard();
+			ageField.setDisable(true);
+			accord.setExpandedPane(demoGraphicTitlePane);
+			fxUtils.dateFormatter(ageDatePicker);
+			fxUtils.disableFutureDays(ageDatePicker);
+			region.getItems().addAll(RegistrationConstants.CITY_LIST);
+			city.getItems().addAll(RegistrationConstants.CITY_LIST);
+			province.getItems().addAll(RegistrationConstants.CITY_LIST);
+			localAdminAuthority.getItems().addAll(RegistrationConstants.CITY_LIST);
+
 			if (isEditPage() && getRegistrationDtoContent() != null) {
 				prepareEditPageContent();
 			}
+			uinUpdate();
+
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
+	}
+
+	private void uinUpdate() {
+		if (getRegistrationDtoContent().getSelectionListDTO() != null) {
+
+			ObservableList<Node> nodes = demoGraphicPane1.getChildren();
+
+			for (Node node : nodes) {
+				node.setDisable(true);
+			}
+			paneLabel.setText("/ UIN Update");
+			fetchBtn.setVisible(false);
+			headerImage.setVisible(false);
+			nextBtn.setDisable(false);
+			preRegistrationLabel.setText("UIN");
+
+			preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
+
+			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild());
+
+			fullName.setDisable(false);
+			fullNameLocalLanguage.setDisable(false);
+			fullNameLabel.setDisable(false);
+
+			dateAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAge());
+
+			gender.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+			genderLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isGender());
+
+			addressAnchorPane.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isAddress());
+
+			mobileNo.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			mobileNoLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+
+			emailId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+			emailIdLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
+
+			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+
+			parentName.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
+			uinId.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild());
+			if (getRegistrationDtoContent().getSelectionListDTO().isChild()) {
+				documentScanController.documentScan.setLayoutY(134.00);
+			} else {
+				documentScanController.documentScan.setLayoutY(25.00);
+			}
+
+		}
+	}
+
+	public void init(SelectionListDTO selectionListDTO) {
+		createRegistrationDTOObject("Update");
+		getRegistrationDtoContent().setSelectionListDTO(selectionListDTO);
 	}
 
 	/**
@@ -464,50 +491,46 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Preparing the Edit page content");
 
-			DemographicDTO demographicDTO = getRegistrationDtoContent().getDemographicDTO();
-			DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
-			AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
-			LocationDTO locationDTO = addressDTO.getLocationDTO();
+			DemographicInfoDTO demo = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO();
 
-			fullName.setText(demographicInfoDTO.getFullName());
+			populateFieldValue(fullName, fullNameLocalLanguage, demo.getIdentity().getFullName().getValues());
+			populateFieldValue(gender, null, demo.getIdentity().getGender().getValues());
+			populateFieldValue(addressLine1, addressLine1LocalLanguage,
+					demo.getIdentity().getAddressLine1().getValues());
+			populateFieldValue(addressLine2, addressLine2LocalLanguage,
+					demo.getIdentity().getAddressLine2().getValues());
+			populateFieldValue(addressLine3, addressLine3LocalLanguage,
+					demo.getIdentity().getAddressLine3().getValues());
+			populateFieldValue(region, null, demo.getIdentity().getRegion().getValues());
+			populateFieldValue(province, null, demo.getIdentity().getProvince().getValues());
+			populateFieldValue(city, null, demo.getIdentity().getCity().getValues());
+			populateFieldValue(gender, null, demo.getIdentity().getGender().getValues());
+			postalCode.setText(demo.getIdentity().getPostalCode());
+			mobileNo.setText(demo.getIdentity().getPhone().getValue());
+			emailId.setText(demo.getIdentity().getEmail().getValue());
+			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber());
 
-			if (demographicInfoDTO.getDateOfBirth() != null && getAgeDatePickerContent() != null
+			populateFieldValue(localAdminAuthority, null,
+					demo.getIdentity().getLocalAdministrativeAuthority().getValues());
+
+			if (demo.getIdentity().getParentOrGuardianRIDOrUIN() != null
+					&& !demo.getIdentity().getParentOrGuardianRIDOrUIN().isEmpty()) {
+				populateFieldValue(parentName, null, demo.getIdentity().getParentOrGuardianName().getValues());
+				uinId.setText(demo.getIdentity().getParentOrGuardianRIDOrUIN());
+			}
+
+			if (demo.getIdentity().getDateOfBirth().getValue() != null && getAgeDatePickerContent() != null
 					&& dobSelectionFromCalendar) {
 				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
 			} else {
 				switchedOn.set(true);
 				ageDatePicker.setDisable(true);
 				ageField.setDisable(false);
-				ageField.setText(demographicInfoDTO.getAge());
+				ageField.setText(demo.getIdentity().getAge());
 				if (isEditPage())
 					autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
 			}
 
-			gender.setValue(demographicInfoDTO.getGender());
-
-			addressLine1.setText(addressDTO.getAddressLine1());
-			addressLine2.setText(addressDTO.getAddressLine2());
-			addressLine3.setText(addressDTO.getAddressLine3());
-
-			province.setText(locationDTO.getProvince());
-			city.setText(locationDTO.getCity());
-			region.setText(locationDTO.getRegion());
-			postalCode.setText(locationDTO.getPostalCode());
-
-			mobileNo.setText(demographicInfoDTO.getMobile());
-			emailId.setText(demographicInfoDTO.getEmailId());
-			cniOrPinNumber.setText(demographicInfoDTO.getCneOrPINNumber());
-			localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
-
-			if (demographicDTO.getIntroducerRID() != null) {
-				uinId.setText(demographicDTO.getIntroducerRID());
-			}
-			if (demographicDTO.getIntroducerUIN() != null) {
-				uinId.setText(demographicDTO.getIntroducerUIN());
-			}
-			if (demographicInfoDTO.getParentOrGuardianName() != null) {
-				parentName.setText(demographicInfoDTO.getParentOrGuardianName());
-			}
 			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
 
 			// for applicant biometrics
@@ -531,29 +554,7 @@ public class RegistrationController extends BaseController {
 				}
 			}
 
-			// for Document scan
-			if (getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO() != null
-					&& getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO()
-							.getDocumentDetailsDTO() != null) {
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POA_DOCUMENT))
-						.findFirst()
-						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poaBox, poaScroll));
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POI_DOCUMENT))
-						.findFirst()
-						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), poiBox, poiScroll));
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.POR_DOCUMENT))
-						.findFirst()
-						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), porBox, porScroll));
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(doc -> doc.getDocumentCategory().equals(RegistrationConstants.DOB_DOCUMENT))
-						.findFirst()
-						.ifPresent(document -> addDocumentsToScreen(document.getDocumentName(), dobBox, dobScroll));
-
-			}
-
+			documentScanController.prepareEditPageContent();
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
 			ageFieldValidations();
 			ageValidationInDatePicker();
@@ -565,12 +566,41 @@ public class RegistrationController extends BaseController {
 
 	}
 
+	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
+		String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
+		String localLanguageCode = AppConfig.getApplicationProperty("local_language");
+		String valueInPlatformLang = "";
+		String valueinLocalLang = "";
+
+		for (ValuesDTO fieldValue : fieldValues) {
+			if (fieldValue.getLanguage().equals(platformLanguageCode)) {
+				valueInPlatformLang = fieldValue.getValue();
+			} else if (nodeForLocalLang != null && fieldValue.getLanguage().equals(localLanguageCode)) {
+				valueinLocalLang = fieldValue.getValue();
+			}
+		}
+
+		if (nodeForPlatformLang instanceof TextField) {
+			((TextField) nodeForPlatformLang).setText(valueInPlatformLang);
+
+			if (nodeForLocalLang != null) {
+				((TextField) nodeForLocalLang).setText(valueinLocalLang);
+			}
+		} else if (nodeForPlatformLang instanceof ComboBox) {
+			((ComboBox) nodeForPlatformLang).setValue(valueInPlatformLang);
+
+			if (nodeForLocalLang != null) {
+				((ComboBox) nodeForLocalLang).setValue(valueinLocalLang);
+			}
+		}
+	}
+
 	@FXML
 	private void fetchPreRegistration() {
 		String preRegId = preRegistrationId.getText();
 
 		if (StringUtils.isEmpty(preRegId)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.PRE_REG_ID_EMPTY);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PRE_REG_ID_EMPTY);
 			return;
 		} else {
 			try {
@@ -616,9 +646,9 @@ public class RegistrationController extends BaseController {
 			} else {
 				LocationDTO locationDto = ((AddressDTO) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.ADDRESS_KEY)).getLocationDTO();
-				region.setText(locationDto.getRegion());
-				city.setText(locationDto.getCity());
-				province.setText(locationDto.getProvince());
+				region.setValue(locationDto.getRegion());
+				city.setValue(locationDto.getCity());
+				province.setValue(locationDto.getProvince());
 				postalCode.setText(locationDto.getPostalCode());
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
@@ -640,7 +670,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading the second demographic pane");
 
-			if (validateDemographicPaneOne()) {
+			if (validateDemographicPane(demoGraphicPane1)) {
 				demoGraphicTitlePane.setContent(null);
 				demoGraphicTitlePane.setExpanded(false);
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
@@ -683,8 +713,8 @@ public class RegistrationController extends BaseController {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(120.00);
 			}
+			keyboardNode.setVisible(!keyboardNode.isVisible());
 
-			keyboardNode.setVisible(true);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -706,70 +736,30 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
-			DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-			LocationDTO locationDTO = new LocationDTO();
-			AddressDTO addressDTO = new AddressDTO();
-			DemographicDTO demographicDTO = registrationDTO.getDemographicDTO();
+			DemographicInfoDTO demographicInfoDTO;
+
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
-			if (validateDemographicPaneTwo()) {
-				demographicInfoDTO.setFullName(fullName.getText());
-				if (ageDatePicker.getValue() != null) {
-					dobSelectionFromCalendar = true;
-					demographicInfoDTO.setDateOfBirth(Date
-							.from(ageDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-				} else {
-					dobSelectionFromCalendar = false;
-					demographicInfoDTO.setDateOfBirth(Date.from(
-							autoAgeDatePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-				}
-				demographicInfoDTO.setAge(ageField.getText());
-				demographicInfoDTO.setGender(gender.getValue());
-				addressDTO.setAddressLine1(addressLine1.getText());
-				addressDTO.setAddressLine2(addressLine2.getText());
-				addressDTO.setLine3(addressLine3.getText());
-				locationDTO.setProvince(province.getText());
-				locationDTO.setCity(city.getText());
-				locationDTO.setRegion(region.getText());
-				locationDTO.setPostalCode(postalCode.getText());
-				addressDTO.setLocationDTO(locationDTO);
-				demographicInfoDTO.setAddressDTO(addressDTO);
-				demographicInfoDTO.setMobile(mobileNo.getText());
-				demographicInfoDTO.setEmailId(emailId.getText());
-				demographicInfoDTO.setChild(isChild);
-				demographicInfoDTO.setCneOrPINNumber(cniOrPinNumber.getText());
-				demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
+
+			if (validateDemographicPane(demoGraphicPane2)) {
+
+				demographicInfoDTO = buildDemographicInfo();
+
+				dobSelectionFromCalendar = ageDatePicker.getValue() != null;
+
 				if (isChild) {
-					if (uinId.getText().length() == Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
-						demographicDTO.setIntroducerRID(uinId.getText());
-					} else {
-						demographicDTO.setIntroducerUIN(uinId.getText());
-					}
+
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-					demographicInfoDTO.setParentOrGuardianName(parentName.getText());
+
 					registrationMetaDataDTO.setApplicationType("Child");
 				} else {
 					registrationMetaDataDTO.setApplicationType("Adult");
 				}
-				demographicDTO.setDemoInUserLang(demographicInfoDTO);
+
 				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
 
-				// local language
-				demographicInfoDTO = new DemographicInfoDTO();
-				locationDTO = new LocationDTO();
-				addressDTO = new AddressDTO();
-				addressDTO.setLocationDTO(locationDTO);
-				demographicInfoDTO.setAddressDTO(addressDTO);
-				demographicInfoDTO.setFullName(fullNameLocalLanguage.getText());
-				addressDTO.setAddressLine1(addressLine1LocalLanguage.getText());
-				addressDTO.setAddressLine2(addressLine2LocalLanguage.getText());
-				addressDTO.setLine3(addressLine3LocalLanguage.getText());
-
-				demographicDTO.setDemoInLocalLang(demographicInfoDTO);
-
 				registrationDTO.setPreRegistrationId(preRegistrationId.getText());
-				registrationDTO.setOsiDataDTO(osiDataDTO);
-				registrationDTO.setDemographicDTO(demographicDTO);
+				registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
@@ -779,14 +769,166 @@ public class RegistrationController extends BaseController {
 				} else {
 					SessionContext.getInstance().getMapObject().put("ageDatePickerContent", autoAgeDatePicker);
 				}
-
 				biometricTitlePane.setExpanded(true);
+				
+					toggleFingerprintCaptureVisibility(registrationDTO.getSelectionListDTO().isBiometricFingerprint());
+					toggleIrisCaptureVisibility(registrationDTO.getSelectionListDTO().isBiometricIris());
+					//togglePhotoCaptureVisibility(true);
 
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private DemographicInfoDTO buildDemographicInfo() {
+
+		String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
+		String localLanguageCode = AppConfig.getApplicationProperty("local_language");
+		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+				.getIdentity();
+
+		return Builder.build(DemographicInfoDTO.class).with(demographicDTO -> demographicDTO.setIdentity(Builder
+				.build(Identity.class)
+				.with(identity -> identity.setFullName(fullName.isDisabled() ? null : (ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(name -> name.setLabel("First Name"))
+						.with(name -> name.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(fullName.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setDateOfBirth(dateAnchorPane.isDisabled() ? null : Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Date Of Birth"))
+								.with(value -> value.setValue(DateUtils.formatDate(
+										Date.from((ageDatePicker.getValue() == null ? autoAgeDatePicker : ageDatePicker)
+												.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+										"yyyy/MM/dd")))
+								.get()))
+
+				.with(identity -> identity.setAge(ageField.isDisabled() ? null : ageField.getText()))
+				.with(identity -> identity.setGender((ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(genderValue -> genderValue.setLabel("Gender"))
+						.with(genderValue -> genderValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(gender.getValue())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(gender.getValue())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setAddressLine1(addressLine1.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(addressValue -> addressValue.setLabel("Address Line 1"))
+						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(addressLine1.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+
+										.with(value -> value.setValue(addressLine1LocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setAddressLine2(addressLine2.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(addressValue -> addressValue.setLabel("Address Line 2"))
+						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(addressLine2.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+
+										.with(value -> value.setValue(addressLine2LocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setAddressLine3(addressLine3.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(addressValue -> addressValue.setLabel("Address Line 3"))
+						.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(addressLine3.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+
+										.with(value -> value.setValue(addressLine3LocalLanguage.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setRegion(region.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(regionValue -> regionValue.setLabel("Region"))
+						.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(region.getValue())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(region.getValue())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setProvince(province.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(provinceValue -> provinceValue.setLabel("Province"))
+						.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(province.getValue())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(province.getValue())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setCity(city.isDisabled() ? null :(ArrayPropertiesDTO) Builder.build(ArrayPropertiesDTO.class)
+						.with(cityValue -> cityValue.setLabel("City"))
+						.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(city.getValue())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(city.getValue())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setPostalCode(postalCode.isDisabled() ? null : postalCode.getText()))
+
+				.with(identity -> identity
+						.setPhone(mobileNo.isDisabled() ? null :Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Land Line"))
+								.with(value -> value.setValue(mobileNo.getText())).get()))
+				.with(identity -> identity.setEmail(emailId.isDisabled() ? null :
+						Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Business Email"))
+								.with(value -> value.setValue(emailId.getText())).get()))
+				.with(identity -> identity.setCnieNumber(cniOrPinNumber.isDisabled() ? null :cniOrPinNumber.getText()))
+				.with(identity -> identity.setLocalAdministrativeAuthority(localAdminAuthority.isDisabled() ? null :(ArrayPropertiesDTO) Builder
+						.build(ArrayPropertiesDTO.class)
+						.with(localAdminAuthValue -> localAdminAuthValue.setLabel("Local Administrative Authority"))
+						.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(localAdminAuthority.getValue())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setParentOrGuardianName(parentName.isDisabled() ? null :(ArrayPropertiesDTO) Builder
+						.build(ArrayPropertiesDTO.class).with(parentValue -> parentValue.setLabel("Parent/Guardian"))
+						.with(parentValue -> parentValue.setValues(Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue(parentName.getText())).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue(parentName.getText())).get()))
+								.get()))
+						.get()))
+				.with(identity -> identity.setParentOrGuardianRIDOrUIN(uinId.isDisabled() ? null :uinId.getText()))
+				.with(identity -> identity.setProofOfIdentity(demographicIdentity.getProofOfIdentity()))
+				.with(identity -> identity.setProofOfAddress(demographicIdentity.getProofOfAddress()))
+				.with(identity -> identity.setProofOfRelationship(demographicIdentity.getProofOfRelationship()))
+				.with(identity -> identity.setDateOfBirthProof(demographicIdentity.getDateOfBirthProof())).get()))
+				.get();
 	}
 
 	@FXML
@@ -830,8 +972,7 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType
-	 *            type of image that is to be captured
+	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -892,56 +1033,68 @@ public class RegistrationController extends BaseController {
 	private void saveBiometricDetails() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
+		boolean isValid = true;
+		isValid = validateDemographicPane(demoGraphicPane1);
+		if (isValid) {
+			isValid = validateDemographicPane(demoGraphicPane2);
+		}
+		if (!isValid) {
+			demoGraphicTitlePane.setExpanded(true);
+			toggleIrisCaptureVisibility(true);
+		}
+		if (isValid) {
 
-		if (capturePhotoUsingDevice.equals("Y")) {
-			if (validateApplicantImage()) {
-				try {
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-							byteArrayOutputStream);
-					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
-							.getApplicantDocumentDTO();
-					applicantDocumentDTO.setPhoto(photoInBytes);
-					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-					byteArrayOutputStream.close();
-					if (exceptionBufferedImage != null) {
-						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-						ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-								outputStream);
-						byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-						applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
-						applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-						applicantDocumentDTO.setHasExceptionPhoto(true);
-						outputStream.close();
-					} else {
-						applicantDocumentDTO.setHasExceptionPhoto(false);
+			if (capturePhotoUsingDevice.equals("Y")) {
+				if (validateApplicantImage()) {
+					try {
+						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+						ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+								byteArrayOutputStream);
+						byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+						ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+								.getApplicantDocumentDTO();
+						applicantDocumentDTO.setPhoto(photoInBytes);
+						applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+						byteArrayOutputStream.close();
+						if (exceptionBufferedImage != null) {
+							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+							ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+									outputStream);
+							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+							applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+							applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+							applicantDocumentDTO.setHasExceptionPhoto(true);
+							outputStream.close();
+						} else {
+							applicantDocumentDTO.setHasExceptionPhoto(false);
+						}
+
+						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
+								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								"showing demographic preview");
+
+						setPreviewContent();
+						loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
+					} catch (IOException ioException) {
+						LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+								RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 					}
+				}
 
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-
+			} else {
+				try {
+					DataProvider.setApplicantDocumentDTO(
+							getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO(),
+							toggleBiometricException);
 					setPreviewContent();
 					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 				} catch (IOException ioException) {
 					LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+				} catch (RegBaseCheckedException regBaseCheckedException) {
+					LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
 				}
-			}
-
-		} else {
-			try {
-				DataProvider.setApplicantDocumentDTO(
-						getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO(),
-						toggleBiometricException);
-				setPreviewContent();
-				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
-			} catch (IOException ioException) {
-				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-			} catch (RegBaseCheckedException regBaseCheckedException) {
-				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, regBaseCheckedException.getMessage());
 			}
 		}
 
@@ -955,10 +1108,7 @@ public class RegistrationController extends BaseController {
 		pane2PrevBtn.setVisible(false);
 		autoFillBtn.setVisible(false);
 		fetchBtn.setVisible(false);
-		poaScanBtn.setVisible(false);
-		poiScanBtn.setVisible(false);
-		porScanBtn.setVisible(false);
-		dobScanBtn.setVisible(false);
+		documentScanController.setPreviewContent();
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane1Content", demoGraphicPane1);
 		SessionContext.getInstance().getMapObject().put("demoGraphicPane2Content", demoGraphicPane2);
 	}
@@ -976,29 +1126,23 @@ public class RegistrationController extends BaseController {
 						imageCaptured = true;
 					} else {
 						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+								RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
+					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
 				}
 			} else {
 				if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
 					imageCaptured = true;
 				} else {
 					generateAlert(RegistrationConstants.ALERT_ERROR,
-							RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+							RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 				}
 			}
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.APPLICANT_IMAGE_ERROR);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
 		}
 		return imageCaptured;
-	}
-
-	private void loadScreen(String screen) throws IOException {
-		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
-				applicationContext.getApplicationLanguageBundle());
-		getScene(createRoot);
 	}
 
 	/**
@@ -1018,11 +1162,11 @@ public class RegistrationController extends BaseController {
 				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 					childSpecificFields.setVisible(true);
 					isChild = true;
-					documentFields.setLayoutY(134.00);
+					// documentFields.setLayoutY(134.00);
 				} else {
 					isChild = false;
 					childSpecificFields.setVisible(false);
-					documentFields.setLayoutY(25.00);
+					// documentFields.setLayoutY(25.00);
 				}
 				// to populate age based on date of birth
 				ageField.setText("" + (Period.between(ageDatePicker.getValue(), LocalDate.now()).getYears()));
@@ -1036,232 +1180,30 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * Disabling the future days in the date picker calendar.
+	 * Listening on the fields for any operation
 	 */
-	private void disableFutureDays() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Disabling future dates");
-
-			ageDatePicker.setDayCellFactory(picker -> new DateCell() {
-				@Override
-				public void updateItem(LocalDate date, boolean empty) {
-					super.updateItem(date, empty);
-					LocalDate today = LocalDate.now();
-
-					setDisable(empty || date.compareTo(today) > 0);
-				}
-			});
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Future dates disabled");
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * Populating the user language fields to local language fields
-	 */
-	private void populateTheLocalLangFields() {
+	private void listenerOnFields() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
-			fullName.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
-							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
-
-						fullName.setText(oldValue);
-						fullName.requestFocus();
-					} else {
-						fullNameLocalLanguage.setText(fullName.getText());
-					}
-				}
-			});
-
-			addressLine1.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.ADDRESS_LINE1_REGEX)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_WARNING);
-
-						addressLine1.setText(oldValue);
-						addressLine1.requestFocus();
-					} else {
-						addressLine1LocalLanguage.setText(addressLine1.getText());
-					}
-				}
-			});
-
-			addressLine2.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					addressLine2LocalLanguage.setText(addressLine2.getText());
-				}
-			});
-
-			addressLine3.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					addressLine3LocalLanguage.setText(addressLine3.getText());
-				}
-			});
-
-			mobileNo.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.MOBILE_NUMBER_REGEX)
-							|| newValue.length() > RegistrationConstants.MOBILE_NUMBER_LENGTH)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
-						mobileNo.setText(oldValue);
-						mobileNo.requestFocus();
-					}
-				}
-			});
-
-			emailId.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.EMAIL_ID_REGEX_INITIAL)
-							|| newValue.length() > 50)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.EMAIL_ID_EXAMPLE);
-						emailId.setText(oldValue);
-						emailId.requestFocus();
-					}
-				}
-			});
-
-			cniOrPinNumber.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
-								RegistrationConstants.CNIE_OR_PIN_NUMBER_WARNING);
-						cniOrPinNumber.setText(oldValue);
-						cniOrPinNumber.requestFocus();
-					}
-				}
-			});
-
-			parentName.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && (!newValue.matches(RegistrationConstants.FULL_NAME_REGEX)
-							|| newValue.length() > RegistrationConstants.FULL_NAME_LENGTH)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ONLY_ALPHABETS);
-
-						parentName.setText(oldValue);
-						parentName.requestFocus();
-					}
-				}
-			});
-
-			uinId.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.UIN_REGEX)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_WARNING);
-						uinId.setText(oldValue);
-						uinId.requestFocus();
-					}
-				}
-			});
-
-			postalCode.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
-						final String newValue) {
-					if (newValue.length() != 0 && !newValue.matches(RegistrationConstants.POSTAL_CODE_REGEX_INITIAL)) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POSTAL_CODE_WARNING);
-						postalCode.setText(oldValue);
-						postalCode.requestFocus();
-					}
-				}
-			});
-
+			fxUtils.validateOnType(fullName, validation, fullNameLocalLanguage);
+			fxUtils.validateOnType(addressLine1, validation, addressLine1LocalLanguage);
+			fxUtils.validateOnType(addressLine2, validation, addressLine2LocalLanguage);
+			fxUtils.validateOnType(addressLine3, validation, addressLine3LocalLanguage);
+			fxUtils.validateOnType(mobileNo, validation);
+			fxUtils.validateOnType(postalCode, validation);
+			fxUtils.validateOnType(emailId, validation);
+			fxUtils.validateOnType(cniOrPinNumber, validation);
+			fxUtils.validateOnType(fullNameLocalLanguage, validation);
 			copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
-
 			copyAddressImage.setOnMouseExited((e) -> {
 				copyAddressLabel.setVisible(false);
 			});
 
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - LOCAL FIELD POPULATION FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * To restrict the user not to enter any values other than integer values.
-	 */
-	private void loadLanguageSpecificKeyboard() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loading the local language keyboard");
-			addressLine1LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			addressLine2LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			addressLine3LocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-
-			fullNameLocalLanguage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						keyboardNode.setVisible(false);
-					}
-
-				}
-			});
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - KEYBOARD LOADING FAILED ", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
@@ -1274,43 +1216,38 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				if (ageField.getText().length() > 3) {
+				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype",
+						RegistrationConstants.INDIVIDUAL_VALIDATION)) {
 					ageField.setText(oldValue);
-					generateAlert(RegistrationConstants.ALERT_ERROR,
-							RegistrationConstants.MAX_AGE_WARNING + " " + AppConfig.getApplicationProperty("max_age"));
 				}
-
+				int age = 0;
 				if (newValue.matches("\\d{1,3}")) {
 					if (Integer.parseInt(ageField.getText()) > Integer
 							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 						ageField.setText(oldValue);
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.MAX_AGE_WARNING + " "
+						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
+					} else {
+						age = Integer.parseInt(ageField.getText());
+						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+						LocalDate dob = currentYear.minusYears(age);
+						autoAgeDatePicker.setValue(dob);
+						if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
+							childSpecificFields.setVisible(true);
+							isChild = true;
+							documentScanController.documentScan.setLayoutY(134.00);
+							parentName.setDisable(false);
+							uinId.setDisable(false);
+						} else {
+							isChild = false;
+							childSpecificFields.setVisible(false);
+							documentScanController.documentScan.setLayoutY(25.00);
+							parentName.setDisable(true);
+							uinId.setDisable(true);
+						}
 					}
 				}
-				// to populate date of birth based on age
-				int age = 0;
-				if (ageField.getText().length() > 0 && newValue.matches("\\d*")) {
-					age = Integer.parseInt(ageField.getText());
-					LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-					LocalDate dob = currentYear.minusYears(age);
-					autoAgeDatePicker.setValue(dob);
-				}
-				if (!newValue.matches("\\d*")) {
-					ageField.setText(oldValue);
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_WARNING);
 
-				}
-
-				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-					childSpecificFields.setVisible(true);
-					isChild = true;
-					documentFields.setLayoutY(134.00);
-				} else {
-					isChild = false;
-					childSpecificFields.setVisible(false);
-					documentFields.setLayoutY(25.00);
-				}
 			});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
@@ -1344,7 +1281,6 @@ public class RegistrationController extends BaseController {
 						childSpecificFields.setVisible(false);
 						ageDatePicker.setDisable(true);
 						ageField.setDisable(false);
-						toggleAgeOrDobField = true;
 
 					} else {
 						toggleLabel1.setId("toggleLabel1");
@@ -1356,7 +1292,6 @@ public class RegistrationController extends BaseController {
 						childSpecificFields.setVisible(false);
 						ageDatePicker.setDisable(false);
 						ageField.setDisable(true);
-						toggleAgeOrDobField = false;
 
 					}
 				}
@@ -1378,205 +1313,29 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To dispaly the selected date in the date picker in specific
-	 * format("dd-mm-yyyy").
-	 */
-	private void dateFormatter() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validating the date format");
-
-			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
-				String pattern = "dd-MM-yyyy";
-				DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
-
-				{
-					ageDatePicker.setPromptText(pattern.toLowerCase());
-				}
-
-				@Override
-				public String toString(LocalDate date) {
-					return date != null ? dateFormatter.format(date) : "";
-
-				}
-
-				@Override
-				public LocalDate fromString(String string) {
-					if (string != null && !string.isEmpty()) {
-						return LocalDate.parse(string, dateFormatter);
-					} else {
-						return null;
-					}
-				}
-			});
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - DATE FORMAT VALIDATION FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
-	 * 
-	 * Opens the home page screen
-	 * 
-	 */
-	public void goToHomePage() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Going to home page");
-
-		try {
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_ISEDIT);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE1_DATA);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
-			SessionContext.getInstance().getUserContext().getUserMap()
-					.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
-			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-		}
-	}
-
-	/**
 	 * 
 	 * Validates the fields of demographic pane1
 	 * 
 	 */
-	private boolean validateDemographicPaneOne() {
+	private boolean validateDemographicPane(AnchorPane paneToValidate) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the fields in first demographic pane");
+				RegistrationConstants.APPLICATION_ID, "Validating the fields in demographic pane");
 
-		boolean gotoNext = false;
-		if (validateRegex(fullName, RegistrationConstants.FULL_NAME_REGEX)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.FULL_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
+		boolean gotoNext = true;
+		List<String> excludedIds = new ArrayList<String>();
+		excludedIds.add("preRegistrationId");
+		excludedIds.add("region");
+		excludedIds.add("city");
+		excludedIds.add("province");
+		excludedIds.add("localAdminAuthority");
+		excludedIds.add("virtualKeyboard");
+		validation.setChild(isChild);
+		validation.setValidationMessage();
+		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext);
+		displayValidationMessage(validation.getValidationMessage().toString());
 
-			fullName.requestFocus();
-		} else {
-			if (validateAgeOrDob()) {
-				if (gender.getValue() == null) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.GENDER_EMPTY);
-
-					gender.requestFocus();
-				} else {
-					if (validateRegex(addressLine1, RegistrationConstants.ADDRESS_LINE1_REGEX)) {
-
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.ADDRESS_LINE_1_EMPTY
-								+ " " + RegistrationConstants.ADDRESS_LINE_WARNING);
-						addressLine1.requestFocus();
-					} else {
-						if (validateRegex(region, "[^$]+")) {
-
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.REGION_EMPTY);
-							region.requestFocus();
-						} else {
-							if (validateRegex(city, "^[^$]+")) {
-
-								generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.CITY_EMPTY);
-								city.requestFocus();
-							} else {
-								if (validateRegex(province, "[^$]+")) {
-
-									generateAlert(RegistrationConstants.ALERT_ERROR,
-											RegistrationConstants.PROVINCE_EMPTY);
-									province.requestFocus();
-								} else {
-									if (validateRegex(postalCode, RegistrationConstants.POSTAL_CODE_REGEX)) {
-										generateAlert(RegistrationConstants.ALERT_ERROR,
-												RegistrationConstants.POSTAL_CODE_EMPTY);
-										postalCode.requestFocus();
-									} else {
-										if (validateRegex(localAdminAuthority, "[^$]+")) {
-											generateAlert(RegistrationConstants.ALERT_ERROR,
-													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY);
-											localAdminAuthority.requestFocus();
-										} else {
-											if (validateRegex(mobileNo, RegistrationConstants.MOBILE_NUMBER_REGEX)) {
-
-												generateAlert(RegistrationConstants.ALERT_ERROR,
-														RegistrationConstants.MOBILE_NUMBER_EMPTY + " "
-																+ RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
-												mobileNo.requestFocus();
-											} else {
-												if (validateRegex(emailId, RegistrationConstants.EMAIL_ID_REGEX)) {
-
-													generateAlert(RegistrationConstants.ALERT_ERROR,
-															RegistrationConstants.EMAIL_ID_EMPTY + " "
-																	+ RegistrationConstants.EMAIL_ID_EXAMPLE);
-													emailId.requestFocus();
-												} else {
-													if (validateRegex(cniOrPinNumber,
-															RegistrationConstants.CNI_OR_PIN_NUMBER_REGEX)) {
-
-														generateAlert(RegistrationConstants.ALERT_ERROR,
-																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY + " "
-																		+ RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
-														cniOrPinNumber.requestFocus();
-													} else {
-														gotoNext = true;
-													}
-
-												}
-
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-			}
-		}
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
-		return gotoNext;
-	}
-
-	/**
-	 * 
-	 * Validate the fields of demographic pane 2
-	 * 
-	 */
-
-	private boolean validateDemographicPaneTwo() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Validating the fields in second demographic pane");
-		boolean gotoNext = false;
-
-		if (isChild && validateRegex(parentName, RegistrationConstants.FULL_NAME_REGEX)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR,
-					RegistrationConstants.PARENT_NAME_EMPTY + " " + RegistrationConstants.ONLY_ALPHABETS);
-			parentName.requestFocus();
-		} else {
-			if (isChild && validateRegex(uinId, RegistrationConstants.UIN_REGEX)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UIN_ID_EMPTY);
-				uinId.requestFocus();
-			} else {
-				if (poaBox.getChildren().isEmpty()) {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POA_DOCUMENT_EMPTY);
-				} else {
-					if (poiBox.getChildren().isEmpty()) {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POI_DOCUMENT_EMPTY);
-					} else {
-						if (isChild && porBox.getChildren().isEmpty()) {
-							generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.POR_DOCUMENT_EMPTY);
-						} else {
-							if (dobBox.getChildren().isEmpty()) {
-								generateAlert(RegistrationConstants.ALERT_ERROR,
-										RegistrationConstants.DOB_DOCUMENT_EMPTY);
-							} else {
-								gotoNext = true;
-							}
-						}
-					}
-				}
-			}
-		}
 		return gotoNext;
 	}
 
@@ -1618,56 +1377,6 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	/**
-	 * 
-	 * Loading the the labels of local language fields
-	 * 
-	 */
-	private void loadListOfDocuments() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-
-			poaDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			poiDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			porDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-			dobDocuments.getItems().addAll(RegistrationConstants.getPoaDocumentList());
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
-
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - LOADING LIST OF DOCUMENTS FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	private boolean validateAgeOrDob() {
-		boolean gotoNext = false;
-		if (toggleAgeOrDobField) {
-			if (validateRegex(ageField, RegistrationConstants.AGE_REGEX)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AGE_EMPTY);
-
-				ageField.requestFocus();
-			} else {
-				if (Integer.parseInt(ageField.getText()) < Integer
-						.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-					childSpecificFields.setVisible(true);
-				}
-				gotoNext = true;
-			}
-		} else if (!toggleAgeOrDobField) {
-			if (ageDatePicker.getValue() == null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.DATE_OF_BIRTH_EMPTY);
-
-				ageDatePicker.requestFocus();
-			} else {
-				gotoNext = true;
-			}
-		}
-		return gotoNext;
-	}
-
 	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
@@ -1685,24 +1394,51 @@ public class RegistrationController extends BaseController {
 	}
 
 	public void clickMe() {
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
+				RegistrationConstants.CONSOLIDATED_VALIDATION);
+		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
+		switchedOn.set(true);
 		ageField.setText("" + age);
-		toggleAgeOrDobField = true;
 		gender.setValue("MALE");
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");
 		addressLine3.setText("Taramani");
-		region.setText("Taramani");
-		city.setText("Chennai");
-		province.setText("Tamilnadu");
+		region.setValue("Taramani");
+		city.setValue("Chennai");
+		province.setValue("Tamilnadu");
 		postalCode.setText("60011");
-		localAdminAuthority.setText("MindTree");
+		localAdminAuthority.setValue("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
+		displayValidationMessage(validation.getValidationMessage().toString());
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
+				RegistrationConstants.INDIVIDUAL_VALIDATION);
+	}
+
+	/**
+	 * Display the validation failure messages
+	 */
+	private void displayValidationMessage(String validationMessage) {
+		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Showing the validatoin message");
+		if (validationMessage.length() > 0) {
+			TextArea view = new TextArea(validationMessage);
+			view.setEditable(false);
+			Scene scene = new Scene(new StackPane(view), 300, 200);
+			Stage primaryStage = new Stage();
+			primaryStage.setTitle("Invalid input");
+			primaryStage.setScene(scene);
+			primaryStage.sizeToScene();
+			primaryStage.show();
+
+			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validatoin message shown successfully");
+		}
 	}
 
 	@FXML
@@ -1789,8 +1525,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane
-	 *            the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1801,7 +1536,10 @@ public class RegistrationController extends BaseController {
 		try {
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
-
+			authenticationController.initData(ProcessNames.PACKET.getType());
+			/*if (toggleBiometricException) {
+				authenticationController.initData(ProcessNames.EXCEPTION.getType());
+			} */
 			accord.setExpandedPane(authenticationTitlePane);
 			headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
 
@@ -1815,30 +1553,9 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * This method toggles the visible property of the IrisCapture Pane.
-	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
-	 */
-	public void toggleIrisCaptureVisibility(boolean visibility) {
-		this.irisCapture.setVisible(visibility);
-	}
-
-	/**
-	 * This method toggles the visible property of the FingerprintCapture Pane.
-	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
-	 */
-	public void toggleFingerprintCaptureVisibility(boolean visibility) {
-		this.fingerPrintCapturePane.setVisible(visibility);
-	}
-
-	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1853,313 +1570,7 @@ public class RegistrationController extends BaseController {
 		}
 	}
 
-	/**
-	 * This method scans and uploads Proof of Address documents
-	 */
-	@FXML
-	private void scanPoaDocument() {
-
-		scanDocument(poaDocuments, poaBox, RegistrationConstants.POA_DOCUMENT,
-				RegistrationConstants.POA_DOCUMENT_EMPTY);
-	}
-
-	/**
-	 * This method scans and uploads Proof of Identity documents
-	 */
-	@FXML
-	private void scanPoiDocument() {
-
-		scanDocument(poiDocuments, poiBox, RegistrationConstants.POI_DOCUMENT,
-				RegistrationConstants.POI_DOCUMENT_EMPTY);
-	}
-
-	/**
-	 * This method scans and uploads Proof of Relation documents
-	 */
-	@FXML
-	private void scanPorDocument() {
-
-		scanDocument(porDocuments, porBox, RegistrationConstants.POR_DOCUMENT,
-				RegistrationConstants.POR_DOCUMENT_EMPTY);
-	}
-
-	/**
-	 * This method scans and uploads Proof of Date of birth documents
-	 */
-	@FXML
-	private void scanDobDocument() {
-
-		scanDocument(dobDocuments, dobBox, RegistrationConstants.DOB_DOCUMENT,
-				RegistrationConstants.DOB_DOCUMENT_EMPTY);
-	}
-
-	/**
-	 * This method scans and uploads documents
-	 */
-	private void scanDocument(ComboBox<String> documents, VBox vboxElement, String document, String errorMessage) {
-
-		if (documents.getValue() == null) {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
-			documents.requestFocus();
-		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
-				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_CATEGORY_MULTIPLE);
-		} else {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
-
-			selectedDocument = document;
-			scanWindow();
-		}
-
-	}
-
-	/**
-	 * This method will display Scan window to scan and upload documents
-	 */
-	private void scanWindow() {
-
-		scanController.init(this, RegistrationConstants.SCAN_DOC_TITLE);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
-	}
-
-	/**
-	 * This method will allow to scan and upload documents
-	 */
-	@Override
-	public void scan(Stage popupStage) {
-
-		try {
-
-			byte[] byteArray = documentScanFacade.getScannedDocument();
-
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
-
-			if (byteArray.length > documentSize) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOC_SIZE);
-			} else {
-				if (selectedDocument != null) {
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
-
-					switch (selectedDocument) {
-					case RegistrationConstants.POA_DOCUMENT:
-						attachDocuments(poaDocuments.getValue(), poaBox, poaScroll, byteArray);
-						break;
-					case RegistrationConstants.POI_DOCUMENT:
-						attachDocuments(poiDocuments.getValue(), poiBox, poiScroll, byteArray);
-						break;
-					case RegistrationConstants.POR_DOCUMENT:
-						attachDocuments(porDocuments.getValue(), porBox, porScroll, byteArray);
-						break;
-					case RegistrationConstants.DOB_DOCUMENT:
-						attachDocuments(dobDocuments.getValue(), dobBox, dobScroll, byteArray);
-						break;
-					default:
-					}
-
-					popupStage.close();
-
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "Documents added successfully");
-				}
-			}
-
-		} catch (IOException ioException) {
-			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					String.format("%s -> Exception while scanning documents for registration  %s -> %s",
-							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
-							ioException.getCause()));
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					String.format("%s -> Exception while scanning documents for registration  %s",
-							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
-
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.SCAN_DOCUMENT_ERROR);
-		}
-
-	}
-
-	/**
-	 * This method will add Hyperlink and Image for scanned documents
-	 */
-	private void attachDocuments(String document, VBox vboxElement, ScrollPane scrollPane, byte[] byteArray) {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
-
-		scanController.getScanImage().setImage(convertBytesToImage(byteArray));
-
-		String documentName = document;
-
-		ObservableList<Node> nodes = vboxElement.getChildren();
-		if (!nodes.isEmpty() && nodes.stream().anyMatch(index -> index.getId().contains(document))) {
-			documentName = document.concat("_").concat(String.valueOf(nodes.size()));
-		}
-
-		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
-		documentDetailsDTO.setDocument(byteArray);
-		documentDetailsDTO.setDocumentCategory(selectedDocument);
-		documentDetailsDTO.setDocumentType(RegistrationConstants.WEB_CAMERA_IMAGE_TYPE);
-		documentDetailsDTO.setDocumentName(documentName);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
-
-		getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-				.add(documentDetailsDTO);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
-
-		addDocumentsToScreen(documentDetailsDTO.getDocumentName(), vboxElement, scrollPane);
-
-		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationConstants.SCAN_DOC_SUCCESS);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
-
-	}
-
-	private void addDocumentsToScreen(String document, VBox vboxElement, ScrollPane scrollPane) {
-
-		GridPane gridPane = new GridPane();
-		gridPane.setId(document);
-
-		gridPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
-		gridPane.add(createImageView(vboxElement, scrollPane), 1, vboxElement.getChildren().size());
-
-		vboxElement.getChildren().add(gridPane);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
-
-		if (vboxElement.getChildren().size() >= scrollCheck) {
-			// scrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
-			scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		} else {
-			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-			scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
-		}
-	}
-
-	/**
-	 * This method will set scrollbar policy for scroll pane
-	 */
-	private void setScrollFalse() {
-		poaScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		poaScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-		poiScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		poiScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-		porScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		porScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-		dobScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
-		dobScroll.setVbarPolicy(ScrollBarPolicy.NEVER);
-	}
-
-	/**
-	 * This method will create Hyperlink to view scanned document
-	 */
-	private Hyperlink createHyperLink(String document) {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
-
-		Hyperlink hyperLink = new Hyperlink();
-		hyperLink.setId(document);
-		hyperLink.setText(document);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"Binding OnAction event to Hyperlink to display Scanned document");
-
-		hyperLink.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent actionEvent) {
-				GridPane pane = (GridPane) ((Hyperlink) actionEvent.getSource()).getParent();
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.stream().filter(detail -> detail.getDocumentName().equals(pane.getId())).findFirst()
-						.ifPresent(doc -> displayDocument(doc.getDocument(), doc.getDocumentName()));
-
-			}
-		});
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
-
-		return hyperLink;
-	}
-
-	/**
-	 * This method will create Image to delete scanned document
-	 */
-	private ImageView createImageView(VBox vboxElement, ScrollPane scrollPane) {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
-
-		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
-		ImageView imageView = new ImageView(image);
-		imageView.setCursor(Cursor.HAND);
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
-
-		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				GridPane gridpane = (GridPane) ((ImageView) event.getSource()).getParent();
-				vboxElement.getChildren().remove(gridpane);
-				getRegistrationDtoContent().getDemographicDTO().getApplicantDocumentDTO().getDocumentDetailsDTO()
-						.removeIf(document -> document.getDocumentName().equals(gridpane.getId()));
-				if (vboxElement.getChildren().isEmpty()) {
-					scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-					scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
-				}
-			}
-
-		});
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
-
-		return imageView;
-	}
-
-	/**
-	 * This method will display the scanned document
-	 */
-	private void displayDocument(byte[] document, String documentName) {
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
-
-		Image img = convertBytesToImage(document);
-		ImageView view = new ImageView(img);
-		Scene scene = new Scene(new StackPane(view), 700, 600);
-		Stage primaryStage = new Stage();
-		primaryStage.setTitle(documentName);
-		primaryStage.setScene(scene);
-		primaryStage.sizeToScene();
-		primaryStage.show();
-
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
-	}
-
-	private void createRegistrationDTOObject() {
+	protected void createRegistrationDTOObject(String registrationCategory) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
 		// Set the RID
@@ -2176,20 +1587,13 @@ public class RegistrationController extends BaseController {
 		// Create object for Demographic DTOS
 		DemographicDTO demographicDTO = new DemographicDTO();
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
-		applicantDocumentDTO.setDocumentDetailsDTO(new ArrayList<>());
+
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
-		DemographicInfoDTO demographicInfoDTOUser = new DemographicInfoDTO();
-		AddressDTO addressDTO = new AddressDTO();
-		addressDTO.setLocationDTO(new LocationDTO());
-		demographicInfoDTOUser.setAddressDTO(addressDTO);
+		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
+		Identity identity = new Identity();
+		demographicInfoDTO.setIdentity(identity);
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 
-		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
-		AddressDTO addressDTOLocal = new AddressDTO();
-		addressDTO.setLocationDTO(new LocationDTO());
-		demographicInfoDTOLocal.setAddressDTO(addressDTOLocal);
-
-		demographicDTO.setDemoInLocalLang(demographicInfoDTOLocal);
-		demographicDTO.setDemoInUserLang(demographicInfoDTOUser);
 		registrationDTO.setDemographicDTO(demographicDTO);
 
 		// Create object for OSIData DTO
@@ -2197,7 +1601,7 @@ public class RegistrationController extends BaseController {
 
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
-		registrationMetaDataDTO.setRegistrationCategory("New");
+		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Put the RegistrationDTO object to SessionContext Map
@@ -2213,4 +1617,21 @@ public class RegistrationController extends BaseController {
 		return biometricInfoDTO;
 	}
 
+	/**
+	 * This method toggles the visible property of the IrisCapture Pane.
+	 * 
+	 * @param visibility the value of the visible property to be set
+	 */
+	public void toggleIrisCaptureVisibility(boolean visibility) {
+		this.irisCapture.setVisible(visibility);
+	}
+
+	/**
+	 * This method toggles the visible property of the FingerprintCapture Pane.
+	 * 
+	 * @param visibility the value of the visible property to be set
+	 */
+	public void toggleFingerprintCaptureVisibility(boolean visibility) {
+		this.fingerPrintCapturePane.setVisible(visibility);
+	}
 }

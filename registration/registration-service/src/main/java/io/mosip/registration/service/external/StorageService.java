@@ -26,5 +26,5 @@ public interface StorageService {
 	 * @return returns the file path where the files had been stored
 	 * @throws RegBaseCheckedException
 	 */
-	String storeToDisk(String registrationId, byte[] packet, byte[] ackReceipt) throws RegBaseCheckedException;
+	String storeToDisk(String registrationId, byte[] packet) throws RegBaseCheckedException;
 }

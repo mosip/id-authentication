@@ -1,13 +1,5 @@
 package io.mosip.registration.service.packet.impl;
 
-import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
-import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +28,14 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
-import io.mosip.registration.util.json.JSONConverter;
+
+import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
+import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 /**
  * Class for creating the Resident Registration
@@ -80,8 +79,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			jsonsMap.put(DEMOGRPAHIC_JSON_NAME,
-					javaObjectToJsonString(JSONConverter.jsonConvertor(registrationDTO.getDemographicDTO()))
-							.getBytes());
+					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic Json created successfully");
 			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, Components.PACKET_CREATOR,

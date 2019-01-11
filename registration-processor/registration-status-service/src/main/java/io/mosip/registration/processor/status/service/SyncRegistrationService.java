@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
-
+	
 /**
  * The Interface SyncRegistrationService.
  *
  * @author M1047487
- * @param <T>
- *            the generic type
+ * @param <T>            the generic type
+ * @param <U> the generic type
  */
 @Service
 public interface SyncRegistrationService<T,U> {

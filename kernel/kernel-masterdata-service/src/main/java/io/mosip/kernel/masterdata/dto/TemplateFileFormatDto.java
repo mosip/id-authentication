@@ -23,11 +23,11 @@ public class TemplateFileFormatDto {
 	private String description;
 
 	@NotBlank
-	@ValidLangCode
+	// @ValidLangCode
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "Language code", required = true, dataType = "java.lang.String")
 	private String langCode;
-	
+
 	@NotNull
 	@ApiModelProperty(value = "TemplateFileFormat isActive status", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;

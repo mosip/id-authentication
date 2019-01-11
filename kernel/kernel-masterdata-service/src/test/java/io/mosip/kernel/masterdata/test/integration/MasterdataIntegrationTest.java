@@ -804,11 +804,11 @@ public class MasterdataIntegrationTest {
 	private void templateFileFormatSetup() {
 		templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
-		templateFileFormatDto.setLangCode("eng");
+		templateFileFormatDto.setLangCode("ENG");
 		templateFileFormatDto.setIsActive(true);
 		templateFileFormat = new TemplateFileFormat();
 		templateFileFormat.setCode("xml");
-		templateFileFormat.setLangCode("eng");
+		templateFileFormat.setLangCode("ENG");
 		templateFileFormat.setIsActive(true);
 
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);

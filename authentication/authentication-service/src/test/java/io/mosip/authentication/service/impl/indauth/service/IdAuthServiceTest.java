@@ -33,7 +33,6 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -92,39 +91,6 @@ public class IdAuthServiceTest {
 	}
 
 	/**
-	 * This method throws IdValidationFailedException when UinEntity is not null but
-	 * UIN is inactive
-	 * 
-	 */
-	@Ignore
-	@Test(expected = IdValidationFailedException.class)
-	public void testValidateUINInactive() throws IdAuthenticationBusinessException {
-		String uin = "1234567890";
-		UinEntity uinEntity = new UinEntity();
-		uinEntity.setActive(false);
-//		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(Optional.of(uinEntity));
-		idAuthServiceImpl.getIdRepoByUinNumber(uin);
-	}
-
-	/**
-	 * This method throws IdValidationFailedException when UinEntity is not null but
-	 * UIN is active
-	 * 
-	 */
-	@Ignore
-	@Test
-	public void testValidateUinActive() throws IdAuthenticationBusinessException {
-		String uin = "1234567890";
-		UinEntity uinEntity = new UinEntity();
-		uinEntity.setActive(true);
-		uinEntity.setUin("12345");
-//		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
-		String refId = null;
-		refId = "1234567890";
-		assertEquals(refId, uinEntity.getUinRefId());
-	}
-
-	/**
 	 * This method throws IdValidationFailedException when VIDEntity is null
 	 * 
 	 */
@@ -167,68 +133,6 @@ public class IdAuthServiceTest {
 		idAuthServiceImpl.getIdRepoByVidNumber(vid);
 	}
 
-	/**
-	 * This method throws IdValidationFailedException when VIDEntity is not null but
-	 * VID is active and checks for refId in UIN and failed.
-	 * 
-	 */
-	@Ignore
-	@Test(expected = IdValidationFailedException.class)
-	public void testValidateRef() throws IdAuthenticationBusinessException {
-		String vid = "1234567890";
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date(2019, 1, 1));
-		UinEntity uinEntity = null;
-		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-//		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.ofNullable(uinEntity));
-		idAuthServiceImpl.getIdRepoByVidNumber(vid);
-	}
-
-	/**
-	 * This method throws IdValidationFailedException when VIDEntity is not null but
-	 * VID is active and checks for refId in UIN and UIN is inactive.
-	 * 
-	 */
-	@Ignore
-	@Test(expected = IdValidationFailedException.class)
-	public void testValidateUINInactiveForVID() throws IdAuthenticationBusinessException {
-		String vid = "1234567890";
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
-		UinEntity uinEntity = new UinEntity();
-		uinEntity.setActive(false);
-		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-//		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(Optional.of(uinEntity));
-		idAuthServiceImpl.getIdRepoByVidNumber(vid);
-
-	}
-
-	/**
-	 * This method throws IdValidationFailedException when VIDEntity is not null but
-	 * VID is active and checks for refId in UIN and returns refId
-	 * 
-	 */
-	@Ignore
-	@Test
-	public void testValidatebothActive() throws IdAuthenticationBusinessException {
-		String vid = "1234567890";
-		VIDEntity vidEntity = new VIDEntity();
-		vidEntity.setRefId("1234");
-		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
-		UinEntity uinEntity = new UinEntity();
-		uinEntity.setActive(true);
-//		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(Optional.of(uinEntity));
-		Mockito.when(vidRepository.findById(Mockito.anyString())).thenReturn(Optional.of(vidEntity));
-
-//		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
-		Map<String, Object> refId = idAuthServiceImpl.getIdRepoByVidNumber(vid);
-		//assertEquals(vidEntity.getRefId(), refId);
-
-	}
-
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestAuditData() throws Throwable {
 		RestRequestFactory restfactory = Mockito.mock(RestRequestFactory.class);
@@ -242,25 +146,5 @@ public class IdAuthServiceTest {
 
 		}
 
-	}
-	
-	@Ignore
-	@Test(expected = IdValidationFailedException.class)
-	public void testDoValidateUINInactive() throws Throwable {
-		UinEntity uinEntity = new UinEntity();
-		uinEntity.setActive(false);
-		Method doValidateUIN = idAuthServiceImpl.getClass().getDeclaredMethod("doValidateUIN", UinEntity.class);
-		doValidateUIN.setAccessible(true);
-		try {
-		doValidateUIN.invoke(idAuthServiceImpl, uinEntity);
-		} catch (InvocationTargetException e) {
-			throw e.getTargetException();
-		}
-	}
-	
-	private Map<String, Object> repoDetails(){
-		Map<String, Object> map = new HashMap<>();
-		map.put("registrationId", "863537");
-		return map;
 	}
 }

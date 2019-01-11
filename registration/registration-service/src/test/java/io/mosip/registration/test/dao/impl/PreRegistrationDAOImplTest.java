@@ -1,5 +1,11 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -9,12 +15,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dao.impl.PreRegistrationDataSyncDAOImpl;
-import io.mosip.registration.dao.impl.RegistrationAppAuthenticationDAOImpl;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.repositories.PreRegistrationDataSyncRepository;
-import io.mosip.registration.repositories.RegistrationAppAuthenticationRepository;
 
 public class PreRegistrationDAOImplTest {
 
@@ -34,14 +37,26 @@ public class PreRegistrationDAOImplTest {
 	public void savetest() {
 		
 		Mockito.when(registrationRepository.save(preRegistrationList)).thenReturn(preRegistrationList);
-		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.savePreRegistration(preRegistrationList));
+		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.save(preRegistrationList));
 	}
 	
 	@Test
 	public void findByPreRegIdTest() {
 		Mockito.when(registrationRepository.findByPreRegId(Mockito.anyString())).thenReturn(preRegistrationList);
-		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.getPreRegistration(Mockito.anyString()));
+		Assert.assertSame(preRegistrationList, preRegistrationDAOImpl.get(Mockito.anyString()));
 	}
 	
+	@Test
+	public void fetchRecordsToBeDeletedTest() {
+		List<PreRegistrationList> preRegList=new ArrayList<>();
+		Mockito.when(registrationRepository.findByAppointmentDateBeforeAndIsDeleted(Mockito.any(), Mockito.any())).thenReturn(preRegList);
+		assertEquals(preRegList, preRegistrationDAOImpl.fetchRecordsToBeDeleted(new Date()));
+	}
+	
+	@Test
+	public void updateTest() {
+		Mockito.when(registrationRepository.update(Mockito.any())).thenReturn(preRegistrationList);
+		assertEquals(preRegistrationList, preRegistrationDAOImpl.update(preRegistrationList));
+	}
 
 }

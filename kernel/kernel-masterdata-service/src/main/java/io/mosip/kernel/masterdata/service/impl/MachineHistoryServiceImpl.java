@@ -84,8 +84,6 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		return machineHistoryResponseDto;
 	}
 
-	
-	
 	/* (non-Javadoc)
 	 * @see io.mosip.kernel.masterdata.service.MachineHistoryService#createMachineHistory(io.mosip.kernel.masterdata.entity.MachineHistory)
 	 */
@@ -98,5 +96,4 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		MapperUtils.map(createdHistory, idResponseDto);
 		return idResponseDto;
 	}
-
 }

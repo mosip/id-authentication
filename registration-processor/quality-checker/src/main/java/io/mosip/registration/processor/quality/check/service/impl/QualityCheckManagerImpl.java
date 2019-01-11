@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.quality.check.service.impl;
-
+	
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -30,15 +30,21 @@ import io.mosip.registration.processor.quality.check.exception.ResultNotFoundExc
 import io.mosip.registration.processor.quality.check.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
-
+/**
+ * The Class QualityCheckManagerImpl.
+ */
 @Component
 public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUserDto> {
+	
+	/** The applicant info dao. */
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
 
+	/** The qc users client. */
 	@Autowired
 	QCUsersClient qcUsersClient;
 
+	/** The client audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder clientAuditRequestBuilder;
 
@@ -51,10 +57,15 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	/** The event type. */
 	private String eventType = "";
 
+	/** The description. */
 	String description = "";
 	
+	/** The Constant LANG_CODE. */
 	private static final String LANG_CODE= "eng";
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager#assignQCUser(java.lang.Object)
+	 */
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
 		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
@@ -70,6 +81,9 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	}
 
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager#updateQCUserStatus(java.util.List)
+	 */
 	@Override
 	public List<QCUserDto> updateQCUserStatus(List<QCUserDto> qcUserDtos) {
 		boolean isTransactionSuccessful = false;
@@ -103,6 +117,12 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	}
 
+	/**
+	 * Validate user.
+	 *
+	 * @param qcUserDtos the qc user dtos
+	 * @return the map
+	 */
 	private Map<QcuserRegistrationIdEntity, QCUserDto> validateUser(List<QCUserDto> qcUserDtos) {
 
 		Map<QcuserRegistrationIdEntity, QCUserDto> map = new LinkedHashMap<>();
@@ -126,6 +146,12 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		return map;
 	}
 
+	/**
+	 * Assign new packet.
+	 *
+	 * @param qcUserDto the qc user dto
+	 * @return the QC user dto
+	 */
 	private QCUserDto assignNewPacket(QCUserDto qcUserDto) {
 		boolean isTransactionSuccessful = false;
 		try {
@@ -150,6 +176,12 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		}
 	}
 
+	/**
+	 * Convert dto to entity.
+	 *
+	 * @param qcUserDto the qc user dto
+	 * @return the qcuser registration id entity
+	 */
 	private QcuserRegistrationIdEntity convertDtoToEntity(QCUserDto qcUserDto) {
 		QcuserRegistrationIdEntity qcUserEntity = new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity qcuserPKEntity = new QcuserRegistrationIdPKEntity();
@@ -165,6 +197,12 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	}
 
+	/**
+	 * Convert entity to dto.
+	 *
+	 * @param entity the entity
+	 * @return the QC user dto
+	 */
 	public QCUserDto convertEntityToDto(QcuserRegistrationIdEntity entity) {
 		QCUserDto dto = new QCUserDto();
 		dto.setQcUserId(entity.getId().getUsrId());

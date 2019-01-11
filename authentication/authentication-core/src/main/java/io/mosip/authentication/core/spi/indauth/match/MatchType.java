@@ -1,8 +1,11 @@
 package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
@@ -52,7 +55,16 @@ public interface MatchType {
 
 	Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
 
-	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction();
+	public Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction();
+	
+	public default List<IdentityInfoDTO> getIdentityInfoList(IdentityDTO identity) {
+		return getIdentityInfoFunction().apply(identity)
+				.values()
+				.stream()
+				.filter(Objects::nonNull)
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
+	}
 
 	public default LanguageType getLanguageType() {
 		return LanguageType.PRIMARY_LANG;
@@ -62,7 +74,7 @@ public interface MatchType {
 
 	public AuthUsageDataBit getMatchedBit();
 
-	public Function<String, String> getEntityInfoMapper();
+	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper();
 
 	public Category getCategory();
 

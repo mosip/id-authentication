@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
@@ -146,18 +149,22 @@ public class RegistrationCenterController {
 				hierarchyLevel, text);
 
 	}
-	
+
 	/**
-	 * Check whether the time stamp sent for the given registration center id is not a holiday and 
-	 * is in between working hours.
-	 * @param regId - registration id
-	 * @param timeStamp - timestamp based on the format  YYYY-MM-ddTHH:mm:ss.SSSZ
+	 * Check whether the time stamp sent for the given registration center id is not
+	 * a holiday and is in between working hours.
+	 * 
+	 * @param regId
+	 *            - registration id
+	 * @param timeStamp
+	 *            - timestamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return RegistrationCenterStatusResponseDto
 	 */
 	@GetMapping("/v1.0/registrationcenters/validate/{id}/{timestamp}")
-	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId ,@PathVariable("timestamp") String timeStamp) {
+	public ResgistrationCenterStatusResponseDto validateTimestamp(@PathVariable("id") String regId,
+			@PathVariable("timestamp") String timeStamp) {
 		return registrationCenterService.validateTimeStampWithRegistrationCenter(regId, timeStamp);
-		
+
 	}
 
 	/**
@@ -173,6 +180,25 @@ public class RegistrationCenterController {
 		return new ResponseEntity<>(registrationCenterService.createRegistrationCenter(registrationCenterDto),
 				HttpStatus.CREATED);
 	}
-	
-	
+
+	/**
+	 * Function to fetch list of registration centers based on hierarchy level,List
+	 * of text and language code
+	 * 
+	 * @param langCode
+	 *            input from user
+	 * @param hierarchyLevel
+	 *            input from user
+	 * @param texts
+	 *            input from user
+	 * @return {@link RegistrationCenterResponseDto}
+	 */
+	@GetMapping("/v1.0/registrationcenters/names/{langcode}/{hierarchylevel}")
+	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@RequestParam("name") List<String> texts) {
+		return registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode,
+				hierarchyLevel, texts);
+	}
+
 }

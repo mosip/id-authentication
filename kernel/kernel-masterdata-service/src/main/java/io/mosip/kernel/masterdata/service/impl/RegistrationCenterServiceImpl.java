@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -333,8 +334,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
 			/**
-			 * a query is written in RegistrationCenterRepository which would check if the date 
-			 * is not a holiday for that center
+			 * a query is written in RegistrationCenterRepository which would check if the
+			 * date is not a holiday for that center
 			 *
 			 */
 			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
@@ -356,7 +357,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					boolean isAfterStartTime = locatime.isAfter(startTime);
 					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
 					/*
-					 * below is the validation to check if the time that is sent is between start and end time
+					 * below is the validation to check if the time that is sent is between start
+					 * and end time
 					 */
 					if (isAfterStartTime && isBeforeEndTime) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
@@ -378,5 +380,32 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		return resgistrationCenterStatusResponseDto;
+	}
+
+	@Override
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			String languageCode, Integer hierarchyLevel, List<String> texts) {
+		List<RegistrationCenterDto> registrationCentersDtoList = null;
+		List<String> names = texts.stream().map(String::toUpperCase).collect(Collectors.toList());
+		List<RegistrationCenter> registrationCentersList = null;
+		try {
+			registrationCentersList = registrationCenterRepository
+					.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(languageCode, hierarchyLevel, names);
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (registrationCentersList.isEmpty()) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
+
+		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
+		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
+		return registrationCenterResponseDto;
 	}
 }

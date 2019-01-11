@@ -29,27 +29,50 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
+/**
+ * The Class TemplateGenerator.
+ */
 @Component
 public class TemplateGenerator {
 
+	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(TemplateGenerator.class);
+	
+	/** The Constant TEMPLATES. */
 	private static final String TEMPLATES = "templates";
 
+	/** The resource loader. */
 	private String resourceLoader = "classpath";
+	
+	/** The template path. */
 	private String templatePath = ".";
+	
+	/** The cache. */
 	private boolean cache = Boolean.TRUE;
+	
+	/** The default encoding. */
 	private String defaultEncoding = StandardCharsets.UTF_8.name();
 
+	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	public String templateGenerator(String templateTypeCode, Map<String, Object> attributes, String langCode)
-			throws IOException {
+	/**
+	 * Gets the template.
+	 *
+	 * @param templateTypeCode the template type code
+	 * @param attributes the attributes
+	 * @param langCode the lang code
+	 * @return the template
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 */
+	public String getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
+			throws IOException, ApisResourceAccessException {
 		String artifact = null;
 
 		try {
@@ -70,18 +93,19 @@ public class TemplateGenerator {
 
 			artifact = writer.toString();
 
-		} catch (ApisResourceAccessException e) {
-			throw new TemplateNotFoundException(PlatformErrorMessages.RPR_TEM_NOT_FOUND.getCode());
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {
-			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
-		} catch (Exception e) {
-			log.error("Template was not generated due to some internal error", e);
+			log.error("Template processing failed due to resource absence", e);
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		}
 
 		return artifact;
 	}
 
+	/**
+	 * Gets the template manager.
+	 *
+	 * @return the template manager
+	 */
 	public TemplateManager getTemplateManager() {
 		final Properties properties = new Properties();
 		properties.put(RuntimeConstants.INPUT_ENCODING, defaultEncoding);

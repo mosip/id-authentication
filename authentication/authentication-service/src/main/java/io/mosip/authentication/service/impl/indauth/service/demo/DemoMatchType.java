@@ -5,7 +5,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -50,15 +53,18 @@ public enum DemoMatchType implements MatchType {
 
 	/**  Secondary Date of Birth Type Match. */
 	AGE(IdaIdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG,
-			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, demoValue -> {
+			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, entityInfoMap -> {
 				int age = -1;
 				try {
-					age = Period.between(DOBMatchingStrategy.getDateFormat().parse(demoValue).toInstant()
+					String value = entityInfoMap.values().stream().findFirst().orElse("");
+					age = Period.between(DOBMatchingStrategy.getDateFormat().parse(value).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 				} catch (ParseException e) {
 					getLogger().error("sessionId", "IdType", "Id", e.getMessage());
 				}
-				return String.valueOf(Math.abs(age));
+				Map<String, String> map = new LinkedHashMap<>();
+				map.put(IdaIdMapping.AGE.getIdname(), String.valueOf(age));
+				return map;
 			}),
 
 	/**  Gender Match Type. */
@@ -159,7 +165,7 @@ public enum DemoMatchType implements MatchType {
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
 	/** The entity info. */
-	private Function<String, String> entityInfoFetcher;
+	private Function<Map<String, String>, Map<String, String>> entityInfoFetcher;
 
 	/** The used bit. */
 	private AuthUsageDataBit usedBit;
@@ -171,7 +177,7 @@ public enum DemoMatchType implements MatchType {
 	private LanguageType langType;
 
 	/**  */
-	private Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction;
+	private Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> identityInfoFunction;
 
 	/**  */
 	private IdMapping idMapping;
@@ -189,9 +195,13 @@ public enum DemoMatchType implements MatchType {
 	 */
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, LanguageType langType,
-			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, Function<String, String> entityInfoFetcher) {
+			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, Function<Map<String, String>, Map<String, String>> entityInfoFetcher) {
 		this.idMapping = idMapping;
-		this.identityInfoFunction = identityInfoFunction;
+		this.identityInfoFunction =  (IdentityDTO identityDTO) -> {
+			Map<String, List<IdentityInfoDTO>> map = new HashMap<>();
+			map.put(idMapping.getIdname(), identityInfoFunction.apply(identityDTO));
+			return map;
+		};
 		this.langType = langType;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 		this.entityInfoFetcher = entityInfoFetcher;
@@ -212,13 +222,7 @@ public enum DemoMatchType implements MatchType {
 	private DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, LanguageType langType,
 			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
-		this.idMapping = idMapping;
-		this.identityInfoFunction = identityInfoFunction;
-		this.langType = langType;
-		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
-		this.usedBit = usedBit;
-		this.matchedBit = matchedBit;
-		this.entityInfoFetcher = Function.identity();
+		this(idMapping, allowedMatchingStrategy, identityInfoFunction, langType, usedBit, matchedBit, Function.identity());
 	}
 	
 	
@@ -246,7 +250,7 @@ public enum DemoMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public Function<String, String> getEntityInfoMapper() {
+	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper() {
 		return entityInfoFetcher;
 	}
 
@@ -291,7 +295,7 @@ public enum DemoMatchType implements MatchType {
 	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchType#getIdentityInfoFunction()
 	 */
 	@Override
-	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+	public Function<IdentityDTO, Map<String, List<IdentityInfoDTO>>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
 	

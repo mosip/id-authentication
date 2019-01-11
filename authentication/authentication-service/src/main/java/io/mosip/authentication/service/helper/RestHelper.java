@@ -10,11 +10,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
@@ -79,13 +76,10 @@ public class RestHelper {
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param request
-	 *            the request
+	 * @param         <T> the generic type
+	 * @param request the request
 	 * @return the response object or null in case of exception
-	 * @throws RestServiceException
-	 *             the rest service exception
+	 * @throws RestServiceException the rest service exception
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
@@ -127,24 +121,24 @@ public class RestHelper {
 	/**
 	 * Request to send/receive HTTP requests and return the response asynchronously.
 	 *
-	 * @param request            the request
+	 * @param request the request
 	 * @return the supplier
 	 * @throws RestServiceException the rest service exception
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		try {
-		mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
-		Mono<?> sendRequest = request(request, getSslContext());
-		sendRequest.subscribe();
-		mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
-		return () -> sendRequest.block();
+			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+			Mono<?> sendRequest = request(request, getSslContext());
+			sendRequest.subscribe();
+			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+			return () -> sendRequest.block();
 		} catch (RestServiceException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
 					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
 			return () -> new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 		}
 	}
-	
+
 	/**
 	 * Gets the ssl context.
 	 *
@@ -164,7 +158,7 @@ public class RestHelper {
 	/**
 	 * Method to send/receive HTTP requests and return the response as Mono.
 	 *
-	 * @param request            the request
+	 * @param request    the request
 	 * @param sslContext the ssl context
 	 * @return the mono
 	 */
@@ -197,14 +191,7 @@ public class RestHelper {
 		}
 
 		if (request.getRequestBody() != null) {
-			if (request.getHeaders() != null
-					&& request.getHeaders().getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
-				exchange = uri
-						.body(BodyInserters.fromFormData((MultiValueMap<String, String>) request.getRequestBody()))
-						.retrieve();
-			} else {
-				exchange = uri.syncBody(request.getRequestBody()).retrieve();
-			}
+			exchange = uri.syncBody(request.getRequestBody()).retrieve();
 		} else {
 			exchange = uri.retrieve();
 		}

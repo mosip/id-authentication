@@ -1,49 +1,98 @@
-<div *ngIf="availabilityData.length !== 0">
-<div class="container">
-  <div class="left-button">
-      <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
-  </div>
-  <div #widgetsContent class="middle">
-    <mat-card *ngFor="let data of availabilityData | slice:0:days; let i = index" 
-              [ngClass]="data.holiday ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
-              (click)="dateSelected(i)">
-      <p>{{data.displayDate}}</p>
-      <p>{{data.TotalAvailable}} spots</p>
-    </mat-card>
-  </div>
-  <div class="right-button">
-      <a (click)="scrollRight()"><i class="material-icons">arrow_forward</i></a>
-  </div>
-</div>
-  <div *ngIf="selectedTile !== null" class="container-card">
-    <div class="left-button-card">
-        <a (click)="scrollLeftCard()"><i class="material-icons">arrow_back</i></a>
-    </div>
-    <div #cardsContent class="middle-card">
-      <div *ngFor="let data of availabilityData[selectedTile].timeSlots; let i = index;">
-              <p>{{data.DisplayTime}}</p>
-              <mat-card [ngClass]="selectedCard === i ? 'sizing-card selected' : 'sizing-card'"
-                        (click)="cardSelected(i)">
-                <p>Available: {{data.availability - data.names.length}}</p>
-                <p>Selected: {{data.names.length}}</p>
-                <div class="list-container">
-                  <ul class="list" *ngIf="data.names.length !== 0">
-                    <li *ngFor="let name of data.names | slice:0:limit[i]; let j = index;">{{name.fullName}}<i (click)="itemDelete(j)" *ngIf="selectedCard === i" class="material-icons close-button-sizing">close</i></li>
-                    <li *ngIf="limit[i] < data.names.length && selectedCard === i" (click)="changeLimit()">more...</li>
-                    <li *ngIf="!(selectedCard === i) && limit[i] < data.names.length">more...</li>
-                  </ul>
-                </div>
-                <div class="add-button-container" *ngIf="showAddButton && !(data.availability === data.names.length)">
-                  <button mat-fab color="primary" (click)="openDialog()"><i class="material-icons add-icon">add</i></button>
-                </div>
-              </mat-card>
+<mat-card class="time-selection__title-card">
+  <mat-card-header>
+      <p class="time-selection__title-card-text">{{'bookAppointment.title_book'|translate}} </p>
+  </mat-card-header>
+</mat-card>
+<mat-card class="time-selection__date-card">
+  <div *ngIf="availabilityData.length !== 0">
+    <div class="container">
+      <div class="time-selection__arrow-text">
+        <p (click)="scrollLeft()">{{'bookAppointment.text_prev'|translate}}</p>
+      </div>
+      <div class="left-button">
+          <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div #widgetsContent class="middle">
+        <mat-card *ngFor="let data of availabilityData | slice:0:days; let i = index" 
+                  [ngClass]="data.holiday ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
+                  (click)="dateSelected(i)">
+            <mat-card-content style="margin: 10px 0 10px 5px;">
+                <p class="time-selection__tile-date-text">{{data.displayDate}}</p>
+                <p class="time-selection__tile-date-text">{{data.displayDay}}</p>
+                <p class="time-selection__tile-availability-text">{{data.TotalAvailable}} Bookings</p>
+            </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="right-button">
+          <a (click)="scrollRight()"><i class="material-icons">arrow_forward</i></a>
+      </div>
+      <div class="time-selection__arrow-text">
+          <p (click)="scrollRight()">{{'bookAppointment.text_next'|translate}}</p>
       </div>
     </div>
-    <div class="right-button-card">
-        <a (click)="scrollRightCard()"><i class="material-icons">arrow_forward</i></a>
     </div>
+</mat-card>
+<div class="time-seelection__slot-groups-div">
+  <p (click)="tabSelected('morning')" [ngClass]="activeTab === 'morning' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">{{'bookAppointment.text_morning'|translate}}</p>
+  <p (click)="tabSelected('afternoon')" [ngClass]="activeTab === 'afternoon' ? 'time-seelection__slot-groups-div-selected' : 'time-seelection__slot-groups-div p'">{{'bookAppointment.text_afternoon'|translate}}</p>
+</div>
+<div class="time-selection__slots-div">
+  <mat-card class="time-selection__time-slots-container">
+    <div class="container-card">
+      <div *ngIf="availabilityData[selectedTile] !== undefined" #cardsContent class="middle-card">
+        <div *ngFor="let data of availabilityData[selectedTile].timeSlots; let i = index;">
+                <mat-card [ngClass]="selectedCard === i ? 'card card-content selected-card' : 'card card-content'" (click)="cardSelected(i)">
+                  <mat-card-content>
+                      <p class="card-time-text">
+                          {{data.displayTime}}
+                      </p>
+                      <p [ngClass]="selectedCard === i ? 'card-slot-text-selected' : 'card-slot-text'">
+                          {{data.availability}} slots
+                        <span *ngIf="data.names.length !== 0" class="card-slot-text-span-number">{{data.names.length}}</span><span *ngIf="selectedCard === i" class="card-slot-text-span-image"><img src="assets/slots.png" height="10px" width="10px" /></span>
+                      </p>
+                  </mat-card-content>
+                </mat-card>
+        </div>
+      </div>
+      </div>
+  </mat-card>
+  <mat-card class="time-selection__names-container">
+    <div>
+      <div *ngIf="availabilityData[selectedTile] !== undefined" class="time-selection__name-list-header">
+        <span class="time-selection__names-header-date-text">{{availabilityData[selectedTile].displayDate}}</span>, 
+        <span class="time-selection__names-header-date-text">{{availabilityData[selectedTile].displayDay}}</span> <br>
+        <span class="time-selection__names-header-time-text">{{availabilityData[selectedTile].timeSlots[selectedCard].displayTime}}</span>, 
+        <span class="time-selection__names-header-day-text">morning</span>
+      </div>
+      <div *ngIf="availabilityData[selectedTile] !== undefined">
+        <table class="time-selection__name-list">
+          <tr class="time-selection__name-list-item" *ngFor="let item of availabilityData[selectedTile].timeSlots[selectedCard].names; let j = index;">
+            <td>{{item.fullName}}</td><td><mat-icon (click)="itemDelete(j)" class="name-delete-button">close</mat-icon></td>
+          </tr>
+        </table>
+      </div>
     </div>
-  </div>
-  <div *ngIf="availabilityData.length === 0">
-    <p>Data for this center hasn't been added yet</p>
-  </div>
+    <div *ngIf="deletedNames.length !== 0">
+     <div class="time-selection__name-list-header">
+       {{'bookAppointment.text_available'|translate}} 
+     </div>
+     <div>
+      <table class="time-selection__name-list">
+        <tr class="time-selection__name-list-item" *ngFor="let item of deletedNames; let k = index;">
+          <td>{{item.fullName}}</td><td><mat-icon (click)="addItem(k)" class="name-delete-button">add</mat-icon></td>
+        </tr>
+      </table>
+     </div>
+    </div>
+  </mat-card>
+</div>
+
+<div>
+  <mat-card class="center-selection__button-container">
+    <button mat-button (click)="navigateBack()" class="user-back-btn">Back</button>
+    <span class="spacer"></span>
+    <button mat-button (click)="navigateDashboard()" class="user-book_later-btn">Book Later</button>
+    <button mat-button (click)="makeBooking()" class="user-continue-btn">Continue</button>
+  </mat-card>
+</div>
+

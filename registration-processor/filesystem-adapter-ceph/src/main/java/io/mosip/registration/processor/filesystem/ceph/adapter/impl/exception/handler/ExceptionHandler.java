@@ -9,17 +9,24 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.In
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 
 /**
- * Global Exception handler
- * 
- * @author Pranav Kumar
+ * Global Exception handler.
  *
+ * @author Pranav Kumar
  */
 public class ExceptionHandler {
 	
+	/**
+	 * Instantiates a new exception handler.
+	 */
 	private ExceptionHandler() {
 		
 	}
 	
+	/**
+	 * Exception handler.
+	 *
+	 * @param e the e
+	 */
 	public static void exceptionHandler(AmazonS3Exception e) {
 		if(e.getStatusCode() == 403) {
 			throw new InvalidConnectionParameters(PlatformErrorMessages.RPR_FAC_INVALID_CONNECTION_PARAMETERS.getMessage(),e);
@@ -28,6 +35,12 @@ public class ExceptionHandler {
 			throw new PacketNotFoundException(PlatformErrorMessages.RPR_FAC_PACKET_NOT_AVAILABLE.getMessage(),e);
 		}
 	}
+	
+	/**
+	 * Exception handler.
+	 *
+	 * @param e the e
+	 */
 	public static void exceptionHandler(SdkClientException e) {
 		throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_FAC_CONNECTION_NOT_AVAILABLE.getMessage(),e);
 	}

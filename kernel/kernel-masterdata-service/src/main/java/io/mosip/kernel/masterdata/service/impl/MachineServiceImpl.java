@@ -42,14 +42,13 @@ public class MachineServiceImpl implements MachineService {
 	 */
 	@Autowired
 	MachineRepository machineRepository;
-	/**
-	 * Field to hold Machine History Service object
-	 */
-	@Autowired
-	MachineHistoryService machineHistoryService;
+
 
 	@Autowired
 	MachineSpecificationRepository machineSpecificationRepository;
+
+	@Autowired
+	MachineHistoryService machineHistoryService;
 
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
@@ -67,10 +66,9 @@ public class MachineServiceImpl implements MachineService {
 		MachineResponseDto machineResponseIdDto = new MachineResponseDto();
 		try {
 			machineList = machineRepository.findAllByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNull(id, langCode);
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
 			machineDtoList = MapperUtils.mapAll(machineList, MachineDto.class);
@@ -98,10 +96,9 @@ public class MachineServiceImpl implements MachineService {
 		try {
 			machineList = machineRepository.findAllByIsDeletedFalseOrIsDeletedIsNull();
 
-		} catch (DataAccessException|DataAccessLayerException e) {
+		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
 			machineDtoList = MapperUtils.mapAll(machineList, MachineDto.class);
@@ -129,8 +126,7 @@ public class MachineServiceImpl implements MachineService {
 			machineList = machineRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(langCode);
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(e));
+					MachineErrorCode.MACHINE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		if (machineList != null && !machineList.isEmpty()) {
 			machineDtoList = MapperUtils.mapAll(machineList, MachineDto.class);
@@ -250,6 +246,5 @@ public class MachineServiceImpl implements MachineService {
 		return idResponseDto;
 
 	}
-
 
 }

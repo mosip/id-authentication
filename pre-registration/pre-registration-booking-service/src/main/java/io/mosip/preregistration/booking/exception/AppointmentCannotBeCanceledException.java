@@ -14,16 +14,16 @@ public class AppointmentCannotBeCanceledException extends BaseUncheckedException
 	 */
 	private static final long serialVersionUID = 5135952690225019228L;
 
-	public AppointmentCannotBeCanceledException(String message) {
-		super(ErrorCodes.PRG_BOOK_RCI_001.toString(), message);
+	public AppointmentCannotBeCanceledException(String msg) {
+		super("", msg);
+	}
+
+	public AppointmentCannotBeCanceledException(String msg, Throwable cause) {
+		super("", msg, cause);
 	}
 
 	public AppointmentCannotBeCanceledException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
-	}
-
-	public AppointmentCannotBeCanceledException(String errorMessage, Throwable rootCause) {
-		super(ErrorCodes.PRG_BOOK_RCI_001.toString(), errorMessage, rootCause);
 	}
 
 	public AppointmentCannotBeCanceledException(String errorCode, String errorMessage, Throwable rootCause) {

@@ -7,29 +7,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="359.0" prefWidth="477.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.ScanController" styleClass="paneRoot">
+<AnchorPane styleClass="paneRoot" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.ScanPopUpViewController">
    <children>
-      <AnchorPane layoutX="3.0" layoutY="53.0" prefHeight="307.0" prefWidth="483.0" styleClass="subPane">
+      <AnchorPane layoutX="3.0" layoutY="53.0" styleClass="subPane">
          <children>
-            <Button layoutX="387.0" layoutY="233.0" mnemonicParsing="false" onAction="#scan" text="Scan" styleClass="RegbuttonStyle" >
+            <Button layoutX="376.0" layoutY="124.0" mnemonicParsing="false" onAction="#scan" styleClass="RegbuttonStyle" text="Scan">
                <font>
                   <Font size="10.0" />
                </font></Button>
-            <AnchorPane layoutX="10.0" layoutY="25.0" prefHeight="238.0" prefWidth="349.0" styleClass="imagePane">
+            <AnchorPane layoutX="10.0" layoutY="25.0" styleClass="imagePane">
                <children>
-                  <ImageView fx:id="scanImage" fitHeight="238.0" fitWidth="349.0" layoutX="-2.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="scanImage" fitHeight="238.0" fitWidth="349.0" layoutX="-2.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" styleClass="scannedImagePreview" />
                </children>
             </AnchorPane>
+            <Button fx:id="saveBtn" layoutX="372.0" layoutY="65.0" mnemonicParsing="false" onAction="#save" prefHeight="23.0" prefWidth="44.0" styleClass="RegbuttonStyle" text="Save">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Button>
+            <Text fx:id="totalScannedPages" layoutX="390.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+            <Label fx:id="scannedPagesLabel" layoutX="359.0" layoutY="171.0" text="Total Pages" />
+            <Text fx:id="scanningMsg" layoutX="369.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Scanning..." />
          </children>
       </AnchorPane>
-      <AnchorPane layoutY="-1.0" prefHeight="54.0" prefWidth="483.0" styleClass="headerPane">
+      <AnchorPane layoutY="-1.0" styleClass="headerPane">
          <children>
-            <Label fx:id="popupTitle" layoutX="194.0" layoutY="14.0">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Hyperlink layoutX="458.0" layoutY="10.0" onAction="#exitWindow" text="X" styleClass="exit"/>
+            <Label fx:id="popupTitle" layoutX="194.0" layoutY="14.0" styleClass="scanPopupHeader" />
+            <Hyperlink layoutX="458.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit" text="X" />
          </children>
       </AnchorPane>
    </children>

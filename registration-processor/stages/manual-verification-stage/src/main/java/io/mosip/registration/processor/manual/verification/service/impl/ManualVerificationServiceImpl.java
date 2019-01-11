@@ -39,6 +39,9 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
+/**
+ * The Class ManualVerificationServiceImpl.
+ */
 @Component
 public class ManualVerificationServiceImpl implements ManualVerificationService {
 
@@ -51,15 +54,19 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The filesystem ceph adapter impl. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
+	/** The base packet repository. */
 	@Autowired
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 
+	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
 
@@ -100,7 +107,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
 					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
 					manualVerificationDTO
-							.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+					.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
 					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
 					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
 				}
@@ -122,27 +129,13 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	public byte[] getApplicantFile(String regId, String fileName) {
 		byte[] file = null;
 		InputStream fileInStream = null;
-		if (fileName.equals(PacketFiles.APPLICANTPHOTO.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTPHOTO);
-		} else if (fileName.equals(PacketFiles.PROOFOFADDRESS.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PROOFOFADDRESS);
-		} else if (fileName.equals(PacketFiles.PROOFOFIDENTITY.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.PROOFOFIDENTITY);
-		} else if (fileName.equals(PacketFiles.EXCEPTIONPHOTO.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.EXCEPTIONPHOTO);
-		} else if (fileName.equals(PacketFiles.RIGHTPALM.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTPALM);
-		} else if (fileName.equals(PacketFiles.LEFTPALM.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.LEFTPALM);
-		} else if (fileName.equals(PacketFiles.BOTHTHUMBS.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.BOTHTHUMBS);
-		} else if (fileName.equals(PacketFiles.LEFTEYE.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.LEFTEYE);
-		} else if (fileName.equals(PacketFiles.RIGHTEYE.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.RIGHTEYE);
-		} else if (fileName.equals(PacketFiles.DEMOGRAPHICINFO.name())) {
-			fileInStream = filesystemCephAdapterImpl.getFile(regId, PacketStructure.DEMOGRAPHICINFO);
-		} else {
+
+		if(checkBiometric(fileName)) {
+			fileInStream = getApplicantBiometricFile(regId,fileName);
+		} else if (checkDemographic(fileName)) {
+			fileInStream =	getApplicantDemographicFile(regId,fileName);
+		}
+		else {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
@@ -152,6 +145,52 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			logger.error(e.getLocalizedMessage());
 		}
 		return file;
+	}
+
+	/**
+	 * Gets the applicant biometric file.
+	 *
+	 * @param regId the reg id
+	 * @param fileName the file name
+	 * @return the applicant biometric file
+	 */
+	private InputStream getApplicantBiometricFile(String regId,String fileName){
+		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTBIOMETRIC + fileName);
+	}
+	
+	/**
+	 * Gets the applicant demographic file.
+	 *
+	 * @param regId the reg id
+	 * @param fileName the file name
+	 * @return the applicant demographic file
+	 */
+	private InputStream getApplicantDemographicFile(String regId,String fileName){
+		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
+	}
+	
+	/**
+	 * Check biometric.
+	 *
+	 * @param fileName the file name
+	 * @return true, if successful
+	 */
+	private boolean checkBiometric(String fileName){
+
+		return fileName.equals(PacketFiles.APPLICANTPHOTO.name()) || fileName.equals(PacketFiles.PROOFOFADDRESS.name()) || fileName.equals(PacketFiles.PROOFOFIDENTITY.name())
+				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.DEMOGRAPHICINFO.name());
+	}
+
+	/**
+	 * Check demographic.
+	 *
+	 * @param fileName the file name
+	 * @return true, if successful
+	 */
+	private boolean checkDemographic(String fileName){
+
+		return fileName.equals(PacketFiles.RIGHTPALM.name()) || fileName.equals(PacketFiles.LEFTPALM.name()) ||
+				fileName.equals(PacketFiles.BOTHTHUMBS.name()) || fileName.equals(PacketFiles.LEFTEYE.name()) || fileName.equals(PacketFiles.RIGHTEYE.name());
 	}
 
 	/*
@@ -228,6 +267,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.manual.verification.service.ManualVerificationService#getApplicantPacketInfo(java.lang.String)
+	 */
 	@Override
 	public PacketMetaInfo getApplicantPacketInfo(String regId) {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();

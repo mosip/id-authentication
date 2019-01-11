@@ -128,7 +128,6 @@ public class PacketUploadController extends BaseController {
 					syncDto.setStatusComment(packetToBeSynch.getClientStatusCode() + " " + "-" + " "
 							+ packetToBeSynch.getClientStatusComments());
 					syncDto.setRegistrationId(packetToBeSynch.getId());
-					syncDto.setParentRegistrationId(packetToBeSynch.getId());
 					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
 					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 					syncDtoList.add(syncDto);
@@ -243,7 +242,7 @@ public class PacketUploadController extends BaseController {
 										|| "E".equals(synchedPacket.getFileUploadStatus())) {
 									Object response = packetUploadService.pushPacket(packet);
 									String responseCode = response.toString();
-									if (responseCode.equals("PACKET_UPLOADED_TO_LANDING_ZONE")) {
+									if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
 										synchedPacket.setClientStatusCode(
 												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 										synchedPacket.setFileUploadStatus(

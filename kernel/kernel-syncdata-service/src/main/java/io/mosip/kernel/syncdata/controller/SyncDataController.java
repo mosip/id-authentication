@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
+import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
@@ -64,6 +65,11 @@ public class SyncDataController {
 	@GetMapping(value = "/registrationcenterconfig/{registrationcenterid}")
 	public JSONObject getRegistrationCentreConfig(@PathVariable(value = "registrationcenterid") String regId) {
 		return syncConfigDetailsService.getRegistrationCenterConfigDetails(regId);
+	}
+
+	@GetMapping("/configuration/{registrationCenterId}")
+	public ConfigDto getConfiguration(@PathVariable("registrationCenterId") String registrationCenterId) {
+		return syncConfigDetailsService.getConfiguration(registrationCenterId);
 	}
 
 	/**

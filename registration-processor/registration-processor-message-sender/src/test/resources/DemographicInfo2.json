@@ -1,0 +1,184 @@
+{
+  "identity" : {
+    "firstName" : [ {
+      "language" : "en",
+      "label" : "firstName",
+      "value" : "ROUNAK"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "lastName" : [ {
+      "language" : "en",
+      "label" : "lastName",
+      "value" : "NAYAK"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "dateOfBirth" : [ {
+      "language" : "en",
+      "label" : "dateOfBirth",
+      "value" : "Mon Jul 05 00:00:00 IST 1993"
+    }, {
+      "language" : "ar",
+      "label" : "dateOfBirth",
+      "value" : "Mon Jul 05 00:00:00 IST 1993"
+    } ],
+    "gender" : [ {
+      "language" : "en",
+      "label" : "gender",
+      "value" : "Male"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "addressLine1" : [ {
+      "language" : "en",
+      "label" : "addressLine1",
+      "value" : "1"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "addressLine2" : [ {
+      "language" : "en",
+      "label" : "addressLine2",
+      "value" : "2"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "addressLine3" : [ {
+      "language" : "en",
+      "label" : "addressLine3",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "region" : [ {
+      "language" : "en",
+      "label" : "region",
+      "value" : "BTM"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "city" : [ {
+      "language" : "en",
+      "label" : "city",
+      "value" : "Bangalore"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "province" : [ {
+      "language" : "en",
+      "label" : "province",
+      "value" : "KA"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "postalCode" : [ {
+      "language" : "en",
+      "label" : "postalCode",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "emailId" : [ {
+      "language" : "en",
+      "label" : "emailId",
+      "value" : ""
+    }, {
+      "language" : "ar",
+      "label" : "emailId",
+      "value" : ""
+    } ],
+    "mobileNumber" : [ {
+      "language" : "en",
+      "label" : "mobileNumber",
+      "value" : ""
+    }, {
+      "language" : "ar",
+      "label" : "mobileNumber",
+      "value" : ""
+    } ],
+    "languageCode" : [ {
+      "language" : "en",
+      "label" : "languageCode",
+      "value" : "en"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "isChild" : [ {
+      "language" : "en",
+      "label" : "isChild",
+      "value" : "false"
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "age" : [ {
+      "language" : "en",
+      "label" : "age",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "localAdministrativeAuthority" : [ {
+      "language" : "en",
+      "label" : "localAdministrativeAuthority",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "cneOrPINNumber" : [ {
+      "language" : "en",
+      "label" : "cneOrPINNumber",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "parentOrGuardianName" : [ {
+      "language" : "en",
+      "label" : "parentOrGuardianName",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ],
+    "parentOrGuardianRIDOrUIN" : [ {
+      "language" : "en",
+      "label" : "parentOrGuardianRIDOrUIN",
+      "value" : null
+    }, {
+      "language" : "ar",
+      "label" : "ØªÙ�Ø§Ø­Ø©",
+      "value" : "ØªÙ�Ø§Ø­Ø©"
+    } ]
+  }
+}
