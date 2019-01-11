@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -200,8 +199,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
-
-
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "uin";
 
@@ -218,7 +215,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		boolean isTransactionSuccessful = false;
 
 		Biometric biometric = identity.getBiometric();
-		List<Document> documentDtos = identity.getDocuments();
+
 		List<FieldValue> osiData = identity.getOsiData();
 		List<BiometricExceptionDto> exceptionBiometrics = identity.getExceptionBiometrics();
 		Photograph applicantPhotographData = identity.getApplicantPhotograph();
@@ -226,7 +223,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		metaData = identity.getMetaData();
 
 		try {
-			saveDocuments(documentDtos);
+
 			saveApplicantBioMetricDatas(biometric.getApplicant());
 			saveExceptionBiometricDatas(exceptionBiometrics);
 			savePhotoGraph(applicantPhotographData, exceptionPhotographData);
@@ -356,7 +353,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param documentDtos
 	 *            the document dto
 	 */
-	private void saveDocuments(List<Document> documentDtos) {
+	public void saveDocuments(List<Document> documentDtos) {
 
 		for (Document document : documentDtos) {
 			saveDocument(document);
@@ -375,11 +372,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				metaData);
 
 		String fileName;
-		if (PacketFiles.ID.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name();
-		} else {
-			fileName = DEMOGRAPHIC_APPLICANT + documentDetail.getDocumentName().toUpperCase();
-		}
+
+		fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + documentDetail.getDocumentName().toUpperCase();
 
 		Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
 				.findFirst();
@@ -477,7 +471,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @return the t[]
 	 */
 	@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType,JSONArray demographicJsonNode) {
+	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
 		String value;
 		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
@@ -518,32 +512,34 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Gets the json values.
 	 *
-	 * @param identityKey the identity key
+	 * @param identityKey
+	 *            the identity key
 	 * @return the json values
 	 */
 	private JsonValue[] getJsonValues(Object identityKey) {
-		JSONArray demographicJsonNode=null;
+		JSONArray demographicJsonNode = null;
 
 		if (demographicIdentity != null)
 			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
 		return (demographicJsonNode != null)
 				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
-						: null;
+				: null;
 
 	}
-
 
 	/**
 	 * Gets the identity keys and fetch values from JSON.
 	 *
-	 * @param demographicJsonString the demographic json string
+	 * @param demographicJsonString
+	 *            the demographic json string
 	 * @return the identity keys and fetch values from JSON
 	 */
 	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+					utility.getGetRegProcessorIdentityJson());
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -554,7 +550,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 			demographicData.setName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
-			demographicData.setDateOfBirth((String)(demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue())));
+			demographicData.setDateOfBirth(
+					(String) (demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue())));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
@@ -572,7 +569,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Gets the registration id.
 	 *
-	 * @param metaData the meta data
+	 * @param metaData
+	 *            the meta data
 	 * @return the registration id
 	 */
 	private void getRegistrationId(List<FieldValue> metaData) {
@@ -592,7 +590,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save individual demographic dedupe.
 	 *
-	 * @param demographicJsonBytes the demographic json bytes
+	 * @param demographicJsonBytes
+	 *            the demographic json bytes
 	 */
 	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes) {
 
