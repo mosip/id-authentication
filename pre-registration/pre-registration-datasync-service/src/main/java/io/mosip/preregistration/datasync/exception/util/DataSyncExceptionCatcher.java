@@ -59,7 +59,6 @@ public class DataSyncExceptionCatcher {
 					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
 		} else if (ex instanceof ReverseDataFailedToStoreException) {
 			throw new ReverseDataFailedToStoreException(((ReverseDataFailedToStoreException) ex).getErrorText());
-
 		} else if (ex instanceof RecordNotFoundForDateRange) {
 			throw new RecordNotFoundForDateRange(((RecordNotFoundForDateRange) ex).getErrorText());
 

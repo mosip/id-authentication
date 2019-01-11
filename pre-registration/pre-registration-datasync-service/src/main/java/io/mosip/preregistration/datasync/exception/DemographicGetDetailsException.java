@@ -1,7 +1,6 @@
 package io.mosip.preregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
 
 /**
  * @author M1046129
@@ -11,18 +10,49 @@ public class DemographicGetDetailsException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	public DemographicGetDetailsException(String msg) {
-		super(ErrorCodes.PRG_DATA_SYNC_007.toString(), msg);
+	/**
+	 * Default constructor
+	 */
+	public DemographicGetDetailsException() {
+		super();
 	}
 
-	public DemographicGetDetailsException(String msg, Throwable cause) {
-		super(ErrorCodes.PRG_DATA_SYNC_007.toString(), msg, cause);
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 */
+	public DemographicGetDetailsException(String errorMessage) {
+		super("", errorMessage);
 	}
 
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 */
 	public DemographicGetDetailsException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public DemographicGetDetailsException(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
 	public DemographicGetDetailsException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}

@@ -70,12 +70,12 @@
                 <span>{{ 'demographic.text_years' | translate }}</span>
               </div>
             </div>
-            <div
+            <!-- <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="userForm.get('age').touched && !userForm.get('age').valid"
             >
-              Age should be less than 150
-            </div>
+              Age should be less than 150 and greater than 0
+            </div> -->
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
@@ -92,13 +92,16 @@
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
             >
-              Enter valid DOB
+              Enter 4 numeric digits for year
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
-              *ngIf="userForm.get('dob').touched && userForm.get('dob').errors['incorrect']"
+              *ngIf="
+                (userForm.get('dob').touched && userForm.get('dob').errors['incorrect']) ||
+                (userForm.get('age').touched && !userForm.get('age').valid)
+              "
             >
-              Enter Valid DOB (Age should be less than 150)
+              Enter Valid DOB or age (Age should be less than 150 and whole number)
             </div>
 
             <div class="user__gender">
@@ -160,7 +163,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, provinces)"
+                  (selectionChange)="onLocationSelect($event, provinces, transProvinces, transRegions)"
                   placeholder="{{ 'demographic.label_region' | translate }}"
                   formControlName="region"
                   #region
@@ -176,7 +179,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, cities)"
+                  (selectionChange)="onLocationSelect($event, cities, transCities, transProvinces)"
                   placeholder="{{ 'demographic.label_province' | translate }}"
                   formControlName="province"
                   #province
@@ -191,7 +194,14 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, localAdministrativeAuthorities)"
+                  (selectionChange)="
+                    onLocationSelect(
+                      $event,
+                      localAdministrativeAuthorities,
+                      transLocalAdministrativeAuthorities,
+                      transCities
+                    )
+                  "
                   placeholder="{{ 'demographic.label_city' | translate }}"
                   formControlName="city"
                   #city
@@ -206,7 +216,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, null)"
+                  (selectionChange)="onLocationSelect($event, null, null, transLocalAdministrativeAuthorities)"
                   placeholder="{{ 'demographic.label_local_ administrative_authority' | translate }}"
                   formControlName="localAdministrativeAuthority"
                   #authority
@@ -316,12 +326,12 @@
               <span class="user__age--disabled">Years</span>
             </div>
           </div>
-          <div
+          <!-- <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="userForm.get('age').touched && !userForm.get('age').valid"
           >
             <br />
-          </div>
+          </div> -->
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
@@ -498,7 +508,7 @@
     </div>
   </div>
   <div class="user__buttons">
-    <button class="user__btn" type="button" (click)="onBack()" [disabled]="this.isNewApplicant">
+    <button class="user__btn" type="button" (click)="onBack()" [disabled]="isNewApplicant">
       {{ 'demographic.action_back' | translate }}
     </button>
     <button class="user__btn" type="button" [disabled]="!dataUploadComplete || !userForm.valid" (click)="onSubmit()">

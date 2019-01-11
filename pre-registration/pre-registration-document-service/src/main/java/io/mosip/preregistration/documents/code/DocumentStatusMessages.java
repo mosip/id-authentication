@@ -12,7 +12,7 @@ package io.mosip.preregistration.documents.code;
  * @since 1.0.0
  *
  */
-public enum StatusCodes {
+public enum DocumentStatusMessages {
 
 	DOCUMENT_FOR_VIRUS_SCAN,
 	DOCUMENT_UPLOAD_SUCCESSFUL,
@@ -23,7 +23,5 @@ public enum StatusCodes {
 	DOCUMENT_IS_MISSING,
 	DOCUMENT_DELETE_SUCCESSFUL,
 	DOCUMENT_TABLE_NOTACCESSIBLE,
-	DOCUMENT_COPY_SUCCESSFUL,
-	Pending_Appointment
-
-}
+	DOCUMENT_COPY_SUCCESSFUL;
+	}

@@ -9,5 +9,6 @@ public enum ErrorCode {
 	PRG_PAM_BAT_001,
 	PRG_PAM_BAT_002,
 	PRG_PAM_BAT_003,
-	PRG_PAM_BAT_004;
+	PRG_PAM_BAT_004,
+	PRG_PAM_BAT_005;
 }

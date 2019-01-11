@@ -22,7 +22,7 @@ import lombok.Setter;
  */
 @Component
 @Entity
-@Table(name = "processed_prereg_list")
+@Table(name = "processed_prereg_list", schema="prereg")
 @Getter
 @Setter
 @NoArgsConstructor

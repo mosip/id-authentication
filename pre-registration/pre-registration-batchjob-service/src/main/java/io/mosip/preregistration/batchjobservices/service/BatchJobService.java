@@ -2,7 +2,9 @@ package io.mosip.preregistration.batchjobservices.service;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+
+
 
 
 /**
@@ -21,6 +23,6 @@ public interface BatchJobService {
 	 * Update status of Applicant Demographic.
 	 * @return the response dto
 	 */
-	ResponseDto<String> demographicConsumedStatus();
+	MainResponseDTO<String> demographicConsumedStatus();
 
 }

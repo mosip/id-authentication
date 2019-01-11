@@ -33,11 +33,12 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.documents.code.RequestCodes;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -158,7 +159,7 @@ public class DocumentServiceUtil {
 		documentEntity.setDocCatCode(dto.getDocCatCode());
 		documentEntity.setDocTypeCode(dto.getDocTypeCode());
 		documentEntity.setDocFileFormat(dto.getDocFileFormat());
-		documentEntity.setStatusCode(dto.getStatusCode());
+		documentEntity.setStatusCode(StatusCodes.PENDINGAPPOINTMENT.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
 		documentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		documentEntity.setUpdBy(dto.getUploadBy());
@@ -264,7 +265,7 @@ public class DocumentServiceUtil {
 		copyDocumentEntity.setLangCode(documentEntity.getLangCode());
 		copyDocumentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		copyDocumentEntity.setUpdDtime(DateUtils.parseDateToLocalDateTime(new Date()));
-		copyDocumentEntity.setStatusCode(StatusCodes.Pending_Appointment.toString());
+		copyDocumentEntity.setStatusCode(StatusCodes.PENDINGAPPOINTMENT.getCode());
 		return copyDocumentEntity;
 	}
 

@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
@@ -80,6 +81,7 @@ import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.config.LoggerConfiguration;
 
 /**
  * This class provides the utility methods for Booking application.
@@ -91,13 +93,12 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
  */
 @Component
 public class BookingServiceUtil {
-	
+
 	/**
 	 * Autowired reference for {@link #restTemplateBuilder}
 	 */
 	@Autowired
 	RestTemplateBuilder restTemplateBuilder;
-
 
 	/**
 	 * Reference for ${regCenter.url} from property file
@@ -123,11 +124,15 @@ public class BookingServiceUtil {
 	@Value("${documentUrl}")
 	String documentUrl;
 
+	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
+
 	/**
 	 * This method will call kernel service for registration center date.
+	 * 
 	 * @return List of RegistrationCenterDto
 	 */
 	public List<RegistrationCenterDto> callRegCenterDateRestService() {
+		log.info("sessionId", "idType", "id", "In callRegCenterDateRestService method of Booking Service Util");
 		List<RegistrationCenterDto> regCenter = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
@@ -143,25 +148,36 @@ public class BookingServiceUtil {
 				throw new MasterDataNotAvailableException(ErrorCodes.PRG_BOOK_RCI_020.toString(),
 						ErrorMessages.MASTER_DATA_NOT_FOUND.toString());
 			}
-		} catch (HttpClientErrorException e) {
-			System.out.println(e.getResponseBodyAsString());
+		} catch (HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+			System.out.println(ex.getResponseBodyAsString());
 			try {
-				ErrorResponse<ServiceError> errorResponse=(ErrorResponse<ServiceError>) JsonUtils.jsonStringToJavaObject(ErrorResponse.class,e.getResponseBodyAsString());
-				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode() , errorResponse.getErrors().get(0).getErrorMessage());
+				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
+						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
+				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
+						errorResponse.getErrors().get(0).getErrorMessage());
 			} catch (JsonParseException | JsonMappingException | IOException e1) {
 				e1.printStackTrace();
+				log.error("sessionId", "idType", "id",
+						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
+								+ ex.getMessage());
+
 			}
-			
+
 		}
 		return regCenter;
 	}
 
 	/**
 	 * This method will call kernel service holiday list
+	 * 
 	 * @param regDto
 	 * @return List of string
 	 */
 	public List<String> callGetHolidayListRestService(RegistrationCenterDto regDto) {
+		log.info("sessionId", "idType", "id", "In callGetHolidayListRestService method of Booking Service Util");
 		List<String> holidaylist = null;
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
@@ -180,25 +196,36 @@ public class BookingServiceUtil {
 					holidaylist.add(holiday.getHolidayDate());
 				}
 			}
-		} catch (HttpClientErrorException e) {
+		} catch (HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetHolidayListRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+
 			try {
-				ErrorResponse<ServiceError> errorResponse=(ErrorResponse<ServiceError>) JsonUtils.jsonStringToJavaObject(ErrorResponse.class,e.getResponseBodyAsString());
-				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode() , errorResponse.getErrors().get(0).getErrorMessage());
+				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
+						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
+				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
+						errorResponse.getErrors().get(0).getErrorMessage());
 			} catch (JsonParseException | JsonMappingException | IOException e1) {
+				log.error("sessionId", "idType", "id",
+						"In callGetHolidayListRestService method of Booking Service Util for JsonParseException- "
+								+ ex.getMessage());
 				e1.printStackTrace();
 			}
-			
+
 		}
 		return holidaylist;
 	}
 
 	/**
 	 * This method will call demographic service for update status.
+	 * 
 	 * @param preId
 	 * @param status
 	 * @return response entity
 	 */
 	public boolean callUpdateStatusRestService(String preId, String status) {
+		log.info("sessionId", "idType", "id", "In callUpdateStatusRestService method of Booking Service Util");
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 
@@ -218,18 +245,24 @@ public class BookingServiceUtil {
 
 			return bookingResponse.getBody().isStatus();
 
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callUpdateStatusRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+
 			throw new DemographicStatusUpdationException(ErrorCodes.PRG_BOOK_RCI_011.toString(),
-					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.toString(), e.getCause());
+					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.toString(), ex.getCause());
 		}
 	}
 
 	/**
-	 * This method will call demographic service for status. 
+	 * This method will call demographic service for status.
+	 * 
 	 * @param preId
 	 * @return status code
 	 */
 	public String callGetStatusRestService(String preId) {
+		log.info("sessionId", "idType", "id", "In callGetStatusRestService method of Booking Service Util");
 		String statusCode = "";
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
@@ -239,7 +272,7 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			System.out.println("uriBuilder::"+uriBuilder);
+			System.out.println("uriBuilder::" + uriBuilder);
 			@SuppressWarnings({ "rawtypes" })
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -254,7 +287,11 @@ public class BookingServiceUtil {
 				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
 						respEntity.getBody().getErr().getMessage());
 			}
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetStatusRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+
 			throw new DemographicGetStatusException(ErrorCodes.PRG_BOOK_RCI_012.toString(),
 					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.toString());
 		}
@@ -263,10 +300,12 @@ public class BookingServiceUtil {
 
 	/**
 	 * This method will call demographic service for cancel status.
+	 * 
 	 * @param preId
 	 * @return status code
 	 */
 	public boolean callGetStatusForCancelRestService(String preId) {
+		log.info("sessionId", "idType", "id", "In callGetStatusForCancelRestService method of Booking Service Util");
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(preRegResourceUrl + "/applicationStatus")
@@ -295,7 +334,10 @@ public class BookingServiceUtil {
 				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
 						respEntity.getBody().getErr().getMessage());
 			}
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetStatusForCancelRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
 			throw new DemographicGetStatusException(ErrorCodes.PRG_BOOK_RCI_012.toString(),
 					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.toString());
 		}
@@ -304,14 +346,16 @@ public class BookingServiceUtil {
 
 	/**
 	 * This method will call document service.
+	 * 
 	 * @param bookingRequestDTO
 	 * @return boolean
 	 */
 	public boolean callGetDocumentsByPreIdRestService(BookingRequestDTO bookingRequestDTO) {
+		log.info("sessionId", "idType", "id", "In callGetDocumentsByPreIdRestService method of Booking Service Util");
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentUrl).queryParam("pre_registration_id",
-					bookingRequestDTO.getPreRegistrationId());
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentUrl)
+					.queryParam("pre_registration_id", bookingRequestDTO.getPreRegistrationId());
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentGetAllDTO>> httpEntity = new HttpEntity<>(headers);
@@ -322,15 +366,20 @@ public class BookingServiceUtil {
 			if (!docresp.getBody().getResponse().isEmpty()) {
 				return true;
 			}
-		} catch (RestClientException e) {
+		} catch (RestClientException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetDocumentsByPreIdRestService method of Booking Service Util for HttpClientErrorException- "
+							+ ex.getMessage());
+
 			throw new DocumentNotFoundException(ErrorCodes.PRG_BOOK_RCI_023.toString(),
-					ErrorMessages.DOCUMENTS_NOT_FOUND_EXCEPTION.toString(), e.getCause());
+					ErrorMessages.DOCUMENTS_NOT_FOUND_EXCEPTION.toString(), ex.getCause());
 		}
 		return false;
 	}
 
 	/**
 	 * This method will do booking time slots.
+	 * 
 	 * @param regDto
 	 * @param holidaylist
 	 * @param sDate
@@ -338,6 +387,7 @@ public class BookingServiceUtil {
 	 */
 	public void timeSlotCalculator(RegistrationCenterDto regDto, List<String> holidaylist, LocalDate sDate,
 			BookingDAO bookingDAO) {
+		log.info("sessionId", "idType", "id", "In timeSlotCalculator method of Booking Service Util");
 		if (holidaylist.contains(sDate.toString())) {
 			DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 			String text = "2016-11-09 00:00:00";
@@ -395,12 +445,14 @@ public class BookingServiceUtil {
 
 	/**
 	 * This method will check mandatory parameter check.
+	 * 
 	 * @param bookingDto
 	 * @return true or false
 	 * @throws java.text.ParseException
 	 */
 	public boolean mandatoryParameterCheck(String preRegistrationId, BookingRegistrationDTO oldBookingDetails,
 			BookingRegistrationDTO newBookingDetails) {
+		log.info("sessionId", "idType", "id", "In mandatoryParameterCheck method of Booking Service Util");
 		boolean flag = true;
 		if (isNull(preRegistrationId)) {
 			throw new BookingPreIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_006.toString(),
@@ -437,6 +489,7 @@ public class BookingServiceUtil {
 	 */
 
 	public boolean isNull(Object key) {
+		log.info("sessionId", "idType", "id", "In isNull method of Booking Service Util");
 		if (key instanceof String) {
 			if (key.equals("") || ((String) key).trim().length() == 0)
 				return true;
@@ -449,6 +502,7 @@ public class BookingServiceUtil {
 
 	private void saveAvailability(RegistrationCenterDto regDto, LocalDate date, LocalTime currentTime, LocalTime toTime,
 			BookingDAO bookingDAO) {
+		log.info("sessionId", "idType", "id", "In saveAvailability method of Booking Service Util");
 		AvailibityEntity avaEntity = new AvailibityEntity();
 		avaEntity.setRegDate(date);
 		avaEntity.setRegcntrId(regDto.getId());
@@ -471,6 +525,7 @@ public class BookingServiceUtil {
 
 	/**
 	 * This method will do booking slots.
+	 * 
 	 * @param dateList
 	 * @param dateTimeList
 	 * @param i
@@ -479,6 +534,7 @@ public class BookingServiceUtil {
 	 */
 	public void slotSetter(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
 			List<AvailibityEntity> entity) {
+		log.info("sessionId", "idType", "id", "In slotSetter method of Booking Service Util");
 		List<SlotDto> slotList = new ArrayList<>();
 		for (AvailibityEntity en : entity) {
 			if (en.getAvailableKiosks() > 0) {
@@ -501,10 +557,12 @@ public class BookingServiceUtil {
 
 	/**
 	 * This method will do mandatory parameter check for cancel.
+	 * 
 	 * @param cancelBookingDTO
 	 * @return true or false
 	 */
 	public boolean mandatoryParameterCheckforCancel(CancelBookingDTO cancelBookingDTO) {
+		log.info("sessionId", "idType", "id", "In mandatoryParameterCheckforCancel method of Booking Service Util");
 		boolean flag = true;
 
 		if (isNull(cancelBookingDTO.getPreRegistrationId())) {
@@ -527,12 +585,14 @@ public class BookingServiceUtil {
 
 	/**
 	 * This method will check for duplicates.
+	 * 
 	 * @param oldBookingRegistrationDTO
 	 * @param newBookingRegistrationDTO
 	 * @return boolean
 	 */
 	public boolean isNotDuplicate(BookingRegistrationDTO oldBookingRegistrationDTO,
 			BookingRegistrationDTO newBookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In isNotDuplicate method of Booking Service Util");
 		if (oldBookingRegistrationDTO.getRegDate().equals(newBookingRegistrationDTO.getRegDate())
 				&& oldBookingRegistrationDTO.getRegistrationCenterId()
 						.equals(newBookingRegistrationDTO.getRegistrationCenterId())
@@ -545,13 +605,15 @@ public class BookingServiceUtil {
 	}
 
 	/**
-	 * This method is used to add the initial request values into a map for request map.
+	 * This method is used to add the initial request values into a map for request
+	 * map.
 	 * 
-	 * @param MainRequestDTO 
-	 * 						pass requestDTO
+	 * @param MainRequestDTO
+	 *            pass requestDTO
 	 * @return a map for request request map
 	 */
 	public Map<String, String> prepareRequestMap(MainListRequestDTO<?> requestDto) {
+		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Booking Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("ver", requestDto.getVer());
@@ -561,13 +623,15 @@ public class BookingServiceUtil {
 	}
 
 	/**
-	 * This method is used to add the initial request values into a map for request map.
+	 * This method is used to add the initial request values into a map for request
+	 * map.
 	 * 
-	 * @param MainRequestDTO 
-	 * 						pass requestDTO
+	 * @param MainRequestDTO
+	 *            pass requestDTO
 	 * @return a map for request request map
 	 */
 	public Map<String, String> prepareRequestMap(MainRequestDTO<?> requestDto) {
+		log.info("sessionId", "idType", "id", "In prepareRequestMap method of Booking Service Util");
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("ver", requestDto.getVer());
@@ -578,12 +642,14 @@ public class BookingServiceUtil {
 
 	/**
 	 * Helper method for setting CancelBookingDTO.
+	 * 
 	 * @param preRegistrationId
 	 * @param oldBookingRegistrationDTO
 	 * @return
 	 */
 	public CancelBookingDTO cancelBookingDtoSetter(String preRegistrationId,
 			BookingRegistrationDTO oldBookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In cancelBookingDtoSetter method of Booking Service Util");
 		CancelBookingDTO cancelBookingDTO = new CancelBookingDTO();
 		cancelBookingDTO.setPreRegistrationId(preRegistrationId);
 		cancelBookingDTO.setRegistrationCenterId(oldBookingRegistrationDTO.getRegistrationCenterId());
@@ -594,15 +660,18 @@ public class BookingServiceUtil {
 	}
 
 	public String getCurrentResponseTime() {
+		log.info("sessionId", "idType", "id", "In getCurrentResponseTime method of Booking Service Util");
 		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 	/**
 	 * This method will check for availability.
+	 * 
 	 * @param availableEntity
 	 * @return boolean
 	 */
 	public boolean isKiosksAvailable(AvailibityEntity availableEntity) {
+		log.info("sessionId", "idType", "id", "In isKiosksAvailable method of Booking Service Util");
 
 		if (availableEntity.getAvailableKiosks() > 0) {
 			return true;
@@ -614,12 +683,14 @@ public class BookingServiceUtil {
 
 	/**
 	 * Helper method for setting RegistrationBookingEntity.
+	 * 
 	 * @param preRegistrationId
 	 * @param oldBookingRegistrationDTO
 	 * @return
 	 */
 	public RegistrationBookingEntity bookingEntitySetter(String preRegistrationId,
 			BookingRegistrationDTO bookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In bookingEntitySetter method of Booking Service Util");
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		entity.setBookingPK(
 				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
