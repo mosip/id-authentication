@@ -34,7 +34,6 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
@@ -633,7 +632,6 @@ public class BaseAuthRequestValidatorTest {
 		BioInfo bioinfo1 = new BioInfo();
 		bioinfo1.setBioType("test");
 		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
-	
 
 		authRequestDTO.setBioInfo(bioInfoList);
 
@@ -1037,6 +1035,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
 	}
+
 	@Test
 	public void testInValidAuthRequest_SecondaryLanguage() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1083,6 +1082,7 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDemoAuth", authRequestDTO, error);
 		assertFalse(errors.hasErrors());
 	}
+
 	@Test
 	public void testInValidAuthRequest() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -1272,24 +1272,24 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 
 	}
-	
+
 	@Test
-	public void testValidateAdandFullAdd()
-	{
+	public void testValidateAdandFullAdd() {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setFullAddress(true);
-		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setAuthType(authTypeDTO);
-		Set<String> availableAuthTypeInfos=new HashSet<>();
+		Set<String> availableAuthTypeInfos = new HashSet<>();
 		availableAuthTypeInfos.add("address");
 		availableAuthTypeInfos.add("fullAddress");
-		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdAndFullAd", availableAuthTypeInfos, error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateAdAndFullAd", availableAuthTypeInfos,
+				error);
 		assertTrue(error.hasErrors());
 	}
+
 	@Test
-	public void testValidateAge()
-	{
+	public void testValidateAge() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
@@ -1314,9 +1314,9 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkAge", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
+
 	@Test
-	public void testValidateDOB()
-	{
+	public void testValidateDOB() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage(env.getProperty("mosip.primary.lang-code"));
@@ -1341,11 +1341,11 @@ public class BaseAuthRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "checkDOB", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
-	
+
 	@Test
 	public void testValidateDeviceInfo() {
 		BioInfo bioinfo = new BioInfo();
-	
+
 		DeviceInfo deviceInfo = new DeviceInfo();
 		deviceInfo.setDeviceId("test1");
 		deviceInfo.setMake("test");
@@ -1366,10 +1366,10 @@ public class BaseAuthRequestValidatorTest {
 		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
 		deviceInfoList.add(bioinfo);
 
-		 ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
-				"validateDeviceInfo", deviceInfoList,error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateDeviceInfo", deviceInfoList, error);
 		assertTrue(error.hasErrors());
 	}
+
 	@Test
 	public void testValidateBioType() {
 		BioInfo bioinfo = new BioInfo();
@@ -1394,9 +1394,8 @@ public class BaseAuthRequestValidatorTest {
 		List<BioInfo> deviceInfoList = new ArrayList<BioInfo>();
 		deviceInfoList.add(bioinfo);
 
-		 ReflectionTestUtils.invokeMethod(baseAuthRequestValidator,
-				"validateBioType", deviceInfoList,error);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validateBioType", deviceInfoList, error);
 		assertTrue(error.hasErrors());
 	}
-	
+
 }
