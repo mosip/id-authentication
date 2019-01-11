@@ -1,7 +1,6 @@
 package io.mosip.preregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
 
 /**
  * ReverseDataSyncRecordNotFoundException
@@ -13,19 +12,50 @@ public class ReverseDataFailedToStoreException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ReverseDataFailedToStoreException(String message) {
-		super(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(), message);
+	/**
+	 * Default constructor
+	 */
+	public ReverseDataFailedToStoreException() {
+		super();
 	}
 
-	public ReverseDataFailedToStoreException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(), message, cause);
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 */
+	public ReverseDataFailedToStoreException(String errorMessage) {
+		super("", errorMessage);
 	}
 
-	public ReverseDataFailedToStoreException(String errorCode, String message, Throwable cause) {
-		super(errorCode, message, cause);
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 */
+	public ReverseDataFailedToStoreException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage, null);
 	}
 
-	public ReverseDataFailedToStoreException(String errorCode, String message) {
-		super(errorCode, message);
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public ReverseDataFailedToStoreException(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public ReverseDataFailedToStoreException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 }

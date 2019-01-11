@@ -56,8 +56,9 @@ export class PreviewComponent implements OnInit {
     const routeParams = this.router.url.split('/');
     // this.router.navigate(['dashboard', routeParams[2]]);
     this.router.navigate(['../demographic'], { relativeTo: this.route });
-    sessionStorage.setItem('newApplicant', 'true');
-    sessionStorage.setItem('modifyUser', 'false');
+    // sessionStorage.setItem('newApplicant', 'true');
+    localStorage.setItem('newApplicant', 'false');
+    this.registrationService.changeMessage({ modifyUser: 'false' });
   }
 
   navigateBack() {

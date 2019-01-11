@@ -1,7 +1,6 @@
 package io.mosip.preregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
 
 /**
  * RecordNotFoundForDateRange Exception
@@ -13,18 +12,49 @@ public class RecordNotFoundForDateRange extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	public RecordNotFoundForDateRange(String msg) {
-		super(ErrorCodes.PRG_DATA_SYNC_001.toString(), msg);
+	/**
+	 * Default constructor
+	 */
+	public RecordNotFoundForDateRange() {
+		super();
 	}
 
-	public RecordNotFoundForDateRange(String msg, Throwable cause) {
-		super(ErrorCodes.PRG_DATA_SYNC_001.toString(), msg, cause);
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 */
+	public RecordNotFoundForDateRange(String errorMessage) {
+		super("", errorMessage);
 	}
 
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 */
 	public RecordNotFoundForDateRange(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public RecordNotFoundForDateRange(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
 	public RecordNotFoundForDateRange(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}

@@ -26,7 +26,7 @@ export class DashBoardComponent implements OnInit {
   userFile: FileModel;
   userFiles: any[] = [];
   tempFiles;
-  disableModifyDataButton = true;
+  disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
   modify = false;
@@ -56,6 +56,7 @@ export class DashBoardComponent implements OnInit {
 
   initUsers() {
     this.regService.flushUsers();
+    this.sharedService.flushNameList();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log(applicants);
@@ -135,8 +136,12 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
-    this.isNewApplication = true;
+    if (this.loginId) {
+      this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+      this.isNewApplication = true;
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   openDialog(data, width) {
@@ -261,7 +266,7 @@ export class DashBoardComponent implements OnInit {
   }
 
   onModifyInformation(preId: string) {
-    sessionStorage.setItem('modifyUser', 'true');
+    this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => {
@@ -320,25 +325,8 @@ export class DashBoardComponent implements OnInit {
         regDto: regDto,
         status: status
       });
-      this.dataStorageService.getUser(preId).subscribe(
-        response => {
-          const request = this.createRequestJSON(response[appConstants.RESPONSE][0]);
-          this.disableModifyDataButton = true;
-          this.regService.addUser(new UserModel(preId, request, this.userFiles));
-        },
-        error => {
-          console.log('error', error);
-          this.disableModifyDataButton = false;
-          this.fetchedDetails = true;
-          return this.router.navigate(['error']);
-        },
-        () => {
-          this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
-          // this.fetchedDetails = true;
-          // this.router.navigate(['pre-registration', this.loginId, 'demographic']);
-        }
-      );
     }
+    this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
   }
   private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(

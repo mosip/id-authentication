@@ -1,14 +1,20 @@
 import { Injectable } from '@angular/core';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { UserModel } from './demographic/modal/user.modal';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationService {
-  private users: UserModel[] = [];
   usersChanged = new Subject<UserModel[]>();
+  private messageSource = new BehaviorSubject({});
+  currentMessage = this.messageSource.asObservable();
+  private users: UserModel[] = [];
   private regCenterId: string;
+
+  changeMessage(message: Object) {
+    this.messageSource.next(message);
+  }
 
   flushUsers() {
     this.users.length = 0;

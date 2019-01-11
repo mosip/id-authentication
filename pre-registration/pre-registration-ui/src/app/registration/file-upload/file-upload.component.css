@@ -16,7 +16,7 @@
   height: 50%;
 }
 .browseInput {
-  width: 30%;
+  width: 60%;
   background: none;
   border: 1px solid rgba(253, 81, 140, 1);
   color: rgba(253, 81, 140, 1);
@@ -154,9 +154,10 @@ mat-select:focus {
 }
 .file-upload__button {
   height: 32px;
-  width: 40%;
+  width: 20%;
   display: inline-flex;
-  justify-content: center;
+  justify-content: flex-end;
+  padding-right: 15px;
 }
 
 .file-uplaoad__body__2__preview {
@@ -193,6 +194,11 @@ mat-select:focus {
   color: #ff4081;
   cursor: default;
 }
-.file-upload__input {
+.file-upload__input,
+.file-upload__or {
   width: 33%;
+}
+
+.file-upload__or {
+  padding-left: 1rem;
 }

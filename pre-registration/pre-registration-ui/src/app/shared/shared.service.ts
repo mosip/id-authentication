@@ -24,6 +24,10 @@ export class SharedService {
     this.registrationCenterCoordinatesList.next(coordinates);
   }
 
+  flushNameList() {
+    this.nameList.length = 0;
+  }
+
   getNameList() {
     return [...this.nameList];
   }

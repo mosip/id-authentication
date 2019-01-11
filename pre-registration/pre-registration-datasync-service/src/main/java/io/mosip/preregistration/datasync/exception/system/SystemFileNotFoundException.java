@@ -18,27 +18,50 @@ public class SystemFileNotFoundException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param msg pass the error message
+	 * Default constructor
 	 */
-	public SystemFileNotFoundException(String msg) {
-		super("", msg);
+	public SystemFileNotFoundException() {
+		super();
 	}
 
 	/**
-	 * @param errCode  pass the error code
-	 * @param msg  pass the error message
+	 * @param errorMessage
+	 *            pass the error message
 	 */
-	public SystemFileNotFoundException(String errCode, String msg) {
-		super(errCode, msg);
+	public SystemFileNotFoundException(String errorMessage) {
+		super("", errorMessage);
 	}
 
 	/**
-	 * @param errCode  pass the error Code
-	 * @param msg  pass the error message
-	 * @param cause  pass the error cause
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
 	 */
-	public SystemFileNotFoundException(String errCode, String msg, Throwable cause) {
-		super(errCode, msg, cause);
+	public SystemFileNotFoundException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage, null);
+	}
+
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public SystemFileNotFoundException(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public SystemFileNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 
 }

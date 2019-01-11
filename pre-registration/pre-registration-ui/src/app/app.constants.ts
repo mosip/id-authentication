@@ -1,6 +1,6 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-export const COUNTRY_NAME = 'INDIA';
+export const COUNTRY_NAME = 'MOROCCO';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
@@ -15,7 +15,7 @@ export const IDS = {
 
 export const LANGUAGE_CODE = {
   primary: 'ENG',
-  secondary: 'arb'
+  secondary: 'ARB'
 };
 
 export const APPEND_URL = {

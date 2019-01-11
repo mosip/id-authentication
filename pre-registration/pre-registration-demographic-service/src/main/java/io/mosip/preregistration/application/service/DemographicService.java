@@ -4,6 +4,7 @@
  */
 package io.mosip.preregistration.application.service;
 
+import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -199,7 +199,8 @@ public class DemographicService {
 		try {
 			requestParamMap.put(RequestCodes.userId.toString(), userId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId,StatusCodes.Consumed.toString());
+				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId,
+						StatusCodes.Consumed.toString());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						String identityValue = serviceUtil.getValueFromIdentity(
@@ -377,17 +378,17 @@ public class DemographicService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
-					if(serviceUtil.isStatusValid(status)) {
+					if (serviceUtil.isStatusValid(status)) {
 						demographicEntity.setStatusCode(StatusCodes.valueOf(status).toString());
 						demographicRepository.update(demographicEntity);
 						response.setResponse("STATUS_UPDATED_SUCESSFULLY");
 						response.setResTime(new Timestamp(System.currentTimeMillis()));
 						response.setStatus("true");
-					}else {
+					} else {
 						throw new RecordFailedToUpdateException(ErrorCodes.PRG_PAM_APP_005.name(),
 								ErrorMessages.INVALID_STATUS_CODE.name());
 					}
-				}else {
+				} else {
 					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
 				}
@@ -416,16 +417,27 @@ public class DemographicService {
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
 		List<String> preIds = new ArrayList<>();
 		Map<String, String> reqDateRange = new HashMap<>();
+		Map<String, String> inputDateRange = new HashMap<>();
 		try {
 			reqDateRange.put(RequestCodes.fromDate.toString(), fromDate);
 			reqDateRange.put(RequestCodes.toDate.toString(), toDate);
-			if (ValidationUtil.requstParamValidator(reqDateRange)) {
-				Map<String, LocalDateTime> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, "yyyy-MM-dd HH:mm:ss");
+			String format = "yyyy-MM-dd HH:mm:ss";
+			String parsedFromDate = URLDecoder.decode(reqDateRange.get(RequestCodes.fromDate.toString()), "UTF-8");
+			String parsedToDate = URLDecoder.decode(reqDateRange.get(RequestCodes.toDate.toString()), "UTF-8");
+			inputDateRange.put(RequestCodes.fromDate.toString(), parsedFromDate);
+			inputDateRange.put(RequestCodes.toDate.toString(), parsedToDate);
+			if (ValidationUtil.requstParamValidator(inputDateRange)) {
+				Map<String, LocalDateTime> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, format);
 				List<DemographicEntity> details = demographicRepository.findBycreateDateTimeBetween(
 						reqTimeStamp.get(RequestCodes.fromDate.toString()),
 						reqTimeStamp.get(RequestCodes.toDate.toString()));
-				for (DemographicEntity entity : details) {
-					preIds.add(entity.getPreRegistrationId());
+				if (details != null && !details.isEmpty()) {
+					for (DemographicEntity entity : details) {
+						preIds.add(entity.getPreRegistrationId());
+					}
+				} else {
+					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.toString(),
+							ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE.toString());
 				}
 				response.setResponse(preIds);
 			}
@@ -463,7 +475,8 @@ public class DemographicService {
 					MainResponseDTO.class);
 			if (respEntity.getBody().isStatus()) {
 				ObjectMapper mapper = new ObjectMapper();
-				bookingRegistrationDTO = mapper.convertValue(respEntity.getBody().getResponse(), BookingRegistrationDTO.class);
+				bookingRegistrationDTO = mapper.convertValue(respEntity.getBody().getResponse(),
+						BookingRegistrationDTO.class);
 			}
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
@@ -525,7 +538,8 @@ public class DemographicService {
 		try {
 			RestTemplate restTemplate = restTemplateBuilder.build();
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder
-					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId").queryParam("pre_registration_id", preregId);
+					.fromHttpUrl(resourceUrl + "pre-registration/deleteAllByPreRegId")
+					.queryParam("pre_registration_id", preregId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> httpEntity = new HttpEntity<>(headers);
@@ -536,7 +550,8 @@ public class DemographicService {
 					MainListResponseDTO.class);
 
 			if (!responseEntity.getBody().isStatus()) {
-				if(!responseEntity.getBody().getErr().getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
+				if (!responseEntity.getBody().getErr().getErrorCode()
+						.equalsIgnoreCase(ErrorCodes.PRG_PAM_DOC_005.toString())) {
 					throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
 							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
 				}
