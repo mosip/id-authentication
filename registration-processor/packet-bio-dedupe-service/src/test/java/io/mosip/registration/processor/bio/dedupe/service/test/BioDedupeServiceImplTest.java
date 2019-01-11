@@ -1,19 +1,23 @@
 package io.mosip.registration.processor.bio.dedupe.service.test;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -30,6 +34,7 @@ import io.mosip.registration.processor.bio.dedupe.service.impl.BioDedupeServiceI
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -37,6 +42,9 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 @RefreshScope
 @RunWith(PowerMockRunner.class)
 public class BioDedupeServiceImplTest {
+
+	@Mock
+	InputStream inputStream;
 
 	@Mock
 	RegistrationProcessorRestClientService<Object> restClientService;
@@ -53,6 +61,9 @@ public class BioDedupeServiceImplTest {
 	private IdentityResponceDto identifyResponse = new IdentityResponceDto();
 
 	String registrationId = "1000";
+
+	@Mock
+	FileSystemAdapter<InputStream, Boolean> adapter;
 
 	@Before
 	public void setup() throws ApisResourceAccessException {
@@ -227,6 +238,16 @@ public class BioDedupeServiceImplTest {
 		identifyResponse.setFailureReason(4);
 
 		bioDedupeService.performDedupe(rid);
+	}
+
+	public void testGetFile() throws Exception {
+		byte[] data = "1234567890".getBytes();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
+
+		byte[] fileData = bioDedupeService.getFile(registrationId);
+		assertArrayEquals(fileData, data);
 	}
 
 }
