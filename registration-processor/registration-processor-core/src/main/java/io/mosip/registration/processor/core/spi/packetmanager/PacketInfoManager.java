@@ -4,6 +4,9 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 import java.io.InputStream;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -100,6 +103,14 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the registration id by UIN
 	 */
 	public List<String> getRegIdByUIN(String uin);
+
+	/**
+	 * Gets the documents by reg id.
+	 *
+	 * @param regId the reg id
+	 * @return the documents by reg id
+	 */
+	public List<ApplicantDocument> getDocumentsByRegId(String regId);
 
 	/**
 	 * Save manual adjudication data.

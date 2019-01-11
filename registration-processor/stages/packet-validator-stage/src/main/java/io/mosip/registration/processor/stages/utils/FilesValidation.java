@@ -105,8 +105,8 @@ public class FilesValidation {
 		for (String applicantFile : values) {
 			String fileName = "";
 
-			if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
-				fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
+			if (PacketFiles.ID.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name();
 			} else {
 				fileName = DEMOGRAPHIC_APPLICANT + applicantFile.toUpperCase();
 			}

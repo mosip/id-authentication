@@ -178,7 +178,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	private boolean checkBiometric(String fileName){
 
 		return fileName.equals(PacketFiles.APPLICANTPHOTO.name()) || fileName.equals(PacketFiles.PROOFOFADDRESS.name()) || fileName.equals(PacketFiles.PROOFOFIDENTITY.name())
-				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.DEMOGRAPHICINFO.name());
+				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.ID.name());
 	}
 
 	/**

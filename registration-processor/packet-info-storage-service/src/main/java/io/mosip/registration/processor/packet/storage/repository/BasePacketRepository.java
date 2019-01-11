@@ -125,6 +125,12 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.isActive = FALSE WHERE demo.id.regId =:regId")
 	public void updateIsActiveIfDuplicateFound(@Param("regId") String regId);
 
+	@Modifying
+	@Transactional
+	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.uin =:uin WHERE demo.id.regId =:regId")
+	public void updateUinWrtRegistraionId(@Param("regId") String regId,@Param("uin") String uin);
+
+
 	/**
 	 * Gets the reg id by UIN.
 	 *
@@ -135,6 +141,9 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
 	public List<String> getRegIdByUIN(@Param("uin")String uin);
 	
+	@Query("SELECT app FROM ApplicantDocumentEntity app WHERE app.id.regId=:regId")
+	public List<E> getDocumentsByRegId(@Param("regId")String regId);
+
 	/**
 	 * Gets the reference id by rid.
 	 *

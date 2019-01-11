@@ -1,7 +1,9 @@
 package io.mosip.registration.processor.packet.storage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 
 /**
  * The Class PacketInfoManagerApplication.
@@ -11,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		"io.mosip.registration.processor.auditmanager", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client" })
 
-public class PacketInfoManagerApplication {
+public class PacketInfoManagerApplication{
 
 	/**
 	 * The main method.
@@ -19,8 +21,12 @@ public class PacketInfoManagerApplication {
 	 * @param args
 	 *            the arguments
 	 */
+	@Autowired
+	PacketInfoManagerImpl packetInfoManagerImpl;
 	public static void main(String[] args) {
 		SpringApplication.run(PacketInfoManagerApplication.class, args);
 	}
+
+	
 
 }

@@ -182,7 +182,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 							InputStream demographicInfoStream = adapter.getFile(registrationId,
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
-											+ PacketFiles.DEMOGRAPHICINFO.name());
+											+ PacketFiles.ID.name());
 							packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
 									packetMetaInfo.getIdentity().getMetaData());
 
