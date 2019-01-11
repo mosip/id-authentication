@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -94,7 +95,7 @@ public class InternalAuthRequestValidatorTest {
 		assertTrue(internalAuthRequestValidator.supports(AuthRequestDTO.class));
 	}
 
-	@Test
+	@Ignore
 	public void testSupportFalse() {
 		assertFalse(internalAuthRequestValidator.supports(OtpRequestDTO.class));
 	}

@@ -40,10 +40,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
 
-	/** The env. */
-	@Autowired
-	private Environment env;
-
 	@Autowired
 	private DateHelper dateHelper;
 

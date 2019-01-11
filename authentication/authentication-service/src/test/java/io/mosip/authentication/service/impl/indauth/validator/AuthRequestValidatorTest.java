@@ -37,6 +37,7 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
+import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
@@ -90,10 +91,13 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
+	
+	
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
+		//ReflectionTestUtils.setField(idAuthValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
