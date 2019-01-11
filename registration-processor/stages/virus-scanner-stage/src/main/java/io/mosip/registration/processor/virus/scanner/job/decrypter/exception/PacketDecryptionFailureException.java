@@ -25,4 +25,8 @@ public class PacketDecryptionFailureException extends BaseCheckedException{
 
 	}
 
+	public PacketDecryptionFailureException(String errorCode, String errorMessage) {
+		super(errorCode,errorMessage);
+	}
+
 }

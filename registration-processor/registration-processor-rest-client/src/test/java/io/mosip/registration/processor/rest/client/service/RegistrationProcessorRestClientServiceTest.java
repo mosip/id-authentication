@@ -57,7 +57,7 @@ public class RegistrationProcessorRestClientServiceTest {
 	}
 
 	@Test
-	public void postObjecSuccessTest() throws ApisResourceAccessException {
+	public void postObjecSuccessTest() throws Exception {
 		AuditRequestDto auditRequestDto=new AuditRequestDto();
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		Mockito.when(restApiClient.postApi(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(auditResponseDto);
@@ -77,7 +77,7 @@ public class RegistrationProcessorRestClientServiceTest {
 	}
 	
 	@Test(expected = ApisResourceAccessException.class)
-	public void postObjecTestFailureTest() throws ApisResourceAccessException {
+	public void postObjecTestFailureTest() throws Exception {
 		AuditRequestDto auditRequestDto=new AuditRequestDto();
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");

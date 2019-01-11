@@ -146,7 +146,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		if (kycAuthRequestDTO.getEKycAuthType() != null) {
+		if (kycAuthRequestDTO.getEKycAuthType() != null && !kycAuthRequestDTO.getEKycAuthType().isEmpty()) {
 			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
 					.map(String::valueOf)
 					.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr).filter(eAuthType -> eAuthType
@@ -161,7 +161,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		} else {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
 			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), AUTH_TYPE));
+					new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
 	}

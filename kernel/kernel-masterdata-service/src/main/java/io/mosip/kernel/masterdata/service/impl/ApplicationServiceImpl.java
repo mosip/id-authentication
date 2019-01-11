@@ -39,11 +39,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Autowired
 	private ApplicationRepository applicationRepository;
+	
 
-	@Autowired
-	private DataMapper dataMapper;
-
-	MapperFactory mapperFactory = null;
+    MapperFactory mapperFactory = null;
 	MapperFacade mapper = null;
 
 	@PostConstruct
@@ -72,9 +70,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> {
-				applicationDtoList.add(mapper.map(application, ApplicationDto.class));
-			});
+			applicationList.forEach(application -> 
+				applicationDtoList.add(mapper.map(application,ApplicationDto.class))
+			);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -102,11 +100,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> {
-				ApplicationDto applicationDto = new ApplicationDto();
-				dataMapper.map(application, applicationDto, true, null, null, true);
-				applicationDtoList.add(applicationDto);
-			});
+			applicationList.forEach(application -> 
+				applicationDtoList.add(mapper.map(application,ApplicationDto.class))
+			);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -125,7 +121,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
 		Application application;
-		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
 			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
@@ -136,8 +131,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
-			dataMapper.map(application, applicationDto, true, null, null, true);
-			applicationDtoList.add(applicationDto);
+	     applicationDtoList.add(mapper.map(application,ApplicationDto.class));
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -165,8 +159,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(application, codeLangCodeId, true, null, null, true);
-		return codeLangCodeId;
+		return mapper.map(application,CodeAndLanguageCodeID.class);
 	}
 }

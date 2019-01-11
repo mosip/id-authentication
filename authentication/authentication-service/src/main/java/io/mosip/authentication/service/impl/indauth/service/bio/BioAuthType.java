@@ -131,6 +131,20 @@ public enum BioAuthType implements AuthType {
 			valueMap.put("idvid", authRequestDTO.getIdvId());
 			return valueMap;
 		}
+		
+		@Override
+		public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
+				Function<LanguageType, String> languageInfoFetcher, Environment environment) {
+
+			String bioType = getType();
+			Integer threshold = null;
+			String key = bioType.toLowerCase().concat(".multi.default.match.value");
+			String property = environment.getProperty(key);
+			if (property != null && !property.isEmpty()) {
+				threshold = Integer.parseInt(property);
+			}
+			return Optional.ofNullable(threshold);
+		}
 			
 		
 		@Override
@@ -153,7 +167,7 @@ public enum BioAuthType implements AuthType {
 				BiFunction< Map<String, String>,  Map<String, String>, Double> func =idInfoFetcher.getIrisProvider(bioinfovalue)::matchImage;//TODO add provider
 				valueMap.put(IrisProvider.class.getSimpleName(), func);
 			});
-			valueMap.put("idvid", authRequestDTO.getIdvId());
+			valueMap.put("idvid", authRequestDTO.getIdvId()); 
 			return valueMap;
 		}
 	 

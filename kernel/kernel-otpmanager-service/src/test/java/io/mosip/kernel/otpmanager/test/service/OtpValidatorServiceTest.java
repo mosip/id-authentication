@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class OtpValidatorServiceTest {
 		entity.setId("testKey");
 		entity.setValidationRetryCount(0);
 		entity.setStatusCode("OTP_UNUSED");
-		entity.setUpdatedDtimes(LocalDateTime.now().plusSeconds(10));
+		entity.setUpdatedDtimes(LocalDateTime.now(ZoneId.of("UTC")).plusSeconds(50));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))
@@ -99,7 +100,7 @@ public class OtpValidatorServiceTest {
 		entity.setId("testKey");
 		entity.setValidationRetryCount(0);
 		entity.setStatusCode("KEY_FREEZED");
-		entity.setUpdatedDtimes(LocalDateTime.now().minus(1, ChronoUnit.MINUTES));
+		entity.setUpdatedDtimes(LocalDateTime.now(ZoneId.of("UTC")).minus(1, ChronoUnit.MINUTES));
 		when(repository.findById(OtpEntity.class, "testKey")).thenReturn(entity);
 		MvcResult result = mockMvc
 				.perform(get("/v1.0/otp/validate?key=testKey&otp=1234").contentType(MediaType.APPLICATION_JSON))

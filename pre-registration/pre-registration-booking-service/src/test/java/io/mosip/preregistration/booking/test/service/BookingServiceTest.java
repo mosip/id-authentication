@@ -71,9 +71,10 @@ import io.mosip.preregistration.booking.repository.RegistrationBookingRepository
 import io.mosip.preregistration.booking.service.BookingService;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+
 
 /**
  * Booking service Test

@@ -12,11 +12,11 @@ public class DemographicStatusUpdationException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	public DemographicStatusUpdationException(String msg) {
-		super(ErrorCodes.PRG_BOOK_RCI_011.toString(), msg);
+		super("", msg);
 	}
 
 	public DemographicStatusUpdationException(String msg, Throwable cause) {
-		super(ErrorCodes.PRG_BOOK_RCI_011.toString(), msg, cause);
+		super("", msg, cause);
 	}
 
 	public DemographicStatusUpdationException(String errorCode, String errorMessage) {
@@ -26,5 +26,10 @@ public class DemographicStatusUpdationException extends BaseUncheckedException {
 	public DemographicStatusUpdationException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+
+	public DemographicStatusUpdationException() {
+		super();
+	}
+
 
 }

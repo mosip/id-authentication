@@ -30,7 +30,14 @@ public class BiometricProviderFactory {
 	private static final String IRIS_IMG= "irisImg";
 
 	/** The Constant cogentBiometricProvider. */
-	private static final String COGENT_BIO_PROVIDER = "cogent";
+	private static final String COGENT_BIO_PROVIDER = "bioprovider.cogent";
+	
+	/** The Constant mantraBiometricProvider. */
+	private static final String MANTRA_BIO_PROVIDER = "bioprovider.mantra";
+	
+	/** The Constant morphoBiometricProvider. */
+	private static final String MORHO_BIO_PROVIDER = "bioprovider.morpho";
+
 	
 	@Autowired
 	private Environment environment;
@@ -77,18 +84,20 @@ public class BiometricProviderFactory {
 	public MosipBiometricProvider getBiometricProvider(BioInfo bioInfo) {
 
 		if (bioInfo.getBioType().equalsIgnoreCase(BiometricProviderFactory.IRIS_IMG)) {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(BiometricProviderFactory.COGENT_BIO_PROVIDER))
+			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER)))
 				return getCogentIrisProvider();
-			else
+			else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORHO_BIO_PROVIDER)))
 				return getMorphoIrisProvider();
 		}
 
 		else {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(BiometricProviderFactory.COGENT_BIO_PROVIDER))
+			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER)))
 				return getCogentFingerProvider();
-			else
+			else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_BIO_PROVIDER)))
 				return getMantraFingerprintProvider();
 		}
+		
+		return null;
 
 	}
 }

@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.booking.controller;
 
 import java.util.List;
@@ -35,9 +39,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * Booking Controller
+ * This class provides different API's to perform operations on
+ * Booking Application
  * 
- * @author M1037717
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
+ * @since 1.0.0
  *
  */
 @RestController
@@ -46,14 +54,16 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin("*")
 public class BookingController {
 
+	/** Autowired reference for {@link #bookingService}. */
 	@Autowired
 	private BookingService bookingService;
 
 	/**
+	 * Get API to save availability.
 	 * 
-	 * @return
+	 * @return MainResponseDto . 
 	 */
-	@GetMapping(path = "/masterSync", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/masterSynchronization", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Sync master Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Master Data Sync is successful"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
@@ -61,22 +71,27 @@ public class BookingController {
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.addAvailability());
 	}
 
+	
 	/**
-	 * @param regID
-	 * @return ResponseDto<AvailabilityDto>
+	 * Get API to get availability details.
+	 * 
+	 * @param registration_center_id
+	 * @return MainResponseDTO
 	 */
 	@GetMapping(path = "/availability", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Fetch availability Data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Availablity details fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch the records") })
 	public ResponseEntity<MainResponseDTO<AvailabilityDto>> getAvailability(
-			@RequestParam(value = "RegCenterId") String regID) {
+			@RequestParam(value = "registration_center_id") String regID) {
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getAvailability(regID));
 	}
 
 	/**
-	 * @param bookingDTO
-	 * @return response entity
+	 * Post API to book the appointment.
+	 * 
+	 * @param MainListRequestDTO
+	 * @return MainResponseDTO
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
@@ -92,8 +107,10 @@ public class BookingController {
 	
 
 	/**
-	 * @param bookingDTO
-	 * @return response entity
+	 * Get API to get the booked appointment details.
+	 * 
+	 * @param MainListRequestDTO
+	 * @return MainResponseDTO
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
@@ -102,14 +119,16 @@ public class BookingController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Appointment Booked Successfully"),
 			@ApiResponse(code = 400, message = "Unable to Book the appointment") })
 	public ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> appointmentDetails(
-			@RequestParam(value = "preRegID") String preRegID) {
+			@RequestParam(value = "pre_registration_id") String preRegID) {
 		return ResponseEntity.status(HttpStatus.OK).body(bookingService.getAppointmentDetails(preRegID));
 
 	}
 	
 	/**
-	 * @param bookingDTO
-	 * @return response entity
+	 * Put API to cancel the appointment.
+	 * 
+	 * @param MainListRequestDTO
+	 * @return MainResponseDTO
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */
@@ -123,8 +142,10 @@ public class BookingController {
 	}
 	
 	/**
-	 * @param bookingDTO
-	 * @return response entity
+	 * post API to get Pre-Registration-Id by Registration-Center-id.
+	 * 
+	 * @param MainListRequestDTO
+	 * @return MainResponseDTO
 	 * @throws ParseException
 	 * @throws java.text.ParseException
 	 */

@@ -18,7 +18,7 @@ import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistartionExpiredStatusRepository;
-import io.mosip.preregistration.core.exception.TablenotAccessibleException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
  * @author M1043008
@@ -81,7 +81,7 @@ public class ExpiredStatusService {
 						LOGGER.info(LOGDISPLAY, "Update the status successfully into Registration Appointment table");
 
 					} catch (DataAccessLayerException e) {
-						throw new TablenotAccessibleException(ErrorCode.PRG_PAM_BAT_004.toString(),
+						throw new TableNotAccessibleException(ErrorCode.PRG_PAM_BAT_004.toString(),
 								ErrorMessage.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 					}
 

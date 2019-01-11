@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -53,7 +54,7 @@ public class StorageServiceImpl implements StorageService {
 					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
 							.concat(seperator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
-			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
+			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 
 			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
 

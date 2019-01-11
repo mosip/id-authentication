@@ -12,11 +12,11 @@ public class DocumentNotFoundException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	public DocumentNotFoundException(String msg) {
-		super(ErrorCodes.PRG_BOOK_RCI_012.toString(), msg);
+		super("", msg);
 	}
 
 	public DocumentNotFoundException(String msg, Throwable cause) {
-		super(ErrorCodes.PRG_BOOK_RCI_012.toString(), msg, cause);
+		super("", msg, cause);
 	}
 
 	public DocumentNotFoundException(String errorCode, String errorMessage) {
@@ -25,6 +25,10 @@ public class DocumentNotFoundException extends BaseUncheckedException {
 
 	public DocumentNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
+	}
+
+	public DocumentNotFoundException() {
+		super();
 	}
 
 }
