@@ -131,18 +131,33 @@
             [disabled]="i != documentIndex ? true : false || !users[0].files[0][documentIndex] ? false : true"
           />
         </span>
-        <div class="file-upload__body__document-name" *ngIf="users[0].files[0][i]">
-          <span>{{ users[0].files[0][i].doc_name }}</span>
-          <span class="file-uplaoad__body__document-name__view" (click)="viewFile(users[0].files[0][i].multipartFile)">
-            view
-          </span>
+        <span *ngIf="document.document_name === 'POA' && multipleApplicants">
+          <span>OR</span>
           <span>
-            <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, i)">close</mat-icon>
+            <mat-form-field class="file-upload__or">
+              <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)">
+                <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegId }}">
+                  {{ applicant.request.demographicDetails.identity.fullName[0].value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </span>
+        </span>
+        <div class="file-upload__body__document-name" *ngFor="let file of users[0].files[0]; let j = index">
+          <div *ngIf="file.doc_cat_code == document.document_name">
+            <span>{{ file.doc_name }}</span>
+            <span class="file-uplaoad__body__document-name__view" (click)="viewFile(file)">
+              <img src="assets\view.png" class="view-img" />
+            </span>
+            <span>
+              <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, j)">close</mat-icon>
+            </span>
+          </div>
         </div>
       </div>
     </div>
     <div class="file-upload__body__2">
+      <p>{{ fileName }}</p>
       <iframe class="file-uplaoad__body__2__preview" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
     </div>
   </div>

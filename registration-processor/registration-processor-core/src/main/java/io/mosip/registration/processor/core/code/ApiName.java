@@ -47,7 +47,7 @@ public enum ApiName {
 
 	/** The email notifier. */
 	EMAILNOTIFIER,
-	
+
 	CRYPTOMANAGERDECRYPT
 
 }

@@ -18,10 +18,7 @@ import lombok.EqualsAndHashCode;
 public class IdResponseDTO extends BaseIdRequestResponseDTO {
 	
 	/** The err. */
-	private List<ErrorDTO> err;
-	
-	/** The uin id. */
-	private String uin;
+	private List<ErrorDTO> error;
 	
 	/** The status. */
 	private String status;

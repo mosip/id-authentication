@@ -1,5 +1,6 @@
 package io.mosip.kernel.syncdata.service;
 
+import io.mosip.kernel.syncdata.dto.ConfigDto;
 import net.minidev.json.JSONObject;
 
 /**
@@ -27,4 +28,6 @@ public interface SyncConfigDetailsService {
 	 * @return JSONObject - registration center config synced data
 	 */
 	public JSONObject getRegistrationCenterConfigDetails(String regId);
+	
+	 ConfigDto getConfiguration(String registrationCenterId);
 }

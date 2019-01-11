@@ -14,16 +14,12 @@ import java.util.stream.Collectors;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.syncdata.dto.HolidayDto;
-import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.entity.BaseEntity;
 import io.mosip.kernel.syncdata.entity.Holiday;
-import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 
 /**
@@ -33,21 +29,6 @@ import io.mosip.kernel.syncdata.entity.id.HolidayID;
  */
 @Component
 public class MapperUtils {
-
-	@Autowired
-	private DataMapper dataMapperImpl;
-
-	public List<RegistrationCenterDto> mapRegistrationCenter(List<RegistrationCenter> list) {
-		List<RegistrationCenterDto> responseDto = new ArrayList<>();
-		list.forEach(p -> {
-			RegistrationCenterDto dto = new RegistrationCenterDto();
-			dataMapperImpl.map(p, dto, new RegistrationCenterConverter());
-			dataMapperImpl.map(p, dto, true, null, null, true);
-			responseDto.add(dto);
-		});
-
-		return responseDto;
-	}
 
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
 		Objects.requireNonNull(holidays);

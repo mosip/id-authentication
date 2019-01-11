@@ -1,3 +1,4 @@
+
 /* 
  * Copyright
  * 
@@ -103,3 +104,4 @@ public class RegistrationBookingEntity implements Serializable {
 	private LocalDateTime delTime;
 
 }
+
