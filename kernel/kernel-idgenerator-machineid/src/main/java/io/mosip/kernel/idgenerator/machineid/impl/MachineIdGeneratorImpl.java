@@ -24,7 +24,7 @@ public class MachineIdGeneratorImpl implements MachineIdGenerator<Integer> {
 	/**
 	 * The length of machine ID.
 	 */
-	@Value("${mosip.kernel.registrationcenterid.length}")
+	@Value("${mosip.kernel.machineid.length}")
 	private int machineIdLength;
 
 	/**
