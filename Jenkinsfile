@@ -27,7 +27,7 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  }
 
  stage('---------- SonarQube Analysis --------------') {
