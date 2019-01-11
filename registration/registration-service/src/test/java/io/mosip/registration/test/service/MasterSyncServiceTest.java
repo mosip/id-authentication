@@ -45,6 +45,7 @@ import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
+import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -1239,4 +1240,21 @@ public class MasterSyncServiceTest {
 		masterSyncServiceImpl.getAllBlackListedWords("ENG");
 
 	}
-}
+
+	@Test
+	public void findDocumentCategories() {
+	
+		List<MasterDocumentCategory> documents = new ArrayList<>();
+		MasterDocumentCategory document = new MasterDocumentCategory();
+		document.setName("Aadhar");
+		document.setDescription("Aadhar card");
+		document.setLangCode("ENG");
+		documents.add(document);
+		documents.add(document);
+	
+		Mockito.when(masterSyncDao.getDocumentCategories(Mockito.anyString())).thenReturn(documents);
+	
+		masterSyncServiceImpl.getDocumentCategories("ENG");
+	
+	}
+	}

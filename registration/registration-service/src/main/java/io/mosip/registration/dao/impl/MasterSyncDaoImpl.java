@@ -433,5 +433,16 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<MasterBlacklistedWords> getBlackListedWords(String langCode) {
 		return masterSyncBlacklistedWordsRepository.findBlackListedWordsByLangCode(langCode);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#getDocumentCategories(java.lang.String)
+	 */
+	@Override
+	public List<MasterDocumentCategory> getDocumentCategories(String langCode) {
+		return masterSyncDocumentCategoryRepository.findDocumentCategoryByLangCode(langCode);
+	}
 
 }

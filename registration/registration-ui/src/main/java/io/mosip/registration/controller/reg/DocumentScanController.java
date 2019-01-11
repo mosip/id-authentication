@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,8 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -56,6 +59,9 @@ public class DocumentScanController extends BaseController {
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanController.class);
 	private boolean isChild;
 
+	@Autowired 
+	MasterSyncService masterSync;
+	
 	@FXML
 	private ComboBox<String> poaDocuments;
 
@@ -100,6 +106,9 @@ public class DocumentScanController extends BaseController {
 	protected AnchorPane documentScan;
 
 	List<BufferedImage> scannedPages;
+	
+	private List<DocumentCategoryDto> documents;
+
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
@@ -603,11 +612,15 @@ public class DocumentScanController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-
-			poaDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
-			poiDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
-			porDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
-			dobDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
+			documents  = masterSync.getDocumentCategories(RegistrationConstants.mappedCodeForLang
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+					.getMappedCode());
+			List<String> documentNames  = documents.stream().map(doc->doc.getName()).collect(Collectors.toList());
+			
+			poaDocuments.getItems().addAll(documentNames);
+			poiDocuments.getItems().addAll(documentNames);
+			porDocuments.getItems().addAll(documentNames);
+			dobDocuments.getItems().addAll(documentNames);
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");

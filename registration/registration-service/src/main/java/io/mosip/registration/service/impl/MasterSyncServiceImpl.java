@@ -31,11 +31,13 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
+import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -335,5 +337,31 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		});
 
 		return blackWords;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#getDocumentCategories(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<DocumentCategoryDto> getDocumentCategories(String langCode) {
+
+		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
+		List<MasterDocumentCategory> masterDocuments = masterSyncDao.getDocumentCategories(langCode);
+
+		masterDocuments.forEach(document -> {
+
+			DocumentCategoryDto documents = new DocumentCategoryDto();
+			documents.setDescription(document.getDescription());
+			documents.setLangCode(document.getLangCode());
+			documents.setName(document.getName());
+			documentsDTO.add(documents);
+
+		});
+
+		return documentsDTO;
 	}
 }

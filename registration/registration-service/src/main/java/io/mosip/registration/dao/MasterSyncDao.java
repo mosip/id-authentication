@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
+import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -72,5 +73,13 @@ public interface MasterSyncDao {
 	 * @return the black listed words
 	 */
 	List<MasterBlacklistedWords> getBlackListedWords(String langCode);
+	
+	/**
+	 * Gets the Document Categories.
+	 *
+	 * @param langCode the lang code
+	 * @return the document categories
+	 */
+	List<MasterDocumentCategory> getDocumentCategories(String langCode);
 
 }

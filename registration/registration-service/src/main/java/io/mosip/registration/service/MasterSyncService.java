@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 
@@ -56,5 +57,15 @@ public interface MasterSyncService {
 	 * @return the all black listed words
 	 */
 	List<BlacklistedWordsDto> getAllBlackListedWords(String langCode);
+	
+	/**
+	 * Gets all the document categories.
+	 *
+	 * @param langCode the lang code
+	 * @return all the document categories
+	 */
+	List<DocumentCategoryDto> getDocumentCategories(String langCode);
+	
+	
 
 }
