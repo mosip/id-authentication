@@ -46,7 +46,6 @@ export class PreviewComponent implements OnInit {
   modifyDemographic() {
     const routeParams = this.router.url.split('/');
     this.router.navigate([routeParams[1], routeParams[2], 'demographic']);
-    // this.router.navigate(['../', 'demographic']);
     localStorage.setItem('newApplicant', 'false');
     this.registrationService.changeMessage({ modifyUser: 'true' });
   }
