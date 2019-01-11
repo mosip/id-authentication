@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
  * @author Sagar Mahapatra
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -155,7 +156,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            provided by user
 	 * @param hierarchyLevel
 	 *            provided by user
-	 * @param text
+	 * @param texts
 	 *            provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */

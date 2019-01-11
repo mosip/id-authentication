@@ -51,7 +51,12 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
+ * @author Uday Kumar
  * @since 1.0.0
+ *
+ */
+/**
+ * @author M1046571
  *
  */
 @Service
@@ -442,6 +447,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return idResponseDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(java.lang.String, java.lang.Integer, java.util.List)
+	 */
 	@Override
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
 			String languageCode, Integer hierarchyLevel, List<String> texts) {
