@@ -1,4 +1,4 @@
-<h1><b>Book Appointment</b></h1>
+<!--  <h1><b>Book Appointment</b></h1>
 <div class="expansionPanelPlacer">
 <mat-accordion>
   <div class="spacer">
@@ -28,10 +28,10 @@
               <a class="hyperlink" (click)="getLocation()">Show nearby Centers</a>
           </div>
           <div *ngIf="showTable">
-            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z8"> -->
 
-              <!-- Radio Button Column -->
-              <ng-container matColumnDef="select">
+<!-- Radio Button Column -->
+<!-- <ng-container matColumnDef="select">
                 <mat-header-cell *matHeaderCellDef>
                   Select
                 </mat-header-cell>
@@ -40,34 +40,34 @@
                     [checked] = "i == 0"
                     (change)="selectedRow(row)"></mat-radio-button>
                 </mat-cell>
-              </ng-container>
-            
-              <!-- Registration center name Column -->
-              <ng-container matColumnDef="name">
+              </ng-container> -->
+
+<!-- Registration center name Column -->
+<!-- <ng-container matColumnDef="name">
                 <mat-header-cell *matHeaderCellDef> Registration Center Name </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
               </ng-container>
-            
-              <!-- Address Column -->
-              <ng-container matColumnDef="addressLine1">
+             -->
+<!-- Address Column -->
+<!-- <ng-container matColumnDef="addressLine1">
                 <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.addressLine1}} </mat-cell>
-              </ng-container>
-            
-              <!-- Contact Person Column -->
-              <ng-container matColumnDef="contactPerson">
+              </ng-container> -->
+
+<!-- Contact Person Column -->
+<!-- <ng-container matColumnDef="contactPerson">
                 <mat-header-cell *matHeaderCellDef> Contact Person </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.contactPerson}} </mat-cell>
               </ng-container>
-            
-              <!-- Center type Column -->
-              <ng-container matColumnDef="centerTypeCode">
+             -->
+<!-- Center type Column -->
+<!-- <ng-container matColumnDef="centerTypeCode">
                 <mat-header-cell *matHeaderCellDef> Center Type </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.centerTypeCode}} </mat-cell>
-              </ng-container>
+              </ng-container> -->
 
-              <!-- Contact Number Column -->
-              <ng-container matColumnDef="contactPhone">
+<!-- Contact Number Column -->
+<!-- <ng-container matColumnDef="contactPhone">
                 <mat-header-cell *matHeaderCellDef> Contact Number </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.contactPhone}} </mat-cell>
               </ng-container>
@@ -101,7 +101,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
         <div *ngIf="selectedCentre !== null">
-          <app-time-selection [registrationCenter]="selectedCentre"></app-time-selection>
+         <app-time-selection [registrationCenter]="selectedCentre"></app-time-selection>
         </div>
         <div *ngIf="selectedCentre === null">
           <p>Please select the centre first</p>
@@ -114,4 +114,192 @@
     </mat-expansion-panel>
   </div>
   </mat-accordion>
+</div> -->
+<div class="center_selection-wrapper">
+  <!-- Header -->
+  <mat-card class="center-selection__title-card">
+    <mat-card-header>
+      <p class="center__title-card-text">Book Appointment</p>
+    </mat-card-header>
+  </mat-card>
+  <!-- search container -->
+  <!-- <div
+    class="center_selection-intial-recommendation-container"
+    *ngIf="searchClick; else elseBlock"
+  >
+    <div class="center_selection-center_recommendation-display">
+      <span><b>Recommended Centers</b></span>
+      <button
+        mat-button
+        class="center_selection-nearby-btn"
+        (click)="getLocation()"
+      >
+        Nearby</button
+      ><br />
+      <span class="center_selection-center-available-text"
+        >(Found 6 Centers)
+      </span>
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button class="search-btn" (click)="setSearchClick(false)">
+      <img src="assets\search.png" />
+    </button>
+  </div>
+  <ng-template #elseBlock> -->
+
+  <section>
+    <div class="centers-wrapper">
+      <!-- search container -->
+      <div
+        class="center_selection-intial-recommendation-container"
+        *ngIf="searchClick; else elseBlock"
+      >
+        <div class="center_selection-center_recommendation-display">
+          <span><b>Recommended Centers</b></span>
+          <button
+            mat-button
+            class="center_selection-nearby-btn"
+            (click)="getLocation()"
+          >
+            Nearby</button
+          ><br />
+          <span class="center_selection-center-available-text"
+            >Found {{ dataSource.data.length }} centers
+          </span>
+        </div>
+        <span class="spacer"></span>
+        <button
+          mat-icon-button
+          class="search-btn"
+          (click)="setSearchClick(false)"
+        >
+          <img src="assets\search.png" />
+        </button>
+      </div>
+
+      <ng-template #elseBlock>
+        <div class="center_selection-form-container">
+          <form class="search-form">
+            <mat-card class="select-card">
+              <mat-select
+                class="select-input"
+                placeholder="Select Location Types"
+              >
+                <mat-option
+                  style="color:black;"
+                  *ngFor="let locationType of locationTypes"
+                  [value]="locationType.value"
+                >
+                  {{ locationType.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-card>
+            <mat-card class="search-card">
+              <input
+                mat-input
+                type="search"
+                placeholder="Search..."
+                name="search"
+                class="search-input"
+                [(ngModel)]="searchText"
+              /><button
+                mat-icon-button
+                type="submit"
+                (click)="showResults()"
+                (click)="onSubmit()"
+              >
+                <img src="assets\search_grey.png" />
+              </button>
+              <button
+                mat-icon-button
+                class="search-cancel-btn"
+                (click)="setSearchClick(true)"
+              >
+                <img src="assets\close.png" />
+              </button>
+            </mat-card>
+          </form>
+        </div>
+        <span class="search-text" *ngIf="searchTextFlag">{{
+          displayMessage
+        }}</span>
+      </ng-template>
+
+      <div class="centers-list" *ngIf="dataSource.data">
+        <ul>
+          <li *ngFor="let center of dataSource.data">
+            <mat-card class="center-card">
+              <input type="radio" name="center" />
+              <div>
+                <div>
+                  <span><img src="assets\address.png"/></span>
+                  <span
+                    ><strong>
+                      {{
+                        center.addressLine1 +
+                          ", " +
+                          center.addressLine2 +
+                          ", " +
+                          center.addressLine3
+                      }}</strong
+                    ></span
+                  >
+                </div>
+                <div>
+                  <span><img src="assets\contact number.png"/></span>
+                  <span>
+                    {{
+                      center.contactPerson + ", " + center.contactPhone
+                    }}</span
+                  >
+                </div>
+              </div>
+              <span class="spacer"></span>
+              <div>
+                <div>
+                  <span
+                    >Timing:
+                    {{
+                      changeTimeFormat(center.centerStartTime.substring(0, 5)) +
+                        " - " +
+                        changeTimeFormat(center.centerEndTime.substring(0, 5)) +
+                        " | Lunch: " +
+                        changeTimeFormat(
+                          center.lunchStartTime.substring(0, 5)
+                        ) +
+                        " - " +
+                        changeTimeFormat(center.lunchEndTime.substring(0, 5))
+                    }}</span
+                  >
+                </div>
+                <div><span>Open: Monday - Friday</span></div>
+              </div>
+            </mat-card>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- <span flex></span>
+
+    <div class="map">
+      Map container
+    </div> -->
+  </section>
+
+  <!-- Footer navigation -->
+  <div>
+    <mat-card class="center-selection__button-container">
+      <button mat-button (click)="routeBack()" class="user-back-btn">
+        Back
+      </button>
+      <span class="spacer"></span>
+      <button mat-button (click)="routeDashboard()" class="user-book_later-btn">
+        Book Later
+      </button>
+      <button (click)="routeNext()" mat-button class="user-continue-btn">
+        Continue
+      </button>
+    </mat-card>
+  </div>
 </div>

@@ -8,79 +8,105 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0" prefWidth="959.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.HeaderController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0"
+	prefWidth="959.0" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="io.mosip.registration.controller.reg.HeaderController">
 	<children>
-		<AnchorPane fx:id="commonImage" prefHeight="200.0" prefWidth="200.0">
+		<AnchorPane fx:id="commonImage" prefHeight="200.0"
+			prefWidth="200.0">
 			<children>
-				<ImageView fx:id="headerImage" fitHeight="93.0" fitWidth="133.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+				<ImageView fx:id="headerImage" fitHeight="93.0"
+					fitWidth="133.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true"
+					preserveRatio="true">
 					<image>
 						<Image url="@../images/logo-final-small.png" />
 					</image>
 				</ImageView>
 			</children>
 		</AnchorPane>
-		<AnchorPane fx:id="commonHeader" prefHeight="174.0" prefWidth="774.0">
+		<AnchorPane fx:id="commonHeader" prefHeight="174.0"
+			prefWidth="774.0">
 			<children>
-				<Label fx:id="registrationOfficeLocation" layoutX="414.0" layoutY="94.0" />
-				<Label layoutX="43.0" layoutY="94.0" text="RO Office                                          :" />
-				<Label fx:id="registrationOfficeId" layoutX="414.0" layoutY="55.0" />
-				<Label layoutX="43.0" layoutY="55.0" text="RO ID                                                :" />
-				<Label fx:id="registrationOfficerName" layoutX="414.0" layoutY="16.0" />
-				<Label layoutX="42.0" layoutY="16.0" text="RO Name                                          :" />
+				<Label fx:id="registrationOfficeLocation" layoutX="414.0"
+					layoutY="94.0" />
+				<Label layoutX="43.0" layoutY="94.0"
+					text="RO Office                                          :" />
+				<Label fx:id="registrationOfficeId" layoutX="414.0"
+					layoutY="55.0" />
+				<Label layoutX="43.0" layoutY="55.0"
+					text="RO ID                                                :" />
+				<Label fx:id="registrationOfficerName" layoutX="414.0"
+					layoutY="16.0" />
+				<Label layoutX="42.0" layoutY="16.0"
+					text="RO Name                                          :" />
 
-				<MenuBar fx:id="menu" layoutX="650.0" layoutY="24.0" prefHeight="15.0" prefWidth="15.0">
+				<MenuBar fx:id="menu" layoutX="650.0" layoutY="24.0"
+					prefHeight="15.0" prefWidth="15.0">
 					<menus>
 
-					
+
 						<Menu mnemonicParsing="false">
 							<graphic>
-								<ImageView fitHeight="23.0" fitWidth="23.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="23.0" fitWidth="23.0"
+									layoutX="49.0" layoutY="32.0" pickOnBounds="true"
+									preserveRatio="true">
 									<image>
 										<Image url="@../images/accountIcon.png" />
 									</image>
 								</ImageView>
 							</graphic>
 							<items>
-								<MenuItem mnemonicParsing="false" onAction="#logout" text="Logout" />
+								<MenuItem mnemonicParsing="false" onAction="#logout"
+									text="Logout" />
 							</items>
 						</Menu>
 						<Menu mnemonicParsing="false">
 							<graphic>
-								<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="20.0" fitWidth="20.0"
+									layoutX="49.0" layoutY="32.0" pickOnBounds="true"
+									preserveRatio="true">
 									<image>
 										<Image url="@../images/MenuIcon.jpg" />
 									</image>
 								</ImageView>
 							</graphic>
 							<items>
-								<MenuItem mnemonicParsing="false" text="Approve Registration" />
+								<MenuItem mnemonicParsing="false"
+									onAction="#eodProcess" text="EOD Process" />
 								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" text="Upload Packet" />
+								<MenuItem mnemonicParsing="false"
+									onAction="#uploadPacketToServer" text="Upload Packet" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" text="Virus Scan" />
 								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#syncPacketStatus" text="Sync Data" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#syncMasterData" text="Master Sync Data" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#syncInitializer" text="Sync Initializer" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="Download Pre-Registration Data" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#onBoardUser" text="On Board User" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="Device Onboarding" />
-								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" onAction="#redirectHome" text="Home" />
+								<MenuItem mnemonicParsing="false" onAction="#syncData"
+									text="Sync Data" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#downloadPreRegData"
+										text="Download Pre-Registration Data" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#onBoardUser" text="On Board User" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#onBoardDevice" text="Device Onboarding" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#redirectHome" text="Home" />
 							</items>
 						</Menu>
 					</menus>
 				</MenuBar>
-            <ImageView fx:id="availableIcon" fitHeight="15.0" fitWidth="15.0" layoutX="338.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" visible="false">
-               <image>
-                  <Image url="@../images/Available_Icon.png" />
-               </image>
-            </ImageView>
+				<ImageView fx:id="availableIcon" fitHeight="15.0"
+					fitWidth="15.0" layoutX="338.0" layoutY="16.0" pickOnBounds="true"
+					preserveRatio="true" visible="false">
+					<image>
+						<Image url="@../images/Available_Icon.png" />
+					</image>
+				</ImageView>
 
 
 			</children>

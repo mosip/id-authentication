@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { NameList } from '../registration/demographic/name-list.modal';
+import { NameList } from '../registration/demographic/modal/name-list.modal';
 
 @Injectable({
   providedIn: 'root'

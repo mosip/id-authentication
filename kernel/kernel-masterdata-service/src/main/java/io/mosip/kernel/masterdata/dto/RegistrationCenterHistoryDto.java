@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -18,11 +19,11 @@ import lombok.Data;
  */
 @Data
 public class RegistrationCenterHistoryDto {
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	private String id;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 128)
 	private String name;
 
@@ -44,7 +45,7 @@ public class RegistrationCenterHistoryDto {
 	@Size(min = 1, max = 32)
 	private String longitude;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 36)
 	private String locationCode;
 
@@ -57,7 +58,7 @@ public class RegistrationCenterHistoryDto {
 	@Size(min = 1, max = 32)
 	private String workingHours;
 
-	@NotNull
+	@NotBlank
 	@Size(min = 1, max = 3)
 	private String languageCode;
 

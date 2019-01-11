@@ -8,7 +8,6 @@ import lombok.Data;
 public class PostLocationCodeResponseDto {
 
 	private String code;
-	private String parentLocCode;
-	private Boolean isActive;
+	private String langCode;
 
 }

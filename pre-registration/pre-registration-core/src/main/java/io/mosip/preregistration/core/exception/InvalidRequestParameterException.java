@@ -16,4 +16,7 @@ public class InvalidRequestParameterException extends BaseUncheckedException {
 	public InvalidRequestParameterException(String errCode, String errMessage) {
 		super(errCode, errMessage);
 	}
+	public InvalidRequestParameterException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
+	}
 }

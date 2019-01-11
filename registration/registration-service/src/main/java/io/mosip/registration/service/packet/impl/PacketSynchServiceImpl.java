@@ -67,7 +67,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	public List<Registration> fetchPacketsToBeSynched() {
 		LOGGER.debug("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
-		return syncRegistrationDAO.getPacketsToBeSynched(RegistrationConstants.getPacketStatus());
+		return syncRegistrationDAO.getPacketsToBeSynched(RegistrationConstants.PACKET_STATUS);
 	}
 
 	/*

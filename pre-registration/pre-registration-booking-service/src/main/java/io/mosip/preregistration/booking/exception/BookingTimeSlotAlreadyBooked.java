@@ -14,12 +14,12 @@ public class BookingTimeSlotAlreadyBooked extends BaseUncheckedException {
 	 */
 	private static final long serialVersionUID = -7620811373366498697L;
 
-	public BookingTimeSlotAlreadyBooked(String message) {
-		super(ErrorCodes.PRG_BOOK_RCI_004.toString(), message);
+	public BookingTimeSlotAlreadyBooked(String msg) {
+		super("", msg);
 	}
 
 	public BookingTimeSlotAlreadyBooked(String msg, Throwable cause) {
-		super(ErrorCodes.PRG_BOOK_RCI_004.toString(), msg, cause);
+		super("", msg, cause);
 	}
 
 	public BookingTimeSlotAlreadyBooked(String errorCode, String errorMessage) {
@@ -28,5 +28,9 @@ public class BookingTimeSlotAlreadyBooked extends BaseUncheckedException {
 
 	public BookingTimeSlotAlreadyBooked(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
+	}
+
+	public BookingTimeSlotAlreadyBooked() {
+		super();
 	}
 }

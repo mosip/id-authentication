@@ -25,4 +25,8 @@ public class RestCallException extends BaseUncheckedException {
 	public RestCallException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
+
+	public RestCallException() {
+		super();
+	}
 }

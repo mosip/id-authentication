@@ -52,5 +52,8 @@ public enum ErrorCodes {
 	PRG_PAM_APP_011,
 
 	/* ErrorCode for MISSING_REQUEST_PARAMETER */
-	PRG_PAM_APP_012;
+	PRG_PAM_APP_012,
+	
+	/* ErrorCode for MISSING_DOCUMENT */
+	PRG_PAM_DOC_005;
 }

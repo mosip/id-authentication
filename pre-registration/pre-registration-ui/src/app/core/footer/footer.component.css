@@ -1,0 +1,7 @@
+.main-footer {
+  display: flex;
+  justify-content: center;
+  font-family: Roboto;
+  font-size: 12px;
+  opacity: 100%;
+}

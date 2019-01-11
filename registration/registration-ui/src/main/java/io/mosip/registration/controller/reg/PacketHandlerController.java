@@ -1,24 +1,31 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.template.TemplateService;
+import io.mosip.registration.util.acktemplate.TemplateGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -47,14 +54,30 @@ public class PacketHandlerController extends BaseController {
 	@FXML
 	private AnchorPane uploadRoot;
 
+	@FXML
+	private AnchorPane optionRoot;
+
 	@Autowired
 	private AckReceiptController ackReceiptController;
+
+	@Autowired
+	private HomeController homeController;
+
+	@Autowired
+	private TemplateService templateService;
+
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
+
+	private TemplateGenerator templateGenerator = new TemplateGenerator();
+
+	@Autowired
+	private RidGenerator<String> ridGeneratorImpl;
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
 	 * acknowledgement form
 	 */
-
 	public void createPacket() {
 
 		try {
@@ -64,7 +87,7 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				StringBuilder errorMessage = new StringBuilder();
 				ResponseDTO responseDTO;
@@ -85,8 +108,8 @@ public class PacketHandlerController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
-			
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_REG_PAGE);
+
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -96,9 +119,23 @@ public class PacketHandlerController extends BaseController {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
+			registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
+					RegistrationConstants.MACHINE_ID_GEN));
 			ackReceiptController.setRegistrationData(registrationDTO);
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-			getScene(createRoot);
+			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
+			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
+					templateManagerBuilder);
+			if (templateResponse != null && templateResponse.getSuccessResponseDTO() != null) {
+				Writer stringWriter = (Writer) templateResponse.getSuccessResponseDTO().getOtherAttributes()
+						.get(RegistrationConstants.TEMPLATE_NAME);
+				ackReceiptController.setStringWriter(stringWriter);
+				Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
+				getScene(createRoot);
+			} else if (templateResponse != null && templateResponse.getErrorResponseDTOs() != null) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, "Unable to display Acknowledgement Screen");
+				createPacket();
+			}
+
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME, APPLICATION_ID,
 					regBaseCheckedException.getMessage());
@@ -112,7 +149,7 @@ public class PacketHandlerController extends BaseController {
 	/**
 	 * Validating screen authorization and Approve, Reject and Hold packets
 	 */
-	public void approvePacket(ActionEvent event) {
+	public void approvePacket() {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
 
@@ -120,12 +157,9 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
+				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
 					nodes.get(index).setVisible(false);
 					nodes.get(index).setManaged(false);
@@ -136,14 +170,14 @@ public class PacketHandlerController extends BaseController {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.UNABLE_LOAD_APPROVAL_PAGE);
+			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
 	}
 
 	/**
 	 * Validating screen authorization and Uploading packets to FTP server
 	 */
-	public void uploadPacket(ActionEvent event) {
+	public void uploadPacket() {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
@@ -151,12 +185,10 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
+
+				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
 					nodes.get(index).setVisible(false);
 					nodes.get(index).setManaged(false);
@@ -169,4 +201,28 @@ public class PacketHandlerController extends BaseController {
 		}
 	}
 
+	public void updateUIN(ActionEvent event) {
+		try {
+			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+
+			LOGGER.debug("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "updating UIN");
+
+			if (!validateScreenAuthorization(root.getId())) {
+				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+			} else {
+				Button button = (Button) event.getSource();
+				AnchorPane anchorPane = (AnchorPane) button.getParent();
+				VBox vBox = (VBox) (anchorPane.getParent());
+				ObservableList<Node> nodes = vBox.getChildren();
+				IntStream.range(1, nodes.size()).forEach(index -> {
+					nodes.get(index).setVisible(false);
+					nodes.get(index).setManaged(false);
+				});
+				nodes.add(root);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+		}
+	}
 }

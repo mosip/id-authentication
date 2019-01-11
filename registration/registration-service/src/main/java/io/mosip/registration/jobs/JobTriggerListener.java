@@ -3,6 +3,7 @@ package io.mosip.registration.jobs;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
+import org.quartz.TriggerKey;
 import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
-
+		
 		/*
 		 * ------------------Trigger MisFired ---------------
 		 */
@@ -54,10 +55,10 @@ public class JobTriggerListener extends TriggerListenerSupport {
 			//Insert SYNC Transaction
 			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_MIS_FIRED,
 					RegistrationConstants.JOB_TRIGGER_MIS_FIRED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					jobManager.getJobId(trigger));
-		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+					trigger.getKey().getName());
+		} catch (RegBaseUncheckedException  baseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 		}
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -86,7 +87,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 					RegistrationConstants.JOB_TRIGGER_STARTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -110,7 +111,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 					jobManager.getJobId(context));
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
 
