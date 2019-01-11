@@ -25,5 +25,7 @@ public class AppRolePriority extends RegistrationCommonFields{
 
 	@Column(name = "priority")
 	private int priority;
+	@Column(name = "lang_code")
+	private String langCode;
 
 }

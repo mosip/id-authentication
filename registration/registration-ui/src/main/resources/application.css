@@ -350,7 +350,7 @@
 	-fx-pref-width: 483px;
 }
 
-#submit, #rejectionSubmit,#submitBtn, #getOTP, #resend, #submitUserId{
+#submit, #rejectionSubmit,#submitBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -414,7 +414,12 @@
 	-fx-pref-width: 500px;
 }
 
-.loginFieldStyle{
+.loginAnchorPaneStyle{
+	-fx-pref-height: 172px;
+	-fx-pref-width: 228px;
+}
+
+.loginTextStyle{
 	-fx-pref-height: 39px;
 	-fx-pref-width: 221px;
 }
@@ -422,26 +427,17 @@
 .loginSubmitStyle{
 	-fx-pref-height: 30px;
 	-fx-pref-width: 81px;
-}
-
-.loginOtpStyle{
-	-fx-pref-height: 30px;
-	-fx-pref-width: 89px;
-}
-
-.loginResendOtpStyle{
-	-fx-pref-height: 30px;
-	-fx-pref-width: 105px;
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
 
 .loginOtpValidStyle{
 	-fx-pref-height: 18px;
 	-fx-pref-width: 136px;
-}
-
-.loginBioStyle{
-	-fx-pref-height: 27px;
-	-fx-pref-width: 230px;
 }
 
 .headerStyle{

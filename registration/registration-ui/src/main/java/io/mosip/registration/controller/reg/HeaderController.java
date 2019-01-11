@@ -132,8 +132,7 @@ public class HeaderController extends BaseController {
 			SchedulerUtil.stopScheduler();
 
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
-			loginController.enableUserId();
+
 			getScene(loginpage);
 
 		} catch (IOException ioException) {

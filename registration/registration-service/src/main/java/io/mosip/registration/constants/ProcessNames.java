@@ -1,11 +1,11 @@
 package io.mosip.registration.constants;
 
 public enum ProcessNames {
-	LOGIN("login authentication"), 
-	PACKET("packet authentication"),
-	EOD("eod authentication"),
-	EXCEPTION("exception authentication"),
-	ONBOARD("onboard authentication");	
+	LOGIN("login_auth"), 
+	PACKET("packet_auth"),
+	EOD("eod_auth"),
+	EXCEPTION("exception_auth"),
+	ONBOARD("onboard_auth");	
 	
 	
 	/**

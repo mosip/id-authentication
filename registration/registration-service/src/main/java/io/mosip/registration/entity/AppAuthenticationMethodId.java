@@ -23,11 +23,10 @@ public class AppAuthenticationMethodId implements Serializable {
 
 	@Column(name = "app_id")
 	private String appId;
+	@Column(name = "process_id")
+	private String processId;
+	@Column(name= "role_code")
+	private String roleCode;
 	@Column(name = "auth_method_code")
 	private String authMethodCode;
-	@Column(name = "process_name")
-	private String processName;
-	@Column(name = "lang_code")
-	private String langCode;
-
 }

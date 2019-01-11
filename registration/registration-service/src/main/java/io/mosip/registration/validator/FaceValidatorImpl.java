@@ -17,6 +17,10 @@ import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
 
+/**
+ * @author Sravya Surampalli
+ * @since 1.0.0 
+ */
 @Service("faceValidator")
 public class FaceValidatorImpl extends AuthenticationBaseValidator{
 	

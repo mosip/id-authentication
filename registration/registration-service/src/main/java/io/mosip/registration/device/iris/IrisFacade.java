@@ -104,6 +104,24 @@ public class IrisFacade {
 		}
 	}
 	
+	/**
+	 * Capture Iris
+	 * 
+	 * @return byte[] of captured Iris
+	 */
+	public byte[] captureIris() {
+		
+		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+				"Stub data for Iris");
+		
+		return RegistrationConstants.IRIS_STUB.getBytes();
+	}
+	
+	/**
+	 * Validate Iris
+	 * 
+	 * @return boolean of captured Iris
+	 */
 	public boolean validateIris(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails) {
 		
 		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,

@@ -17,6 +17,10 @@ import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
 
+/**
+ * @author Sravya Surampalli
+ * @since 1.0.0 
+ */
 @Service("irisValidator")
 public class IrisValidatorImpl extends AuthenticationBaseValidator{
 	

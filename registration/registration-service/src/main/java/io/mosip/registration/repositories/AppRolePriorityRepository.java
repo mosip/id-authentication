@@ -17,6 +17,6 @@ import io.mosip.registration.entity.AppRolePriorityId;
  */
 public interface AppRolePriorityRepository extends BaseRepository<AppRolePriority, AppRolePriorityId>{
 	
-	List<AppRolePriorityDetails> findByAppRolePriorityIdProcessNameAndAppRolePriorityIdRoleCodeInOrderByPriority(String processName, Set<String> roleList);
+	List<AppRolePriorityDetails> findByAppRolePriorityIdProcessIdAndAppRolePriorityIdRoleCodeInOrderByPriority(String processName, Set<String> roleList);
 
 }

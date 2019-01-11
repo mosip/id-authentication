@@ -26,7 +26,7 @@ public class AppAuthenticationMethod extends RegistrationCommonFields {
 	@Column(name = "method_seq")
 	private int methodSeq;
 	
-	@Column(name= "role_code")
-	private String roleCode;
+	@Column(name = "lang_code")
+	private String langCode;
 
 }

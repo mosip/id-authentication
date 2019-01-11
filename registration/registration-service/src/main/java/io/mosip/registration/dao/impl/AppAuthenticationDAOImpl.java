@@ -53,12 +53,12 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 		if(roleList.size() == RegistrationConstants.PARAM_ONE) {
 			role = roleList.iterator().next();
 		} else if(roleList.size() > RegistrationConstants.PARAM_ONE){
-			List<AppRolePriorityDetails> appRolePriorityDetails = appRolePriorityRepository.findByAppRolePriorityIdProcessNameAndAppRolePriorityIdRoleCodeInOrderByPriority(authType, roleList);
+			List<AppRolePriorityDetails> appRolePriorityDetails = appRolePriorityRepository.findByAppRolePriorityIdProcessIdAndAppRolePriorityIdRoleCodeInOrderByPriority(authType, roleList);
 			role = !appRolePriorityDetails.isEmpty() ? String.valueOf(appRolePriorityDetails.get(RegistrationConstants.PARAM_ZERO).getAppRolePriorityId().getRoleCode()) : null;
 		}
 
 		List<AppAuthenticationDetails> loginList = appAuthenticationRepository
-				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessNameAndRoleCodeOrderByMethodSeq(authType, role);
+				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq(authType, role);
 		
 		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");

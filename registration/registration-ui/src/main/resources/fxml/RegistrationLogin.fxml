@@ -70,25 +70,61 @@
 						<Font size="23.0" />
 					</font>
 				</Label>
-				<Label fx:id="bioText" layoutX="107.0" layoutY="121.0" styleClass="loginfpStyle" text="%withfingerprint" />
-            <AnchorPane fx:id="userIdPane" layoutX="108.0" layoutY="153.0" prefHeight="150.0" prefWidth="200.0">
+            <AnchorPane fx:id="userIdPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle">
                <children>
-      				<TextField fx:id="userId" layoutY="1.0" promptText="%username" styleClass="loginFieldStyle" AnchorPane.leftAnchor="0.0" />
-                  <Button fx:id="submitUserId" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
+                 <Label layoutY="-35.0" text="%withusername" />
+      			 <TextField fx:id="userId" layoutY="1.0" promptText="%username" styleClass="loginTextStyle" AnchorPane.leftAnchor="0.0" />
+                  <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateUserId" styleClass="loginSubmitStyle" text="%submit" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="credentialsPane" layoutX="108.0" layoutY="153.0" prefHeight="172.0" prefWidth="228.0">
+            <AnchorPane fx:id="credentialsPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
                <children>
-      				<Button fx:id="getOTP" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginOtpStyle" text="%getotp" />
-      				<Button fx:id="resend" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginResendOtpStyle" text="%resendotp" visible="false" />
-      				<ImageView fx:id="bioImage" fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               		<Label layoutY="-35.0" text="%withpword" />
+      				<PasswordField fx:id="password" layoutX="2.0" promptText="%password" styleClass="loginTextStyle" AnchorPane.leftAnchor="2.0" />
+      				<Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="otpPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+               <children>
+               	  <Label layoutY="-35.0" text="%withotp" />
+               	  <PasswordField fx:id="otp" layoutX="2.0" promptText="%enterotp" styleClass="loginTextStyle" AnchorPane.leftAnchor="2.0" />
+                  <Button fx:id="getOTP" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
+                  <Button fx:id="resend" layoutY="75.0" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%resendotp" visible="false" />
+                  <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateOTP" styleClass="loginSubmitStyle" text="%submit" />
+                  <Label fx:id="otpValidity" layoutY="145.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="fingerprintPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+               <children>
+               	  <Label layoutY="-35.0" text="%withfingerprint" />
+                  <Button fx:id="submit" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateFingerPrint" styleClass="loginSubmitStyle" text="%submit" />
+                  <ImageView fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
       					<image>
       						<Image url="@../images/fingerprint.jpg" />
       					</image>
       				</ImageView>
-      				<Label fx:id="otpValidity" layoutY="145.0" styleClass="loginOtpValidStyle" text="%otp_validity_in_mins" />
-      				<Button fx:id="submit" layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
-      				<PasswordField fx:id="password" layoutX="2.0" promptText="%password" styleClass="loginFieldStyle" AnchorPane.leftAnchor="2.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="irisPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+               <children>
+                 <Label layoutY="-35.0" text="%withiris" />
+                 <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateIris" styleClass="loginSubmitStyle" text="%submit" />
+                  <ImageView fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
+      					<image>
+      						<Image url="@../images/iris.jpg" />
+      					</image>
+      				</ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="facePane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false"> 
+               <children>
+                  <Label layoutY="-35.0" text="%withface" />
+                  <Button layoutX="130.0" layoutY="75.0" mnemonicParsing="false" onAction="#validateFace" styleClass="loginSubmitStyle" text="%submit" />
+                  <ImageView fitHeight="99.0" fitWidth="92.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
+      					<image>
+      						<Image url="@../images/face.jpg" />
+      					</image>
+      				</ImageView>
                </children>
             </AnchorPane>
 			</children>
