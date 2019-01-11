@@ -1,15 +1,9 @@
 package io.mosip.preregistration.datasync.service.util;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +16,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -41,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
@@ -71,7 +64,6 @@ import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.preregistration.datasync.exception.system.SystemFileIOException;
-import io.mosip.preregistration.datasync.exception.system.SystemFileNotFoundException;
 import io.mosip.preregistration.datasync.repository.InterfaceDataSyncRepo;
 import io.mosip.preregistration.datasync.repository.ProcessedDataSyncRepo;
 
@@ -328,8 +320,11 @@ public class DataSyncServiceUtil {
 				idResponseDTO = mapper.convertValue(respEntity.getBody().getResponse().get(0),
 						PreRegIdsByRegCenterIdResponseDTO.class);
 			}
-		} catch (ParseException e) {
-			e.printStackTrace();
+		} catch (ParseException ex) {
+			log.error("sessionId", "idType", "id",
+					"In callGetPreIdsByRegCenterIdRestService method of datasync service util for ParseException - "
+							+ ex.getMessage());
+
 		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
 					"In callGetPreIdsByRegCenterIdRestService method of datasync service util - " + ex.getMessage());
@@ -453,62 +448,6 @@ public class DataSyncServiceUtil {
 	 * @param documentEntityList
 	 * @return zipped file's byte array
 	 */
-	public PreRegArchiveDTO archivingFiles(DemographicResponseDTO preRegistrationDTO,
-			BookingRegistrationDTO bookingRegistrationDTO, List<DocumentMultipartResponseDTO> documentEntityList) {
-		log.info("sessionId", "idType", "id", "In archivingFiles method of datasync service util");
-		List<String> inputMultiFileList = new ArrayList<>();
-		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
-		try {
-			preRegArchiveDTO = preparePreRegArchiveDTO(preRegistrationDTO, bookingRegistrationDTO);
-			JSONObject demographicJsonObject = preRegistrationDTO.getDemographicDetails();
-			Path pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
-					+ preRegistrationDTO.getPreRegistrationId() + "id.json");
-
-			File jsonFile = new File(pathDoc.toString());
-			if (jsonFile.exists()) {
-				FileUtils.forceDelete(jsonFile);
-			}
-
-			if (jsonFile.createNewFile()) {
-				outputStream(jsonFile, demographicJsonObject.toJSONString().getBytes(), inputMultiFileList);
-			}
-
-			if (documentEntityList != null && !documentEntityList.isEmpty()) {
-				for (int i = 0; i < documentEntityList.size(); i++) {
-					pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
-							+ documentEntityList.get(i).getPrereg_id() + "_"
-							+ documentEntityList.get(i).getDoc_cat_code() + "_"
-							+ documentEntityList.get(i).getDoc_name());
-
-					File fileDoc = new File(pathDoc.toString());
-					if (fileDoc.exists()) {
-						FileUtils.forceDelete(fileDoc);
-					}
-					if (fileDoc.createNewFile()) {
-						outputStream(fileDoc, documentEntityList.get(i).getMultipartFile(), inputMultiFileList);
-					}
-				}
-
-			}
-			preRegArchiveDTO.setZipBytes(getCompressed(inputMultiFileList));
-			preRegArchiveDTO.setFileName(preRegistrationDTO.getPreRegistrationId());
-
-			if (inputMultiFileList != null && !inputMultiFileList.isEmpty()) {
-				for (String filePath : inputMultiFileList) {
-					FileUtils.forceDelete(Paths.get(filePath).toFile());
-				}
-			}
-		} catch (Exception ex) {
-			log.error("sessionId", "idType", "id",
-					"In archivingFiles method of datasync service util - " + ex.getMessage());
-			throw new ZipFileCreationException(ErrorCodes.PRG_DATA_SYNC_005.toString(),
-					ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.toString(), ex.getCause());
-		} finally {
-			inputMultiFileList.clear();
-		}
-		return preRegArchiveDTO;
-	}
-
 	private PreRegArchiveDTO preparePreRegArchiveDTO(DemographicResponseDTO preRegistrationDTO,
 			BookingRegistrationDTO bookingRegistrationDTO) {
 		log.info("sessionId", "idType", "id", "In preparePreRegArchiveDTO method of datasync service util");
@@ -522,22 +461,52 @@ public class DataSyncServiceUtil {
 	}
 
 	/**
+	 * @param preRegistrationEntity
+	 * @param documentEntityList
+	 * @return zipped file's byte array
+	 */
+	public PreRegArchiveDTO archivingFiles(DemographicResponseDTO preRegistrationDTO,
+			BookingRegistrationDTO bookingRegistrationDTO, List<DocumentMultipartResponseDTO> documentEntityList) {
+		log.info("sessionId", "idType", "id", "In archivingFiles method of datasync service util");
+		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
+		try {
+			preRegArchiveDTO = preparePreRegArchiveDTO(preRegistrationDTO, bookingRegistrationDTO);
+			Map<String, byte[]> idJson = new HashMap<>();
+			idJson.put("ID.json",
+					JsonUtils.javaObjectToJsonString(preRegistrationDTO.getDemographicDetails()).getBytes());
+			if (documentEntityList != null && !documentEntityList.isEmpty()) {
+				for (int i = 0; i < documentEntityList.size(); i++) {
+					idJson.put(
+							documentEntityList.get(i).getDoc_cat_code().concat("_")
+									.concat(documentEntityList.get(i).getDoc_name()),
+							documentEntityList.get(i).getMultipartFile());
+				}
+			}
+			preRegArchiveDTO.setZipBytes(getCompressed(idJson));
+			preRegArchiveDTO.setFileName(preRegistrationDTO.getPreRegistrationId());
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id",
+					"In archivingFiles method of datasync service util - " + ex.getMessage());
+			throw new ZipFileCreationException(ErrorCodes.PRG_DATA_SYNC_005.toString(),
+					ErrorMessages.FAILED_TO_CREATE_A_ZIP_FILE.toString(), ex.getCause());
+		}
+		return preRegArchiveDTO;
+	}
+
+	/**
 	 * @param inputFIle
 	 * @return compressed Zip
 	 * @throws IOException
 	 */
-	private static byte[] getCompressed(List<String> inputFIle) {
+	private static byte[] getCompressed(Map<String, byte[]> inputFIle) {
 		log.info("sessionId", "idType", "id", "In getCompressed method of datasync service util");
-		File fileToZip = null;
-		List<String> srcFiles = new ArrayList<>();
-		srcFiles.addAll(inputFIle);
 		byte[] byteArray = null;
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
 		try {
-			for (String srcFile : srcFiles) {
-				fileToZip = new File(srcFile);
-				zipping(fileToZip, zipOutputStream);
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+
+			for (Map.Entry<String, byte[]> entry : inputFIle.entrySet()) {
+				zipping(entry.getKey(), entry.getValue(), zipOutputStream);
 			}
 			zipOutputStream.close();
 			byteArray = byteArrayOutputStream.toByteArray();
@@ -547,22 +516,17 @@ public class DataSyncServiceUtil {
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
 					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
 		}
-
 		return byteArray;
 	}
 
-	private static void zipping(File fileToZip, ZipOutputStream zipOutputStream) {
+	private static void zipping(String fileName, byte[] fileToZip, ZipOutputStream zipOutputStream) {
 		log.info("sessionId", "idType", "id", "In zipping method of datasync service util");
-		try (FileInputStream fileInputStream = new FileInputStream(fileToZip);
-				BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream, 1024)) {
-			ZipEntry entry = new ZipEntry(fileToZip.getName());
+
+		try {
+			ZipEntry entry = new ZipEntry(fileName);
 			zipOutputStream.putNextEntry(entry);
-			readFile(zipOutputStream, fileInputStream);
-		} catch (FileNotFoundException ex) {
-			log.error("sessionId", "idType", "id",
-					"In zipping method of datasync service util for FileNotFoundException - " + ex.getMessage());
-			throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
-					ErrorMessages.FILE_NOT_FOUND.toString(), ex.getCause());
+			zipOutputStream.write(fileToZip);
+			zipOutputStream.flush();
 		} catch (IOException ex) {
 			log.error("sessionId", "idType", "id",
 					"In zipping method of datasync service util for IOException - " + ex.getMessage());
@@ -576,15 +540,6 @@ public class DataSyncServiceUtil {
 	 * @param fis
 	 * @throws IOException
 	 */
-	private static void readFile(ZipOutputStream zipOut, FileInputStream fis) throws IOException {
-		log.info("sessionId", "idType", "id", "In readFile method of datasync service util");
-		final byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
-		}
-
-	}
 
 	public boolean parseDate(String reqDate, String format) {
 		log.info("sessionId", "idType", "id", "In parseDate method of datasync service util");
@@ -616,25 +571,6 @@ public class DataSyncServiceUtil {
 				return true;
 		}
 		return false;
-
-	}
-
-	private void outputStream(File file, byte[] docBytes, List<String> inputMultiFileList) {
-		log.info("sessionId", "idType", "id", "In outputStream method of datasync service util");
-		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-			fileOutputStream.write(docBytes);
-			inputMultiFileList.add(file.getAbsolutePath());
-		} catch (FileNotFoundException ex) {
-			log.error("sessionId", "idType", "id",
-					"In outputStream method of datasync service util for FileNotFoundException - " + ex.getMessage());
-			throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
-					ErrorMessages.FILE_NOT_FOUND.toString(), ex.getCause());
-		} catch (IOException ex) {
-			log.error("sessionId", "idType", "id",
-					"In outputStream method of datasync service util for IOException - " + ex.getMessage());
-			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());
-		}
 	}
 
 	public PreRegistrationIdsDTO getLastUpdateTimeStamp(List<String> preRegIds) {
