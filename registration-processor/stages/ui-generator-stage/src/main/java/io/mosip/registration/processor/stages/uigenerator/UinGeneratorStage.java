@@ -234,7 +234,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()+ExceptionUtils.getStackTrace(e));
 		}
 		return idResponseDTO;
 
@@ -285,7 +285,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()+ExceptionUtils.getStackTrace(e));
 		}
 		return idResponseDTO;
 	}
