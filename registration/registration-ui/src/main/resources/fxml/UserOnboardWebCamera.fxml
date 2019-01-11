@@ -21,8 +21,8 @@
     		</ImageView>
     		<Text id="homeReg" fx:id="paneLabel" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" /> 
        <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="Capture" />
-       <Button fx:id="captureExceptionImage" disable="false" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" />
-       <Label layoutX="172.0" layoutY="328.0" text="Applicant Image" />
+       <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" />
+       <Label layoutX="172.0" layoutY="328.0" text="Operator Image" />
        <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
        <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
          

@@ -270,11 +270,11 @@ public class LoginController extends BaseController implements Initializable {
 									stationID);
 
 							if (getCenterMachineStatus(userDetail)) {
-								SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER,
+								SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
 										isNewUser);
 								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
 							} else {
-								SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_USER, true);
+								SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
 								Set<String> roleSet = new HashSet<>();
 								roleSet.add("*");
 								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);

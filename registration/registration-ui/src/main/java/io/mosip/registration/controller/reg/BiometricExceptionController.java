@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 @Controller
 public class BiometricExceptionController extends BaseController implements Initializable {
@@ -65,7 +66,13 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Button previousBtn;
 	@FXML
+	private ImageView homePageImg;
+	@FXML
+	private Text homePageLbl;
+	@FXML
 	private AnchorPane biometricException;
+	@FXML
+	private AnchorPane biometricExceptionLayout;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -92,10 +99,13 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(rightThumb);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
-		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_USER)) {
-			previousBtn.setVisible(false);
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+			previousBtn.setVisible(false);			
 		}else {
 			previousBtn.setVisible(true);
+			homePageLbl.setVisible(false);
+			homePageImg.setVisible(false);
+			biometricExceptionLayout.getStyleClass().add("removeBorderStyle");
 		}
 	}
 
@@ -158,7 +168,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	public void goToNextPage() {
-		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_USER)) {
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			userOnboardController.loadFingerPrint(fingerList, irisList);
 		} else {
 			exceptionDTOCreation();

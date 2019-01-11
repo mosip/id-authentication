@@ -69,7 +69,7 @@ public class HeaderController extends BaseController {
 
 	@FXML
 	private ImageView availableIcon;
-	
+
 	@FXML
 	private Menu homeSelectionMenu;
 
@@ -101,9 +101,9 @@ public class HeaderController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_USER)) {
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			homeSelectionMenu.setVisible(false);
-		}else {
+		} else {
 			homeSelectionMenu.setVisible(true);
 		}
 
@@ -121,7 +121,7 @@ public class HeaderController extends BaseController {
 	 */
 	public void logout(ActionEvent event) {
 		try {
-			
+
 			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
 
@@ -130,12 +130,11 @@ public class HeaderController extends BaseController {
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
-			
-			
-				BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-				LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
-				loginController.enableUserId();
-				getScene(loginpage);
+
+			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+			LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
+			loginController.enableUserId();
+			getScene(loginpage);
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
@@ -169,31 +168,30 @@ public class HeaderController extends BaseController {
 	/**
 	 * change On-Board user Perspective
 	 * 
-	 * @param event
-	 *            is an action event
+	 * @param event is an action event
 	 * @throws IOException
 	 */
 	public void onBoardUser(ActionEvent event) throws IOException {
-		AnchorPane onBoardRoot = BaseController
-				.load(getClass().getResource(RegistrationConstants.USER_MACHINE_MAPPING));
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
+		AnchorPane onBoardRoot = BaseController.load(getClass().getResource(RegistrationConstants.BIO_EXCEPTION_PAGE));
+		getScene(onBoardRoot).setRoot(onBoardRoot);
 
-		if (!validateScreenAuthorization(onBoardRoot.getId())) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-		} else {
-			VBox pane = (VBox) menu.getParent().getParent().getParent();
-			Object parent = pane.getChildren().get(0);
-			pane.getChildren().clear();
-			pane.getChildren().add((Node) parent);
-			pane.getChildren().add(onBoardRoot);
-
-		}
+		/*
+		 * if (!validateScreenAuthorization(onBoardRoot.getId())) {
+		 * generateAlert(RegistrationConstants.ALERT_ERROR,
+		 * RegistrationUIConstants.AUTHORIZATION_ERROR); } else { VBox pane = (VBox)
+		 * menu.getParent().getParent().getParent(); Object parent =
+		 * pane.getChildren().get(0); pane.getChildren().clear();
+		 * pane.getChildren().add((Node) parent); pane.getChildren().add(onBoardRoot);
+		 * 
+		 * }
+		 */
 	}
 
 	/**
 	 * Sync data through batch jobs.
 	 *
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	public void syncData(ActionEvent event) {
 
@@ -243,8 +241,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
-	 * @param actionEvent
-	 *            is an action event
+	 * @param actionEvent is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
 		LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
