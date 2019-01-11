@@ -1,16 +1,16 @@
 package io.mosip.registration.service.sync.impl;
 
 import java.io.File;
-import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -37,6 +37,7 @@ import io.mosip.registration.dto.PreRegArchiveDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncDTO;
 import io.mosip.registration.dto.PreRegistrationDataSyncRequestDTO;
+import io.mosip.registration.dto.PreRegistrationIdsDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
@@ -95,28 +96,33 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		try {
 
 			/** REST call to get Pre Registartion Id's */
-			LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) serviceDelegateUtil
+			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
 					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
 
-			HashMap<String, Object> responseMap = (HashMap<String, Object>) map.get("response");
-			ArrayList<String> preRegIds = (ArrayList<String>) responseMap.get("preRegistrationIds");
+			if (isResponseNotEmpty(mainResponseDTO)) {
 
-			/** Get Packets Using pre registration ID's */
-			for (String preRegistrationId : preRegIds) {
+				PreRegistrationIdsDTO preRegistrationIdsDTO = new ObjectMapper().readValue(
+						new JSONObject(mainResponseDTO.getResponse()).toString(), PreRegistrationIdsDTO.class);
 
-				/**
-				 * TODO null has to be replaced with last updated time stamp details from api
-				 * call
-				 */
-				getPreRegistration(responseDTO, preRegistrationId, syncJobId, null);
-				if (responseDTO.getErrorResponseDTOs() != null) {
-					break;
+				Map<String, String> preRegIds = (Map<String, String>) preRegistrationIdsDTO.getPreRegistrationIds();
+
+				/** Get Packets Using pre registration ID's */
+				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
+
+					/**
+					 * TODO null has to be replaced with last updated time stamp details from api
+					 * call
+					 */
+					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
+							Timestamp.from(Instant.parse(preRegDetail.getValue())));
+					if (responseDTO.getErrorResponseDTOs() != null) {
+						break;
+					}
 				}
-
 			}
 
-		} catch (HttpClientErrorException | ResourceAccessException | SocketTimeoutException | HttpServerErrorException
-				| RegBaseCheckedException exception) {
+		} catch (HttpClientErrorException | ResourceAccessException | HttpServerErrorException | RegBaseCheckedException
+				| java.io.IOException exception) {
 
 			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -206,7 +212,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
 						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
 
-				if (isResponseNotEmpty(mainResponseDTO)) {
+				if (isResponseNotEmpty(mainResponseDTO) && mainResponseDTO.getResponse().get("zip-bytes") != null) {
 
 					PreRegArchiveDTO preRegArchiveDTO = new ObjectMapper().readValue(
 							new JSONObject(mainResponseDTO.getResponse()).toString(), PreRegArchiveDTO.class);
@@ -301,8 +307,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	}
 
 	private boolean isResponseNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
-		return mainResponseDTO != null && mainResponseDTO.getResponse() != null
-				&& mainResponseDTO.getResponse().get("zip-bytes") != null;
+		return mainResponseDTO != null && mainResponseDTO.getResponse() != null;
 	}
 
 	@SuppressWarnings("unused")
