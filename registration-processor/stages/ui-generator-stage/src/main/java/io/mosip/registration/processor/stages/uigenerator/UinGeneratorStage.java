@@ -303,26 +303,24 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e1.getMessage());
 		}
-		List<Documents> documentInfoDto = getAllDocumentsByRegId(regId);
+		List<Documents> documentInfo = getAllDocumentsByRegId(regId);
 		idRequestDTO.setId(idRepoCreate);
 		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
 		idRequestDTO.setRegistrationId(regId);
 		idRequestDTO.setUin(uin);
 		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
 		idRequestDTO.setRequest(json);
-		idRequestDTO.setDocuments(documentInfoDto);
-
+		idRequestDTO.setDocuments(documentInfo);
 		try {
-			String myResponse = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
+			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
 					idRequestDTO, String.class);
 			Gson gsonObj = new Gson();
-			idResponseDTO = gsonObj.fromJson(myResponse, IdResponseDTO.class);
+			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
 		}
 		return idResponseDTO;
-
 	}
 	
 	/**
@@ -347,11 +345,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	
 	
 	/**
-	 * Update id repowith uin.
+	 * Update IdRepo with uin.
 	 *
-	 * @param RegId the reg id
+	 * @param RegId as the registration Id
 	 * @param uin the uin
-	 * @return the id response DTO
+	 * @return the IdResponse DTO with the failure/success
 	 */
 	private IdResponseDTO updateIdRepowithUin(String RegId, String uin) {
 		JSONParser parser = new JSONParser();
@@ -363,19 +361,19 @@ public class UinGeneratorStage extends MosipVerticleManager {
 					registrationId,
 					PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e1.getMessage());
 		}
-		List<Documents> documentInfoDto = getAllDocumentsByRegId(RegId);
+		List<Documents> documentInfo = getAllDocumentsByRegId(RegId);
 		idRequestDTO.setId(idRepoUpdate);
 		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
 		idRequestDTO.setRegistrationId(RegId);
 		idRequestDTO.setUin(uin);
 		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
 		idRequestDTO.setRequest(json);
-		idRequestDTO.setDocuments(documentInfoDto);
+		idRequestDTO.setDocuments(documentInfo);
 		try {
-			String myResponse = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
+			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
 					idRequestDTO, String.class);
 			Gson gsonObj = new Gson();
-			idResponseDTO = gsonObj.fromJson(myResponse, IdResponseDTO.class);
+			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage());
