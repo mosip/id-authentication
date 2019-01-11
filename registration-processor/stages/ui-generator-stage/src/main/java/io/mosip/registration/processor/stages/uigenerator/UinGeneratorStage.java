@@ -335,7 +335,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		List<Documents> applicantDocuments = new ArrayList<>();
 		Documents documentsInfoDto;
 		List<ApplicantDocument> applicantDocument = packetInfoManager
-				.getDocumentsByRegId("27847657360002520181208094033");
+				.getDocumentsByRegId(regId);
 		for (ApplicantDocument entity : applicantDocument) {
 			documentsInfoDto = new Documents();
 			documentsInfoDto.setDocType(entity.getDocName());
