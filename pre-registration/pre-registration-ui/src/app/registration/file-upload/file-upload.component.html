@@ -129,7 +129,7 @@
             value="{{ 'documents.action_browse' | translate }}"
             type="button"
             onclick="document.getElementById('file').click();"
-            [disabled]="i != documentIndex ? true : false"
+            [disabled]="i != documentIndex"
           />
         </span>
         <span *ngIf="document.document_name === 'POA' && multipleApplicants">

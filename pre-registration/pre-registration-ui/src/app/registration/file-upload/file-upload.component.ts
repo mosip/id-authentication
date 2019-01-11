@@ -264,6 +264,15 @@ export class FileUploadComponent implements OnInit {
     this.dataStroage.copyDocument('POA', this.users[0].preRegId, event.value).subscribe(response => {});
   }
 
+  ifDisabled(category) {
+    this.users[0].files[0].forEach(element => {
+      if ((element.doc_cat_code = category)) {
+        return true;
+      }
+    });
+    return false;
+  }
+
   onBack() {
     this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
