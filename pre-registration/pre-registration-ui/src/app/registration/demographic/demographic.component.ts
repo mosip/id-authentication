@@ -361,6 +361,7 @@ export class DemographicComponent implements OnInit {
       this.userForm.controls.date.patchValue('01');
       this.userForm.controls.month.patchValue('01');
       this.userForm.controls.year.patchValue(calulatedYear);
+      this.userForm.controls.dob.patchValue('01/01/' + calulatedYear);
       this.userForm.controls['dob'].setErrors(null);
     }
   }
