@@ -55,9 +55,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant REQ_TIME. */
 	private static final String REQ_TIME = "reqTime";
 
-	/** The Constant REQ_HMAC. */
-	private static final String REQ_HMAC = "reqHmac";
-
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
@@ -99,6 +96,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 		if (authRequestDto != null) {
 			validateReqTime(authRequestDto.getReqTime(), errors);
+			validateTxnId(authRequestDto.getTxnID(), errors);
 
 			if (!errors.hasErrors()) {
 				validateRequestTimedOut(authRequestDto.getReqTime(), errors);
@@ -108,8 +106,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 				super.validate(target, errors);
 
 				validateIdvId(authRequestDto.getIdvId(), authRequestDto.getIdvIdType(), errors);
-
-				validateTxnId(authRequestDto.getTxnID(), errors);
 
 				// validateTspId(authRequestDto.getTspID(),errors);
 

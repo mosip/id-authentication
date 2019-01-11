@@ -53,7 +53,6 @@ import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
 import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 import io.mosip.kernel.core.logger.spi.Logger;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdInfoHelper.
  *

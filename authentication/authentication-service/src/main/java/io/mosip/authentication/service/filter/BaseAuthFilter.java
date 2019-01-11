@@ -11,7 +11,7 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -108,15 +108,12 @@ public abstract class BaseAuthFilter implements Filter {
 	/** The request time. */
 	private String requestTime;
 
-	/** The time formatter. */
-	private DateTimeFormatter timeFormatter;
-
 	/** The Constant MOSIP_TSP_ORGANIZATION. */
 	private static final String MOSIP_TSP_ORGANIZATION = "mosip.jws.certificate.organization";
 
 	/** The Constant MOSIP_JWS_CERTIFICATE_ALGO. */
 	private static final String MOSIP_JWS_CERTIFICATE_ALGO = "mosip.jws.certificate.algo";
-	
+
 	protected PublicKey publicKey;
 
 	/*
@@ -132,7 +129,6 @@ public abstract class BaseAuthFilter implements Filter {
 		mapper = context.getBean(ObjectMapper.class);
 		encryptor = context.getBean(EncryptorImpl.class);
 		keyManager = context.getBean(KeyManager.class);
-		timeFormatter = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
 	}
 
 	/*
@@ -187,12 +183,6 @@ public abstract class BaseAuthFilter implements Filter {
 			Map<String, Object> responseMap = setResponseParam(getRequestBody(requestWrapper.getInputStream()),
 					getResponseBody(responseWrapper.toString()));
 			responseMap.put("ver", ver);
-			ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME), timeFormatter).getZone();
-			responseMap.replace(RES_TIME,
-					DateUtils.formatDate(
-							DateUtils.parseToDate((String) responseMap.get(RES_TIME), env.getProperty(DATETIME_PATTERN),
-									TimeZone.getTimeZone(zone)),
-							env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
 			response.getWriter().write(mapper.writeValueAsString(encodedResponse(responseMap)));
 
 			logResponseTime((String) getResponseBody(responseWrapper.toString()).get(RES_TIME));
@@ -305,11 +295,13 @@ public abstract class BaseAuthFilter implements Filter {
 	 */
 	private void logResponseTime(String responseTime) {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Response sent at : " + responseTime);
-		long duration = Duration.between(Instant.from(timeFormatter.parse(requestTime)),
-				Instant.from(timeFormatter.parse(responseTime))).toMillis();
+		long duration = Duration.between(
+				LocalDateTime.parse(requestTime, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))),
+				LocalDateTime.parse(responseTime, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))))
+				.toMillis();
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 				"Time difference between request and response in millis:" + duration
-						+ ".  Time difference between request and response in Seconds: " + ((duration / 1000) % 60));
+						+ ".  Time difference between request and response in Seconds: " + (duration / 1000));
 	}
 
 	/**
@@ -335,28 +327,33 @@ public abstract class BaseAuthFilter implements Filter {
 		try {
 			Map<String, Object> requestMap = getRequestBody(requestWrapper.getInputStream());
 			requestWrapper.resetInputStream();
-			ZoneId zone = ZonedDateTime
-					.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME).getZone();
-			requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 			responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+			requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 			chain.doFilter(requestWrapper, responseWrapper);
 			Map<String, Object> responseMap = getResponseBody(responseWrapper.toString());
-			responseMap.replace(RES_TIME,
-					DateUtils.formatDate(
-							DateUtils.parseToDate((String) responseMap.get(RES_TIME), env.getProperty(DATETIME_PATTERN),
-									TimeZone.getTimeZone(zone)),
-							env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
+			if (Objects.nonNull(requestMap.get(REQ_TIME))) {
+				ZoneId zone = ZonedDateTime
+						.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME)
+						.getZone();
+				responseMap.replace(RES_TIME,
+						DateUtils.formatDate(
+								DateUtils.parseToDate((String) responseMap.get(RES_TIME),
+										env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
+								env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
+			}
 			response.getWriter().write(mapper.writeValueAsString(setResponseParam(requestMap, responseMap)));
 			logResponseTime((String) getResponseBody(responseWrapper.toString()).get(RES_TIME));
 		} catch (IdAuthenticationAppException e1) {
 			String responseTime = mapper.convertValue(new Date(), String.class);
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Cannot log time \n" + ExceptionUtils.getStackTrace(e1));
-			long duration = Duration.between(Instant.from(timeFormatter.parse(requestTime)),
-					Instant.from(timeFormatter.parse(responseTime))).toMillis();
+			long duration = Duration.between(
+					LocalDateTime.parse(requestTime, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))),
+					LocalDateTime.parse(responseTime, DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN))))
+					.toMillis();
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Cannot log time. Response sent at : " + responseTime + ". Time taken in millis: " + duration
-							+ ". Time taken in seconds: " + ((duration / 1000) % 60));
+							+ ". Time taken in seconds: " + (duration / 1000));
 		}
 		return responseWrapper;
 	}
@@ -393,9 +390,10 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @param responseBody
 	 *            the response body
 	 * @return the map
+	 * @throws IdAuthenticationAppException
 	 */
 	protected abstract Map<String, Object> setResponseParam(Map<String, Object> requestBody,
-			Map<String, Object> responseBody);
+			Map<String, Object> responseBody) throws IdAuthenticationAppException;
 
 	/**
 	 * Get version of url.
@@ -460,7 +458,8 @@ public abstract class BaseAuthFilter implements Filter {
 						IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorMessage());
 			}
-		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException | SignatureException e) {
+		} catch (JoseException | InvalidKeyException | CertificateException | NoSuchAlgorithmException
+				| NoSuchProviderException | SignatureException e) {
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Invalid certificate");
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_CERTIFICATE.getErrorMessage());

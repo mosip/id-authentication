@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -12,6 +13,8 @@ import org.springframework.validation.Validator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -73,11 +76,16 @@ public abstract class IdAuthValidator implements Validator {
 	@Autowired
 	private VidValidatorImpl vidValidator;
 
+	@Autowired
+	private Environment env;
+
 	/**
 	 * Validate id - check whether id is null or not.
 	 *
-	 * @param id     the id
-	 * @param errors the errors
+	 * @param id
+	 *            the id
+	 * @param errors
+	 *            the errors
 	 */
 	public void validateId(String id, Errors errors) {
 		if (Objects.isNull(id) || id.isEmpty()) {
@@ -91,9 +99,12 @@ public abstract class IdAuthValidator implements Validator {
 	 * Validate individual's id - check whether id is null or not and if valid,
 	 * validates idType and UIN/VID.
 	 *
-	 * @param id              the id
-	 * @param idType          the id type
-	 * @param errors          the errors
+	 * @param id
+	 *            the id
+	 * @param idType
+	 *            the id type
+	 * @param errors
+	 *            the errors
 	 */
 	public void validateIdvId(String id, String idType, Errors errors) {
 		if (Objects.isNull(id) || id.isEmpty()) {
@@ -108,8 +119,10 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate txn id - check whether it is of length 10 and alphanumeric.
 	 *
-	 * @param txnID  the txn ID
-	 * @param errors the errors
+	 * @param txnID
+	 *            the txn ID
+	 * @param errors
+	 *            the errors
 	 */
 	protected void validateTxnId(String txnID, Errors errors) {
 		if (Objects.isNull(txnID)) {
@@ -127,8 +140,10 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param reqTime the req time
-	 * @param errors  the errors
+	 * @param reqTime
+	 *            the req time
+	 * @param errors
+	 *            the errors
 	 */
 	protected void validateReqTime(String reqTime, Errors errors) {
 
@@ -145,16 +160,19 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Check future req time.
 	 *
-	 * @param reqTime the req time
-	 * @param errors the errors
+	 * @param reqTime
+	 *            the req time
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkFutureReqTime(String reqTime, Errors errors) {
 
 		Date reqDateAndTime = null;
 		try {
-			reqDateAndTime = DateUtils.parseToDate(reqTime, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", null);
-		}  catch (Exception e) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "ParseException : Invalid Date");
+			reqDateAndTime = DateUtils.parseToDate(reqTime, env.getProperty(DATETIME_PATTERN));
+		} catch (ParseException | java.text.ParseException e) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
+					"ParseException : Invalid Date\n" + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { REQ_TIME },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
@@ -171,9 +189,12 @@ public abstract class IdAuthValidator implements Validator {
 	/**
 	 * Validate UIN, VID.
 	 *
-	 * @param id              the id
-	 * @param idType          the id type
-	 * @param errors          the errors
+	 * @param id
+	 *            the id
+	 * @param idType
+	 *            the id type
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
 		if (Objects.isNull(idType)) {
@@ -204,12 +225,14 @@ public abstract class IdAuthValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
-	
+
 	/**
 	 * Validation for TspId.
 	 *
-	 * @param tspID the tsp ID
-	 * @param errors the errors
+	 * @param tspID
+	 *            the tsp ID
+	 * @param errors
+	 *            the errors
 	 */
 	protected void validateTspId(String tspID, Errors errors) {
 		if (Objects.isNull(tspID)) {
@@ -217,9 +240,7 @@ public abstract class IdAuthValidator implements Validator {
 			errors.rejectValue(TSP_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { TSP_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
-		
+
 	}
-
-
 
 }

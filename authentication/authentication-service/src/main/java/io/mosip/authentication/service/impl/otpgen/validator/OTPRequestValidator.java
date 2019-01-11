@@ -71,6 +71,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 			validateReqTime(otpRequestDto.getReqTime(), errors);
 
+			validateTxnId(otpRequestDto.getTxnID(), errors);
+
 			if (!errors.hasErrors()) {
 				validateRequestTimedOut(otpRequestDto.getReqTime(), errors);
 			}
@@ -83,8 +85,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 				validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 
 				validateTspId(otpRequestDto.getTspID(), errors);
-
-				validateTxnId(otpRequestDto.getTxnID(), errors);
 			}
 		}
 
