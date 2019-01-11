@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -38,7 +39,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class DemodedupeStage.
  *
  * @author M1048358 Alok Ranjan
- */	
+ */
 
 @RefreshScope
 @Service
@@ -46,7 +47,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemodedupeStage.class);
-	
+
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
@@ -69,7 +70,7 @@ public class DemodedupeStage extends MosipVerticleManager {
 	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
-	
+
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 
@@ -89,16 +90,20 @@ public class DemodedupeStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMODEDUPE_BUS_IN, MessageBusAddress.DEMODEDUPE_BUS_OUT);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.DEMO_DEDUPE_BUS_IN, MessageBusAddress.DEMO_DEDUPE_BUS_OUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
-		object.setMessageBusAddress(MessageBusAddress.DEMODEDUPE_BUS_IN);
+		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		String description = "";
 		boolean isTransactionSuccessful = false;
@@ -160,11 +165,13 @@ public class DemodedupeStage extends MosipVerticleManager {
 			isTransactionSuccessful = true;
 
 		} catch (IOException | ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage()+e.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} catch (Exception ex) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage()+ex.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ex.getMessage());
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
@@ -186,8 +193,10 @@ public class DemodedupeStage extends MosipVerticleManager {
 	/**
 	 * Save manual adjudication data.
 	 *
-	 * @param uniqueMatchedRefIds the unique matched ref ids
-	 * @param registrationId the registration id
+	 * @param uniqueMatchedRefIds
+	 *            the unique matched ref ids
+	 * @param registrationId
+	 *            the registration id
 	 */
 	private void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
 		boolean isTransactionSuccessful = false;
