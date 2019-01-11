@@ -113,6 +113,10 @@ export class DataStorageService {
     );
   }
 
+  getLocationTypeData() {
+    return this.httpClient.get(this.MASTER_DATA_URL + 'locations/' + this.LANGUAGE_CODE);
+  }
+
   getAvailabilityData(registrationCenterId) {
     return this.httpClient.get(this.AVAILABILITY_URL, {
       observe: 'body',

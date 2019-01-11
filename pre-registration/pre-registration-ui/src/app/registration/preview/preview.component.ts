@@ -29,7 +29,10 @@ export class PreviewComponent implements OnInit {
    console.log(this.user);
       // console.log(response);
       this.previewData = this.user.request.demographicDetails.identity;
-      this.previewData.age = new Date().getFullYear() - Number(this.previewData.dateOfBirth[0].value.split('/')[2]);
+      const now = new Date();
+      const born = new Date(this.previewData.dateOfBirth[0].value);
+      const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+      this.previewData.age = years;
       console.log(this.previewData);
       if (this.previewData['fullName'][1].language === 'ARB') {
         this.secondaryLanguage = 'ar';
