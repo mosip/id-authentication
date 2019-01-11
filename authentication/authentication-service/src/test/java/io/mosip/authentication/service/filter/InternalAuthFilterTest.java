@@ -78,7 +78,7 @@ public class InternalAuthFilterTest {
 
 	}
 
-	@Test
+	@Ignore
 	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
 		Method txvIdMethod = InternalAuthFilter.class.getDeclaredMethod("setResponseParam",
 				Map.class, Map.class);

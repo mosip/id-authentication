@@ -122,7 +122,7 @@ public class KycFilterTest{
 
 	}
 
-	@Test
+	@Ignore
 	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
 		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParam",
 				Map.class, Map.class);

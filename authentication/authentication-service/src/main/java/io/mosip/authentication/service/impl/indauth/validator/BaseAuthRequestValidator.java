@@ -122,10 +122,6 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	@Autowired
 	PhoneValidatorImpl phoneValidatorImpl;
 
-	/** The env. */
-	@Autowired
-	protected Environment env;
-
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;

@@ -77,7 +77,7 @@ public abstract class IdAuthValidator implements Validator {
 	private VidValidatorImpl vidValidator;
 
 	@Autowired
-	private Environment env;
+	protected Environment env;
 
 	/**
 	 * Validate id - check whether id is null or not.
