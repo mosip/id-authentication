@@ -13,8 +13,8 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
-public class PreRegistrationBatchService {
+public class BatchServiceApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(PreRegistrationBatchService.class, args);
+		SpringApplication.run(BatchServiceApplication.class, args);
 	}
 }

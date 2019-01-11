@@ -36,7 +36,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
@@ -177,7 +177,7 @@ public class DocumentUploadServiceTest {
 	public void uploadDocumentSuccessTest() throws IOException {
 		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
 		MainListResponseDTO restRes= new MainListResponseDTO<>();
-		docResp.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
@@ -334,7 +334,7 @@ public class DocumentUploadServiceTest {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
 		documentDeleteDTO.setDocumnet_Id("1");
-		documentDeleteDTO.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 
 		responsedelete.setResponse(deleteresponseList);
@@ -357,7 +357,7 @@ public class DocumentUploadServiceTest {
 		List<DocumentDeleteResponseDTO> deleteresponseList = new ArrayList<>();
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
 		documentDeleteDTO.setDocumnet_Id("1");
-		documentDeleteDTO.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+		documentDeleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 		deleteresponseList.add(documentDeleteDTO);
 
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();

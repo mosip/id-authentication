@@ -18,7 +18,7 @@ import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;
@@ -231,7 +231,7 @@ public class DocumentExceptionHandler {
 	public ResponseEntity<MainListResponseDTO<?>> sizeExceedException(final MultipartException me,
 			WebRequest webRequest) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_004.toString(),
-				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
+				DocumentStatusMessages.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(responseStatus);
@@ -250,7 +250,7 @@ public class DocumentExceptionHandler {
 	public ResponseEntity<MainListResponseDTO<?>> documentNotFound(final DocumentNotFoundException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(ErrorCodes.PRG_PAM_DOC_005.toString(),
-				StatusCodes.DOCUMENT_IS_MISSING.toString());
+				DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(responseStatus);
