@@ -320,7 +320,7 @@ export class DemographicComponent implements OnInit {
     this.locations.push(location);
   }
 
-  getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[]) {
+  getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[], parentLocation?: string) {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {

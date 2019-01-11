@@ -209,7 +209,7 @@
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
-                  (selectionChange)="onLocationSelect($event, null)"
+                  (selectionChange)="onLocationSelect($event, null, null)"
                   placeholder="{{ 'demographic.label_local_ administrative_authority' | translate }}"
                   formControlName="localAdministrativeAuthority"
                   #authority
