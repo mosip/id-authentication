@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.stages.uingenerator.idrepo.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -15,4 +17,6 @@ public class ResponseDTO {
 	
 	/** The identity. */
 	private Object identity;
+	
+	private List<Documents> documents;
 }

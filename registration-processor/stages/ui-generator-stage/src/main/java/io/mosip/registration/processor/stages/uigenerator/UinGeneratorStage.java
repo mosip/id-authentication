@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.stages.uigenerator;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,17 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdRepoStatusConstant;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
-import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -33,8 +39,6 @@ import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
-
-
 
 /**
  * The Class UinGeneratorStage.
@@ -61,18 +65,27 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
+	/** The cluster address. */
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
+	/** The localhost. */
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
+	/** The cluster manager url. */
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 	
+	/** The id repo create. */
 	@Value("${registration.processor.id.repo.create}")
 	private String idRepoCreate;
+	
+	/** The id repo update. */
+	@Value("${registration.processor.id.repo.update}")
+	private String idRepoUpdate;
 
+	/** The adapter. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
@@ -80,168 +93,150 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	/** The registration processor rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
+	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 	
 	/** The packet info manager. */
+	//** The packet info manager. *//*
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The registration id. */
 	private String registrationId = "";
 
+	/** The uin response dto. */
 	UinResponseDto uinResponseDto = new UinResponseDto();
+	
+	/** The id response DTO. */
 	IdResponseDTO idResponseDTO = new IdResponseDTO();
+	
+	/** The id request DTO. */
 	IdRequestDto idRequestDTO =  new IdRequestDto();
 	
-	String identityInfo = "{  \r\n" + 
-			"   \"identity\":{  \r\n" + 
-			"      \"firstName\":{  \r\n" + 
-			"         \"label\":\"First Name\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"ابراهيم\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"Ibrahim\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"middleName\":{  \r\n" + 
-			"         \"label\":\"Middle Name\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"بن\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"Ibn\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"lastName\":{  \r\n" + 
-			"         \"label\":\"Last Name\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"علي\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"Ali\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"dateOfBirth\":{  \r\n" + 
-			"         \"label\":\"Date Of Birth\",\r\n" + 
-			"         \"value\":\"1955/04/15\"\r\n" + 
-			"      },\r\n" + 
-			"      \"gender\":{  \r\n" + 
-			"         \"label\":\"Gender\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"الذكر\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"mâle\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"addressLine1\":{  \r\n" + 
-			"         \"label\":\"Address Line 1\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"عنوان العينة سطر 1\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"exemple d'adresse ligne 1\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"addressLine2\":{  \r\n" + 
-			"         \"label\":\"Address Line 2\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"عنوان العينة سطر 2\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"exemple d'adresse ligne 2\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"region\":{  \r\n" + 
-			"         \"label\":\"Region\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"طنجة - تطوان - الحسيمة\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"Tanger-Tétouan-Al Hoceima\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"province\":{  \r\n" + 
-			"         \"label\":\"Province\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"فاس-مكناس\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"Fès-Meknès\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"phone\":{  \r\n" + 
-			"         \"label\":\"Land Line\",\r\n" + 
-			"         \"value\":\"9878967890\"\r\n" + 
-			"      },\r\n" + 
-			"      \"email\":{  \r\n" + 
-			"         \"label\":\"Business Email\",\r\n" + 
-			"         \"value\":\"abc@xyz.com\"\r\n" + 
-			"      },\r\n" + 
-			"      \"parentOrGuardianName\":{  \r\n" + 
-			"         \"label\":\"Parent/Guardian\",\r\n" + 
-			"         \"values\":[  \r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"ar\",\r\n" + 
-			"               \"value\":\"سلمى\"\r\n" + 
-			"            },\r\n" + 
-			"            {  \r\n" + 
-			"               \"language\":\"fr\",\r\n" + 
-			"               \"value\":\"salma\"\r\n" + 
-			"            }\r\n" + 
-			"         ]\r\n" + 
-			"      },\r\n" + 
-			"      \"proofOfAddress\":{  \r\n" + 
-			"         \"format\":\"cbeff\",\r\n" + 
-			"         \"category\":\"drivingLicense\",\r\n" + 
-			"         \"value\":\"test\"\r\n" + 
-			"      },\r\n" + 
-			"      \"proofOfIdentity\":{  \r\n" + 
-			"         \"format\":\"txt\",\r\n" + 
-			"         \"category\":\"passport\",\r\n" + 
-			"         \"value\":\"test\"\r\n" + 
-			"      }\r\n" + 
-			"   }\r\n" + 
+	/** The identity info. */
+	String identityInfo = "{\n" + 
+			"    \"identity\" : {\n" + 
+			"      \"IDSchemaVersion\" : 1.0,\n" + 
+			"      \"UIN\" : 629140831958,\n" + 
+			"      \"fullName\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"ابراهيم بن علي\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"Ibrahim Ibn Ali\"\n" + 
+			"      } ],\n" + 
+			"      \"dateOfBirth\" : \"1955/04/15\",\n" + 
+			"      \"age\" : 45,\n" + 
+			"      \"gender\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"الذكر\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"mâle\"\n" + 
+			"      } ],\n" + 
+			"      \"addressLine1\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"عنوان العينة سطر 1\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"exemple d'adresse ligne 1\"\n" + 
+			"      } ],\n" + 
+			"      \"addressLine2\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"عنوان العينة سطر 2\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"exemple d'adresse ligne 2\"\n" + 
+			"      } ],\n" + 
+			"      \"addressLine3\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"عنوان العينة سطر 2\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"exemple d'adresse ligne 2\"\n" + 
+			"      } ],\n" + 
+			"      \"region\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"طنجة - تطوان - الحسيمة\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"Tanger-Tétouan-Al Hoceima\"\n" + 
+			"      } ],\n" + 
+			"      \"province\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"فاس-مكناس\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"Fès-Meknès\"\n" + 
+			"      } ],\n" + 
+			"      \"city\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"الدار البيضاء\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"Casablanca\"\n" + 
+			"      } ],\n" + 
+			"      \"postalCode\" : \"570004\",\n" + 
+			"      \"phone\" : \"9876543210\",\n" + 
+			"      \"email\" : \"abc@xyz.com\",\n" + 
+			"      \"CNIENumber\" : 6789545678909,\n" + 
+			"      \"localAdministrativeAuthority\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"سلمى\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"salma\"\n" + 
+			"      } ],\n" + 
+			"      \"parentOrGuardianRIDOrUIN\" : 212124324784912,\n" + 
+			"      \"parentOrGuardianName\" : [ {\n" + 
+			"        \"language\" : \"ara\",\n" + 
+			"        \"value\" : \"سلمى\"\n" + 
+			"      }, {\n" + 
+			"        \"language\" : \"fre\",\n" + 
+			"        \"value\" : \"salma\"\n" + 
+			"      } ],\n" + 
+			"      \"proofOfAddress\" : {\n" + 
+			"        \"format\" : \"pdf\",\n" + 
+			"        \"type\" : \"drivingLicense\",\n" + 
+			"        \"value\" : \"fileReferenceID\"\n" + 
+			"      },\n" + 
+			"      \"proofOfIdentity\" : {\n" + 
+			"        \"format\" : \"txt\",\n" + 
+			"        \"type\" : \"passport\",\n" + 
+			"        \"value\" : \"fileReferenceID\"\n" + 
+			"      },\n" + 
+			"      \"proofOfRelationship\" : {\n" + 
+			"        \"format\" : \"pdf\",\n" + 
+			"        \"type\" : \"passport\",\n" + 
+			"        \"value\" : \"fileReferenceID\"\n" + 
+			"      },\n" + 
+			"      \"proofOfDateOfBirth\" : {\n" + 
+			"        \"format\" : \"pdf\",\n" + 
+			"        \"type\" : \"passport\",\n" + 
+			"        \"value\" : \"fileReferenceID\"\n" + 
+			"      },\n" + 
+			"      \"individualBiometrics\" : {\n" + 
+			"        \"format\" : \"cbeff\",\n" + 
+			"        \"version\" : 1.0,\n" + 
+			"        \"value\" : \"fileReferenceID\"\n" + 
+			"      },\n" + 
+			"      \"parentOrGuardianBiometrics\" : {\n" + 
+			"        \"format\" : \"cbeff\",\n" + 
+			"        \"version\" : 1.0,\n" + 
+			"        \"value\" : \"fileReferenceID\"\n" + 
+			"      }\n" + 
+			"    }\n" + 
 			"}";
 
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		String description = "";
@@ -250,7 +245,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		this.registrationId = object.getRid();
 		System.out.println(this.registrationId);
 		UinResponseDto uinResponseDto= null;
-		sendIdRepoWithUin(true,uinResponseDto);
 
 /*
 		try {
@@ -292,93 +286,102 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		return null;
 	}
 
-
-
-	private IdResponseDTO sendIdRepoWithUin(boolean uinAvailable,UinResponseDto uinResponseDto) {	
-		
-/*		File demographicJsonFile =  FileUtils.getFile("D:\\Mosip\\workspace\\MOS-1065\\mosip\\registration-processor\\packet-info-storage-service\\src\\test\\resources\\DemographicInfo.json");
-		InputStream packetDemographicInfoStream = null;
+	/**
+	 * Send id repo with uin.
+	 *
+	 * @param regId the reg id
+	 * @param uin the uin
+	 * @return the id response DTO
+	 */
+	private IdResponseDTO sendIdRepoWithUin(String regId, String uin) {
+		JSONParser parser = new JSONParser();
+		JSONObject json = new JSONObject();
 		try {
-			packetDemographicInfoStream = new FileInputStream(demographicJsonFile);
-			identityInfo = (JSONObject) JsonUtil.inputStreamtoJavaObject(packetDemographicInfoStream,
-					JSONObject.class);
-			//documentInfoDto = new ArrayList<>();
-
-
-		} catch (UnsupportedEncodingException | FileNotFoundException e1) {
-			e1.printStackTrace();
-		} */
-
-		if(uinAvailable) {
-			JSONParser parser = new JSONParser(); 
-			JSONObject json = new JSONObject();
-			try {
-				json = (JSONObject) parser.parse(identityInfo);
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			List<Documents> documentInfoDto = getAllDocumentsByRegId(uinResponseDto);
-			idRequestDTO.setId(idRepoCreate);
-			idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
-			idRequestDTO.setRegistrationId("27847657360002520181208094034");
-			idRequestDTO.setUin("827063769462");
-			idRequestDTO.setTimestamp(null);
-			idRequestDTO.setRequest(json);
-			idRequestDTO.setDocuments(documentInfoDto);
-
-			try {
-				idResponseDTO = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "","", idRequestDTO, IdResponseDTO.class);
-				System.out.println(idResponseDTO);
-			} catch (ApisResourceAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			//System.out.println(uinAvailable);
+			json = (JSONObject) parser.parse(identityInfo);
+		} catch (ParseException e1) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,
+					PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e1.getMessage());
 		}
-		
-		else 
-		{
+		List<Documents> documentInfoDto = getAllDocumentsByRegId(regId);
+		idRequestDTO.setId(idRepoCreate);
+		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
+		idRequestDTO.setRegistrationId("27847657360002520181208094011");
+		idRequestDTO.setUin("284092194624");
+		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
+		idRequestDTO.setRequest(json);
+		idRequestDTO.setDocuments(documentInfoDto);
 
+		try {
+			String myResponse = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
+					idRequestDTO, String.class);
+			Gson gsonObj = new Gson();
+			idResponseDTO = gsonObj.fromJson(myResponse, IdResponseDTO.class);
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
 		}
-		return idResponseDTO;	
-		
+		return idResponseDTO;
+
 	}
 	
-/*	private IdResponseDTO getIdRepoWithUin(UinResponseDto uinResponseDto) {
-		List<String> pathsegments=new ArrayList<>();
-		try {
-			pathsegments.add(uinResponseDto.getUin());
-			idResponseDTO = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOSITORY, pathsegments, "","", IdResponseDTO.class);
-			System.out.println(idResponseDTO);
-		} catch (ApisResourceAccessException e) {
-			e.printStackTrace();
-		}
-		System.out.println(idResponseDTO);
-		
-		
-		return idResponseDTO;
-	}*/
-	
-	private List<Documents> getAllDocumentsByRegId(UinResponseDto uinResponseDto) {
+	/**
+	 * Gets the all documents by reg id.
+	 *
+	 * @param regId the reg id
+	 * @return the all documents by reg id
+	 */
+	private List<Documents> getAllDocumentsByRegId(String regId) {
 		List<Documents> applicantDocuments = new ArrayList<>();
-		Documents documentsInfoDto = new Documents();
-
-		List<ApplicantDocument> test = packetInfoManager.getDocumentsByRegId("27847657360002520181208094033");
-		for (ApplicantDocument entity : test) {
+		Documents documentsInfoDto;
+		List<ApplicantDocument> applicantDocument = packetInfoManager
+				.getDocumentsByRegId("27847657360002520181208094033");
+		for (ApplicantDocument entity : applicantDocument) {
+			documentsInfoDto = new Documents();
 			documentsInfoDto.setDocType(entity.getDocName());
 			documentsInfoDto.setDocValue(CryptoUtil.encodeBase64(entity.getDocStore()));
 			applicantDocuments.add(documentsInfoDto);
 		}
-		applicantDocuments.add(documentsInfoDto);
 		return applicantDocuments;
 	}
-
-
-
-
-
-
+	
+	
+	/**
+	 * Update id repowith uin.
+	 *
+	 * @param RegId the reg id
+	 * @param uin the uin
+	 * @return the id response DTO
+	 */
+	private IdResponseDTO updateIdRepowithUin(String RegId, String uin) {
+		JSONParser parser = new JSONParser();
+		JSONObject json = new JSONObject();
+		try {
+			json = (JSONObject) parser.parse(identityInfo);
+		} catch (ParseException e1) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,
+					PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e1.getMessage());
+		}
+		List<Documents> documentInfoDto = getAllDocumentsByRegId(RegId);
+		idRequestDTO.setId(idRepoUpdate);
+		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
+		idRequestDTO.setRegistrationId(RegId);
+		idRequestDTO.setUin(uin);
+		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
+		idRequestDTO.setRequest(json);
+		idRequestDTO.setDocuments(documentInfoDto);
+		try {
+			String myResponse = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
+					idRequestDTO, String.class);
+			Gson gsonObj = new Gson();
+			idResponseDTO = gsonObj.fromJson(myResponse, IdResponseDTO.class);
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage());
+		}
+		return idResponseDTO;
+	}
 
 	/**
 	 * Deploy verticle.

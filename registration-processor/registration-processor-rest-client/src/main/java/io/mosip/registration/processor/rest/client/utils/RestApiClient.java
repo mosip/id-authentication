@@ -2,6 +2,7 @@ package io.mosip.registration.processor.rest.client.utils;
 
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -72,20 +74,25 @@ public class RestApiClient {
 	 * @param responseClass            the response class
 	 * @return the t
 	 */
-	public <T> T postApi(String uri, T requestType, Class<?> responseClass) {
-
+	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) {
+		T result =null;
 		RestTemplate restTemplate;
 		try {
 			System.out.println("Your URl is to change ::   " + uri);
+			System.out.println("Request Type******** ::   "+requestType.toString());
 			restTemplate = getRestTemplate();
 
-			T result = (T) restTemplate.postForObject("https://integ.mosip.io/identity/auth/internal", requestType, responseClass);
+			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
+			System.out.println("Result from API ::  " + result);
 			return result;
-		} catch (Exception e) {
+		} catch (HttpClientErrorException e) {
+			result = (T) e.getResponseBodyAsString();
+			logger.error(e.getResponseBodyAsString());
+		}catch (Exception e) {
 
 			logger.error(e.getMessage());
 		}
-		return null;
+		return result;
 	}
 
 	/**
