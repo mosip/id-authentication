@@ -28,7 +28,7 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 		"io.mosip.registration.processor.auditmanager", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client" })
 
-public class PacketInfoManagerApplication implements CommandLineRunner{
+public class PacketInfoManagerApplication{
 
 	/**
 	 * The main method.
@@ -42,71 +42,6 @@ public class PacketInfoManagerApplication implements CommandLineRunner{
 		SpringApplication.run(PacketInfoManagerApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
 	
-		
-		//packetInfoManagerImpl.
-		String filePath="C:\\Users\\M1049387\\Desktop\\ID.json";
-		//Scanner sc=new Scanner(new File("C:\\Users\\M1049387\\Desktop\\ID.json"));
-		//System.out.println(" JSON  DATA ::   "+usingBufferedReader(filePath));
-		IndividualDemographicDedupe demographicData =packetInfoManagerImpl.getIdentityKeysAndFetchValuesFromJSON(usingBufferedReader(filePath));
-		
-		 JsonValue[] name=demographicData.getName();
-		 
-		// System.out.println("How many names types "+name.size());
-			
-			 for (JsonValue jsonValue : name) {
-				
-			
-				 System.out.println(jsonValue.getLanguage());
-				 System.out.println(jsonValue.getValue());
-			}
-		
-		 
-		 
- String dob=demographicData.getDateOfBirth();
-		 
-		 System.out.println("How many dob types "+dob);
-		 
-			
-				/*List<FieldValue> metaData=new ArrayList<>();
-
-				FieldValue regId = new FieldValue();
-				regId.setLabel("registrationId");
-				regId.setValue("27847657360002520181208094033");
-				
-				
-				FieldValue preId = new FieldValue();
-				preId.setLabel("preRegistrationId");
-				preId.setValue(null);
-				metaData.add(regId);
-				metaData.add(preId);
-
-			 File file = new File("C:\\Users\\M1049387\\Desktop\\ID.json");
-				InputStream inputStream = new FileInputStream(file);
-			 packetInfoManagerImpl.saveDemographicInfoJson(inputStream,metaData);*/
-		 
-		 
-	}
-	
-	private static String usingBufferedReader(String filePath)
-	{
-	    StringBuilder contentBuilder = new StringBuilder();
-	    try (BufferedReader br = new BufferedReader(new FileReader(filePath)))
-	    {
-	 
-	        String sCurrentLine;
-	        while ((sCurrentLine = br.readLine()) != null)
-	        {
-	            contentBuilder.append(sCurrentLine).append("\n");
-	        }
-	    }
-	    catch (IOException e)
-	    {
-	        e.printStackTrace();
-	    }
-	    return contentBuilder.toString();
-	}
 
 }
