@@ -117,6 +117,7 @@ export class FileUploadComponent implements OnInit {
 
   ngOnInit() {
     this.allApplicants = this.registration.getUsers();
+    this.allApplicants.splice(-1, 1);
     if (this.registration.getUsers().length > 0) {
       this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
       if (!this.users[0].files[0]) {
@@ -266,7 +267,11 @@ export class FileUploadComponent implements OnInit {
     window.open(fileUrl);
   }
 
-  sameAsChange(event) {}
+  sameAsChange(event) {
+    this.dataStroage.copyDocument('POA', this.users[0].preRegId, event.value).subscribe(response => {
+      console.log('response from copy', response);
+    });
+  }
 
   onBack() {
     this.router.navigate(['../demographic'], { relativeTo: this.route });
