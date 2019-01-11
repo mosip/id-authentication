@@ -19,6 +19,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -62,10 +63,15 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private Pane rightEyePane;
 	@FXML
+	private Button previousBtn;
+	@FXML
 	private AnchorPane biometricException;
 
 	@Autowired
 	private RegistrationController registrationController;
+	
+	@Autowired
+	private UserOnboardController userOnboardController;
 
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
@@ -86,7 +92,11 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(rightThumb);
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
-
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_USER)) {
+			previousBtn.setVisible(false);
+		}else {
+			previousBtn.setVisible(true);
+		}
 	}
 
 	private void fingerExceptionListener(Label fingerLabel) {
@@ -148,12 +158,17 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	public void goToNextPage() {
-		exceptionDTOCreation();
-		if (fingerList.isEmpty() && irisList.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_USER)) {
+			userOnboardController.loadFingerPrint(fingerList, irisList);
 		} else {
-			registrationController.toggleBiometricExceptionVisibility(false);
-			registrationController.toggleFingerprintCaptureVisibility(true);
+			exceptionDTOCreation();
+			if (fingerList.isEmpty() && irisList.isEmpty()) {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION,
+						RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
+			} else {
+				registrationController.toggleBiometricExceptionVisibility(false);
+				registrationController.toggleFingerprintCaptureVisibility(true);
+			}
 		}
 	}
 

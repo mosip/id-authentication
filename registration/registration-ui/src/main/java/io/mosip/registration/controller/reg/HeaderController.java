@@ -31,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -68,6 +69,9 @@ public class HeaderController extends BaseController {
 
 	@FXML
 	private ImageView availableIcon;
+	
+	@FXML
+	private Menu homeSelectionMenu;
 
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
@@ -97,6 +101,11 @@ public class HeaderController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_USER)) {
+			homeSelectionMenu.setVisible(false);
+		}else {
+			homeSelectionMenu.setVisible(true);
+		}
 
 		getTimer().schedule(new TimerTask() {
 

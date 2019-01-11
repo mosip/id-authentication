@@ -37,6 +37,7 @@
             </AnchorPane>
             <Button fx:id="scanBtn" layoutX="17.0" layoutY="391.0" mnemonicParsing="false" onAction="#scan" styleClass="RegbuttonStyle" text="Scan" />
             <Button fx:id="nextBtn" layoutX="738.0" layoutY="592.0" mnemonicParsing="false" onAction="#goToNextPage" styleClass="RegbuttonStyle" text="Next" />
+            <Button fx:id="nextBtn" layoutX="660.0" layoutY="592.0" mnemonicParsing="false" onAction="#goToPrevPage" styleClass="RegbuttonStyle" text="Previous" />
             <Label layoutX="20.0" layoutY="318.0" text="Quality %       :" />
             <Label layoutX="20.0" layoutY="345.0" text="Threshold %   :" />
             <Label layoutX="288.0" layoutY="346.0" text="Threshold %   :" />

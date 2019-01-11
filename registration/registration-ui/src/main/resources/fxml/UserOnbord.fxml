@@ -9,6 +9,6 @@
    <children>
       <Label layoutX="530.0" layoutY="210.0" prefHeight="27.0" prefWidth="248.0" text="in order to see the dashboard" />
       <Label layoutX="170.0" layoutY="210.0" prefHeight="27.0" prefWidth="280.0" text="Please provide your biometrics through" />
-      <Hyperlink fx:id="userOnboard" layoutX="420.0" layoutY="210.0" text="OnBoard User" onAction="#loadFingerPrint"/>
+      <Hyperlink fx:id="userOnboard" layoutX="420.0" layoutY="210.0" text="OnBoard User" onAction="#initUserOnboard"/>
    </children>
 </AnchorPane> 
