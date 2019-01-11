@@ -22,7 +22,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
@@ -78,9 +77,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
-
-	@Autowired
-	private RidGenerator<String> ridGeneratorImpl;
 
 	private TemplateGenerator templateGenerator = new TemplateGenerator();
 
@@ -140,8 +136,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 						String number = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getPhone().getValue();
 						String rid = getRegistrationData() == null ? "RID"
-								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
-										RegistrationConstants.MACHINE_ID_GEN);
+								: getRegistrationData().getRegistrationId();
 
 						if (!number.isEmpty()
 								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {

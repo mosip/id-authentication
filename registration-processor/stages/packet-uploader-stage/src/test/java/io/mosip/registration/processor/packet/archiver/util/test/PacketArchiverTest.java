@@ -31,11 +31,10 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 
-///**
-// * The Class PacketArchiverTest.
-// * 
-// * @author M1039285
-// */
+/**
+ * @author M1039285
+ *
+ */
 @RunWith(SpringRunner.class)
 public class PacketArchiverTest {
 

@@ -38,9 +38,9 @@
     position="start"
     mode="push">
     <mat-nav-list class="sidenav-list">
-      <a mat-list-item routerLink="/about-us" (click)="sidenav.toggle()">About us</a>
-      <a mat-list-item routerLink="/faq" (click)="sidenav.toggle()">FAQ</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.toggle()">Contact</a>
+      <a mat-list-item routerLink="/about-us" (click)="sidenav.toggle()"> {{'header.link_about' | translate}}</a>
+      <a mat-list-item routerLink="/faq" (click)="sidenav.toggle()">{{'header.link_faq' | translate}}</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.toggle()">{{'header.link_contact'| translate}}</a>
       <a mat-list-item routerLink="#" (click)="sidenav.toggle()">help</a>
       <a mat-list-item routerLink="#" (click)="sidenav.toggle()">home</a>
       <a mat-list-item routerLink="#" (click)="sidenav.toggle()">profile</a>
@@ -56,9 +56,9 @@
       <a><img  src="assets\logo-final.png" style="max-height: 50px;"></a>
       <div style="margin-left:5px;"><a routerLink="/" class="logo">logo</a></div> 
       <mat-nav-list class="list-item">
-        <a mat-list-item routerLink="/about-us">About us</a>
-        <a mat-list-item routerLink="/faq" >FAQ</a>
-        <a mat-list-item routerLink="/contact">Contact</a>
+        <a mat-list-item routerLink="/about-us">{{'header.link_about' | translate}}</a>
+        <a mat-list-item routerLink="/faq" >{{'header.link_faq' | translate}}</a>
+        <a mat-list-item routerLink="/contact">{{'header.link_contact'| translate}}</a>
       </mat-nav-list>
       <span class="spacer"></span>
       <mat-nav-list class="list-item">

@@ -1,40 +1,5 @@
 package io.mosip.preregistration.datasync.test.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import io.mosip.preregistration.core.exception.dto.ExceptionJSONInfo;
-import io.mosip.preregistration.datasync.controller.DataSyncController;
-import io.mosip.preregistration.datasync.dto.MainRequestDTO;
-import io.mosip.preregistration.datasync.dto.MainResponseDTO;
-import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
-import io.mosip.preregistration.datasync.dto.ReverseDataSyncRequestDTO;
-import io.mosip.preregistration.datasync.service.DataSyncService;
-
 /**
  * @author M1046129
  *

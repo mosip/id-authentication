@@ -41,7 +41,7 @@ public class RetryVerticleApplicationTests {
 		dto.setRetryCount(null);
 		dto.setIsValid(false);
 		dto.setInternalError(true);
-		dto.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
+		dto.setMessageBusAddress(MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 
 	}
 

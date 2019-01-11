@@ -35,6 +35,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
@@ -48,6 +49,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -58,9 +60,11 @@ import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -74,6 +78,7 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
@@ -88,8 +93,9 @@ import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
-import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterDeviceHistoryService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceHistoryService;
+import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -125,6 +131,8 @@ public class MasterDataServiceTest {
 
 	private RequestDto<ApplicationDto> applicationRequestDto;
 	private RequestDto<DocumentCategoryDto> documentCategoryRequestDto;
+
+	private RegistrationCenterMachineDeviceHistoryDto registrationCenterMachimeDeviceHistoryDto;
 
 	@MockBean
 	BiometricAttributeRepository biometricAttributeRepository;
@@ -176,6 +184,14 @@ public class MasterDataServiceTest {
 	@Autowired
 	DocumentCategoryService documentCategoryService;
 
+	@MockBean
+	RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
+
+	RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory;
+
+	@Autowired
+	RegistrationCenterMachineDeviceHistoryService registrationCenterMachineDeviceHistoryService;
+
 	private DocumentCategory documentCategory1;
 	private DocumentCategory documentCategory2;
 
@@ -185,6 +201,8 @@ public class MasterDataServiceTest {
 	private LanguageService languageService;
 	@Autowired
 	private RegistrationCenterDeviceHistoryService registrationCenterDeviceHistoryService;
+
+	private RegCenterMachineDeviceHistoryResponseDto regCenterMachineDeviceHistroyResponseDto;
 	@MockBean
 	private LanguageRepository languageRepository;
 
@@ -287,6 +305,8 @@ public class MasterDataServiceTest {
 		documentTypeSetup();
 
 		registrationCenterSetup();
+
+		registrationCenterMachineDeviceHistorySetup();
 
 	}
 
@@ -594,6 +614,22 @@ public class MasterDataServiceTest {
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLanguageCode("ENG");
+	}
+
+	private void registrationCenterMachineDeviceHistorySetup() {
+		registrationCenterMachimeDeviceHistoryDto = new RegistrationCenterMachineDeviceHistoryDto();
+		registrationCenterMachimeDeviceHistoryDto.setDeviceId("1");
+		registrationCenterMachimeDeviceHistoryDto.setMachineId("1000");
+		registrationCenterMachimeDeviceHistoryDto.setRegCenterId("10");
+		RegistrationCenterMachineDeviceHistoryID registrationCenterMachineDeviceHistoryPk = new RegistrationCenterMachineDeviceHistoryID();
+		regCenterMachineDeviceHistroyResponseDto = new RegCenterMachineDeviceHistoryResponseDto();
+		regCenterMachineDeviceHistroyResponseDto
+				.setRegistrationCenterMachineDeviceHistoryDto(registrationCenterMachimeDeviceHistoryDto);
+
+		registrationCenterMachineDeviceHistory = new RegistrationCenterMachineDeviceHistory();
+		registrationCenterMachineDeviceHistory
+				.setRegistrationCenterMachineDeviceHistoryPk(registrationCenterMachineDeviceHistoryPk);
+
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
@@ -1463,7 +1499,7 @@ public class MasterDataServiceTest {
 	public void getMachineHistroyIdLangEffDTimeParseDateException() {
 		machineHistoryService.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-12-11T11:18:261.033Z");
 	}
-	
+
 	// ----------------------------------
 	@Test(expected = RequestException.class)
 	public void getRegCentDevHistByregCentIdDevIdEffTimeinvalidDateFormateTest() {
@@ -1496,7 +1532,7 @@ public class MasterDataServiceTest {
 		 */
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
 
@@ -1514,7 +1550,7 @@ public class MasterDataServiceTest {
 		registrationCenter.setCenterEndTime(endTime);
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		/*
 		 * mockMvc.perform(get(
@@ -1533,7 +1569,7 @@ public class MasterDataServiceTest {
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
 				.thenReturn(registrationCenter);
 
-		registrationCenterService.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 	}
 
@@ -1543,22 +1579,21 @@ public class MasterDataServiceTest {
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString())).thenReturn(null);
 
-		registrationCenterService.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 	}
-	
-	@Test(expected=DataNotFoundException.class)
+
+	@Test(expected = DataNotFoundException.class)
 	public void getStatusOfWorkingHoursDataNotFoundTest() throws Exception {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
 				.thenReturn(false);
 		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
 				.thenReturn(registrationCenter);
-		
-		registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
-		}
-	
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+
+	}
+
 	@Test
 	public void getStatusOfWorkingHoursRejectedWorkingHourTest() throws Exception {
 		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
@@ -1571,14 +1606,24 @@ public class MasterDataServiceTest {
 		registrationCenter.setCenterEndTime(endTime);
 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = registrationCenterService
-				.validateTimestampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
+				.validateTimeStampWithRegistrationCenter("1", "2017-12-12T17:59:59.999Z");
 
 		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
-		
+
+	}
+
+	@Test
+	public void createRegCenterMachineDeviceHistoryTest() {
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenReturn(registrationCenterMachineDeviceHistory);
+		registrationCenterMachineDeviceHistoryService.createRegCenterMachineDeviceHistoryMapping(registrationCenterMachineDeviceHistory);
+
 	}
 	
-	
-	
-	
+	@Test(expected=MasterDataServiceException.class)
+	public void createRegCenterMachineDeviceHistoryServiceExceptionTest() {
+		when(registrationCenterMachineDeviceHistoryRepository.create(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		registrationCenterMachineDeviceHistoryService.createRegCenterMachineDeviceHistoryMapping(registrationCenterMachineDeviceHistory);
+
+	}
 
 }

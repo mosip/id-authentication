@@ -9,6 +9,7 @@
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 	/**
@@ -49,6 +50,7 @@ import lombok.Data;
 		/**
 		 * Field for language code
 		 */
+		@ValidLangCode
 		private String langCode;
 		/**
 		 * Field for is active

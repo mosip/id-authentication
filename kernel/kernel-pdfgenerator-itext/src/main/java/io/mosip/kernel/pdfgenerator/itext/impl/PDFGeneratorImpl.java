@@ -14,10 +14,10 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.css.media.MediaDeviceDescription;
 import com.itextpdf.html2pdf.css.media.MediaType;
 import com.itextpdf.html2pdf.css.util.CssUtils;
+import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.font.FontProvider;
 
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
@@ -136,18 +136,15 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		PdfWriter pdfWriter = new PdfWriter(os);
 		PdfDocument pdfDoc = new PdfDocument(pdfWriter);
 		ConverterProperties converterProperties = new ConverterProperties();
-		FontProvider fp = new FontProvider();
-		
 		pdfDoc.setTagged();
 		PageSize pageSize = PageSize.A4.rotate();
 		pdfDoc.setDefaultPageSize(pageSize);
 		float screenWidth = CssUtils.parseAbsoluteLength("" + pageSize.getWidth());
 		MediaDeviceDescription mediaDescription = new MediaDeviceDescription(MediaType.SCREEN);
 		mediaDescription.setWidth(screenWidth);
+		DefaultFontProvider dfp = new DefaultFontProvider(true, true, false);
 		converterProperties.setMediaDeviceDescription(mediaDescription);
-		fp.addStandardPdfFonts();
-		fp.addDirectory(resourceLoc);
-		converterProperties.setFontProvider(fp);
+		converterProperties.setFontProvider(dfp);
 		converterProperties.setBaseUri(resourceLoc);
 		converterProperties.setCreateAcroForm(true);
 		try {

@@ -18,6 +18,8 @@ import { SharedModule } from '../shared/shared.module';
 import { DraggableDirective } from './file-upload/draggable.directive';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { StepperComponent } from './stepper/stepper.component';
+import { I18nModule } from '../i18n.module';
+import { PreviewComponent } from './preview/preview.component';
 
 @NgModule({
   imports: [
@@ -28,7 +30,8 @@ import { StepperComponent } from './stepper/stepper.component';
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    SharedModule
+    SharedModule,
+    I18nModule
   ],
   exports: [],
   entryComponents: [DialougComponent],
@@ -41,7 +44,8 @@ import { StepperComponent } from './stepper/stepper.component';
     ParentComponent,
     DraggableDirective,
     ConfirmationComponent,
-    StepperComponent
+    StepperComponent,
+    PreviewComponent
   ]
 })
 export class RegistrationModule {}

@@ -3,6 +3,7 @@ package io.mosip.preregistration.datasync.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
