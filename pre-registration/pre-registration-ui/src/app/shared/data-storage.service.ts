@@ -21,6 +21,8 @@ export class DataStorageService {
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
   TEST_URL = 'http://A2ML27085:9092/';
+  DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
+  COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
   LANGUAGE_CODE = 'ENG';
   DISTANCE = 2000;
 
@@ -79,7 +81,7 @@ export class DataStorageService {
   }
 
   deleteRegistration(preId: string) {
-    return this.httpClient.delete(this.BASE_URL + appConstants.APPEND_URL.applicants, {
+    return this.httpClient.delete(this.DELETE_REGISTRATION_URL, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.deleteUser, preId)
@@ -179,5 +181,26 @@ export class DataStorageService {
 
   getSecondaryLanguageLabels(langCode: string) {
     return this.httpClient.get(`./assets/i18n/${langCode}.json`);
+  }
+
+  copyDocument(catCode: string, sourceId: string, destinationId: string) {
+    // return this.httpClient.post(this.COPY_DOCUMENT_URL, {
+    //   params: new HttpParams()
+    //     .append('catCode', catCode)
+    //     .append('destinationPreId', destinationId)
+    //     .append('sourcePrId', sourceId)
+    // });
+    // const params = new URLSearchParams();
+    //   params.set('catCode',catCode);
+    //   params.append('destinationPreId',destinationId);
+    //   params.append('sourcePrId',sourceId);
+
+    //   const options = new RequestOptions({
+    //     params: params,
+    //   });
+    this.COPY_DOCUMENT_URL =
+      this.COPY_DOCUMENT_URL + '?catCode=POA&destinationPreId=' + destinationId + '&sourcePrId=' + sourceId;
+
+    return this.httpClient.post(this.COPY_DOCUMENT_URL, '');
   }
 }
