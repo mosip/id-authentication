@@ -51,7 +51,8 @@ public enum ApiName {
 
 	/** The biodedupepotential. */
 	BIODEDUPEPOTENTIAL,
-
+	
+	/** The biodedupe. */
 	BIODEDUPE,
 
 	/** The idrepository. */
@@ -59,7 +60,8 @@ public enum ApiName {
 
 	/** The uingenerator. */
 	UINGENERATOR,
-
+	
+	/** The idrepodev. */
 	IDREPODEV
 
 }

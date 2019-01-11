@@ -11,7 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -34,7 +34,7 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
  * The Class AbisServiceImpl.
  */
 @Service
-public class AbisServiceImpl implements AbisService{
+public class AbisServiceImpl implements AbisService {
 
 	/** The packet info manager. */
 	@Autowired
@@ -44,37 +44,41 @@ public class AbisServiceImpl implements AbisService{
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	/** The env. */
-	@Autowired
-	private static Environment env;
-
 	/** The Constant DUPLICATE. */
 	private static final String DUPLICATE = "duplicate";
-	
+
 	/** The Constant INSERT. */
 	private static final String INSERT = "insert";
-	
+
 	/** The Constant IDENTIFY. */
 	private static final String IDENTIFY = "Identify";
-	
+
 	/** The Constant TESTFINGERPRINT. */
-	private static final String TESTFINGERPRINT = env.getProperty("TESTFINGERPRINT");
-	
+	@Value("${TESTFINGERPRINT}")
+	private String TESTFINGERPRINT;
+
 	/** The Constant TESTIRIS. */
-	private static final String TESTIRIS = env.getProperty("TESTIRIS");
-	
+	@Value("${TESTIRIS}")
+	private String TESTIRIS;
+
 	/** The Constant TESTFACE. */
-	private static final String TESTFACE = env.getProperty("TESTFACE");
+	@Value("${TESTFACE}")
+	private String TESTFACE;
 
 	/**
 	 * Insert.
 	 *
-	 * @param abisInsertRequestDto the abis insert request dto
+	 * @param abisInsertRequestDto
+	 *            the abis insert request dto
 	 * @return the abis insert responce dto
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException
+	 *             the parser configuration exception
+	 * @throws SAXException
+	 *             the SAX exception
 	 */
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
@@ -107,12 +111,17 @@ public class AbisServiceImpl implements AbisService{
 	/**
 	 * Gets the cbeff document.
 	 *
-	 * @param referenceId the reference id
+	 * @param referenceId
+	 *            the reference id
 	 * @return the cbeff document
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException
+	 *             the parser configuration exception
+	 * @throws SAXException
+	 *             the SAX exception
 	 */
 	private Document getCbeffDocument(String referenceId)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
@@ -137,12 +146,17 @@ public class AbisServiceImpl implements AbisService{
 	/**
 	 * Perform dedupe.
 	 *
-	 * @param identifyRequest the identity request
+	 * @param identifyRequest
+	 *            the identity request
 	 * @return the identity responce dto
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException
+	 *             the parser configuration exception
+	 * @throws SAXException
+	 *             the SAX exception
 	 */
 	public IdentifyResponseDto performDedupe(IdentifyRequestDto identifyRequest)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
@@ -169,7 +183,7 @@ public class AbisServiceImpl implements AbisService{
 
 		if (duplicate) {
 			CandidateListDto cd = new CandidateListDto();
-			CandidatesDto[] candidatesDto = new CandidatesDto[10];
+			CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
 			for (int i = 1; i <= identifyRequest.getMaxResults(); i++) {
 				candidatesDto[i] = new CandidatesDto();
 				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
@@ -187,8 +201,10 @@ public class AbisServiceImpl implements AbisService{
 	/**
 	 * Check duplicate.
 	 *
-	 * @param duplicate the duplicate
-	 * @param nodeList the node list
+	 * @param duplicate
+	 *            the duplicate
+	 * @param nodeList
+	 *            the node list
 	 * @return true, if successful
 	 */
 	private boolean checkDuplicate(boolean duplicate, NodeList nodeList) {
