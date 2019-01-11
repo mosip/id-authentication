@@ -26,7 +26,7 @@ export class DashBoardComponent implements OnInit {
   userFile: FileModel;
   userFiles: any[] = [];
   tempFiles;
-  disableModifyDataButton = true;
+  disableModifyDataButton = false;
   disableModifyAppointmentButton = true;
   fetchedDetails = true;
   modify = false;
@@ -47,6 +47,7 @@ export class DashBoardComponent implements OnInit {
 
   ngOnInit() {
     // sessionStorage.clear();
+    sessionStorage.removeItem('modifyUser');
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -55,10 +56,10 @@ export class DashBoardComponent implements OnInit {
 
   initUsers() {
     this.regService.flushUsers();
+    this.sharedService.flushNameList();
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: Applicant[]) => {
         console.log(applicants);
-
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][appConstants.ERROR_CODE] ===
@@ -78,20 +79,20 @@ export class DashBoardComponent implements OnInit {
               bookingRegistrationDTO !== null &&
               applicants[appConstants.RESPONSE][index][
                 appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode
-              ].toLowerCase() === appConstants.APPLICATION_STATUS_CODES.booked
+              ].toLowerCase() === appConstants.APPLICATION_STATUS_CODES.booked.toLowerCase()
             ) {
               const date =
                 applicants[appConstants.RESPONSE][index][
-                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate
-                ];
+                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto
+                ][appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.regDate];
               const fromTime =
                 applicants[appConstants.RESPONSE][index][
-                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from
-                ];
+                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto
+                ][appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_from];
               const toTime =
                 applicants[appConstants.RESPONSE][index][
-                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to
-                ];
+                  appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto
+                ][appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.time_slot_to];
               appointmentDateTime = date + ' ( ' + fromTime + ' - ' + toTime + ' )';
             }
             const applicant: Applicant = {
@@ -103,8 +104,6 @@ export class DashBoardComponent implements OnInit {
                 applicants[appConstants.RESPONSE][index][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
               regDto: bookingRegistrationDTO
             };
-            console.log('applicant', applicant);
-
             this.users.push(applicant);
           }
         } else {
@@ -137,8 +136,12 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.router.navigate(['pre-registration', this.loginId, 'demographic']);
-    this.isNewApplication = true;
+    if (this.loginId) {
+      this.router.navigate(['pre-registration', this.loginId, 'demographic']);
+      this.isNewApplication = true;
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   openDialog(data, width) {
@@ -263,13 +266,10 @@ export class DashBoardComponent implements OnInit {
   }
 
   onModifyInformation(preId: string) {
-    console.log('modify info called');
-
+    this.regService.changeMessage({ modifyUser: 'true' });
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => {
-        console.log('response from modify data', response);
-
         this.setUserFiles(response);
       },
       error => {

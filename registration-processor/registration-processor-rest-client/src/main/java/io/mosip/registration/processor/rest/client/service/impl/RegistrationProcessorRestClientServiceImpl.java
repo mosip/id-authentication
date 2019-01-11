@@ -119,7 +119,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			try {
 				obj = restApiClient.postApi(builder.toUriString(), requestedData, responseType);
 
-			} catch (ResourceAccessException e) {
+			} catch (Exception e) {
 
 				throw new ApisResourceAccessException(
 						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(), e);

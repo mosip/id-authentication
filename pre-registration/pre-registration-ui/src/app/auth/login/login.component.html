@@ -20,14 +20,14 @@
 
       <div *ngIf="showContactDetails">
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="inputContactDetails" placeholder="{{'login.label_email_num' | translate}}"  id="inputFieldContact" required />
+          <input autofocus="autofocus" matInput [(ngModel)]="inputContactDetails" placeholder="{{'login.label_email_num' | translate}}"  id="inputFieldContact" required />
           <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
       </div>
 
       <div *ngIf="showOTP">
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="inputOTP" placeholder="{{'login.label_otp' | translate}}" id="inputFieldOTP" (input)="showVerifyBtn()" />
+          <input autofocus="autofocus" matInput [(ngModel)]="inputOTP" placeholder="{{'login.label_otp' | translate}}" id="inputFieldOTP" (input)="showVerifyBtn()" />
         </mat-form-field>
       </div>
 

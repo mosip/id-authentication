@@ -4,23 +4,43 @@
     <img class="done" src="assets/img/done.png" />{{ message2 }}
   </div>
   <div class="ack-container">
-    <div  *ngFor="let usersI of usersInfo">
+    <div  *ngFor="let user of usersInfo">
       <div class="ack-userInfo-container">
         <div class="ack-userInfo">
-          <div class="ack-userInfo_row" *ngFor="let row of usersI.userInfo">
-            <div class="ack-userInfo_label">{{ row.key }}</div>
+          <div class="ack-userInfo_row">
+            <div class="ack-userInfo_label">Name</div>
             <div class="ack-userInfo_separator">:</div>
-            <div class="ack-userInfo_data">{{ row.value }}</div>
+            <div class="ack-userInfo_data">{{user.fullName}}</div>
           </div>
-        </div>
+          <div class="ack-userInfo_row">
+            <div class="ack-userInfo_label">Pre Registration ID</div>
+            <div class="ack-userInfo_separator">:</div>
+            <div class="ack-userInfo_data">{{user.preRegId}}</div>
+          </div>
+          <div class="ack-userInfo_row">
+            <div class="ack-userInfo_label">Registration Center</div>
+            <div class="ack-userInfo_separator">:</div>
+            <div class="ack-userInfo_data">{{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine2}}</div>
+          </div>
+          <div class="ack-userInfo_row">
+            <div class="ack-userInfo_label">Center Contact Number</div>
+            <div class="ack-userInfo_separator">:</div>
+            <div class="ack-userInfo_data">{{user.registrationCenter.contactPhone}}</div>
+          </div>
+          <div class="ack-userInfo_row">
+            <div class="ack-userInfo_label">Appointment Date & Time</div>
+            <div class="ack-userInfo_separator">:</div>
+            <div class="ack-userInfo_data">{{user.bookingData}}</div>
+          </div>   
+          </div>
         <div class="ack-userInfo_qr-code">
-          <img src="{{ usersI.qrCode }}" />
+          <img src="assets/img/QR_code.png" />
         </div>
       </div>
       <div class="ack-guidelines-container">
         <div>Important Guidelines</div>
         <ul>
-          <li *ngFor="let item of usersI.guidelines">{{ item }}</li>
+          <li>Guidelines yet to be decided.</li>
         </ul>
       </div>
     </div>

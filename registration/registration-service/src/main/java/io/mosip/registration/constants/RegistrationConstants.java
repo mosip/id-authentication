@@ -49,12 +49,22 @@ public class RegistrationConstants {
 	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
 	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
 	public static final String SCAN_PAGE = "/fxml/Scan.fxml";
-	public static final String UIN_UPDATE = "/fxml/UINUpdate.fxml";
+	public static final String UIN_UPDATE = "/fxml/UpdateUIN.fxml";
+	public static final String SYNC_DATA = "/fxml/SyncDataProcess.fxml";
+	public static final String USER_ONBOARD = "/fxml/UserOnbord.fxml";
+	public static final String USER_ONBOARD_FP = "/fxml/UserOnboardFPCapture.fxml";
+	public static final String USER_ONBOARD_IRIS = "/fxml/UserOnboardIrisCapture.fxml";
+	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
+
+	// Images path
 	public static final String CLOSE_IMAGE_PATH = "/images/close.jpg";
 	public static final String DOC_STUB_PATH = "/images/PANStubbed.jpg";
+	public static final String FP_IMG_PATH = "/images/fingerprint.jpg";
+	public static final String IRIS_IMG_PATH = "/images/iris.jpg";
+	public static final String FACE_IMG_PATH = "/images/face.jpg";
 
 	// Authentication
 	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
@@ -67,15 +77,26 @@ public class RegistrationConstants {
 	public static final String FAILURE = "Fail";
 	public static final String SUPERVISOR = "SUPERVISOR";
 	public static final String OFFICER = "OFFICER";
+	public static final String IRIS_STUB = "leftIris";
+	public static final String FACE_STUB = "face";
 
 	// Login
 	public static final String LOGIN_METHOD_PWORD = "PWD";
 	public static final String LOGIN_METHOD_OTP = "OTP";
 	public static final String LOGIN_METHOD_BIO = "BIO";
+	public static final String LOGIN_METHOD_IRIS = "IRIS";
+	public static final String LOGIN_METHOD_FACE = "FACE";
+	public static final String USR_TEXT = "Enter your Username";
+	public static final String PWORD_TEXT = "Enter your Password";
+	public static final String OTP_TEXT = "Enter OTP";
+	public static final String FINGERPRINT_TEXT = "Place your fingerprint on the device to scan it";
+	public static final String IRIS_TEXT = "Scan your eye on the iris scanner";
+	public static final String FACE_TEXT = "Bring your face near the camera";
 	public static final String BLOCKED = "BLOCKED";
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String BLACKLISTED = "BLOCKED";
+	public static final String NEW_USER = "isNewUser";
 	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
 	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
@@ -106,25 +127,44 @@ public class RegistrationConstants {
 	public static final String IS_CONSOLIDATED = "isConsolidated";
 	public static final String CONSOLIDATED_VALIDATION = "Y";
 	public static final String INDIVIDUAL_VALIDATION = "N";
-	public static final String VALIDATION_SPLITTER="\\s,";
-	public static final String ON_TYPE="_ontype";
-	public static final String POR_DOCUMENTS="porDocuments";
-	public static final String POR_BOX="porBox";
-	public static final String VALIDATION_LOGGER="VALIDATIONS";
-	public static final String REG_LGN_001="REG_LGN_001";
-	public static final String REG_DDC_002_1="REG_DDC_002_1";
-	public static final String REG_DDC_002_2="REG_DDC_002_2";
-	public static final String REG_DDC_003_1="REG_DDC_003_1";
-	public static final String REG_DDC_003_2="REG_DDC_003_2";
-	public static final String REG_DDC_004_1="REG_DDC_004_1";
-	public static final String REG_DDC_004_2="REG_DDC_004_2";
+	public static final String VALIDATION_SPLITTER = "\\s,";
+	public static final String ON_TYPE = "_ontype";
+	public static final String POR_DOCUMENTS = "porDocuments";
+	public static final String POR_BOX = "porBox";
+	public static final String VALIDATION_LOGGER = "VALIDATIONS";
+	public static final String REG_LGN_001 = "REG_LGN_001";
+	public static final String REG_DDC_002_1 = "REG_DDC_002_1";
+	public static final String REG_DDC_002_2 = "REG_DDC_002_2";
+	public static final String REG_DDC_003_1 = "REG_DDC_003_1";
+	public static final String REG_DDC_003_2 = "REG_DDC_003_2";
+	public static final String REG_DDC_004_1 = "REG_DDC_004_1";
+	public static final String REG_DDC_004_2 = "REG_DDC_004_2";
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
-	public static final String LOCAL_LANGUAGE="LocalLanguage";
-
+	public static final String LOCAL_LANGUAGE = "LocalLanguage";
+	public static final String APPLICATION_LANGUAGE = "application_language";
+	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
+	public static final String PACKET_TYPE_NEW = "New";
+	public static final String FLAG_YES = "Y";
+	public static final String FLAG_NO = "N";
+	public static final String REGISTRATION_DTO = "registrationDto";
+	public static final String ADDRESS_LINE1 = "addressLine1";
+	public static final String ADDRESS_LINE2 = "addressLine2";
+	public static final String ADDRESS_LINE3 = "addressLine3";
+	public static final String FULL_NAME = "fullName";
+	public static final String CHILD = "Child";
+	public static final String ADULT = "Adult";
+	public static final String AGE_DATEPICKER_CONTENT = "ageDatePickerContent";
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
 	public static final String TOGGLE_BIO_METRIC_EXCEPTION = "toggleBiometricException";
+
+	// update UIN
+	public static final String UIN_NAV_LABEL = "/ UIN Update";
+	public static final String UIN_LABEL = "UIN";
+	public static final String FIRST_TOGGLE_LABEL = "toggleLabel1";
+	public static final String SECOND_TOGGLE_LABEL = "toggleLabel2";
+	public static final String PACKET_TYPE_UPDATE = "Update";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";
@@ -163,6 +203,8 @@ public class RegistrationConstants {
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";
+	public static final String VALIDATION_TYPE_IRIS = "Iris";
+	public static final String VALIDATION_TYPE_FACE = "Face";
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
 
 	// Supervisor Authentication
@@ -264,6 +306,7 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "Biometrics";
 	public static final String TEMPLATE_RO_NAME = "ROName";
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
+	public static final String TEMPLATE_PNG_IMAGE_ENCODING = "data:image/png;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_HANDS_IMAGE_PATH = "/images/hands.jpg";
 	public static final String TEMPLATE_QRCODE_IMAGE_PATH = "/images/QRCode.jpg";
@@ -395,6 +438,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_URS_J00007 = "URS_J00007";
 	public static final String OPT_TO_REG_POS_J00008 = "POS_J00008";
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
+	public static final String OPT_TO_REG_RDJ_J00010 = "RDJ_J00010";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -484,14 +528,12 @@ public class RegistrationConstants {
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint");
 
 	// Documents
-	public static final String POA_DOCUMENT = "PoA";
-	public static final String POI_DOCUMENT = "PoI";
-	public static final String POR_DOCUMENT = "PoR";
-	public static final String DOB_DOCUMENT = "DoB";
+	public static final String POA_DOCUMENT = "POA";
+	public static final String POI_DOCUMENT = "POI";
+	public static final String POR_DOCUMENT = "POR";
+	public static final String DOB_DOCUMENT = "DOB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-	
-	public static List<String> CITY_LIST = Arrays.asList("Delhi","Chennai","Bengaluru","Mumbai");
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
@@ -673,6 +715,8 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
+	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
+
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
 	public static final int FULL_NAME_LENGTH = 50;
@@ -725,11 +769,17 @@ public class RegistrationConstants {
 	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "SYNC-DATA Process started successfully";
 	public static final String START_SCHEDULER_ERROR_MESSAGE = "Unable to start SYNC-DATA process";
 	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
-	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop JobScheduler";
+	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop SYNC-DATA Process";
 	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "Unable to fetch current running job details";
 	public static final String EXECUTE_JOB_ERROR_MESSAGE = "Unable to execute job";
-	public static final String BATCH_JOBS_ALREADY_STARTED = "SYNC-DATA Process already running";
-
+	public static final String SYNC_DATA_PROCESS_ALREADY_STARTED = "SYNC-DATA Process already running";
+	public static final String SYNC_DATA_PROCESS_ALREADY_STOPPED = "SYNC-DATA Process not running to stop";
+	public static final String SYNC_DATA_DTO = "SYNC-DATA DTO";
+	public static final String JOB_RUNNING = "RUNNING";
+	public static final String JOB_COMPLETED = "COMPLETED";
+	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
+	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
+	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
 	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
@@ -755,7 +805,43 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_INSERT_GPS = "Unable to validate machine location. Please insert the GPS device and try again";
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again";
 
-	public static final String POLICY_SYNC_SERVICE="policysync";
-	public static final String KEY_NAME="KEY_POLICY_SYNC_THRESHOLD_VALUE";
-	public static final String REFERENCE_ID="1001";
+	public static final String POLICY_SYNC_SERVICE = "policysync";
+	public static final String KEY_NAME = "KEY_POLICY_SYNC_THRESHOLD_VALUE";
+	public static final String REFERENCE_ID = "1001";
+
+	// Reg Deletion
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_SUCCESS = "Registartion Packets Deletion Successful ";
+	public static final String REGISTRATION_DELETION_BATCH_JOBS_FAILURE = "Registartion Packets Deletion Failure ";
+
+	// Application Language
+	public static final String APPLICATION_LANUAGE = "application_language";
+
+	// Global-Config Constants
+	public static final String GET_GLOBAL_CONFIG = "get_registration_center_config";
+	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
+
+	public enum mappedCodeForLang {
+		en("ENG"),ar("AR");
+		private String langCode;
+
+		mappedCodeForLang(String langCode) {
+			this.langCode = langCode;
+		}
+
+		public String getMappedCode() {
+			return langCode;
+		}
+
+	}
+	
+	// user on boarding
+	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
+	public static final String USER_ON_BOARDING_SUCCESS_RESPONSE = "success";
+	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
+	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
+	public static final String USER_ON_BOARDING_SUCCESS_CODE="REG-URE‌-002";
+	public static final String USER_ON_BOARDING_SUCCESS_MSG="User on-boarded successfully.";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE="REG-URE‌-008";
+	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG="Threshold for number of successful authentications not met.";
+
 }

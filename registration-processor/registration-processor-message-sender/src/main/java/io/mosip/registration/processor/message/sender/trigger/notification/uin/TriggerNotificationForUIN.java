@@ -65,10 +65,9 @@ public class TriggerNotificationForUIN {
 	 * Trigger notification.
 	 *
 	 * @param uin the uin
-	 * @throws ApisResourceAccessException the apis resource access exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception 
 	 */
-	public void triggerNotification(String uin) throws ApisResourceAccessException, IOException {
+	public void triggerNotification(String uin) throws Exception {
 
 		Map<String, Object> attributes = new HashMap<>();
 		String[] ccEMailList = null;
