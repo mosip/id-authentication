@@ -804,11 +804,11 @@ public class MasterdataIntegrationTest {
 	private void templateFileFormatSetup() {
 		templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
-		templateFileFormatDto.setLangCode("ENG");
+		templateFileFormatDto.setLangCode("eng");
 		templateFileFormatDto.setIsActive(true);
 		templateFileFormat = new TemplateFileFormat();
 		templateFileFormat.setCode("xml");
-		templateFileFormat.setLangCode("ENG");
+		templateFileFormat.setLangCode("eng");
 		templateFileFormat.setIsActive(true);
 
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
@@ -4037,6 +4037,22 @@ public class MasterdataIntegrationTest {
 		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content(content)).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void updateTemplateFileFormatLanguageCodeValidationTest() throws Exception {
+		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.update");
+		requestDto.setVer("1.0.0");
+		templateFileFormatDto.setLangCode("xxx");
+		requestDto.setRequest(templateFileFormatDto);
+		String content = mapper.writeValueAsString(requestDto);
+		Mockito.when(templateFileFormatRepository
+				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(templateFileFormat);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isBadRequest());
 	}
 
 	@Test
