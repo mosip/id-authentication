@@ -273,7 +273,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
 					.parseInt(getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))) {
 
-				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
+				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
 			} else {
 				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}

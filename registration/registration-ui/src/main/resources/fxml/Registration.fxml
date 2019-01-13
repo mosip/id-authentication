@@ -32,8 +32,8 @@
                      <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="10.0" prefHeight="438.0" prefWidth="819.0" visible="false">
                     	<children>
                       <fx:include source="DocumentScan.fxml" />
-                      <Button fx:id="pane2NextBtn" layoutX="732.0" layoutY="280.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
-                  	   <Button fx:id="pane2PrevBtn" layoutX="663.0" layoutY="280.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
+                      <Button fx:id="pane2NextBtn" layoutX="770.0" layoutY="480.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
+                  	   <Button fx:id="pane2PrevBtn" layoutX="700.0" layoutY="480.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
                            <AnchorPane id="biometricException" layoutX="50.0" layoutY="280.0">
                               <children>
                             <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutX="130.0" prefHeight="15.0" prefWidth="9.1" />
@@ -48,7 +48,7 @@
                </AnchorPane>
                <Accordion id="registrationAccordian" fx:id="accord" layoutX="40.0" layoutY="85.0" pickOnBounds="false" visible="true">
                  <panes>
-                     <TitledPane fx:id="demoGraphicTitlePane" prefHeight="863.0" prefWidth="900.0" text="%titleDemographicPane">
+                     <TitledPane fx:id="demoGraphicTitlePane" prefHeight="500.0" prefWidth="900.0" text="%titleDemographicPane">
                         <content>
                            <AnchorPane id="demographicPane" fx:id="demoGraphicPane1" prefHeight="720.0" prefWidth="806.0" visible="true">
                               <children>

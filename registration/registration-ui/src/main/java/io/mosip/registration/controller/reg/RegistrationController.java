@@ -65,13 +65,11 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
-import io.mosip.registration.dto.demographic.ArrayPropertiesDTO;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.demographic.LocationDTO;
-import io.mosip.registration.dto.demographic.SimplePropertiesDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -531,12 +529,6 @@ public class RegistrationController extends BaseController {
 					.setUin(getRegistrationDtoContent().getSelectionListDTO().getUinId());
 			preRegistrationId.setText(getRegistrationDtoContent().getSelectionListDTO().getUinId());
 
-			childSpecificFields.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
-					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
-
-			childSpecificFieldsLocal.setVisible(getRegistrationDtoContent().getSelectionListDTO().isChild()
-					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
-
 			fullName.setDisable(false);
 			fullNameLocalLanguage.setDisable(false);
 			fullNameLocalLanguageLabel.setDisable(false);
@@ -569,11 +561,20 @@ public class RegistrationController extends BaseController {
 			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			boolean isChild = getRegistrationDtoContent().getSelectionListDTO().isChild()
+					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
+			childSpecificFields.setDisable(!isChild);
+			childSpecificFieldsLocal.setDisable(!isChild);
+			childSpecificFields.setVisible(isChild);
+			childSpecificFieldsLocal.setVisible(isChild);
 
-			childSpecificFields.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
-					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
-			childSpecificFieldsLocal.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isChild()
-					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails());
+			if (SessionContext.getInstance().getMapObject().get("isChild") != null) {
+				isChild = (boolean) SessionContext.getInstance().getMapObject().get("isChild");
+				childSpecificFields.setDisable(!isChild);
+				childSpecificFields.setVisible(isChild);
+				childSpecificFieldsLocal.setDisable(!isChild);
+				childSpecificFieldsLocal.setVisible(isChild);
+			}
 
 			if (getRegistrationDtoContent().getSelectionListDTO().isBiometricException()) {
 				bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
@@ -646,32 +647,38 @@ public class RegistrationController extends BaseController {
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
-			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber().toString());
+			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
-			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber().toString());
+			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
-
-			if (demo.getIdentity().getParentOrGuardianRIDOrUIN() != null) {
-				populateFieldValue(parentName, parentNameLocalLanguage, demo.getIdentity().getParentOrGuardianName());
-				uinId.setText(demo.getIdentity().getParentOrGuardianRIDOrUIN().toString());
-			}
-
+		
 			if (demo.getIdentity().getDateOfBirth() != null && getAgeDatePickerContent() != null
 					&& dobSelectionFromCalendar) {
 				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
 			} else {
-				switchedOn.set(true);
+			    switchedOn.set(true);
 				ageDatePicker.setDisable(true);
 				ageField.setDisable(false);
 				ageField.setText(String.valueOf(demo.getIdentity().getAge()));
 				if (isEditPage())
 					autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
 			}
+			if (SessionContext.getInstance().getMapObject().get("isChild") != null) {
 
+				boolean isChild = (boolean) SessionContext.getInstance().getMapObject().get("isChild");
+				childSpecificFields.setDisable(!isChild);
+				childSpecificFields.setVisible(isChild);
+				childSpecificFieldsLocal.setDisable(!isChild);
+				childSpecificFieldsLocal.setVisible(isChild);
+			}
+			if (demo.getIdentity().getParentOrGuardianRIDOrUIN() != null) {
+				populateFieldValue(parentName, parentNameLocalLanguage, demo.getIdentity().getParentOrGuardianName());
+				uinId.setText(demo.getIdentity().getParentOrGuardianRIDOrUIN() + "");
+			}
 			preRegistrationId.setText(getRegistrationDtoContent().getPreRegistrationId());
 
 			// for applicant biometrics
@@ -694,12 +701,8 @@ public class RegistrationController extends BaseController {
 					}
 				}
 			}
-
 			documentScanController.prepareEditPageContent();
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, false);
-			ageFieldValidations();
-			ageValidationInDatePicker();
-
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -708,30 +711,33 @@ public class RegistrationController extends BaseController {
 	}
 
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
-		String platformLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE);
-		String localLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE);
-		String valueInPlatformLang = "";
-		String valueinLocalLang = "";
+		if (fieldValues != null) {
+			String platformLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE);
+			String localLanguageCode = AppConfig
+					.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE);
+			String valueInPlatformLang = "";
+			String valueinLocalLang = "";
 
-		for (ValuesDTO fieldValue : fieldValues) {
-			if (fieldValue.getLanguage().equals(platformLanguageCode)) {
-				valueInPlatformLang = fieldValue.getValue();
-			} else if (nodeForLocalLang != null && fieldValue.getLanguage().equals(localLanguageCode)) {
-				valueinLocalLang = fieldValue.getValue();
+			for (ValuesDTO fieldValue : fieldValues) {
+				if (fieldValue.getLanguage().equals(platformLanguageCode)) {
+					valueInPlatformLang = fieldValue.getValue();
+				} else if (nodeForLocalLang != null && fieldValue.getLanguage().equals(localLanguageCode)) {
+					valueinLocalLang = fieldValue.getValue();
+				}
 			}
-		}
 
-		if (nodeForPlatformLang instanceof TextField) {
-			((TextField) nodeForPlatformLang).setText(valueInPlatformLang);
+			if (nodeForPlatformLang instanceof TextField) {
+				((TextField) nodeForPlatformLang).setText(valueInPlatformLang);
 
-			if (nodeForLocalLang != null) {
-				((TextField) nodeForLocalLang).setText(valueinLocalLang);
-			}
-		} else if (nodeForPlatformLang instanceof ComboBox) {
-			((ComboBox) nodeForPlatformLang).setValue(valueInPlatformLang);
+				if (nodeForLocalLang != null) {
+					((TextField) nodeForLocalLang).setText(valueinLocalLang);
+				}
+			} else if (nodeForPlatformLang instanceof ComboBox) {
+				((ComboBox) nodeForPlatformLang).setValue(valueInPlatformLang);
 
-			if (nodeForLocalLang != null) {
-				((ComboBox) nodeForLocalLang).setValue(valueinLocalLang);
+				if (nodeForLocalLang != null) {
+					((ComboBox) nodeForLocalLang).setValue(valueinLocalLang);
+				}
 			}
 		}
 	}
@@ -815,7 +821,7 @@ public class RegistrationController extends BaseController {
 				demoGraphicTitlePane.setContent(null);
 				demoGraphicTitlePane.setExpanded(false);
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
-				demoGraphicTitlePane.setPrefHeight(500.00);
+				anchorPaneRegistration.setPrefHeight(700.00);
 				demoGraphicTitlePane.setExpanded(true);
 			}
 		} catch (RuntimeException runtimeException) {
@@ -881,7 +887,7 @@ public class RegistrationController extends BaseController {
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
-
+			SessionContext.getInstance().getMapObject().put("isChild", isChild);
 			if (validateDemographicPane(demoGraphicPane2)) {
 
 				demographicInfoDTO = buildDemographicInfo();
@@ -1150,7 +1156,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 * To open camera for the type of image that is to be captured
 	 * 
-	 * @param imageType type of image that is to be captured
+	 * @param imageType
+	 *            type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -1213,11 +1220,13 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To detect the face part from the applicant photograph to use it for QR Code
-	 * generation
+	 * To detect the face part from the applicant photograph to use it for QR
+	 * Code generation
 	 * 
-	 * @param applicantImage the image that is captured as applicant photograph
-	 * @return BufferedImage the face that is detected from the applicant photograph
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
+	 * @return BufferedImage the face that is detected from the applicant
+	 *         photograph
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
 		BufferedImage detectedFace = null;
@@ -1236,10 +1245,11 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To compress the detected face from the image of applicant and store it in DTO
-	 * to use it for QR Code generation
+	 * To compress the detected face from the image of applicant and store it in
+	 * DTO to use it for QR Code generation
 	 * 
-	 * @param applicantImage the image that is captured as applicant photograph
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
 	 */
 	private void compressImageForQRCode(BufferedImage applicantImage) {
 		BufferedImage detectedFace = detectApplicantFace(applicantImage);
@@ -1256,7 +1266,8 @@ public class RegistrationController extends BaseController {
 			ImageWriteParam param = writer.getDefaultWriteParam();
 
 			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			param.setCompressionQuality(0); // Change the quality value you prefer
+			param.setCompressionQuality(0); // Change the quality value you
+											// prefer
 			writer.write(null, new IIOImage(detectedFace, null, null), param);
 
 			byte[] compressedPhoto = byteArrayOutputStream.toByteArray();
@@ -1489,6 +1500,8 @@ public class RegistrationController extends BaseController {
 							childSpecificFieldsLocal.setVisible(true);
 							childSpecificFields.setDisable(false);
 							childSpecificFieldsLocal.setDisable(false);
+							parentName.clear();
+							uinId.clear();
 							isChild = true;
 						} else {
 							isChild = false;
@@ -1496,6 +1509,8 @@ public class RegistrationController extends BaseController {
 							childSpecificFieldsLocal.setVisible(false);
 							childSpecificFields.setDisable(true);
 							childSpecificFieldsLocal.setDisable(true);
+							parentName.clear();
+							uinId.clear();
 						}
 					}
 				}
@@ -1528,8 +1543,6 @@ public class RegistrationController extends BaseController {
 						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						ageField.clear();
 						ageDatePicker.setValue(null);
-						parentName.clear();
-						uinId.clear();
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
 						ageDatePicker.setDisable(true);
@@ -1540,8 +1553,6 @@ public class RegistrationController extends BaseController {
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
 						ageDatePicker.setValue(null);
-						parentName.clear();
-						uinId.clear();
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
 						ageDatePicker.setDisable(false);
@@ -1595,7 +1606,7 @@ public class RegistrationController extends BaseController {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
-		return gotoNext;
+		return true;
 	}
 
 	/**
@@ -1726,6 +1737,7 @@ public class RegistrationController extends BaseController {
 		demoGraphicTitlePane.setContent(null);
 		demoGraphicTitlePane.setExpanded(false);
 		demoGraphicTitlePane.setContent(demoGraphicPane1);
+		anchorPaneRegistration.setPrefHeight(1100.00);
 		demoGraphicTitlePane.setExpanded(true);
 	}
 
@@ -1804,7 +1816,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1818,7 +1831,8 @@ public class RegistrationController extends BaseController {
 			authenticationController.initData(ProcessNames.PACKET.getType());
 			/*
 			 * if (toggleBiometricException) {
-			 * authenticationController.initData(ProcessNames.EXCEPTION.getType()); }
+			 * authenticationController.initData(ProcessNames.EXCEPTION.getType(
+			 * )); }
 			 */
 			accord.setExpandedPane(authenticationTitlePane);
 			headerImage.setImage(new Image(RegistrationConstants.OPERATOR_AUTHENTICATION_LOGO));
@@ -1835,7 +1849,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1905,7 +1920,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1914,7 +1930,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
@@ -1923,7 +1940,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the BiometricException Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleBiometricExceptionVisibility(boolean visibility) {
 		this.biometricException.setVisible(visibility);
@@ -1996,7 +2014,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language code
+	 * To load the localAdminAuthorities selection list based on the language
+	 * code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {

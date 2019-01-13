@@ -130,6 +130,10 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			isChild = true;
+			porDocuments.setValue("dfdf");
+			poiDocuments.setValue("dfdf");
+			poaDocuments.setValue("dfdf");
+			dobDocuments.setValue("dfdf");
 			loadListOfDocuments();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
