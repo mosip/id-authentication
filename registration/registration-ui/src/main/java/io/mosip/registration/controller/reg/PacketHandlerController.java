@@ -88,7 +88,7 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				StringBuilder errorMessage = new StringBuilder();
 				ResponseDTO responseDTO;
@@ -99,7 +99,7 @@ public class PacketHandlerController extends BaseController {
 						errorMessage
 								.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
 					}
-					generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
+					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 				} else {
 					getScene(createRoot).setRoot(createRoot);
@@ -110,7 +110,7 @@ public class PacketHandlerController extends BaseController {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -133,7 +133,7 @@ public class PacketHandlerController extends BaseController {
 				Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
 				getScene(createRoot);
 			} else if (templateResponse != null && templateResponse.getErrorResponseDTOs() != null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, "Unable to display Acknowledgement Screen");
+				generateAlert(RegistrationConstants.ERROR, "Unable to display Acknowledgement Screen");
 				createPacket();
 			}
 
@@ -158,7 +158,7 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
 				IntStream.range(1, nodes.size()).forEach(index -> {
@@ -171,7 +171,7 @@ public class PacketHandlerController extends BaseController {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - APPROVE PACKET", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_APPROVAL_PAGE);
 		}
 	}
 
@@ -186,7 +186,7 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 
 				ObservableList<Node> nodes = homeController.getMainBox().getChildren();
@@ -210,7 +210,7 @@ public class PacketHandlerController extends BaseController {
 					APPLICATION_ID, "updating UIN");
 
 			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				Button button = (Button) event.getSource();
 				AnchorPane anchorPane = (AnchorPane) button.getParent();

@@ -130,15 +130,11 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			isChild = true;
-			porDocuments.setValue("dfdf");
-			poiDocuments.setValue("dfdf");
-			poaDocuments.setValue("dfdf");
-			dobDocuments.setValue("dfdf");
 			loadListOfDocuments();
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -198,19 +194,19 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
+			generateAlert(RegistrationConstants.ERROR, errorMessage);
 			documents.requestFocus();
 		} else if (!vboxElement.getChildren().isEmpty()) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "One Document can be added to the Category");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
 				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
@@ -255,13 +251,13 @@ public class DocumentScanController extends BaseController {
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
 							ioException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s",
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
 
 	}
@@ -273,7 +269,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 		if (byteArray.length > documentSize) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
 				
@@ -322,7 +318,7 @@ public class DocumentScanController extends BaseController {
 
 	private void scanFromScanner() throws IOException {
 		if (!documentScanFacade.isConnected()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
 			return;
 		}
 
@@ -331,7 +327,7 @@ public class DocumentScanController extends BaseController {
 		BufferedImage bufferedImage = documentScanFacade.getScannedDocumentFromScanner();
 
 		if (bufferedImage == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 			return;
 		}
 		if (scannedPages == null) {
@@ -353,7 +349,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 		if (scannedPages == null || scannedPages.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
 			return;
 		}
 		byte[] byteArray;
@@ -363,11 +359,11 @@ public class DocumentScanController extends BaseController {
 			byteArray = documentScanFacade.asPDF(scannedPages);
 		}
 		if (byteArray == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
 		if (byteArray.length > documentSize) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,

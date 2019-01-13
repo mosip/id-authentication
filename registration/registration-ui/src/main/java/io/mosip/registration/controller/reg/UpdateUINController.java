@@ -135,7 +135,7 @@ public class UpdateUINController extends BaseController implements Initializable
 		try {
 
 			if (StringUtils.isEmpty(uinId.getText())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
 			} else {
 
 				if (uinValidatorImpl.validateId(uinId.getText())) {
@@ -186,7 +186,7 @@ public class UpdateUINController extends BaseController implements Initializable
 								applicationContext.getApplicationLanguageBundle());
 
 						if (!validateScreenAuthorization(createRoot.getId())) {
-							generateAlert(RegistrationConstants.ALERT_ERROR,
+							generateAlert(RegistrationConstants.ERROR,
 									RegistrationUIConstants.AUTHORIZATION_ERROR);
 						} else {
 							StringBuilder errorMessage = new StringBuilder();
@@ -198,25 +198,25 @@ public class UpdateUINController extends BaseController implements Initializable
 									errorMessage.append(errorResponseDTO.getMessage() + " - "
 											+ errorResponseDTO.getCode() + "\n\n");
 								}
-								generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage.toString().trim());
+								generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
 							} else {
 								getScene(createRoot).setRoot(createRoot);
 							}
 						}
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, "please select any one detail for updation");
+						generateAlert(RegistrationConstants.ERROR, "please select any one detail for updation");
 					}
 				}
 			}
 		} catch (InvalidIDException invalidIdException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, invalidIdException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, "Please enter a valid UIN.");
+			generateAlert(RegistrationConstants.ERROR, "Please enter a valid UIN.");
 		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 }

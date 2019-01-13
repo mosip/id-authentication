@@ -104,7 +104,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 			
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
-			if (onBoardingResponse.equals(RegistrationConstants.USER_ON_BOARDING_SUCCESS_RESPONSE)) {
+			if (onBoardingResponse.equals(RegistrationConstants.success)) {
 
 				SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
 				sucessResponse.setCode(RegistrationConstants.USER_ON_BOARDING_SUCCESS_CODE);
@@ -155,7 +155,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(errorCode);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 
 		errorResponses.add(errorResponse);

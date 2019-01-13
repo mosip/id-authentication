@@ -142,7 +142,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(errorCode);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 		errorResponses.add(errorResponse);
 

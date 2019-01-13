@@ -265,7 +265,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 
 		errorResponses.add(errorResponse);
@@ -455,7 +455,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(RegistrationConstants.DEVICE_MAPPING_ERROR_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 
 		errorResponses.add(errorResponse);

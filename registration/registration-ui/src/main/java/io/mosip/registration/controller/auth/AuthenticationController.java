@@ -163,12 +163,12 @@ public class AuthenticationController extends BaseController {
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 			}
 
 		} else {
 			// Generate Alert to show username field was empty
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 		}
 	}
 
@@ -187,28 +187,28 @@ public class AuthenticationController extends BaseController {
 							userNameField = otpUserId.getText();
 							loadNextScreen();
 						} else {
-							generateAlert(RegistrationConstants.ALERT_ERROR,
+							generateAlert(RegistrationConstants.ERROR,
 									RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 						}
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
 			if (otp.getText() != null) {
 				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
 					loadNextScreen();
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR,
+					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
 			}
 		}
 	}
@@ -219,7 +219,7 @@ public class AuthenticationController extends BaseController {
 			userNameField = username.getText();
 			loadNextScreen();
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.INCORRECT_PWORD);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INCORRECT_PWORD);
 		}
 	}
 
@@ -237,19 +237,19 @@ public class AuthenticationController extends BaseController {
 						userNameField = fpUserId.getText();
 						loadNextScreen();
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
 			if (captureAndValidateFP(fpUserId.getText())) {
 				loadNextScreen();
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
 			}
 		}
 	}
@@ -268,19 +268,19 @@ public class AuthenticationController extends BaseController {
 						userNameField = irisUserId.getText();
 						loadNextScreen();
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_MATCH);
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
 			if (captureAndValidateIris(irisUserId.getText())) {
 				loadNextScreen();
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_MATCH);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
 			}
 		}
 	}
@@ -299,19 +299,19 @@ public class AuthenticationController extends BaseController {
 						userNameField = faceUserId.getText();
 						loadNextScreen();
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FACE_MATCH);
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
 				}
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			}
 		} else {
 			if (captureAndValidateFace(faceUserId.getText())) {
 				loadNextScreen();
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.FACE_MATCH);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
 			}
 		}
 	}
@@ -329,7 +329,7 @@ public class AuthenticationController extends BaseController {
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType,roleSet);
 
 		if (userAuthenticationTypeList.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
 		} else {
 			loadNextScreen();
 		}
@@ -571,7 +571,7 @@ public class AuthenticationController extends BaseController {
 		MosipFingerprintProvider fingerPrintConnector = fingerprintFacade.getFingerprintProviderFactory(providerName);
 		int statusCode = fingerPrintConnector.captureFingerprint(qualityScore, captureTimeOut, "");
 		if (statusCode != 0) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_FP_NOT_FOUND);
 		} else {
 			// Thread to wait until capture the bio image/ minutia from FP. based on the
 			// error code or success code the respective action will be taken care.

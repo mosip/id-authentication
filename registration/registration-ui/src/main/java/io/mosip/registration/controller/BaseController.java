@@ -197,7 +197,7 @@ public class BaseController {
 	 *            alert context
 	 */
 	protected void generateAlert(String context, String isConsolidated, StringBuilder validationMessage) {
-		if (isConsolidated.equals(RegistrationConstants.INDIVIDUAL_VALIDATION)) {
+		if (isConsolidated.equals(RegistrationConstants.DISABLE)) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setHeaderText(null);
 			alert.setContentText(context);
@@ -281,7 +281,7 @@ public class BaseController {
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
@@ -418,10 +418,10 @@ public class BaseController {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
 		if (password.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
 		}  else if (password.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_LENGTH);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 			return RegistrationUIConstants.PWORD_LENGTH;
 		} else {
 			String hashPassword = null;

@@ -54,7 +54,7 @@
                               <children>
                                  <Label fx:id="preRegistrationLabel" layoutX="45.0" layoutY="30.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                                  <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
-                                 <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" styleClass="RegbuttonStyle" text="%fetch" />
+                                 <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch" />
                                  <Label fx:id="fullNameLabel" layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%fullName" />
                                  <TextField id="fullName" fx:id="fullName" layoutX="44.0" layoutY="90.0" prefHeight="10.0" prefWidth="320.0" />
                                  <AnchorPane fx:id="dateAnchorPane" layoutX="40.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">

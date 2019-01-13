@@ -99,7 +99,7 @@ public class PacketUploadController extends BaseController {
 				}
 			});
 		} catch (RegBaseCheckedException checkedException) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, checkedException.getErrorText());
+			generateAlert(RegistrationConstants.ERROR, checkedException.getErrorText());
 		}
 
 	}

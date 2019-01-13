@@ -150,7 +150,7 @@ public class UserOnBoardServiceImplTest {
 		
 		ReflectionTestUtils.setField(userOnboardServiceImpl, "UserOnBoardThresholdLimit", 10);
 		
-		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.USER_ON_BOARDING_SUCCESS_RESPONSE);
+		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
 		
 		userOnboardServiceImpl.validate(biometricDTO);
 		
@@ -256,7 +256,7 @@ public class UserOnBoardServiceImplTest {
 		
 		ReflectionTestUtils.setField(userOnboardServiceImpl, "UserOnBoardThresholdLimit", 100);
 		
-		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.USER_ON_BOARDING_SUCCESS_RESPONSE);
+		Mockito.when(userOnBoardDao.insert(biometricDTO)).thenReturn(RegistrationConstants.success);
 		
 		userOnboardServiceImpl.validate(biometricDTO);
 		

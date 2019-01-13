@@ -79,7 +79,7 @@ public class OTPManager extends BaseService{
 			otpValidatorResponseDto = (OtpValidatorResponseDTO) serviceDelegateUtil
 					.get(RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME, requestParamMap,false);
 			if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
-					&& RegistrationConstants.OTP_VALIDATION_SUCCESS.equals(otpValidatorResponseDto.getStatus())) {
+					&& RegistrationConstants.success.equals(otpValidatorResponseDto.getStatus())) {
 
 				status = true;
 

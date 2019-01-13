@@ -73,7 +73,6 @@ public class RegistrationConstants {
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 	public static final String FINGER_PRINT_SINGLE = "single";
 	public static final String FINGER_PRINT_MULTIPLE = "multiple";
-	public static final String OTP_VALIDATION_SUCCESS = "success";
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
 	public static final String SUPERVISOR = "SUPERVISOR";
@@ -108,7 +107,6 @@ public class RegistrationConstants {
 
 	// Generic
 	public static final String ERROR = "ERROR";
-	public static final String SUCCESS_MSG = "Success";
 	public static final int PARAM_ONE = 1;
 	public static final int PARAM_ZERO = 0;
 
@@ -121,8 +119,8 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_PANE2_DATA = "demoGraphicPane2Content";
 	public static final String REGISTRATION_ISEDIT = "isEditPage";
 	public static final String IS_CONSOLIDATED = "isConsolidated";
-	public static final String CONSOLIDATED_VALIDATION = "Y";
-	public static final String INDIVIDUAL_VALIDATION = "N";
+	public static final String ENABLE = "Y";
+	public static final String DISABLE = "N";
 	public static final String VALIDATION_SPLITTER = "\\s,";
 	public static final String ON_TYPE = "_ontype";
 	public static final String POR_DOCUMENTS = "porDocuments";
@@ -140,8 +138,6 @@ public class RegistrationConstants {
 	public static final String APPLICATION_LANGUAGE = "application_language";
 	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
 	public static final String PACKET_TYPE_NEW = "New";
-	public static final String FLAG_YES = "Y";
-	public static final String FLAG_NO = "N";
 	public static final String REGISTRATION_DTO = "registrationDto";
 	public static final String ADDRESS_LINE1 = "addressLine1";
 	public static final String ADDRESS_LINE2 = "addressLine2";
@@ -262,7 +258,6 @@ public class RegistrationConstants {
 
 	// ALert related constants
 	public static final String ALERT_INFORMATION = "INFORMATION";
-	public static final String ALERT_ERROR = "ERROR";
 	public static final String ALERT_WARNING = "WARNING";
 	public static final String ALERT = "ALERT";
 
@@ -422,14 +417,11 @@ public class RegistrationConstants {
 	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
 	public static final String OPT_TO_REG_LOGGER_SESSION_ID = "REGISTRATION - SYNC - VALIDATION";
 	public static final String OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
-	public static final String OPT_TO_REG_GEO_FLAG_SINGLETIME = "Y";
-	public static final String OPT_TO_REG_GEO_FLAG_MULTIPLETIME = "N";
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
 	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
 	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
-	public static final String OPT_TO_REG_LATITUDE = "latitude";
-	public static final String OPT_TO_REG_LONGITUDE = "longitude";
+	public static final String LATITUDE = "latitude";
 	public static final String OPT_TO_REG_MDS_J00001 = "MDS_J00001";
 	public static final String OPT_TO_REG_LCS_J00002 = "LCS_J00002";
 	public static final String OPT_TO_REG_PDS_J00003 = "PDS_J00003";
@@ -508,8 +500,7 @@ public class RegistrationConstants {
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
-	public static final String GPS_LATITUDE = "latitude";
-	public static final String GPS_LONGITUDE = "longitude";
+	public static final String LONGITUDE = "longitude";
 	public static final String GPS_DISTANCE = "distance";
 	public static final String GPS_CAPTURE_ERROR_MSG = "gpsErrorMessage";
 	public static final String GPS_CAPTURE_SUCCESS = "gpsCaptureSuccess";
@@ -841,7 +832,7 @@ public class RegistrationConstants {
 	
 	// user on boarding
 	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
-	public static final String USER_ON_BOARDING_SUCCESS_RESPONSE = "success";
+	public static final String success = "success";
 	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE="REG-URE‌-002";

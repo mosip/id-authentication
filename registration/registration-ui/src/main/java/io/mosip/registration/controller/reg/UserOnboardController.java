@@ -455,7 +455,7 @@ public class UserOnboardController extends BaseController implements Initializab
 						isthumbsCaptured = true;
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
@@ -706,14 +706,14 @@ public class UserOnboardController extends BaseController implements Initializab
 				LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 						"Scanning of iris details for user registration completed");
 			} catch (RegBaseCheckedException regBaseCheckedException) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, String.format(
 						"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 						RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 						runtimeException.getCause()));
 
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 			} finally {
 				selectedIris.requestFocus();
 			}
@@ -813,7 +813,7 @@ public class UserOnboardController extends BaseController implements Initializab
 							RegistrationConstants.USER_REG_IRIS_CAPTURE_POPUP_LOAD_EXP, runtimeException.getMessage(),
 							runtimeException.getStackTrace()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_IRIS_SCAN_POPUP);
 		}
 	}
 
@@ -870,7 +870,7 @@ public class UserOnboardController extends BaseController implements Initializab
 						isRightEyeCaptured = true;
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_QUALITY_SCORE_ERROR);
 					return isValid;
 				}
 			}
@@ -878,7 +878,7 @@ public class UserOnboardController extends BaseController implements Initializab
 			if (isLeftEyeCaptured && isRightEyeCaptured) {
 				isValid = true;
 			} else {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.IRIS_VALIDATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_VALIDATION_ERROR);
 			}
 
 			LOGGER.debug(LOG_REG_IRIS_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
@@ -1030,7 +1030,7 @@ public class UserOnboardController extends BaseController implements Initializab
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 		}
 	}
 
@@ -1044,7 +1044,7 @@ public class UserOnboardController extends BaseController implements Initializab
 			ResponseDTO response = userOnboardService.validate(biometricDTO);
 			if (response != null && response.getErrorResponseDTOs() != null
 					&& response.getErrorResponseDTOs().get(0) != null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+				generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
 			} else if (response != null && response.getSuccessResponseDTO() != null) {
 				try {
 					popupStage = new Stage();
@@ -1062,7 +1062,7 @@ public class UserOnboardController extends BaseController implements Initializab
 				} catch (IOException exception) {
 					LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage());
-					generateAlert(RegistrationConstants.ALERT_ERROR,
+					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 				}
 			}
@@ -1073,7 +1073,7 @@ public class UserOnboardController extends BaseController implements Initializab
 		if (biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
 			return true;
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, "Please capture the photo");
+			generateAlert(RegistrationConstants.ERROR, "Please capture the photo");
 			return true;
 		}
 	}

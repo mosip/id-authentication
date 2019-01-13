@@ -311,7 +311,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			webView.getEngine().print(job);
 			job.endJob();
 		}
-		generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
+		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
 		goToHomePageFromRegistration();
 	}
 
@@ -329,6 +329,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 */
 	private void generateNotificationAlert(String alertMessage) {
 		/* Generate Alert */
-		generateAlert(RegistrationConstants.ALERT_ERROR, alertMessage);
+		generateAlert(RegistrationConstants.ERROR, alertMessage);
 	}
 }

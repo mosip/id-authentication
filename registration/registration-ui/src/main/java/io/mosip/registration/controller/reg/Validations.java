@@ -84,12 +84,12 @@ public class Validations extends BaseController {
 			} else {
 				if (nodeToValidate(notTovalidate, node)) {
 					isValid = validateTheNode(node, node.getId());
-					if (isConsolidated.equals(RegistrationConstants.CONSOLIDATED_VALIDATION)) {
+					if (isConsolidated.equals(RegistrationConstants.ENABLE)) {
 						isValid = getValidationMessage().toString().length() == 0;
 					}
 				}
 			}
-			if (!isValid && isConsolidated.equals(RegistrationConstants.INDIVIDUAL_VALIDATION))
+			if (!isValid && isConsolidated.equals(RegistrationConstants.DISABLE))
 				break;
 		}
 		return isValid;
@@ -269,7 +269,7 @@ public class Validations extends BaseController {
 			try {
 				uinValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidUinException) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, invalidUinException.getErrorText());
+				generateAlert(RegistrationConstants.ERROR, invalidUinException.getErrorText());
 				field.requestFocus();
 				return false;
 			}
@@ -277,7 +277,7 @@ public class Validations extends BaseController {
 			try {
 				ridValidator.validateId(field.getText());
 			} catch (InvalidIDException invalidRidException) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, invalidRidException.getErrorText());
+				generateAlert(RegistrationConstants.ERROR, invalidRidException.getErrorText());
 				field.requestFocus();
 				return false;
 			}

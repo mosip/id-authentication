@@ -187,7 +187,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"User and machine information insertion sucessful");
 
-			response = RegistrationConstants.USER_ON_BOARDING_SUCCESS_RESPONSE;
+			response = RegistrationConstants.success;
 			
 			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Leaving insert method");

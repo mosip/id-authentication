@@ -454,7 +454,7 @@ public class RegistrationController extends BaseController {
 				createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 			}
 
-			if (capturePhotoUsingDevice.equals(RegistrationConstants.FLAG_YES) && !isEditPage()) {
+			if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE) && !isEditPage()) {
 				defaultImage = applicantImage.getImage();
 				applicantImageCaptured = false;
 				exceptionImageCaptured = false;
@@ -481,7 +481,7 @@ public class RegistrationController extends BaseController {
 					});
 			fxUtils = FXUtils.getInstance();
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
-					RegistrationConstants.INDIVIDUAL_VALIDATION);
+					RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			isChild = true;
@@ -507,7 +507,7 @@ public class RegistrationController extends BaseController {
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -747,13 +747,13 @@ public class RegistrationController extends BaseController {
 		String preRegId = preRegistrationId.getText();
 
 		if (StringUtils.isEmpty(preRegId)) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PRE_REG_ID_EMPTY);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PRE_REG_ID_EMPTY);
 			return;
 		} else {
 			try {
 				pridValidatorImpl.validateId(preRegId);
 			} catch (InvalidIDException invalidIDException) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, invalidIDException.getErrorText());
+				generateAlert(RegistrationConstants.ERROR, invalidIDException.getErrorText());
 				return;
 			}
 		}
@@ -769,7 +769,7 @@ public class RegistrationController extends BaseController {
 			prepareEditPageContent();
 
 		} else if (errorResponseDTOList != null && !errorResponseDTOList.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTOList.get(0).getMessage());
+			generateAlert(RegistrationConstants.ERROR, errorResponseDTOList.get(0).getMessage());
 		}
 	}
 
@@ -784,7 +784,7 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.ADDRESS_KEY) == null) {
-				generateAlert(RegistrationConstants.ALERT_ERROR,
+				generateAlert(RegistrationConstants.ERROR,
 						"Address could not be loaded as there is no previous entry");
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
@@ -1181,7 +1181,7 @@ public class RegistrationController extends BaseController {
 						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
 			}
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
 		}
 	}
 
@@ -1380,22 +1380,22 @@ public class RegistrationController extends BaseController {
 							&& getRegistrationDtoContent().getDemographicDTO() != null) {
 						imageCaptured = true;
 					} else {
-						generateAlert(RegistrationConstants.ALERT_ERROR,
+						generateAlert(RegistrationConstants.ERROR,
 								RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 					}
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
 				}
 			} else {
 				if (getRegistrationDtoContent() != null && getRegistrationDtoContent().getDemographicDTO() != null) {
 					imageCaptured = true;
 				} else {
-					generateAlert(RegistrationConstants.ALERT_ERROR,
+					generateAlert(RegistrationConstants.ERROR,
 							RegistrationUIConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
 				}
 			}
 		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.APPLICANT_IMAGE_ERROR);
 		}
 		return imageCaptured;
 	}
@@ -1480,7 +1480,7 @@ public class RegistrationController extends BaseController {
 			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
 				ageFieldLocalLanguage.setText(newValue);
 				if (!validation.validateTextField(ageField, ageField.getId() + "_ontype",
-						RegistrationConstants.INDIVIDUAL_VALIDATION)) {
+						RegistrationConstants.DISABLE)) {
 					ageField.setText(oldValue);
 				}
 				int age = 0;
@@ -1488,7 +1488,7 @@ public class RegistrationController extends BaseController {
 					if (Integer.parseInt(ageField.getText()) > Integer
 							.parseInt(AppConfig.getApplicationProperty("max_age"))) {
 						ageField.setText(oldValue);
-						generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.MAX_AGE_WARNING + " "
 								+ AppConfig.getApplicationProperty("max_age"));
 					} else {
 						age = Integer.parseInt(ageField.getText());
@@ -1684,7 +1684,7 @@ public class RegistrationController extends BaseController {
 
 	public void clickMe() {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.CONSOLIDATED_VALIDATION);
+				RegistrationConstants.ENABLE);
 		validation.setValidationMessage();
 		fullName.setText("Taleev Aalam");
 		int age = 45;
@@ -1706,7 +1706,7 @@ public class RegistrationController extends BaseController {
 		uinId.setText("93939939");
 		displayValidationMessage(validation.getValidationMessage().toString());
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_CONSOLIDATED,
-				RegistrationConstants.INDIVIDUAL_VALIDATION);
+				RegistrationConstants.DISABLE);
 	}
 
 	/**
@@ -1854,9 +1854,9 @@ public class RegistrationController extends BaseController {
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
-			if (capturePhotoUsingDevice.equals(RegistrationConstants.FLAG_YES)) {
+			if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)) {
 				getBiometricsPane().setVisible(true);
-			} else if (capturePhotoUsingDevice.equals(RegistrationConstants.FLAG_NO)) {
+			} else if (capturePhotoUsingDevice.equals(RegistrationConstants.DISABLE)) {
 				saveBiometricDetails();
 				getBiometricsPane().setVisible(false);
 			}

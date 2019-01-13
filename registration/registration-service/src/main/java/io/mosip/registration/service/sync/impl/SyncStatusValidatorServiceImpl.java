@@ -165,11 +165,11 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						errorResponseDTOList);
 			}
 
-			if (RegistrationConstants.OPT_TO_REG_GEO_FLAG_SINGLETIME.equals(geoFrequnecyFlag)) {
+			if (RegistrationConstants.ENABLE.equals(geoFrequnecyFlag)) {
 				if (!isCapturedForTheDay()) {
 					captureGeoLocation(errorResponseDTOList);
 				}
-			} else if (RegistrationConstants.OPT_TO_REG_GEO_FLAG_MULTIPLETIME.equals(geoFrequnecyFlag)) {
+			} else if (RegistrationConstants.DISABLE.equals(geoFrequnecyFlag)) {
 				captureGeoLocation(errorResponseDTOList);
 			}
 

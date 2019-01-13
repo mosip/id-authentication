@@ -174,7 +174,7 @@ public class MasterSyncServiceTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(RegistrationConstants.MASTER_SYNC_OFFLINE_FAILURE_MSG);
 
 		errorResponses.add(errorResponse);
@@ -199,7 +199,7 @@ public class MasterSyncServiceTest {
 		// Error response
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		errorResponses.add(errorResponse);
@@ -231,7 +231,7 @@ public class MasterSyncServiceTest {
 		// Error response
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		errorResponses.add(errorResponse);
@@ -263,7 +263,7 @@ public class MasterSyncServiceTest {
 		// Error response
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		errorResponses.add(errorResponse);
@@ -294,7 +294,7 @@ public class MasterSyncServiceTest {
 		// Error response
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		errorResponses.add(errorResponse);
@@ -325,7 +325,7 @@ public class MasterSyncServiceTest {
 		// Error response
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_CODE);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(RegistrationConstants.MASTER_SYNC_FAILURE_MSG_INFO);
 
 		errorResponses.add(errorResponse);

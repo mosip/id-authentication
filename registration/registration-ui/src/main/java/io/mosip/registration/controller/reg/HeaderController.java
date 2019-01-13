@@ -139,7 +139,7 @@ public class HeaderController extends BaseController {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class HeaderController extends BaseController {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
@@ -222,7 +222,7 @@ public class HeaderController extends BaseController {
 					.load(getClass().getResource(RegistrationConstants.SYNC_STATUS));
 
 			if (!validateScreenAuthorization(syncServerClientRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				VBox pane = (VBox) (menu.getParent().getParent().getParent());
 				for (int index = pane.getChildren().size() - 1; index > 0; index--) {
@@ -251,7 +251,7 @@ public class HeaderController extends BaseController {
 					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
 
 			if (!validateScreenAuthorization(onBoardRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				VBox pane = (VBox) menu.getParent().getParent().getParent();
 				Object parent = pane.getChildren().get(0);
@@ -264,7 +264,7 @@ public class HeaderController extends BaseController {
 					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
 							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");

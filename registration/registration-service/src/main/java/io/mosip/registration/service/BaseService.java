@@ -58,7 +58,7 @@ public class BaseService {
 		/** Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 
-		errorResponse.setCode(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setCode(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 
 		Map<String, Object> otherAttributes = new HashMap<>();
@@ -110,7 +110,7 @@ public class BaseService {
 		/** Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 
-		errorResponse.setCode(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setCode(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 
 		errorResponse.setOtherAttributes(attributes);
