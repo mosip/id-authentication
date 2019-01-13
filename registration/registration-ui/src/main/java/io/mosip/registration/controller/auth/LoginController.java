@@ -297,7 +297,6 @@ public class LoginController extends BaseController implements Initializable {
 
 							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
 									APPLICATION_NAME, APPLICATION_ID, "Retrieved corresponding Login mode");
-							loginMode="PWD";
 							if (loginMode == null) {
 								AnchorPane loginType = BaseController
 										.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));

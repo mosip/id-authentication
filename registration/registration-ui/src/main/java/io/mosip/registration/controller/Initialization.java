@@ -4,8 +4,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -15,9 +17,13 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
 import io.mosip.registration.dao.GlobalParamDAO;
+import io.mosip.registration.dao.SynchConfigDAO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.jobs.impl.SynchConfigDataJob;
 import io.mosip.registration.service.config.GlobalParamService;
+import io.mosip.registration.service.impl.SyncConfigService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.application.Application;
 import javafx.stage.Stage;
