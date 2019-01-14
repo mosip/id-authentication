@@ -1606,7 +1606,7 @@ public class RegistrationController extends BaseController {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
-		return true;
+		return gotoNext;
 	}
 
 	/**
