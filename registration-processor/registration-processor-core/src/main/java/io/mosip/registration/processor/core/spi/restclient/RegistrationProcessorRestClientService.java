@@ -41,4 +41,7 @@ public interface RegistrationProcessorRestClientService<T> {
 	public T postApi(ApiName apiName, String queryParam, String queryParamValue,T requestedData, Class<?> responseType)throws ApisResourceAccessException;
 
 
+	
+	public T postApi(ApiName apiName,List<String> pathsegments, String queryParam, String queryParamValue,T requestedData, Class<?> responseType)throws ApisResourceAccessException;
+
 }
