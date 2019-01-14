@@ -273,7 +273,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
 					.parseInt(getValueFromSessionMap(RegistrationConstants.FINGERPRINT_RETRIES_COUNT))) {
 
-				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
+				scanPopUpViewController.init(this, RegistrationConstants.FINGERPRINT);
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_MAX_RETRIES_ALERT);
 			}
@@ -424,7 +424,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 					
 					long irisCount = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getBiometricExceptionDTO().stream()
-							.filter(bio -> bio.getBiometricType().equals("iris")).count();
+							.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
 					
 					if (getRegistrationDTOFromSession().getSelectionListDTO().isBiometricIris() || irisCount > 0) {
 						registrationController.toggleFingerprintCaptureVisibility(false);
@@ -559,10 +559,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						}
 					}
 					String finger;
-					if(duplicateFinger.getFingerType().contains("left")) {
-						finger = duplicateFinger.getFingerType().replace("left", "Left hand ");
+					if(duplicateFinger.getFingerType().contains(RegistrationConstants.LEFT.toLowerCase())) {
+						finger = duplicateFinger.getFingerType().replace(RegistrationConstants.LEFT.toLowerCase(),RegistrationConstants.LEFT_HAND);
 					}else {
-						finger = duplicateFinger.getFingerType().replace("right", "Right hand ");
+						finger = duplicateFinger.getFingerType().replace(RegistrationConstants.RIGHT.toLowerCase(),RegistrationConstants.RIGHT_HAND);
 					}
 					duplicateCheckLbl.setText(finger + " "
 							+ RegistrationUIConstants.FINGERPRINT_DUPLICATION_ALERT);

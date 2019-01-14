@@ -88,26 +88,25 @@ public class UpdateUINController extends BaseController implements Initializable
 	 */
 	private void toggleFunction() {
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
 			// TODO : remove this stub afterwards
 			uinId.setText("426789089018");
 
-			toggleLabel1.setId("toggleLabel1");
-			toggleLabel2.setId("toggleLabel2");
+			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+			toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			switchedOn.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						toggleLabel1.setId("toggleLabel2");
-						toggleLabel2.setId("toggleLabel1");
+						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						isChild = newValue;
 
 					} else {
-						toggleLabel1.setId("toggleLabel1");
-						toggleLabel2.setId("toggleLabel2");
+						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						isChild = newValue;
 
 					}
@@ -120,12 +119,10 @@ public class UpdateUINController extends BaseController implements Initializable
 			toggleLabel2.setOnMouseClicked((event) -> {
 				switchedOn.set(!switchedOn.get());
 			});
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
+			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
 
@@ -135,7 +132,7 @@ public class UpdateUINController extends BaseController implements Initializable
 		try {
 
 			if (StringUtils.isEmpty(uinId.getText())) {
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_ENTER_UIN_ALERT);
 			} else {
 
 				if (uinValidatorImpl.validateId(uinId.getText())) {
@@ -205,14 +202,14 @@ public class UpdateUINController extends BaseController implements Initializable
 							}
 						}
 					} else {
-						generateAlert(RegistrationConstants.ERROR, "please select any one detail for updation");
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 					}
 				}
 			}
 		} catch (InvalidIDException invalidIdException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, invalidIdException.getMessage());
 
-			generateAlert(RegistrationConstants.ERROR, "Please enter a valid UIN.");
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_VALIDATION_ALERT);
 		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 

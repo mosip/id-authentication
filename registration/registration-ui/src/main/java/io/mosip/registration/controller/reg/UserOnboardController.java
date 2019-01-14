@@ -1142,11 +1142,6 @@ public class UserOnboardController extends BaseController implements Initializab
 						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
 					}
 					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-				} else {
-					byte[] isoExceptionImageBytes = IOUtils
-							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
-					biometricExceptionDTO.setBiometricISOImage(isoExceptionImageBytes);
-
 				}
 			}
 		} catch (IOException ioException) {

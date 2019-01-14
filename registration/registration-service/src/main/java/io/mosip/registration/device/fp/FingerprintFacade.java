@@ -206,7 +206,7 @@ public class FingerprintFacade {
 	 */
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
 			throws RegBaseCheckedException {
- 		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has started");
 
 		try {
@@ -214,21 +214,19 @@ public class FingerprintFacade {
 			List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getInstance()
 					.getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 							.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			
+
 			List<String> filePaths = Arrays.asList(path);
 
 			boolean isExceptionFinger = false;
-			BiometricExceptionDTO biometricExceptionDTO = new BiometricExceptionDTO();
 			
 			for (String folderPath : filePaths) {
 				isExceptionFinger = false;
 				String[] imageFileName = folderPath.split("/");
 
 				for (BiometricExceptionDTO exceptionDTO : biometricExceptionDTOs) {
-					
+
 					if (imageFileName[3].equals(exceptionDTO.getMissingBiometric())) {
 						isExceptionFinger = true;
-						biometricExceptionDTO = exceptionDTO;
 						break;
 					}
 				}
@@ -254,11 +252,6 @@ public class FingerprintFacade {
 						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
 					}
 					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-				}else {
-					byte[] isoExceptionImageBytes = IOUtils
-							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
-					biometricExceptionDTO.setBiometricISOImage(isoExceptionImageBytes);
-					
 				}
 			}
 		} catch (IOException ioException) {
@@ -291,8 +284,7 @@ public class FingerprintFacade {
 		userFingerprintDetails.forEach(fingerPrintTemplateEach -> {
 			if (fingerprintProvider.scoreCalculator(minutiae,
 					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {
-				fingerprintDetailsDTO
-						.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode());
+				fingerprintDetailsDTO.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode());
 			}
 		});
 		return userFingerprintDetails.stream()
