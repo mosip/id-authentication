@@ -8,6 +8,7 @@ node {
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
+ k8DevContext = 'dev-k8-cluster'
  updatedServices = []
  updatedDockerImages = []
  
