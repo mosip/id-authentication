@@ -1,8 +1,10 @@
 package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,6 +19,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
  * @author Sagar Mahapatra
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -120,6 +123,32 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	boolean validateDateWithHoliday(LocalDate date, String regId);
 
 	/**
+	 * This method triggers query to find registration centers based on id.
+	 * 
+	 * @param id
+	 *            - id of the registration center.
+	 * @return - the fetched registration center entity.
+	 */
+	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
+	RegistrationCenter findByIdAndIsDeletedFalseOrNull(String id);
+
+	/**
+	 * This method triggers query to set the isDeleted to true for a registration
+	 * center based on id given.
+	 * 
+	 * @param deletedDateTime
+	 *            the time at which the center is set to be deleted.
+	 * @param id
+	 *            the id of the registration center which is to be deleted.
+	 * @param updatedBy
+	 *            updated by
+	 * @return the number of id deleted.
+	 */
+	@Modifying
+	@Query("UPDATE RegistrationCenter r SET r.isDeleted =true , r.deletedDateTime = ?1, r.updatedBy = ?3 WHERE r.id =?2 and (r.isDeleted is null or r.isDeleted =false)")
+	int deleteRegistrationCenter(LocalDateTime deletedDateTime, String id, String updatedBy);
+
+	/**
 	 * This method trigger query to fetch registration centers based on hierarchy
 	 * level,text input and language code
 	 * 
@@ -127,7 +156,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            provided by user
 	 * @param hierarchyLevel
 	 *            provided by user
-	 * @param text
+	 * @param texts
 	 *            provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */

@@ -22,6 +22,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
  * @author Srinivasan
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -130,6 +131,25 @@ public interface RegistrationCenterService {
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
+
+	/**
+	 * This method deletes the registration center.
+	 * 
+	 * @param registrationCenterId
+	 *            - the id of the registration center to be deleted.
+	 * @return - the id response DTO.
+	 */
+	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
+
+	/**
+	 * This method updates the registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            - the updated registration center DTO.
+	 * 
+	 * @return - the id response DTO.
+	 */
+	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
 
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,text
