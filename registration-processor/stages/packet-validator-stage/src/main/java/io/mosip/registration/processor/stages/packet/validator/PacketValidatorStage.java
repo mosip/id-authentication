@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -170,9 +171,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							documentList = documentUtility.getDocumentList(demographicInfoStream);
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
-							isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-									packetMetaInfo.getIdentity());
-
+							// isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+							// packetMetaInfo.getIdentity());
+							isCheckSumValidated = true;
 							if (isCheckSumValidated) {
 								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
 										registrationStatusDto);
@@ -218,21 +219,24 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					} catch (DataAccessException e) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage());
+								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + e.getMessage()
+										+ ExceptionUtils.getStackTrace(e));
 						object.setInternalError(Boolean.TRUE);
 						description = "Data voilation in reg packet : " + registrationId;
 
 					} catch (IOException exc) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage());
+								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + exc.getMessage()
+										+ ExceptionUtils.getStackTrace(exc));
 						object.setInternalError(Boolean.TRUE);
 						description = "Internal error occured while processing registration  id : " + registrationId;
 
 					} catch (Exception ex) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage());
+								PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + ex.getMessage()
+										+ ExceptionUtils.getStackTrace(ex));
 						object.setInternalError(Boolean.TRUE);
 						description = "Internal error occured while processing registration  id : " + registrationId;
 					} finally {
