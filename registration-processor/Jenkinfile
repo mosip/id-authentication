@@ -7,6 +7,7 @@ node {
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
+ k8DevContext = 'dev-k8-cluster'
 
  stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
@@ -92,5 +93,15 @@ stage('-----------Docker image push and cleanup-----------') {
 
 }
 
+stage('Kubernetes Deploy : DEV-INT'){
+      //this stage will rollout the changes on Kubernetes Cluster
+      sh "kubectl config use-context $k8DevContext"
+      sh "kubectl set image deployment/registration-processor-dmz registration-processor-packet-reciever-service=docker-registry.mosip.io:5000/packet-receiver:$BUILD_NUMBER registration-processor-virus-scanner-stage=docker-registry.mosip.io:5000/virus-scanner-stage:$BUILD_NUMBER registration-processor-packet-uploader-stage=docker-registry.mosip.io:5000/packet-uploader-stage:$BUILD_NUMBER"
+
+      sh "kubectl set image deployment/registration-processor-stages registration-processor-packet-validator-service=docker-registry.mosip.io:5000/packet-validator-stage:$BUILD_NUMBER registration-processor-osi-validator=docker-registry.mosip.io:5000/osi-validator-stage:$BUILD_NUMBER registration-processor-demo-dedupe-stage=docker-registry.mosip.io:5000/demo-dedupe-stage:$BUILD_NUMBER registration-processor-manual-verification-stage=docker-registry.mosip.io:5000/manual-verification-stage:$BUILD_NUMBER"
+      
+      echo "Getting list of all services" 
+      sh "kubectl get services"
+    }
 
 }
