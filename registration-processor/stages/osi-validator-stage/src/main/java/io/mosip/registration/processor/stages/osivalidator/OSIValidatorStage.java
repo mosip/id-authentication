@@ -2,6 +2,7 @@ package io.mosip.registration.processor.stages.osivalidator;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -117,19 +118,22 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 		} catch (DataAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			description = "Data voilation in reg packet : " + registrationId;
 
 		} catch (IOException | ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + ex.getMessage());
+					registrationId, PlatformErrorMessages.OSI_VALIDATION_FAILED.name() + ex.getMessage()
+							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {

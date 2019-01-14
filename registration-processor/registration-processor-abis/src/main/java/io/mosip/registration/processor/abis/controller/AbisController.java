@@ -19,7 +19,7 @@ import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
 import io.mosip.registration.processor.abis.dto.IdentifyRequestDto;
 import io.mosip.registration.processor.abis.dto.IdentifyResponseDto;
-import io.mosip.registration.processor.abis.service.impl.AbisServiceImpl;
+import io.mosip.registration.processor.abis.service.impl.AbisService;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
 public class AbisController {
 
 	@Autowired
-	private AbisServiceImpl abisServiceImpl;
+	private AbisService abisService;
 
 	@PostMapping(path = "/insert", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "insert biometric data of an Individual", response = AbisInsertResponseDto.class)
@@ -43,13 +43,11 @@ public class AbisController {
 			@RequestBody(required = true) AbisInsertRequestDto abisInsertRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 
-		AbisInsertResponseDto abisInsertResponseDto = abisServiceImpl.insert(abisInsertRequestDto);
+		AbisInsertResponseDto abisInsertResponseDto = abisService.insert(abisInsertRequestDto);
 
 		if (abisInsertRequestDto.getId().equalsIgnoreCase("insert")) {
 			return ResponseEntity.status(HttpStatus.OK).body(abisInsertResponseDto);
-		} else {
-			abisInsertResponseDto.setFailureReason(2);
-			abisInsertResponseDto.setReturnValue(2);
+		} else {		
 			return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(abisInsertResponseDto);
 		}
 	}
@@ -62,7 +60,7 @@ public class AbisController {
 			@RequestBody(required = true) IdentifyRequestDto identifyRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 
-		IdentifyResponseDto identifyResponseDto = abisServiceImpl.performDedupe(identifyRequestDto);
+		IdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
 
 		if (identifyRequestDto.getId().equalsIgnoreCase("identify")) {
 			return ResponseEntity.status(HttpStatus.OK).body(identifyResponseDto);
