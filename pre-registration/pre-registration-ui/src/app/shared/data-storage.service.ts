@@ -16,11 +16,9 @@ export class DataStorageService {
   SEND_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/getDocument';
-  MASTER_DATA_URL = 'https://integ.mosip.io/' + 'masterdata/v1.0/';
+  MASTER_DATA_URL = this.BASE_URL + 'masterdata/v1.0/';
   AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
-  TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
-  TEST_URL = 'http://A2ML27085:9092/';
   DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
   LANGUAGE_CODE = 'ENG';
@@ -126,23 +124,6 @@ export class DataStorageService {
   }
 
   makeBooking(request: BookingModelRequest) {
-    // const x = {
-    //   id: 'mosip.pre-registration.booking.book',
-    //   reqTime: '2018-12-10T08:24:10.749',
-    //   request: [
-    //     {
-    //       newBookingDetails: {
-    //         reg_date: "2018-12-13",
-    //         registration_center_id: "1",
-    //         time-slot-from: "09:00:00",
-    //         time-slot-to: "09:13:00"
-    //       },
-    //       "oldBookingDetails": null,
-    //       "pre_registration_id": "90597269106527"
-    //     }
-    //   ],
-    //   "ver": "1.0"
-    // }
     console.log('request inside service', request);
     return this.httpClient.post(this.BOOKING_URL, request);
   }
