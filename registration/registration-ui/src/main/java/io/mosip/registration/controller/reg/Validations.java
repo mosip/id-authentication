@@ -162,9 +162,9 @@ public class Validations extends BaseController {
 			String isMandetory = validationProperty[2];
 			String isFixed = validationProperty[3];
 			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
-			if (isMandetory.equals("false") && node.getText().isEmpty())
-				return true;
 			if (node.isDisabled())
+				return true;
+			if (isMandetory.equals("false") && node.getText().isEmpty())
 				return true;
 			if (!id.contains(RegistrationConstants.ON_TYPE) && isMandetory.equals("true") && node.getText().isEmpty()) {
 				if(!showAlert)

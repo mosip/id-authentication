@@ -562,14 +562,14 @@ public class RegistrationController extends BaseController {
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			boolean isChild = getRegistrationDtoContent().getSelectionListDTO().isChild()
-					&& !getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
+					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
 			childSpecificFields.setDisable(!isChild);
 			childSpecificFieldsLocal.setDisable(!isChild);
 			childSpecificFields.setVisible(isChild);
 			childSpecificFieldsLocal.setVisible(isChild);
 
-			if (SessionContext.getInstance().getMapObject().get("isChild") != null) {
-				isChild = (boolean) SessionContext.getInstance().getMapObject().get("isChild");
+			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child) != null) {
+				isChild = (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child);
 				childSpecificFields.setDisable(!isChild);
 				childSpecificFields.setVisible(isChild);
 				childSpecificFieldsLocal.setDisable(!isChild);
@@ -667,9 +667,9 @@ public class RegistrationController extends BaseController {
 				if (isEditPage())
 					autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
 			}
-			if (SessionContext.getInstance().getMapObject().get("isChild") != null) {
+			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child) != null) {
 
-				boolean isChild = (boolean) SessionContext.getInstance().getMapObject().get("isChild");
+				boolean isChild = (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child);
 				childSpecificFields.setDisable(!isChild);
 				childSpecificFields.setVisible(isChild);
 				childSpecificFieldsLocal.setDisable(!isChild);
@@ -887,9 +887,13 @@ public class RegistrationController extends BaseController {
 
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
-			SessionContext.getInstance().getMapObject().put("isChild", isChild);
 			if (validateDemographicPane(demoGraphicPane2)) {
-
+				if(isChild) {
+					if(ageField.isDisable()) {
+						isChild=false;
+					}
+				}
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, isChild);
 				demographicInfoDTO = buildDemographicInfo();
 
 				dobSelectionFromCalendar = ageDatePicker.getValue() != null;

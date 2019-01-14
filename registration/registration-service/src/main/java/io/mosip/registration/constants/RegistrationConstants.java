@@ -118,6 +118,7 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_PANE1_DATA = "demoGraphicPane1Content";
 	public static final String REGISTRATION_PANE2_DATA = "demoGraphicPane2Content";
 	public static final String REGISTRATION_ISEDIT = "isEditPage";
+	public static final String IS_Child = "isChild";
 	public static final String IS_CONSOLIDATED = "isConsolidated";
 	public static final String ENABLE = "Y";
 	public static final String DISABLE = "N";
