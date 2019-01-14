@@ -1,6 +1,5 @@
 package io.mosip.preregistration.datasync.exception.util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -15,7 +14,6 @@ import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.preregistration.datasync.exception.system.SystemFileIOException;
-import io.mosip.preregistration.datasync.exception.system.SystemFileNotFoundException;
 
 /**
  * This class is used to catch the exceptions that occur while doing Datasync
@@ -51,9 +49,6 @@ public class DataSyncExceptionCatcher {
 		} else if (ex instanceof ZipFileCreationException) {
 			throw new ZipFileCreationException(((ZipFileCreationException) ex).getErrorCode(),
 					((ZipFileCreationException) ex).getErrorText(), ex.getCause());
-		} else if (ex instanceof FileNotFoundException) {
-			throw new SystemFileNotFoundException(ErrorCodes.PRG_DATA_SYNC_015.toString(),
-					ErrorMessages.FILE_NOT_FOUND.toString(), ex.getCause());
 		} else if (ex instanceof IOException) {
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
 					ErrorMessages.FILE_IO_EXCEPTION.toString(), ex.getCause());

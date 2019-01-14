@@ -40,7 +40,12 @@ import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-
+/**
+ * Booking Controller Test
+ * 
+ * @author Sanober Noor
+ *
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(BookingController.class)
 public class BookingControllerTest {

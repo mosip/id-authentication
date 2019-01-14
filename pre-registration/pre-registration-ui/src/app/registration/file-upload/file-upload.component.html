@@ -112,6 +112,7 @@
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
         <mat-form-field class="file-upload__input">
           <mat-select
+            #docCatSelect
             placeholder="{{ document.document_name }}"
             (selectionChange)="selectChange($event, i)"
             (openedChange)="openedChange($event, i)"
@@ -122,13 +123,13 @@
           </mat-select>
         </mat-form-field>
         <span class="file-upload__button">
-          <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;" />
+          <input #fileUpload type="file" id="file" (change)="handleFileInput($event)" style="display: none;" />
           <input
             class="browseInput"
             value="{{ 'documents.action_browse' | translate }}"
             type="button"
             onclick="document.getElementById('file').click();"
-            [disabled]="i != documentIndex ? true : false || !users[0].files[0][documentIndex] ? false : true"
+            [disabled]="i != documentIndex"
           />
         </span>
         <span *ngIf="document.document_name === 'POA' && multipleApplicants">
