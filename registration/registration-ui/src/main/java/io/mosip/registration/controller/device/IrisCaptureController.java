@@ -139,7 +139,7 @@ public class IrisCaptureController extends BaseController {
 			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
 
 			boolean isExceptionIris = getIrisExceptions().stream()
-					.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getBiometricType(),
+					.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
 							StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
 									? RegistrationConstants.LEFT
 									: RegistrationConstants.RIGHT));
@@ -149,10 +149,12 @@ public class IrisCaptureController extends BaseController {
 			// 2. Quality score of the scanned image is less than threshold
 			// 3. If iris is not forced captured
 			// 4. If iris is an exception iris
-			if (irisDetailsDTO == null || isExceptionIris
-					|| (Double.compare(irisDetailsDTO.getQualityScore(),
-							Double.parseDouble(getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD))) < 0)
-					|| irisDetailsDTO.isForceCaptured()) {
+			if (!isExceptionIris
+					&& (irisDetailsDTO == null
+							|| (Double.compare(irisDetailsDTO.getQualityScore(),
+									Double.parseDouble(
+											getValueFromApplicationMap(RegistrationConstants.IRIS_THRESHOLD))) < 0)
+							|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
 			}
 

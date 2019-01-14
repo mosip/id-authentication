@@ -16,6 +16,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -32,6 +33,7 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.ProcessedLevelType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.PurposeType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
+import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
@@ -121,6 +123,14 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				if (introducerCBEFFInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
 							introducerCBEFFInBytes);
+					
+					registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+							.setParentOrGuardianBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
+									.with(cbeffProperty -> cbeffProperty.setFormat("cbeff"))
+									.with(cbeffProperty -> cbeffProperty
+											.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME
+													.replace(".xml", RegistrationConstants.EMPTY)))
+									.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 
 					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME));
@@ -319,7 +329,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			if (personType.equals(RegistrationConstants.INDIVIDUAL) && fingerprint.getSegmentedFingerprints() != null
 					&& !fingerprint.getSegmentedFingerprints().isEmpty()) {
 				for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-					BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage());
+					BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
 					birs.add(bir);
 					birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
 							bir.getBdbInfo().getIndex());

@@ -390,9 +390,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		if (introducerRIDorUIN != null) {
 			if (introducerRIDorUIN.toString().length() == Integer
 					.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
-				introducerRID = introducerRIDorUIN.toString();
-			} else {
 				introducerUIN = introducerRIDorUIN.toString();
+			} else {
+				introducerRID = introducerRIDorUIN.toString();
 			}
 		}
 
@@ -433,9 +433,6 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		} else {
 			osiData.add(buildFieldValue("officerBiometricFileName", null));
 		}
-
-		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
-				RegistrationConstants.OFFICER.toLowerCase(), RegistrationConstants.BIOMETRIC_IMAGE));
 
 		// Add Supervisor ID
 		osiData.add(buildFieldValue("supervisorId", registrationDTO.getOsiDataDTO().getSupervisorID()));
