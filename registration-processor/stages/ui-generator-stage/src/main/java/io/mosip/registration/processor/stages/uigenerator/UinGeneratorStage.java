@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
 import io.mosip.registration.processor.stages.uingenerator.util.UinStatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -144,9 +146,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		this.registrationId = object.getRid();
 		UinResponseDto uinResponseDto= null;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
-
-
-		try {
+			try {
 
 			InputStream idJsonStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
@@ -218,17 +218,23 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * @return the id response DTO
 	 */
 	private IdResponseDTO sendIdRepoWithUin(String regId, String uin) {
+		
 		List<Documents> documentInfo = getAllDocumentsByRegId(regId);
+		RequestDto requestDto = new RequestDto();
+		requestDto.setIdentity(identityJson);
+		requestDto.setDocuments(documentInfo);
+		
+		List<String> pathsegments=new ArrayList<>();
+		pathsegments.add(uin);
+		
 		idRequestDTO.setId(idRepoCreate);
-		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
 		idRequestDTO.setRegistrationId(regId);
-		idRequestDTO.setUin(uin);
-		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
-		idRequestDTO.setRequest(identityJson);
-		idRequestDTO.setDocuments(documentInfo);
+		idRequestDTO.setRequest(requestDto);
+		idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
+		idRequestDTO.setVersion("1.0");
 
 		try {
-			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
+			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV,pathsegments, "", "",
 					idRequestDTO, String.class);
 			Gson gsonObj = new Gson();
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
@@ -248,7 +254,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 */
 	private List<Documents> getAllDocumentsByRegId(String regId) {
 		List<Documents> applicantDocuments = new ArrayList<>();
-		Documents documentsInfoDto;
+		Documents documentsInfoDto = null;
 		List<ApplicantDocument> applicantDocument = packetInfoManager
 				.getDocumentsByRegId(regId);
 		for (ApplicantDocument entity : applicantDocument) {
@@ -269,15 +275,17 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * @param uin the uin
 	 * @return the id response DTO
 	 */
-	private IdResponseDTO updateIdRepowithUin(String RegId, String uin) {
-		List<Documents> documentInfo = getAllDocumentsByRegId(RegId);
+	private IdResponseDTO updateIdRepowithUin(String regId, String uin) {
+		List<Documents> documentInfo = getAllDocumentsByRegId(regId);
+		RequestDto requestDto = new RequestDto();
+		requestDto.setIdentity(identityJson);
+		requestDto.setDocuments(documentInfo);
+		
 		idRequestDTO.setId(idRepoUpdate);
-		idRequestDTO.setStatus(IdRepoStatusConstant.REGISTERED.toString());
-		idRequestDTO.setRegistrationId(RegId);
-		idRequestDTO.setUin(uin);
+		idRequestDTO.setRegistrationId(regId);
+		idRequestDTO.setRequest(requestDto);
 		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
-		idRequestDTO.setRequest(identityJson);
-		idRequestDTO.setDocuments(documentInfo);
+		idRequestDTO.setVersion("1.0");
 		try {
 			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
 					idRequestDTO, String.class);
@@ -295,9 +303,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-
-		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		MessageDTO mm=new MessageDTO();
+		mm.setRid("132345");
+		this.process(mm);
+/*		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);*/
 
 	}
 

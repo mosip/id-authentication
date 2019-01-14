@@ -80,7 +80,7 @@ public class RestApiClient {
 		T result = null;
 		RestTemplate restTemplate;
 		try {
-			System.out.println("Your URl is to change ::   " + uri);
+			System.out.println("Rest Client API url ::   " + uri);
 			restTemplate = getRestTemplate();
 
 			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
