@@ -84,6 +84,7 @@
 
 		<!-- Vert.x -->
 		<vertx.version>3.5.3</vertx.version>
+		<camel.vertx.version>2.23.0</camel.vertx.version>
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 		<!-- local -->
@@ -108,7 +109,6 @@
 
 	<modules>
 		<module>registration-processor-core</module>
-		<module>packet-receiver</module>
 		<module>registration-status-service</module>
 		<module>filesystem-adapter-ceph</module>
 		<module>registration-processor-rest-client</module>
@@ -150,16 +150,6 @@
 		</profile>
 	</profiles>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<pluginManagement>

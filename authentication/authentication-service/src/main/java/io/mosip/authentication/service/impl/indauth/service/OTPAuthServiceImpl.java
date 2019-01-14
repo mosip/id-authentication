@@ -71,7 +71,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
 		String txnId = authreqdto.getTxnID();
-		String tspCode = authreqdto.getMuaCode();
+		String tspCode = authreqdto.getTspID();
 		Optional<String> otp = getOtpValue(authreqdto);
 		if (otp.isPresent()) {
 			boolean isValidRequest = validateTxnId(txnId, uin);

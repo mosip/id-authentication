@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.service;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDeviceDto;
+import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -33,7 +33,7 @@ public interface RegistrationCenterMachineDeviceService {
 	 *             device id is not valid or not present in database.
 	 * 
 	 */
-	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
+	public ResponseRegistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto);
 
 	/**

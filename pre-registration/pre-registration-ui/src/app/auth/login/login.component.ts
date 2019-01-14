@@ -1,38 +1,88 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { TranslateService } from '@ngx-translate/core';
+import { FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  languages: string[] = ['English', 'French', 'Arabic'];
 
-  languages: string[] = [
-    'English',
-    'French',
-    'Arabic'
-  ];
-
-  inputPlaceholder = 'Email ID or Phone Number';
-  btnText = 'Send OTP';
+  inputPlaceholderContact = 'Email ID or Phone Number';
+  inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
   timer: any;
-  self: any = this;
-  inputText = '';
+  inputContactDetails = '';
+  inputOTP: string;
+  selectedLanguage = '';
+  langCode = 'en';
+  dir = 'ltr';
+  showSendOTP = true;
+  showResend = false;
+  showVerify = false;
+  showContactDetails = true;
+  showOTP = false;
 
-  constructor(private router: Router) { }
+  email = new FormControl('', [Validators.required, Validators.email]);
+
+  getErrorMessage() {
+    return this.email.hasError('required')
+      ? 'You must enter a value'
+      : this.email.hasError('email')
+      ? 'Not a valid email'
+      : '';
+  }
+
+  constructor(private router: Router, private translate: TranslateService) {
+    translate.addLangs(['en', 'fr', 'ar']);
+    translate.setDefaultLang('en');
+
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
+    localStorage.setItem('langCode', this.langCode);
+  }
 
   ngOnInit() {
+    if (localStorage.getItem('langCode')) {
+      this.langCode = localStorage.getItem('langCode');
+      this.translate.use(this.langCode);
+    }
+  }
+
+  changeLanguage(): void {
+    if (this.selectedLanguage === 'English') {
+      this.langCode = 'en';
+      this.dir = 'ltr';
+    } else if (this.selectedLanguage === 'French') {
+      this.langCode = 'fr';
+      this.dir = 'ltr';
+    } else if (this.selectedLanguage === 'Arabic') {
+      this.langCode = 'ar';
+      this.dir = 'rtl';
+    }
+    this.translate.use(this.langCode);
+    localStorage.setItem('langCode', this.langCode);
+    localStorage.setItem('dir', this.dir);
+  }
+
+  showVerifyBtn() {
+    if (this.inputOTP.length > 3) {
+      this.showVerify = true;
+      this.showResend = false;
+    } else {
+      this.showResend = true;
+      this.showVerify = false;
+    }
   }
 
   submit(): void {
-
-    if (this.btnText === 'Send OTP' || this.btnText === 'Resend') {
-
-      this.inputPlaceholder = 'Enter OTP';
-      this.btnText = 'Resend';
-      this.inputText = '';
+    if (this.showSendOTP || this.showResend) {
+      this.showResend = true;
+      this.showOTP = true;
+      this.showSendOTP = false;
+      this.showContactDetails = false;
 
       const timerFn = () => {
         let secValue = Number(document.getElementById('secondsSpan').innerText);
@@ -41,12 +91,15 @@ export class LoginComponent implements OnInit {
         if (secValue === 0) {
           secValue = 60;
           if (minValue === 0) {
-
             // redirecting to initial phase on completion of timer
-            this.btnText = 'Send OTP';
-            document.getElementById('timer').style.visibility = 'hidden';
-            this.inputPlaceholder = 'Email ID or Phone Number';
+            this.showContactDetails = true;
+            this.showSendOTP = true;
+            this.showResend = false;
+            this.showOTP = false;
+            this.showVerify = false;
+            document.getElementById('minutesSpan').innerText = '02';
 
+            document.getElementById('timer').style.visibility = 'hidden';
             clearInterval(this.timer);
             return;
           }
@@ -55,8 +108,8 @@ export class LoginComponent implements OnInit {
         }
 
         if (secValue === 10 || secValue < 10) {
-          document.getElementById('secondsSpan').innerText = '0' + (--secValue);
-        }  else {
+          document.getElementById('secondsSpan').innerText = '0' + --secValue;
+        } else {
           document.getElementById('secondsSpan').innerText = --secValue + '';
         }
       };
@@ -72,31 +125,10 @@ export class LoginComponent implements OnInit {
       }
 
       // dynamic update of button text for Resend and Verify
-      document.getElementById('inputField').oninput = () => {
-        if (this.btnText !== 'Send OTP') {
-          if (this.inputText.length > 0) {
-            this.btnText = 'Verify';
-          } else {
-            this.btnText = 'Resend';
-          }
-        }
-
-      };
-
-    } else if (this.btnText === 'Verify') {
-      // does nothing as of now
-      this.router.navigate(['dashboard', this.inputText]);
+    } else if (this.showVerify) {
+      clearInterval(this.timer);
+      console.log(this.inputContactDetails);
+      this.router.navigate(['dashboard', this.inputContactDetails]);
     }
-
-
   }
-
-
-
-
-
-
-
-
-
 }

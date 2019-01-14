@@ -8,6 +8,9 @@ node {
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
+ k8DevContext = 'dev-k8-cluster'
+ updatedServices = []
+ updatedDockerImages = []
  
  stage('------- Checkout --------') {
   // Checkout only Authentication Module
@@ -90,6 +93,14 @@ stage('-----------Docker image push and cleanup-----------') {
 
 
 }
+
+stage('Kubernetes Deploy : DEV-INT'){
+      //this stage will rollout the changes on Kubernetes Cluster
+      sh "kubectl config use-context $k8DevContext"
+      sh " kubectl set image deployment/authentication-service authentication-service=docker-registry.mosip.io:5000/authentication-service:$BUILD_NUMBER"
+      echo "Getting list of all services" 
+      sh "kubectl get services"
+    }
  
 
 }

@@ -1,7 +1,7 @@
 {
 	"ida-mapping" : 
 		{
-			"name" : 
+			"fullName" : 
 				[
 					"firstName",
 					"middleName",
@@ -53,9 +53,9 @@
 			"location3" : [
 					"province"
 				],
-			"pinCode" : 
+			"postalCode" : 
 				[
-					"pinCode"
+					"postalCode"
 				],
 			"fullAddress" : 
 				[
@@ -65,7 +65,7 @@
 					"city",
 					"region",
 					"province",
-					"pinCode"
+					"postalCode"
 				],
 			"otp" : 
 				[

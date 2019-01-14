@@ -1,7 +1,7 @@
 /* 
  * Copyright
  * 
- */
+ 
 package io.mosip.preregistration.transliteration.test.service;
 
 
@@ -152,3 +152,4 @@ public class TransliterationServiceTest {
 
 	
 }
+*/

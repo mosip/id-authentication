@@ -3,9 +3,13 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -47,7 +51,12 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
+ * @author Uday Kumar
  * @since 1.0.0
+ *
+ */
+/**
+ * @author M1046571
  *
  */
 @Service
@@ -327,11 +336,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResgistrationCenterStatusResponseDto validateTimestampWithRegistrationCenter(String id, String timestamp) {
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timestamp) {
 		LocalDateTime localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
 		LocalDate localDate = localDateTime.toLocalDate();
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
+			/**
+			 * a query is written in RegistrationCenterRepository which would check if the
+			 * date is not a holiday for that center
+			 *
+			 */
 			boolean isTrue = registrationCenterRepository.validateDateWithHoliday(localDate, id);
 			if (isTrue) {
 				resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);
@@ -350,6 +364,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					LocalTime locatime = localDateTime.toLocalTime();
 					boolean isAfterStartTime = locatime.isAfter(startTime);
 					boolean isBeforeEndTime = locatime.isBefore(endTime.plusHours(1));
+					/*
+					 * below is the validation to check if the time that is sent is between start
+					 * and end time
+					 */
 					if (isAfterStartTime && isBeforeEndTime) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
@@ -370,5 +388,92 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		return resgistrationCenterStatusResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
+	 */
+	@Override
+	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto) {
+		RegistrationCenterDto registrationCenter = registrationCenterDto.getRequest();
+		IdResponseDto idResponseDto = new IdResponseDto();
+		MapperUtils.mapFieldValues(registrationCenter, idResponseDto);
+		try {
+			RegistrationCenter registrationCenterEntity = registrationCenterRepository
+					.findByIdAndIsDeletedFalseOrNull(registrationCenterDto.getRequest().getId());
+			if (registrationCenterEntity != null) {
+				MetaDataUtils.setUpdateMetaData(registrationCenter, registrationCenterEntity, false);
+				registrationCenterRepository.update(registrationCenterEntity);
+			} else {
+				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		return idResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * deleteRegistrationCenter(java.lang.String)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto deleteRegistrationCenter(String registrationCenterId) {
+		try {
+			int deletedRegistrationCenter = registrationCenterRepository.deleteRegistrationCenter(
+					LocalDateTime.now(ZoneId.of("UTC")), registrationCenterId, MetaDataUtils.getContextUser());
+			if (deletedRegistrationCenter < 1) {
+				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_DELETE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_DELETE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		idResponseDto.setId(registrationCenterId);
+		return idResponseDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(java.lang.String, java.lang.Integer, java.util.List)
+	 */
+	@Override
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			String languageCode, Integer hierarchyLevel, List<String> texts) {
+		List<RegistrationCenterDto> registrationCentersDtoList = null;
+		List<String> names = texts.stream().map(String::toUpperCase).collect(Collectors.toList());
+		List<RegistrationCenter> registrationCentersList = null;
+		try {
+			registrationCentersList = registrationCenterRepository
+					.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(languageCode, hierarchyLevel, names);
+
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		if (registrationCentersList.isEmpty()) {
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		registrationCentersDtoList = MapperUtils.mapAll(registrationCentersList, RegistrationCenterDto.class);
+
+		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
+		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
+		return registrationCenterResponseDto;
 	}
 }

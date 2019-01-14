@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
@@ -19,6 +21,8 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
+ * @author Srinivasan
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -114,15 +118,56 @@ public interface RegistrationCenterService {
 	 * @return the id response dto.
 	 */
 	public IdResponseDto createRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
-	
+
 	/**
-	 * This method would validate timestamp and id whether
-	 * the given date in timestamp is a holiday. Also,checks time in the timestamp whether it is between
-	 * working hours.
+	 * This method would validate timestamp and id whether the given date in
+	 * timestamp is a holiday. Also,checks time in the timestamp whether it is
+	 * between working hours.
+	 * 
 	 * @param id
-	 * @param timestamp
+	 *            - registration id
+	 * @param timeStamp
+	 *            - Time stamp based on the format YYYY-MM-ddTHH:mm:ss.SSSZ
 	 * @return ResgistrationCenterStatusResponseDto
 	 */
-	public ResgistrationCenterStatusResponseDto validateTimestampWithRegistrationCenter(String id,String timestamp);
+	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timeStamp);
+
+	/**
+	 * This method deletes the registration center.
+	 * 
+	 * @param registrationCenterId
+	 *            - the id of the registration center to be deleted.
+	 * @return - the id response DTO.
+	 */
+	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
+
+	/**
+	 * This method updates the registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            - the updated registration center DTO.
+	 * 
+	 * @return - the id response DTO.
+	 */
+	public IdResponseDto updateRegistrationCenter(RequestDto<RegistrationCenterDto> registrationCenterDto);
+
+	/**
+	 * Function to fetch list of registration centers based on hierarchy level,text
+	 * input and language code
+	 * 
+	 * @param hierarchyLevel
+	 *            input from user
+	 * @param texts
+	 *            input from user
+	 * @param languageCode
+	 *            input from user
+	 * @return list of registration centers
+	 * @throws MasterDataServiceException
+	 *             when data not fetched from DB
+	 * @throws DataNotFoundException
+	 *             when data not found
+	 */
+	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+			String languageCode, Integer hierarchyLevel, List<String> texts);
 
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 /**
  * Class for Audit Response having status of audit
  * 
- * @author Dharmesh Khandelwal
+ * @author Manoj SP
  * @since 1.0.0
  *
  */
