@@ -97,7 +97,7 @@ stage('-----------Docker image push and cleanup-----------') {
 stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
-      sh "deployment/authentication-service authentication-service=docker-registry.mosip.io:5000/authentication-service:$BUILD_NUMBER"
+      sh " kubectl set image deployment/authentication-service authentication-service=docker-registry.mosip.io:5000/authentication-service:$BUILD_NUMBER"
       echo "Getting list of all services" 
       sh "kubectl get services"
     }
