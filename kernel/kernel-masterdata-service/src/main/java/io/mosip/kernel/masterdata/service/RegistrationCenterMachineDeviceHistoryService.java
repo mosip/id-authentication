@@ -15,7 +15,7 @@ public interface RegistrationCenterMachineDeviceHistoryService {
     /**
      *  This method creates an entry in {@link RegistrationCenterMachineDeviceHistory} table whenever 
      *  create/update done in RegistrationCenter-Machine-Device
-     * @param registrationCenterMachineDeviceHistoryDto - object that contain entity object
+     * @param registrationCenterMachineDeviceHistory  -object that contain entity object
      * @return  RegCenterMachineDeviceHistoryResponseDto
      */
 	public RegCenterMachineDeviceHistoryResponseDto createRegCenterMachineDeviceHistoryMapping(

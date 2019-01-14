@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.virus.scanner.job.decryptor;
+/*package io.mosip.registration.processor.virus.scanner.job.decryptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -72,3 +72,4 @@ public class DecryptorTest {
 	}
 
 }
+*/
