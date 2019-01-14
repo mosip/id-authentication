@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
 import * as appConstants from './../app.constants';
+import Utils from '../app.util';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class DataStorageService {
   AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
-  TEST_URL = 'http://A2ML27085:9092/';
+  TEST_URL = 'http://A2ML21989:9092/';
   DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
   LANGUAGE_CODE = 'ENG';
@@ -35,7 +36,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.get_applicant, {
+    return this.httpClient.get(this.TEST_URL + appConstants.APPEND_URL.get_applicant, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
@@ -67,12 +68,12 @@ export class DataStorageService {
     const obj = {
       id: appConstants.IDS.newUser,
       ver: appConstants.VERSION,
-      reqTime: '2019-01-02T11:01:31.211Z',
+      reqTime: Utils.getCurrentDate(),
       request: identity
     };
     console.log('data being sent', obj);
 
-    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.applicants, obj);
+    return this.httpClient.post(this.TEST_URL + appConstants.APPEND_URL.applicants, obj);
   }
 
   sendFile(formdata: FormData) {

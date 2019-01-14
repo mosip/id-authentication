@@ -32,7 +32,7 @@ export const APPEND_URL = {
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
   getUser: PRE_REGISTRATION_ID,
-  deleteUser: 'pre_registration_id',
+  deleteUser: PRE_REGISTRATION_ID,
   locationHierarchyName: 'hierarchyName'
 };
 
@@ -85,7 +85,7 @@ export const virtual_keyboard_languages = {
   en: 'English',
   fr: 'Fran\u00e7ais',
   ar: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629'
-}
+};
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request DTO';

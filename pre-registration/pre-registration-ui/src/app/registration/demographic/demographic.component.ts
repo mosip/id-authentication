@@ -165,10 +165,10 @@ export class DemographicComponent implements OnInit {
       this.preRegId = this.user.preRegId;
       fullName = this.user.request.demographicDetails.identity.fullName[0].value;
       gender = this.user.request.demographicDetails.identity.gender[0].value;
-      date = this.user.request.demographicDetails.identity.dateOfBirth.split('/')[0];
-      month = this.user.request.demographicDetails.identity.dateOfBirth.split('/')[1];
-      year = this.user.request.demographicDetails.identity.dateOfBirth.split('/')[2];
-      dob = this.user.request.demographicDetails.identity.dateOfBirth;
+      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
+      month = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[1];
+      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
+      dob = this.user.request.demographicDetails.identity.dateOfBirth[0].value;
       age = this.calculateAge(new Date(new Date(dob))).toString();
       addressLine1 = this.user.request.demographicDetails.identity.addressLine1[0].value;
       addressLine2 = this.user.request.demographicDetails.identity.addressLine2[0].value;
@@ -178,12 +178,18 @@ export class DemographicComponent implements OnInit {
       city = this.user.request.demographicDetails.identity.city[0].value;
       localAdministrativeAuthority = this.user.request.demographicDetails.identity.localAdministrativeAuthority[0]
         .value;
-      email = this.user.request.demographicDetails.identity.emailId;
-      postalCode = this.user.request.demographicDetails.identity.postalcode;
-      mobileNumber = this.user.request.demographicDetails.identity.mobileNumber;
-      pin = this.user.request.demographicDetails.identity.CNEOrPINNumber;
+      email = this.user.request.demographicDetails.identity.emailId[0].value;
+      postalCode = this.user.request.demographicDetails.identity.postalcode[0].value;
+      mobileNumber = this.user.request.demographicDetails.identity.mobileNumber[0].value;
+      pin = this.user.request.demographicDetails.identity.CNEOrPINNumber[0].value;
 
       t_fullName = this.user.request.demographicDetails.identity.fullName[1].value;
+      // t_gender = this.user.request.demographicDetails.identity.gender[1].value;
+      // t_date = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[0];
+      // t_month = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[1];
+      // t_year = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[2];
+      // t_dob = this.user.request.demographicDetails.identity.dateOfBirth[1].value;
+      // t_age = this.calculateAge(new Date(new Date(dob))).toString();
       t_addressLine1 = this.user.request.demographicDetails.identity.addressLine1[1].value;
       t_addressLine2 = this.user.request.demographicDetails.identity.addressLine2[1].value;
       t_addressLine3 = this.user.request.demographicDetails.identity.addressLine3[1].value;
@@ -508,12 +514,14 @@ export class DemographicComponent implements OnInit {
 
   private createIdentityJSON() {
     const identity = new IdentityModel(
-      '1.0',
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.fullName.value),
         new AttributeModel(this.secondaryLang, this.transUserForm.controls.t_fullName.value)
       ],
-      this.userForm.controls.dob.value,
+      [
+        new AttributeModel(this.primaryLang, this.userForm.controls.dob.value),
+        new AttributeModel(this.secondaryLang, this.userForm.controls.dob.value)
+      ],
       [
         new AttributeModel(this.primaryLang, this.userForm.controls.gender.value),
         new AttributeModel(this.secondaryLang, this.userForm.controls.gender.value)
@@ -546,10 +554,22 @@ export class DemographicComponent implements OnInit {
         new AttributeModel(this.primaryLang, this.userForm.controls.localAdministrativeAuthority.value),
         new AttributeModel(this.secondaryLang, this.userForm.controls.localAdministrativeAuthority.value)
       ],
-      this.userForm.controls.postalCode.value,
-      this.userForm.controls.mobileNumber.value,
-      this.userForm.controls.email.value,
-      this.userForm.controls.pin.value
+      [
+        new AttributeModel(this.primaryLang, this.userForm.controls.postalCode.value),
+        new AttributeModel(this.secondaryLang, this.userForm.controls.postalCode.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.userForm.controls.mobileNumber.value),
+        new AttributeModel(this.secondaryLang, this.userForm.controls.mobileNumber.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.userForm.controls.email.value),
+        new AttributeModel(this.secondaryLang, this.userForm.controls.email.value)
+      ],
+      [
+        new AttributeModel(this.primaryLang, this.userForm.controls.pin.value),
+        new AttributeModel(this.secondaryLang, this.userForm.controls.pin.value)
+      ]
     );
 
     return identity;
@@ -563,7 +583,7 @@ export class DemographicComponent implements OnInit {
     let createdDateTime = Utils.getCurrentDate();
     let updatedBy = '';
     let updatedDateTime = '';
-    // let statusCode = appConstants.APPLICATION_STATUS_CODES.pending;
+    let statusCode = appConstants.APPLICATION_STATUS_CODES.pending;
     let langCode = this.primaryLang;
     if (this.user) {
       preRegistrationId = this.user.preRegId;
@@ -571,7 +591,7 @@ export class DemographicComponent implements OnInit {
       createdDateTime = this.user.request.createdDateTime;
       updatedBy = this.loginId;
       updatedDateTime = Utils.getCurrentDate();
-      // statusCode = this.user.request.statusCode;
+      statusCode = this.user.request.statusCode;
       langCode = this.user.request.langCode;
     }
     const req: RequestModel = {
@@ -580,7 +600,7 @@ export class DemographicComponent implements OnInit {
       createdDateTime: createdDateTime,
       updatedBy: updatedBy,
       updatedDateTime: updatedDateTime,
-      // statusCode: statusCode,
+      statusCode: statusCode,
       langCode: langCode,
       demographicDetails: new DemoIdentityModel(identity)
     };
