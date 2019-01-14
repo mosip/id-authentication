@@ -203,7 +203,7 @@ public class BookingServiceTest {
 		newBooking.setRegistrationCenterId("1");
 		newBooking.setSlotFromTime("09:00");
 		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-06");
+		newBooking.setRegDate("2018-12-12");
 
 		rebookingRequestDTO.setNewBookingDetails(newBooking);
 		bookingRequestDTO.setPreRegistrationId("23587986034785");
@@ -458,9 +458,30 @@ public void bookTest() {
 	BookingStatusDTO response=service.book("23587986034785", newBooking);
 	assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
 }
+
 @Test
-public void cancelTest() {
+public void reBookingAppoinmentTest()
+
+{
 	
+	List<PreRegistartionStatusDTO> statusList1 = new ArrayList<>();
+	PreRegistartionStatusDTO preRegistartionStatusDTO=new PreRegistartionStatusDTO();
+	preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDINGAPPOINTMENT.getCode());
+	preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+	statusList1.add(preRegistartionStatusDTO);
 	
-}
+	preRegResponse.setResponse(statusList1);
+	preRegResponse.setErr(null);
+	preRegResponse.setStatus(true);
+	RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+	Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+	ResponseEntity<MainListResponseDTO> respEntity=new ResponseEntity<>(preRegResponse,HttpStatus.OK);
+	Mockito.when(restTemplate.exchange(Mockito.anyString(),
+			 Mockito.eq(HttpMethod.GET), Mockito.any(),
+			 Mockito.eq(MainListResponseDTO.class))).thenReturn(respEntity);
+	Mockito.when(mapper.convertValue(respEntity.getBody().getResponse().get(0), PreRegistartionStatusDTO.class)).thenReturn(preRegistartionStatusDTO);
+
+	MainResponseDTO<List<BookingStatusDTO>> response=service.bookAppointment(bookingDto);
+	assertEquals(0, response.getResponse().size());
+	}
 }
