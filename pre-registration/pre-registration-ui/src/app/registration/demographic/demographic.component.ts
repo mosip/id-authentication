@@ -383,8 +383,8 @@ export class DemographicComponent implements OnInit {
       const _month = dateform.getMonth() + 1;
       if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
         const pipe = new DatePipe('en-US');
-        const myFormattedDate = pipe.transform(dateform, 'dd/MM/yyyy');
-        this.userForm.controls.dob.patchValue(year + '/' + month + '/' + date);
+        const myFormattedDate = pipe.transform(dateform, 'yyyy/MM/dd');
+        this.userForm.controls.dob.patchValue(myFormattedDate);
         this.userForm.controls.age.patchValue(this.calculateAge(dateform));
       } else {
         this.userForm.controls['dob'].markAsTouched();
