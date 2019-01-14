@@ -16,6 +16,8 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { LocationModal } from './modal/location.modal';
 import * as appConstants from '../../app.constants';
 import Utils from 'src/app/app.util';
+import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse} from '@angular/common/http'
 
 @Component({
   selector: 'app-demographic',
@@ -43,6 +45,7 @@ export class DemographicComponent implements OnInit {
   preRegId = '';
   loginId = '';
   user: UserModel;
+  demodata: string [];
 
   uppermostLocationHierarchy: any;
   message = {};
@@ -112,7 +115,8 @@ export class DemographicComponent implements OnInit {
     private route: ActivatedRoute,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private httpService: HttpClient
   ) {}
 
   ngOnInit() {
@@ -130,6 +134,15 @@ export class DemographicComponent implements OnInit {
     });
     this.numberOfApplicants = 1;
     this.initForm();
+    this.httpService.get('./assets/i18n/ar.json').subscribe(
+      data => {
+        this.demodata = data as string [];	 // FILL THE ARRAY WITH DATA.
+          console.log(this.demodata[1]+":arebic data");
+      },
+      (err: HttpErrorResponse) => {
+        console.log (err.message);
+      }
+    );
   }
 
   async initForm() {

@@ -458,4 +458,9 @@ public void bookTest() {
 	BookingStatusDTO response=service.book("23587986034785", newBooking);
 	assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
 }
+@Test
+public void cancelTest() {
+	
+	
+}
 }
