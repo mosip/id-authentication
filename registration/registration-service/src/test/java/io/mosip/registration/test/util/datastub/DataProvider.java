@@ -81,11 +81,16 @@ public class DataProvider {
 
 	private static BiometricInfoDTO buildBioMerticDTO(String persontype) throws RegBaseCheckedException {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
+
 		if (persontype.equalsIgnoreCase(DataProvider.APPLICANT)) {
+			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
 			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
 			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
+		} else if (persontype.equalsIgnoreCase("officer")) {
+			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
+		} else {
+			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
 		}
 		return biometricInfoDTO;
 	}
@@ -95,12 +100,35 @@ public class DataProvider {
 		List<FingerprintDetailsDTO> fingerList = new ArrayList<>();
 
 		if (personType.equals(DataProvider.APPLICANT)) {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "BothThumbs.jpg", 85.0, false,
-					"thumbs", 0));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm.jpg", 80.0, false,
-					"leftSlap", 3));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm.jpg", 95.0, false,
-					"rightSlap", 2));
+			FingerprintDetailsDTO fingerprint = DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"BothThumbs.jpg", 85.0, false, "thumbs", 0);
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightThumb.jpg", 80.0, false, "rightThumb", 2));
+			fingerList.add(fingerprint);
+
+			fingerprint = DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm.jpg", 80.0, false,
+					"leftSlap", 3);
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftIndex.jpg", 80.0, false, "leftIndex", 3));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftMiddle.jpg", 80.0, false, "leftMiddle", 1));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftRing.jpg", 80.0, false, "leftRing", 2));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftLittle.jpg", 80.0, false, "leftLittle", 0));
+			fingerList.add(fingerprint);
+
+			fingerprint = DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm.jpg", 95.0, false,
+					"rightSlap", 2);
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightIndex.jpg", 80.0, false, "rightIndex", 3));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightMiddle.jpg", 80.0, false, "rightMiddle", 1));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightRing.jpg", 80.0, false, "rightRing", 2));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightLittle.jpg", 80.0, false, "rightLittle", 0));
+			fingerList.add(fingerprint);
 		} else {
 			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType + "LeftThumb.jpg", 0, false,
 					"leftThumb", 0));
@@ -119,6 +147,7 @@ public class DataProvider {
 		fingerprintDetailsDTO.setForceCaptured(isForceCaptured);
 		fingerprintDetailsDTO.setFingerType(fingerType);
 		fingerprintDetailsDTO.setNumRetry(numRetry);
+		fingerprintDetailsDTO.setSegmentedFingerprints(new ArrayList<>());
 		return fingerprintDetailsDTO;
 	}
 
@@ -126,8 +155,6 @@ public class DataProvider {
 		List<BiometricExceptionDTO> fingerExcepList = new ArrayList<>();
 
 		fingerExcepList.add(DataProvider.buildBiometricExceptionDTO("fingerprint", "LeftThumb", "Due to accident",
-				DataProvider.PERMANANENT));
-		fingerExcepList.add(DataProvider.buildBiometricExceptionDTO("fingerprint", "LeftForefinger", "Due to accident",
 				DataProvider.PERMANANENT));
 		return fingerExcepList;
 	}

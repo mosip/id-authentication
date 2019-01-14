@@ -5,6 +5,8 @@ package io.mosip.registration.util.kernal.cbeff.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import io.mosip.registration.dto.cbeff.BIR;
 import io.mosip.registration.dto.cbeff.jaxbclasses.BIRType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
@@ -17,6 +19,7 @@ import io.mosip.registration.util.kernal.cbeff.service.CbeffI;
  * @author Ramadurai Pandian
  *
  */
+@Service
 public class CbeffImpl implements CbeffI {
 
 	@Override

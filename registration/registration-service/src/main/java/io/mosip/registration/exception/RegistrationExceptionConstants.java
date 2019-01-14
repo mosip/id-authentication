@@ -51,7 +51,8 @@ public enum RegistrationExceptionConstants {
 	REG_FINGERPRINT_SCANNING_ERROR(RegistrationConstants.USER_REG_FINGERPRINT_CAPTURE_EXP_CODE+"FCS-002", "Exception while scanning fingerprints of the individual"),
 	REG_OTP_VALIDATION("REG-OV-001","Erroe while validating the otp"),
 	REG_PACKET_DATE_PARSER_CODE(PACKET_CREATION_EXP_CODE + "TGE-001", "Exception while parsing the date to display in acknowledgement receipt"),
-	REG_PACKET_SIZE_EXCEEDED_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PES-001", "Registration packet size exceeded the configured file size");
+	REG_PACKET_SIZE_EXCEEDED_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PES-001", "Registration packet size exceeded the configured file size"),
+	REG_PACKET_BIO_CBEFF_GENERATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-002", "Exception while creating CBEFF file for biometrics");
 
 	/**
 	 * The constructor

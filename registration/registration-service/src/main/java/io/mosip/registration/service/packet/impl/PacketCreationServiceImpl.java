@@ -45,7 +45,7 @@ import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.util.kernal.cbeff.constant.CbeffConstant;
-import io.mosip.registration.util.kernal.cbeff.service.impl.CbeffImpl;
+import io.mosip.registration.util.kernal.cbeff.service.CbeffI;
 
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
@@ -68,7 +68,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	@Autowired
 	private ZipCreationService zipCreationService;
 	private static final Logger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);
-
+	@Autowired
+	private CbeffI cbeffI;
 	/**
 	 * Instance of {@code AuditFactory}
 	 */
@@ -297,17 +298,18 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			byte[] cbeffXMLInBytes = null;
 
 			if (!birs.isEmpty()) {
-				cbeffXMLInBytes = new CbeffImpl().createXML(birs);
+				cbeffXMLInBytes = cbeffI.createXML(birs);
 			}
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Creating CBEFF file as bytes has been completed");
 
 			return cbeffXMLInBytes;
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException();
 		} catch (Exception exception) {
-			throw new RegBaseCheckedException();
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PACKET_BIO_CBEFF_GENERATION_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_BIO_CBEFF_GENERATION_ERROR_CODE.getErrorMessage(),
+					exception);
 		}
 	}
 
@@ -319,7 +321,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
 					BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage());
 					birs.add(bir);
-					birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(), bir.getBdbInfo().getIndex());
+					birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
+							bir.getBdbInfo().getIndex());
 				}
 			} else {
 				BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
@@ -345,15 +348,15 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private List<String> getFingerSubType(String fingerType) {
 		List<String> fingerSubTypes = new ArrayList<>();
 
-		if (fingerType.startsWith("left")) {
+		if (fingerType.startsWith(RegistrationConstants.LEFT.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
-			fingerType = fingerType.replace("left", "");
-		} else if (fingerType.startsWith("right")) {
+			fingerType = fingerType.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.EMPTY);
+		} else if (fingerType.startsWith(RegistrationConstants.RIGHT.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
-			fingerType = fingerType.replace("right", "");
+			fingerType = fingerType.replace(RegistrationConstants.RIGHT.toLowerCase(), RegistrationConstants.EMPTY);
 		}
 
-		if (fingerType.equalsIgnoreCase("thumb")) {
+		if (fingerType.equalsIgnoreCase(RegistrationConstants.THUMB.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
 		} else {
 			fingerSubTypes.add(SingleAnySubtypeType
