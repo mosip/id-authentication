@@ -12,6 +12,7 @@
               <input
                 matInput
                 #fullName
+                [matKeyboard]="keyboardLang"
                 maxlength="
               50"
                 placeholder="{{ 'demographic.label_name' | translate }}"
@@ -127,6 +128,7 @@
             <mat-form-field>
               <input
                 matInput
+                [matKeyboard]="keyboardLang"
                 #addressLine1
                 maxlength="50"
                 placeholder="{{ 'demographic.label_address1' | translate }}"
@@ -141,6 +143,7 @@
               <input
                 matInput
                 #addressLine2
+                [matKeyboard]="keyboardLang"
                 maxlength="50"
                 placeholder="{{ 'demographic.label_address2' | translate }}"
                 formControlName="addressLine2"
@@ -152,6 +155,7 @@
               <input
                 matInput
                 #addressLine3
+                [matKeyboard]="keyboardLang"
                 maxlength="50"
                 placeholder="{{ 'demographic.label_address3' | translate }}"
                 formControlName="addressLine3"
@@ -295,6 +299,7 @@
           <mat-form-field>
             <input
               matInput
+              [matKeyboard]="keyboardSecondaryLang"
               maxlength="50"
               placeholder="{{ demo1.fullName }}"
               formControlName="t_fullName"
@@ -374,6 +379,7 @@
           <mat-form-field>
             <input
               matInput
+              [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine1
               name="t_addressLine1"
               maxlength="50"
@@ -387,6 +393,7 @@
             <input
               formControlName="t_addressLine2"
               matInput
+              [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine2
               name="t_addressLine2"
               maxlength="50"
@@ -399,6 +406,7 @@
               formControlName="t_addressLine3"
               name="t_addressLine3"
               matInput
+              [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine3
               maxlength="50"
               placeholder="{{ demo1.addressLine3 }}"
