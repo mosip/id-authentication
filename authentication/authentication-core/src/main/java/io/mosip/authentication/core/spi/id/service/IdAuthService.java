@@ -18,18 +18,20 @@ public interface IdAuthService {
 	 *
 	 * @param uin the uin
 	 * @return the id repo by uin number
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	Map<String, Object> getIdRepoByUinNumber(String uin) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdRepoByUinNumber(String uin, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * validates the VID.
 	 *
 	 * @param vid the vid
 	 * @return the id repo by vid number
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException;
+	Map<String, Object> getIdRepoByVidNumber(String vid, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Process the IdType and validates the Idtype and upon validation reference Id
@@ -41,7 +43,8 @@ public interface IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException;
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio)
+			throws IdAuthenticationBusinessException;
 
 	/**
 	 * Store entry in Auth_txn table for all authentications.
@@ -53,7 +56,8 @@ public interface IdAuthService {
 	 * @param status      status('Y'/'N')
 	 * @param comment     comment
 	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException;

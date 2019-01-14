@@ -76,7 +76,7 @@ public enum BioMatchType implements MatchType {
 	
 	//Multi-fingerPrint 
 	FGRMIN_MULTI(IdaIdMapping.FINGERPRINT, setOf(MultiFingerprintMatchingStrategy.PARTIAL),
-			AuthUsageDataBit.USED_BIO_FINGERPRINT_IMAGE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_IMAGE, t -> {
+			AuthUsageDataBit.USED_BIO_FINGERPRINT_MINUTIAE, AuthUsageDataBit.MATCHED_BIO_FINGERPRINT_MINUTIAE, t -> {
 				Map<String, List<IdentityInfoDTO>> multifingerMap = new HashMap<>();
 
 				if (null != t.getRightLittle() && !t.getRightLittle().isEmpty()) {

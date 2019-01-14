@@ -336,7 +336,7 @@ public class DemoAuthServiceTest {
 		nameInfoDTO.setLanguage("FR");
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
-		identityDTO.setName(nameList);
+		identityDTO.setFullName(nameList);
 		requestDTO.setIdentity(identityDTO);
 		authRequestDTO.setIdvIdType("D");
 		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
@@ -487,7 +487,7 @@ public class DemoAuthServiceTest {
 		nameInfoDTO.setLanguage("FR");
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
-		identityDTO.setName(nameList);
+		identityDTO.setFullName(nameList);
 		requestDTO.setIdentity(identityDTO);
 		authRequestDTO.setIdvIdType("D");
 		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
@@ -583,7 +583,7 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
-		identity.setName(nameList);
+		identity.setFullName(nameList);
 		requestDTO.setIdentity(identity);
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoIdentity = new HashMap<>();
@@ -664,11 +664,11 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setLanguage("FR");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
-		identity.setName(nameList);
+		identity.setFullName(nameList);
 		requestDTO.setIdentity(identity);
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoEntity.put("name", nameList);
+		demoEntity.put("fullName", nameList);
 		AuthStatusInfo demoStatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "274390482564", demoEntity);
 
 	}

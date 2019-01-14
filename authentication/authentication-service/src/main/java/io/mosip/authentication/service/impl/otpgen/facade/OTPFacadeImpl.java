@@ -103,7 +103,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String txnId = otpRequestDto.getTxnID();
 
 		Map<String, Object> idResDTO = idAuthService.processIdType(otpRequestDto.getIdvIdType(),
-				otpRequestDto.getIdvId());
+				otpRequestDto.getIdvId(), false);
 		String productid = env.getProperty("application.id");
 		String txnID = otpRequestDto.getTxnID();
 

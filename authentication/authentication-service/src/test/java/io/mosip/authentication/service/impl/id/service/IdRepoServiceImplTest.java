@@ -68,7 +68,7 @@ public class IdRepoServiceImplTest {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
-		Mockito.when(idReposerviceImpl.getIdRepo("76746685")).thenReturn(response);
+		Mockito.when(idReposerviceImpl.getIdRepo("76746685", false)).thenReturn(response);
 
 		assertNotNull(response);
 	}
@@ -79,9 +79,9 @@ public class IdRepoServiceImplTest {
 
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.SERVER_ERROR));
-		idReposerviceImpl.getIdRepo("76746685");
+		idReposerviceImpl.getIdRepo("76746685", false);
 	}
-	
+
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGetIdRepo_ThrowException2() throws IdAuthenticationBusinessException, RestServiceException {
 		RestRequestDTO restRequestDTO = new RestRequestDTO();
@@ -90,7 +90,7 @@ public class IdRepoServiceImplTest {
 				.thenReturn(restRequestDTO);
 		Mockito.when(restHelper.requestSync(Mockito.any()))
 				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR));
-		idReposerviceImpl.getIdRepo("76746685");
+		idReposerviceImpl.getIdRepo("76746685", false);
 	}
 
 	@Test
@@ -102,28 +102,24 @@ public class IdRepoServiceImplTest {
 		ObjectMapper mapper = new ObjectMapper();
 		byte resByte[] = res.getBytes();
 		String value = new String(resByte, "UTF-8");
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, Object> idResponseDTO = mapper.readValue(value, Map.class);
 		ReflectionTestUtils.invokeMethod(idReposerviceImpl, "getIdInfo", idResponseDTO);
 	}
-	
+
 	@Test
 	public void testGetIdInfo1()
 			throws IdAuthenticationBusinessException, JsonParseException, JsonMappingException, IOException {
 
-		String res = "{\r\n" + 
-				"	\"id\": \"mosip.id.read\",\r\n" + 
-				"	\"timestamp\": \"2019-01-02T09:10:05.506\",\r\n" + 
-				"	\"registrationId\": \"1234234320000920181212010055\",\r\n" + 
-				"	\"status\": \"REGISTERED\",\r\n" + 
-				"	\"response\": {}\r\n" + 
-				"}";
+		String res = "{\r\n" + "	\"id\": \"mosip.id.read\",\r\n" + "	\"timestamp\": \"2019-01-02T09:10:05.506\",\r\n"
+				+ "	\"registrationId\": \"1234234320000920181212010055\",\r\n" + "	\"status\": \"REGISTERED\",\r\n"
+				+ "	\"response\": {}\r\n" + "}";
 
 		ObjectMapper mapper = new ObjectMapper();
 		byte resByte[] = res.getBytes();
 		String value = new String(resByte, "UTF-8");
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, Object> idResponseDTO = mapper.readValue(value, Map.class);
 		ReflectionTestUtils.invokeMethod(idReposerviceImpl, "getIdInfo", idResponseDTO);

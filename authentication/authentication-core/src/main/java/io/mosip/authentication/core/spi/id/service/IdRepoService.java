@@ -17,10 +17,11 @@ public interface IdRepoService {
 	 * Method to get entity from ID Repo.
 	 *
 	 * @param uin the uin
+	 * @param isBio 
 	 * @return the id repo
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public Map<String, Object> getIdRepo(String uin) throws IdAuthenticationBusinessException;
+	public Map<String, Object> getIdRepo(String uin, boolean isBio) throws IdAuthenticationBusinessException;
 
 	/**
 	 * Method to get Identity info.

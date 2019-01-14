@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -53,15 +55,20 @@ public class IdRepoServiceImpl implements IdRepoService {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
-	public Map<String, Object> getIdRepo(String uin) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdRepo(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest = null;
 		Map<String, Object> response = null;
 
 		try {
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class);
-			Map<String, String> params = new HashMap<>();
+			Map<String, String> params = new HashMap();
 			params.put("uin", uin);
+			if (isBio) {
+				params.put("type", "bio");
+			} else {
+				params.put("type", "demo");
+			}
 			buildRequest.setPathVariables(params);
 			response = restHelper.requestSync(buildRequest);
 			response.put("uin", uin);
@@ -82,7 +89,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 				.filter(entry -> entry.getKey().equals("response") && entry.getValue() instanceof Map)
 				.flatMap(entry -> ((Map<String, Object>) entry.getValue()).entrySet().stream()).flatMap(entry -> {
 					if (entry.getKey().equals("identity") && entry.getValue() instanceof Map) {
-						return getIdentityValues((Map<String, Object>) entry.getValue()).entrySet().stream();
+						return ((Map<String, Object>) entry.getValue()).entrySet().stream();
 					} else if (entry.getKey().equals("documents") && entry.getValue() instanceof List) {
 						return (getDocumentValues((List<Map<String, Object>>) entry.getValue())).entrySet().stream();
 					} else {
@@ -94,12 +101,19 @@ public class IdRepoServiceImpl implements IdRepoService {
 						List<Map> arrayList = (List) val;
 						return arrayList.stream().filter(elem -> elem instanceof Map)
 								.map(elem -> (Map<String, Object>) elem).map(map1 -> {
+									String value = String.valueOf(map1.get("value"));
 									IdentityInfoDTO idInfo = new IdentityInfoDTO();
-									idInfo.setLanguage(String.valueOf(map1.get("language")));
-									idInfo.setValue(String.valueOf(map1.get("value")));
+									if (map1.containsKey("language")) {
+										idInfo.setLanguage(String.valueOf(map1.get("language")));
+									}
+									idInfo.setValue(value);
 									return idInfo;
 								}).collect(Collectors.toList());
 
+					} else if (val instanceof Boolean ||val instanceof String || val instanceof Long || val instanceof Integer || val instanceof Double) {
+						IdentityInfoDTO idInfo = new IdentityInfoDTO();
+						idInfo.setValue(String.valueOf(val));
+						return Stream.of(idInfo).collect(Collectors.toList());
 					}
 					return Collections.emptyList();
 				}));
@@ -109,20 +123,17 @@ public class IdRepoServiceImpl implements IdRepoService {
 	private Map<String, Object> getIdentityValues(Map<String, Object> map) {
 		return map.entrySet().stream().filter(entry -> entry.getValue() instanceof Map)
 				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-					List<Map<String, Object>> idValuesList = ((Map<String, Object>) entry.getValue()).entrySet()
-							.stream()
-							.filter(entry1 -> "values".equals(entry1.getKey()) && entry1.getValue() instanceof List)
-							.flatMap(entry1 -> ((List<Map<String, Object>>) entry1.getValue()).stream())
-							.collect(Collectors.toList());
-
-					return idValuesList;
+					if (entry.getValue() instanceof List) {
+						List<Map<String, Object>> values = (List<Map<String, Object>>) entry.getValue();
+						return values;
+					}
+					return Collections.emptyList();
 				}));
-
 	}
 
 	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
-		return value.stream().filter(map -> "individualBiometrics".equals(map.get("docType")))
-				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("docValue"))
+		return value.stream().filter(map -> "individualBiometrics".equals(map.get("category")))
+				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("value"))
 				.map(entry -> (Map<String, Object>) decodeToMap(entry.getValue()))
 				.flatMap(map -> map.entrySet().stream())
 				.collect(Collectors.toMap(Entry<String, Object>::getKey, entry -> {

@@ -86,9 +86,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdRepoByUinNumber(String uin) throws IdAuthenticationBusinessException {
+	public Map<String, Object> getIdRepoByUinNumber(String uin, boolean isBio)
+			throws IdAuthenticationBusinessException {
 
-		Map<String, Object> idRepo = idRepoService.getIdRepo(uin); // REST CALL IdRepo service
+		Map<String, Object> idRepo = idRepoService.getIdRepo(uin, isBio); // REST CALL IdRepo service
 		auditData();
 		return idRepo;
 	}
@@ -123,8 +124,9 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * String)
 	 */
 	@Override
-	public Map<String, Object> getIdRepoByVidNumber(String vid) throws IdAuthenticationBusinessException {
-		Map<String, Object> idRepo = getIdRepoByVidAsRequest(vid);
+	public Map<String, Object> getIdRepoByVidNumber(String vid, boolean isBio)
+			throws IdAuthenticationBusinessException {
+		Map<String, Object> idRepo = getIdRepoByVidAsRequest(vid, isBio);
 
 		auditData();
 
@@ -138,14 +140,14 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @return the string
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	Map<String, Object> getIdRepoByVidAsRequest(String vid) throws IdAuthenticationBusinessException {
+	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
 
 		Optional<String> findUinByRefId = vidRepository.findUinByVid(vid);
 		if (findUinByRefId.isPresent()) {
 			String uin = findUinByRefId.get().trim();
 			try {
-				idRepo = idRepoService.getIdRepo(uin);
+				idRepo = idRepoService.getIdRepo(uin, isBio);
 			} catch (IdAuthenticationBusinessException e) {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 			}
@@ -178,18 +180,19 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *                                           exception
 	 */
 	@Override
-	public Map<String, Object> processIdType(String idvIdType, String idvId) throws IdAuthenticationBusinessException {
+	public Map<String, Object> processIdType(String idvIdType, String idvId, boolean isBio)
+			throws IdAuthenticationBusinessException {
 		Map<String, Object> idResDTO = null;
 		if (idvIdType.equals(IdType.UIN.getType())) {
 			try {
-				idResDTO = getIdRepoByUinNumber(idvId);
+				idResDTO = getIdRepoByUinNumber(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(null, null, e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
 			try {
-				idResDTO = getIdRepoByVidNumber(idvId);
+				idResDTO = getIdRepoByVidNumber(idvId, isBio);
 			} catch (IdAuthenticationBusinessException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
@@ -209,7 +212,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @param status      status('Y'/'N')
 	 * @param comment     comment
 	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public void saveAutnTxn(String idvId, String idvIdType, String reqTime, String txnId, String status, String comment,
 			RequestType requestType) throws IdAuthenticationBusinessException {
@@ -229,7 +233,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 			convertStringToDate = dateHelper.convertStringToDate(reqTime);
 		} catch (IDDataValidationException e) {
 			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP, e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
+					e);
 		}
 
 		autnTxn.setRequestDTtimes(convertStringToDate);

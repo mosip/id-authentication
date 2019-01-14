@@ -12,11 +12,11 @@ import java.util.List;
 public interface MappingConfig {
 
 	/**
-	 * List of value to hold name.
+	 * List of value to hold Full Name.
 	 *
 	 * @return the name
 	 */
-	public List<String> getName();
+	public List<String> getFullName();
 
 	/**
 	 * List of value to hold DOB.
@@ -103,11 +103,11 @@ public interface MappingConfig {
 	public List<String> getLocation3();
 
 	/**
-	 * List of value to hold Pincode.
+	 * List of value to hold Postalcode.
 	 *
 	 * @return the pin code
 	 */
-	public List<String> getPinCode();
+	public List<String> getPostalCode();
 
 	/**
 	 * List of value to hold Full Address.
@@ -221,16 +221,14 @@ public interface MappingConfig {
 	 * @return the face
 	 */
 	public List<String> getFace();
-	
-	
-	
+
 	/**
 	 * Gets the left eye.
 	 *
 	 * @return the left eye
 	 */
 	public List<String> getLeftEye();
-	
+
 	/**
 	 * Gets the right eye.
 	 *

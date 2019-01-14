@@ -98,14 +98,15 @@ public class IdAuthServiceImplTest {
 		 * restFactory); ReflectionTestUtils.setField(idAuthServiceImplMock,
 		 * "uinRepository", uinRepository);
 		 * ReflectionTestUtils.setField(idAuthServiceImplMock, "vidRepository",
-		 * vidRepository);
+		 * vidRepository);testProcessIdType_IdTypeIsD
 		 */
 	}
 
 	@Test
 	public void testGetIdRepoByUinNumber() throws IdAuthenticationBusinessException {
 
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByUinNumber", Mockito.anyString());
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByUinNumber", Mockito.anyString(),
+				Mockito.anyBoolean());
 
 	}
 
@@ -117,7 +118,7 @@ public class IdAuthServiceImplTest {
 	@Test
 	public void testGetIdRepoByVidNumber() throws IdAuthenticationBusinessException {
 
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidNumber", Mockito.anyString());
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidNumber", Mockito.anyString(), false);
 	}
 
 	@Ignore
@@ -126,7 +127,7 @@ public class IdAuthServiceImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenReturn(idRepo);
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
 		Object invokeMethod = ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "getIdRepoByVidAsRequest",
 				Mockito.anyString());
 		assertNotNull(invokeMethod);
@@ -139,7 +140,7 @@ public class IdAuthServiceImplTest {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
 
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
 	}
 
 	@Test
@@ -147,7 +148,7 @@ public class IdAuthServiceImplTest {
 		String idvIdType = "V";
 		String idvId = "875948796";
 
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "processIdType", idvIdType, idvId, false);
 	}
 
 	@Ignore
@@ -159,10 +160,11 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_VID);
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString())).thenThrow(idBusinessException);
-		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId)).thenThrow(idBusinessException);
+		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenThrow(idBusinessException);
+		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 
 	}
 
@@ -174,10 +176,11 @@ public class IdAuthServiceImplTest {
 		IdAuthenticationBusinessException idBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.INVALID_UIN);
 
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenThrow(idBusinessException);
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenThrow(idBusinessException);
 
-		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString())).thenThrow(idBusinessException);
-		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId)).thenThrow(idBusinessException);
+		Mockito.when(idAuthService.getIdRepoByVidNumber(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenThrow(idBusinessException);
+		Mockito.when(idAuthServiceImpl.processIdType(idvIdType, idvId, false)).thenThrow(idBusinessException);
 
 	}
 

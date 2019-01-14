@@ -65,7 +65,7 @@ public class CryptoEncode {
 			"	}";
 
 	public static void main(String args[]) {
-		String encodeBase64 = CryptoUtil.encodeBase64(sampleEyeData.getBytes());
+		String encodeBase64 = CryptoUtil.encodeBase64(sampleData.getBytes());
 		System.err.println(encodeBase64);
 	}
 
