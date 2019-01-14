@@ -590,6 +590,14 @@ public class RegistrationConstants {
 	public static final String THUMB = "Thumb";
 	public static final String LEFT_HAND = "Left hand ";
 	public static final String RIGHT_HAND = "Right hand ";
+	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/lefthand/leftIndex/",
+			"/fingerprints/UserOnboard/lefthand/leftLittle/", "/fingerprints/UserOnboard/lefthand/leftMiddle/",
+			"/fingerprints/UserOnboard/lefthand/leftRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/righthand/rightIndex/",
+			"/fingerprints/UserOnboard/righthand/rightLittle/", "/fingerprints/UserOnboard/righthand/rightMiddle/",
+			"/fingerprints/UserOnboard/righthand/rightRing/" };
+	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/thumb/leftThumb/",
+	"/fingerprints/UserOnboard/thumb/rightThumb/" };
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";

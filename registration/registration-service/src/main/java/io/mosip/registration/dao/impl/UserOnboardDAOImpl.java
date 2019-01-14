@@ -17,6 +17,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.machinezoo.sourceafis.FingerprintTemplate;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -104,8 +106,8 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 				biometricId.setBioAttributeCode(fingerPrintData.getFingerprintImageName());
 				biometricId.setBioTypeCode(fingerPrintData.getFingerType());
-				biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());
-				bioMetrics.setBioIsoImage(fingerPrintData.getFingerPrintISOImage());
+				biometricId.setUsrId(SessionContext.getInstance().getUserContext().getUserId());				
+				bioMetrics.setBioMinutia(new FingerprintTemplate().convert(fingerPrintData.getFingerPrint()).serialize());
 				bioMetrics.setNumberOfRetry(fingerPrintData.getNumRetry());
 				bioMetrics.setUserBiometricId(biometricId);
 				Double qualitySocre = fingerPrintData.getQualityScore();

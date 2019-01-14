@@ -35,7 +35,6 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.iris.IrisFacade;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -614,7 +613,6 @@ public class UserOnboardController extends BaseController implements Initializab
 		if (pageName == RegistrationConstants.FINGERPRINT) {
 
 			try {
-
 				FingerprintDetailsDTO detailsDTO = null;
 
 				List<FingerprintDetailsDTO> fingerprintDetailsDTOs = biometricDTO.getOperatorBiometricDTO()
@@ -629,35 +627,24 @@ public class UserOnboardController extends BaseController implements Initializab
 
 					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
 
-							RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, leftHandPalmImageview,
+							RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, leftHandPalmImageview,
 
 							leftSlapQualityScore, popupStage);
 
 				} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
-					if (SessionContext.getInstance().getMapObject()
-							.containsKey(RegistrationConstants.DUPLICATE_FINGER)) {
+					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
 
-						scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+							RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, rightHandPalmImageview,
 
-								RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
-
-								rightSlapQualityScore, popupStage);
-
-					} else {
-						scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
-
-								RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
-
-								rightSlapQualityScore, popupStage);
-					}
+							rightSlapQualityScore, popupStage);
 
 				} else if (selectedPane.getId() == thumbPane.getId()) {
 
 					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
 
-							RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore,
-							popupStage);
+							RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD, thumbImageview,
+							thumbsQualityScore, popupStage);
 
 				}
 			} catch (RuntimeException runtimeException) {
@@ -1062,8 +1049,7 @@ public class UserOnboardController extends BaseController implements Initializab
 				} catch (IOException exception) {
 					LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage());
-					generateAlert(RegistrationConstants.ERROR,
-							RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
 				}
 			}
 		}
@@ -1131,8 +1117,8 @@ public class UserOnboardController extends BaseController implements Initializab
 							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
 					segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
 
-					segmentedDetailsDTO.setFingerType(imageFileName[3]);
-					segmentedDetailsDTO.setFingerprintImageName(imageFileName[3]);
+					segmentedDetailsDTO.setFingerType(imageFileName[4]);
+					segmentedDetailsDTO.setFingerprintImageName(imageFileName[4]);
 					segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
 					segmentedDetailsDTO.setForceCaptured(false);
 					segmentedDetailsDTO.setQualityScore(90);
