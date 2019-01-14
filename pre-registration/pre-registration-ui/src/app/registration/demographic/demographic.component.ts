@@ -284,7 +284,6 @@ export class DemographicComponent implements OnInit {
         this.transLocalAdministrativeAuthorities,
         localAdministrativeAuthority
       );
-      console.log('LOCATION', this.locations);
     }
   }
 
@@ -358,7 +357,6 @@ export class DemographicComponent implements OnInit {
   }
 
   onGenderChange() {
-    console.log(this.userForm.controls['gender'].value);
     this.userForm.controls['gender'].markAsTouched();
   }
 
@@ -442,8 +440,6 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.locations);
-
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
     this.dataStorageService.addUser(request).subscribe(
@@ -458,7 +454,6 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else if (response !== null) {
-          console.log(response);
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.locations));
           this.sharedService.addNameList({
