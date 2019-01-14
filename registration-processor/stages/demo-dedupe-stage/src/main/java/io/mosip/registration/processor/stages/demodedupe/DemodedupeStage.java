@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -164,12 +166,14 @@ public class DemodedupeStage extends MosipVerticleManager {
 
 		} catch (IOException | ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + e.getMessage());
+					registrationId,
+					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ex.getMessage());
+					registrationId,
+					PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
@@ -191,8 +195,10 @@ public class DemodedupeStage extends MosipVerticleManager {
 	/**
 	 * Save manual adjudication data.
 	 *
-	 * @param uniqueMatchedRefIds the unique matched ref ids
-	 * @param registrationId the registration id
+	 * @param uniqueMatchedRefIds
+	 *            the unique matched ref ids
+	 * @param registrationId
+	 *            the registration id
 	 */
 	private void saveManualAdjudicationData(Set<String> uniqueMatchedRefIds, String registrationId) {
 		boolean isTransactionSuccessful = false;

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -146,7 +147,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} catch (VirusScanFailedException | IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationStatusDto.getRegistrationId(), VIRUS_SCAN_FAILED + " " + e.getMessage());
+					registrationStatusDto.getRegistrationId(),
+					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
 		} catch (PacketDecryptionFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getErrorCode(), e.getErrorText());
@@ -159,7 +161,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 		} catch (Exception ex) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PSJ_VIRUS_SCAN_FAILED.getMessage() + ex.getMessage()
+							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {
