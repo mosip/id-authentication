@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
 import * as appConstants from './../app.constants';
+import Utils from '../app.util';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class DataStorageService {
   AVAILABILITY_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/availability';
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   TRANSLITERATION_URL = 'http://A2ML29824:9098/dev-PreRegTranslitration/v0.1/pre-registration/translitrate';
-  TEST_URL = 'http://A2ML27085:9092/';
+  TEST_URL = 'http://A2ML21989:9092/';
   DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
   LANGUAGE_CODE = 'ENG';
@@ -45,7 +46,7 @@ export class DataStorageService {
   getTransliteration(request) {
     const obj = {
       id: appConstants.IDS.transliteration,
-      reqTime: '2019-01-02T11:01:31.211Z',
+      reqTime: Utils.getCurrentDate(),
       ver: appConstants.VERSION,
       request: request
     };
@@ -67,7 +68,7 @@ export class DataStorageService {
     const obj = {
       id: appConstants.IDS.newUser,
       ver: appConstants.VERSION,
-      reqTime: '2019-01-02T11:01:31.211Z',
+      reqTime: Utils.getCurrentDate(),
       request: identity
     };
     console.log('data being sent', obj);
