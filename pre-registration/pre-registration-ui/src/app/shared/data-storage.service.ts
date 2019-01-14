@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
 import * as appConstants from './../app.constants';
+import Utils from '../app.util';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +66,7 @@ export class DataStorageService {
     const obj = {
       id: appConstants.IDS.newUser,
       ver: appConstants.VERSION,
-      reqTime: '2019-01-02T11:01:31.211Z',
+      reqTime: Utils.getCurrentDate(),
       request: identity
     };
     console.log('data being sent', obj);

@@ -330,12 +330,14 @@ export class DashBoardComponent implements OnInit {
   }
   private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(
-      identityModal.IDSchemaVersion,
       [
         new AttributeModel(identityModal.fullName[0].language, identityModal.fullName[0].value),
         new AttributeModel(identityModal.fullName[1].language, identityModal.fullName[1].value)
       ],
-      identityModal.dateOfBirth,
+      [
+        new AttributeModel(identityModal.dateOfBirth[0].language, identityModal.dateOfBirth[0].value),
+        new AttributeModel(identityModal.dateOfBirth[1].language, identityModal.dateOfBirth[1].value)
+      ],
       [
         new AttributeModel(identityModal.gender[0].language, identityModal.gender[0].value),
         new AttributeModel(identityModal.gender[1].language, identityModal.gender[1].value)
@@ -374,10 +376,22 @@ export class DashBoardComponent implements OnInit {
           identityModal.localAdministrativeAuthority[1].value
         )
       ],
-      identityModal.postalcode,
-      identityModal.mobileNumber,
-      identityModal.emailId,
-      identityModal.CNEOrPINNumber
+      [
+        new AttributeModel(identityModal.postalcode[0].language, identityModal.postalcode[0].value),
+        new AttributeModel(identityModal.postalcode[1].language, identityModal.postalcode[1].value)
+      ],
+      [
+        new AttributeModel(identityModal.mobileNumber[0].language, identityModal.mobileNumber[0].value),
+        new AttributeModel(identityModal.mobileNumber[1].language, identityModal.mobileNumber[1].value)
+      ],
+      [
+        new AttributeModel(identityModal.emailId[0].language, identityModal.emailId[0].value),
+        new AttributeModel(identityModal.emailId[1].language, identityModal.emailId[1].value)
+      ],
+      [
+        new AttributeModel(identityModal.CNEOrPINNumber[0].language, identityModal.CNEOrPINNumber[0].value),
+        new AttributeModel(identityModal.CNEOrPINNumber[1].language, identityModal.CNEOrPINNumber[1].value)
+      ]
     );
 
     return identity;
@@ -391,7 +405,7 @@ export class DashBoardComponent implements OnInit {
       createdDateTime: requestModal.createdDateTime,
       updatedBy: this.loginId,
       updatedDateTime: '',
-      // statusCode: requestModal.statusCode,
+      statusCode: requestModal.statusCode,
       langCode: requestModal.langCode,
       demographicDetails: new DemoIdentityModel(identity)
     };

@@ -6,7 +6,7 @@ export interface RequestModel {
   createdDateTime: string;
   updatedBy: string;
   updatedDateTime: string;
-  // statusCode: string;
+  statusCode: string;
   langCode: string;
   demographicDetails: DemoIdentityModel;
 }
