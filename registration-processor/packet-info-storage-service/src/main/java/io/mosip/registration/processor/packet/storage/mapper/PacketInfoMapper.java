@@ -484,7 +484,8 @@ public class PacketInfoMapper {
 			entity.setIsActive(true);
 			entity.setIsDeleted(false);
 			String applicantName = null;
-			applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
+			if (demoDto.getName() != null)
+				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
 			entity.setName(applicantName);
 
 			Locale loc = new Locale(languageArray[i]);
