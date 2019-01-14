@@ -23,12 +23,9 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 
 /**
- * 
- * @author Dinesh Karuppiah.T
- */
-
-/**
  * The Enum DemoAuthType.
+ *
+ * @author Dinesh Karuppiah.T
  */
 public enum DemoAuthType implements AuthType {
 
@@ -69,23 +66,26 @@ public enum DemoAuthType implements AuthType {
 	/** The type. */
 	private String type;
 
-	/**  */
+	/** The associated match types. */
 	private Set<MatchType> associatedMatchTypes;
 
+	/** The auth type predicate. */
 	private Predicate<? super AuthTypeDTO> authTypePredicate;
 
+	/** The lang type. */
 	private LanguageType langType;
 
+	/** The display name. */
 	private String displayName;
 
 	/**
-	 * 
+	 * Instantiates a new demo auth type.
 	 *
-	 * @param type
-	 * @param associatedMatchTypes
-	 * @param authTypeTester
-	 * @param msInfoFetcher
-	 * @param mtInfoFetcher
+	 * @param type the type
+	 * @param associatedMatchTypes the associated match types
+	 * @param langType the lang type
+	 * @param authTypePredicate the auth type predicate
+	 * @param displayName the display name
 	 */
 	private DemoAuthType(String type, Set<MatchType> associatedMatchTypes, LanguageType langType,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
@@ -132,7 +132,7 @@ public enum DemoAuthType implements AuthType {
 	/**
 	 * Sets the of.
 	 *
-	 * @param supportedMatchTypes
+	 * @param supportedMatchTypes the supported match types
 	 * @return the sets the
 	 */
 	public static Set<MatchType> setOf(MatchType... supportedMatchTypes) {
@@ -189,12 +189,30 @@ public enum DemoAuthType implements AuthType {
 		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingThreshold);
 	}
 
+	/**
+	 * Gets the match info.
+	 *
+	 * @param <T> the generic type
+	 * @param authReq the auth req
+	 * @param languageInfoFetcher the language info fetcher
+	 * @param infoFunction the info function
+	 * @return the match info
+	 */
 	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher,
 			Function<? super MatchInfo, ? extends T> infoFunction) {
 		return Optional.of(authReq)
 				.flatMap(authReqDTO -> getMatchInfo(authReqDTO.getMatchInfo(), languageInfoFetcher, infoFunction));
 	}
 
+	/**
+	 * Gets the match info.
+	 *
+	 * @param <T> the generic type
+	 * @param matchInfos the match infos
+	 * @param languageInfoFetcher the language info fetcher
+	 * @param infoFunction the info function
+	 * @return the match info
+	 */
 	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, Function<LanguageType, String> languageInfoFetcher,
 			Function<? super MatchInfo, ? extends T> infoFunction) {
 		String language = languageInfoFetcher.apply(langType);
@@ -219,6 +237,9 @@ public enum DemoAuthType implements AuthType {
 		return Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchProperties(io.mosip.authentication.core.dto.indauth.AuthRequestDTO, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
+	 */
 	@Override
 	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
 		HashMap<String, Object> valuemap = new HashMap<>();
@@ -229,6 +250,9 @@ public enum DemoAuthType implements AuthType {
 		return valuemap;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
+	 */
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
 		return Optional

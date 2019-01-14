@@ -1,9 +1,15 @@
 package io.mosip.demo.authentication.service.impl.indauth.controller;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.text.MessageFormat;
+import java.io.InputStreamReader;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,11 +17,10 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
-import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
-import io.swagger.annotations.ApiOperation;;
+import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;;
 
 @RestController
 public class Decrypt {
@@ -26,42 +31,40 @@ public class Decrypt {
 	@Autowired
 	DecryptorImpl decryptorImpl;
 
-	private static final String FILEPATH = "sample.privatekey.filepath";
-
 	@PostMapping(path = "/authRequest/decrypt")
-	@ApiOperation(value = "Decrypt Session Key with private Key and Decrypt Identity with sessionKey", response = EncryptionResponseDto.class)
-	public String decrypt(String key, String data, String tspId)
-			throws IOException {
-		byte[] privateKey = fileReader(tspId);
-		// Decrypt session Key with private Key
-		String sessionKey = decrypt(privateKey, key.getBytes(), "sessionkey");
-
-		// Decrypt data with with decrypted session key
-		String finalvalue = decrypt(sessionKey.getBytes(), data.getBytes(), "data");
-
-		System.err.println(finalvalue);
-		return finalvalue;
+	public String decrypt(@RequestBody String data)
+			throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+		PrivateKey privateKey = fileReader();
+		String encodedKey = data.substring(0, 343);
+		String encodeData = data.substring(344, data.length()-1);
+		byte[] key = decryptorImpl.asymmetricPrivateDecrypt(privateKey, org.apache.commons.codec.binary.Base64.decodeBase64(encodedKey));
+		byte[] finalvalue = decryptorImpl.symmetricDecrypt(new SecretKeySpec(key, 0, key.length, "AES"), org.apache.commons.codec.binary.Base64.decodeBase64(encodeData));
+		return new String(finalvalue);
 	}
 
-	private String decrypt(byte[] key, byte[] data, String type) {
-		return decryptorImpl.symmetricDecrypt(prepareKey(key), data).toString();
+	public PrivateKey fileReader() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
+		FileInputStream pkeyfis = new FileInputStream("lib/Keystore/privkey1.pem");
+		String pKey = getFileContent(pkeyfis, "UTF-8");
+		pKey = pKey.replaceAll("-----BEGIN (.*)-----\n", "");
+		pKey = pKey.replaceAll("-----END (.*)----\n", "");
+		pKey = pKey.replaceAll("\\s", "");
+		KeyFactory kf = KeyFactory.getInstance("RSA");
+		return kf.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(pKey)));
 	}
-
-	private SecretKey prepareKey(byte[] key) {
-		return new SecretKeySpec(key, 0, key.length, "AES");
-	}
-
-	public byte[] fileReader(String filename) throws IOException {
-		String localpath = environment.getProperty(FILEPATH);
-		Object[] homedirectory = new Object[] { System.getProperty("user.home") + File.separator };
-		String finalpath = MessageFormat.format(localpath, homedirectory);
-		File fileInfo = new File(finalpath + File.separator + filename);
-		File parentFile = fileInfo.getParentFile();
-		byte[] output = null;
-		if (parentFile.exists()) {
-			output = Files.readAllBytes(fileInfo.toPath());
+	
+	public static String getFileContent(FileInputStream fis,String encoding ) throws IOException
+	{
+		try( BufferedReader br =
+				new BufferedReader( new InputStreamReader(fis, encoding )))
+		{
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while(( line = br.readLine()) != null ) {
+				sb.append( line );
+				sb.append( '\n' );
+			}
+			return sb.toString();
 		}
-		return output;
 	}
 
 }

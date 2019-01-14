@@ -20,22 +20,21 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 
 	/**
 	 * Obtain all Authentication Transaction for particular TxnId and UIN.
-	 * 
-	 * @param TxnId
-	 * @param UIN
-	 * @return
-	 * 
+	 *
+	 * @param txnId the txn id
+	 * @param refId the ref id
+	 * @return the list
 	 */
 	public List<AutnTxn> findAllByRequestTrnIdAndRefId(String txnId, String refId);
 
 	/**
 	 * Obtain the number of count of request_dTtimes for particular UIN(uniqueId)
 	 * with within the otpRequestDTime and oneMinuteBeforeTime.
-	 * 
-	 * @param otpRequestDTime
-	 * @param oneMinuteBeforeTime
-	 * @param UIN
-	 * @return
+	 *
+	 * @param otpRequestDTime the otp request D time
+	 * @param oneMinuteBeforeTime the one minute before time
+	 * @param refId the ref id
+	 * @return the int
 	 */
 	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
 			+ "request_dtimes >= :oneMinuteBeforeTime and refId=:refId")

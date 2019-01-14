@@ -61,48 +61,56 @@ public class KycServiceImpl implements KycService {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+    /** The env. */
     @Autowired
     Environment env;
 
+    /** The message source. */
     @Autowired
     private MessageSource messageSource;
 
+    /** The id template manager. */
     @Autowired
     private IdTemplateManager idTemplateManager;
 
+    /** The demo helper. */
     @Autowired
     private IdInfoHelper demoHelper;
 
+    /** The pdf generator. */
     @Autowired
     private PDFGenerator pdfGenerator;
 
     /**
-	 * This method will return the KYC info of the individual
-	 * 
-	 * @param eKycType the ekyctype full or limited
-	 * @param refId the refId
-	 * @param isSecLangInfoRequired the isseclanginforequired used to check secondary language info also needed
-	 * @param ePrintReq the ePrintReq used to check is PDF required or not
-     * @param identityInfo 
-	 * @return the map 
-	 */
+     * This method will return the KYC info of the individual.
+     *
+     * @param uin the uin
+     * @param eKycType the ekyctype full or limited
+     * @param ePrintReq the ePrintReq used to check is PDF required or not
+     * @param isSecLangInfoRequired the isseclanginforequired used to check secondary language info also needed
+     * @param identityInfo the identity info
+     * @return the map
+     * @throws IdAuthenticationBusinessException the id authentication business exception
+     */
     @Override
     public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired, Map<String, List<IdentityInfoDTO>> identityInfo)
 			throws IdAuthenticationBusinessException {
 		KycInfo kycInfo = new KycInfo();
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
 				isSecLangInfoRequired);
-		kycInfo.setIdentity(filteredIdentityInfo);
-		Object maskedUin = uin;
-		Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
-		Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
-		if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
-			maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
+		if (null != filteredIdentityInfo) {
+			kycInfo.setIdentity(filteredIdentityInfo);
+			Object maskedUin = uin;
+			Boolean maskRequired = env.getProperty("uin.masking.required", Boolean.class);
+			Integer maskCount = env.getProperty("uin.masking.charcount", Integer.class);
+			if (null != maskRequired && maskRequired.booleanValue() && null != maskCount) {
+				maskedUin = MaskUtil.generateMaskValue(uin, maskCount);
+			}
+			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+			String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
+			kycInfo.setEPrint(ePrintInfo);
+			kycInfo.setIdvId(maskedUin.toString());
 		}
-		Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-		String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
-		kycInfo.setEPrint(ePrintInfo);
-		kycInfo.setIdvId(maskedUin.toString());
 		return kycInfo;
 	}
 
@@ -132,7 +140,7 @@ public class KycServiceImpl implements KycService {
 		identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
-	if (!isSecLangInfoRequired) {
+	if (!isSecLangInfoRequired && null != identityInfo) {
 	    String primaryLanguage = env.getProperty("mosip.primary.lang-code");
 	    identityInfo = identityInfo.entrySet().stream()
 		    .collect(Collectors.toMap(Map.Entry::getKey,
@@ -146,13 +154,13 @@ public class KycServiceImpl implements KycService {
     }
 
     /**
-	 * Method to give details in primary or secondary language
-	 * 
-	 * @param filteredIdentityInfo
-	 * @param maskedUin
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
+     * Method to give details in primary or secondary language.
+     *
+     * @param filteredIdentityInfo the filtered identity info
+     * @param maskedUin the masked uin
+     * @return the map
+     * @throws IdAuthenticationBusinessException the id authentication business exception
+     */
     private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
 	    Object maskedUin) throws IdAuthenticationBusinessException {
 	String primaryLanguage = env.getProperty("mosip.primary.lang-code");
@@ -182,13 +190,13 @@ public class KycServiceImpl implements KycService {
     }
 
     /**
-	 * Methods to retrieve image of the requested refid
-	 * 
-	 * @param filteredIdentityInfo
-	 * @param maskedUin
-	 * @param pdfDetails
-	 * @throws IdAuthenticationBusinessException
-	 */
+     * Methods to retrieve image of the requested refid.
+     *
+     * @param filteredIdentityInfo the filtered identity info
+     * @param maskedUin the masked uin
+     * @param pdfDetails the pdf details
+     * @throws IdAuthenticationBusinessException the id authentication business exception
+     */
     private void faceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin,
 	    Map<String, Object> pdfDetails) throws IdAuthenticationBusinessException {
 	Optional<String> faceValue = getFaceDetails(filteredIdentityInfo);
@@ -210,23 +218,25 @@ public class KycServiceImpl implements KycService {
     }
 
     /**
-	 * @param filteredIdentityInfo
-	 * @return
-	 */
+     * Gets the face details.
+     *
+     * @param filteredIdentityInfo the filtered identity info
+     * @return the face details
+     */
     private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
 	return filteredIdentityInfo.entrySet().stream().filter(e -> e.getKey().equals("face"))
 		.flatMap(val -> val.getValue().stream()).findAny().map(IdentityInfoDTO::getValue);
     }
 
     /**
-	 * Method to find the template to provided the kyc info
-	 * 
-	 * @param eKycType
-	 * @param identity
-	 * @param isSecLangInfoRequired
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 */
+     * Method to find the template to provided the kyc info.
+     *
+     * @param eKycType the e kyc type
+     * @param identity the identity
+     * @param isSecLangInfoRequired the is sec lang info required
+     * @return the string
+     * @throws IdAuthenticationBusinessException the id authentication business exception
+     */
     private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity, boolean isSecLangInfoRequired)
 	    throws IdAuthenticationBusinessException {
 	String pdfDetails = null;
@@ -258,15 +268,24 @@ public class KycServiceImpl implements KycService {
     }
 
 
+	/**
+	 * Check template present.
+	 *
+	 * @param limitedKycFull the limited kyc full
+	 * @param limitedKycPri the limited kyc pri
+	 * @param fullKycPri the full kyc pri
+	 * @param fullKyc the full kyc
+	 * @return true, if successful
+	 */
 	private boolean checkTemplatePresent(String limitedKycFull, String limitedKycPri, String fullKycPri, String fullKyc) {
 		return null != limitedKycFull || null != limitedKycPri || null != fullKyc || null != fullKycPri;
 	}
 
     /**
-	 * Method to delete the temp file created for image
-	 * 
-	 * @param identity
-	 */
+     * Method to delete the temp file created for image.
+     *
+     * @param identity the identity
+     */
     private void deleteFileOnExit(Map<String, Object> identity) {
 	Path path = (Path) identity.get("photoUrl");
 	if (path != null) {

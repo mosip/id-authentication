@@ -15,7 +15,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * 
+ * The Class DemoMatcherUtil.
+ *
  * @author Dinesh Karuppiah
  */
 
@@ -27,15 +28,18 @@ public final class DemoMatcherUtil {
 	private static Logger mosipLogger = IdaLogger.getLogger(DemoMatcherUtil.class);
 	private static final String SESSION_ID = "sessionId";
 
+	/**
+	 * Instantiates a new demo matcher util.
+	 */
 	private DemoMatcherUtil() {
 
 	}
 
 	/**
-	 * Do Exact match on Request Info details and Entity Info details string
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
+	 * Do Exact match on Request Info details and Entity Info details string.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
 	 * @return 0 or 100 based on match value
 	 */
 	public static int doExactMatch(String reqInfo, String entityInfo) {
@@ -50,11 +54,11 @@ public final class DemoMatcherUtil {
 	}
 
 	/**
-	 * Do Partial Match for Reference info details and Entity Info details string
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
-	 * @return
+	 * Do Partial Match for Reference info details and Entity Info details string.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @return the int
 	 */
 	public static int doPartialMatch(String reqInfo, String entityInfo) {
 		int matchvalue = 0;
@@ -83,11 +87,11 @@ public final class DemoMatcherUtil {
 	}
 
 	/**
-	 * Do Less than or equal to match based on input integer value
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
-	 * @return
+	 * Do Less than or equal to match based on input integer value.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @return the int
 	 */
 	public static int doLessThanEqualToMatch(int reqInfo, int entityInfo) {
 		if (reqInfo <= entityInfo) {
@@ -98,10 +102,10 @@ public final class DemoMatcherUtil {
 	}
 
 	/**
-	 * Exact match for Date - checks refInfo date and entity info date are same
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
+	 * Exact match for Date - checks refInfo date and entity info date are same.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
 	 * @return 100 when the refInfo and entityInfo dates are matched
 	 */
 	public static int doExactMatch(Date reqInfo, Date entityInfo) {
@@ -113,10 +117,10 @@ public final class DemoMatcherUtil {
 	}
 
 	/**
-	 * Split the string based on empty String and convert to words
-	 * 
-	 * @param str
-	 * @return
+	 * Split the string based on empty String and convert to words.
+	 *
+	 * @param str the str
+	 * @return the list
 	 */
 
 	private static List<String> split(String str) {
@@ -125,11 +129,11 @@ public final class DemoMatcherUtil {
 
 	/**
 	 * returns boolean values based on all match value on entityInfo List and
-	 * refInfoList values
-	 * 
-	 * @param refInfoList
-	 * @param entityInfoList
-	 * @return
+	 * refInfoList values.
+	 *
+	 * @param refInfoList the ref info list
+	 * @param entityInfoList the entity info list
+	 * @return true, if successful
 	 */
 
 	private static boolean allMatch(List<String> refInfoList, List<String> entityInfoList) {
@@ -139,8 +143,11 @@ public final class DemoMatcherUtil {
 	/**
 	 * Doing phonetic match with input request and stored-request with language-name,NOT language-code.
 	 * If give language code, get java.lang.IllegalArgumentException: No rules found for gen, rules, language-code.
-	 * @param refInfoName @param entityInfoName @return @throws
-	 * 
+	 *
+	 * @param refInfoName the ref info list
+	 * @param entityInfoName the entity info name
+	 * @param language the language
+	 * @return the int
 	 */
 	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
 		int value = 0;

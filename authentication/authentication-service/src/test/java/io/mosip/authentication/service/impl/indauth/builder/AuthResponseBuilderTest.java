@@ -313,14 +313,14 @@ public class AuthResponseBuilderTest {
 		
 		
 		AuthStatusInfo authStatusInfo1 = AuthStatusInfoBuilder.newInstance()
-				.addMessageInfo(DemoAuthType.PI_PRI.getType(), "P", 60, PRIMARY_LANG_CODE)
+				.addMatchInfo(DemoAuthType.PI_PRI.getType(), "P", 60, PRIMARY_LANG_CODE)
 				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP)
 				.addErrors(new AuthError("101", "Error1"))
 				.build();
 		
 		AuthStatusInfo authStatusInfo2 = AuthStatusInfoBuilder
 				.newInstance()
-				.addMessageInfo(DemoAuthType.FAD_PRI.getType(), "E", 100, PRIMARY_LANG_CODE)
+				.addMatchInfo(DemoAuthType.FAD_PRI.getType(), "E", 100, PRIMARY_LANG_CODE)
 				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI)
 				.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL)
 				.addErrors(new AuthError("102", "Error2"), new AuthError("103", "Error3"))
