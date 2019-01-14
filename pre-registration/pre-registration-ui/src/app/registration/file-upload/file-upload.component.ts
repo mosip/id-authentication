@@ -274,6 +274,7 @@ export class FileUploadComponent implements OnInit {
   }
 
   onBack() {
+    this.registration.changeMessage({ modifyUser: 'true' });
     this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
