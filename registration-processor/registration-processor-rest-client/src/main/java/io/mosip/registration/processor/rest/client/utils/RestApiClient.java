@@ -7,6 +7,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
@@ -15,13 +16,16 @@ import org.apache.http.conn.scheme.SchemeSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 
 /**
  * The Class RestApiClient.
@@ -32,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestApiClient {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(RestApiClient.class);
+	private final Logger logger = RegProcessorLogger.getLogger(RestApiClient.class);
 
 	/** The builder. */
 	@Autowired
@@ -57,8 +61,8 @@ public class RestApiClient {
 
 			return result;
 		} catch (Exception e) {
-
-			logger.error(e.getMessage());
+			logger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getMessage()+ExceptionUtils.getStackTrace(e));
+			
 		}
 		return null;
 	}
@@ -87,7 +91,8 @@ public class RestApiClient {
 
 		} catch (Exception e) {
 
-			logger.error("Error: {}", e);
+			logger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getMessage()+ExceptionUtils.getStackTrace(e));
+			
 			throw e;
 		}
 		return result;

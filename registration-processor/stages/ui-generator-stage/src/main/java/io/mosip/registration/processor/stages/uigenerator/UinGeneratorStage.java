@@ -44,6 +44,7 @@ import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
+import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotificationForUIN;
 import io.mosip.registration.processor.stages.uingenerator.util.UinStatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -136,6 +137,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	TriggerNotificationForUIN triggerNotificationForUIN;
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
 	 */
@@ -155,25 +158,26 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
 			JSONObject	demographicIdentity = (JSONObject) identityJson.get("identity");
 			String uinFieldCheck=(String) demographicIdentity.get("uin");
-
+			boolean isUinCreate=false;
 			if(uinFieldCheck==null || ("").equals(uinFieldCheck)) {
 
 				uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
 				idResponseDTO=sendIdRepoWithUin(registrationId,uinResponseDto.getUin());
+				isUinCreate=true;
 			}else {
 				idResponseDTO=updateIdRepowithUin(registrationId,uinFieldCheck);
 			}
 
 			if( !( ("".equals(idResponseDTO.getResponse().getEntity())) || (idResponseDTO.getResponse().getEntity()==null) ) ){
 
-				demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
+				demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());	
+				triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
 				registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
 				description = "UIN updated succesfully for : " + registrationId;
 
 			}	else {
-
 				registrationStatusDto.setStatusComment(idResponseDTO.getErr().get(0).getErrMessage());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				isTransactionSuccessful = false;
@@ -181,7 +185,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,idResponseDTO.getErr().get(0).getErrMessage()+"  :  "+idResponseDTO.toString());
 
 			}
-
+			
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} 

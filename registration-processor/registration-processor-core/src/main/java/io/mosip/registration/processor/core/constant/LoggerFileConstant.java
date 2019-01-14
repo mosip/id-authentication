@@ -5,5 +5,6 @@ public enum LoggerFileConstant {
 
 	SESSIONID,
 	REGISTRATIONID,
-	APPLICATIONID
+	APPLICATIONID,
+	UIN
 }
