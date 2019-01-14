@@ -36,7 +36,7 @@ export class DataStorageService {
   }
 
   getUser(preRegId: string) {
-    return this.httpClient.get(this.TEST_URL + appConstants.APPEND_URL.get_applicant, {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.get_applicant, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append(appConstants.PARAMS_KEYS.getUser, preRegId)
@@ -73,7 +73,7 @@ export class DataStorageService {
     };
     console.log('data being sent', obj);
 
-    return this.httpClient.post(this.TEST_URL + appConstants.APPEND_URL.applicants, obj);
+    return this.httpClient.post(this.BASE_URL + appConstants.APPEND_URL.applicants, obj);
   }
 
   sendFile(formdata: FormData) {
