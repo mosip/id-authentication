@@ -165,9 +165,9 @@ export class DemographicComponent implements OnInit {
       this.preRegId = this.user.preRegId;
       fullName = this.user.request.demographicDetails.identity.fullName[0].value;
       gender = this.user.request.demographicDetails.identity.gender[0].value;
-      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
+      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
       month = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[1];
-      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
+      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
       dob = this.user.request.demographicDetails.identity.dateOfBirth[0].value;
       age = this.calculateAge(new Date(new Date(dob))).toString();
       addressLine1 = this.user.request.demographicDetails.identity.addressLine1[0].value;
