@@ -107,7 +107,7 @@
                                                 <Text fx:id="leftIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%percentageValue" />
                                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
                                                 <Label layoutX="85.0" layoutY="189.0" text="%lefteye" />
-                                                <ImageView fx:id="rightEye" fitHeight="176.0" fitWidth="218.0" layoutX="19.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
+                                                <ImageView fx:id="leftEye" fitHeight="176.0" fitWidth="218.0" layoutX="19.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane layoutX="258.0" layoutY="7.0">
@@ -118,7 +118,7 @@
                                                 <Text fx:id="rightIrisThreshold" layoutX="160.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%percentageValue" />
                                                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="224.0" layoutX="15.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="227.0" />
                                                 <Label layoutX="88.0" layoutY="189.0" text="%righteye" />
-                                                <ImageView fx:id="leftEye" fitHeight="177.0" fitWidth="217.0" layoutX="20.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
+                                                <ImageView fx:id="rightEye" fitHeight="177.0" fitWidth="217.0" layoutX="20.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </AnchorPane>
                                        </children></AnchorPane>
