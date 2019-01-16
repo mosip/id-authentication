@@ -113,6 +113,8 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
+	String byteArray = "Binary Data";
+
 	private Identity identity;
 	private ApplicantDocumentEntity applicantDocumentEntity;
 	private ApplicantDocumentPKEntity applicantDocumentPKEntity;
@@ -509,7 +511,7 @@ public class PacketInfoManagerImplTest {
 	@Test
 	public void saveDemographicInfoJsonTest() {
 
-		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray.getBytes(), metaDataList);
 		assertEquals("identity", utility.getGetRegProcessorDemographicIdentity());
 	}
 
@@ -523,14 +525,14 @@ public class PacketInfoManagerImplTest {
 
 		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 
-		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray.getBytes(), metaDataList);
 	}
 
 	@Test(expected = UnableToInsertData.class)
 	public void demographicDedupeUnableToInsertDataTest() {
 
 		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray.getBytes(), metaDataList);
 
 	}
 
@@ -541,7 +543,7 @@ public class PacketInfoManagerImplTest {
 				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
 		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentityNew.json");
-		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray.getBytes(), metaDataList);
 	}
 
 	@Test
@@ -582,7 +584,7 @@ public class PacketInfoManagerImplTest {
 	public void saveJsonUnableToInsertDataTest() {
 
 		Mockito.when(demographicJsonRepository.save(ArgumentMatchers.any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
+		packetInfoManagerImpl.saveDemographicInfoJson(byteArray.getBytes(), metaDataList);
 
 	}
 
@@ -683,14 +685,14 @@ public class PacketInfoManagerImplTest {
 				"Fetching applicant iris images from db. verifing image name of first record, expected value is LeftEye",
 				"LeftEye", resultList.get(0));
 	}
-	
+
 	@Test
 	public void testGetRegIdbyUIN() {
 		String uin = "123456789";
 		List<String> regIdlist = new ArrayList<>();
 		regIdlist.add("27847657360002520181208094056");
 		Mockito.when(packetInfoDao.getRegIdByUIN(uin)).thenReturn(regIdlist);
-		
+
 		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
 		assertEquals("27847657360002520181208094056", ridList.get(0));
 	}

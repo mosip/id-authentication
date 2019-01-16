@@ -1,3 +1,4 @@
+
 package io.mosip.registration.processor.packet.storage.service.impl;
 
 import java.io.ByteArrayOutputStream;
@@ -5,11 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -69,7 +68,6 @@ import io.mosip.registration.processor.packet.storage.exception.IdentityNotFound
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
-import io.mosip.registration.processor.packet.storage.exception.StreamToBytesConversionException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
@@ -634,15 +632,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * saveDemographicInfoJson(java.io.InputStream, java.util.List)
 	 */
 	@Override
-	public void saveDemographicInfoJson(InputStream demographicJsonStream, List<FieldValue> metaData) {
+	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData) {
 		DemographicInfoJson demoJson = new DemographicInfoJson();
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
-		if (demographicJsonStream == null)
+		if (bytes == null)
 			throw new FileNotFoundInPacketStore(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getMessage());
 
 		try {
-			byte[] bytes = IOUtils.toByteArray(demographicJsonStream);
+
 			demoJson.setDemographicDetails(bytes);
 			demoJson.setLangCode("eng");
 			demoJson.setPreRegId(preRegId);
@@ -654,10 +652,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			saveIndividualDemographicDedupe(bytes);
 
 			isTransactionSuccessful = true;
-		} catch (IOException e) {
-			LOGGER.error("Unable to convert InputStream to bytes", e);
-			throw new StreamToBytesConversionException(
-					PlatformErrorMessages.RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES.getMessage(), e);
 		} catch (DataAccessLayerException e) {
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {

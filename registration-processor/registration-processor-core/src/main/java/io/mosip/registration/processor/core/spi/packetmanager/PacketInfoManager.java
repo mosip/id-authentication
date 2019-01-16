@@ -1,7 +1,6 @@
 
 package io.mosip.registration.processor.core.spi.packetmanager;
 
-import java.io.InputStream;
 import java.util.List;
 
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
@@ -40,7 +39,7 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @param metaData
 	 *            the meta data
 	 */
-	public void saveDemographicInfoJson(InputStream demographicJsonStream, List<FieldValue> metaData);
+	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData);
 
 	/**
 	 * Gets the OsiData for QC user.
