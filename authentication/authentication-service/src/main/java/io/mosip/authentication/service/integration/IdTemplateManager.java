@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,7 +22,8 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 
 
 /**
- * 
+ * The Class IdTemplateManager.
+ *
  * @author Dinesh Karuppiah.T
  */
 
@@ -33,23 +33,29 @@ public class IdTemplateManager {
 	/** PDF Generator */
 	private PDFGenerator pdfGenerator;
 
-	/** Class path */
+	/**  Class path. */
 	private static final String CLASSPATH = "classpath";
 
-	/** UTF type */
+	/**  UTF type. */
 	private static final String ENCODE_TYPE = "UTF-8";
 
-	/** Template path */
+	/**  Template path. */
 	private static final String TEMPLATES = "templates/";
 
+	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
 	
+	/** The template manager builder. */
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
 	
+	/** The template manager. */
 	private TemplateManager templateManager;
 
 	
+	/**
+	 * Id template manager post construct.
+	 */
 	@PostConstruct
 	public void idTemplateManagerPostConstruct() {
 		templateManager = templateManagerBuilder.encodingType(ENCODE_TYPE)
@@ -57,13 +63,13 @@ public class IdTemplateManager {
 	}
 
 	/**
-	 * To apply Template for PDF Generation
-	 * 
+	 * To apply Template for PDF Generation.
+	 *
 	 * @param templateName - template name for pdf format
 	 * @param values       - list of contents
-	 * @return
-	 * @throws IdAuthenticationBusinessException
-	 * @throws IOException
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public String applyTemplate(String templateName, Map<String, Object> values)
 			throws IdAuthenticationBusinessException, IOException {
@@ -81,12 +87,12 @@ public class IdTemplateManager {
 	}
 
 	/**
-	 * Generate PDF for e-KYC
-	 * 
-	 * @param templateName
-	 * @param values
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Generate PDF for e-KYC.
+	 *
+	 * @param templateName the template name
+	 * @param values the values
+	 * @return the output stream
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public OutputStream generatePDF(String templateName, Map<String, Object> values)
 			throws IdAuthenticationBusinessException {

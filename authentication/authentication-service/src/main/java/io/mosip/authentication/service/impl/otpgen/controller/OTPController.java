@@ -50,13 +50,11 @@ public class OTPController {
 	/**
 	 * send OtpRequestDTO request to generate OTP and received OtpResponseDTO as
 	 * output.
-	 * 
-	 * @param otpRequestDto
-	 *            as request body
-	 * @param errors
-	 *            associate error
+	 *
+	 * @param otpRequestDto            as request body
+	 * @param errors            associate error
 	 * @return otpResponseDTO
-	 * @throws IdAuthenticationAppException
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@PostMapping(path = "/v1.0/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)

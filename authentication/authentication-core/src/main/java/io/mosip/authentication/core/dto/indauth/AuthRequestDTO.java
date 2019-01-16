@@ -22,13 +22,11 @@ public class AuthRequestDTO extends BaseAuthRequestDTO {
 
 	private AuthTypeDTO authType;
 
-	private String muaCode;
+	private String tspID;
 
 	private String txnID;
 
 	private String reqTime;
-
-	private String reqHmac;
 
 	private AuthSecureDTO key;
 

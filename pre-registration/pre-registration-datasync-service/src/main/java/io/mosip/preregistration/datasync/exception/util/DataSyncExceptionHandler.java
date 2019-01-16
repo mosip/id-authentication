@@ -20,7 +20,6 @@ import io.mosip.preregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.preregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.preregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.preregistration.datasync.exception.system.SystemFileIOException;
-import io.mosip.preregistration.datasync.exception.system.SystemFileNotFoundException;
 
 /**
  * Exception Handler
@@ -180,23 +179,6 @@ public class DataSyncExceptionHandler {
 	 */
 	@ExceptionHandler(SystemFileIOException.class)
 	public ResponseEntity<MainResponseDTO<?>> fileIOException(final SystemFileIOException e, WebRequest request) {
-		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
-		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
-		responseDto.setStatus(status);
-		responseDto.setErr(errorDetails);
-		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
-
-	}
-
-	/**
-	 * @param e
-	 * @param request
-	 * @return
-	 */
-	@ExceptionHandler(SystemFileNotFoundException.class)
-	public ResponseEntity<MainResponseDTO<?>> fileNotFoundException(final SystemFileNotFoundException e,
-			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainResponseDTO<?> responseDto = new MainResponseDTO<>();
 		responseDto.setStatus(status);

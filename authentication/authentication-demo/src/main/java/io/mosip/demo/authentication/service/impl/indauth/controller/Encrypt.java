@@ -49,6 +49,7 @@ import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
 import io.mosip.demo.authentication.service.dto.EncryptedRequest;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.swagger.annotations.ApiOperation;
@@ -139,7 +140,8 @@ public class Encrypt {
 		request.setApplicationId(appID);
 		request.setData(Base64.encodeBase64URLSafeString(data.getBytes()));
 		request.setReferenceId(tspID);
-		request.setTimeStamp(LocalDateTime.now().toString());
+		String utcTime = DateUtils.getUTCCurrentDateTimeString();
+		request.setTimeStamp(utcTime);
 
 		ResponseEntity<CryptomanagerResponseDto> response = restTemplate.exchange(encryptURL, HttpMethod.POST,
 				getHeaders(request), CryptomanagerResponseDto.class);

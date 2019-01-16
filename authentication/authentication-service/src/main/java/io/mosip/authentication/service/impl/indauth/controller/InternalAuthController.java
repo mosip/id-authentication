@@ -43,6 +43,7 @@ public class InternalAuthController {
 	@Autowired
 	private InternalAuthRequestValidator internalAuthRequestValidator;
 
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
@@ -60,11 +61,14 @@ public class InternalAuthController {
 	}
 
 	/**
-	 * @throws IdAuthenticationAppException
-	 * @throws IdAuthenticationDaoException 
-	 * 
-	 * 
-	 * 
+	 * Authenticate tsp.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param e the e
+	 * @return the auth response DTO
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
 	@PostMapping(path = "/v1.0/auth/internal", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)

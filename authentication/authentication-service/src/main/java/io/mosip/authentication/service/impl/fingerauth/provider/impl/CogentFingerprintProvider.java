@@ -3,17 +3,16 @@ package io.mosip.authentication.service.impl.fingerauth.provider.impl;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
+
 
 /**
  * The Class CogentFingerprintProvider - FingerprintProvider for Cogent devices.
  *
- * @author Manoj SP
+ * @author Manoj SP , Arun Bose S
  */
-@Component
+
 public class CogentFingerprintProvider extends FingerprintProvider {
 
 	/*
@@ -48,6 +47,27 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 	@Override
 	public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 		return Optional.empty();
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider#createMinutiae(byte[])
+	 */
+	@Override
+	public String createMinutiae(byte[] inputImage) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double matchImage(Object reqInfo, Object entityInfo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double matchMultiImage(Object reqInfo, Object entityInfo) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

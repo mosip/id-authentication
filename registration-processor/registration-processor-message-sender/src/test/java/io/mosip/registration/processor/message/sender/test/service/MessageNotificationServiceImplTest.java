@@ -158,7 +158,7 @@ public class MessageNotificationServiceImplTest {
 	}
 
 	@Test(expected = EmailIdNotFoundException.class)
-	public void testEmailIDNotFoundException() throws IOException, ApisResourceAccessException {
+	public void testEmailIDNotFoundException() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File demographicJsonFile = new File(classLoader.getResource("DemographicInfo2.json").getFile());
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
@@ -184,7 +184,7 @@ public class MessageNotificationServiceImplTest {
 	}
 
 	@Test(expected = TemplateGenerationFailedException.class)
-	public void testTemplateProcessingFailureException() throws IOException, ApisResourceAccessException {
+	public void testTemplateProcessingFailureException() throws Exception {
 		Mockito.when(templateGenerator.getTemplate("EMAIL_TEMP_FOR_UIN_GEN", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 

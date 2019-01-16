@@ -3,4 +3,6 @@ export interface NameList {
   fullName: string;
   regDto?: any;
   status?: string;
+  registrationCenter?: any, 
+  bookingData?: any
 }

@@ -23,7 +23,7 @@ public class KeyGenerator {
 	/**
 	 * Symmetric key algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
 	private String symmetricKeyAlgorithm;
 
 	/**
@@ -35,7 +35,7 @@ public class KeyGenerator {
 	/**
 	 * Asymmetric key algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
 	private String asymmetricKeyAlgorithm;
 
 	/**
