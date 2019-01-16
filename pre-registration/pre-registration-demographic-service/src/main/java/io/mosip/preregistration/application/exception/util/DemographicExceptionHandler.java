@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
+import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
 import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
@@ -169,6 +170,24 @@ public class DemographicExceptionHandler {
 	 */
 	@ExceptionHandler(InvalidRequestParameterException.class)
 	public ResponseEntity<MainListResponseDTO<?>> invalidRequest(final InvalidRequestParameterException e,
+			WebRequest request) {
+		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
+		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();
+		errorRes.setErr(errorDetails);
+		errorRes.setStatus(Boolean.FALSE);
+		errorRes.setResTime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for InvalidRequestParameterException
+	 */
+	@ExceptionHandler(RecordFailedToUpdateException.class)
+	public ResponseEntity<MainListResponseDTO<?>> recordFailedToUpdateException(final RecordFailedToUpdateException e,
 			WebRequest request) {
 		ExceptionJSONInfoDTO errorDetails = new ExceptionJSONInfoDTO(e.getErrorCode(), e.getErrorText());
 		MainListResponseDTO<?> errorRes = new MainListResponseDTO<>();

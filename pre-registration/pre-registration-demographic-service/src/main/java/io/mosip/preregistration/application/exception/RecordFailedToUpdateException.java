@@ -1,28 +1,33 @@
-package io.mosip.preregistration.datasync.exception;
+/* 
+ * Copyright
+ * 
+ */
+package io.mosip.preregistration.application.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * DataSyncRecordNotFoundException
+ * This class defines the RecordFailedToDeleteException
  * 
- * @author M1046129
- *
+ * @author Rajath KR
+ * @since 1.0.0
+ * 
  */
-public class DataSyncRecordNotFoundException extends BaseUncheckedException {
-
+public class RecordFailedToUpdateException extends BaseUncheckedException {
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor
 	 */
-	public DataSyncRecordNotFoundException() {
+	public RecordFailedToUpdateException() {
 		super();
 	}
 
 	/**
 	 * @param errorMessage pass the error message
 	 */
-	public DataSyncRecordNotFoundException(String errorMessage) {
+	public RecordFailedToUpdateException(String errorMessage) {
 		super("", errorMessage);
 	}
 
@@ -30,7 +35,7 @@ public class DataSyncRecordNotFoundException extends BaseUncheckedException {
 	 * @param errorCode pass the error code
 	 * @param errorMessage pass the error message
 	 */
-	public DataSyncRecordNotFoundException(String errorCode, String errorMessage) {
+	public RecordFailedToUpdateException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage, null);
 	}
 
@@ -38,7 +43,7 @@ public class DataSyncRecordNotFoundException extends BaseUncheckedException {
 	 * @param errorMessage pass the error message
 	 * @param rootCause pass the cause
 	 */
-	public DataSyncRecordNotFoundException(String errorMessage, Throwable rootCause) {
+	public RecordFailedToUpdateException(String errorMessage, Throwable rootCause) {
 		super("", errorMessage, rootCause);
 	}
 
@@ -47,8 +52,7 @@ public class DataSyncRecordNotFoundException extends BaseUncheckedException {
 	 * @param errorMessage pass the error message
 	 * @param rootCause pass the cause
 	 */
-	public DataSyncRecordNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
+	public RecordFailedToUpdateException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
-
 }

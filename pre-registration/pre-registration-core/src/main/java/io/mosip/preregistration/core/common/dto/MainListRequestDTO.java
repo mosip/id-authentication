@@ -1,4 +1,4 @@
-package io.mosip.preregistration.booking.dto;
+package io.mosip.preregistration.core.common.dto;
 
 import java.io.Serializable;
 import java.util.Date;
