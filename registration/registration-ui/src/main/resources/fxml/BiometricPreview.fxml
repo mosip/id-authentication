@@ -38,7 +38,7 @@
                                  <children>
                                     <AnchorPane fx:id="fingerprintAnchorPane" layoutX="14.0" layoutY="14.0" prefHeight="289.0" prefWidth="765.0">
                                        <children>
-                                          <AnchorPane>
+                                          <AnchorPane fx:id="leftSlapAnchorPane">
                                              <children>
                                                 <Label layoutX="24.0" layoutY="231.0" text="%quality" />
                                                 <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
@@ -49,7 +49,7 @@
                                                 <ImageView fx:id="leftPalm" fitHeight="183.0" fitWidth="215.0" layoutX="21.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane layoutX="258.0" prefHeight="289.0" prefWidth="261.0">
+                                          <AnchorPane fx:id="rightSlapAnchorPane" layoutX="258.0" prefHeight="289.0" prefWidth="261.0">
                                              <children>
                                                 <Label layoutX="24.0" layoutY="231.0" text="%quality" />
                                                 <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
@@ -60,7 +60,7 @@
                                                 <ImageView fx:id="rightPalm" fitHeight="182.0" fitWidth="219.0" layoutX="19.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane layoutX="509.0">
+                                          <AnchorPane fx:id="thumbAnchorPane" layoutX="509.0">
                                              <children>
                                                 <Label layoutX="24.0" layoutY="231.0" text="%quality" />
                                                 <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
@@ -99,7 +99,7 @@
                                        </children></AnchorPane>
                                     <AnchorPane fx:id="irisAnchorPane" layoutX="14.0" layoutY="303.0" prefHeight="289.0" prefWidth="765.0">
                                        <children>
-                                          <AnchorPane layoutY="7.0">
+                                          <AnchorPane fx:id="leftIrisAnchorPane" layoutY="7.0">
                                              <children>
                                                 <Label layoutX="24.0" layoutY="231.0" text="%quality" />
                                                 <Label layoutX="24.0" layoutY="262.0" text="%threshold" />
@@ -110,7 +110,7 @@
                                                 <ImageView fx:id="leftEye" fitHeight="176.0" fitWidth="218.0" layoutX="19.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane layoutX="258.0" layoutY="7.0">
+                                          <AnchorPane fx:id="rightIrisAnchorPane" layoutX="258.0" layoutY="7.0">
                                              <children>
                                                 <Label layoutX="24.0" layoutY="231.0" text="%quality" />
                                                 <Label layoutX="24.0" layoutY="262.0" text="%threshold" />

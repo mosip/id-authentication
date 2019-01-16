@@ -923,6 +923,9 @@ public class RegistrationController extends BaseController {
 							autoAgeDatePicker);
 				}
 
+				toggleIrisCaptureVisibility(false);
+				togglePhotoCaptureVisibility(false);
+				
 				if (toggleBiometricException) {
 					biometricException.setVisible(true);
 					toggleFingerprintCaptureVisibility(false);
