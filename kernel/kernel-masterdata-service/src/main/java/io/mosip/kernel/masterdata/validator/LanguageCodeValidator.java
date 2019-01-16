@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.masterdata.constant.ValidLangCodeErrorCode;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import lombok.Data;
 
 /**
  * To validate Language codes as per ISO:639-3 standard during creation and
@@ -23,6 +24,7 @@ import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
+@Data
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
 
 	@Autowired
