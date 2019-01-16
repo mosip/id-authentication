@@ -17,6 +17,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
@@ -24,7 +26,9 @@ import io.mosip.registration.processor.abis.dto.CandidatesDto;
 import io.mosip.registration.processor.abis.dto.IdentifyRequestDto;
 import io.mosip.registration.processor.abis.dto.IdentifyResponseDto;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -65,6 +69,8 @@ public class AbisServiceImpl implements AbisService {
 	@Value("${TESTFACE}")
 	private String TESTFACE;
 
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisServiceImpl.class);
+
 	/**
 	 * Insert.
 	 *
@@ -82,27 +88,38 @@ public class AbisServiceImpl implements AbisService {
 	 */
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
+
 		boolean isPresent = false;
-
-		String referenceId = abisInsertRequestDto.getReferenceId();
-		Document doc = getCbeffDocument(referenceId);
-
-		NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
-		NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
-		NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
-
-		if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
-			isPresent = true;
-		}
-
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
-		response.setId(INSERT);
-		response.setRequestId(abisInsertRequestDto.getRequestId());
-		response.setTimestamp(abisInsertRequestDto.getTimestamp());
-		if (isPresent) {
-			response.setReturnValue(1);
-		} else {
-			response.setReturnValue(2);
+		String referenceId = abisInsertRequestDto.getReferenceId();
+		try {
+
+			Document doc = getCbeffDocument(referenceId);
+
+			if (TESTFINGERPRINT == null || TESTIRIS == null || TESTFACE == null) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
+			}
+
+			NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
+			NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
+			NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
+
+			if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
+				isPresent = true;
+			}
+
+			response.setId(INSERT);
+			response.setRequestId(abisInsertRequestDto.getRequestId());
+			response.setTimestamp(abisInsertRequestDto.getTimestamp());
+			if (isPresent) {
+				response.setReturnValue(1);
+			} else {
+				response.setReturnValue(2);
+			}
+		} catch (NullPointerException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "Test Tags are not present" + ExceptionUtils.getStackTrace(e));
 		}
 
 		return response;
@@ -131,6 +148,10 @@ public class AbisServiceImpl implements AbisService {
 		pathSegments.add(regId);
 
 		byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
+		if (bytefile == null) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "Byte file not found from BioDedupe api");
+		}
 
 		File testCbeff = new File("TestCbeff.xml");
 		try (FileOutputStream fos = new FileOutputStream(testCbeff)) {
