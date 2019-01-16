@@ -723,7 +723,9 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
-	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
+	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
+	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
+	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
 
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";

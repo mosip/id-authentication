@@ -62,7 +62,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	@Autowired
 	private GlobalParamDAO globalParamDAO;
-	
+
 	@Autowired
 	private UserOnboardDAO userOnboardDAO;
 
@@ -73,7 +73,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	public Map<String, Object> getGlobalParams() {
 
-		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBALPARAMSSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of global params");
 
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of global params",
@@ -82,42 +82,36 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		return globalParamDAO.getGlobalParams();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData(
-	 * String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData()
 	 */
 	@Override
 	public ResponseDTO synchConfigData() {
-		LOGGER.debug("REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		
-		String centerID=null;
+		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
+			LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					" Unable to synch config data");
+			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
+		}
+
+		String centerID = null;
 		try {
 			String macId = RegistrationSystemPropertiesChecker.getMachineId();
-			
+
 			// get stationID
 			String stationID = userOnboardDAO.getStationID(macId);
 			// get CenterID
 			centerID = userOnboardDAO.getCenterID(stationID);
-			
-		} catch (RegBaseCheckedException exception) {
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
-		}
-		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
-			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
-		}
 
-		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
+			Map<String, String> requestParamMap = new HashMap<String, String>();
+			requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
 
-		try {
+			/** REST CALL */
 			@SuppressWarnings("unchecked")
 			HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true);
@@ -140,16 +134,18 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				globalParam.setVal(globalParamMap.get(key.getValue()));
 				list.add(globalParam);
 			}
+
+			/** Save all Global Params */
 			globalParamDAO.saveAll(list);
+
 			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 
 		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException
 				| ResourceAccessException exception) {
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
-		LOGGER.debug("REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is completed");
 
 		return responseDTO;
