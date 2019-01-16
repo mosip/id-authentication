@@ -159,7 +159,7 @@ public class DocumentServiceUtil {
 		documentEntity.setDocCatCode(dto.getDocCatCode());
 		documentEntity.setDocTypeCode(dto.getDocTypeCode());
 		documentEntity.setDocFileFormat(dto.getDocFileFormat());
-		documentEntity.setStatusCode(StatusCodes.PENDINGAPPOINTMENT.getCode());
+		documentEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
 		documentEntity.setLangCode(dto.getLangCode());
 		documentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		documentEntity.setUpdBy(dto.getUploadBy());
@@ -265,7 +265,7 @@ public class DocumentServiceUtil {
 		copyDocumentEntity.setLangCode(documentEntity.getLangCode());
 		copyDocumentEntity.setCrDtime(DateUtils.parseDateToLocalDateTime(new Date()));
 		copyDocumentEntity.setUpdDtime(DateUtils.parseDateToLocalDateTime(new Date()));
-		copyDocumentEntity.setStatusCode(StatusCodes.PENDINGAPPOINTMENT.getCode());
+		copyDocumentEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
 		return copyDocumentEntity;
 	}
 
