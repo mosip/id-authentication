@@ -260,7 +260,7 @@ public class TemplateGenerator extends BaseService {
 
 			// QR Code Generation
 			StringBuilder qrCodeString = new StringBuilder();
-			qrCodeString.append("N: ")
+			qrCodeString.append("Name: ")
 					.append(getValue(
 							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							platformLanguageCode));
@@ -275,7 +275,7 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			qrCodeString.append("\n");
-			qrCodeString.append("A: ");
+			qrCodeString.append("Address: ");
 			qrCodeString.append(
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
 							platformLanguageCode));
@@ -290,7 +290,7 @@ public class TemplateGenerator extends BaseService {
 			qrCodeString.append("\n");
 			qrCodeString.append("RID: ").append(registration.getRegistrationId());
 			qrCodeString.append("\n");
-			qrCodeString.append("G: ")
+			qrCodeString.append("Gender: ")
 					.append(getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
 							platformLanguageCode));
 			qrCodeString.append("\n");
@@ -301,7 +301,7 @@ public class TemplateGenerator extends BaseService {
 					byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
 							.getCompressedFacePhoto();
 
-					qrCodeString.append("I: ").append(CryptoUtil.encodeBase64(applicantPhoto));
+					qrCodeString.append("Image: ").append(CryptoUtil.encodeBase64(applicantPhoto));
 
 					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 				} else {

@@ -83,16 +83,16 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane credentialsPane;
-	
+
 	@FXML
 	private AnchorPane otpPane;
-	
+
 	@FXML
 	private AnchorPane fingerprintPane;
-	
+
 	@FXML
 	private AnchorPane irisPane;
-	
+
 	@FXML
 	private AnchorPane facePane;
 
@@ -101,7 +101,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private TextField password;
-	
+
 	@FXML
 	private TextField otp;
 
@@ -161,10 +161,10 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private FingerprintFacade fingerprintFacade;
-	
+
 	@Autowired
 	private IrisFacade irisFacade;
-	
+
 	@Autowired
 	private FaceFacade faceFacade;
 
@@ -222,7 +222,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validate user id.
 	 *
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	public void validateUserId(ActionEvent event) {
 
@@ -279,7 +280,8 @@ public class LoginController extends BaseController implements Initializable {
 										isNewUser);
 								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
 							} else {
-								SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
+								SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
+										true);
 								Set<String> roleSet = new HashSet<>();
 								roleSet.add("*");
 								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
@@ -357,10 +359,10 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (serverStatus || offlineStatus) {
 
-				LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
-						APPLICATION_ID, "Loading next login screen");
-				credentialsPane.setVisible(false);
-				loadNextScreen(userDetail, RegistrationConstants.PWORD);
+			LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER, APPLICATION_NAME,
+					APPLICATION_ID, "Loading next login screen");
+			credentialsPane.setVisible(false);
+			loadNextScreen(userDetail, RegistrationConstants.PWORD);
 
 		}
 	}
@@ -374,24 +376,27 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	public void generateOtp(ActionEvent event) {
 
-		// Response obtained from server
-		ResponseDTO responseDTO = otpGenerator.getOTP(userId.getText());
+		if (userId.getText().isEmpty()) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+		} else {
+			// Response obtained from server
+			ResponseDTO responseDTO = otpGenerator.getOTP(userId.getText());
 
-		if (responseDTO.getSuccessResponseDTO() != null) {
-			// Enable submit button
-			changeToOTPSubmitMode();
+			if (responseDTO.getSuccessResponseDTO() != null) {
+				// Enable submit button
+				changeToOTPSubmitMode();
 
-			// Generate alert to show OTP
-			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(RegistrationConstants.ERROR, successResponseDTO.getMessage());
+				// Generate alert to show OTP
+				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+				generateAlert(RegistrationConstants.ERROR, successResponseDTO.getMessage());
 
-		} else if (responseDTO.getErrorResponseDTOs() != null) {
-			// Generate Alert to show INVALID USERNAME
-			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+			} else if (responseDTO.getErrorResponseDTOs() != null) {
+				// Generate Alert to show INVALID USERNAME
+				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 
+			}
 		}
-
 	}
 
 	/**
@@ -402,7 +407,7 @@ public class LoginController extends BaseController implements Initializable {
 	@FXML
 	public void validateOTP(ActionEvent event) {
 
-		if (!otp.getText().isEmpty() && otp.getText().length() != 3) {
+		if (!otp.getText().isEmpty()) {
 
 			UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
@@ -521,7 +526,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Checking server status
 	 * 
-	 * @param LoginUserDTO the UserDTO object
+	 * @param LoginUserDTO
+	 *            the UserDTO object
 	 * @return boolean
 	 */
 	private boolean getConnectionCheck(LoginUserDTO userObj) {
@@ -551,11 +557,12 @@ public class LoginController extends BaseController implements Initializable {
 		getOTP.setVisible(false);
 		resend.setVisible(true);
 	}
-	
+
 	/**
 	 * Load login screen depending on Loginmode
 	 * 
-	 * @param loginMode login screen to be loaded
+	 * @param loginMode
+	 *            login screen to be loaded
 	 */
 	public void loadLoginScreen(String loginMode) {
 		switch (loginMode) {
@@ -582,7 +589,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating User role and Machine mapping during login
 	 * 
-	 * @param userId entered userId
+	 * @param userId
+	 *            entered userId
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setInitialLoginInfo(String userId) {
@@ -611,7 +619,8 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Fetching and Validating machine and center id
 	 * 
-	 * @param userDetail the userDetail
+	 * @param userDetail
+	 *            the userDetail
 	 * @return boolean
 	 * @throws RegBaseCheckedException
 	 */
@@ -636,9 +645,12 @@ public class LoginController extends BaseController implements Initializable {
 	 * Setting values for Session context and User context and Initial info for
 	 * Login
 	 * 
-	 * @param userId     entered userId
-	 * @param userDetail userdetails
-	 * @param roleList   list of user roles
+	 * @param userId
+	 *            entered userId
+	 * @param userDetail
+	 *            userdetails
+	 * @param roleList
+	 *            list of user roles
 	 * @throws RegBaseCheckedException
 	 */
 	private boolean setSessionContext(String authInfo, UserDetail userDetail, List<String> roleList) {
@@ -676,8 +688,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Loading next login screen in case of multifactor authentication
 	 * 
-	 * @param userDetail the userDetail
-	 * @param loginMode the loginMode
+	 * @param userDetail
+	 *            the userDetail
+	 * @param loginMode
+	 *            the loginMode
 	 */
 	private void loadNextScreen(UserDetail userDetail, String loginMode) {
 
@@ -691,19 +705,19 @@ public class LoginController extends BaseController implements Initializable {
 
 		} else {
 			if (setInitialLoginInfo(userId.getText())) {
-				
+
 				try {
 
 					LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 							"Loading Home screen");
 					schedulerUtil.startSchedulerUtil();
-	
+
 					BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-	
+
 					userDetail.setLastLoginMethod(loginMode);
 					userDetail.setLastLoginDtimes(Timestamp.valueOf(LocalDateTime.now()));
 					userDetail.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
-	
+
 					loginService.updateLoginParams(userDetail);
 				} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 
@@ -818,8 +832,10 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating invalid number of login attempts
 	 * 
-	 * @param userDetail user details
-	 * @param userId     entered userId
+	 * @param userDetail
+	 *            user details
+	 * @param userId
+	 *            entered userId
 	 * @return boolean
 	 */
 	private boolean validateInvalidLogin(UserDetail userDetail, String errorMessage) {
@@ -851,9 +867,10 @@ public class LoginController extends BaseController implements Initializable {
 
 		}
 
-		String unlockMessage =
-				String.format("%s %s %s %s %s", RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER, String.valueOf(invalidLoginCount), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE, String.valueOf(invalidLoginTime),RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES);
-				
+		String unlockMessage = String.format("%s %s %s %s %s", RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_NUMBER,
+				String.valueOf(invalidLoginCount), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE,
+				String.valueOf(invalidLoginTime), RegistrationUIConstants.USER_ACCOUNT_LOCK_MESSAGE_MINUTES);
+
 		if (loginCount >= invalidLoginCount) {
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
@@ -901,10 +918,14 @@ public class LoginController extends BaseController implements Initializable {
 	/**
 	 * Validating login time and count
 	 * 
-	 * @param loginCount        number of invalid attempts
-	 * @param invalidLoginCount count from global param
-	 * @param loginTime         login time from table
-	 * @param invalidLoginTime  login time from global param
+	 * @param loginCount
+	 *            number of invalid attempts
+	 * @param invalidLoginCount
+	 *            count from global param
+	 * @param loginTime
+	 *            login time from table
+	 * @param invalidLoginTime
+	 *            login time from global param
 	 * @return boolean
 	 */
 	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
