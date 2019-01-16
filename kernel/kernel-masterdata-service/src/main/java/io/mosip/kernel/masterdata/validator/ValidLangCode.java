@@ -20,7 +20,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidLangCode {
 
-	String message() default "Language code not supported.";
+	String message() default "Language code not supported";
 
 	Class<?>[] groups() default {};
 

@@ -59,8 +59,6 @@ public class RegistrationCenterDto {
 	private String workingHours;
 
 	@ValidLangCode
-	@NotBlank
-	@Size(min = 1, max = 3)
 	private String languageCode;
 
 	private Short numberOfKiosks;
