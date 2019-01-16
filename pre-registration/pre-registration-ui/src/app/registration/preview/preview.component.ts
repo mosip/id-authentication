@@ -24,10 +24,8 @@ export class PreviewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-   // this.preRegId = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].preRegId;
    this.user = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1]; 
    console.log(this.user);
-      // console.log(response);
       this.previewData = this.user.request.demographicDetails.identity;
       const now = new Date();
       const born = new Date(this.previewData.dateOfBirth[0].value);

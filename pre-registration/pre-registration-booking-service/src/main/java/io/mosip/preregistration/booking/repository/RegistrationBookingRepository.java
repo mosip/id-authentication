@@ -35,7 +35,7 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @return RegistrationBookingEntity based on Pre-registration-Id and status code
 	 */
 	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode);
-	
+	 
 	@Query(preIdQuery)
 	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
 	
