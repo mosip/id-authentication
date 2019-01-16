@@ -84,17 +84,19 @@ public class BiometricProviderFactory {
 	public MosipBiometricProvider getBiometricProvider(BioInfo bioInfo) {
 
 		if (bioInfo.getBioType().equalsIgnoreCase(BiometricProviderFactory.IRIS_IMG)) {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER)))
+			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER))) {
 				return getCogentIrisProvider();
-			else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORHO_BIO_PROVIDER)))
+			} else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORHO_BIO_PROVIDER))) {
 				return getMorphoIrisProvider();
+			}
 		}
 
 		else {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER)))
+			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER))) {
 				return getCogentFingerProvider();
-			else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_BIO_PROVIDER)))
+			} else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_BIO_PROVIDER))) {
 				return getMantraFingerprintProvider();
+			}
 		}
 		
 		return null;
