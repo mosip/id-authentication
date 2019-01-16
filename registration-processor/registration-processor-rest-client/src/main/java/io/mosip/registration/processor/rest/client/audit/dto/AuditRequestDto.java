@@ -68,7 +68,7 @@ public class AuditRequestDto {
 
 	/** The action time stamp. */
 	@NotNull
-	private LocalDateTime actionTimeStamp;
+	private String actionTimeStamp;
 
 	/** The host name. */
 	@NotNull
