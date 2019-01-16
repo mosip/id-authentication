@@ -140,16 +140,16 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param hierarchyLevel
 	 *            input from user
-	 * @param text
+	 * @param name
 	 *            input from user
 	 * @return {@link RegistrationCenterResponseDto}
 	 */
-	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevelname}/{name}")
+	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevel}/{name}")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
-			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevelname") String hierarchyLevel,
-			@PathVariable("name") String text) {
+			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
+			@PathVariable("name") String name) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,
-				hierarchyLevel, text);
+				hierarchyLevel, name);
 
 	}
 
@@ -207,7 +207,6 @@ public class RegistrationCenterController {
 
 	}
 
-
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,List
 	 * of text and language code
@@ -216,16 +215,16 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param hierarchyLevel
 	 *            input from user
-	 * @param texts
+	 * @param names
 	 *            input from user
 	 * @return {@link RegistrationCenterResponseDto}
 	 */
 	@GetMapping("/v1.0/registrationcenters/names/{langcode}/{hierarchylevel}")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
 			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
-			@RequestParam("name") List<String> texts) {
+			@RequestParam("name") List<String> names) {
 		return registrationCenterService.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(langCode,
-				hierarchyLevel, texts);
+				hierarchyLevel, names);
 	}
 
 }
