@@ -22,7 +22,7 @@
 
 ** Properties to be added in parent Spring Application environment **
 
-[kernel-idgenerator-tokenid-dev.properties](../../config/kernel-idgenerator-tokenid-dev.properties)
+[application-dev.properties](../../config/application-dev.properties)
 
 
 **Database properties**

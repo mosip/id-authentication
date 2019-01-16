@@ -3,11 +3,14 @@ package io.mosip.kernel.ridgenerator.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+import io.mosip.kernel.core.util.MathUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
 import io.mosip.kernel.ridgenerator.entity.Rid;
@@ -21,6 +24,7 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
  * 
  * @author Ritesh Sinha
  * @author Sidhant Agarwal
+ * @author Abhishek Kumar
  * @since 1.0.0
  *
  */
@@ -33,8 +37,23 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	@Value("${mosip.kernel.rid.machineid-length:-1}")
 	private int machineIdLength;
 
+	@Value("${mosip.kernel.rid.sequence-max-digit}")
+	private int sequenceMaxDigit;
+
+	@Value("${mosip.kernel.rid.sequence-initial-value:1}")
+	private int sequenceInitialValue;
+
+	private String sequenceFormat;
+	private int sequenceEndvalue;
+
 	@Autowired
 	RidRepository ridRepository;
+
+	@PostConstruct
+	public void constructValue() {
+		sequenceFormat = "%0" + sequenceMaxDigit + "d";
+		sequenceEndvalue = MathUtils.getPow(10, sequenceMaxDigit) - 1;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -108,24 +127,20 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 */
 	private String sequenceNumberGenerator(String machineId) {
 
-		final int initialValue = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
-
 		Rid entity = ridRepository.findById(Rid.class, machineId);
 
-		if (entity == null || entity.getSequenceId() == Integer
-				.parseInt(RidGeneratorPropertyConstant.SEQUENCE_END_VALUE.getProperty())) {
+		if (entity == null || entity.getCurrentSequenceNo() == sequenceEndvalue) {
 
 			entity = new Rid();
-			entity.setMachineId(machineId);
-			entity.setSequenceId(initialValue);
+			entity.setCurrentSequenceNo(sequenceInitialValue);
 
 		} else {
 
-			entity.setSequenceId(entity.getSequenceId() + 1);
+			entity.setCurrentSequenceNo(entity.getCurrentSequenceNo() + 1);
 
 		}
 		ridRepository.save(entity);
-		return String.format("%05d", entity.getSequenceId());
+		return String.format(sequenceFormat, entity.getCurrentSequenceNo());
 	}
 
 	/**
