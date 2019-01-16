@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +46,10 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
+	
+	@Qualifier("blacklistedWordsToWordAndLanguageCodeIDDefaultMapper")
 	@Autowired
-	private DataMapper dataMapper;
+	private DataMapper<BlacklistedWords,WordAndLanguageCodeID> blacklistedWordsToWordAndLanguageCodeIDDefaultMapper;
 
 	/*
 	 * (non-Javadoc)
@@ -129,9 +132,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		WordAndLanguageCodeID wordAndLanguageCodeID = new WordAndLanguageCodeID();
-		dataMapper.map(blacklistedWords, wordAndLanguageCodeID, true, null, null, true);
-		return wordAndLanguageCodeID;
+		
+		return blacklistedWordsToWordAndLanguageCodeIDDefaultMapper.map(blacklistedWords);
 	}
 
 	/*
