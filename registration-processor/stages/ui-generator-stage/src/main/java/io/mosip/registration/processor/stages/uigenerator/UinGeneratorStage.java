@@ -137,6 +137,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	@Autowired
 	TriggerNotificationForUIN triggerNotificationForUIN;
 	
 	/* (non-Javadoc)
@@ -158,12 +159,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			JSONParser parser = new JSONParser(); 
 			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
 			JSONObject	demographicIdentity = (JSONObject) identityJson.get("identity");
-			String uinFieldCheck=(String) demographicIdentity.get("uin");
+			String uinFieldCheck=(String) demographicIdentity.get("UIN");
 			boolean isUinCreate=false;
 			if(uinFieldCheck==null || ("").equals(uinFieldCheck)) {
 				uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
-				identityJson.remove("UIN");
-				identityJson.put("UIN", uinResponseDto.getUin());
+				long uinInLong=Long.parseLong(uinResponseDto.getUin());
+				demographicIdentity.put("UIN", uinInLong);
+				identityJson.remove("identity");
+				identityJson.put("identity", demographicIdentity);
 				idResponseDTO=sendIdRepoWithUin(registrationId,uinResponseDto.getUin());
 				isUinCreate=true;
 			}else {
@@ -309,11 +312,11 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MessageDTO mm=new MessageDTO();
+		/*MessageDTO mm=new MessageDTO();
 		mm.setRid("132345");
-		this.process(mm);
-/*		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);*/
+		this.process(mm);*/
+	mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
 
 	}
 

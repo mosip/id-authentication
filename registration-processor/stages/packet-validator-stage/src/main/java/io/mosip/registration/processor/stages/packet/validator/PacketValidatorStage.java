@@ -194,7 +194,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 
-							packetInfoManager.saveDemographicInfoJson(bytes,
+							packetInfoManager.saveDemographicInfoJson(IOUtils.toByteArray(demographicInfoStream),
 									packetMetaInfo.getIdentity().getMetaData());
 							packetInfoManager.saveDocuments(documentList);
 							object.setRid(dto.getRegistrationId());
