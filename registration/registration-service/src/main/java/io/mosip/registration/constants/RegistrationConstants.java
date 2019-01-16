@@ -829,6 +829,7 @@ public class RegistrationConstants {
 	// Global-Config Constants
 	public static final String GET_GLOBAL_CONFIG = "get_registration_center_config";
 	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
+	public static final String GLOBAL_CONFIG_ERROR_MSG = "please synch the data before starting the application";
 
 	public enum mappedCodeForLang {
 		en("ENG"),ar("AR");
