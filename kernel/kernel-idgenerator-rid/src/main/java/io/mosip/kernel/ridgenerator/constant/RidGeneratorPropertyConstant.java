@@ -8,11 +8,7 @@ package io.mosip.kernel.ridgenerator.constant;
  *
  */
 public enum RidGeneratorPropertyConstant {
-	TIMESTAMP_FORMAT("yyyyMMddHHmmss"),
-	CENTERID_MIN_LENGTH("4"),
-	DONGLEID_MIN_LENGTH("5"),
-	SEQUENCE_START_VALUE("1"),
-	SEQUENCE_END_VALUE("99999");
+	TIMESTAMP_FORMAT("yyyyMMddHHmmss");
 
 	/**
 	 * The property for ridgenerator.
