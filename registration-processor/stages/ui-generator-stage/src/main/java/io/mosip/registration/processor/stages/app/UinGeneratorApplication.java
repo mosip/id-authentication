@@ -11,7 +11,7 @@ import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;
 @SpringBootApplication(scanBasePackages = { 
 		"io.mosip.registration.processor.status", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client","io.mosip.registration.processor.packet.storage",
-		"io.mosip.registration.processor.core","io.mosip.registration.processor.stages.uigenerator"})
+		"io.mosip.registration.processor.core","io.mosip.registration.processor.stages","io.mosip.registration.processor.message.sender"})
 public class UinGeneratorApplication {
 
 	/** The validatebean. */
