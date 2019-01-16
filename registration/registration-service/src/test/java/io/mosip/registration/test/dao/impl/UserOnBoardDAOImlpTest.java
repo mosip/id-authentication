@@ -2,11 +2,14 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.mockito.Matchers.anyObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.taskdefs.EchoXML;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -77,7 +80,7 @@ public class UserOnBoardDAOImlpTest {
 	}
 	
 	@Test
-	public void UserOnBoardSuccess() {
+	public void UserOnBoardSuccess() throws IOException {
 
 		List<UserBiometric> bioMetricsList = new ArrayList<>();
 
@@ -85,9 +88,14 @@ public class UserOnBoardDAOImlpTest {
 
 		List<FingerprintDetailsDTO> listOfFingerPrints = new ArrayList<>();
 		List<FingerprintDetailsDTO> listOfFingerSegmets = new ArrayList<>();
+		
+		
+		File file = new File(ClassLoader.getSystemResource("ISOTemplate.iso").getFile());
+		byte[] data = FileUtils.readFileToByteArray(file);
+		
 
 		FingerprintDetailsDTO fingerDto = new FingerprintDetailsDTO();
-		fingerDto.setFingerPrint("leftIndex".getBytes());
+		fingerDto.setFingerPrint(data);
 		fingerDto.setFingerprintImageName("leftIndex");
 		fingerDto.setFingerPrintISOImage("leftIndex".getBytes());
 		fingerDto.setFingerType("FingerPrint");
@@ -98,7 +106,7 @@ public class UserOnBoardDAOImlpTest {
 		listOfFingerPrints.add(fingerDto);
 
 		fingerDto = new FingerprintDetailsDTO();
-		fingerDto.setFingerPrint("leftLittle".getBytes());
+		fingerDto.setFingerPrint(data);
 		fingerDto.setFingerprintImageName("leftLittle");
 		fingerDto.setFingerPrintISOImage("leftLittle".getBytes());
 		fingerDto.setFingerType("FingerPrint");
@@ -109,7 +117,7 @@ public class UserOnBoardDAOImlpTest {
 		listOfFingerPrints.add(fingerDto);
 
 		fingerDto = new FingerprintDetailsDTO();
-		fingerDto.setFingerPrint("leftMiddle".getBytes());
+		fingerDto.setFingerPrint(data);
 		fingerDto.setFingerprintImageName("leftMiddle");
 		fingerDto.setFingerPrintISOImage("leftMiddle".getBytes());
 		fingerDto.setFingerType("FingerPrint");
@@ -120,7 +128,7 @@ public class UserOnBoardDAOImlpTest {
 		listOfFingerPrints.add(fingerDto);
 
 		fingerDto = new FingerprintDetailsDTO();
-		fingerDto.setFingerPrint("leftRing".getBytes());
+		fingerDto.setFingerPrint(data);
 		fingerDto.setFingerprintImageName("leftRing");
 		fingerDto.setFingerPrintISOImage("leftRing".getBytes());
 		fingerDto.setFingerType("FingerPrint");
@@ -131,7 +139,7 @@ public class UserOnBoardDAOImlpTest {
 		listOfFingerPrints.add(fingerDto);
 
 		fingerDto = new FingerprintDetailsDTO();
-		fingerDto.setFingerPrint("leftThumb".getBytes());
+		fingerDto.setFingerPrint(data);
 		fingerDto.setFingerprintImageName("leftThumb");
 		fingerDto.setFingerPrintISOImage("leftThumb".getBytes());
 		fingerDto.setFingerType("FingerPrint");
@@ -142,7 +150,7 @@ public class UserOnBoardDAOImlpTest {
 		listOfFingerPrints.add(fingerDto);
 
 		fingerDto = new FingerprintDetailsDTO();
-		fingerDto.setFingerPrint("leftFore".getBytes());
+		fingerDto.setFingerPrint(data);
 		fingerDto.setFingerprintImageName("leftFore");
 		fingerDto.setFingerPrintISOImage("leftFore".getBytes());
 		fingerDto.setFingerType("FingerPrint");
