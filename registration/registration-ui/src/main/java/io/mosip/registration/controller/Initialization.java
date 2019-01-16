@@ -67,7 +67,7 @@ public class Initialization extends Application {
 		ResponseDTO responseDTO = globalParamService.synchConfigData();
 		if(responseDTO!=null && responseDTO.getErrorResponseDTOs()!=null) {
 			ErrorResponseDTO errorResponseDTO=responseDTO.getErrorResponseDTOs().get(0);
-			baseController.generateAlert(errorResponseDTO.getMessage());
+			baseController.generateAlert(RegistrationConstants.ERROR,errorResponseDTO.getMessage());
 		}
 		
 
