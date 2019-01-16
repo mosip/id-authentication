@@ -1,3 +1,4 @@
+package io.mosip.registration.processor.stages.uigenerator.util.test;
 /*package io.mosip.registration.processor.message.sender.test.service;
 
 import static org.mockito.Matchers.any;

@@ -35,7 +35,6 @@ import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFo
 import io.mosip.registration.processor.message.sender.exception.TemplateGenerationFailedException;
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
-import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;
 
 /**
  * The Class TriggerNotificationForUIN.
@@ -69,6 +68,7 @@ public class TriggerNotificationForUIN {
 	@Autowired
 	private MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> service;
 
+	/** The utility. */
 	@Autowired
 	private MessageSenderUtil utility;
 
@@ -90,12 +90,14 @@ public class TriggerNotificationForUIN {
 	/** The Constant EMAIL_TYPE. */
 	private static final String EMAIL_TYPE = "EMAIL";
 
-	boolean result=false;
+	/** The is template available. */
+	boolean isTemplateAvailable=false;
+	
 	/**
 	 * Trigger notification.
 	 *
 	 * @param uin the uin
-	 * @throws Exception 
+	 * @param isSuccess the is success
 	 */
 	public void triggerNotification(String uin, boolean isSuccess ){
 		
@@ -167,6 +169,13 @@ public class TriggerNotificationForUIN {
 	}
 
 
+	/**
+	 * Checks if is template available.
+	 *
+	 * @param templateCode the template code
+	 * @return true, if is template available
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 */
 	private boolean isTemplateAvailable(String templateCode) throws ApisResourceAccessException {
 
 		List<String> pathSegments = new ArrayList<>();
@@ -174,10 +183,10 @@ public class TriggerNotificationForUIN {
 		TemplateResponseDto template = (TemplateResponseDto) restClientService.getApi(ApiName.MASTER, pathSegments,	"", "", TemplateResponseDto.class);
 		template.getTemplates().forEach(dto -> {		
 			if(dto.getTemplateTypeCode().equalsIgnoreCase(templateCode)) {
-				result= true;
+				isTemplateAvailable= true;
 			}});
 
-		return result;
+		return isTemplateAvailable;
 	}
 
 }
