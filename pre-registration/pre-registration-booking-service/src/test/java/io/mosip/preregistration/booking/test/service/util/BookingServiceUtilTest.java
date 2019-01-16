@@ -3,9 +3,6 @@ package io.mosip.preregistration.booking.test.service.util;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,16 +18,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
-import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
-import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
-import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -45,6 +41,7 @@ import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedEx
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
+import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -312,8 +309,40 @@ public class BookingServiceUtilTest {
 		
 	}
 	
+	@Test(expected=RestCallException.class)
+	public void HttpClientErrorExceptionTest() {
+		HttpClientErrorException ex = new HttpClientErrorException(HttpStatus.OK);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(RegistrationCenterResponseDto.class))).thenThrow(ex);
+		
+		serviceUtil.callRegCenterDateRestService();
+		
+	}
+	
 	@Test(expected=DemographicStatusUpdationException.class)
 	public void callUpdateStatusRestServiceTest() {
+		RestClientException ex = new RestClientException(null);
+		MainResponseDTO<String> preRegResponse= new MainResponseDTO<>();
+		preRegResponse.setStatus(false);
+		preRegResponse.setResponse(null);
+		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
+		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
+		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
+		preRegResponse.setErr(err);
+		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(MainResponseDTO.class))).thenThrow(ex);
+		
+		serviceUtil.callUpdateStatusRestService("23587986034785", "Pending_Appointment");
+		
+	}
+	
+	@Test(expected=DemographicStatusUpdationException.class)
+	public void callUpdateStatusRestService1Test() {
 		
 		MainResponseDTO<String> preRegResponse= new MainResponseDTO<>();
 		preRegResponse.setStatus(false);
@@ -333,8 +362,9 @@ public class BookingServiceUtilTest {
 		serviceUtil.callUpdateStatusRestService("23587986034785", "Pending_Appointment");
 		
 	}
+
 	
-	
+	@SuppressWarnings("unchecked")
 	@Test(expected=AppointmentCannotBeCanceledException.class)
 	public void callGetStatusRestServiceforCancelTest() {
 		
@@ -362,15 +392,25 @@ public class BookingServiceUtilTest {
 	}
 	
 	@Test(expected=DemographicGetStatusException.class)
-	public void callGetStatusRestServiceTest() {
-		DemographicStatusUpdationException ex = new DemographicStatusUpdationException();
+	public void demographicGetStatusExceptionTest() {
+		RestClientException ex =new RestClientException(null);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenThrow(ex);
+		
+		serviceUtil.callGetStatusForCancelRestService("23587986034785");
+		
+	}
+	
+	@Test(expected=DemographicGetStatusException.class)
+	public void callGetStatusRestServiceforCancel1Test() {
 		
 		@SuppressWarnings("rawtypes")
 		MainListResponseDTO preRegResponse = new MainListResponseDTO();
 		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
 		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
 		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
-		preRegResponse.setResponse(null);
 		preRegResponse.setStatus(false);
 		preRegResponse.setErr(err);
 		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
@@ -385,44 +425,40 @@ public class BookingServiceUtilTest {
 		
 	}
 	
-	@Test
-	public void timeSlotCalculatorTest() {
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		LocalTime localTime1;
-		LocalTime localTime2;
-		String date1 = "2016-11-09 09:00:00";
-		String date2 = "2016-11-09 17:00:00";
-		String date3 = "2016-11-09 00:20:00";
-		String date4 = "2016-11-09 13:00:00";
-		String date5 = "2016-11-09 14:20:00";
-		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
-		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
-		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
-		LocalTime startTime = localDateTime1.toLocalTime();
-		LocalTime endTime = localDateTime2.toLocalTime();
-		LocalTime perKioskTime = localDateTime3.toLocalTime();
-		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
-		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
-		RegistrationCenterDto centerDto = new RegistrationCenterDto();
-		List<RegistrationCenterDto> centerList = new ArrayList<>();
-		centerDto.setId("1");
-		centerDto.setLanguageCode("LOC01");
-		centerDto.setCenterStartTime(startTime);
-		centerDto.setCenterEndTime(endTime);
-		centerDto.setPerKioskProcessTime(perKioskTime);
-		centerDto.setLunchStartTime(LunchStartTime);
-		centerDto.setLunchEndTime(LunchEndTime);
-		centerDto.setNumberOfKiosks((short) 4);
-		centerList.add(centerDto);
-		//regCenDto.setRegistrationCenters(centerList);
+	@Test(expected=DemographicGetStatusException.class)
+	public void callGetStatusRestServiceTest() {
 		
-		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
-		HolidayDto holiday = new HolidayDto();
-		List<String> holidayList = new ArrayList<>();
-//		holiday.setHolidayDate("2018-12-12");
-//		holidayList.add(holiday);
-//		CenholidayDto.setHolidays(holidayList);
-		holidayList.add(0, date1);
-		serviceUtil.timeSlotCalculator(centerDto, holidayList, LocalDate.parse("2016-11-09"), bookingDAO);
+		@SuppressWarnings("rawtypes")
+		MainListResponseDTO preRegResponse = new MainListResponseDTO();
+		ExceptionJSONInfoDTO err = new ExceptionJSONInfoDTO();
+		err.setErrorCode(ErrorCodes.PRG_BOOK_RCI_011.name());
+		err.setMessage(ErrorMessages.DEMOGRAPHIC_STATUS_UPDATION_FAILED.getMessage());
+		preRegResponse.setStatus(false);
+		preRegResponse.setErr(err);
+		preRegResponse.setResTime(serviceUtil.getCurrentResponseTime());
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
+		
+		serviceUtil.callGetStatusRestService("23587986034785");
+		
 	}
+	
+	@Test(expected=DemographicGetStatusException.class)
+	public void callGetStatusRestService1Test() {
+		RestClientException ex =new RestClientException(null);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenThrow(ex);
+		
+		serviceUtil.callGetStatusRestService("23587986034785");
+		
+	}
+	
+	
+
 }
