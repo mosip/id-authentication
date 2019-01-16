@@ -1,0 +1,4 @@
+Your Pre-Registration for UIN is Completed Successfully
+on $Date at $Time. Your ID is #$PRID.
+Appointment is scheduled for $Appointmentdate at $Appointmenttime.
+you will also receive the details on your registered email address
