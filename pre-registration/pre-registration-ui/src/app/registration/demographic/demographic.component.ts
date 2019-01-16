@@ -121,26 +121,7 @@ this.secondaryLanguage='ar';
     .subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
       console.log(this.secondaryLanguagelabels);
-      this.demo1 = new DemoLabels(
-        this.secondaryLanguagelabels.label_name ? this.secondaryLanguagelabels.label_name : 't_Full Name',
-        't_dob',
-        this.secondaryLanguagelabels.date_dd ? this.secondaryLanguagelabels.date_dd :'t_dd',
-        this.secondaryLanguagelabels.date_mm ? this.secondaryLanguagelabels.date_mm : 't_mm',
-        this.secondaryLanguagelabels.date_yyyy ? this.secondaryLanguagelabels.date_yyyy : 't_yyyy',
-        this.secondaryLanguagelabels.text_gender ? this.secondaryLanguagelabels.text_gender : 't_gender',
-        this.secondaryLanguagelabels.label_address1 ? this.secondaryLanguagelabels.label_address1:  't_Address Line 1',
-        this.secondaryLanguagelabels.label_address2 ? this.secondaryLanguagelabels.label_address2: 't_Address Line 2',
-        this.secondaryLanguagelabels.label_address3 ? this.secondaryLanguagelabels.label_address3: 't_Address Line 3',
-        this.secondaryLanguagelabels.label_region ? this.secondaryLanguagelabels.label_region: 't_Region',
-        this.secondaryLanguagelabels.label_province ? this.secondaryLanguagelabels.label_province: 't_Province',
-        this.secondaryLanguagelabels.label_city ? this.secondaryLanguagelabels.label_city: 't_City',
-        this.secondaryLanguagelabels.label_postalCode ? this.secondaryLanguagelabels.label_postalCode: 't_Postal Code',
-        this.secondaryLanguagelabels.label_address1 ? this.secondaryLanguagelabels.label_address1:'t_Local Administrative Authority',
-        this.secondaryLanguagelabels.label_email_id ? this.secondaryLanguagelabels.label_email_id: 't_Email Id',
-        this.secondaryLanguagelabels.label_mob_num ? this.secondaryLanguagelabels.label_mob_num: 't_Mobile Number',
-        this.secondaryLanguagelabels.label1_pin ? this.secondaryLanguagelabels.label1_pin: 't_CNE/PIN Number',
-        this.secondaryLanguagelabels.label_age ? this.secondaryLanguagelabels.label_age:  't_Age'
-      );
+     
     });
   
   }
