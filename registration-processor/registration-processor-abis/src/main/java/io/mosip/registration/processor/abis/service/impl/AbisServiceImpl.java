@@ -3,6 +3,7 @@ package io.mosip.registration.processor.abis.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -153,15 +155,21 @@ public class AbisServiceImpl implements AbisService {
 					referenceId, "Byte file not found from BioDedupe api");
 		}
 
-		File testCbeff = new File("TestCbeff.xml");
-		try (FileOutputStream fos = new FileOutputStream(testCbeff)) {
-			fos.write(bytefile);
-		}
+//		File testCbeff = new File("TestCbeff.xml");
+//		try (FileOutputStream fos = new FileOutputStream(testCbeff)) {
+//			fos.write(bytefile);
+//		}
 
+		String byteFileStr = new String(bytefile);
+
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(byteFileStr));
+
+		
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-		return dBuilder.parse(testCbeff);
+		return dBuilder.parse(is);
 	}
 
 	/**
