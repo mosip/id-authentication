@@ -140,9 +140,9 @@ public class IrisCaptureController extends BaseController {
 
 			boolean isExceptionIris = getIrisExceptions().stream()
 					.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
-							StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
+							(StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)
 									? RegistrationConstants.LEFT
-									: RegistrationConstants.RIGHT));
+									: RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)));
 
 			// Enable the scan button, if any of the following satisfies
 			// 1. If Iris was not scanned

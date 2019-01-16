@@ -56,7 +56,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 			registrationDTO.getBiometricDTO();
 			if (checkNotNull(registrationDTO.getBiometricDTO())) {
 				// Biometric -> Applicant Folder
-				if (checkNotNull(registrationDTO.getBiometricDTO().getApplicantBiometricDTO())) {
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME)) {
 					writeFileToZip(
 							"Biometric".concat(separator).concat(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
 							filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),

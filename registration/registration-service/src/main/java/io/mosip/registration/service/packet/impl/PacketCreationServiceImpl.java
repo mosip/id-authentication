@@ -105,9 +105,19 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Packet Meta-Data and Audit
 			Map<String, byte[]> filesGeneratedForPacket = new HashMap<>();
 
-			filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
-					createCBEFFXML(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(),
-							RegistrationConstants.INDIVIDUAL, birUUIDs));
+			byte[] cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(),
+					RegistrationConstants.INDIVIDUAL, birUUIDs);
+			if (cbeffInBytes != null) {
+				filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+
+				registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+						.setIndividualBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
+								.with(cbeffProperty -> cbeffProperty.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
+								.with(cbeffProperty -> cbeffProperty
+										.setValue(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME.replace(
+												RegistrationConstants.XML_FILE_FORMAT, RegistrationConstants.EMPTY)))
+								.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
+			}
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
@@ -116,20 +126,20 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					REGISTRATION_ID, rid);
 
 			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
-				byte[] introducerCBEFFInBytes = createCBEFFXML(
-						registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), RegistrationConstants.INTRODUCER,
-						birUUIDs);
+				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(),
+						RegistrationConstants.INTRODUCER, birUUIDs);
 
-				if (introducerCBEFFInBytes != null) {
-					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
-							introducerCBEFFInBytes);
-					
+				if (cbeffInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+
 					registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setParentOrGuardianBiometrics(Builder.build(CBEFFFilePropertiesDTO.class)
-									.with(cbeffProperty -> cbeffProperty.setFormat("cbeff"))
 									.with(cbeffProperty -> cbeffProperty
-											.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME
-													.replace(".xml", RegistrationConstants.EMPTY)))
+											.setFormat(RegistrationConstants.CBEFF_FILE_FORMAT))
+									.with(cbeffProperty -> cbeffProperty
+											.setValue(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME.replace(
+													RegistrationConstants.XML_FILE_FORMAT,
+													RegistrationConstants.EMPTY)))
 									.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 
 					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -141,13 +151,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
-				byte[] operatorCBEFFInBytes = createCBEFFXML(
-						registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), RegistrationConstants.OFFICER,
-						birUUIDs);
+				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
+						RegistrationConstants.OFFICER, birUUIDs);
 
-				if (operatorCBEFFInBytes != null) {
-					filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME,
-							operatorCBEFFInBytes);
+				if (cbeffInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
 					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME));
@@ -158,13 +166,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			if (registrationDTO.getBiometricDTO().getSupervisorBiometricDTO() != null) {
-				byte[] supervisorCBEFFInBytes = createCBEFFXML(
-						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), RegistrationConstants.SUPERVISOR,
-						birUUIDs);
+				cbeffInBytes = createCBEFFXML(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(),
+						RegistrationConstants.SUPERVISOR, birUUIDs);
 
-				if (supervisorCBEFFInBytes != null) {
-					filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME,
-							supervisorCBEFFInBytes);
+				if (cbeffInBytes != null) {
+					filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
 					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME));
