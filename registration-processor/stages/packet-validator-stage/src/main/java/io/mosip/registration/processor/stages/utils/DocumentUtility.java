@@ -4,11 +4,9 @@
 package io.mosip.registration.processor.stages.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -49,14 +47,14 @@ public class DocumentUtility {
 	@Autowired
 	private Utilities utility;
 
-	public List<Document> getDocumentList(InputStream demographicJsonStream) throws IOException, ParseException {
+	public List<Document> getDocumentList(byte[] bytes) throws IOException, ParseException {
 
 		List<Document> documentList = new ArrayList<>();
 		JSONObject documentPOAnode = null;
 		JSONObject documentPOInode = null;
 		JSONObject documentPORnode = null;
 		JSONObject documentPOBnode = null;
-		byte[] bytes = IOUtils.toByteArray(demographicJsonStream);
+
 		String demographicJsonString = new String(bytes);
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());

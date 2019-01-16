@@ -228,7 +228,7 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
-		Mockito.doNothing().when(packetInfoManager).saveDemographicInfoJson(inputStream,
+		Mockito.doNothing().when(packetInfoManager).saveDemographicInfoJson(data,
 				packetMetaInfo.getIdentity().getMetaData());
 
 	}

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -165,10 +166,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						boolean isApplicantDocumentValidation = false;
 						InputStream demographicInfoStream = null;
 						List<Document> documentList = null;
+						byte[] bytes = null;
 						if (isFilesValidated) {
 							demographicInfoStream = adapter.getFile(registrationId,
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-							documentList = documentUtility.getDocumentList(demographicInfoStream);
+							bytes = IOUtils.toByteArray(demographicInfoStream);
+							documentList = documentUtility.getDocumentList(bytes);
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
 							// isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
@@ -191,7 +194,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 
-							packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
+							packetInfoManager.saveDemographicInfoJson(bytes,
 									packetMetaInfo.getIdentity().getMetaData());
 							packetInfoManager.saveDocuments(documentList);
 							object.setRid(dto.getRegistrationId());
