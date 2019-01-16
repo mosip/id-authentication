@@ -1,21 +1,12 @@
 package io.mosip.authentication.service.integration;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.dto.indauth.NotificationType;
-import io.mosip.authentication.core.dto.indauth.SenderType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -26,7 +17,8 @@ import io.mosip.authentication.service.integration.dto.SmsRequestDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * 
+ * The Class NotificationManager.
+ *
  * @author Dinesh Karuppiah.T
  */
 
@@ -47,10 +39,11 @@ public class NotificationManager {
 	private static Logger logger = IdaLogger.getLogger(NotificationManager.class);
 	
 	/**
-	 * 
-	 * @param notificationMobileNo
-	 * @param message
-	 * @throws IdAuthenticationBusinessException
+	 * Send sms notification.
+	 *
+	 * @param notificationMobileNo the notification mobile no
+	 * @param message the message
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public void sendSmsNotification(String notificationMobileNo, String message) throws IdAuthenticationBusinessException {
 		try {
@@ -68,11 +61,12 @@ public class NotificationManager {
 	}
 	
 	/**
-	 * 
-	 * @param emailId
-	 * @param mailSubject
-	 * @param mailContent
-	 * @throws IdAuthenticationBusinessException
+	 * Send email notification.
+	 *
+	 * @param emailId the email id
+	 * @param mailSubject the mail subject
+	 * @param mailContent the mail content
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public void sendEmailNotification(String emailId, String mailSubject, String mailContent)
 			throws IdAuthenticationBusinessException {

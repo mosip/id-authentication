@@ -8,6 +8,9 @@ public enum SenderType {
 
 	AUTH("auth"), OTP("otp");
 
+	/**
+	 * Variable to hold name
+	 */
 	private String name;
 
 	SenderType(String name) {

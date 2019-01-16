@@ -35,6 +35,8 @@ public class AuthResponseInfo {
 	 */
 	private List<MatchInfo> matchInfos;
 	
+	private List<BioInfo> bioInfos;
+	
 	/**
 	 * The 16 digit Hexa decimal data that encodes the authentication types that are 
 	 * used and the authentication types that are matched.

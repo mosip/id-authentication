@@ -1,15 +1,13 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegCenterMachineDeviceHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceHistoryService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -41,19 +39,13 @@ public class RegCenterMachineDeviceHistoryServiceImpl implements RegistrationCen
 	 * RegistrationCenterMachineDeviceHistory)
 	 */
 	@Override
+	@Transactional(propagation = Propagation.MANDATORY)
 	public RegCenterMachineDeviceHistoryResponseDto createRegCenterMachineDeviceHistoryMapping(
 			RegistrationCenterMachineDeviceHistory registrationCenterMachineDeviceHistory) {
 		RegistrationCenterMachineDeviceHistoryDto registrationCenterMachineDeviceHistoryDto = null;
 		RegCenterMachineDeviceHistoryResponseDto regCenterMachineDeviceHistoryResponseDto = new RegCenterMachineDeviceHistoryResponseDto();
-		try {
-			registrationCenterMachineDeviceHistoryRepo.create(registrationCenterMachineDeviceHistory);
-		} catch (DataAccessException | DataAccessLayerException ex) {
-			throw new MasterDataServiceException(
-					RegistrationCenterMachineDeviceHistoryErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_HISTORY_CREATE_EXCEPTION
-							.getErrorCode(),
-					RegistrationCenterMachineDeviceHistoryErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_HISTORY_CREATE_EXCEPTION
-							.getErrorMessage());
-		}
+
+		registrationCenterMachineDeviceHistoryRepo.create(registrationCenterMachineDeviceHistory);
 
 		registrationCenterMachineDeviceHistoryDto = MapperUtils.map(registrationCenterMachineDeviceHistory,
 				RegistrationCenterMachineDeviceHistoryDto.class);

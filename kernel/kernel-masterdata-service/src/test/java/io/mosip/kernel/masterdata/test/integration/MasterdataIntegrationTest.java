@@ -804,11 +804,11 @@ public class MasterdataIntegrationTest {
 	private void templateFileFormatSetup() {
 		templateFileFormatDto = new TemplateFileFormatDto();
 		templateFileFormatDto.setCode("xml");
-		templateFileFormatDto.setLangCode("ENG");
+		templateFileFormatDto.setLangCode("eng");
 		templateFileFormatDto.setIsActive(true);
 		templateFileFormat = new TemplateFileFormat();
 		templateFileFormat.setCode("xml");
-		templateFileFormat.setLangCode("ENG");
+		templateFileFormat.setLangCode("eng");
 		templateFileFormat.setIsActive(true);
 
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
@@ -1637,9 +1637,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
-		Mockito.when(
-				reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(reasoncategories);
+		Mockito.when(reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(reasoncategories);
 		mockMvc.perform(get("/v1.0/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isOk());
 	}
@@ -1653,9 +1652,8 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(
-				reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/v1.0/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
 	}
@@ -1668,18 +1666,16 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(
-				reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(null);
+		Mockito.when(reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(null);
 		mockMvc.perform(get("/v1.0/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(
-				reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(new ArrayList<ReasonCategory>());
+		Mockito.when(reasonCategoryRepository.findReasonCategoryByCodeAndLangCode(ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/v1.0/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isNotFound());
 	}
@@ -1697,7 +1693,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
 				.content(reasonCategoryRequest.getBytes())).andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void createReasonCateogryLanguageCodeValidatorFailureTest() throws Exception {
 		RequestDto<PostReasonCategoryDto> requestDto1 = new RequestDto<>();
@@ -1710,7 +1706,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
 				.content(content.getBytes())).andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void createReasonCateogryLanguageCodeValidatorTest() throws Exception {
 		Mockito.when(reasonCategoryRepository.create(Mockito.any())).thenReturn(reasoncategories.get(0));
@@ -1737,7 +1733,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
 				.content(content.getBytes())).andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void createReasonCateogryFetchExceptionTest() throws Exception {
 		Mockito.when(reasonCategoryRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
@@ -1829,6 +1825,46 @@ public class MasterdataIntegrationTest {
 				.thenReturn(emptyList);
 
 		mockMvc.perform(get("/v1.0/registrationcenters/ENG/CITY/BANGALORE").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndListTextAndLanguageCodeTest() throws Exception {
+		when(registrationCenterRepository.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+				Mockito.anyString(), Mockito.anyInt(), Mockito.anyList())).thenReturn(registrationCenters);
+		MvcResult result = mockMvc
+				.perform(get("/v1.0/registrationcenters/names/ENG/2").param("name", "bangalore")
+						.param("name", "Bangalore Central").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+				RegistrationCenterResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(2).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndListTextAndLanguageCodeFetchExceptionTest() throws Exception {
+
+		when(registrationCenterRepository.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+				Mockito.anyString(), Mockito.anyInt(), Mockito.anyList())).thenThrow(DataAccessLayerException.class);
+
+		mockMvc.perform(get("/v1.0/registrationcenters/names/ENG/5").param("name", "bangalore")
+				.param("name", "Bangalore Central").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndListTextAndLanguageCodeNotFoundExceptionTest()
+			throws Exception {
+
+		List<RegistrationCenter> emptyList = new ArrayList<>();
+		when(registrationCenterRepository.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
+				Mockito.anyString(), Mockito.anyInt(), Mockito.anyList())).thenReturn(emptyList);
+
+		mockMvc.perform(get("/v1.0/registrationcenters/names/ENG/5").param("name", "bangalore")
+				.param("name", "Bangalore Central").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 
 	}
@@ -2277,6 +2313,18 @@ public class MasterdataIntegrationTest {
 	}
 
 	@Test
+	public void addGenderTypeLandCodeValidationTest() throws Exception {
+		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.language.create");
+		requestDto.setVer("1.0.0");
+		genderDto.setLangCode("akk");
+		requestDto.setRequest(genderDto);
+		String content = mapper.writeValueAsString(requestDto);
+		mockMvc.perform(post("/v1.0/gendertypes").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	public void addGenderTypeExceptionTest() throws Exception {
 
 		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
@@ -2296,7 +2344,7 @@ public class MasterdataIntegrationTest {
 		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
-		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
+		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "eng", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.updateGenderType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
@@ -2326,7 +2374,7 @@ public class MasterdataIntegrationTest {
 		RequestDto<GenderTypeDto> requestDto = new RequestDto<>();
 		requestDto.setId("mosip.idtype.create");
 		requestDto.setVer("1.0");
-		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "ENG", true);
+		GenderTypeDto genderTypeDto = new GenderTypeDto("GEN01", "Male", "eng", true);
 		requestDto.setRequest(genderTypeDto);
 		String contentJson = mapper.writeValueAsString(requestDto);
 		when(genderTypeRepository.updateGenderType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
@@ -3349,7 +3397,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/idtypes").contentType(MediaType.APPLICATION_JSON).content(content))
 				.andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void createIdTypeLanguageCodeValidatorTest() throws Exception {
 		RequestDto<IdTypeDto> requestDto = new RequestDto<>();
@@ -3602,7 +3650,7 @@ public class MasterdataIntegrationTest {
 		mockMvc.perform(post("/v1.0/documentcategories").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void addDocumentCategoryLanguageCodeValidatorTest() throws Exception {
 		RequestDto<DocumentCategoryDto> requestDto = new RequestDto<>();
@@ -4029,6 +4077,22 @@ public class MasterdataIntegrationTest {
 		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
 		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
 				.content(content)).andExpect(status().isOk());
+	}
+
+	@Test
+	public void updateTemplateFileFormatLanguageCodeValidationTest() throws Exception {
+		RequestDto<TemplateFileFormatDto> requestDto = new RequestDto<>();
+		requestDto.setId("mosip.device.update");
+		requestDto.setVer("1.0.0");
+		templateFileFormatDto.setLangCode("xxx");
+		requestDto.setRequest(templateFileFormatDto);
+		String content = mapper.writeValueAsString(requestDto);
+		Mockito.when(templateFileFormatRepository
+				.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(templateFileFormat);
+		Mockito.when(templateFileFormatRepository.update(Mockito.any())).thenReturn(templateFileFormat);
+		mockMvc.perform(MockMvcRequestBuilders.put("/v1.0/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content(content)).andExpect(status().isBadRequest());
 	}
 
 	@Test
