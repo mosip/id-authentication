@@ -21,6 +21,7 @@ import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinHistory;
@@ -33,6 +34,12 @@ import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
  */
 @Component
 public class IdRepoEntityInterceptor extends EmptyInterceptor {
+
+	private static final String UIN_DATA_HASH = "uinDataHash";
+
+	private static final String DECRYPT = "decrypt";
+
+	private static final String UIN_DATA = "uinData";
 
 	/** The mosip logger. */
 	private transient Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
@@ -81,7 +88,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 						CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt");
 				uinEntity.setUinData(encryptedData);
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("uinData");
+				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = encryptedData;
 				return super.onSave(uinEntity, id, state, propertyNames, types);
 			}
@@ -109,9 +116,13 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Uin || entity instanceof UinHistory) {
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("uinData");
+				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = CryptoUtil
-						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], "decrypt")));
+						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], DECRYPT)));
+
+				if (!hash((byte[]) state[indexOfData]).equals(state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
+					throw new IdRepoAppException(IdRepoErrorConstants.IDENTITY_MISMATCH);
+				}
 			}
 		} catch (IdRepoAppException e) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
@@ -153,4 +164,14 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		}
 	}
 
+	/**
+	 * Hash.
+	 *
+	 * @param identityInfo
+	 *            the identity info
+	 * @return the string
+	 */
+	private String hash(byte[] identityInfo) {
+		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
+	}
 }

@@ -14,7 +14,7 @@ public enum IdRepoErrorConstants {
 	INVALID_INPUT_PARAMETER("KER-IDR-002", "Invalid Input Parameter - %s"),
 
 	/** The identity mismatch. */
-	IDENTITY_MISMATCH("KER-IDR-003", "One or more Identity Element entered does not match MOSIP ID"),
+	IDENTITY_MISMATCH("KER-IDR-003", "Identity Element entered does not match with hash"),
 
 	/** The unsupported lang code. */
 	UNSUPPORTED_LANG_CODE("KER-IDR-004", "Unsupported Language Code"),

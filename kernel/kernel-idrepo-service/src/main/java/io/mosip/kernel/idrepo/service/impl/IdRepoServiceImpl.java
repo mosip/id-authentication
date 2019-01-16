@@ -232,8 +232,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	public IdResponseDTO addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
-			return constructIdResponse(this.id.get(CREATE),
-					addIdentity(uin, request.getRegistrationId(),
+			return constructIdResponse(
+					this.id.get(CREATE), addIdentity(uin, request.getRegistrationId(),
 							convertToBytes(request.getRequest().getIdentity()), request.getRequest().getDocuments()),
 					null);
 		} catch (IdRepoAppException e) {
@@ -293,16 +293,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 								storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 										CryptoUtil.decodeBase64(doc.getValue()));
 
-								uinDocRepo.save(new UinDocument(uinRefId, docType.get(TYPE).asText(),
+								uinDocRepo.save(new UinDocument(uinRefId, docType.get(TYPE).asText(), doc.getCategory(),
+										fileRefId, docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
+										hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(),
+										UPDATED_BY, now(), false, now()));
+
+								uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), docType.get(TYPE).asText(),
 										doc.getCategory(), fileRefId, docType.get(VALUE).asText(),
 										docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
 										LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-
-								uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(),
-										docType.get(TYPE).asText(), doc.getCategory(), fileRefId,
-										docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-										hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(),
-										UPDATED_BY, now(), false, now()));
 							}
 							return false;
 						} catch (IdRepoAppException e) {
@@ -427,6 +426,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
 						String data = getFile(uinObject.getUin(), fileName);
+						if (Objects.nonNull(data)
+								&& uinObject.getUinDataHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
+							throw new IdRepoAppException(IdRepoErrorConstants.IDENTITY_MISMATCH);
+						}
 						if (Objects.nonNull(data)) {
 							documents.add(new Documents(bio.getBiometricFileType(), data));
 						}
