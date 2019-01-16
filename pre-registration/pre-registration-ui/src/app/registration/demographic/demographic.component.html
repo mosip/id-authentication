@@ -293,7 +293,7 @@
           </form>
         </div>
       </div>
-      <div class="user__container">
+      <div *ngIf="demo1 !== undefined" class="user__container">
         <form [formGroup]="transUserForm" class="user__form">
           <h6>Language - Arabic</h6>
           <mat-form-field>

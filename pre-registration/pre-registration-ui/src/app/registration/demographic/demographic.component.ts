@@ -16,8 +16,6 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { LocationModal } from './modal/location.modal';
 import * as appConstants from '../../app.constants';
 import Utils from 'src/app/app.util';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse} from '@angular/common/http'
 
 @Component({
   selector: 'app-demographic',
@@ -26,8 +24,6 @@ import { HttpErrorResponse} from '@angular/common/http'
 })
 export class DemographicComponent implements OnInit {
   textDir = localStorage.getItem('dir');
-  keyboardLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.primaryKeyboardLang];
-  keyboardSecondaryLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.secondaryKeyboardLang];
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
   primaryLang = appConstants.LANGUAGE_CODE.primary;
@@ -48,6 +44,8 @@ export class DemographicComponent implements OnInit {
   loginId = '';
   user: UserModel;
   demodata: string [];
+  secondaryLanguage: any;
+  secondaryLanguagelabels:any;
 
   uppermostLocationHierarchy: any;
   message = {};
@@ -91,35 +89,15 @@ export class DemographicComponent implements OnInit {
   //Need to be removed after translation
   demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
-  demo1 = new DemoLabels(
-    't_Full Name',
-    't_dob',
-    't_dd',
-    't_mm',
-    't_yyyy',
-    't_gender',
-    't_Address Line 1',
-    't_Address Line 2',
-    't_Address Line 3',
-    't_Region',
-    't_Province',
-    't_City',
-    't_Postal Code',
-    't_Local Administrative Authority',
-    't_Email Id',
-    't_Mobile Number',
-    't_CNE/PIN Number',
-    't_Age'
-  );
+  demo1: any;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
-    private sharedService: SharedService,
-    private httpService: HttpClient
-  ) {}
+    private sharedService: SharedService
+     ) {}
 
   ngOnInit() {
     if (localStorage.getItem('newApplicant') === 'true') {
@@ -134,18 +112,37 @@ export class DemographicComponent implements OnInit {
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
-    this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
     this.numberOfApplicants = 1;
     this.initForm();
-    this.httpService.get('./assets/i18n/ar.json').subscribe(
-      data => {
-        this.demodata = data as string [];	 // FILL THE ARRAY WITH DATA.
-          console.log(this.demodata[1]+":arebic data");
-      },
-      (err: HttpErrorResponse) => {
-        console.log (err.message);
-      }
-    );
+this.secondaryLanguage='ar';
+
+    this.dataStorageService
+    .getSecondaryLanguageLabels(this.secondaryLanguage )
+    .subscribe(response => {
+      this.secondaryLanguagelabels = response['demographic'];
+      console.log(this.secondaryLanguagelabels);
+      this.demo1 = new DemoLabels(
+        this.secondaryLanguagelabels.label_name ? this.secondaryLanguagelabels.label_name : 't_Full Name',
+        't_dob',
+        this.secondaryLanguagelabels.date_dd ? this.secondaryLanguagelabels.date_dd :'t_dd',
+        this.secondaryLanguagelabels.date_mm ? this.secondaryLanguagelabels.date_mm : 't_mm',
+        this.secondaryLanguagelabels.date_yyyy ? this.secondaryLanguagelabels.date_yyyy : 't_yyyy',
+        this.secondaryLanguagelabels.text_gender ? this.secondaryLanguagelabels.text_gender : 't_gender',
+        this.secondaryLanguagelabels.label_address1 ? this.secondaryLanguagelabels.label_address1:  't_Address Line 1',
+        this.secondaryLanguagelabels.label_address2 ? this.secondaryLanguagelabels.label_address2: 't_Address Line 2',
+        this.secondaryLanguagelabels.label_address3 ? this.secondaryLanguagelabels.label_address3: 't_Address Line 3',
+        this.secondaryLanguagelabels.label_region ? this.secondaryLanguagelabels.label_region: 't_Region',
+        this.secondaryLanguagelabels.label_province ? this.secondaryLanguagelabels.label_province: 't_Province',
+        this.secondaryLanguagelabels.label_city ? this.secondaryLanguagelabels.label_city: 't_City',
+        this.secondaryLanguagelabels.label_postalCode ? this.secondaryLanguagelabels.label_postalCode: 't_Postal Code',
+        this.secondaryLanguagelabels.label_address1 ? this.secondaryLanguagelabels.label_address1:'t_Local Administrative Authority',
+        this.secondaryLanguagelabels.label_email_id ? this.secondaryLanguagelabels.label_email_id: 't_Email Id',
+        this.secondaryLanguagelabels.label_mob_num ? this.secondaryLanguagelabels.label_mob_num: 't_Mobile Number',
+        this.secondaryLanguagelabels.label1_pin ? this.secondaryLanguagelabels.label1_pin: 't_CNE/PIN Number',
+        this.secondaryLanguagelabels.label_age ? this.secondaryLanguagelabels.label_age:  't_Age'
+      );
+    });
+  
   }
 
   async initForm() {
@@ -178,9 +175,9 @@ export class DemographicComponent implements OnInit {
       this.preRegId = this.user.preRegId;
       fullName = this.user.request.demographicDetails.identity.fullName[0].value;
       gender = this.user.request.demographicDetails.identity.gender[0].value;
-      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
+      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
       month = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[1];
-      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
+      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
       dob = this.user.request.demographicDetails.identity.dateOfBirth[0].value;
       age = this.calculateAge(new Date(new Date(dob))).toString();
       addressLine1 = this.user.request.demographicDetails.identity.addressLine1[0].value;
@@ -197,12 +194,6 @@ export class DemographicComponent implements OnInit {
       pin = this.user.request.demographicDetails.identity.CNEOrPINNumber[0].value;
 
       t_fullName = this.user.request.demographicDetails.identity.fullName[1].value;
-      // t_gender = this.user.request.demographicDetails.identity.gender[1].value;
-      // t_date = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[0];
-      // t_month = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[1];
-      // t_year = this.user.request.demographicDetails.identity.dateOfBirth[1].value.split('/')[2];
-      // t_dob = this.user.request.demographicDetails.identity.dateOfBirth[1].value;
-      // t_age = this.calculateAge(new Date(new Date(dob))).toString();
       t_addressLine1 = this.user.request.demographicDetails.identity.addressLine1[1].value;
       t_addressLine2 = this.user.request.demographicDetails.identity.addressLine2[1].value;
       t_addressLine3 = this.user.request.demographicDetails.identity.addressLine3[1].value;
@@ -297,6 +288,7 @@ export class DemographicComponent implements OnInit {
         this.transLocalAdministrativeAuthorities,
         localAdministrativeAuthority
       );
+      console.log('LOCATION', this.locations);
     }
   }
 
@@ -370,6 +362,7 @@ export class DemographicComponent implements OnInit {
   }
 
   onGenderChange() {
+    console.log(this.userForm.controls['gender'].value);
     this.userForm.controls['gender'].markAsTouched();
   }
 
@@ -381,7 +374,7 @@ export class DemographicComponent implements OnInit {
       this.userForm.controls.date.patchValue('01');
       this.userForm.controls.month.patchValue('01');
       this.userForm.controls.year.patchValue(calulatedYear);
-      this.userForm.controls.dob.patchValue(calulatedYear + '/01/01');
+      this.userForm.controls.dob.patchValue('01/01/' + calulatedYear);
       this.userForm.controls['dob'].setErrors(null);
     }
   }
@@ -396,7 +389,7 @@ export class DemographicComponent implements OnInit {
       const _month = dateform.getMonth() + 1;
       if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
         const pipe = new DatePipe('en-US');
-        const myFormattedDate = pipe.transform(dateform, 'yyyy/MM/dd');
+        const myFormattedDate = pipe.transform(dateform, 'dd/MM/yyyy');
         this.userForm.controls.dob.patchValue(myFormattedDate);
         this.userForm.controls.age.patchValue(this.calculateAge(dateform));
       } else {
@@ -453,6 +446,8 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.locations);
+
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
     this.dataStorageService.addUser(request).subscribe(
@@ -467,6 +462,7 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else if (response !== null) {
+          console.log(response);
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.locations));
           this.sharedService.addNameList({
