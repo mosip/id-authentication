@@ -111,7 +111,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService
 				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponceDto.class);
 
-		if (authResponseDTO.getReturnValue() == "1")
+		if (authResponseDTO.getReturnValue() == 1)
 			insertStatus = "success";
 		else
 			throwException(authResponseDTO.getFailureReason(), referenceId, requestId);

@@ -69,7 +69,7 @@ public class BioDedupeServiceImplTest {
 	public void setup() throws ApisResourceAccessException {
 		Mockito.doNothing().when(packetInfoManager).saveAbisRef(any());
 
-		abisInsertResponceDto.setReturnValue("2");
+		abisInsertResponceDto.setReturnValue(2);
 
 		ReflectionTestUtils.setField(bioDedupeService, "maxResults", 30);
 		ReflectionTestUtils.setField(bioDedupeService, "targetFPIR", 30);
@@ -108,7 +108,7 @@ public class BioDedupeServiceImplTest {
 	@Test
 	public void insertBiometricsSuccessTest() throws ApisResourceAccessException {
 
-		abisInsertResponceDto.setReturnValue("1");
+		abisInsertResponceDto.setReturnValue(1);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(abisInsertResponceDto);
 
