@@ -787,6 +787,9 @@ public class RegistrationConstants {
 	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
 	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
 	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
+	public static final String JOB_UNKNOWN= "UNKNOWN";
+	
+
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
 	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
