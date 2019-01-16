@@ -140,13 +140,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 		engine.loadContent(stringWriter.toString());
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Acknowledgement template has been loaded to webview");
-		System.out.println(notificationAlertData);
+		
 		// pauses the view for 3 seconds so that the webview will be loaded with the
 		// content and calls the method to create packet after 3 seconds
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(e -> saveRegistrationData());
-		pause.play();
-		
+		pause.play();		
 		if (notificationAlertData != null) {
 			generateNotificationAlert(notificationAlertData);
 		}
