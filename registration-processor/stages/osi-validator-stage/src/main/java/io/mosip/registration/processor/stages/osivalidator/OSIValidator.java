@@ -18,13 +18,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
-import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -335,7 +333,7 @@ public class OSIValidator {
 	 */
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type) {
 		String finger = null;
-		String[] fingerType = env.getProperty("fingerType").split(",");
+		String[] fingerType = env.getProperty("registration.processor.fingerType").split(",");
 		List<String> list = new ArrayList<>(Arrays.asList(fingerType));
 		finger = type;
 		Iterator<String> it = list.iterator();
@@ -463,10 +461,13 @@ public class OSIValidator {
 		List<PinInfo> pinList = new ArrayList<>();
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
-	/*	AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
-				authRequestDTO, AuthResponseDTO.class);
-		if (authResponseDTO.getStatus().equalsIgnoreCase("y"))*/
-			isValidPin = true;
+		/*
+		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
+		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
+		 * AuthResponseDTO.class); if
+		 * (authResponseDTO.getStatus().equalsIgnoreCase("y"))
+		 */
+		isValidPin = true;
 		return isValidPin;
 	}
 
@@ -485,10 +486,13 @@ public class OSIValidator {
 		authRequestDTO.setAuthType(authTypeDTO);
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
-		/*AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
-				authRequestDTO, AuthResponseDTO.class);
-		return authResponseDTO != null && authResponseDTO.getStatus() != null
-				&& authResponseDTO.getStatus().equalsIgnoreCase("y");*/
+		/*
+		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
+		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
+		 * AuthResponseDTO.class); return authResponseDTO != null &&
+		 * authResponseDTO.getStatus() != null &&
+		 * authResponseDTO.getStatus().equalsIgnoreCase("y");
+		 */
 		return true;
 	}
 

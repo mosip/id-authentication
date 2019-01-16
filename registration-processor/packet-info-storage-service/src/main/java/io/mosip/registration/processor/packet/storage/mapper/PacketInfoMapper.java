@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.storage.mapper;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -20,6 +19,7 @@ import org.apache.commons.codec.language.bm.RuleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
@@ -380,7 +380,8 @@ public class PacketInfoMapper {
 		regCenterMachineEntity.setMachineId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.MACHINEID));
 		String creationTime = identityIteratorUtil.getFieldValue(metaData, JsonConstant.CREATIONDATE);
 		if (creationTime != null)
-			regCenterMachineEntity.setPacketCreationDate(LocalDateTime.parse(creationTime));
+			regCenterMachineEntity.setPacketCreationDate(
+					DateUtils.parseUTCToLocalDateTime(creationTime, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);

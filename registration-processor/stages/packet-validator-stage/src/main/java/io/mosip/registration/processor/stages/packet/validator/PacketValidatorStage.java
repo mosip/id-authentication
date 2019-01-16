@@ -164,13 +164,15 @@ public class PacketValidatorStage extends MosipVerticleManager {
 								packetMetaInfo.getIdentity());
 						boolean isCheckSumValidated = false;
 						boolean isApplicantDocumentValidation = false;
+						InputStream documentInfoStream = null;
 						InputStream demographicInfoStream = null;
+						byte[] bytesArray = null;
 						List<Document> documentList = null;
 						byte[] bytes = null;
 						if (isFilesValidated) {
-							demographicInfoStream = adapter.getFile(registrationId,
+							documentInfoStream = adapter.getFile(registrationId,
 									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-							bytes = IOUtils.toByteArray(demographicInfoStream);
+							bytes = IOUtils.toByteArray(documentInfoStream);
 							documentList = documentUtility.getDocumentList(bytes);
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
@@ -193,8 +195,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 							packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
-
-							packetInfoManager.saveDemographicInfoJson(IOUtils.toByteArray(demographicInfoStream),
+							demographicInfoStream = adapter.getFile(registrationId,
+									PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+							bytesArray = IOUtils.toByteArray(demographicInfoStream);
+							packetInfoManager.saveDemographicInfoJson(bytesArray,
 									packetMetaInfo.getIdentity().getMetaData());
 							packetInfoManager.saveDocuments(documentList);
 							object.setRid(dto.getRegistrationId());

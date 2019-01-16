@@ -63,9 +63,10 @@ public class ApplicantDocumentValidation {
 				&& checkDocumentAvailability(identity, documentList, DocumentCategory.PROOFOFADDRESS.name()))
 			isApplicantDocumentVerified = true;
 
-		if (isApplicantDocumentVerified) {
-			isApplicantDocumentVerified = validateRegistrationStatus(identity, documentList);
-		}
+		/*
+		 * if (isApplicantDocumentVerified) { isApplicantDocumentVerified =
+		 * validateRegistrationStatus(identity, documentList); }
+		 */
 		return isApplicantDocumentVerified;
 	}
 
