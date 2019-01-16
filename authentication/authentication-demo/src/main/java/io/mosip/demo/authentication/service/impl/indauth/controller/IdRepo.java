@@ -8,6 +8,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.translate.AggregateTranslator;
 import org.apache.commons.text.translate.EntityArrays;
 import org.apache.commons.text.translate.LookupTranslator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -25,16 +26,35 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 
+import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 @RestController
-public class CEPH {
+public class IdRepo {
+
+	@Autowired
+	private JsonValidator jsonValidator;
 
 	@Bean(name = "multipartResolver")
 	public CommonsMultipartResolver multipartResolver() {
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
 		multipartResolver.setMaxUploadSize(100000);
 		return multipartResolver;
+	}
+
+	@PostMapping(path = "/validateJson", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public Object jsonSchemaValidator(@RequestBody ObjectNode object) {
+		try {
+			return jsonValidator.validateJson(object.toString(), "mosip-identity-json-schema.json");
+		} catch (BaseUncheckedException | JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
+				| FileIOException e) {
+			return e.getMessage();
+		}
 	}
 
 	@PostMapping(value = "/encodeFile", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -68,8 +88,8 @@ public class CEPH {
 	@PostMapping(path = "/jsonDecompress", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String jsonDecompress(@RequestBody String json) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(
-				mapper.readValue(StringEscapeUtils.unescapeJava(json).getBytes(Charset.forName("UTF-16")), ObjectNode.class));
+		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper
+				.readValue(StringEscapeUtils.unescapeJava(json).getBytes(Charset.forName("UTF-16")), ObjectNode.class));
 	}
 
 }
