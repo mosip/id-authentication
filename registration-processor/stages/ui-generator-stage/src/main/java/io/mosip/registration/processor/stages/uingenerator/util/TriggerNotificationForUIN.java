@@ -131,10 +131,6 @@ public class TriggerNotificationForUIN {
 				smsTemplateCode=SMS_TEMPLATE_UIN_UPDATE_CODE;
 				emailTemplateCode=EMAIL_TEMPLATE_UIN_UPDATE_CODE;
 			}
-			if(isTemplateAvailable(smsTemplateCode) && isTemplateAvailable(emailTemplateCode)) {
-				throw new TemplateNotFoundException();
-			}
-
 
 			for (String notificationType : allNotificationTypes) {
 

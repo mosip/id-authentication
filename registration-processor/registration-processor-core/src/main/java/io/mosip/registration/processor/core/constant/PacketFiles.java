@@ -28,7 +28,7 @@ public enum PacketFiles {
 	/** The proofofaddress. */
 	PROOFOFADDRESS,
 	/** The demographicinfo. */
-	DEMOGRAPHICINFO,
+	ID,
 	/** The leftthumb. */
 	LEFTTHUMB,
 	/** The rightthumb. */

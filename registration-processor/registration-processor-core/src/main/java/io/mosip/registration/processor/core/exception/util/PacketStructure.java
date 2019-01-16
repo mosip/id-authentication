@@ -9,7 +9,7 @@ public class PacketStructure {
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC + FILE_SEPERATOR;
 
 	public static final String APPLICANTPHOTO = APPLICANTDEMOGRAPHIC + PacketFiles.APPLICANTPHOTO;
-	public static final String DEMOGRAPHICINFO = PacketFiles.DEMOGRAPHIC + FILE_SEPERATOR + PacketFiles.DEMOGRAPHICINFO;
+	public static final String DEMOGRAPHICINFO = PacketFiles.DEMOGRAPHIC + FILE_SEPERATOR + PacketFiles.ID;
 	public static final String PROOFOFADDRESS = APPLICANTDEMOGRAPHIC + PacketFiles.PROOFOFADDRESS;
 	public static final String PROOFOFIDENTITY = APPLICANTDEMOGRAPHIC + PacketFiles.PROOFOFIDENTITY;
 	public static final String EXCEPTIONPHOTO = APPLICANTDEMOGRAPHIC + PacketFiles.EXCEPTIONPHOTO;

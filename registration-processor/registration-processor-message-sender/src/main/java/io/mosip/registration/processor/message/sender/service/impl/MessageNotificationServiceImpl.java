@@ -146,10 +146,10 @@ public class MessageNotificationServiceImpl
 
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
-			if (templatejson.getPhoneNumber()[0].getValue().isEmpty()) {
+			if (templatejson.getPhoneNumber().isEmpty()) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
-			smsDto.setNumber(templatejson.getPhoneNumber()[0].getValue());
+			smsDto.setNumber(templatejson.getPhoneNumber());
 			smsDto.setMessage(artifact);
 
 			response = (SmsResponseDto) restClientService.postApi(ApiName.SMSNOTIFIER, "", "", smsDto,
@@ -182,14 +182,14 @@ public class MessageNotificationServiceImpl
 
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
-			if (template.getEmailID()[0].getValue().isEmpty()) {
+			if (template.getEmailID().isEmpty()) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
 
-			String[] mailTo = new String[template.getEmailID().length];
-			for (int i = 0; i < mailTo.length; i++) {
-				mailTo[i] = template.getEmailID()[i].getValue();
-			}
+			String email = template.getEmailID();
+			String[] mailTo = new String[1];
+			mailTo[0] = email;
+			
 
 			response = sendEmail(mailTo, mailCc, subject, artifact, attachment);
 
@@ -270,7 +270,7 @@ public class MessageNotificationServiceImpl
 		}
 
 		demographicInfoStream = adapter.getFile(id,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 
 		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
 
@@ -319,9 +319,9 @@ public class MessageNotificationServiceImpl
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 			template.setFirstName(getJsonValues(regProcessorTemplateJson.getFirstName()));
-			template.setEmailID(getJsonValues(regProcessorTemplateJson.getEmailID()));
-			template.setPhoneNumber(getJsonValues(regProcessorTemplateJson.getPhoneNumber()));
-
+			template.setEmailID((String)demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
+			template.setPhoneNumber((String)demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
+			
 		} catch (ParseException e) {
 			LOGGER.error("Error while parsing Json file", e);
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
@@ -358,7 +358,7 @@ public class MessageNotificationServiceImpl
 	 *            the demographic json node
 	 * @return the t[]
 	 */
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
 		String label;
@@ -398,6 +398,56 @@ public class MessageNotificationServiceImpl
 		}
 
 		return javaObject;
+	}*/
+	
+	/**
+	 * Map json node to java object.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param genericType
+	 *            the generic type
+	 * @param demographicJsonNode
+	 *            the demographic json node
+	 * @return the t[]
+	 */
+	@SuppressWarnings("unchecked")
+	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
+		String language;
+		String value;
+		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
+		try {
+			for (int i = 0; i < demographicJsonNode.size(); i++) {
+
+				T jsonNodeElement = (T) genericType.newInstance();
+
+				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				language = (String) objects.get(LANGUAGE);
+				value = (String) objects.get(VALUE);
+
+				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
+				languageField.setAccessible(true);
+				languageField.set(jsonNodeElement, language);
+
+				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
+				valueField.setAccessible(true);
+				valueField.set(jsonNodeElement, value);
+
+				javaObject[i] = jsonNodeElement;
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			LOGGER.error("Error while Creating Instance of generic type", e);
+			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
+					e);
+
+		} catch (NoSuchFieldException | SecurityException e) {
+			LOGGER.error("no such field exception", e);
+			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
+
+		}
+
+		return javaObject;
+
 	}
 
 }
