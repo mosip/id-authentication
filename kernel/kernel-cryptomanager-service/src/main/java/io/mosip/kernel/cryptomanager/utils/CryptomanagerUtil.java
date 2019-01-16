@@ -76,7 +76,7 @@ public class CryptomanagerUtil {
 	 * {@link DataMapper} instance.
 	 */
 	@Autowired
-	private DataMapper dataMapper;
+	private DataMapper<CryptomanagerRequestDto,KeymanagerSymmetricKeyRequestDto> dataMapper;
 
 	/**
 	 * {@link RestTemplate} instance
