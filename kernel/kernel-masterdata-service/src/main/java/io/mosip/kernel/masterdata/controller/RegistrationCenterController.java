@@ -219,7 +219,7 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @return {@link RegistrationCenterResponseDto}
 	 */
-	@GetMapping("/v1.0/registrationcenters/names/{langcode}/{hierarchylevel}")
+	@GetMapping("/v1.0/registrationcenters/{langcode}/{hierarchylevel}/names")
 	public RegistrationCenterResponseDto getRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
 			@PathVariable("langcode") String langCode, @PathVariable("hierarchylevel") Integer hierarchyLevel,
 			@RequestParam("name") List<String> names) {
