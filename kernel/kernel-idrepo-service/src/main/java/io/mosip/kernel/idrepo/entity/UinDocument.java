@@ -5,21 +5,28 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The Class UinDocument.
  *
  * @author Manoj SP
  */
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"uin"})
 @Entity
 @NoArgsConstructor
+@IdClass(DocumentPK.class)
 @Table(schema = "idrepo")
 public class UinDocument {
 	
@@ -48,9 +55,11 @@ public class UinDocument {
 	private String uinRefId;
 	
 	/** The doccat code. */
+	@Id
 	private String doccatCode;
 	
 	/** The doctyp code. */
+	@Id
 	private String doctypCode;
 	
 	/** The doc id. */
@@ -93,5 +102,6 @@ public class UinDocument {
 	
 	@ManyToOne
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
+	@Setter(value = AccessLevel.NONE)
 	private Uin uin;
 }

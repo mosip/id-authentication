@@ -17,15 +17,16 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * 
+ * The Class KycAuthRequestValidator.
+ *
  * @author Prem Kumar
  * @author Dinesh Karuppiah.T
- *
  */
 
 @Component
 public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
+	/** The auth request validator. */
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
 
@@ -64,15 +65,21 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	/** The env. */
 	@Autowired
-	private Environment env;
+	private Environment environment;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#supports(java.lang.Class)
+	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return KycAuthRequestDTO.class.equals(clazz);
 	}
-
+	
 	/**
-	 * Validates the KycAuthRequest
+	 * Validates the KycAuthRequest.
+	 *
+	 * @param target the target
+	 * @param errors the errors
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
@@ -114,16 +121,16 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validates the KycAuthrequest against the MUACode on the request
-	 * 
-	 * @param errors
-	 * @param kycAuthRequestDTO
+	 * Validates the KycAuthrequest against the MUACode on the request.
+	 *
+	 * @param errors the errors
+	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		String key = ACCESS_LEVEL
-				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getMuaCode).orElse("");
-		String accesslevel = env.getProperty(key);
+				+ Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getTspID).orElse("");
+		String accesslevel = environment.getProperty(key);
 		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
@@ -133,13 +140,13 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	/**
-	 * Validates the KycAuthrequest against the Authtype on the request
-	 * 
-	 * @param errors
-	 * @param kycAuthRequestDTO
+	 * Validates the KycAuthrequest against the Authtype on the request.
+	 *
+	 * @param errors the errors
+	 * @param kycAuthRequestDTO the kyc auth request DTO
 	 */
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		if (kycAuthRequestDTO.getEKycAuthType() != null) {
+		if (kycAuthRequestDTO.getEKycAuthType() != null && !kycAuthRequestDTO.getEKycAuthType().isEmpty()) {
 			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
 					.map(String::valueOf)
 					.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr).filter(eAuthType -> eAuthType
@@ -154,16 +161,16 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		} else {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
 			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), AUTH_TYPE));
+					new Object[] { AUTH_TYPE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
 
 	}
 
 	/**
-	 * Validates the ConsentRequest on KycAuthrequest
-	 * 
-	 * @param kycAuthRequestDTO
-	 * @param errors
+	 * Validates the ConsentRequest on KycAuthrequest.
+	 *
+	 * @param kycAuthRequestDTO the kyc auth request DTO
+	 * @param errors the errors
 	 */
 	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.isConsentReq()) {

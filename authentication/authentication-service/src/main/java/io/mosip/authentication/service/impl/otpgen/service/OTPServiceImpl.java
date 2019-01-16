@@ -19,16 +19,19 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Service
 public class OTPServiceImpl implements OTPService {
 	
+	/** The otp manager. */
 	@Autowired
 	private OTPManager otpManager;
 
+	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 	
 	/**
-	 * 
-	 * @param otpKey
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Generate otp.
+	 *
+	 * @param otpKey the otp key
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Override
 	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException {

@@ -17,9 +17,17 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  */
 
 public interface BioAuthService {
-
-	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException;
-
 	
+	/**
+	 * Method to validate Bio Auth details.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfo the id info
+	 * @return the auth status info
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+
+	AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo)
+			throws IdAuthenticationBusinessException;
 
 }

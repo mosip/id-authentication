@@ -71,6 +71,24 @@ public class FingerprintProviderTest {
 		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
 			return null;
 		}
+
+		@Override
+		public String createMinutiae(byte[] inputImage) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public double matchImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public double matchMultiImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	};
 
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
@@ -92,35 +110,53 @@ public class FingerprintProviderTest {
 			// TODO Auto-generated method stub
 			return null;
 		}
+
+		@Override
+		public String createMinutiae(byte[] inputImage) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public double matchImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public double matchMultiImage(Object reqInfo, Object entityInfo) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	};
 
 	@Test
 	public void testISOScoreCalculatorSameFingerDiffScan() {
-		double score = fp.scoreCalculator(finger1, finger1scan2);
+		double score = fp.matchScoreCalculator(finger1, finger1scan2);
 		assertTrue(score > 100);
 	}
 
 	@Test
 	public void testISOScoreCalculatorDiffFinger() {
-		double score = fp.scoreCalculator(finger1, finger2);
+		double score = fp.matchScoreCalculator(finger1, finger2);
 		assertTrue(score < 100);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testISOScoreCalculatorException() {
-		fp.scoreCalculator(new byte[] { 1, 2 }, new byte[] { 1, 2 });
+		fp.matchScoreCalculator(new byte[] { 1, 2 }, new byte[] { 1, 2 });
 	}
 
 	@Test(expected = JsonSyntaxException.class)
 	public void testMinutiaeScoreCalculatorException() {
-		fp.scoreCalculator("123", "123");
+		fp.matchScoreCalculator("123", "123");
 	}
 
 	@Test
 	public void testMinutiaeScoreSameFingerDiffScan() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
 		FingerprintTemplate template2 = new FingerprintTemplate().convert(finger1scan2);
-		double score = fp.scoreCalculator(template1.serialize(), template2.serialize());
+		double score = fp.matchScoreCalculator(template1.serialize(), template2.serialize());
 		assertTrue(score > 100);
 	}
 
@@ -128,7 +164,7 @@ public class FingerprintProviderTest {
 	public void testMinutiaeScoreDiffFinger() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
 		FingerprintTemplate template2 = new FingerprintTemplate().convert(finger2);
-		double score = fp.scoreCalculator(template1.serialize(), template2.serialize());
+		double score = fp.matchScoreCalculator(template1.serialize(), template2.serialize());
 		assertTrue(score < 100);
 	}
 
@@ -136,7 +172,7 @@ public class FingerprintProviderTest {
 	public void testmatchMinutiea() {
 		byte[] refInfo = Base64.getEncoder().encode(finger1);
 		String value = new String(refInfo);
-		fingerPrint.matchMinutiea(value, value);
+		fingerPrint.matchMinutiae(value, value);
 		fingerPrint.matchImage(value, value);
 		fingerPrint.decodeValue(value);
 	}
@@ -190,7 +226,7 @@ public class FingerprintProviderTest {
 		entityInfo.put("rightIndex", rightIndex);
 		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
 		fingerPrint.matchMultiImage(reqInfo, entityInfo);
-		assertTrue(score < 60);
+		assertTrue(score > 60);
 	}
 
 }

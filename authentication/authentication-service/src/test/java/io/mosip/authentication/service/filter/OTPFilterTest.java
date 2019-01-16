@@ -18,7 +18,7 @@ public class OTPFilterTest {
 	Map<String, Object> responseBody = new HashMap<>();;
 	
 	@Test
-	public void testSetTxnId() {
+	public void testSetTxnId() throws IdAuthenticationAppException {
 		responseBody.put("txnId", "1234");
 		assertEquals(responseBody, filter.setResponseParam(requestBody, responseBody));
 	}

@@ -113,7 +113,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	@Override
 	public BiometricTypeResponseDto getBiometricTypeByCodeAndLangCode(String code, String langCode) {
 		BiometricType biometricType;
-		BiometricTypeDto biometricTypeDto = new BiometricTypeDto();
+		BiometricTypeDto biometricTypeDto; 
 		try {
 			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
 					langCode);
@@ -124,7 +124,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		}
 
 		if (biometricType != null) {
-			biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType);
+			biometricTypeDto=biometricTypeTobiometricTypeDtoDefaultMapper.map(biometricType);
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());

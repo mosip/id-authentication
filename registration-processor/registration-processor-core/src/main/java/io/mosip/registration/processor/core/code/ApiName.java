@@ -46,6 +46,8 @@ public enum ApiName {
 	SMSNOTIFIER,
 
 	/** The email notifier. */
-	EMAILNOTIFIER
+	EMAILNOTIFIER,
+
+	CRYPTOMANAGERDECRYPT
 
 }

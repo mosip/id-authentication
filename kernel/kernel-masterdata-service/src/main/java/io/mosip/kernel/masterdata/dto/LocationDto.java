@@ -1,10 +1,10 @@
 package io.mosip.kernel.masterdata.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -41,9 +41,9 @@ public class LocationDto {
 	@NotBlank
 	private String parentLocCode;
 
-	
+	@ValidLangCode
 	@Size(min = 1, max = 3)
-	@NotEmpty
+	@NotBlank
 	private String langCode;
 
 	@NotNull

@@ -174,12 +174,12 @@ public class IdAuthValidatorTest {
      */
     @Test
     public void testNullMuaCode() {
-	validator.validateMuaCode(null, errors);
+	validator.validateTspId(null, errors);
 	errors.getAllErrors().forEach(error -> {
 	    assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
 	    assertEquals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
 		    error.getDefaultMessage());
-	    assertEquals("muaCode", ((FieldError) error).getField());
+	    assertEquals("tspID", ((FieldError) error).getField());
 	});
     }
     
@@ -188,12 +188,12 @@ public class IdAuthValidatorTest {
      */
     @Test
     public void testInvalidMuaCode() {
-	validator.validateMuaCode("1234", errors);
+	validator.validateTspId("1234", errors);
 	errors.getAllErrors().forEach(error -> {
 	    assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 	    assertEquals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 		    error.getDefaultMessage());
-	    assertEquals("muaCode", ((FieldError) error).getField());
+	    assertEquals("tspID", ((FieldError) error).getField());
 	});
     }
     

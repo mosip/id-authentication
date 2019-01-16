@@ -36,12 +36,16 @@ import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBMatchingStrategy;
 import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.validator.IdAuthValidator;
+import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
+import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
@@ -55,6 +59,10 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
+
+	private static final String MAKE = "Make";
+
+	private static final String DEVICE_ID = "Device Id";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthRequestValidator.class);
@@ -104,6 +112,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	private static final String FACE = "face";
 
+	private static final String IDENTITY_INFO_DTO = "IdentityInfoDTO";
+
 	/** email Validator */
 	@Autowired
 	EmailValidatorImpl emailValidatorImpl;
@@ -112,10 +122,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	@Autowired
 	PhoneValidatorImpl phoneValidatorImpl;
 
-	/** The env. */
-	@Autowired
-	protected Environment env;
-
+	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
 
@@ -147,9 +154,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Validate Biometric details i.e validating fingers,iris,face and device
 	 * information.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param errors
+	 *            the errors
 	 */
 	protected void validateBioDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 
@@ -160,6 +169,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
 
 			if (bioInfo != null && !bioInfo.isEmpty() && isContainDeviceInfo(bioInfo)) {
+
+				validateDeviceInfo(bioInfo, errors);
+
+				validateBioType(bioInfo, errors);
 
 				validateFinger(authRequestDTO, bioInfo, errors);
 
@@ -177,11 +190,80 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validate fingers.
+	 * Validates the BioType value
 	 * 
-	 * @param authRequestDTO
 	 * @param bioInfo
 	 * @param errors
+	 */
+	private void validateBioType(List<BioInfo> bioInfo, Errors errors) {
+		AuthType[] authTypes = BioAuthType.values();
+		Set<String> availableAuthTypeInfos = new HashSet<>();
+		for (AuthType authType : authTypes) {
+			availableAuthTypeInfos.add(authType.getType());
+		}
+		for (BioInfo bioInfos : bioInfo) {
+			if (!availableAuthTypeInfos.contains(bioInfos.getBioType())) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorCode(),
+						new Object[] { bioInfos.getBioType() },
+						IdAuthenticationErrorConstants.INVALID_BIOTYPE.getErrorMessage());
+			}
+		}
+
+	}
+
+	/**
+	 * validates the DeviceInfo
+	 * 
+	 * @param bioInfo
+	 * @param errors
+	 */
+	private void validateDeviceInfo(List<BioInfo> bioInfo, Errors errors) {
+		if (!isContainDeviceId(bioInfo)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric Device id Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { DEVICE_ID },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		if (!isContainDeviceMake(bioInfo)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+					"missing biometric Device Make Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { MAKE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+
+	}
+
+	/**
+	 * check the value of Make present or not from the list
+	 * 
+	 * @param deviceInfoList
+	 * @return
+	 */
+	private boolean isContainDeviceMake(List<BioInfo> deviceInfoList) {
+		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getMake() != null
+				&& !deviceInfo.getDeviceInfo().getMake().isEmpty());
+	}
+
+	/**
+	 * check the deviceId value null or empty
+	 * 
+	 * @param deviceInfoList
+	 * @return
+	 */
+	private boolean isContainDeviceId(List<BioInfo> deviceInfoList) {
+		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getDeviceId() != null
+				&& !deviceInfo.getDeviceInfo().getDeviceId().isEmpty());
+	}
+
+	/**
+	 * Validate fingers.
+	 *
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param bioInfo
+	 *            the bio info
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateFinger(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 		if ((isAvailableBioType(bioInfo, BioType.FGRMIN) && isDuplicateBioType(authRequestDTO, BioType.FGRMIN))
@@ -197,10 +279,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * Validate Iris.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param bioInfo
+	 *            the bio info
 	 * @param errors
+	 *            the errors
 	 */
 	private void validateIris(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 		if (isAvailableBioType(bioInfo, BioType.IRISIMG) && isDuplicateBioType(authRequestDTO, BioType.IRISIMG)) {
@@ -208,17 +293,46 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 			checkAtleastOneIrisRequestAvailable(authRequestDTO, errors);
 			if (!errors.hasErrors()) {
 				validateIrisRequestCount(authRequestDTO, errors);
+				validateMultiIrisValue(authRequestDTO, errors);
 			}
 
 		}
 	}
 
 	/**
-	 * Validate Face.
+	 * Validation for MultiIris Values
 	 * 
 	 * @param authRequestDTO
-	 * @param bioInfo
 	 * @param errors
+	 */
+	private void validateMultiIrisValue(AuthRequestDTO authRequestDTO, Errors errors) {
+		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
+		List<Supplier<List<IdentityInfoDTO>>> listOfIris = Stream
+				.<Supplier<List<IdentityInfoDTO>>>of(identity::getLeftEye, identity::getRightEye)
+				.collect(Collectors.toList());
+
+		List<IdentityInfoDTO> idendityInfoList = listOfIris.stream().map(Supplier::get).filter(Objects::nonNull)
+				.flatMap(list -> list.stream()).collect(Collectors.toList());
+
+		boolean isDuplicateIrisValue = checkIsDuplicate(idendityInfoList);
+
+		if (isDuplicateIrisValue) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Duplicate IRIS in request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.DUPLICATE_IRIS.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.DUPLICATE_IRIS.getErrorMessage(), REQUEST));
+		}
+
+	}
+
+	/**
+	 * Validate Face.
+	 *
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param bioInfo
+	 *            the bio info
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateFace(AuthRequestDTO authRequestDTO, List<BioInfo> bioInfo, Errors errors) {
 
@@ -230,9 +344,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate atleast one finger request should be available for Bio.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param errors
+	 *            the errors
 	 */
 	private void checkAtleastOneFingerRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 
@@ -251,9 +367,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate atleast one Iris request should be available for Bio.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param errors
+	 *            the errors
 	 */
 	private void checkAtleastOneIrisRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 		@SuppressWarnings("unchecked")
@@ -268,9 +386,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate atleast one Face request should be available for Bio.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param errors
+	 *            the errors
 	 */
 	private void checkAtleastOneFaceRequestAvailable(AuthRequestDTO authRequestDTO, Errors errors) {
 		boolean isFaceRequestAvailable = authRequestDTO.getRequest() != null
@@ -285,25 +405,31 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * check any IdentityInfoDto data available or not.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param functions
-	 * @return
+	 *            the functions
+	 * @return true, if successful
 	 */
 	@SuppressWarnings("unchecked")
 	boolean checkAnyIdInfoAvailable(AuthRequestDTO authRequestDTO,
 			Function<IdentityDTO, List<IdentityInfoDTO>>... functions) {
-		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions)
-				.anyMatch(func -> Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
-						.map(func).filter(list -> !list.isEmpty()).isPresent());
+		return Stream.<Function<IdentityDTO, List<IdentityInfoDTO>>>of(functions).anyMatch(func -> Optional
+				.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(func)
+				.filter(list -> list != null && !list.isEmpty()
+						&& list.stream().allMatch(idDto -> idDto.getValue() != null && !idDto.getValue().isEmpty()))
+				.isPresent());
 	}
 
 	/**
 	 * If DemoAuthType is Bio, then validate bioinfo is available or not.
-	 * 
+	 *
 	 * @param bioInfoList
+	 *            the bio info list
 	 * @param bioType
-	 * @return
+	 *            the bio type
+	 * @return true, if is available bio type
 	 */
 	private boolean isAvailableBioType(List<BioInfo> bioInfoList, BioType bioType) {
 		return bioInfoList.parallelStream().filter(bio -> bio.getBioType() != null && !bio.getBioType().isEmpty())
@@ -312,9 +438,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * If DemoAuthType is Bio, then validate device information is available or not.
-	 * 
+	 *
 	 * @param deviceInfoList
-	 * @return
+	 *            the device info list
+	 * @return true, if is contain device info
 	 */
 	private boolean isContainDeviceInfo(List<BioInfo> deviceInfoList) {
 
@@ -324,10 +451,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * If DemoAuthType is Bio, then check same bio request type should not be
 	 * requested again.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param bioType
-	 * @return
+	 *            the bio type
+	 * @return true, if is duplicate bio type
 	 */
 	private boolean isDuplicateBioType(AuthRequestDTO authRequestDTO, BioType bioType) {
 		List<BioInfo> bioInfo = authRequestDTO.getBioInfo();
@@ -344,9 +473,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * If DemoAuthType is Bio, Then check duplicate request of finger and number
 	 * finger of request should not exceed to 10.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @param errors
+	 *            the errors
 	 */
 	private void validateFingerRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
@@ -372,6 +503,14 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
+	/**
+	 * Validate multi fingers value.
+	 *
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param errors
+	 *            the errors
+	 */
 	private void validateMultiFingersValue(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
 		List<Supplier<List<IdentityInfoDTO>>> listOfFingerprint = Stream.<Supplier<List<IdentityInfoDTO>>>of(
@@ -391,12 +530,26 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
+	/**
+	 * Gets the id info count.
+	 *
+	 * @param list
+	 *            the list
+	 * @return the id info count
+	 */
 	private Long getIdInfoCount(List<IdentityInfoDTO> list) {
 		return Optional.ofNullable(list).map(List::parallelStream)
 				.map(stream -> stream.filter(lt -> lt.getValue() != null && !lt.getValue().isEmpty()).count())
 				.orElse((long) 0);
 	}
 
+	/**
+	 * Check is duplicate.
+	 *
+	 * @param list
+	 *            the list
+	 * @return true, if successful
+	 */
 	private boolean checkIsDuplicate(List<IdentityInfoDTO> list) {
 		return Optional.ofNullable(list).map(List::parallelStream).map(stream -> stream.filter((IdentityInfoDTO lt) -> {
 			return lt.getValue() != null && !lt.getValue().isEmpty();
@@ -408,8 +561,11 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * validate Iris request count. left and right eye should not exceed 1 and total
 	 * iris should not exceed 2.
-	 * 
+	 *
 	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateIrisRequestCount(AuthRequestDTO authRequestDTO, Errors errors) {
 		IdentityDTO identity = authRequestDTO.getRequest().getIdentity();
@@ -425,8 +581,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		if (leftEyeCount > 1 || rightEyeCount > 1) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"Iris : either left eye or right eye count is more than 1.");
-			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { IRIS }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorCode(),
+					new Object[] { IRIS }, IdAuthenticationErrorConstants.IRIS_EXCEEDING.getErrorMessage());
 		}
 
 	}
@@ -434,8 +590,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check demo auth.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	protected void checkDemoAuth(AuthRequestDTO authRequest, Errors errors) {
 		AuthType[] authTypes = DemoAuthType.values();
@@ -456,13 +614,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				}
 			}
 		}
-		
+
 		checkAvaliableAuthInfo(authRequest, errors, authTypes, availableAuthTypeInfos);
-		
+
 		if (!hasMatch) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Missing IdentityInfoDTO");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "IdentityInfoDTO" },
+					new Object[] { IDENTITY_INFO_DTO },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		} else {
 			checkOtherValues(authRequest, errors, availableAuthTypeInfos);
@@ -472,16 +630,20 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check avaliable auth info.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors the errors
-	 * @param authTypes the auth types
-	 * @param availableAuthTypeInfos the available auth type infos
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
+	 * @param authTypes
+	 *            the auth types
+	 * @param availableAuthTypeInfos
+	 *            the available auth type infos
 	 */
 	private void checkAvaliableAuthInfo(AuthRequestDTO authRequest, Errors errors, AuthType[] authTypes,
 			Set<String> availableAuthTypeInfos) {
 		for (AuthType authType : authTypes) {
 			if (authType.isAuthTypeEnabled(authRequest, idInfoHelper)) {
-				checkAvailableAuthType(errors, availableAuthTypeInfos, authType);
+				addMissingAuthTypeError(errors, availableAuthTypeInfos, authType);
 
 				checkAvailableMatchingStrategy(authRequest, errors, authType);
 
@@ -493,13 +655,16 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check available matching threshold.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors the errors
-	 * @param authType the auth type
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
+	 * @param authType
+	 *            the auth type
 	 */
 	private void checkAvailableMatchingThreshold(AuthRequestDTO authRequest, Errors errors, AuthType authType) {
-		Optional<Integer> matchingThreshold = authType.getMatchingThreshold(authRequest,
-				idInfoHelper::getLanguageCode, env);
+		Optional<Integer> matchingThreshold = authType.getMatchingThreshold(authRequest, idInfoHelper::getLanguageCode,
+				env);
 		if (matchingThreshold.isPresent()) {
 			Integer integer = matchingThreshold.get();
 			if (integer <= 0 || integer >= 100) {
@@ -539,13 +704,15 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check available matching strategy.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors the errors
-	 * @param authType the auth type
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
+	 * @param authType
+	 *            the auth type
 	 */
 	private void checkAvailableMatchingStrategy(AuthRequestDTO authRequest, Errors errors, AuthType authType) {
-		Optional<String> matchingStrategy = authType.getMatchingStrategy(authRequest,
-				idInfoHelper::getLanguageCode);
+		Optional<String> matchingStrategy = authType.getMatchingStrategy(authRequest, idInfoHelper::getLanguageCode);
 		if (matchingStrategy.isPresent()) {
 			if (!MatchingStrategyType.getMatchStrategyType(matchingStrategy.get()).isPresent()) {
 				if (authType.equals(DemoAuthType.FAD_PRI)) {
@@ -584,29 +751,29 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check available auth type.
 	 *
-	 * @param errors the errors
-	 * @param availableAuthTypeInfos the available auth type infos
-	 * @param authType the auth type
+	 * @param errors
+	 *            the errors
+	 * @param availableAuthTypeInfos
+	 *            the available auth type infos
+	 * @param authType
+	 *            the auth type
 	 */
-	private void checkAvailableAuthType(Errors errors, Set<String> availableAuthTypeInfos, AuthType authType) {
+	private void addMissingAuthTypeError(Errors errors, Set<String> availableAuthTypeInfos, AuthType authType) {
 		if (!availableAuthTypeInfos.contains(authType.getType())) {
 			if ((authType.equals(DemoAuthType.FAD_PRI)) || (authType.equals(DemoAuthType.FAD_SEC))) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 						"Full Address is Missing");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_FAD.getErrorCode(),
-						new Object[] { FULLADDRESS },
-						IdAuthenticationErrorConstants.MISSING_FAD.getErrorMessage());
+						new Object[] { FULLADDRESS }, IdAuthenticationErrorConstants.MISSING_FAD.getErrorMessage());
 			} else if ((authType.equals(DemoAuthType.AD_PRI)) || (authType.equals(DemoAuthType.AD_SEC))) {
-				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-						"Address is Missing");
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Address is Missing");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_AD.getErrorCode(),
 						new Object[] { ADDRESS }, IdAuthenticationErrorConstants.MISSING_AD.getErrorMessage());
 			} else if ((authType.equals(DemoAuthType.PI_PRI)) || (authType.equals(DemoAuthType.PI_SEC))) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
 						"personalIdentity is Missing");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PI.getErrorCode(),
-						new Object[] { PERSONALIDENTITY },
-						IdAuthenticationErrorConstants.MISSING_PI.getErrorMessage());
+						new Object[] { PERSONALIDENTITY }, IdAuthenticationErrorConstants.MISSING_PI.getErrorMessage());
 			}
 		}
 	}
@@ -614,15 +781,17 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check identity info value.
 	 *
-	 * @param identityInfos the identity infos
-	 * @param errors        the errors
+	 * @param identityInfos
+	 *            the identity infos
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkIdentityInfoValue(List<IdentityInfoDTO> identityInfos, Errors errors) {
 		for (IdentityInfoDTO identityInfoDTO : identityInfos) {
 			if (Objects.isNull(identityInfoDTO.getValue())) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "IdentityInfoDTO is invalid");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { "IdentityInfoDTO" },
+						new Object[] { IDENTITY_INFO_DTO },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 
@@ -633,10 +802,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check other values.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
-	 * @param availableAuthTypeInfos 
-	 * @param hasMatch    the has match
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
+	 * @param availableAuthTypeInfos
+	 * @param hasMatch
+	 *            the has match
 	 */
 	private void checkOtherValues(AuthRequestDTO authRequest, Errors errors, Set<String> availableAuthTypeInfos) {
 		checkDOB(authRequest, errors);
@@ -651,14 +823,17 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Validate ad and full ad.
 	 *
-	 * @param availableAuthTypeInfos the available auth type infos
-	 * @param errors the errors
+	 * @param availableAuthTypeInfos
+	 *            the available auth type infos
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateAdAndFullAd(Set<String> availableAuthTypeInfos, Errors errors) {
-		if(availableAuthTypeInfos.contains(DemoAuthType.AD_PRI.getType()) && availableAuthTypeInfos.contains(DemoAuthType.FAD_PRI.getType())) {
+		if (availableAuthTypeInfos.contains(DemoAuthType.AD_PRI.getType())
+				&& availableAuthTypeInfos.contains(DemoAuthType.FAD_PRI.getType())) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Ad and FAD are enabled");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "IdentityInfoDTO" },
+					new Object[] { IDENTITY_INFO_DTO },
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
 	}
@@ -666,8 +841,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check gender.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkGender(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> genderList = DemoMatchType.GENDER
@@ -689,8 +866,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check DOB type.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkDOBType(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> dobTypeList = DemoMatchType.DOBTYPE
@@ -712,8 +891,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check age.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkAge(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoList(authRequest.getRequest().getIdentity());
@@ -735,8 +916,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check DOB.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
 		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoList(authRequest.getRequest().getIdentity());
@@ -745,7 +928,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 				try {
 					DOBMatchingStrategy.getDateFormat().parse(identityInfoDTO.getValue());
 				} catch (ParseException e) {
-					//FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date format or Age in the acceptable range
+					// FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date
+					// format or Age in the acceptable range
 
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 							"Demographic data – DOB(pi) did not match");
@@ -760,9 +944,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check langauge details.
 	 *
-	 * @param demoMatchType the demo match type
-	 * @param identityInfos the identity infos
-	 * @param errors        the errors
+	 * @param demoMatchType
+	 *            the demo match type
+	 * @param identityInfos
+	 *            the identity infos
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
 		String priLangCode = env.getProperty(PRIMARY_LANG_CODE);
@@ -798,9 +985,12 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check seconday language.
 	 *
-	 * @param demoMatchType the demo match type
-	 * @param secCount      the sec count
-	 * @param errors        the errors
+	 * @param demoMatchType
+	 *            the demo match type
+	 * @param secCount
+	 *            the sec count
+	 * @param errors
+	 *            the errors
 	 */
 	private void checkSecondayLanguage(MatchType demoMatchType, long secCount, Errors errors) {
 		IdMapping idMapping = demoMatchType.getIdMapping();
@@ -829,8 +1019,10 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Check OTP auth.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	protected void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 		Optional<String> otp = getOtpValue(authRequest);
@@ -850,7 +1042,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Gets the otp value.
 	 *
-	 * @param authreqdto the authreqdto
+	 * @param authreqdto
+	 *            the authreqdto
 	 * @return the otp value
 	 */
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
@@ -863,46 +1056,53 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validate email id.
-	 * 
-	 * @param authRequest authRequest
+	 *
+	 * @param authRequest
+	 *            authRequest
+	 * @param errors
+	 *            the errors
 	 */
 	private void validateEmail(AuthRequestDTO authRequest, Errors errors) {
-
-		List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL.getIdentityInfoList(authRequest.getRequest().getIdentity());
-		if (emailId != null) {
-			for (IdentityInfoDTO email : emailId) {
-				boolean isValidEmail = emailValidatorImpl.validateEmail(email.getValue());
-
-				if (!isValidEmail) {
-					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { "emailId" },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		try {
+			List<IdentityInfoDTO> emailId = DemoMatchType.EMAIL
+					.getIdentityInfoList(authRequest.getRequest().getIdentity());
+			if (emailId != null) {
+				for (IdentityInfoDTO email : emailId) {
+					emailValidatorImpl.validateEmail(email.getValue());
 				}
 			}
+		} catch (InvalideEmailException e) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+					"Invalid email \n" + ExceptionUtils.getStackTrace(e));
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { "emailId" },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
-
 	}
 
 	/**
 	 * validate phone number.
-	 * 
-	 * @param authRequest authRequest
+	 *
+	 * @param authRequest
+	 *            authRequest
+	 * @param errors
+	 *            the errors
 	 */
 	private void validatePhone(AuthRequestDTO authRequest, Errors errors) {
-
-		List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE
-				.getIdentityInfoList(authRequest.getRequest().getIdentity());
-		if (phoneNumber != null) {
-			for (IdentityInfoDTO phone : phoneNumber) {
-				boolean isValidPhone = phoneValidatorImpl.validatePhone(phone.getValue());
-				if (!isValidPhone) {
-					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { "phoneNumber" },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		try {
+			List<IdentityInfoDTO> phoneNumber = DemoMatchType.PHONE
+					.getIdentityInfoList(authRequest.getRequest().getIdentity());
+			if (phoneNumber != null) {
+				for (IdentityInfoDTO phone : phoneNumber) {
+					phoneValidatorImpl.validatePhone(phone.getValue());
 				}
 			}
+		} catch (InvalidPhoneNumberException e) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+					"Invalid email \n" + ExceptionUtils.getStackTrace(e));
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { "phoneNumber" },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
-
 	}
-
 }

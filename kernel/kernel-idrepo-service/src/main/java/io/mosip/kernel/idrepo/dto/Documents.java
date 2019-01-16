@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 public class Documents {
 
 	/** The doc type. */
-	private String docType;
+	private String category;
 	
 	/** The doc value. */
-	private String docValue; 
+	private String value; 
 }

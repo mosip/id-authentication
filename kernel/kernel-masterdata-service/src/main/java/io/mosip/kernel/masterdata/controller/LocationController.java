@@ -111,9 +111,9 @@ public class LocationController {
 	}
 
 	/**
-	 * 
-	 * @param locationCode
-	 * @return PostOcationCodeResponseDto
+	 * This API call would update isDeleted to true when called.
+	 * @param locationCode -location code
+	 * @return CodeResponseDto
 	 */
 	@DeleteMapping(value = "/{locationcode}")
 	public CodeResponseDto deleteLocationHierarchyDetails(@PathVariable(value = "locationcode") String locationCode) {
