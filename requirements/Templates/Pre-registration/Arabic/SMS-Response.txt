@@ -1,4 +1,5 @@
-Votre pré-inscription pour UIN est terminée avec succès sur $Date à $Time. 
-Votre ID est # $PRID.
-Le rendez-vous est prévu pour $Appointmentdate à $Appointmenttime.
-vous recevrez également les détails sur votre adresse email enregistrée
+تم الانتهاء من التسجيل المسبق ل uin بنجاح
+علي $Date في $Time. رقم التعريف الخاص بك هو # $PRID.
+ومن المقرر تعيين $Appointmentdate في $Appointmenttime.
+سوف تتلقي أيضا التفاصيل علي عنوان البريد الكتروني المسجل الخاص بك
+
