@@ -47,7 +47,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.preregistration.booking.code.StatusCodes;
 import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
@@ -77,6 +76,7 @@ import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
@@ -152,8 +152,8 @@ public class BookingServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In callRegCenterDateRestService method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-			System.out.println(ex.getResponseBodyAsString());
 			try {
+				@SuppressWarnings("unchecked")
 				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
 						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
 				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
@@ -202,6 +202,7 @@ public class BookingServiceUtil {
 							+ ex.getMessage());
 
 			try {
+				@SuppressWarnings("unchecked")
 				ErrorResponse<ServiceError> errorResponse = (ErrorResponse<ServiceError>) JsonUtils
 						.jsonStringToJavaObject(ErrorResponse.class, ex.getResponseBodyAsString());
 				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
@@ -272,7 +273,6 @@ public class BookingServiceUtil {
 			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 			HttpEntity<MainListResponseDTO<PreRegistartionStatusDTO>> httpEntity = new HttpEntity<>(headers);
 			String uriBuilder = builder.build().encode().toUriString();
-			System.out.println("uriBuilder::" + uriBuilder);
 			@SuppressWarnings({ "rawtypes" })
 			ResponseEntity<MainListResponseDTO> respEntity = restTemplate.exchange(uriBuilder, HttpMethod.GET,
 					httpEntity, MainListResponseDTO.class);
@@ -326,7 +326,7 @@ public class BookingServiceUtil {
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
 
-				if (!statusCode.equals(StatusCodes.BOOKED.getCode())) {
+				if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
 					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.toString(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
 				}
@@ -461,6 +461,9 @@ public class BookingServiceUtil {
 			if (isNull(oldBookingDetails.getRegistrationCenterId())) {
 				throw new BookingRegistrationCenterIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_007.toString(),
 						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.toString());
+			} else if (isNull(oldBookingDetails.getRegDate())) {
+				throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+						ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
 			} else if (isNull(oldBookingDetails.getSlotFromTime()) && isNull(oldBookingDetails.getSlotToTime())) {
 				throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.toString(),
 						ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.toString());
@@ -469,7 +472,10 @@ public class BookingServiceUtil {
 			if (isNull(newBookingDetails.getRegistrationCenterId())) {
 				throw new BookingRegistrationCenterIdNotFoundException(ErrorCodes.PRG_BOOK_RCI_007.toString(),
 						ErrorMessages.REGISTRATION_CENTER_ID_NOT_ENTERED.toString());
-			} else if (isNull(newBookingDetails.getSlotFromTime()) || isNull(newBookingDetails.getSlotToTime())) {
+			} else if (isNull(newBookingDetails.getRegDate())) {
+				throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.toString(),
+						ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.toString());
+			} else if (isNull(newBookingDetails.getSlotFromTime()) && isNull(newBookingDetails.getSlotToTime())) {
 				throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.toString(),
 						ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.toString());
 			}

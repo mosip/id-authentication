@@ -165,9 +165,9 @@ export class DemographicComponent implements OnInit {
       this.preRegId = this.user.preRegId;
       fullName = this.user.request.demographicDetails.identity.fullName[0].value;
       gender = this.user.request.demographicDetails.identity.gender[0].value;
-      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
+      date = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
       month = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[1];
-      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[2];
+      year = this.user.request.demographicDetails.identity.dateOfBirth[0].value.split('/')[0];
       dob = this.user.request.demographicDetails.identity.dateOfBirth[0].value;
       age = this.calculateAge(new Date(new Date(dob))).toString();
       addressLine1 = this.user.request.demographicDetails.identity.addressLine1[0].value;
@@ -284,7 +284,6 @@ export class DemographicComponent implements OnInit {
         this.transLocalAdministrativeAuthorities,
         localAdministrativeAuthority
       );
-      console.log('LOCATION', this.locations);
     }
   }
 
@@ -358,7 +357,6 @@ export class DemographicComponent implements OnInit {
   }
 
   onGenderChange() {
-    console.log(this.userForm.controls['gender'].value);
     this.userForm.controls['gender'].markAsTouched();
   }
 
@@ -385,8 +383,8 @@ export class DemographicComponent implements OnInit {
       const _month = dateform.getMonth() + 1;
       if (dateform.toDateString() !== 'Invalid Date' && (+month === _month || month === '0' + _month)) {
         const pipe = new DatePipe('en-US');
-        const myFormattedDate = pipe.transform(dateform, 'dd/MM/yyyy');
-        this.userForm.controls.dob.patchValue(year + '/' + month + '/' + date);
+        const myFormattedDate = pipe.transform(dateform, 'yyyy/MM/dd');
+        this.userForm.controls.dob.patchValue(myFormattedDate);
         this.userForm.controls.age.patchValue(this.calculateAge(dateform));
       } else {
         this.userForm.controls['dob'].markAsTouched();
@@ -442,8 +440,6 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.locations);
-
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
     this.dataStorageService.addUser(request).subscribe(
@@ -458,7 +454,6 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else if (response !== null) {
-          console.log(response);
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.locations));
           this.sharedService.addNameList({
