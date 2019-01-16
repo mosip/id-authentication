@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * This class is used to generate UUID of Type 5.
+ * 
  * @author Bal Vikash Sharma
  *
  */
@@ -23,6 +25,9 @@ public class UUIDUtils {
 	}
 
 	/**
+	 * This method takes UUID <code>namespace</code> and a <code>name</code> and
+	 * generate Type 5 UUID.
+	 * 
 	 * @param namespace
 	 *            is the {@link UUID}
 	 * @param name
@@ -36,6 +41,10 @@ public class UUIDUtils {
 	}
 
 	/**
+	 * 
+	 * This method takes UUID <code>namespace</code> and a <code>name</code> as a
+	 * byte array and generate Type 5 UUID.
+	 * 
 	 * @param namespace
 	 *            is the {@link UUID}
 	 * @param name
