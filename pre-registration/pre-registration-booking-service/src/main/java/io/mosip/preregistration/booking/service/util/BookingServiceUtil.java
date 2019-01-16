@@ -47,10 +47,8 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.preregistration.booking.dto.BookingRequestDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
-import io.mosip.preregistration.booking.dto.DocumentGetAllDTO;
 import io.mosip.preregistration.booking.dto.HolidayDto;
 import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
@@ -72,7 +70,6 @@ import io.mosip.preregistration.booking.exception.BookingRegistrationCenterIdNot
 import io.mosip.preregistration.booking.exception.BookingTimeSlotNotSeletectedException;
 import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
-import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -343,40 +340,6 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
-
-	/**
-	 * This method will call document service.
-	 * 
-	 * @param bookingRequestDTO
-	 * @return boolean
-	 */
-	public boolean callGetDocumentsByPreIdRestService(BookingRequestDTO bookingRequestDTO) {
-		log.info("sessionId", "idType", "id", "In callGetDocumentsByPreIdRestService method of Booking Service Util");
-		try {
-			RestTemplate restTemplate = restTemplateBuilder.build();
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(documentUrl)
-					.queryParam("pre_registration_id", bookingRequestDTO.getPreRegistrationId());
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-			HttpEntity<MainListResponseDTO<DocumentGetAllDTO>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<MainListResponseDTO> docresp = restTemplate.exchange(uriBuilder, HttpMethod.GET, httpEntity,
-					MainListResponseDTO.class);
-			if (!docresp.getBody().getResponse().isEmpty()) {
-				return true;
-			}
-		} catch (RestClientException ex) {
-			log.error("sessionId", "idType", "id",
-					"In callGetDocumentsByPreIdRestService method of Booking Service Util for HttpClientErrorException- "
-							+ ex.getMessage());
-
-			throw new DocumentNotFoundException(ErrorCodes.PRG_BOOK_RCI_023.toString(),
-					ErrorMessages.DOCUMENTS_NOT_FOUND_EXCEPTION.toString(), ex.getCause());
-		}
-		return false;
-	}
-
 	/**
 	 * This method will do booking time slots.
 	 * 
