@@ -117,7 +117,7 @@ public class AbisServiceImpl implements AbisService {
 			} else {
 				response.setReturnValue(2);
 			}
-		} catch (NullPointerException e) {
+		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Test Tags are not present" + ExceptionUtils.getStackTrace(e));
 		}
@@ -184,36 +184,42 @@ public class AbisServiceImpl implements AbisService {
 		boolean duplicate = false;
 
 		int count = 0;
-		String referenceId = identifyRequest.getReferenceId();
-		Document doc = getCbeffDocument(referenceId);
-
-		NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
-		duplicate = checkDuplicate(duplicate, fingerNodeList);
-
-		NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
-		duplicate = checkDuplicate(duplicate, irisNodeList);
-
-		NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
-		duplicate = checkDuplicate(duplicate, faceNodeList);
-
 		IdentifyResponseDto response = new IdentifyResponseDto();
-		response.setId(IDENTIFY);
-		response.setRequestId(identifyRequest.getRequestId());
-		response.setTimestamp(identifyRequest.getTimestamp());
-		response.setReturnValue(1);
+		String referenceId = identifyRequest.getReferenceId();
 
-		if (duplicate) {
-			CandidateListDto cd = new CandidateListDto();
-			CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-			for (int i = 1; i <= identifyRequest.getMaxResults(); i++) {
-				candidatesDto[i] = new CandidatesDto();
-				candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
-				candidatesDto[i].setScaledScore(100 - i + "");
-				count++;
+		try {
+			Document doc = getCbeffDocument(referenceId);
+
+			NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
+			duplicate = checkDuplicate(duplicate, fingerNodeList);
+
+			NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
+			duplicate = checkDuplicate(duplicate, irisNodeList);
+
+			NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
+			duplicate = checkDuplicate(duplicate, faceNodeList);
+
+			response.setId(IDENTIFY);
+			response.setRequestId(identifyRequest.getRequestId());
+			response.setTimestamp(identifyRequest.getTimestamp());
+			response.setReturnValue(1);
+
+			if (duplicate) {
+				CandidateListDto cd = new CandidateListDto();
+				CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
+				for (int i = 1; i <= identifyRequest.getMaxResults(); i++) {
+					candidatesDto[i] = new CandidatesDto();
+					candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
+					candidatesDto[i].setScaledScore(100 - i + "");
+					count++;
+				}
+				cd.setCount(count + "");
+				cd.setCandidates(candidatesDto);
+				response.setCandidateList(cd);
 			}
-			cd.setCount(count + "");
-			cd.setCandidates(candidatesDto);
-			response.setCandidateList(cd);
+		} catch (Exception e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 		}
 
 		return response;
