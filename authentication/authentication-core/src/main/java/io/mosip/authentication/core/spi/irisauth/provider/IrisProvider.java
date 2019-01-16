@@ -94,7 +94,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 *          - Composite - Positive
 	 * Odd UIN - LeftEye   - Negative
 	 * 		   - RighetEye - Positive
-	 *         - Composite - Positive
+	 *         - Composite - Negative
 	 * @param uin the UIN
 	 * @return the uin is even or odd.
 	 */
