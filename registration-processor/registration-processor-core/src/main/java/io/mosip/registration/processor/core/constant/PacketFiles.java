@@ -104,5 +104,5 @@ public enum PacketFiles {
 	/** The introduceriristype. */
 	INTRODUCERIRISTYPE,
 
-	APPLICANT_BIO_CBEF
+	APPLICANT_BIO_CBEFF
 }

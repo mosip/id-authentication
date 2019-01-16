@@ -250,7 +250,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		byte[] file = null;
 
 		InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId,
-				PacketStructure.BIOMETRIC + PacketFiles.APPLICANT_BIO_CBEF.name());
+				PacketStructure.BIOMETRIC + PacketFiles.APPLICANT_BIO_CBEFF.name());
 		try {
 			file = IOUtils.toByteArray(fileInStream);
 		} catch (IOException e) {
