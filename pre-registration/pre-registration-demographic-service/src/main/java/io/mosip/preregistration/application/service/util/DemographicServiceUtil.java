@@ -107,7 +107,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setGroupId("1234567890");
 		demographicEntity.setApplicantDetailJson(
 				demographicRequest.getDemographicDetails().toJSONString().getBytes(StandardCharsets.UTF_8));
-		demographicEntity.setStatusCode(StatusCodes.PENDINGAPPOINTMENT.getCode());
+		demographicEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		try {
@@ -222,7 +222,7 @@ public class DemographicServiceUtil {
 	 */
 	public boolean checkStatusForDeletion(String statusCode) {
 		log.info("sessionId", "idType", "id", "In checkStatusForDeletion method of pre-registration service util ");
-		if (statusCode.equals(StatusCodes.PENDINGAPPOINTMENT.getCode())
+		if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())
 				|| statusCode.equals(StatusCodes.BOOKED.getCode())) {
 			return true;
 		} else {
@@ -302,7 +302,7 @@ public class DemographicServiceUtil {
 
 	public boolean isStatusValid(String status) {
 		for (StatusCodes choice : StatusCodes.values())
-			if (choice.name().equals(status))
+			if (choice.getCode().equals(status))
 				return true;
 		return false;
 	}

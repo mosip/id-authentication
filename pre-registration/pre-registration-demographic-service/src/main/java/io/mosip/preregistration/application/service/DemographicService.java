@@ -379,7 +379,8 @@ public class DemographicService {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
 					if (serviceUtil.isStatusValid(status)) {
-						demographicEntity.setStatusCode(StatusCodes.valueOf(status).toString());
+						demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
+						//System.out.println("@@@ "+StatusCodes.valueOf(status).toString());
 						demographicRepository.update(demographicEntity);
 						response.setResponse("STATUS_UPDATED_SUCESSFULLY");
 						response.setResTime(new Timestamp(System.currentTimeMillis()));

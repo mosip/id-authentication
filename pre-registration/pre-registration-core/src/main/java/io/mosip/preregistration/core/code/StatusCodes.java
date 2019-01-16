@@ -17,7 +17,7 @@ package io.mosip.preregistration.core.code;
 public enum StatusCodes {
 	
 	/* Pending_Appointment */
-	PENDINGAPPOINTMENT("Pending_Appointment"),
+	PENDING_APPOINTMENT("Pending_Appointment"),
 	
 	/* Booked */
 	BOOKED("Booked"),
@@ -26,9 +26,11 @@ public enum StatusCodes {
 	EXPIRED("Expired"), 
 	
 	/* Consumed */
-	CONSUMED("Consumed"),
+	CONSUMED("Consumed"), 
 	
-	/* Canceled */
+	/**
+	 * Canceled
+	 */
 	CANCELED("Canceled");
 	
 	/**
