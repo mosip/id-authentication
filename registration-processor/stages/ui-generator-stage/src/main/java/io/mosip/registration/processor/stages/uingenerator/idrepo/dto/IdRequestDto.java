@@ -15,20 +15,16 @@ public class IdRequestDto {
 	/** The id. */
 	private String id;
 	
-	/** The uin. */
-	private String uin;
-	
-	/** The status. */
-	private String status;
-	
 	/** The registration id. */
 	private String registrationId;
+	
+	/** The request. */
+	private RequestDto request;
 	
 	/** The time stamp. */
 	private String timestamp;
 	
-	/** The request. */
-	private Object request;
-	
-	private List<Documents> documents;
+	/** The version. */
+	private String version;
+
 }

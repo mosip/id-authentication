@@ -1,4 +1,5 @@
-package io.mosip.registration.processor.message.sender.test.service;
+package io.mosip.registration.processor.stages.uigenerator.util.test;
+/*package io.mosip.registration.processor.message.sender.test.service;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -106,3 +107,4 @@ public class TriggerNotificationForUINTest {
 	}
 
 }
+*/
