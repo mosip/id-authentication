@@ -1,7 +1,6 @@
 package io.mosip.preregistration.datasync.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.preregistration.datasync.errorcodes.ErrorCodes;
 
 /**
  * ZipFileCreationException
@@ -13,20 +12,51 @@ public class ZipFileCreationException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ZipFileCreationException(String message) {
-		super(ErrorCodes.PRG_DATA_SYNC_005.toString(), message);
+	/**
+	 * Default constructor
+	 */
+	public ZipFileCreationException() {
+		super();
 	}
 
-	public ZipFileCreationException(String message, Throwable cause) {
-		super(ErrorCodes.PRG_DATA_SYNC_005.toString(), message, cause);
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 */
+	public ZipFileCreationException(String errorMessage) {
+		super("", errorMessage);
 	}
 
-	public ZipFileCreationException(String errorCode, String message, Throwable cause) {
-		super(errorCode, message, cause);
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 */
+	public ZipFileCreationException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage, null);
 	}
 
-	public ZipFileCreationException(String errorCode, String message) {
-		super(errorCode, message);
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public ZipFileCreationException(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public ZipFileCreationException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 
 }

@@ -6,14 +6,15 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 /**
- * @author M1043008
+ * @author Kishan rathore
+ * @since 1.0.0
  *
- * Services for PreRegistration batch Job.
+ * This class is used to define the start of the PreRegistration batch Job.
  */
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
-public class PreRegistrationBatchService {
+public class BatchServiceApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(PreRegistrationBatchService.class, args);
+		SpringApplication.run(BatchServiceApplication.class, args);
 	}
 }
