@@ -56,7 +56,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private SyncJobConfigDAO jobConfigDAO;
 
 	/**
-	 * Sheduler factory bean which will take Job and Trigger details and run jobs
+	 * Scheduler factory bean which will take Job and Trigger details and run jobs
 	 * implicitly
 	 */
 	@Autowired
@@ -79,19 +79,21 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	/**
 	 * Active sync job map with key as jobID and value as SyncJob (Entity)
 	 */
-	private Map<String, SyncJobDef> SYNC_ACTIVE_JOB_MAP = new HashMap<>();
+	private Map<String, SyncJobDef> syncActiveJobMap = new HashMap<>();
 
 	/**
 	 * Sync job map with key as jobID and value as SyncJob (Entity)
 	 */
-	private Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
-
-	private List<SyncJobDef> jobList;
+	private Map<String, SyncJobDef> syncJobMap = new HashMap<>();
 
 	private boolean isSchedulerRunning = false;
 
 	@Value("${SYNC_TRANSACTION_NO_OF_DAYS_LIMIT}")
 	private int syncTransactionHistoryLimitDays;
+	
+	private ApplicationContext applicationContext;
+	
+	private JobDataMap jobDataMap=null;
 
 	/*
 	 * (non-Javadoc)
@@ -103,13 +105,18 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
-		/** Get Active Jobs */
-		jobList = jobConfigDAO.getActiveJobs();
-		jobList.forEach(syncJob -> SYNC_ACTIVE_JOB_MAP.put(syncJob.getId(), syncJob));
-
 		/** Get All Jobs */
 		List<SyncJobDef> jobDefs = jobConfigDAO.getAll();
-		jobDefs.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
+		jobDefs.forEach(syncJob -> {
+
+			/** All Jobs */
+			syncJobMap.put(syncJob.getId(), syncJob);
+
+			/** Active Jobs Map */
+			if (syncJob.getIsActive()) {
+				syncActiveJobMap.put(syncJob.getId(), syncJob);
+			}
+		});
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
@@ -122,7 +129,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * @see io.mosip.registration.service.JobConfigurationService#startJobs(org.
 	 * springframework.context.ApplicationContext)
 	 */
-	@SuppressWarnings("unchecked")
 	public ResponseDTO startScheduler(ApplicationContext applicationContext) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
@@ -136,65 +142,15 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			schedulerFactoryBean.start();
 			isSchedulerRunning = true;
 			Map<String, Object> jobDataAsMap = new HashMap<>();
+			
+			this.applicationContext =applicationContext;
 			jobDataAsMap.put("applicationContext", applicationContext);
-			jobDataAsMap.putAll(SYNC_ACTIVE_JOB_MAP);
+			jobDataAsMap.putAll(syncJobMap);
 
-			JobDataMap jobDataMap = new JobDataMap(jobDataAsMap);
+			jobDataMap = new JobDataMap(jobDataAsMap);
 
-			SYNC_ACTIVE_JOB_MAP.forEach((jobId, syncJob) -> {
-				try {
-					if (syncJob.getParentSyncJobId() == null && responseDTO.getErrorResponseDTOs() == null
-							&& isSchedulerRunning
-							&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
+			loadScheduler(responseDTO);
 
-						BaseJob baseJob = null;
-
-						// Get Job instance through application context
-						baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
-
-						JobDetail jobDetail = JobBuilder.newJob(baseJob.jobClass()).withIdentity(syncJob.getId())
-								.usingJobData(jobDataMap).build();
-
-						CronTrigger trigger = (CronTrigger) TriggerBuilder.newTrigger().forJob(jobDetail)
-								.withIdentity(syncJob.getId())
-								.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
-
-						schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
-
-					}
-				} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
-					LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
-							RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-							exception.getMessage());
-
-					try {
-
-						/** Clear Scheduler */
-						schedulerFactoryBean.getScheduler().clear();
-
-					} catch (SchedulerException schedulerException) {
-						LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
-								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-								schedulerException.getMessage());
-					}
-
-					/** Stop Scheduler Factory */
-					schedulerFactoryBean.stop();
-
-					isSchedulerRunning = false;
-
-					/** Error Response */
-					setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE, null);
-
-				}
-
-				if (isSchedulerRunning) {
-					setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE, null);
-				}
-
-			}
-
-			);
 
 		}
 
@@ -203,6 +159,63 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		return responseDTO;
 
+	}
+	
+	private void loadScheduler(ResponseDTO responseDTO) {
+		syncActiveJobMap.forEach((jobId, syncJob) -> {
+			try {
+				if (syncJob.getParentSyncJobId() == null && responseDTO.getErrorResponseDTOs() == null
+						&& isSchedulerRunning
+						&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
+
+					BaseJob baseJob = null;
+
+					// Get Job instance through application context
+					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+
+					JobDetail jobDetail = JobBuilder.newJob(baseJob.jobClass()).withIdentity(syncJob.getId())
+							.usingJobData(jobDataMap).build();
+
+					CronTrigger trigger = (CronTrigger) TriggerBuilder.newTrigger().forJob(jobDetail)
+							.withIdentity(syncJob.getId())
+							.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
+
+					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
+
+				}
+			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
+				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
+						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						exception.getMessage());
+
+				try {
+
+					/** Clear Scheduler */
+					schedulerFactoryBean.getScheduler().clear();
+
+				} catch (SchedulerException schedulerException) {
+					LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE,
+							RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+							schedulerException.getMessage());
+				}
+
+				/** Stop Scheduler Factory */
+				schedulerFactoryBean.stop();
+
+				isSchedulerRunning = false;
+
+				/** Error Response */
+				setErrorResponse(responseDTO, RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE, null);
+
+			}
+
+			if (isSchedulerRunning) {
+				setSuccessResponse(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE, null);
+			}
+
+		}
+
+		);
 	}
 
 	/*
@@ -260,28 +273,24 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
 					.getCurrentlyExecutingJobs();
 
-			List<SyncDataProcessDTO> dataProcessDTOs = null;
-			Map<String, Object> attributes = new HashMap<>();
-
 			if (executingJobList.isEmpty()) {
 				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
 			} else {
-				dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
+				List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
 
 					/** Parse Job Information to SyncDataProcessDTO */
 					JobDetail jobDetail = jobExecutionContext.getJobDetail();
 					String jobId = jobDetail.getKey().getName();
 
-					SyncJobDef syncJobDef = SYNC_ACTIVE_JOB_MAP.get(jobId);
+					SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
-					return new SyncDataProcessDTO(syncJobDef.getId(), syncJobDef.getName(),
-							RegistrationConstants.JOB_RUNNING, new Timestamp(System.currentTimeMillis()).toString());
+					return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
+							new Timestamp(System.currentTimeMillis()).toString());
 
 				}).collect(Collectors.toList());
 
-				attributes.put(RegistrationConstants.SYNC_DATA_DTO, dataProcessDTOs);
+				setResponseDTO(dataProcessDTOs, responseDTO, null, null);
 
-				setSuccessResponse(responseDTO, null, attributes);
 			}
 
 		} catch (SchedulerException schedulerException) {
@@ -313,7 +322,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = null;
 		try {
 
-			SyncJobDef syncJobDef = SYNC_ACTIVE_JOB_MAP.get(jobId);
+			SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
 			// Get Job using application context and api name
 			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
@@ -349,29 +358,19 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		/** Fetch Sync control records */
 		List<SyncControl> syncControls = syncJobDAO.findAll();
 
-		List<SyncDataProcessDTO> syncDataProcessDTOs = null;
+		List<SyncDataProcessDTO> syncDataProcessDTOs = syncControls.stream().map(syncControl -> {
 
-		syncDataProcessDTOs = syncControls.stream().map(syncControl -> {
-
-			String jobName = (SYNC_JOB_MAP.get(syncControl.getSyncJobId()) == null) ? syncControl.getId()
-					: SYNC_JOB_MAP.get(syncControl.getSyncJobId()).getName();
+			String jobName = (syncJobMap.get(syncControl.getSyncJobId()) == null) ? RegistrationConstants.JOB_UNKNOWN
+					: syncJobMap.get(syncControl.getSyncJobId()).getName();
 
 			String lastUpdTimes = (syncControl.getUpdDtimes() == null) ? syncControl.getCrDtime().toString()
 					: syncControl.getUpdDtimes().toString();
 
-			return new SyncDataProcessDTO(syncControl.getSyncJobId(), jobName, RegistrationConstants.JOB_COMPLETED,
-					lastUpdTimes);
+			return constructDTO(syncControl.getSyncJobId(), jobName, RegistrationConstants.JOB_COMPLETED, lastUpdTimes);
 
 		}).collect(Collectors.toList());
 
-		if (syncDataProcessDTOs.isEmpty()) {
-			return setErrorResponse(responseDTO, RegistrationConstants.NO_JOB_COMPLETED, null);
-		} else {
-			HashMap<String, Object> attributes = new HashMap<>();
-			attributes.put(RegistrationConstants.SYNC_DATA_DTO, syncDataProcessDTOs);
-
-			setSuccessResponse(responseDTO, null, attributes);
-		}
+		setResponseDTO(syncDataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOB_COMPLETED);
 
 		return responseDTO;
 	}
@@ -386,7 +385,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	public ResponseDTO getSyncJobsTransaction() {
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		List<SyncTransaction> syncTransactionList = null;
 
 		/** Get Calendar instance */
 		Calendar cal = Calendar.getInstance();
@@ -395,36 +393,49 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		/** To-Date */
 		Timestamp req = new Timestamp(cal.getTimeInMillis());
-		
-		/** Get All sync Transcation Details from DataBase */
-		syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req);
 
-		/** Reverese the list order, so that we can go through recent transactions */
+		/** Get All sync Transaction Details from DataBase */
+		List<SyncTransaction> syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req);
+
+		/** Reverse the list order, so that we can go through recent transactions */
 		Collections.reverse(syncTransactionList);
 
-		List<SyncDataProcessDTO> syncDataProcessDTOs = null;
+		List<SyncDataProcessDTO> syncDataProcessDTOs = syncTransactionList.stream().map(syncTransaction -> {
 
-		syncDataProcessDTOs = syncTransactionList.stream().map(syncTransaction -> {
+			String jobName = (syncActiveJobMap.get(syncTransaction.getSyncJobId()) == null)
+					? RegistrationConstants.JOB_UNKNOWN
+					: syncActiveJobMap.get(syncTransaction.getSyncJobId()).getName();
 
-			String jobName = (SYNC_ACTIVE_JOB_MAP.get(syncTransaction.getSyncJobId()) == null) ? ""
-					: SYNC_ACTIVE_JOB_MAP.get(syncTransaction.getSyncJobId()).getName();
-
-			return new SyncDataProcessDTO(syncTransaction.getSyncJobId(), jobName, syncTransaction.getStatusCode(),
+			return constructDTO(syncTransaction.getSyncJobId(), jobName, syncTransaction.getStatusCode(),
 					syncTransaction.getCrDtime().toString());
 
 		}).collect(Collectors.toList());
 
-		if (syncDataProcessDTOs.isEmpty()) {
-			return setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_TRANSACTION, null);
+		setResponseDTO(syncDataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOBS_TRANSACTION);
+
+		return responseDTO;
+	}
+
+	private SyncDataProcessDTO constructDTO(String jobId, String jobName, String statusCode, String crDtimes) {
+		/** create new Sync Data Process DTO */
+		return new SyncDataProcessDTO(jobId, jobName, statusCode, crDtimes);
+
+	}
+
+	private void setResponseDTO(List<SyncDataProcessDTO> syncDataProcessDTOs, ResponseDTO responseDTO,
+			String successMsg, String errorMsg) {
+
+		/** Set Response DTO with Error or Success result */
+
+		if (syncDataProcessDTOs != null && syncDataProcessDTOs.isEmpty()) {
+			setErrorResponse(responseDTO, errorMsg, null);
 
 		} else {
 			HashMap<String, Object> attributes = new HashMap<>();
 			attributes.put(RegistrationConstants.SYNC_DATA_DTO, syncDataProcessDTOs);
 
-			setSuccessResponse(responseDTO, null, attributes);
+			setSuccessResponse(responseDTO, successMsg, attributes);
 		}
-
-		return responseDTO;
 	}
 
 }

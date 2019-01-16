@@ -28,10 +28,8 @@ public class SynchConfigDataJob extends BaseJob {
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 		LOGGER.debug(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		SessionContext sessionContext = SessionContext.getInstance();
-		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
-
-		this.responseDTO = globalParamService.synchConfigData(centerId);
+		
+		this.responseDTO = globalParamService.synchConfigData();
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -49,15 +47,11 @@ public class SynchConfigDataJob extends BaseJob {
 		try {
 
 			this.jobId = loadContext(context);
-			// policySyncService = applicationContext.getBean(PolicySyncService.class);
+			globalParamService = applicationContext.getBean(GlobalParamService.class);
 
+			
 			// Run the Parent JOB always first
-
-			String centerId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-					.getRegistrationCenterId();
-
-			// Run the Parent JOB always first
-			this.responseDTO = globalParamService.synchConfigData(centerId);
+			this.responseDTO = globalParamService.synchConfigData();
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null) {

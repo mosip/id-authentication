@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -414,7 +415,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(),
 				RegistrationConstants.INTRODUCER.toLowerCase(), RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Registration Creation Date
-		metaData.add(buildFieldValue("creationDate", String.valueOf(LocalDateTime.now())));
+		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
 		return metaData;
 	}

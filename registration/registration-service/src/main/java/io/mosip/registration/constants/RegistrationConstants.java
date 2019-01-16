@@ -202,6 +202,9 @@ public class RegistrationConstants {
 	public static final String INTRODUCER = "INTRODUCER";
 	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
 	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
+	public static final String XML_FILE_FORMAT = ".xml";
+	public static final String FILE_NAME_TYPE_SEPERATOR = ".";
+	public static final String CBEFF_FILE_FORMAT = "cbeff";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
@@ -720,7 +723,9 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
-	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
+	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
+	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
+	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
 
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
@@ -787,6 +792,9 @@ public class RegistrationConstants {
 	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
 	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
 	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
+	public static final String JOB_UNKNOWN= "UNKNOWN";
+	
+
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
 	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
@@ -826,6 +834,7 @@ public class RegistrationConstants {
 	// Global-Config Constants
 	public static final String GET_GLOBAL_CONFIG = "get_registration_center_config";
 	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
+	public static final String GLOBAL_CONFIG_ERROR_MSG = "please synch the data before starting the application";
 
 	public enum mappedCodeForLang {
 		en("ENG"),ar("AR");

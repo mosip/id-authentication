@@ -8,11 +8,10 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,15 +25,16 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
-import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.GlobalParamId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.impl.LoginServiceImpl;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * Class for implementing GlobalContextParam service
@@ -63,6 +63,9 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	@Autowired
 	private GlobalParamDAO globalParamDAO;
 
+	@Autowired
+	private UserOnboardDAO userOnboardDAO;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,7 +73,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	public Map<String, Object> getGlobalParams() {
 
-		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBALPARAMSSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of global params");
 
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of global params",
@@ -79,77 +82,73 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		return globalParamDAO.getGlobalParams();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData(
-	 * String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData()
 	 */
 	@Override
-	public ResponseDTO synchConfigData(String centerId) {
-		LOGGER.debug("REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE", APPLICATION_NAME, APPLICATION_ID,
+	public ResponseDTO synchConfigData() {
+		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerId);
+		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
+			LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					" Unable to synch config data");
+			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
+		}
 
+		String centerID = null;
 		try {
+			String macId = RegistrationSystemPropertiesChecker.getMachineId();
+
+			// get stationID
+			String stationID = userOnboardDAO.getStationID(macId);
+			// get CenterID
+			centerID = userOnboardDAO.getCenterID(stationID);
+
+			Map<String, String> requestParamMap = new HashMap<String, String>();
+			requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
+
+			/** REST CALL */
 			@SuppressWarnings("unchecked")
-			HashMap<String, Object> map = (HashMap<String, Object>) serviceDelegateUtil
+			HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true);
 			HashMap<String, String> globalParamMap = new HashMap<>();
-			parseToMap(map, globalParamMap);
+			parseToMap(globalParamJsonMap, globalParamMap);
+
 			List<GlobalParam> list = new ArrayList<>();
-			for (String key : globalParamMap.keySet()) {
+
+			for (Entry<String, String> key : globalParamMap.entrySet()) {
 				GlobalParam globalParam = new GlobalParam();
 				GlobalParamId globalParamId = new GlobalParamId();
 				globalParamId.setCode(UUID.randomUUID().toString());
 				globalParamId.setLangCode("ENG");
 				globalParam.setGlobalParamId(globalParamId);
-				globalParam.setName(key);
+				globalParam.setName(key.getKey());
 				globalParam.setTyp("CONFIGURATION");
 				globalParam.setIsActive(true);
 				globalParam.setCrBy("brahma");
 				globalParam.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
-				globalParam.setVal(globalParamMap.get(key));
+				globalParam.setVal(globalParamMap.get(key.getValue()));
 				list.add(globalParam);
 			}
+
+			/** Save all Global Params */
 			globalParamDAO.saveAll(list);
-			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegistrationConstants.POLICY_SYNC_SUCCESS_CODE);
-			successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
-			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
-			return responseDTO;
+
+			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 
 		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException
 				| ResourceAccessException exception) {
-			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,
-					RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE);
-			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
-					"error response is created");
+			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
+		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"config data synch is completed");
 
 		return responseDTO;
-	}
-
-	private ResponseDTO buildErrorRespone(ResponseDTO response, final String errorCode, final String message) {
-		/* Create list of Error Response */
-		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
-
-		/* Error response */
-		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setCode(errorCode);
-		errorResponse.setInfoType(RegistrationConstants.ERROR);
-		errorResponse.setMessage(message);
-		errorResponses.add(errorResponse);
-
-		/* Adding list of error responses to response */
-		response.setErrorResponseDTOs(errorResponses);
-
-		return response;
 	}
 
 	@SuppressWarnings("unchecked")

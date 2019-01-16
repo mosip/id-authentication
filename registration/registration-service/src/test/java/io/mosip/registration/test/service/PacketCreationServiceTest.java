@@ -77,7 +77,7 @@ public class PacketCreationServiceTest {
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		Mockito.when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
-		Mockito.when(cbeffI.createXML(Mockito.anyList())).thenCallRealMethod();
+		Mockito.when(cbeffI.createXML(Mockito.anyList())).thenThrow(new Exception("Invalid BIR"));
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}

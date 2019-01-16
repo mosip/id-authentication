@@ -86,7 +86,9 @@ public class JobConfigurationServiceTest {
 
 		syncJob.setApiName("packetSyncStatusJob");
 		syncJob.setSyncFrequency("0/5 * * * * ?");
+		syncJob.setIsActive(true);
 		syncJobList.add(syncJob);
+		
 
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
