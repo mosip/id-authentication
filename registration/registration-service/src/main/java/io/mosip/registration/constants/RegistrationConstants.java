@@ -809,7 +809,7 @@ public class RegistrationConstants {
 
 	// OTP
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
-	public static final String OTP_GENERATION_ERROR_MESSAGE = "Please Enter Valid Username";
+	public static final String OTP_GENERATION_ERROR_MESSAGE = "Incorrect or expired OTP";
 
 	// Sync Status
 	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
