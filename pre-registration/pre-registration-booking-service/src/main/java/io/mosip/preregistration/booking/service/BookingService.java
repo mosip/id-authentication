@@ -214,9 +214,10 @@ public class BookingService {
 					if (serviceUtil.mandatoryParameterCheck(preRegistrationId, oldBookingRegistrationDTO,
 							newBookingRegistrationDTO)) {
 						if (!serviceUtil.isNull(oldBookingRegistrationDTO)) {
-							cancel(preRegistrationId, oldBookingRegistrationDTO, newBookingRegistrationDTO,preRegStatusCode);
+							cancel(preRegistrationId, oldBookingRegistrationDTO, newBookingRegistrationDTO,
+									preRegStatusCode);
 						}
-						respList.add(book(preRegistrationId, newBookingRegistrationDTO,preRegStatusCode));
+						respList.add(book(preRegistrationId, newBookingRegistrationDTO, preRegStatusCode));
 					}
 				}
 			}
@@ -231,7 +232,7 @@ public class BookingService {
 	}
 
 	private boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO,
-			BookingRegistrationDTO newBookingRegistrationDTO,String status) {
+			BookingRegistrationDTO newBookingRegistrationDTO, String status) {
 		log.info("sessionId", "idType", "id", "In cancel method of Booking Service");
 		if (serviceUtil.isNotDuplicate(oldBookingRegistrationDTO, newBookingRegistrationDTO)
 				&& StateManager.checkIsValidStatus(status, "cancel")) {
@@ -252,7 +253,7 @@ public class BookingService {
 		MainResponseDTO<BookingRegistrationDTO> responseDto = new MainResponseDTO<>();
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
 		try {
-			entity = bookingDAO.findPreIdAndStatusCode(preRegID, StatusCodes.CANCELED.getCode());
+			entity = bookingDAO.findPreIdAndStatusCode(preRegID, StatusCodes.CANCELED.getCode());// ?
 			bookingRegistrationDTO.setRegDate(entity.getRegDate().toString());
 			bookingRegistrationDTO.setRegistrationCenterId(entity.getRegistrationCenterId());
 			bookingRegistrationDTO.setSlotFromTime(entity.getSlotFromTime().toString());
@@ -277,9 +278,9 @@ public class BookingService {
 	 * @param MainRequestDTO
 	 * @return MainResponseDTO
 	 */
-	@Transactional(rollbackFor = { DataAccessException.class,
-			CancelAppointmentFailedException.class, AppointmentAlreadyCanceledException.class,
-			AvailablityNotFoundException.class, AppointmentCannotBeCanceledException.class })
+	@Transactional(rollbackFor = { DataAccessException.class, CancelAppointmentFailedException.class,
+			AppointmentAlreadyCanceledException.class, AvailablityNotFoundException.class,
+			AppointmentCannotBeCanceledException.class })
 	public MainResponseDTO<CancelBookingResponseDTO> cancelAppointment(MainRequestDTO<CancelBookingDTO> requestdto) {
 		log.info("sessionId", "idType", "id", "In cancelAppointment method of Booking Service");
 		MainResponseDTO<CancelBookingResponseDTO> responseDto = new MainResponseDTO<>();
@@ -361,30 +362,40 @@ public class BookingService {
 	 * @param bookingRegistrationDTO
 	 * @return BookingStatusDTO
 	 */
-	public BookingStatusDTO book(String preRegistrationId, BookingRegistrationDTO bookingRegistrationDTO,String status) {
+	public BookingStatusDTO book(String preRegistrationId, BookingRegistrationDTO bookingRegistrationDTO,
+			String status) {
 		log.info("sessionId", "idType", "id", "In book method of Booking Service");
 		BookingStatusDTO bookingStatusDTO = new BookingStatusDTO();
-		BookingLock bookingLock = new BookingLock(bookingRegistrationDTO.getRegistrationCenterId(),
-				bookingRegistrationDTO.getRegDate(), bookingRegistrationDTO.getSlotFromTime());
-		AvailibityEntity availableEntity;
-		synchronized (bookingLock) {
-			availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
-					LocalTime.parse(bookingRegistrationDTO.getSlotFromTime()),
-					LocalTime.parse(bookingRegistrationDTO.getSlotToTime()),
-					LocalDate.parse(bookingRegistrationDTO.getRegDate()),
-					bookingRegistrationDTO.getRegistrationCenterId());
-			if (serviceUtil.isKiosksAvailable(availableEntity)) {
-				availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
-				bookingDAO.updateAvailibityEntity(availableEntity);
+		try {
+			if (StateManager.checkIsValidStatus(status, "book")) {
+				BookingLock bookingLock = new BookingLock(bookingRegistrationDTO.getRegistrationCenterId(),
+						bookingRegistrationDTO.getRegDate(), bookingRegistrationDTO.getSlotFromTime());
+				AvailibityEntity availableEntity;
+				synchronized (bookingLock) {
+					availableEntity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
+							LocalTime.parse(bookingRegistrationDTO.getSlotFromTime()),
+							LocalTime.parse(bookingRegistrationDTO.getSlotToTime()),
+							LocalDate.parse(bookingRegistrationDTO.getRegDate()),
+							bookingRegistrationDTO.getRegistrationCenterId());
+					if (serviceUtil.isKiosksAvailable(availableEntity)) {
+						availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() - 1);
+						bookingDAO.updateAvailibityEntity(availableEntity);
+					}
+				}
+				bookingDAO.saveRegistrationEntityForBooking(
+						serviceUtil.bookingEntitySetter(preRegistrationId, bookingRegistrationDTO));
+				/* Pre registration status code update */
+				serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
+				bookingStatusDTO.setPreRegistrationId(preRegistrationId);
+				bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
+				bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+
 			}
+		} catch (Exception ex) {
+			log.error("sessionId", "idType", "id", "In book method of Booking Service- " + ex.getMessage());
+			new BookingExceptionCatcher().handle(ex);
 		}
-		bookingDAO.saveRegistrationEntityForBooking(
-				serviceUtil.bookingEntitySetter(preRegistrationId, bookingRegistrationDTO));
-		/* Pre registration status code update */
-		serviceUtil.callUpdateStatusRestService(preRegistrationId, StatusCodes.BOOKED.getCode());
-		bookingStatusDTO.setPreRegistrationId(preRegistrationId);
-		bookingStatusDTO.setBookingStatus(StatusCodes.BOOKED.getCode());
-		bookingStatusDTO.setBookingMessage("APPOINTMENT_SUCCESSFULLY_BOOKED");
+
 		return bookingStatusDTO;
 	}
 
