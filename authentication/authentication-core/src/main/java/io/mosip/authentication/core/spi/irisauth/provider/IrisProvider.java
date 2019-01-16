@@ -13,6 +13,10 @@ import org.springframework.core.env.Environment;
  */
 public abstract class IrisProvider implements MosipIrisProvider {
 
+	private static final String ODD_UIN = "odduin";
+
+	private static final String EVEN_UIN = "evenuin";
+
 	/** The environment. */
 	private Environment environment;
 
@@ -26,15 +30,11 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	/** The Constant IRISIMG_RIGHT_MATCH_VALUE. */
 	private static final String IRISIMG_RIGHT_MATCH_VALUE = ".irisimg.right.match.value";
 
-	private static final String DEFAULT_LEFT_IRIS_MATCH_VALUE = "default.irisimg.left.match.value";
-
-	private static final String DEFAULT_RIGHT_IRIS_MATCH_VALUE = "default.irisimg.right.match.value";
-
 	/** The Constant LEFTTEYE. */
-	static final String LEFTTEYE = "lefteye";
+	static final String LEFTTEYE = "leftEye";
 
 	/** The Constant RIGHTEYE. */
-	static final String RIGHTEYE = "righteye";
+	static final String RIGHTEYE = "rightEye";
 
 	/** The Constant idvid. */
 	private static final String IDVID = "idvid";
@@ -76,25 +76,31 @@ public abstract class IrisProvider implements MosipIrisProvider {
 		if (reqInfo instanceof Map) {
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
 			String uin = (String) reqInfoMap.get(IDVID);
+			String uinType = checkEvenOrOddUIN(uin);
 			if (reqInfoMap.containsKey(IrisProvider.RIGHTEYE)) {
-				Double irisValue = environment.getProperty(uin + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
-				if (null == irisValue)
-                 {
-					return environment.getProperty(DEFAULT_RIGHT_IRIS_MATCH_VALUE, Double.class);
-				}
-				return irisValue;
+				return environment.getProperty(uinType + IRISIMG_RIGHT_MATCH_VALUE, Double.class);
 			} else if (reqInfoMap.containsKey(IrisProvider.LEFTTEYE)) {
-				Double irisValue = environment.getProperty(uin + IRISIMG_LEFT_MATCH_VALUE, Double.class);
-				if (null == irisValue)
-				{
-					return environment.getProperty(DEFAULT_LEFT_IRIS_MATCH_VALUE, Double.class);
-				}
-				return irisValue;
+				return environment.getProperty(uinType + IRISIMG_LEFT_MATCH_VALUE, Double.class);
 			}
-
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Temporary mocking for iris score calculation un-till integration with SDK.
+	 * Even UIN - LeftEye   - Positive
+	 * 			- RighetEye - Negative
+	 *          - Composite - Positive
+	 * Odd UIN - LeftEye   - Negative
+	 * 		   - RighetEye - Positive
+	 *         - Composite - Positive
+	 * @param uin the UIN
+	 * @return the uin is even or odd.
+	 */
+	private String checkEvenOrOddUIN(String uin) {
+		boolean evenUin = Integer.valueOf(String.valueOf(uin.charAt(uin.length() - 1))) % 2 == 0;
+		return evenUin ? EVEN_UIN : ODD_UIN;
 	}
 
 	/*
@@ -108,7 +114,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
-			String uin = ((Map<String, String>) entityInfo).get(IDVID);
+			String uin = ((Map<String, String>) reqInfo).get(IDVID);
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
 			if (reqInfoMap.containsKey(LEFTTEYE)) {
 				Map<String, String> requestInfo = new HashMap<>();

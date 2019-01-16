@@ -98,7 +98,7 @@
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<!-- Orika -->
-		<datamapper.orika>1.4.6</datamapper.orika>
+		<datamapper.orika>1.5.2</datamapper.orika>
 
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
@@ -112,19 +112,13 @@
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
-		<module>kernel-idgenerator-tspid</module>
-		<module>kernel-idgenerator-machineid</module>
-		<module>kernel-idgenerator-registrationcenterid</module>
+		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
-		<module>kernel-idvalidator-prid</module>
-		<module>kernel-idvalidator-rid</module>
-		<module>kernel-idvalidator-uin</module>
-		<module>kernel-idvalidator-vid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
-		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<!--<module>kernel-crypto-bouncycastle</module> -->
@@ -136,7 +130,6 @@
 		<module>kernel-keymanager-softhsm</module>
 		<module>kernel-qrcodegenerator-zxing</module>
 
-		<module>kernel-idgenerator-uin</module>
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
@@ -153,6 +146,10 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
 
+		<module>kernel-idvalidator-prid</module>
+		<module>kernel-idvalidator-rid</module>
+		<module>kernel-idvalidator-uin</module>
+		<module>kernel-idvalidator-vid</module>
 	</modules>
 
 	<dependencies>
