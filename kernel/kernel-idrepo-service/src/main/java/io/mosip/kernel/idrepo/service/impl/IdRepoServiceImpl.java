@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,7 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
+import io.mosip.kernel.core.idrepo.spi.MosipFingerprintProvider;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -222,6 +224,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private DFSConnectionUtil connection;
 
+	@Autowired
+	private MosipFingerprintProvider<String> fpProvider;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -277,7 +282,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 								String fileRefId = UUID.randomUUID().toString();
 
 								storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-										CryptoUtil.decodeBase64(doc.getValue()));
+										convertToFMR(doc.getValue()));
 
 								uinBioRepo.save(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
 										docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
@@ -323,6 +328,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		} catch (IdRepoAppUncheckedException | DataAccessException e) {
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
+	}
+
+	private byte[] convertToFMR(String encodedCbeffFile) {
+		return CryptoUtil.decodeBase64(fpProvider.convertFIRtoFMR(Collections.singletonList(encodedCbeffFile)).get(0));
 	}
 
 	/**
