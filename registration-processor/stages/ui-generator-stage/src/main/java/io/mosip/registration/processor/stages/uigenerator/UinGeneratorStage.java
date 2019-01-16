@@ -142,6 +142,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		String description = "";
@@ -162,6 +163,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if(uinFieldCheck==null || ("").equals(uinFieldCheck)) {
 
 				uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
+				identityJson.put("UIN", uinResponseDto.getUin());
 				idResponseDTO=sendIdRepoWithUin(registrationId,uinResponseDto.getUin());
 				isUinCreate=true;
 			}else {
