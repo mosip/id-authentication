@@ -199,7 +199,7 @@ public class BookingServiceTest {
 		newBooking.setRegistrationCenterId("1");
 		newBooking.setSlotFromTime("09:00");
 		newBooking.setSlotToTime("09:13");
-		newBooking.setRegDate("2018-12-06");
+		newBooking.setRegDate("2018-12-12");
 
 		rebookingRequestDTO.setNewBookingDetails(newBooking);
 		bookingRequestDTO.setPreRegistrationId("23587986034785");
@@ -209,7 +209,7 @@ public class BookingServiceTest {
 		oldBooking_success.setSlotToTime("09:13");
 		oldBooking_success.setRegDate("2018-12-05");
 		rebookingRequestDTO.setOldBookingDetails(oldBooking_success);
-		bookingRequestDTO.setOldBookingDetails(oldBooking);
+		bookingRequestDTO.setOldBookingDetails(null);
 
 		bookingList.add(bookingRequestDTO);
 
@@ -268,7 +268,8 @@ public class BookingServiceTest {
 		bookingEntity.setSlotFromTime(LocalTime.parse(oldBooking.getSlotFromTime()));
 		bookingEntity.setSlotToTime(LocalTime.parse(oldBooking.getSlotToTime()));
 
-		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
 
@@ -320,6 +321,7 @@ public class BookingServiceTest {
 
 	}
 
+
 	/*@Test
 	public void successBookAppointment() {
 		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
@@ -334,6 +336,7 @@ public class BookingServiceTest {
 		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(bookingDto);
 		assertEquals(0, response.getResponse().size());
 	}*/
+
 
 	@Test
 	public void addAvailabilityServiceTest() {
@@ -389,6 +392,9 @@ public class BookingServiceTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void cancelAppointmentSuccessTest() {
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
 
 		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
@@ -449,4 +455,5 @@ public class BookingServiceTest {
 				StatusCodes.PENDING_APPOINTMENT.getCode());
 		assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
 	}
+
 }
