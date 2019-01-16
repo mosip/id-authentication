@@ -46,6 +46,7 @@ import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -122,7 +123,8 @@ public class KycFilterTest{
 
 	}
 
-	@Ignore
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
 		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParam",
 				Map.class, Map.class);
@@ -218,6 +220,7 @@ public class KycFilterTest{
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		kycAuthResponseDTO.setTxnID("12345");
+		kycAuthResponseDTO.setResTime(DateUtils.getUTCCurrentDateTimeString());
 		String kycAuthResponse =mapper.writeValueAsString(kycAuthResponseDTO);
 		Map<String, Object> map =(Map<String, Object>) mapper.readValue(kycAuthResponse.getBytes(), Map.class);
 		return map;
