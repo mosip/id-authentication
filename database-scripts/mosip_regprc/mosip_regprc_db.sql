@@ -9,6 +9,7 @@ CREATE DATABASE mosip_regprc
 COMMENT ON DATABASE mosip_regprc IS 'The data related to Registration process flows and transaction will be maintained in this database. This database also maintains data that is needed to perform deduplication.';
 -- ddl-end --
 
+\c mosip_regprc sysadmin
 
 -- object: regprc | type: SCHEMA --
 DROP SCHEMA IF EXISTS regprc CASCADE;

@@ -9,6 +9,8 @@ CREATE DATABASE mosip_master
 COMMENT ON DATABASE mosip_master IS 'Database to store all master reference data, look-up data, configuration data, metadata...etc.';
 -- ddl-end --
 
+\c mosip_master sysadmin
+
 -- object: master | type: SCHEMA --
 DROP SCHEMA IF EXISTS master CASCADE;
 CREATE SCHEMA master;
