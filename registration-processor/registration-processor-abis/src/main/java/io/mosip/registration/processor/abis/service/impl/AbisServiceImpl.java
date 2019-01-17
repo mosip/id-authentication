@@ -206,10 +206,11 @@ public class AbisServiceImpl implements AbisService {
 			response.setTimestamp(identifyRequest.getTimestamp());
 			response.setReturnValue(1);
 
-			if (duplicate) {
+			if (true) {
 				CandidateListDto cd = new CandidateListDto();
 				CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-				for (int i = 1; i <= identifyRequest.getMaxResults(); i++) {
+				
+				for (int i = 0; i <candidatesDto.length; i++) {
 					candidatesDto[i] = new CandidatesDto();
 					candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
 					candidatesDto[i].setScaledScore(100 - i + "");
