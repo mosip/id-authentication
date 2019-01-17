@@ -43,6 +43,9 @@ export class DemographicComponent implements OnInit {
   preRegId = '';
   loginId = '';
   user: UserModel;
+  demodata: string [];
+  secondaryLanguage: any;
+  secondaryLanguagelabels:any;
 
   uppermostLocationHierarchy: any;
   message = {};
@@ -56,28 +59,11 @@ export class DemographicComponent implements OnInit {
   provinces: LocationModal[] = [];
   cities: LocationModal[] = [];
   localAdministrativeAuthorities: LocationModal[] = [];
+  transRegions: LocationModal[] = [];
+  transProvinces: LocationModal[] = [];
+  transCities: LocationModal[] = [];
+  transLocalAdministrativeAuthorities: LocationModal[] = [];
   locations: LocationModal[] = [];
-
-  transRegions: LocationModal[] = [
-    // { locationCode: 'BLR', locationName: '(trans) BLR' },
-    // { locationCode: 'TN', locationName: '(trans) TN' },
-    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
-  ];
-  transProvinces: LocationModal[] = [
-    // { locationCode: 'BLR', locationName: '(trans) BLR' },
-    // { locationCode: 'TN', locationName: '(trans) TN' },
-    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
-  ];
-  transCities: LocationModal[] = [
-    // { locationCode: 'BLR', locationName: '(trans) BLR' },
-    // { locationCode: 'TN', locationName: '(trans) TN' },
-    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
-  ];
-  transLocalAdministrativeAuthorities: LocationModal[] = [
-    // { locationCode: 'BLR', locationName: '(trans) BLR' },
-    // { locationCode: 'TN', locationName: '(trans) TN' },
-    // { locationCode: 'region3', locationName: '(trans) Fez, Meknes and the Middle Atlas' }
-  ];
 
   formControlNames = {
     fullName: 'fullNameeee',
@@ -103,26 +89,7 @@ export class DemographicComponent implements OnInit {
   //Need to be removed after translation
   demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
-  demo1 = new DemoLabels(
-    't_Full Name',
-    't_dob',
-    't_dd',
-    't_mm',
-    't_yyyy',
-    't_gender',
-    't_Address Line 1',
-    't_Address Line 2',
-    't_Address Line 3',
-    't_Region',
-    't_Province',
-    't_City',
-    't_Postal Code',
-    't_Local Administrative Authority',
-    't_Email Id',
-    't_Mobile Number',
-    't_CNE/PIN Number',
-    't_Age'
-  );
+  demo1: any;
 
   constructor(
     private router: Router,
@@ -130,7 +97,7 @@ export class DemographicComponent implements OnInit {
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
     private sharedService: SharedService
-  ) {}
+     ) {}
 
   ngOnInit() {
     if (localStorage.getItem('newApplicant') === 'true') {
@@ -147,6 +114,16 @@ export class DemographicComponent implements OnInit {
     });
     this.numberOfApplicants = 1;
     this.initForm();
+this.secondaryLanguage='ar';
+
+    this.dataStorageService
+    .getSecondaryLanguageLabels(this.secondaryLanguage )
+    .subscribe(response => {
+      this.secondaryLanguagelabels = response['demographic'];
+      console.log(this.secondaryLanguagelabels);
+     
+    });
+  
   }
 
   async initForm() {
@@ -262,47 +239,37 @@ export class DemographicComponent implements OnInit {
     });
 
     await this.getLocationMetadataHirearchy();
-    await this.getLocationImmediateHierearchy(this.primaryLang, this.uppermostLocationHierarchy[0].code, this.regions);
+    await this.getLocationImmediateHierearchy(
+      this.primaryLang,
+      this.uppermostLocationHierarchy[0].code,
+      this.regions,
+      region
+    );
     await this.getLocationImmediateHierearchy(
       this.secondaryLang,
       this.uppermostLocationHierarchy[0].code,
-      this.transRegions
+      this.transRegions,
+      region
     );
 
     if (this.regService.getUser(this.step) != null) {
-      // await this.getLocationImmediateHierearchy(
-      //   this.primaryLang,
-      //   this.uppermostLocationHierarchy[0].code,
-      //   this.provinces
-      // );
-      // await this.getLocationImmediateHierearchy(this.primaryLang, this.uppermostLocationHierarchy[0].code, this.cities);
-      // await this.getLocationImmediateHierearchy(
-      //   this.primaryLang,
-      //   this.uppermostLocationHierarchy[0].code,
-      //   this.localAdministrativeAuthorities
-      // );
+      await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces, province);
+      await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces, province);
+      await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities, city);
+      await this.getLocationImmediateHierearchy(this.secondaryLang, province, this.transCities, city);
       await this.getLocationImmediateHierearchy(
         this.primaryLang,
-        region,
-        this.provinces,
-        this.uppermostLocationHierarchy[0].code
+        city,
+        this.localAdministrativeAuthorities,
+        localAdministrativeAuthority
       );
-      await this.getLocationImmediateHierearchy(
-        this.secondaryLang,
-        region,
-        this.transProvinces,
-        this.uppermostLocationHierarchy[0].code
-      );
-      await this.getLocationImmediateHierearchy(this.primaryLang, province, this.cities, region);
-      await this.getLocationImmediateHierearchy(this.secondaryLang, province, this.transCities, region);
-      await this.getLocationImmediateHierearchy(this.primaryLang, city, this.localAdministrativeAuthorities, province);
       await this.getLocationImmediateHierearchy(
         this.secondaryLang,
         city,
         this.transLocalAdministrativeAuthorities,
-        province
+        localAdministrativeAuthority
       );
-      console.log(this.locations);
+      console.log('LOCATION', this.locations);
     }
   }
 
@@ -322,39 +289,48 @@ export class DemographicComponent implements OnInit {
     });
   }
 
-  onLocationSelect(event: MatSelectChange, nextEntity: LocationModal[], transNextEntity: LocationModal[]) {
+  async onLocationSelect(
+    event: MatSelectChange,
+    nextEntity: LocationModal[],
+    transNextEntity: LocationModal[],
+    parentLocation: LocationModal[]
+  ) {
     const locationCode = event.value;
     const locationName = event.source.triggerValue;
-    // const locationCode = 'IND';
     if (nextEntity) this.getLocationImmediateHierearchy(this.primaryLang, locationCode, nextEntity);
-    if (transNextEntity) this.getLocationImmediateHierearchy(this.secondaryLang, locationCode, transNextEntity);
+    if (transNextEntity) {
+      this.getLocationImmediateHierearchy(this.secondaryLang, locationCode, transNextEntity);
+    }
     let location = {} as LocationModal;
-    event.source.triggerValue;
     location.locationCode = locationCode;
     location.locationName = locationName;
     this.locations.push(location);
+
+    if (parentLocation) {
+      let loc = {} as LocationModal;
+      parentLocation.filter(ele => {
+        if ((ele.locationCode = event.value)) {
+          loc = ele;
+        }
+      });
+      this.locations.push(loc);
+    }
   }
 
   getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[], parentLocation?: string) {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
-          // console.log('location response ', response);
-          // console.log('parent location', parent);
-
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
               locationCode: element.code,
               locationName: element.name
             };
             entity.push(locationModal);
-            // after location integration with proper data need to uncomment
-            // console.log(locationModal.locationCode, location);
-
-            // if (locationModal.locationCode === parentLocation) this.locations.push(locationModal);
+            if (parentLocation && locationModal.locationCode === parentLocation) {
+              this.locations.push(locationModal);
+            }
           });
-          // console.log('LOCATIONS', this.locations);
-
           return resolve(true);
         },
         error => console.log('Unable to fetch Below Hierearchy')
@@ -379,6 +355,7 @@ export class DemographicComponent implements OnInit {
       this.userForm.controls.date.patchValue('01');
       this.userForm.controls.month.patchValue('01');
       this.userForm.controls.year.patchValue(calulatedYear);
+      this.userForm.controls.dob.patchValue('01/01/' + calulatedYear);
       this.userForm.controls['dob'].setErrors(null);
     }
   }
@@ -593,7 +570,6 @@ export class DemographicComponent implements OnInit {
     let updatedDateTime = '';
     let statusCode = appConstants.APPLICATION_STATUS_CODES.pending;
     let langCode = this.primaryLang;
-
     if (this.user) {
       preRegistrationId = this.user.preRegId;
       createdBy = this.user.request.createdBy;

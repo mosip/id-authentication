@@ -6,10 +6,10 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
-import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
-import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +25,10 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
+import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
+
 /**
  * This class declares the @Bean methods related to data access using hibernate
  * and will be processed by the Spring container to generate bean definitions
@@ -32,6 +36,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * 
  * @author Dharmesh Khandelwal
  * @author Shashank Agrawal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  * 
  *
@@ -40,6 +45,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = HibernatePersistenceConstant.MOSIP_PACKAGE, repositoryBaseClass = HibernateRepositoryImpl.class)
 public class HibernateDaoConfig implements BaseDaoConfig {
+	private static final Logger LOGGER = LoggerFactory.getLogger(HibernateDaoConfig.class);
 
 	/**
 	 * Field for interface representing the environment in which the current
@@ -134,8 +140,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 				HibernatePersistenceConstant.UPDATE);
 		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_DIALECT,
 				HibernatePersistenceConstant.MY_SQL5_DIALECT);
-		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_SHOW_SQL,
-				HibernatePersistenceConstant.TRUE);
+		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_SHOW_SQL, HibernatePersistenceConstant.TRUE);
 		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_FORMAT_SQL,
 				HibernatePersistenceConstant.TRUE);
 		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_CONNECTION_CHAR_SET,
@@ -152,6 +157,8 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 				HibernatePersistenceConstant.FALSE);
 		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_CURRENT_SESSION_CONTEXT,
 				HibernatePersistenceConstant.JTA);
+		getProperty(jpaProperties, HibernatePersistenceConstant.HIBERNATE_EJB_INTERCEPTOR,
+				HibernatePersistenceConstant.EMPTY_INTERCEPTOR);
 		return jpaProperties;
 	}
 
@@ -170,8 +177,27 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 */
 	private HashMap<String, Object> getProperty(HashMap<String, Object> jpaProperties, String property,
 			String defaultValue) {
-		jpaProperties.put(property,
-				environment.containsProperty(property) ? environment.getProperty(property) : defaultValue);
+		/**
+		 * if property found in properties file then add that interceptor to the jpa
+		 * properties.
+		 */
+		if (property.equals(HibernatePersistenceConstant.HIBERNATE_EJB_INTERCEPTOR)) {
+			try {
+				if (environment.containsProperty(property)) {
+					jpaProperties.put(property,
+							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
+				}
+				/**
+				 * We can add a default interceptor whenever we require here. 
+				 */
+			} catch (BeanInstantiationException | ClassNotFoundException e) {
+				LOGGER.error("Error while configuring Interceptor.");
+			}
+		} else {
+			jpaProperties.put(property,
+					environment.containsProperty(property) ? environment.getProperty(property) : defaultValue);
+		}
 		return jpaProperties;
 	}
+
 }
