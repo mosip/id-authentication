@@ -1,5 +1,5 @@
 ## kernel-idgenerator-rid
-This folder has RID generator module which can be used to generate RID as numeric string based on the centerId and DongleId provided.
+This folder has RID generator module which can be used to generate RID as numeric string based on the centerId and machineId provided.
 
  [API Documentation <TBA>](TBA)
  
@@ -36,9 +36,9 @@ table:rid_seq
 
 1.CenterId of the registration center as string of size  metion in property.
 
-2.DongleId of the device as string of size  metion in property.
+2.machine id of the device as string of size  metion in property.
 
-For example: centerId="32345" and dongleId="56789".
+For example: centerId="32345" and machineId="56789".
 
  
 The response will be numeric string of desire size with centerId, dongleId, five digit sequence generated numbers and timestamp in format "yyyymmddhhmmss" of 14 digits.
