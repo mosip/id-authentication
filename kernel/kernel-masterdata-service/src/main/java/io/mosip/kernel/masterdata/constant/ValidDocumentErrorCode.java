@@ -9,8 +9,8 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum ValidDocumentErrorCode {
 
-	VALID_DOCUMENT_INSERT_EXCEPTION("KER-MSD-444","Exception during inserting data into db"),
-	VALID_DOCUMENT_NOT_FOUND_EXCEPTION("xxx","Valid document not found"),
+	VALID_DOCUMENT_INSERT_EXCEPTION("KER-MSD-071","Exception during inserting data into db"),
+	VALID_DOCUMENT_NOT_FOUND_EXCEPTION("KER-MSD-016","Valid document not found"),
 	VALID_DOCUMENT_DELETE_EXCEPTION("KER-MSD-113","Error occurred while deleting a mapping of Document Category and Document Type details");
 
 	/**
