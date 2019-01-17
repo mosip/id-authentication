@@ -81,19 +81,19 @@
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
             >
-              Enter 2 numeric digits for date
+            {{ 'demographic.validation.date_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('month').valid && userForm.get('month').touched"
             >
-              Enter 2 numeric digits for month
+            {{ 'demographic.validation.month_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
             >
-              Enter 4 numeric digits for year
+            {{ 'demographic.validation.year_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
@@ -102,7 +102,7 @@
                 (userForm.get('age').touched && !userForm.get('age').valid)
               "
             >
-              Enter Valid DOB or age (Age should be less than 150 and whole number)
+            {{ 'demographic.validation.DOB_validation' | translate }}
             </div>
 
             <div class="user__gender">
