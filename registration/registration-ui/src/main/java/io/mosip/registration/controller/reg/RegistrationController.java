@@ -942,7 +942,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity.setDateOfBirth(dob.isDisabled()? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? 0 : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
