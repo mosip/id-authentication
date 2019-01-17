@@ -307,6 +307,7 @@ this.secondaryLanguage='ar';
     let location = {} as LocationModal;
     location.locationCode = locationCode;
     location.locationName = locationName;
+    location.languageCode = this.primaryLang;
     this.locations.push(location);
 
     if (parentLocation) {
@@ -321,13 +322,15 @@ this.secondaryLanguage='ar';
   }
 
   getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[], parentLocation?: string) {
+    entity.length = 0; 
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
               locationCode: element.code,
-              locationName: element.name
+              locationName: element.name,
+              languageCode:lang
             };
             entity.push(locationModal);
             if (parentLocation && locationModal.locationCode === parentLocation) {
@@ -406,8 +409,7 @@ this.secondaryLanguage='ar';
   }
 
   onTransliteration(fromControl: FormControl, toControl: any) {
-    console.log(fromControl, toControl);
-    
+
     if (fromControl.value) {
       const request: any = {
         from_field_lang: 'English',
@@ -417,11 +419,13 @@ this.secondaryLanguage='ar';
         to_field_name: toControl.name,
         to_field_value: ''
       };
-      this.transUserForm.controls[toControl.name].patchValue('dummyValue');
+      // this.transUserForm.controls[toControl.name].patchValue('dummyValue');
 
-      // this.dataStorageService.getTransliteration(request).subscribe(response => {
-      //   this.transUserForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
-      // });
+      this.dataStorageService.getTransliteration(request).subscribe(response => {
+        this.transUserForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
+      });
+    }else{
+      this.transUserForm.controls[toControl.name].patchValue('');
     }
   }
 

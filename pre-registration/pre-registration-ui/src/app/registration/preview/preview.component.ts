@@ -39,6 +39,14 @@ export class PreviewComponent implements OnInit {
                   + (this.previewData.addressLine2[1].value ? ', ' + this.previewData.addressLine2[1].value : '')
                   + (this.previewData.addressLine3[1].value ? ', ' + this.previewData.addressLine3[1].value : '');
       this.previewData.secondaryAddress = address;
+      this.previewData.region[0].value = this.locCodeToName(this.previewData.region[0].value, this.previewData.region[0].language);
+      this.previewData.region[1].value = this.locCodeToName(this.previewData.region[1].value, this.previewData.region[1].language);
+      this.previewData.province[0].value = this.locCodeToName(this.previewData.province[0].value, this.previewData.province[0].language);
+      this.previewData.province[1].value = this.locCodeToName(this.previewData.province[1].value, this.previewData.province[1].language);
+      this.previewData.city[0].value = this.locCodeToName(this.previewData.city[0].value, this.previewData.city[0].language);
+      this.previewData.city[1].value = this.locCodeToName(this.previewData.city[1].value, this.previewData.city[1].language);
+      this.previewData.localAdministrativeAuthority[0].value = this.locCodeToName(this.previewData.localAdministrativeAuthority[0].value, this.previewData.localAdministrativeAuthority[0].language);
+      this.previewData.localAdministrativeAuthority[1].value = this.locCodeToName(this.previewData.localAdministrativeAuthority[1].value, this.previewData.localAdministrativeAuthority[1].language);
       console.log(this.previewData);
       if (this.previewData['fullName'][1].language === 'ARB') {
         this.secondaryLanguage = 'ar';
@@ -61,6 +69,12 @@ export class PreviewComponent implements OnInit {
 
   modifyDocument() {
     this.navigateBack();
+  }
+
+  private locCodeToName(locationCode: string, language: string): string {
+    const locations = this.user.location;
+    const locationName = locations.filter((location) => location.languageCode === language && location.locationCode === locationCode);
+    return locationName[0].locationName;
   }
 
   navigateDashboard() {
