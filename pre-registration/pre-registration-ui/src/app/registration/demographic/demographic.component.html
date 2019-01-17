@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="secondaryLanguagelabels">
   <div class="wrapper">
     <div class="user">
       <header>{{ 'demographic.title' | translate }}</header>
@@ -6,7 +6,7 @@
       <div [dir]="textDir">
         <div class="user__container">
           <form [formGroup]="userForm" class="user__form">
-            <h6>Language - English</h6>
+            <h6>Language - {{'demographic.language'|translate}}</h6>
 
             <mat-form-field>
               <input
@@ -293,7 +293,7 @@
           </form>
         </div>
       </div>
-      <div class="user__container">
+      <div  class="user__container">
         <form [formGroup]="transUserForm" class="user__form">
           <h6>Language - Arabic</h6>
           <mat-form-field>
@@ -301,7 +301,7 @@
               matInput
               [matKeyboard]="keyboardSecondaryLang"
               maxlength="50"
-              placeholder="{{ demo1.fullName }}"
+              [placeholder]="secondaryLanguagelabels.label_name"
               formControlName="t_fullName"
               name="t_fullName"
               #t_fullName
@@ -313,20 +313,20 @@
           <div class="user__age-or-date">
             <div class="user__date">
               <mat-form-field>
-                <input readonly [value]="userForm.get('date').value" matInput placeholder="{{ demo1.date }}" />
+                <input readonly [value]="userForm.get('date').value" matInput [placeholder]="secondaryLanguagelabels.date_dd" />
               </mat-form-field>
               <mat-form-field>
-                <input readonly [value]="userForm.get('month').value" matInput placeholder="{{ demo1.month }}" />
+                <input readonly [value]="userForm.get('month').value" matInput [placeholder]="secondaryLanguagelabels.date_mm" />
               </mat-form-field>
               <mat-form-field>
-                <input readonly [value]="userForm.get('year').value" matInput placeholder="{{ demo1.year }}" />
+                <input readonly [value]="userForm.get('year').value" matInput [placeholder]="secondaryLanguagelabels.date_yyyy" />
               </mat-form-field>
             </div>
 
             <div class="user__pref">OR</div>
             <div class="user__age">
               <mat-form-field>
-                <input readonly [value]="userForm.get('age').value" matInput placeholder="{{ demo1.age }}" />
+                <input readonly [value]="userForm.get('age').value" matInput [placeholder]="secondaryLanguagelabels.label_age" />
               </mat-form-field>
               <span class="user__age--disabled">Years</span>
             </div>
@@ -350,8 +350,7 @@
             <br />
           </div>
           <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
+          *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
           >
             <br />
           </div>
@@ -383,7 +382,7 @@
               #t_addressLine1
               name="t_addressLine1"
               maxlength="50"
-              placeholder="{{ demo1.addressLine1 }}"
+              [placeholder]="secondaryLanguagelabels.label_address1"
               formControlName="t_addressLine1"
             />
             <mat-hint align="end">{{ t_addressLine1.value.length }} / 50</mat-hint>
@@ -397,7 +396,7 @@
               #t_addressLine2
               name="t_addressLine2"
               maxlength="50"
-              placeholder="{{ demo1.addressLine2 }}"
+              [placeholder]="secondaryLanguagelabels.label_address2"
             />
             <mat-hint align="end">{{ t_addressLine2.value.length }} / 50</mat-hint>
           </mat-form-field>
@@ -409,7 +408,7 @@
               [matKeyboard]="keyboardSecondaryLang"
               #t_addressLine3
               maxlength="50"
-              placeholder="{{ demo1.addressLine3 }}"
+              [placeholder]="secondaryLanguagelabels.label_address3"
             />
             <mat-hint align="end">{{ t_addressLine3.value.length }} / 50</mat-hint>
           </mat-form-field>
@@ -420,7 +419,7 @@
                 name="t_region"
                 [value]="userForm.get('region').value"
                 [disabled]="true"
-                placeholder="{{ demo1.region }}"
+                [placeholder]="secondaryLanguagelabels.label_region"
               >
                 <mat-option *ngFor="let region of transRegions" [value]="region.locationCode">{{
                   region.locationName
@@ -433,7 +432,7 @@
             <mat-form-field>
               <mat-select
                 [disabled]="true"
-                placeholder="{{ demo1.province }}"
+                [placeholder]="secondaryLanguagelabels.label_province"
                 [value]="userForm.get('province').value"
                 name="t_province"
               >
@@ -447,7 +446,7 @@
             <mat-form-field>
               <mat-select
                 [disabled]="true"
-                placeholder="{{ demo1.city }}"
+                [placeholder]="secondaryLanguagelabels.label_city"
                 [value]="userForm.get('city').value"
                 name="t_city"
               >
@@ -461,7 +460,7 @@
             <mat-form-field>
               <mat-select
                 [disabled]="true"
-                placeholder="{{ demo1.localAdministrativeAuthority }}"
+                [placeholder]="secondaryLanguagelabels.label_local_administrative_authority"
                 [value]="userForm.get('localAdministrativeAuthority').value"
                 name="t_localAdministrativeAuthority"
               >
@@ -479,7 +478,7 @@
                 matInput
                 [value]="userForm.get('postalCode').value"
                 type="text"
-                placeholder="{{ demo1.postalCode }}"
+                [placeholder]="secondaryLanguagelabels.label_postalCode"
               />
             </mat-form-field>
           </div>
@@ -490,14 +489,14 @@
                 readonly
                 matInput
                 type="text"
-                placeholder="{{ demo1.mobileNumber }}"
+                [placeholder]="secondaryLanguagelabels.label_mob_num"
                 [value]="userForm.get('mobileNumber').value"
               />
             </mat-form-field>
           </div>
           <div class="user__dropdown">
             <mat-form-field>
-              <input matInput readonly placeholder="{{ demo1.emailId }}" [value]="userForm.get('email').value" />
+              <input matInput readonly [placeholder]="secondaryLanguagelabels.label_email_id" [value]="userForm.get('email').value" />
             </mat-form-field>
           </div>
           <div class="user__dropdown">
@@ -506,7 +505,7 @@
                 readonly
                 matInput
                 type="text"
-                placeholder="{{ demo1.CNEOrPINNumber }}"
+                [placeholder]="secondaryLanguagelabels.label1_pin"
                 [value]="userForm.get('pin').value"
               />
             </mat-form-field>
