@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
@@ -129,16 +131,19 @@ public class TriggerNotificationForUIN {
 				smsTemplateCode=SMS_TEMPLATE_UIN_UPDATE_CODE;
 				emailTemplateCode=EMAIL_TEMPLATE_UIN_UPDATE_CODE;
 			}
-
+			
 			for (String notificationType : allNotificationTypes) {
 
 				if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(smsTemplateCode)) {
 
 					service.sendSmsNotification(smsTemplateCode, uin, IdType.UIN, attributes);
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,UinStatusMessage.UIN_GENRATION_SMS_NOTIFICATION_SUCCESS);
+
 
 				} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(emailTemplateCode)) {
 
 					service.sendEmailNotification(emailTemplateCode, uin, IdType.UIN, attributes, ccEMailList,notificationEmailSubject, null);
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,UinStatusMessage.UIN_GENRATION_EMAIL_NOTIFICATION_SUCCESS);
 
 				}else {
 					throw new TemplateNotFoundException("sms and email template not found");
@@ -147,16 +152,17 @@ public class TriggerNotificationForUIN {
 
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException  e) {
 			
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,"Notification trigger failed"+e.getMessage()+ExceptionUtils.getStackTrace(e));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,e.getMessage());
 			throw new TemplateGenerationFailedException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 		} catch (JsonParseException |JsonMappingException jp) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,jp.getMessage()+ExceptionUtils.getStackTrace(jp));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,jp.getMessage());
 
 		}catch(TemplateNotFoundException tnfe) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,tnfe.getMessage()+ExceptionUtils.getStackTrace(tnfe));
-
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,tnfe.getMessage());
+		
 		}catch (Exception ex) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,ex.getMessage()+ExceptionUtils.getStackTrace(ex));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,ex.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.UIN.toString(),uin,ExceptionUtils.getStackTrace(ex));
 
 		}
 

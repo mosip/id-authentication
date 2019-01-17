@@ -20,4 +20,8 @@ public class UinStatusMessage {
 	/** The Constant PACKET_UIN_UPDATION_FAILURE_MSG. */
 	public static final String PACKET_UIN_UPDATION_FAILURE_MSG = "The Uin Updation Failured";
 
+	public static final String UIN_GENRATION_SMS_NOTIFICATION_SUCCESS = "Sms sent Successfully";
+
+	public static final String UIN_GENRATION_EMAIL_NOTIFICATION_SUCCESS = "Email sent Successfully";
+
 }
