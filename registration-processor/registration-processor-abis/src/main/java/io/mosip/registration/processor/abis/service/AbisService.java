@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.abis.service.impl;
+package io.mosip.registration.processor.abis.service;
 
 import java.io.IOException;
 
@@ -9,8 +9,8 @@ import org.xml.sax.SAXException;
 
 import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
-import io.mosip.registration.processor.abis.dto.IdentifyRequestDto;
-import io.mosip.registration.processor.abis.dto.IdentifyResponseDto;
+import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 
 /**
@@ -43,7 +43,7 @@ public interface AbisService {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public IdentifyResponseDto performDedupe(IdentifyRequestDto identifyRequest)
+	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException;
 	
 	public void delete();

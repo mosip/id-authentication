@@ -1,10 +1,10 @@
 package io.mosip.registration.processor.abis.dto;
 
 /**
- * The Class AbisInsertResponseDto.
+ * The Class AbisIdentifyResponseDto.
  */
-public class AbisInsertResponseDto {
-	
+public class AbisIdentifyResponseDto {
+
 	/** The id. */
 	private String id;
 	
@@ -15,7 +15,10 @@ public class AbisInsertResponseDto {
 	private String timestamp;
 	
 	/** The return value. */
-	private int returnValue;
+	private Integer returnValue;
+	
+	/** The candidate list. */
+	private CandidateListDto candidateList;
 	
 	/** The failure reason. */
 	private Integer failureReason;
@@ -79,19 +82,37 @@ public class AbisInsertResponseDto {
 	 *
 	 * @return the return value
 	 */
-	public int getReturnValue() {
+	public Integer getReturnValue() {
 		return returnValue;
 	}
 
 	/**
 	 * Sets the return value.
 	 *
-	 * @param i the new return value
+	 * @param returnValue the new return value
 	 */
-	public void setReturnValue(int i) {
-		this.returnValue = i;
+	public void setReturnValue(Integer returnValue) {
+		this.returnValue = returnValue;
 	}
 
+	/**
+	 * Gets the candidate list.
+	 *
+	 * @return the candidate list
+	 */
+	public CandidateListDto getCandidateList() {
+		return candidateList;
+	}
+
+	/**
+	 * Sets the candidate list.
+	 *
+	 * @param candidateList the new candidate list
+	 */
+	public void setCandidateList(CandidateListDto candidateList) {
+		this.candidateList = candidateList;
+	}
+	
 	/**
 	 * Gets the failure reason.
 	 *
@@ -100,7 +121,7 @@ public class AbisInsertResponseDto {
 	public Integer getFailureReason() {
 		return failureReason;
 	}
-
+	
 	/**
 	 * Sets the failure reason.
 	 *
