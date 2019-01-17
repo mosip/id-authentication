@@ -1,4 +1,4 @@
-مرحبًا $ name_lang2 ،
+﻿Bonjour $name_lang3,
 
-فشل طلب التسجيل $RID الخاص بك لأنه تم العثور على UIN مقابل بياناتك. يرجى زيارة أقرب مكتب تسجيل.
-وزيارة https://mosip.io/grievances
+Votre demande d'enregistrement $RID a échoué car un UIN a été trouvé contre vos coordonnées. Veuillez visiter votre bureau d'inscription le plus proche.
+Et visitez https://mosip.io/grievances
