@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.amazonaws.SdkBaseException;
@@ -240,7 +242,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Override
 	public IdResponseDTO addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
-			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
+			validateUIN(uin);
 			return constructIdResponse(
 					this.id.get(CREATE), addIdentity(uin, request.getRegistrationId(),
 							convertToBytes(request.getRequest().getIdentity()), request.getRequest().getDocuments()),
@@ -248,7 +250,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e, this.id.get(CREATE));
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, this.id.get(CREATE));
 		} catch (DataAccessException e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
@@ -330,7 +332,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now(), bioList, docList));
 			} else {
-				
+
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 						now(), false, now(), null, null));
