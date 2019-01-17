@@ -109,6 +109,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private Environment environment;
 
+	private String notificationAlertData = null;
+
 	private byte[] acknowledgement = null;
 
 	public RegistrationDTO getRegistrationData() {
@@ -127,7 +129,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
-		
+
 		if (getRegistrationData().getSelectionListDTO() != null) {
 			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			newRegistration.setVisible(false);
@@ -143,7 +145,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 		// content and calls the method to create packet after 3 seconds
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(e -> saveRegistrationData());
-		pause.play();
+		pause.play();		
+		if (notificationAlertData != null) {
+			generateNotificationAlert(notificationAlertData);
+		}
 	}
 
 	/**
@@ -153,7 +158,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private void generateEmailNotification() {
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
-		
+
 		try {
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -205,13 +210,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 						// generate alert
 						if (!alert.equals("")) {
-							String data = RegistrationUIConstants.NOTIFICATION_FAIL;
+							notificationAlertData = RegistrationUIConstants.NOTIFICATION_FAIL;
 							if (alert.equals("SMS")) {
-								data = RegistrationUIConstants.NOTIFICATION_SMS_FAIL;
+								notificationAlertData = RegistrationUIConstants.NOTIFICATION_SMS_FAIL;
 							} else if (alert.equals("EMAIL")) {
-								data = RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL;
+								notificationAlertData = RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL;
 							}
-							generateNotificationAlert(data);
 						}
 					}
 				}
@@ -232,7 +236,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private void saveRegistrationData() {
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "packet creation has been started");
-		
+
 		// take a snapshot of the webview to save it along with the packet
 		WritableImage ackImage = webView.snapshot(null, null);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -253,7 +257,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		// packet creation
 		ResponseDTO response = packetHandlerService.handle(registrationData);
-		
+
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
 			generateEmailNotification();
@@ -305,7 +309,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void printReceipt(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Printing the Acknowledgement Receipt");
-		
+
 		PrinterJob job = PrinterJob.createPrinterJob();
 		if (job != null) {
 			webView.getEngine().print(job);
@@ -319,7 +323,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void goToNewRegistration(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to New Registration Page after packet creation");
-		
+
 		clearRegistrationData();
 		packetController.createPacket();
 	}

@@ -54,10 +54,19 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	}
 
 	@Override
-	public void saveAll(List<GlobalParam> list) {
-		Iterable<GlobalParam> iterable = list;
+	public void saveAll(List<GlobalParam> globalParamList) {
 
-		globalParamRepository.saveAll(iterable);
+		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Save Global Params started");
+
+		/** Parase List to Iterable */
+		Iterable<GlobalParam> globalParamIterableList = globalParamList;
+
+		/** Save all Global Params */
+		globalParamRepository.saveAll(globalParamIterableList);
+
+		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Save Global Params ended");
 
 	}
 }

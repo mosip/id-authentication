@@ -6,8 +6,11 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.transaction.Transactional;
 
@@ -28,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
+import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -36,6 +40,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -76,6 +81,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Autowired
 	private HolidayRepository holidayRepository;
+
+	@Autowired
+	private LocationService locationService;
 
 	/*
 	 * (non-Javadoc)
@@ -269,11 +277,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Override
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
-			String languageCode, String hierarchyLevel, String text) {
+			String languageCode, Integer hierarchyLevel, String text) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository
-					.findRegistrationCenterHierarchyLevelName(languageCode, hierarchyLevel, text);
+			Set<String> codes = getLocationCode(
+					locationService.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel),
+					hierarchyLevel, text);
+			registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -447,18 +457,29 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return idResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(java.lang.String, java.lang.Integer, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(java.lang.
+	 * String, java.lang.Integer, java.util.List)
 	 */
 	@Override
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			String languageCode, Integer hierarchyLevel, List<String> texts) {
+			String languageCode, Integer hierarchyLevel, List<String> names) {
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
-		List<String> names = texts.stream().map(String::toUpperCase).collect(Collectors.toList());
 		List<RegistrationCenter> registrationCentersList = null;
+		Set<String> uniqueLocCode = new TreeSet<>();
 		try {
+			Map<Integer, List<Location>> parLocCodeToListOfLocation = locationService
+					.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel);
+			for (String name : names) {
+				Set<String> codes = getLocationCode(parLocCodeToListOfLocation, hierarchyLevel, name);
+				uniqueLocCode.addAll(codes);
+			}
+
 			registrationCentersList = registrationCenterRepository
-					.findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(languageCode, hierarchyLevel, names);
+					.findRegistrationCenterByListOfLocationCode(uniqueLocCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -475,5 +496,29 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
+	}
+
+	private Set<String> getLocationCode(Map<Integer, List<Location>> levelToListOfLocationMap, Integer hierarchyLevel,
+			String text) {
+		Set<String> uniqueLocCode = new TreeSet<>();
+		boolean isParent = false;
+		for (Entry<Integer, List<Location>> data : levelToListOfLocationMap.entrySet()) {
+			if (!isParent) {
+				for (Location location : data.getValue()) {
+					if (text.equalsIgnoreCase(location.getName())) {
+						uniqueLocCode.add(location.getCode());
+						isParent = true;
+						break;// parent code set
+					}
+				}
+			} else if (data.getKey() > hierarchyLevel) {
+				for (Location location : data.getValue()) {
+					if (uniqueLocCode.contains(location.getParentLocCode())) {
+						uniqueLocCode.add(location.getCode());
+					}
+				}
+			}
+		}
+		return uniqueLocCode;
 	}
 }

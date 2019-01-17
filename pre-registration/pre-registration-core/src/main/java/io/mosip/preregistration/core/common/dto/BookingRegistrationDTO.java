@@ -41,4 +41,5 @@ public class BookingRegistrationDTO implements Serializable{
 	@JsonProperty("time_slot_to")
 	@ApiModelProperty(value = "To Time Slot", position = 4)
 	private String slotToTime;
+	
 }

@@ -65,9 +65,9 @@ public class Initialization extends Application {
 
 		GlobalParamService globalParamService = applicationContext.getBean(GlobalParamService.class);
 		ResponseDTO responseDTO = globalParamService.synchConfigData();
-		if(responseDTO!=null && responseDTO.getErrorResponseDTOs()!=null) {
+		if(responseDTO.getErrorResponseDTOs()!=null) {
 			ErrorResponseDTO errorResponseDTO=responseDTO.getErrorResponseDTOs().get(0);
-			baseController.generateAlert(errorResponseDTO.getMessage());
+			baseController.generateAlert(RegistrationConstants.ERROR,errorResponseDTO.getMessage());
 		}
 		
 

@@ -111,6 +111,21 @@ public class BiometricPreviewController extends BaseController {
 	@FXML
 	private AnchorPane photoAnchorPane;
 
+	@FXML
+	private AnchorPane leftSlapAnchorPane;
+
+	@FXML
+	private AnchorPane rightSlapAnchorPane;
+
+	@FXML
+	private AnchorPane thumbAnchorPane;
+
+	@FXML
+	private AnchorPane leftIrisAnchorPane;
+
+	@FXML
+	private AnchorPane rightIrisAnchorPane;
+
 	@Autowired
 	private RegistrationController registrationController;
 
@@ -132,22 +147,8 @@ public class BiometricPreviewController extends BaseController {
 		if (registrationDTOContent.getSelectionListDTO() != null) {
 			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
-
-		if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()
-				&& registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
-			fingerprintAnchorPane.setVisible(false);
-			irisAnchorPane.setVisible(false);
-			photoAnchorPane.setLayoutY(14);
-		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
-				.isEmpty()) {
-			irisAnchorPane.setLayoutY(14);
-			photoAnchorPane.setLayoutY(303);
-			fingerprintAnchorPane.setVisible(false);
-		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
-			fingerprintAnchorPane.setLayoutY(14);
-			photoAnchorPane.setLayoutY(303);
-			irisAnchorPane.setVisible(false);
-		}
+		
+		paneVisibility(registrationDTOContent);
 
 		String irisThreshold = ((String) applicationContext.getApplicationMap()
 				.get(RegistrationConstants.IRIS_THRESHOLD)).concat(RegistrationConstants.PERCENTAGE);
@@ -212,6 +213,73 @@ public class BiometricPreviewController extends BaseController {
 				rightEye.setImage(convertBytesToImage(capturedIris.getIris()));
 				rightEyeQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
 			}
+		}
+	}
+
+	/**
+	 * Pane visibility depending on capturing.
+	 *
+	 * @param registrationDTOContent the registration DTO content
+	 */
+	private void paneVisibility(RegistrationDTO registrationDTOContent) {
+		leftSlapAnchorPane.setVisible(false);
+		rightSlapAnchorPane.setVisible(false);
+		thumbAnchorPane.setVisible(false);
+		leftIrisAnchorPane.setVisible(false);
+		rightIrisAnchorPane.setVisible(false);
+
+		if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()
+				&& registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
+			fingerprintAnchorPane.setVisible(false);
+			irisAnchorPane.setVisible(false);
+			photoAnchorPane.setLayoutY(14);
+
+		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+				.isEmpty()) {
+			irisAnchorPane.setLayoutY(14);
+			photoAnchorPane.setLayoutY(303);
+			fingerprintAnchorPane.setVisible(false);
+		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
+			fingerprintAnchorPane.setLayoutY(14);
+			photoAnchorPane.setLayoutY(303);
+			irisAnchorPane.setVisible(false);
+		}
+
+		boolean isLeftEyeCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO().stream().anyMatch(bio -> bio.getIrisType()
+						.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE)));
+
+		boolean isRightEyeCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO().stream().anyMatch(bio -> bio.getIrisType()
+						.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE)));
+
+		boolean isLeftPalmCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO().stream()
+				.anyMatch(bio -> bio.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM));
+		boolean isRightPalmCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO().stream()
+				.anyMatch(bio -> bio.getFingerType().equalsIgnoreCase(RegistrationConstants.RIGHTPALM));
+		boolean isThumbCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO().stream()
+				.anyMatch(bio -> bio.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS));
+
+		leftSlapAnchorPane.setVisible(isLeftPalmCaptured);
+		rightSlapAnchorPane.setVisible(isRightPalmCaptured);
+		thumbAnchorPane.setVisible(isThumbCaptured);
+		leftIrisAnchorPane.setVisible(isLeftEyeCaptured);
+		rightIrisAnchorPane.setVisible(isRightEyeCaptured);
+
+		if (!isLeftPalmCaptured && !isRightPalmCaptured && isThumbCaptured) {
+			thumbAnchorPane.setLayoutX(0);
+		} else if (isLeftPalmCaptured && !isRightPalmCaptured && isThumbCaptured) {
+			thumbAnchorPane.setLayoutX(258);
+		} else if (!isLeftPalmCaptured && isRightPalmCaptured) {
+			rightSlapAnchorPane.setLayoutX(0);
+			thumbAnchorPane.setLayoutX(258);
+		}
+
+		if (!isLeftEyeCaptured && isRightEyeCaptured) {
+			rightIrisAnchorPane.setLayoutX(0);
 		}
 	}
 

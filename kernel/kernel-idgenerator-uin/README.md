@@ -25,6 +25,8 @@ mvn javadoc:javadoc
 
 ** Properties to be added in parent Spring Application environment **
 
+[application-dev.properties](../../config/application-dev.properties)
+
 [kernel-idgenerator-uin-dev.properties](../../config/kernel-idgenerator-uin-dev.properties)
 
 

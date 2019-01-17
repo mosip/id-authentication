@@ -1,4 +1,3 @@
-
 /* 
  * Copyright
  * 
@@ -9,6 +8,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,12 +28,16 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 @Transactional
 public interface RegistrationBookingRepository extends BaseRepository<RegistrationBookingEntity, String> {
 
+	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
 	/**
 	 * @param preregistrationId
 	 * @param statusCode
-	 * @return RegistrationBookingEntity based on Pre-regisytration-Id and status code
+	 * @return RegistrationBookingEntity based on Pre-registration-Id and status code
 	 */
 	public RegistrationBookingEntity findPreIdAndStatusCode(String preregistrationId, String statusCode);
+	 
+	@Query(preIdQuery)
+	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
 	
 	/**
 	 * @param registrationCenterId
