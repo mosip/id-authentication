@@ -1523,5 +1523,24 @@ public class MasterSyncDaoImplTest {
 		assertTrue(documents!=null);
 	
 	}
+	
+	@Test
+	public void findGenders() throws RegBaseCheckedException {
+	
+		List<MasterGender> genderList = new ArrayList<>();
+		MasterGender gender = new MasterGender();
+		gender.setCode("1");
+		gender.setGenderName("male");
+		gender.setLangCode("ENG");
+		gender.setIsActive(true);
+		genderList.add(gender);
+	
+		Mockito.when(masterSyncDao.getGenderDtls(Mockito.anyString())).thenReturn(genderList);
+	
+		masterSyncDaoImpl.getGenderDtls("ENG");
+		
+		assertTrue(genderList!=null);
+	
+	}
 
 }

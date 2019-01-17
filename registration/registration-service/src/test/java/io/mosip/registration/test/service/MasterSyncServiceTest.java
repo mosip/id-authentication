@@ -46,6 +46,7 @@ import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
 import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -1257,4 +1258,22 @@ public class MasterSyncServiceTest {
 		masterSyncServiceImpl.getDocumentCategories("ENG");
 	
 	}
+	
+	@Test
+	public void findGender() {
+
+		List<MasterGender> genderList = new ArrayList<>();
+		MasterGender gender = new MasterGender();
+		gender.setCode("1");
+		gender.setGenderName("male");
+		gender.setLangCode("ENG");
+		gender.setIsActive(true);
+		genderList.add(gender);
+
+		Mockito.when(masterSyncDao.getGenderDtls(Mockito.anyString())).thenReturn(genderList);
+
+		masterSyncServiceImpl.getGenderDtls("ENG");
+
 	}
+
+}

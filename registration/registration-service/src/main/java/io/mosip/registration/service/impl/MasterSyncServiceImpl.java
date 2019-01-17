@@ -32,12 +32,14 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
 import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -363,5 +365,26 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		});
 
 		return documentsDTO;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.MasterSyncService#getGenderDtls(java.lang.String)
+	 */
+	@Override
+	public List<GenderDto> getGenderDtls(String langCode) {
+
+		List<GenderDto> gendetDtoList = new ArrayList<>();
+		List<MasterGender> masterDocuments = masterSyncDao.getGenderDtls(langCode);
+
+		masterDocuments.forEach(gender -> {
+			GenderDto genders = new GenderDto();
+			genders.setCode(gender.getCode().trim());
+			genders.setGenderName(gender.getGenderName());
+			genders.setIsActive(gender.getIsActive());
+			genders.setLangCode(gender.getLangCode());
+			gendetDtoList.add(genders);
+		});
+
+		return gendetDtoList;
 	}
 }

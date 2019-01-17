@@ -6,6 +6,7 @@ import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
 import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -81,5 +82,13 @@ public interface MasterSyncDao {
 	 * @return the document categories
 	 */
 	List<MasterDocumentCategory> getDocumentCategories(String langCode);
+	
+	/**
+	 * Gets the gender dtls.
+	 *
+	 * @param langCode the lang code
+	 * @return the gender dtls
+	 */
+	List<MasterGender> getGenderDtls(String langCode);
 
 }
