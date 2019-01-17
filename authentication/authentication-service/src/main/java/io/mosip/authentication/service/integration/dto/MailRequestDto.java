@@ -10,10 +10,25 @@ import lombok.Data;
 @Data
 public class MailRequestDto {
 
+	/**
+	 * Variable to hold mail to
+	 */
 	String[] mailTo;
+	/**
+	 * Variable to hold mail cc
+	 */
 	String[] mailCc;
+	/**
+	 * Variable to hold mail subject
+	 */
 	String mailSubject;
+	/**
+	 * Variable to hold mail content
+	 */
 	String mailContent;
+	/**
+	 * Variable to hold attachments
+	 */
 	MultipartFile[] attachments;
 
 }

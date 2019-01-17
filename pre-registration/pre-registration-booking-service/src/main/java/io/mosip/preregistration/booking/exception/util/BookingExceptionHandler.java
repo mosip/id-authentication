@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.booking.dto.ExceptionJSONInfoDTO;
-import io.mosip.preregistration.booking.dto.MainResponseDTO;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentAlreadyCanceledException;
@@ -38,6 +36,8 @@ import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
+import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
@@ -118,7 +118,7 @@ public class BookingExceptionHandler {
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(false);
 		errorRes.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
 
@@ -173,7 +173,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 
 	}
 
@@ -191,7 +191,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -279,7 +279,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(err);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -297,7 +297,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -334,7 +334,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -353,7 +353,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -372,7 +372,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -391,7 +391,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -408,7 +408,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -426,7 +426,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**
@@ -444,7 +444,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 	/**
 	 * @param e
@@ -461,7 +461,7 @@ public class BookingExceptionHandler {
 		responseDto.setStatus(false);
 		responseDto.setErr(errorDetails);
 		responseDto.setResTime(getCurrentResponseTime());
-		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 	
 	/**

@@ -30,7 +30,7 @@ import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.ValidationUtil;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
@@ -191,7 +191,7 @@ public class DocumentService {
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
 				docResponseDto.setDocumentType(documentEntity.getDocTypeCode());
-				docResponseDto.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+				docResponseDto.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 				docResponseDtos.add(docResponseDto);
 			} else {
 				throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
@@ -216,6 +216,7 @@ public class DocumentService {
 	 *            pass destination preRegistrationId
 	 * @return ResponseDTO
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentCopyResponseDTO> copyDoucment(String catCode, String sourcePreId,
 			String destinationPreId) {
 		log.info("sessionId", "idType", "id", "In copyDoucment method of document service");
@@ -237,6 +238,7 @@ public class DocumentService {
 					if (copyDocumentEntity != null) {
 						destinationBucketName = copyDocumentEntity.getPreregId();
 						destinationKey = copyDocumentEntity.getDocCatCode() + "_" + copyDocumentEntity.getDocumentId();
+						System.out.println("name "+sourceBucketName);
 						boolean isStoreSuccess = ceph.copyFile(sourceBucketName, sourceKey, destinationBucketName,
 								destinationKey);
 						if (!isStoreSuccess) {
@@ -259,7 +261,7 @@ public class DocumentService {
 					}
 
 				} else {
-					throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
+					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 				}
 			}
 
@@ -311,7 +313,7 @@ public class DocumentService {
 					responseDto.setStatus(responseStatus);
 					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 				} else {
-					throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
+					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 				}
 			}
 		} catch (Exception ex) {
@@ -329,6 +331,7 @@ public class DocumentService {
 	 *            pass documentID
 	 * @return ResponseDTO
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteDocument(String documentId) {
 		log.info("sessionId", "idType", "id", "In deleteDocument method of document service");
 		List<DocumentDeleteResponseDTO> deleteDocList = new ArrayList<>();
@@ -346,14 +349,14 @@ public class DocumentService {
 					}
 					DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 					deleteDTO.setDocumnet_Id(documentId);
-					deleteDTO.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+					deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 					deleteDocList.add(deleteDTO);
 					delResponseDto.setResponse(deleteDocList);
 				}
 				delResponseDto.setStatus(responseStatus);
 				delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
 			} else {
-				throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
+				throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 			}
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
@@ -375,6 +378,7 @@ public class DocumentService {
 	 *            pass preRegistrationId
 	 * @return ResponseDTO
 	 */
+	@Transactional(rollbackFor = Exception.class)
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
@@ -389,7 +393,7 @@ public class DocumentService {
 							boolean isdelete = ceph.deleteFile(documentEntity.getPreregId(), key);
 							DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
 							deleteDTO.setDocumnet_Id(String.valueOf(documentEntity.getDocumentId()));
-							deleteDTO.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+							deleteDTO.setResMsg(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.toString());
 							deleteAllList.add(deleteDTO);
 						}
 						delResponseDto.setResponse(deleteAllList);
@@ -397,7 +401,7 @@ public class DocumentService {
 						delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
 					}
 				} else {
-					throw new DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
+					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 				}
 			}
 		} catch (DataAccessLayerException ex) {

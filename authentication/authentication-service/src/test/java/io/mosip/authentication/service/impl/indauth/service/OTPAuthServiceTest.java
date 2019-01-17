@@ -100,7 +100,7 @@ public class OTPAuthServiceTest {
 		authType.setOtp(true);
 		authreqdto.setAuthType(authType);
 		authreqdto.setTxnID("1234567890");
-		authreqdto.setMuaCode("1234567890");
+		authreqdto.setTspID("1234567890");
 		List<PinInfo> pinInfolist = new ArrayList<>();
 		PinInfo pinInfo = new PinInfo();
 		pinInfo.setType(PinType.OTP.getType());

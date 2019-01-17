@@ -1,8 +1,7 @@
 package io.mosip.kernel.idrepo.dto;
 
-import java.util.List;
-
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The Class ResponseDTO.
@@ -10,13 +9,10 @@ import lombok.Data;
  * @author Manoj SP
  */
 @Data
-public class ResponseDTO {
+@EqualsAndHashCode(callSuper=true)
+public class ResponseDTO extends BaseRequestResponseDTO {
 	
 	/** The entity. */
 	private String entity;
 	
-	/** The identity. */
-	private Object identity;
-	
-	private List<Documents> documents;
 }

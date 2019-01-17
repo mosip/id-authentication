@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -66,33 +68,38 @@ public class RestApiClient {
 	/**
 	 * Post api.
 	 *
-	 * @param <T>            the generic type
-	 * @param uri            the uri
-	 * @param requestType            the request type
-	 * @param responseClass            the response class
+	 * @param <T>
+	 *            the generic type
+	 * @param uri
+	 *            the uri
+	 * @param requestType
+	 *            the request type
+	 * @param responseClass
+	 *            the response class
 	 * @return the t
 	 */
-	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) {
+	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
 
 		RestTemplate restTemplate;
+		T result = null;
 		try {
-			System.out.println("Your URl is to change ::   " + uri);
 			restTemplate = getRestTemplate();
 
-			T result = (T) restTemplate.postForObject(uri, requestType, responseClass);
-			return result;
+			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
 		} catch (Exception e) {
 
-			logger.error(e.getMessage());
+			logger.error("Error: {}", e);
+			throw e;
 		}
-		return null;
+		return result;
 	}
 
 	/**
 	 * Gets the rest template.
 	 *
 	 * @return the rest template
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static RestTemplate getRestTemplate() throws Exception {
 		SSLContext sslContext = SSLContext.getInstance("SSL");

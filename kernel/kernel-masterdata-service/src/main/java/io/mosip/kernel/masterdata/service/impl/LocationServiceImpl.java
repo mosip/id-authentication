@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -380,6 +383,28 @@ public class LocationServiceImpl implements LocationService {
 		}
 
 		return parentHierarchyList;
+	}
+
+	@Override
+	public Map<Integer, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode,
+			Integer hierarchyLevel) {
+		Map<Integer, List<Location>> map = new TreeMap<>();
+		List<Location> locations = locationRepository.getAllLocationsByLangCodeAndLevel(langCode, hierarchyLevel);
+		if (!EmptyCheckUtils.isNullEmpty(locations)) {
+			for (Location location : locations) {
+				if (map.containsKey(location.getHierarchyLevel())) {
+					map.get(location.getHierarchyLevel()).add(location);
+				} else {
+					List<Location> list = new ArrayList<>();
+					list.add(location);
+					map.put(location.getHierarchyLevel(), list);
+				}
+			}
+			return map;
+		} else {
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		}
 	}
 
 }

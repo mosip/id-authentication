@@ -19,6 +19,10 @@ body {
   color: #e44c29;
 }
 
+.mat-button-toggle-focus-overlay {
+  border-bottom: none !important;
+}
+
 .mat-form-field.mat-form-field-invalid .mat-form-field-ripple,
 .mat-form-field.mat-form-field-invalid .mat-form-field-ripple.mat-accent {
   background-color: #f19f8c;

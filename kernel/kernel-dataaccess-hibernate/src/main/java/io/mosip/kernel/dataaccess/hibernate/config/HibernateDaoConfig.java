@@ -36,6 +36,7 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
  * 
  * @author Dharmesh Khandelwal
  * @author Shashank Agrawal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  * 
  *
@@ -176,12 +177,19 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 */
 	private HashMap<String, Object> getProperty(HashMap<String, Object> jpaProperties, String property,
 			String defaultValue) {
+		/**
+		 * if property found in properties file then add that interceptor to the jpa
+		 * properties.
+		 */
 		if (property.equals(HibernatePersistenceConstant.HIBERNATE_EJB_INTERCEPTOR)) {
 			try {
 				if (environment.containsProperty(property)) {
 					jpaProperties.put(property,
 							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
+				/**
+				 * We can add a default interceptor whenever we require here. 
+				 */
 			} catch (BeanInstantiationException | ClassNotFoundException e) {
 				LOGGER.error("Error while configuring Interceptor.");
 			}

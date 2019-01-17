@@ -122,12 +122,10 @@ public class NotificationServiceImpl implements NotificationService {
 		values.put(NAME, infoHelper.getEntityInfoAsString(DemoMatchType.NAME_PRI, idInfo));
 		String resTime = authResponseDTO.getResTime();
 
-		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime(), isoPattern);
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime());
 		ZoneId zone = zonedDateTime2.getZone();
 
-		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime, isoPattern);
+		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime);
 		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
 		String changedDate = dateTimeConvertedToReqZone
 				.format(DateTimeFormatter.ofPattern(env.getProperty("notification.date.format")));

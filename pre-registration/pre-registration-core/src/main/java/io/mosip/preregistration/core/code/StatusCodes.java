@@ -1,15 +1,51 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.core.code;
 
+/**
+ * 
+ * This Enum provides the constant variables to accept input request.
+ * 
+ * @author Kishan Rathore
+ * @author Jagadishwari
+ * @author Ravi C. Balaji
+ * @since 1.0.0
+ *
+ */
 public enum StatusCodes {
-	USER_ID_INVALID,
-	USER_OTP_GENERATED,
-	USER_OTP_GENERATION_FAILED,
-	USER_ALREADY_EXIST,
-	OTP_VALIDATION_SUCESSFUL,
-	OTP_VALIDATION_FAILED,
-	USER_OTP_INVALID,
-	USER_UPDATED,
-	USER_UPDATION_FAILED,
-	USER_INSERTION_FAILED,
-	SERVER_CONNECTION_FAILED
+	
+	/* Pending_Appointment */
+	PENDING_APPOINTMENT("Pending_Appointment"),
+	
+	/* Booked */
+	BOOKED("Booked"),
+	
+	/* Expired */
+	EXPIRED("Expired"), 
+	
+	/* Consumed */
+	CONSUMED("Consumed"), 
+	
+	/**
+	 * Canceled
+	 */
+	CANCELED("Canceled");
+	
+	/**
+	 * @param code
+	 */
+	private StatusCodes(String code) {
+		this.code = code;
+	}
+
+	private final String code;
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 }

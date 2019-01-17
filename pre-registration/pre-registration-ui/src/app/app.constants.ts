@@ -1,6 +1,6 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-export const COUNTRY_NAME = 'INDIA';
+export const COUNTRY_NAME = 'MOROCCO';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
@@ -15,7 +15,9 @@ export const IDS = {
 
 export const LANGUAGE_CODE = {
   primary: 'ENG',
-  secondary: 'arb'
+  secondary: 'ARB',
+  primaryKeyboardLang: 'en',
+  secondaryKeyboardLang: 'ar'
 };
 
 export const APPEND_URL = {
@@ -30,7 +32,7 @@ export const APPEND_URL = {
 export const PARAMS_KEYS = {
   getUsers: 'user_id',
   getUser: PRE_REGISTRATION_ID,
-  deleteUser: 'preId',
+  deleteUser: PRE_REGISTRATION_ID,
   locationHierarchyName: 'hierarchyName'
 };
 
@@ -77,6 +79,12 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
     upload_by: '9900806086',
     upload_date_time: '2018-12-28T05:23:08.019Z'
   }
+};
+
+export const virtual_keyboard_languages = {
+  en: 'English',
+  fr: 'Fran\u00e7ais',
+  ar: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629'
 };
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';

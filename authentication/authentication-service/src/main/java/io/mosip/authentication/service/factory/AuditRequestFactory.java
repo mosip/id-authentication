@@ -14,6 +14,7 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 
 /**
@@ -66,7 +67,7 @@ public class AuditRequestFactory {
 	request.setEventId(event.getEventId());
 	request.setEventName(event.getEventName());
 	request.setEventType(event.getEventType());
-	request.setActionTimeStamp(LocalDateTime.now());
+	request.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
 	request.setHostName(hostName);
 	request.setHostIp(hostAddress);
 	request.setApplicationId(env.getProperty("application.id"));

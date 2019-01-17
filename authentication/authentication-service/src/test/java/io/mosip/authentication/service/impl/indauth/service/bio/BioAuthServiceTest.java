@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,7 +40,10 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
+import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.service.BioAuthServiceImpl;
 
 @RunWith(SpringRunner.class)
@@ -54,6 +58,15 @@ public class BioAuthServiceTest {
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
+	@InjectMocks
+	private BiometricProviderFactory biometricProviderFactory;
+
+	@InjectMocks
+	private MantraFingerprintProvider mantraFingerprintProvider;
+
+	@InjectMocks
+	private CogentFingerprintProvider cogentFingerprintProvider;
+
 	@Autowired
 	Environment environment;
 
@@ -65,13 +78,17 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(idInfoHelper, "biometricProviderFactory", biometricProviderFactory);
+		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "environment", environment);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidateBioDetails() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Map<String, List<IdentityInfoDTO>> bioIdentity = null;
-		
+
 		bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 	}
 
@@ -92,11 +109,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -127,7 +144,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("sample", identityList);
-		
+
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertFalse(validateBioDetails.isStatus());
 	}
@@ -149,11 +166,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -184,7 +201,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
-		
+
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
@@ -207,11 +224,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -242,7 +259,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("leftIndex", identityList);
-		
+
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
@@ -264,11 +281,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -304,6 +321,7 @@ public class BioAuthServiceTest {
 		System.err.println(validateBioDetails.isStatus());
 		System.err.println(validateBioDetails.getErr());
 	}
+
 	@Test
 	public void TestvalidateBioDetailsMulti() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -321,11 +339,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -345,7 +363,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		identityInfoDTO.setLanguage("AR");
 		identityInfoDTO.setValue(value);
 		identityInfoDTOList.setLanguage("AR");
@@ -387,8 +405,9 @@ public class BioAuthServiceTest {
 		bioIdentity.put("ringThumb", identityList);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertFalse(validateBioDetails.isStatus());
-		
+
 	}
+
 	@Test
 	public void TestvalidateBioMultiImage() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -406,11 +425,11 @@ public class BioAuthServiceTest {
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+		// authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		List<BioInfo> bioInfoList = new ArrayList<>();
@@ -430,7 +449,7 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		String value1="Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		identityInfoDTO.setLanguage("AR");
 		identityInfoDTO.setValue(value);
 		identityInfoDTOList.setLanguage("AR");
@@ -456,7 +475,7 @@ public class BioAuthServiceTest {
 		bioIdentity.put("rightIndex", identityLists);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertTrue(validateBioDetails.isStatus());
-		
+
 	}
 
 }

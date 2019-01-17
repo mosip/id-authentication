@@ -8,6 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { BookingModel } from '../center-selection/booking.model';
 import { RegistrationService } from '../registration.service';
+import { UserModel } from '../demographic/modal/user.modal';
 
 @Component({
   selector: 'app-time-selection',
@@ -32,6 +33,7 @@ export class TimeSelectionComponent implements OnInit {
   enableBookButton = false;
   activeTab = 'morning';
   bookingDataList = [];
+  temp: NameList[];
 
   constructor(
     private sharedService: SharedService,
@@ -43,7 +45,9 @@ export class TimeSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.names = [...this.sharedService.getNameList()];
+    this.names = this.sharedService.getNameList();
+    this.temp = this.sharedService.getNameList();
+    console.log(this.temp);
     this.sharedService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     console.log(this.registrationCenter);
@@ -96,9 +100,10 @@ export class TimeSelectionComponent implements OnInit {
         slot.names = [];
         let fromTime = slot.fromTime.split(':');
         let toTime = slot.toTime.split(':');
+        console.log('from time', fromTime, 'to time', toTime);
         slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
         slot.displayTime += ':' + fromTime[1] + ' - ';
-        slot.displayTime += Number(toTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
+        slot.displayTime += Number(toTime[0]) > 12 ? Number(toTime[0]) - 12 : toTime[0];
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;
@@ -185,6 +190,15 @@ export class TimeSelectionComponent implements OnInit {
             width: '250px',
             data: data
           }).afterClosed().subscribe(() => {
+            this.temp.forEach(name => {
+              this.sharedService.addNameList(name);
+              const booking = this.bookingDataList.filter((element) => element.preRegistrationId === name.preRegId);
+              const date = booking[0].newBookingDetails.appointment_date.split('-');
+              let appointmentDateTime = date[2] + ' ' + this.MONTHS[Number(date[1])] + ', ' + date[0];
+              const time = booking[0].newBookingDetails.time_slot_from.split(':');
+              appointmentDateTime += ', ' + (Number(time[0]) > 12 ? Number(time[0]) - 12 : Number(time[0])) + ':' + time[1] + (Number(time[0]) > 12 ? ' PM' : ' AM');
+              this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
+            })
             this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
           });
         }, error => {

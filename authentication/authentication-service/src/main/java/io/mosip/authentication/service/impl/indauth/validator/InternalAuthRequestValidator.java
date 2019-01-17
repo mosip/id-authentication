@@ -140,7 +140,12 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		return allowedAuthType;
 	}
 
-	/** Validation for DateTime */
+	/**
+	 *  Validation for DateTime.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
+	 */
 	public void validateDate(AuthRequestDTO authRequestDTO, Errors errors) {
 		if (null != authRequestDTO.getReqTime() && !authRequestDTO.getReqTime().isEmpty()) {
 			try {
