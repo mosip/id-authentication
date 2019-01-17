@@ -208,8 +208,7 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @param inputStream
 	 *            the input stream
 	 * @return the request body
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException - the id authentication app exception
 	 */
 	private Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {

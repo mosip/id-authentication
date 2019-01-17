@@ -92,13 +92,9 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private BiometricProviderFactory biometricProviderFactory;
 
-	/**
-	 * Fetch language name for Match Properties based on language code.
-	 *
-	 * @param languageCode the language code
-	 * @return the language name
+	/*
+	 * Fetch language Name based on language code
 	 */
-
 	public Optional<String> getLanguageName(String languageCode) {
 		String languagName = null;
 		String key = null;
@@ -116,7 +112,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Fetch language code from properties
 	 *
-	 * @param languageCode the language code
+	 * @param langType - the language code
 	 * @return the language code
 	 */
 	public String getLanguageCode(LanguageType langType) {
@@ -130,7 +126,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	/**
 	 * Fetch Identity info based on Match type and Identity
 	 *
-	 * @param languageCode the language code
+	 * 
 	 * @return Map
 	 */
 	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity) {
