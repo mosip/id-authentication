@@ -413,9 +413,12 @@ public class LoginController extends BaseController implements Initializable {
 
 			boolean otpLoginStatus = false;
 
-			if (true) {
+			ResponseDTO responseDTO=otpGenerator.validateOTP(userId.getText(), otp.getText());
+			if (responseDTO.getSuccessResponseDTO()!=null) {
 				otpLoginStatus = validateInvalidLogin(userDetail, "");
 			} else {
+//				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+//				generateAlert(errorResponseDTO.getMessage());
 				otpLoginStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 			}
 

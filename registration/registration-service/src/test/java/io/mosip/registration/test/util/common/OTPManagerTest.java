@@ -20,6 +20,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
@@ -70,13 +71,33 @@ public class OTPManagerTest {
 	}
 
 	@Test
-	public void validateOTPSuccessTest() {
-		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
-		when(authenticationService.authValidator("otp", authenticationValidatorDTO)).thenReturn(true);
-		authenticationValidatorDTO.setOtp("12345");
-		authenticationValidatorDTO.setUserId("mosip");
-		when(otpValidator.validate(authenticationValidatorDTO)).thenReturn(true);
-		assertThat(otpManager.validateOTP("mosip", "12345"), is(false));
+	public void validateOTPSuccessTest() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
+		
+		OtpValidatorResponseDTO otpValidatorResponseDTO=new OtpValidatorResponseDTO();
+		
+		otpValidatorResponseDTO.setstatus("success");
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean())).thenReturn(otpValidatorResponseDTO);
+		
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
+	}
+	
+	@Test
+	public void validateOTPFailureTest() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
+		
+		OtpValidatorResponseDTO otpValidatorResponseDTO=new OtpValidatorResponseDTO();
+		
+		otpValidatorResponseDTO.setstatus("failure");
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean())).thenReturn(otpValidatorResponseDTO);
+		
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
+	}
+	
+	@Test
+	public void validateOTPExceptionTest() throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
+		
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean())).thenThrow(RegBaseCheckedException.class);
+		
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getErrorResponseDTOs());
 	}
 
 	@Test

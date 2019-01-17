@@ -86,6 +86,8 @@ public class RegistrationConstants {
 	public static final String FACE = "FACE";
 	public static final String IRIS = "IRIS";
 	
+	public static final String LOGIN_OTP_PARAM = "otp";
+	
 	// Login
 	public static final String BLOCKED = "BLOCKED";
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
@@ -809,7 +811,8 @@ public class RegistrationConstants {
 
 	// OTP
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
-	public static final String OTP_GENERATION_ERROR_MESSAGE = "Incorrect or expired OTP";
+	public static final String OTP_GENERATION_ERROR_MESSAGE = "Unable Generate OTP for entered username";
+	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
 
 	// Sync Status
 	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";

@@ -65,14 +65,17 @@ public class OTPManager extends BaseService{
 	
 	
 	
-	public boolean validateOTP(String userId, String otp) {
+	public ResponseDTO validateOTP(String userId, String otp) {
 
+		ResponseDTO responseDTO = new ResponseDTO();
+		
 		boolean status = false;
 		OtpValidatorResponseDTO otpValidatorResponseDto = null;
 
 		Map<String, String> requestParamMap = new HashMap<String, String>();
+		requestParamMap.put(RegistrationConstants.LOGIN_OTP_PARAM, otp);
 		requestParamMap.put(RegistrationConstants.USERNAME_KEY, userId);
-		requestParamMap.put(RegistrationConstants.OTP, otp);
+		
 
 		try {
 			// Obtain otpValidatorResponseDto from service delegate util
@@ -81,18 +84,19 @@ public class OTPManager extends BaseService{
 			if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus() != null
 					&& RegistrationConstants.success.equals(otpValidatorResponseDto.getStatus())) {
 
-				status = true;
+				setSuccessResponse(responseDTO, null, null);
+				
 
 			} else {
-				status = false;
+				setErrorResponse(responseDTO, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE, null);
 			}
 
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException
 				| ResourceAccessException exception) {
-			status = false;
+			setErrorResponse(responseDTO, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE, null);
+
 		}
 
-		return status;
-
+		return responseDTO;
 	}
 }

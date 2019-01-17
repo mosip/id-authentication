@@ -183,7 +183,7 @@ public class AuthenticationController extends BaseController {
 			if (!otpUserId.getText().isEmpty()) {
 				if (fetchUserRole(otpUserId.getText())) {
 					if (otp.getText() != null) {
-						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
+						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
 							userNameField = otpUserId.getText();
 							loadNextScreen();
 						} else {
@@ -201,7 +201,7 @@ public class AuthenticationController extends BaseController {
 			}
 		} else {
 			if (otp.getText() != null) {
-				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())) {
+				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
 					loadNextScreen();
 				} else {
 					generateAlert(RegistrationConstants.ERROR,
