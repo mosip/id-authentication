@@ -59,9 +59,11 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
-
+	
+	/** The Final Constant For make */
 	private static final String MAKE = "Make";
 
+	/** The Final Constant For deviceId */
 	private static final String DEVICE_ID = "Device Id";
 
 	/** The mosip logger. */
@@ -99,19 +101,26 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/** The Constant OTP_LENGTH. */
 	private static final Integer OTP_LENGTH = 6;
-
+	
+	/** The Constant finger. */
 	private static final String FINGER = "finger";
-
+	
+	/** The Constant iris. */
 	private static final String IRIS = "iris";
 
+	/** The Constant fullAddress. */
 	private static final String FULLADDRESS = "fullAddress";
 
+	/** The Constant Address. */
 	private static final String ADDRESS = "Address";
 
+	/** The Constant personalIdentity. */
 	private static final String PERSONALIDENTITY = "personalIdentity";
 
+	/** The Constant face. */
 	private static final String FACE = "face";
 
+	/** The Constant IdentityInfoDTO. */
 	private static final String IDENTITY_INFO_DTO = "IdentityInfoDTO";
 
 	/** email Validator */
