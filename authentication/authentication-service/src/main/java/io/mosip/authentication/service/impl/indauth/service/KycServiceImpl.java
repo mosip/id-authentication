@@ -290,10 +290,12 @@ public class KycServiceImpl implements KycService {
 					template = idTemplateManager.applyTemplate(fullKycPri, identity);
 				}
 			}
-			ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator
-					.generate(new ByteArrayInputStream(template.getBytes()), getBootStrapFile());
-			deleteFileOnExit(identity);
-			pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
+			if (template != null) {
+				ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator
+						.generate(new ByteArrayInputStream(template.getBytes()), getBootStrapFile());
+				deleteFileOnExit(identity);
+				pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
+			}
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
