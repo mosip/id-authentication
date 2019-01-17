@@ -112,8 +112,4 @@ stage ('---------- build ---------------') {
    }
   }
  }
- 
- stage ('Starting Job Build-TestRig-Pre-Registration') {
- 	build job: 'TestRig-Pre-Registration'
- 	} 
 }
