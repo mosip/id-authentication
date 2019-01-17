@@ -1,9 +1,16 @@
 DROP DATABASE IF EXISTS mosip_audit;
-CREATE DATABASE mosip_audit ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8' TABLESPACE = pg_default OWNER = sysadmin;
+CREATE DATABASE mosip_audit 
+	ENCODING = 'UTF8' 
+--	LC_COLLATE = 'en_US.UTF-8' 
+--	LC_CTYPE = 'en_US.UTF-8' 
+	TABLESPACE = pg_default 
+	OWNER = sysadmin;
+
 -- ddl-end --
 COMMENT ON DATABASE mosip_audit IS 'Audit related logs and the data is stored in this database';
 -- ddl-end --
 
+\c mosip_audit sysadmin
 
 -- object: audit | type: SCHEMA --
 DROP SCHEMA IF EXISTS audit CASCADE;

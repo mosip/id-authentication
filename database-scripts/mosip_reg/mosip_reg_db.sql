@@ -9,6 +9,7 @@ CREATE DATABASE mosip_reg
 COMMENT ON DATABASE mosip_reg IS 'Registration client database to capture registration related data. The needed data from MOSIP system will be synched with this database';
 -- ddl-end --
 
+\c mosip_reg sysadmin
 
 -- object: reg | type: SCHEMA --
 DROP SCHEMA IF EXISTS reg CASCADE;
