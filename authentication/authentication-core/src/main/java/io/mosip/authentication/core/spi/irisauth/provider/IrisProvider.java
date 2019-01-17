@@ -5,11 +5,12 @@ import java.util.Map;
 
 import org.springframework.core.env.Environment;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IrisProvider.
  *
- * @author Prem Kumar The Class IrisProvider.
+ * @author Prem Kumar 
+ * 
+ * 
  */
 public abstract class IrisProvider implements MosipIrisProvider {
 
@@ -19,7 +20,11 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 	/** The environment. */
 	private Environment environment;
-
+	/**
+	 * Constructor for IrisProvider
+	 * 
+	 * @param environment
+	 */
 	public IrisProvider(Environment environment) {
 		this.environment = environment;
 	}
