@@ -11,17 +11,16 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
-import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;
+import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.DTOMappigException;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
@@ -98,7 +97,7 @@ public class DocumentExceptionCatcher {
 					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
 		} else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
-					StatusCodes.DOCUMENT_IS_MISSING.toString());
+					DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 		} else if (ex instanceof DocumentFailedToCopyException) {
 			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
 					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());

@@ -20,7 +20,6 @@ public final class DataValidationUtil {
 	/**
 	 * Get list of errors from error object and throws {@link IDDataValidationException}, if any error is present.
 	 *
-	 * @param exceptionConstant the exception constant
 	 * @param errors the errors
 	 * @throws IDDataValidationException the ID data validation exception
 	 */

@@ -46,7 +46,7 @@ public class TransliterationExceptionHandler {
 		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
 		errorRes.setStatus(falseStatus);
 		
-		return new ResponseEntity<>(errorRes,HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class TransliterationExceptionHandler {
 		errorRes.setErr(errorDetails);
 		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
 		errorRes.setStatus(falseStatus);
-		return new ResponseEntity<>(errorRes,HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes,HttpStatus.OK);
 	}
 	
 	/**
@@ -78,6 +78,6 @@ public class TransliterationExceptionHandler {
 		errorRes.setErr(errorDetails);
 		errorRes.setStatus(falseStatus);
 		errorRes.setResTime(DateUtils.formatDate(new Date(), dateTimeFormat));
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
 	}
 }

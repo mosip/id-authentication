@@ -1,11 +1,9 @@
 {
 	"ida-mapping" : 
 		{
-			"name" : 
+			"fullName" : 
 				[
-					"firstName",
-					"middleName",
-					"lastName"
+					"fullName"
 				],
 			"dob" : 
 				[
@@ -25,11 +23,11 @@
 				],
 			"phoneNumber" : 
 				[
-					"mobileNumber"
+					"phone"
 				],
 			"emailId" : 
 				[
-					"emailId"
+					"email"
 				],
 			"addressLine1" : 
 				[
@@ -53,9 +51,9 @@
 			"location3" : [
 					"province"
 				],
-			"pinCode" : 
+			"postalCode" : 
 				[
-					"pinCode"
+					"postalCode"
 				],
 			"fullAddress" : 
 				[
@@ -65,7 +63,7 @@
 					"city",
 					"region",
 					"province",
-					"pinCode"
+					"postalCode"
 				],
 			"otp" : 
 				[

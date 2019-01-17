@@ -10,6 +10,8 @@ This folder has RID generator module which can be used to generate RID as numeri
  
  **Properties to be added in Spring application environment using this component**
 
+[application-dev.properties](../../config/application-dev.properties)
+
 [kernel-idgenerator-rid-dev.properties](../../config/kernel-idgenerator-rid-dev.properties)
  
  

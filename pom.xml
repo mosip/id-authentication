@@ -20,7 +20,6 @@
 		<module>registration-processor</module>
 		<module>authentication</module>
 		<module>admin</module>
-		<module>config</module>
 		<module>launcher</module>
 	</modules>
 

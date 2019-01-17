@@ -100,9 +100,10 @@ export class TimeSelectionComponent implements OnInit {
         slot.names = [];
         let fromTime = slot.fromTime.split(':');
         let toTime = slot.toTime.split(':');
+        console.log('from time', fromTime, 'to time', toTime);
         slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
         slot.displayTime += ':' + fromTime[1] + ' - ';
-        slot.displayTime += Number(toTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
+        slot.displayTime += Number(toTime[0]) > 12 ? Number(toTime[0]) - 12 : toTime[0];
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;

@@ -103,7 +103,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String txnId = otpRequestDto.getTxnID();
 
 		Map<String, Object> idResDTO = idAuthService.processIdType(otpRequestDto.getIdvIdType(),
-				otpRequestDto.getIdvId());
+				otpRequestDto.getIdvId(), false);
 		String productid = env.getProperty("application.id");
 		String txnID = otpRequestDto.getTxnID();
 
@@ -111,7 +111,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getMuaCode());
+			otpKey = OTPUtil.generateKey(productid, uin, txnID, otpRequestDto.getTspID());
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {

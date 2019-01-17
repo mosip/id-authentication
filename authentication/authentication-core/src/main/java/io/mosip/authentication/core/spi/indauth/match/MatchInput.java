@@ -2,15 +2,14 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.Map;
 
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * @author Arun Bose Instantiates a new match input.
+ * The Class MatchInput.
  *
- * @param demoMatchType     the demo match type
- * @param matchStrategyType the match strategy type
- * @param matchValue        the match value
+ * @author Arun Bose Instantiates a new match input.
  */
 @Data
 @AllArgsConstructor
@@ -29,5 +28,7 @@ public class MatchInput {
 	private Integer matchValue;
 
 	private Map<String, Object> matchProperties;
+	
+	private DeviceInfo deviceInfo;
 
 }

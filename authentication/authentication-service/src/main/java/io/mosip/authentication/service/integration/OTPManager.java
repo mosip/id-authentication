@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -58,12 +57,11 @@ public class OTPManager {
 
 	/**
 	 * Generate OTP with information of
-	 * {@link RestServiceContants.OTP_GENERATE_SERVICE} , {@link HttpMethod.POST},
 	 * {@link MediaType } and OTP generation time-out
-	 * 
-	 * @param otpKey
+	 *
+	 * @param otpKey the otp key
 	 * @return String(otp)
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String generateOTP(String otpKey) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
@@ -107,12 +105,12 @@ public class OTPManager {
 	}
 
 	/**
-	 * Validate method for OTP Validation
-	 * 
-	 * @param pinValue
-	 * @param otpKey
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Validate method for OTP Validation.
+	 *
+	 * @param pinValue the pin value
+	 * @param otpKey the otp key
+	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		boolean isValidOtp = false;
@@ -136,28 +134,10 @@ public class OTPManager {
 				String message = otpvalidateresponsedto.getMessage();
 				if (status != null) {
 					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
-						if (message.equalsIgnoreCase(USER_BLOCKED)) {
-							throw new IdAuthenticationBusinessException(
-									IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
-						} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
-						} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
-						} else {
-							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
-						}
+						throwOtpException(message);
 					}
 				} else {
-					Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
-					// Do not throw server error for OTP not generated, throw invalid OTP error
-					// instead
-					if (errorCode
-							.filter(code -> code.equals(
-									IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
-							.isPresent()) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
-					}
-					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+					throwKeyNotFound(e);
 				}
 			}
 		} catch (IDDataValidationException e) {
@@ -168,6 +148,38 @@ public class OTPManager {
 		return isValidOtp;
 	}
 
+	private void throwKeyNotFound(RestServiceException e) throws IdAuthenticationBusinessException {
+		Optional<String> errorCode = e.getResponseBodyAsString().flatMap(this::getErrorCode);
+		// Do not throw server error for OTP not generated, throw invalid OTP error
+		// instead
+		if (errorCode
+				.filter(code -> code.equals(
+						IdAuthenticationErrorConstants.VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED.getErrorCode()))
+				.isPresent()) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+		}
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+	}
+
+	private void throwOtpException(String message) throws IdAuthenticationBusinessException {
+		if (message.equalsIgnoreCase(USER_BLOCKED)) {
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.BLOCKED_OTP_TO_VALIDATE);
+		} else if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+		} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * Gets the error code.
+	 *
+	 * @param resBody the res body
+	 * @return the error code
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Optional<String> getErrorCode(String resBody) {
 		return Optional.of(resBody).map(str -> {

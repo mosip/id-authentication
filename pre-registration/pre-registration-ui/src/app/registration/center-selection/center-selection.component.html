@@ -168,10 +168,10 @@
         <div class="center_selection-form-container">
           <form class="search-form">
             <mat-card class="select-card">
-              <mat-select name="select" class="select-input" [(ngModel)]="locationType" value="locationType.value"
+              <mat-select name="select" class="select-input" [(ngModel)]="locationType" value="locationType.locationHierarchyName"
                 placeholder="Select Location Types">
-                <mat-option style="color:black;" *ngFor="let locationType of locationTypes" [value]="locationType.value">
-                  {{ locationType.viewValue }}
+                <mat-option style="color:black;" *ngFor="let locationType of locationTypes" [value]="locationType.locationHierarchyName">
+                  {{ locationType.locationHierarchyName }}
                 </mat-option>
               </mat-select>
             </mat-card>

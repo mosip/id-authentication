@@ -58,7 +58,7 @@ public class KeymanagerUtil {
 	/**
 	 * Field for symmetric Algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 	
 	/**
