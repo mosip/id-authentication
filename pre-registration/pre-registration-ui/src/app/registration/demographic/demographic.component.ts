@@ -24,6 +24,8 @@ import Utils from 'src/app/app.util';
 })
 export class DemographicComponent implements OnInit {
   textDir = localStorage.getItem('dir');
+  keyboardLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.primaryKeyboardLang];
+  keyboardSecondaryLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.secondaryKeyboardLang];
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
   primaryLang = appConstants.LANGUAGE_CODE.primary;
@@ -89,7 +91,7 @@ export class DemographicComponent implements OnInit {
   //Need to be removed after translation
   demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
-  demo1: any;
+  demo1= new DemoLabels('t_fullName', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
   constructor(
     private router: Router,
@@ -112,6 +114,7 @@ export class DemographicComponent implements OnInit {
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
+    this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
     this.numberOfApplicants = 1;
     this.initForm();
 this.secondaryLanguage='ar';
@@ -304,6 +307,7 @@ this.secondaryLanguage='ar';
     let location = {} as LocationModal;
     location.locationCode = locationCode;
     location.locationName = locationName;
+    location.languageCode = this.primaryLang;
     this.locations.push(location);
 
     if (parentLocation) {
@@ -318,13 +322,15 @@ this.secondaryLanguage='ar';
   }
 
   getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[], parentLocation?: string) {
+    entity.length = 0; 
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
               locationCode: element.code,
-              locationName: element.name
+              locationName: element.name,
+              languageCode:lang
             };
             entity.push(locationModal);
             if (parentLocation && locationModal.locationCode === parentLocation) {
@@ -403,6 +409,7 @@ this.secondaryLanguage='ar';
   }
 
   onTransliteration(fromControl: FormControl, toControl: any) {
+
     if (fromControl.value) {
       const request: any = {
         from_field_lang: 'English',
@@ -417,6 +424,8 @@ this.secondaryLanguage='ar';
       this.dataStorageService.getTransliteration(request).subscribe(response => {
         this.transUserForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
       });
+    }else{
+      this.transUserForm.controls[toControl.name].patchValue('');
     }
   }
 
