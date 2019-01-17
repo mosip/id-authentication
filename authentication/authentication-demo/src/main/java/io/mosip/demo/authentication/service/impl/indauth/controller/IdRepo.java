@@ -48,11 +48,17 @@ public class IdRepo {
 	}
 
 	@PostMapping(path = "/validateJson", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-	public Object jsonSchemaValidator(@RequestBody ObjectNode object) {
+	public String jsonSchemaValidator(@RequestBody ObjectNode object) {
 		try {
-			return jsonValidator.validateJson(object.toString(), "mosip-identity-json-schema.json");
+			if (jsonValidator.validateJson(object.toString(), "mosip-identity-json-schema.json").isValid()) {
+				return "success";
+			} else {
+				return "failed";
+			}
 		} catch (BaseUncheckedException | JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
 				| FileIOException e) {
+			return e.getMessage();
+		} catch (Exception e) {
 			return e.getMessage();
 		}
 	}
