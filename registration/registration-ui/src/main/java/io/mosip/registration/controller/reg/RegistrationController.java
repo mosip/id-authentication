@@ -939,10 +939,11 @@ public class RegistrationController extends BaseController {
 	private DemographicInfoDTO buildDemographicInfo() {
 
 		String platformLanguageCode = RegistrationConstants.mappedCodeForLang
-				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode();
+				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
+				.toLowerCase();
 		String localLanguageCode = RegistrationConstants.mappedCodeForLang
 				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
-				.getMappedCode();
+				.getMappedCode().toLowerCase();
 		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
 

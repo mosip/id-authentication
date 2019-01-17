@@ -98,8 +98,12 @@ public class TemplateGenerator extends BaseService {
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
-			String platformLanguageCode = AppConfig.getApplicationProperty("application_language");
-			String localLanguageCode = AppConfig.getApplicationProperty("local_language");
+			String platformLanguageCode = RegistrationConstants.mappedCodeForLang
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
+					.toLowerCase();
+			String localLanguageCode = RegistrationConstants.mappedCodeForLang
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE)).getMappedCode()
+					.toLowerCase();
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
@@ -450,7 +454,9 @@ public class TemplateGenerator extends BaseService {
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
 		try {
-			String applicationLanguageCode = AppConfig.getApplicationProperty("application_language");
+			String applicationLanguageCode = RegistrationConstants.mappedCodeForLang
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
+					.toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
 
