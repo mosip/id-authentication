@@ -23,8 +23,9 @@ import io.mosip.registration.processor.abis.dto.AbisInsertRequestDto;
 import io.mosip.registration.processor.abis.dto.AbisInsertResponseDto;
 import io.mosip.registration.processor.abis.dto.CandidateListDto;
 import io.mosip.registration.processor.abis.dto.CandidatesDto;
-import io.mosip.registration.processor.abis.dto.IdentifyRequestDto;
-import io.mosip.registration.processor.abis.dto.IdentifyResponseDto;
+import io.mosip.registration.processor.abis.service.AbisService;
+import io.mosip.registration.processor.abis.dto.AbisIdentifyRequestDto;
+import io.mosip.registration.processor.abis.dto.AbisIdentifyResponseDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -181,12 +182,12 @@ public class AbisServiceImpl implements AbisService {
 	 * @throws SAXException
 	 *             the SAX exception
 	 */
-	public IdentifyResponseDto performDedupe(IdentifyRequestDto identifyRequest)
+	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException {
 		boolean duplicate = false;
 
 		int count = 0;
-		IdentifyResponseDto response = new IdentifyResponseDto();
+		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
 		String referenceId = identifyRequest.getReferenceId();
 
 		try {
