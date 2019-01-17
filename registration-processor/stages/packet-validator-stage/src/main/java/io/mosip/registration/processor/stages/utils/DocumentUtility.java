@@ -39,7 +39,7 @@ public class DocumentUtility {
 	private static final String FORMAT = "format";
 
 	/** The Constant LABEL. */
-	private static final String CATEGORY = "category";
+	private static final String TYPE = "type";
 
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
@@ -95,7 +95,7 @@ public class DocumentUtility {
 	private Document getDocument(JSONObject jsonNode, String category) {
 		Document document = new Document();
 		document.setDocumentCategory(category);
-		document.setDocumentType((String) jsonNode.get(CATEGORY));
+		document.setDocumentType((String) jsonNode.get(TYPE));
 		document.setFormat((String) jsonNode.get(FORMAT));
 		document.setDocumentName((String) jsonNode.get(VALUE));
 		return document;
