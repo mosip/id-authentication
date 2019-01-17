@@ -231,7 +231,7 @@ public class BookingService {
 		return responseDTO;
 	}
 
-	private boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO,
+	public boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO,
 			BookingRegistrationDTO newBookingRegistrationDTO, String status) {
 		log.info("sessionId", "idType", "id", "In cancel method of Booking Service");
 		if (serviceUtil.isNotDuplicate(oldBookingRegistrationDTO, newBookingRegistrationDTO)

@@ -156,11 +156,11 @@ public class BookingServiceUtil {
 				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
 						errorResponse.getErrors().get(0).getErrorMessage());
 			} catch (JsonParseException | JsonMappingException | IOException e1) {
-				e1.printStackTrace();
 				log.error("sessionId", "idType", "id",
 						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
-								+ ex.getMessage());
-
+								+ e1.getMessage());
+				throw new RestCallException(e1.getErrorCode(),
+						e1.getErrorText());
 			}
 
 		}
