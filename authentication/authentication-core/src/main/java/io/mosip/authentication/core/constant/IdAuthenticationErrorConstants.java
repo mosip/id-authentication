@@ -106,7 +106,7 @@ public enum IdAuthenticationErrorConstants {
 	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
 	FGRMIN_MISMATCH("IDA-BIA-001", "Biometric data – fgerMin did not match", "A0143"),
 	FGRIMG_MISMATCH("IDA-BIA-002", "Biometric data – fgerImg did not match", "A0144"),
-	IRISIMG_MISMATCH("IDA-BIA-015", "Please give your Irises again", "A0148"),
+	IRISIMG_MISMATCH("IDA-BIA-015", "Biometric data – IrisImg did not match", "A0148"),
 	INVALID_SIGNATURE("IDA-TSA-001", "Digital signature verification failed"),
 	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature"),
 	
