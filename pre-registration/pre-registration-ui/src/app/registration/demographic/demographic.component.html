@@ -137,7 +137,7 @@
                 (change)="onTransliteration(addressLine1, t_addressLine1)"
               />
               <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
-              <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
+              <mat-error *ngIf="!addressLine1.invalid">{{ 'demographic.validation.address_required' | translate }}</mat-error>
             </mat-form-field>
             <mat-form-field>
               <input
@@ -176,7 +176,7 @@
                     region.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!region.invalid">Please select region</mat-error>
+                <mat-error *ngIf="!region.invalid">{{ 'demographic.validation.region_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
 
@@ -192,7 +192,7 @@
                     province.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!province.invalid">Please select province</mat-error>
+                <mat-error *ngIf="!province.invalid">{{ 'demographic.validation.province_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -214,7 +214,7 @@
                     city.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!city.invalid">Please select city</mat-error>
+                <mat-error *ngIf="!city.invalid">{{ 'demographic.validation.city_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -231,7 +231,7 @@
                     >{{ localAdministrativeAuthoritie.locationName }}</mat-option
                   >
                 </mat-select>
-                <mat-error *ngIf="!authority.invalid">Please select localAdministrativeAuthority</mat-error>
+                <mat-error *ngIf="!authority.invalid">{{ 'demographic.validation.admin_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -246,7 +246,7 @@
                   #postalCode
                 />
                 <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
-                <mat-error *ngIf="!postalCode.invalid">Please enter valid postalCode</mat-error>
+                <mat-error *ngIf="!postalCode.invalid">{{ 'demographic.validation.postal_code_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -260,7 +260,7 @@
                   formControlName="mobileNumber"
                 />
                 <mat-hint align="end">{{ mobileNumber.value.length }} / 9</mat-hint>
-                <mat-error *ngIf="!mobileNumber.invalid">Please enter valid mobile number</mat-error>
+                <mat-error *ngIf="!mobileNumber.invalid">{{ 'demographic.validation.mobile_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -273,7 +273,7 @@
                   formControlName="email"
                 />
                 <mat-hint align="end">{{ email.value.length }} / 50</mat-hint>
-                <mat-error *ngIf="!email.invalid">Please enter valid email id</mat-error>
+                <mat-error *ngIf="!email.invalid">{{ 'demographic.validation.email_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -287,7 +287,7 @@
                   formControlName="pin"
                 />
                 <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
-                <mat-error *ngIf="!pin.invalid">Please enter valid pin</mat-error>
+                <mat-error *ngIf="!pin.invalid">{{ 'demographic.validation.pin_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
           </form>
