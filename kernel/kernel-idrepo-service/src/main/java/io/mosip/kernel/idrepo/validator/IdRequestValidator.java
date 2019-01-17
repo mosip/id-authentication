@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -54,8 +55,7 @@ public class IdRequestValidator implements Validator {
 	/** The Constant VER. */
 	private static final String VER = "version";
 
-	/** The Constant APPLICATION_VERSION. */
-	private static final String APPLICATION_VERSION = "application.version";
+	private static final Pattern verPattern = Pattern.compile("^\\d+(\\.\\d{1,1})?$");
 
 	/** The Constant DOC_TYPE. */
 	private static final String DOC_CAT = "docCat";
@@ -206,7 +206,7 @@ public class IdRequestValidator implements Validator {
 		if (Objects.isNull(ver)) {
 			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
-		} else if (!ver.equals(env.getProperty(APPLICATION_VERSION))) {
+		} else if ((!verPattern.matcher(ver).matches())) {
 			errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
 		}
