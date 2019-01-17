@@ -9,6 +9,7 @@
 <?import javafx.collections.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.stage.Screen?>
+<?import javafx.scene.control.Label?>
 
 <AnchorPane fx:id="newRegistrationRoot" maxHeight="1250.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1250.0" prefWidth="1014.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.RegistrationController">
    <children> 
@@ -41,7 +42,8 @@
                             <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="140.0" prefHeight="15.0" prefWidth="9.0" />
                               </children>
                            </AnchorPane>
-                           <Line endX="500.0" layoutX="300.0" layoutY="10.0" startX="-200.0" />
+                             <Label fx:id="documentTitlePaneApplicationLanguage" layoutX="50.0" layoutY="1.0" prefHeight="20.0" prefWidth="200.0" text="%titleDemographicPane" />
+                           <Line endX="800.0" layoutX="50.0" layoutY="35.0"/>
                     	</children>
                      </AnchorPane>
                   </children>
@@ -52,11 +54,11 @@
                         <content>
                            <AnchorPane id="demographicPane" fx:id="demoGraphicPane1" prefHeight="720.0" prefWidth="806.0" visible="true">
                               <children>
-                                 <Label fx:id="preRegistrationLabel" layoutX="45.0" layoutY="30.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
-                                 <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
-                                 <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch" />
-                                 <Line endX="700.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
-                                    <AnchorPane fx:id="applicationLanguagePane" layoutX="31.0" layoutY="75.0">
+                                 <Label fx:id="preRegistrationLabel" layoutX="45.0" layoutY="59.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
+                                 <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="85.0" prefHeight="10.0" prefWidth="220.00" />
+                                 <Button fx:id="fetchBtn" layoutX="292.0" layoutY="85.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch" />
+                                 <Line endX="700.0" layoutX="227.0" layoutY="49.0" startX="-200.0" />
+                                    <AnchorPane fx:id="applicationLanguagePane" layoutX="31.0" layoutY="120.0">
                                        <children>
                                           <Label fx:id="fullNameLabel" layoutX="13.0" prefHeight="10.0" prefWidth="320.0" text="%fullName" />
                                           <TextField id="fullName" fx:id="fullName" layoutX="13.0" layoutY="15.0" prefHeight="10.0" prefWidth="320.0" />
@@ -121,9 +123,9 @@
                                           </AnchorPane>
                                        </children>
                                     </AnchorPane>
-                                         <Button fx:id="autoFillBtn" layoutX="720.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
-                                    <Button fx:id="nextBtn" layoutX="700.0" layoutY="783.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
-                                    <AnchorPane fx:id="localLanguagePane" layoutX="445.0" layoutY="75.0">
+                                         <Button fx:id="autoFillBtn" layoutX="579.0" layoutY="82.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
+                                    <Button fx:id="nextBtn" layoutX="810.0" layoutY="783.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
+                                    <AnchorPane fx:id="localLanguagePane" layoutX="445.0" layoutY="120.0">
                                        <children>
                                           <Label fx:id="fullNameLocalLanguageLabel" layoutX="118.0" prefHeight="10.0" prefWidth="320.0" text="FullName" />
                                              <TextField id="fullNameLocalLanguage" fx:id="fullNameLocalLanguage" layoutX="113.0" layoutY="15.0" prefHeight="10.0" prefWidth="320.0" />
@@ -194,10 +196,10 @@
                                           </AnchorPane>
                                           <Label fx:id="mobileNoLocalLanguageLabel" layoutX="274.0" layoutY="397.0" text="%mobileNo" />
                                           <TextField fx:id="mobileNoLocalLanguage" layoutX="274.0" layoutY="415.0" prefHeight="35.0" prefWidth="159.0" />
-                                          <TextField fx:id="emailIdLocalLanguage" layoutX="108.0" layoutY="473.0" prefHeight="35.0" prefWidth="159.0" />
-                                          <Label fx:id="emailIdLocalLanguageLabel" layoutX="274.0" layoutY="455.0" text="%emailId" />
-                                          <TextField fx:id="cniOrPinNumberLocalLanguage" layoutX="277.0" layoutY="468.0" prefHeight="39.0" prefWidth="161.0" />
                                           <Label fx:id="cniOrPinNumberLocalLanguageLabel" layoutX="110.0" layoutY="460.0" text="%cniOrPinNumber" />
+                                          <TextField fx:id="cniOrPinNumberLocalLanguage" layoutX="108.0" layoutY="473.0" prefHeight="35.0" prefWidth="159.0" />
+                                          <Label fx:id="emailIdLocalLanguageLabel" layoutX="274.0" layoutY="455.0" text="%emailId" />
+                                          <TextField fx:id="emailIdLocalLanguage" layoutX="277.0" layoutY="468.0" prefHeight="39.0" prefWidth="161.0" />
                                           <AnchorPane fx:id="childSpecificFieldsLocal" disable="true" layoutX="83.0" layoutY="530.0" prefHeight="124.0" prefWidth="398.0" visible="false">
                                              <children>
                                                 <Label fx:id="parentNameLocalLanguageLabel" layoutX="29.0" layoutY="1.0" text="%parentName" />
@@ -213,6 +215,8 @@
                                           </AnchorPane>
                                        </children>
                                     </AnchorPane>
+                                    <Label fx:id="titleDemographicPaneApplicationLanguage" layoutX="49.0" layoutY="7.0" prefHeight="20.0" prefWidth="320.0" text="%titleDemographicPane" />
+                                    <Label fx:id="titleDemographicPaneLocalLanguage" layoutX="562.0" layoutY="7.0" prefHeight="20.0" prefWidth="320.0" text="%titleDemographicPane" />
                                                                   </children>
                            </AnchorPane>
                         </content>

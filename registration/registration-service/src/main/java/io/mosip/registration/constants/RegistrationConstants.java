@@ -848,7 +848,7 @@ public class RegistrationConstants {
 	public static final String GLOBAL_CONFIG_ERROR_MSG = "please synch the data before starting the application";
 
 	public enum mappedCodeForLang {
-		en("ENG"),ar("ARA");
+		en("ENG"),ar("ARB");
 		private String langCode;
 
 		mappedCodeForLang(String langCode) {

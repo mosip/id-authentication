@@ -44,7 +44,6 @@ import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
@@ -304,7 +303,13 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TitledPane biometricTitlePane;
-
+	
+	@FXML
+	private Label titleDemographicPaneApplicationLanguage;
+	
+	@FXML
+	private Label titleDemographicPaneLocalLanguage;
+	
 	@FXML
 	private Accordion accord;
 
@@ -432,6 +437,7 @@ public class RegistrationController extends BaseController {
 	List<LocationDto> locationDtoProvince;
 	List<LocationDto> locationDtoCity;
 	List<LocationDto> locactionlocalAdminAuthority;
+	private String titlePaneText;
 
 	@FXML
 	private void initialize() {
@@ -488,6 +494,8 @@ public class RegistrationController extends BaseController {
 				prepareEditPageContent();
 			}
 			uinUpdate();
+			titlePaneText = demoGraphicTitlePane.getText();
+			demoGraphicTitlePane.setText("");
 
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -1469,22 +1477,15 @@ public class RegistrationController extends BaseController {
 			cityLocalLanguage.setPromptText(localProperties.getString("select"));
 			regionLocalLanguage.setPromptText(localProperties.getString("select"));
 			provinceLocalLanguage.setPromptText(localProperties.getString("select"));
-
-			String userlangTitle = demoGraphicTitlePane.getText();
+			titleDemographicPaneLocalLanguage.setText(localProperties.getString("titleDemographicPane"));
 			demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
-
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-					if (oldValue) {
-						demoGraphicTitlePane.setText(userlangTitle);
-					}
-
 					if (newValue) {
-						demoGraphicTitlePane.setText("    " + userlangTitle
-								+ "                                                              " + ApplicationContext
-										.getInstance().getLocalLanguageProperty().getString("titleDemographicPane"));
-
+						demoGraphicTitlePane.setText("");
+					}
+					if (oldValue) {
+						demoGraphicTitlePane.setText(titlePaneText);
 					}
 				}
 			});
