@@ -45,7 +45,6 @@ import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.RequestDTO;
-import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
@@ -213,8 +212,8 @@ public class IdRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage(), "request"),
+			assertEquals(IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorMessage(), "request"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
