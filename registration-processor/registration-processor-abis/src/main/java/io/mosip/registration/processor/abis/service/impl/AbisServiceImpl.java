@@ -206,7 +206,7 @@ public class AbisServiceImpl implements AbisService {
 			response.setTimestamp(identifyRequest.getTimestamp());
 			response.setReturnValue(1);
 
-			if (true) {
+			if (duplicate) {
 				CandidateListDto cd = new CandidateListDto();
 				CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
 				
