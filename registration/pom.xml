@@ -239,6 +239,11 @@
 				<artifactId>kernel-crypto-jce</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-jsonvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

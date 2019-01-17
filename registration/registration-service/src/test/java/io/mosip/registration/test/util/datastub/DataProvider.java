@@ -322,7 +322,7 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setCategory("Passport");
+		documentDetailsDTO.setType("Passport");
 		documentDetailsDTO.setFormat("jpg");
 		documentDetailsDTO.setValue("ProofOfIdentity.jpg");
 		documentDetailsDTO.setOwner("Self");
@@ -331,7 +331,7 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("Passport");
+		documentDetailsResidenceDTO.setType("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setOwner("hof");
@@ -340,7 +340,7 @@ public class DataProvider {
 
 		documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setCategory("Passport");
+		documentDetailsDTO.setType("Passport");
 		documentDetailsDTO.setFormat("jpg");
 		documentDetailsDTO.setValue("ProofOfRelationship.jpg");
 		documentDetailsDTO.setOwner("Self");
@@ -349,7 +349,7 @@ public class DataProvider {
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("Passport");
+		documentDetailsResidenceDTO.setType("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("DateOfBirthProof.jpg");
 		documentDetailsResidenceDTO.setOwner("hof");

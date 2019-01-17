@@ -85,7 +85,7 @@ public class ZipCreationServiceTest {
 	public void testIOException() throws RegBaseCheckedException {
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setType("PoA");
 		documentDetailsResidenceDTO.setFormat("passport");
 		documentDetailsResidenceDTO.setValue("aaa");
 		documentDetailsResidenceDTO.setOwner("hof");
@@ -94,7 +94,7 @@ public class ZipCreationServiceTest {
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setType("PoA");
 		documentDetailsResidenceDTO.setFormat("passport");
 		documentDetailsResidenceDTO.setValue("aaa");
 		documentDetailsResidenceDTO.setOwner("hof");

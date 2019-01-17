@@ -73,7 +73,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			biometric.setIntroducer(introducer);
 
 			// Load from ApplicationContext
-			String language = "en";
+			String language = "eng";
 
 			ApplicantDocumentDTO documentDTO = source.getDemographicDTO().getApplicantDocumentDTO();
 
@@ -241,28 +241,28 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		if (documentDetailsDTO != null) {
 			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoI",
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 
 		if (documentDetailsDTO != null) {
 			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoA",
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
 
 		if (documentDetailsDTO != null) {
 			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoR",
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 
 		if (documentDetailsDTO != null) {
 			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoB",
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
@@ -369,13 +369,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("registrationIdHash",
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(registrationDTO.getRegistrationId().getBytes()))));
 		// Add Machine ID
-		metaData.add(buildFieldValue("machineId", metaDataDTO.getMachineId()));
+		metaData.add(buildFieldValue("machineId", "12334"));
 		// Add Dongle ID
-		metaData.add(buildFieldValue("dongleId", null));
+		metaData.add(buildFieldValue("dongleId", "67890"));
 		// Add MAC ID
 		metaData.add(buildFieldValue("macId", RegistrationSystemPropertiesChecker.getMachineId()));
 		// Add Center ID
-		metaData.add(buildFieldValue("centerId", metaDataDTO.getCenterId()));
+		metaData.add(buildFieldValue("centerId", "54321"));
 		// Add UIN
 		metaData.add(buildFieldValue("uin", metaDataDTO.getUin()));
 		// Add Previous Registration ID

@@ -46,6 +46,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BIRType", propOrder = {
+	"testFingerPrint",
+	"testIris",
+	"testFace",
     "version",
     "cbeffVersion",
     "birInfo",
@@ -74,6 +77,12 @@ public class BIRType {
     protected byte[] bdb;
     @XmlElement(name = "SB")
     protected byte[] sb;
+    @XmlElement(name = "TestFingerPrint")
+    protected TestBiometricType testFingerPrint;
+    @XmlElement(name = "TestIris")
+    protected TestBiometricType testIris;
+    @XmlElement(name = "TestFace")
+    protected TestBiometricType testFace;
 
     /**
      * Gets the value of the version property.
@@ -332,7 +341,48 @@ public class BIRType {
 		} else if (!version.equals(other.version))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the testFingerPrint
+	 */
+	public TestBiometricType getTestFingerPrint() {
+		return testFingerPrint;
+	}
+
+	/**
+	 * @param testFingerPrint the testFingerPrint to set
+	 */
+	public void setTestFingerPrint(TestBiometricType testFingerPrint) {
+		this.testFingerPrint = testFingerPrint;
+	}
+
+	/**
+	 * @return the testIris
+	 */
+	public TestBiometricType getTestIris() {
+		return testIris;
+	}
+
+	/**
+	 * @param testIris the testIris to set
+	 */
+	public void setTestIris(TestBiometricType testIris) {
+		this.testIris = testIris;
+	}
+
+	/**
+	 * @return the testFace
+	 */
+	public TestBiometricType getTestFace() {
+		return testFace;
+	}
+
+	/**
+	 * @param testFace the testFace to set
+	 */
+	public void setTestFace(TestBiometricType testFace) {
+		this.testFace = testFace;
 	} 
-	
-	
+
 }

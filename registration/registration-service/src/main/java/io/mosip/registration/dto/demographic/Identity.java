@@ -3,6 +3,8 @@ package io.mosip.registration.dto.demographic;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.mosip.registration.dto.BaseDTO;
@@ -14,6 +16,7 @@ import io.mosip.registration.dto.BaseDTO;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
+@JsonInclude(value = Include.NON_NULL)
 public class Identity extends BaseDTO {
 
 	/** The ID schema version. */
@@ -31,7 +34,7 @@ public class Identity extends BaseDTO {
 	private String dateOfBirth;
 
 	/** The age. */
-	private int age;
+	private Integer age;
 
 	/** The gender. */
 	private List<ValuesDTO> gender;
@@ -157,7 +160,7 @@ public class Identity extends BaseDTO {
 	/**
 	 * @return the age
 	 */
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
@@ -165,7 +168,7 @@ public class Identity extends BaseDTO {
 	 * @param age
 	 *            the age to set
 	 */
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 

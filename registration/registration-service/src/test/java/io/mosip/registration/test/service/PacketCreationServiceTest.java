@@ -13,6 +13,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -43,6 +46,8 @@ public class PacketCreationServiceTest {
 	private AuditDAO auditDAO;
 	@Mock
 	private CbeffImpl cbeffI;
+	@Mock
+	private JsonValidator jsonValidator;
 	private static RegistrationDTO registrationDTO;
 
 	@BeforeClass
@@ -59,6 +64,8 @@ public class PacketCreationServiceTest {
 		Mockito.when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		Mockito.when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new ValidationReport());
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
@@ -78,6 +85,22 @@ public class PacketCreationServiceTest {
 		Mockito.when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 		Mockito.when(cbeffI.createXML(Mockito.anyList())).thenThrow(new Exception("Invalid BIR"));
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new ValidationReport());
+
+		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected =  RegBaseCheckedException.class)
+	public void testJsonValidationException() throws Exception {
+		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		Mockito.when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
+				.thenReturn("zip".getBytes());
+		Mockito.when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new JsonValidationProcessingException("errorCode", "errorMessage"));
 
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}

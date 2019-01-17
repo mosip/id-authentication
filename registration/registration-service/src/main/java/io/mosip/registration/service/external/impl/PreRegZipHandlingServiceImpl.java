@@ -127,7 +127,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	private void attachDocument(DocumentDetailsDTO documentDetailsDTO, ZipInputStream zipInputStream, String fileName,
 			String docCatgory) throws IOException {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
-		documentDetailsDTO.setCategory(RegistrationConstants.POI_DOCUMENT);
+		documentDetailsDTO.setType(RegistrationConstants.POI_DOCUMENT);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 		documentDetailsDTO.setValue(RegistrationConstants.POI_DOCUMENT.concat("_").concat(fileName
 				.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf(RegistrationConstants.DOT) + 1)));

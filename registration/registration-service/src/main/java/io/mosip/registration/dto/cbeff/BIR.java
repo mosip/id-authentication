@@ -4,6 +4,7 @@
 package io.mosip.registration.dto.cbeff;
 
 import io.mosip.registration.dto.cbeff.jaxbclasses.BIRType;
+import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
 
 /**
  * @author Ramadurai Pandian
@@ -18,6 +19,9 @@ public class BIR {
 	private byte[] bdb;
 	private byte[] sb;
 	private SBInfo sbInfo;
+	private TestBiometricType testFingerPrint;
+	private TestBiometricType testIris;
+	private TestBiometricType testFace;
 
 	public BIR(BIRBuilder birBuilder) {
 		this.version = birBuilder.version;
@@ -27,6 +31,9 @@ public class BIR {
 		this.bdb = birBuilder.bdb;
 		this.sb = birBuilder.sb;
 		this.sbInfo = birBuilder.sbInfo;
+		this.testFingerPrint = birBuilder.testFingerPrint;
+		this.testIris = birBuilder.testIris;
+		this.testFace = birBuilder.testFace;
 	}
 
 	public BIRVersion getVersion() {
@@ -57,6 +64,18 @@ public class BIR {
 		return sbInfo;
 	}
 
+	public TestBiometricType getTestFingerPrint() {
+		return testFingerPrint;
+	}
+
+	public TestBiometricType getTestIris() {
+		return testIris;
+	}
+
+	public TestBiometricType getTestFace() {
+		return testFace;
+	}
+
 	public static class BIRBuilder {
 		private BIRVersion version;
 		private BIRVersion cbeffversion;
@@ -65,6 +84,9 @@ public class BIR {
 		private byte[] bdb;
 		private byte[] sb;
 		private SBInfo sbInfo;
+		private TestBiometricType testFingerPrint;
+		private TestBiometricType testIris;
+		private TestBiometricType testFace;
 
 		public BIRBuilder withVersion(BIRVersion version) {
 			this.version = version;
@@ -105,6 +127,21 @@ public class BIR {
 			return new BIR(this);
 		}
 
+		public BIRBuilder withTestFingerPrint(TestBiometricType fingerprint) {
+			this.testFingerPrint = fingerprint;
+			return this;
+		}
+
+		public BIRBuilder withTestIris(TestBiometricType iris) {
+			this.testIris = iris;
+			return this;
+		}
+
+		public BIRBuilder withTestFace(TestBiometricType face) {
+			this.testFace = face;
+			return this;
+		}
+
 	}
 
 	public BIRType toBIRType(BIR bir) {
@@ -116,6 +153,15 @@ public class BIR {
 			bIRType.setBIRInfo(bir.getBirInfo().toBIRInfo());
 		if (bir.getBdbInfo() != null)
 			bIRType.setBDBInfo(bir.getBdbInfo().toBDBInfo());
+		if(bir.getTestFingerPrint() != null) {
+			bIRType.setTestFingerPrint(bir.getTestFingerPrint());
+		}
+		if(bir.getTestIris() != null) {
+			bIRType.setTestIris(bir.getTestIris());
+		}
+		if(bir.getTestFace() != null) {
+			bIRType.setTestFace(bir.getTestFace());
+		}
 		return bIRType;
 	}
 

@@ -12,6 +12,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -33,6 +35,8 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.ProcessedLevelType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.PurposeType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
+import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
+import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
@@ -72,6 +76,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private static final Logger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);
 	@Autowired
 	private CbeffI cbeffI;
+	@Autowired
+	private JsonValidator jsonValidator;
 	/**
 	 * Instance of {@code AuditFactory}
 	 */
@@ -181,8 +187,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			// Generating Demographic JSON as byte array
-			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
-					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
+			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
+			jsonValidator.validateJson(idJsonAsString, "mosip-identity-json-schema.json");
+			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME));
@@ -250,6 +257,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
+		} catch (BaseCheckedException baseCheckedException) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
+					baseCheckedException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
@@ -294,7 +306,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			if (biometricInfoDTO.getIrisDetailsDTO() != null && !biometricInfoDTO.getIrisDetailsDTO().isEmpty()) {
 				for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
+					TestBiometricType testBiometricType = new TestBiometricType();
+					testBiometricType.setXmlns("testschema");
+					testBiometricType.setTestBiometric(TestBiometric.UNIQUE);
 					BIR bir = new BIR.BIRBuilder().withBdb(iris.getIris())
+							.withTestIris(testBiometricType)
 							.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 							.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
 									.withFormatType(CbeffConstant.FORMAT_TYPE_IRIS)
@@ -349,7 +365,11 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	}
 
 	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
+		TestBiometricType testBiometricType = new TestBiometricType();
+		testBiometricType.setXmlns("testschema");
+		testBiometricType.setTestBiometric(TestBiometric.UNIQUE);
 		return new BIR.BIRBuilder().withBdb(fingerprintImageInBytes)
+				.withTestFingerPrint(testBiometricType)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
 						.withFormatType(CbeffConstant.FORMAT_TYPE_FINGER)

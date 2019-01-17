@@ -678,16 +678,19 @@ public class RegistrationController extends BaseController {
 
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
-			String platformLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE);
-			String localLanguageCode = AppConfig
-					.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE);
+			String platformLanguageCode = RegistrationConstants.mappedCodeForLang
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+					.getMappedCode();
+			String localLanguageCode = RegistrationConstants.mappedCodeForLang
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
+					.getMappedCode();
 			String valueInPlatformLang = "";
 			String valueinLocalLang = "";
 
 			for (ValuesDTO fieldValue : fieldValues) {
-				if (fieldValue.getLanguage().equals(platformLanguageCode)) {
+				if (fieldValue.getLanguage().equalsIgnoreCase(platformLanguageCode)) {
 					valueInPlatformLang = fieldValue.getValue();
-				} else if (nodeForLocalLang != null && fieldValue.getLanguage().equals(localLanguageCode)) {
+				} else if (nodeForLocalLang != null && fieldValue.getLanguage().equalsIgnoreCase(localLanguageCode)) {
 					valueinLocalLang = fieldValue.getValue();
 				}
 			}
@@ -935,8 +938,11 @@ public class RegistrationController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private DemographicInfoDTO buildDemographicInfo() {
 
-		String platformLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE);
-		String localLanguageCode = AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE);
+		String platformLanguageCode = RegistrationConstants.mappedCodeForLang
+				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode();
+		String localLanguageCode = RegistrationConstants.mappedCodeForLang
+				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
+				.getMappedCode();
 		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
 
@@ -953,7 +959,7 @@ public class RegistrationController extends BaseController {
 										.get()))
 						.with(identity -> identity.setDateOfBirth(dateOfBirth!=null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : ""))
 						.with(identity -> identity
-								.setAge(ageField.isDisabled() ? 0 : Integer.parseInt(ageField.getText())))
+								.setAge(ageField.isDisabled() ? null : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
 								: (List<ValuesDTO>) Builder.build(LinkedList.class)
 										.with(values -> values.add(Builder.build(ValuesDTO.class)

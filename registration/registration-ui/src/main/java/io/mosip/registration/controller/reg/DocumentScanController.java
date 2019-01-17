@@ -418,7 +418,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		documentDetailsDTO.setDocument(byteArray);
-		documentDetailsDTO.setCategory(document);
+		documentDetailsDTO.setType(document);
 		documentDetailsDTO.setFormat(scannerDocType);
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
 
