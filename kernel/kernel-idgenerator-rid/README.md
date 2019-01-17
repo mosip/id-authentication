@@ -12,16 +12,12 @@ This folder has RID generator module which can be used to generate RID as numeri
 
 [application-dev.properties](../../config/application-dev.properties)
 
-[kernel-idgenerator-rid-dev.properties](../../config/kernel-idgenerator-rid-dev.properties)
  
+**Database properties**
  
- 
- **Database properties**
- 
-schema:ids
+schema:reg
 
-table:rid
- 
+table:rid_seq
  
 **Maven Dependency**
 

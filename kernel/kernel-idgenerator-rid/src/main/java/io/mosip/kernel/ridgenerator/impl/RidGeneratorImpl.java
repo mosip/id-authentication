@@ -7,8 +7,10 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.util.MathUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
@@ -17,6 +19,7 @@ import io.mosip.kernel.ridgenerator.entity.Rid;
 import io.mosip.kernel.ridgenerator.exception.EmptyInputException;
 import io.mosip.kernel.ridgenerator.exception.InputLengthException;
 import io.mosip.kernel.ridgenerator.exception.NullValueException;
+import io.mosip.kernel.ridgenerator.exception.RidException;
 import io.mosip.kernel.ridgenerator.repository.RidRepository;
 
 /**
@@ -65,7 +68,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	public String generateId(String centreId, String machineId) {
 		validateInput(centreId, machineId, centerIdLength, machineIdLength);
 
-		String randomDigitRid = sequenceNumberGenerator(machineId);
+		String randomDigitRid = sequenceNumberGenerator();
 
 		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, machineId);
 	}
@@ -80,7 +83,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	public String generateId(String centreId, String machineId, int centerIdLength, int machineIdLength) {
 		validateInput(centreId, machineId, centerIdLength, machineIdLength);
 
-		String randomDigitRid = sequenceNumberGenerator(machineId);
+		String randomDigitRid = sequenceNumberGenerator();
 
 		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, machineId);
 	}
@@ -121,25 +124,30 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	}
 
 	/**
-	 * This method generates a five digit number against dongleId provided.
+	 * This method generates a five digit sequence number.
 	 * 
 	 * @return generated five digit random number
 	 */
-	private String sequenceNumberGenerator(String machineId) {
-
-		Rid entity = ridRepository.findById(Rid.class, machineId);
-
-		if (entity == null || entity.getCurrentSequenceNo() == sequenceEndvalue) {
-
-			entity = new Rid();
-			entity.setCurrentSequenceNo(sequenceInitialValue);
-
-		} else {
-
-			entity.setCurrentSequenceNo(entity.getCurrentSequenceNo() + 1);
-
+	private String sequenceNumberGenerator() {
+		Rid entity = null;
+		try {
+			entity = ridRepository.findLastRid();
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new RidException(RidGeneratorExceptionConstant.RID_FETCH_EXCEPTION.getErrorCode(),
+					RidGeneratorExceptionConstant.RID_FETCH_EXCEPTION.errorMessage, e);
 		}
-		ridRepository.save(entity);
+		try {
+			if (entity == null || entity.getCurrentSequenceNo() == sequenceEndvalue) {
+				entity = new Rid();
+				entity.setCurrentSequenceNo(sequenceInitialValue);
+				ridRepository.save(entity);
+			} else {
+				ridRepository.updateRid(entity.getCurrentSequenceNo() + 1, entity.getCurrentSequenceNo());
+			}
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new RidException(RidGeneratorExceptionConstant.RID_UPDATE_EXCEPTION.getErrorCode(),
+					RidGeneratorExceptionConstant.RID_UPDATE_EXCEPTION.errorMessage, e);
+		}
 		return String.format(sequenceFormat, entity.getCurrentSequenceNo());
 	}
 
