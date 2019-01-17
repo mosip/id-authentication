@@ -3,14 +3,14 @@
 **Functional Background**
 
 As part of the registration packet created successfully the Supervisor has to authenticate the packets using the EOD process. 
-Once done the authenticated packets will be uploaded to the registration processor by manually or automatically. If the registration application is not in online and RO/RS wants to export to the specific folder based on the configuration. Later the RO/RS will be uploaded same by using the portal services.
+Once done the authenticated packets will be uploaded to the registration processor by manually or automatically. If the registration application is not in online and RO/RS wants to export to the specific folder based on the user section path. Later the RO/RS will be uploaded same by using the portal services.
 
 **Packet Export**
 - The UI will provide the option to export label as **'Export'** the packets which status as 'Created'. 
-- The exported packets path should be a configurable one , this values should be taken from as part of the sync.
+- The exported packets path should be chosen by the user.
 - The status should be updated in the transaction table as 'Exported'.
 - While fetching the packet status this status 'Exported' also should be included.
-- While deleting the packets for the configured no.of days, should include this status also.
+- While deleting the packets for the configured no.of days, should include this status.
 
 **Non Functional Scope**
 
@@ -32,10 +32,8 @@ Once done the authenticated packets will be uploaded to the registration process
 
 -   Audit :
 
-    -   Each state of the packet upload should be stored into the DB for
+    -   Each state of the packet export should be stored into the DB for
         audit purpose.
-
-    -   UIN and important detail of the customer should not be audited.
 
 -   Exception :
 
@@ -43,8 +41,6 @@ Once done the authenticated packets will be uploaded to the registration process
         reported to the user with the user understandable exception.
 
 -   Data History :
-
-    -   The IDIS able to authenticate by using the Core Kernel module.
 
     -   Maintain the registration id, status and other high level info in
         the database table.
@@ -67,7 +63,7 @@ Design Detail
   
 **Packet Exporting:**
   
--   Registration Application having the label as 'Export' to export the created and authenticated packets to the configured location. 
+-   Registration Application having the label as 'Export' to export the created and authenticated packets to the desired location which was selected by the user. 
 
 -   Update the respective status in the table.
 
@@ -99,14 +95,10 @@ Design Detail
 
 -   The system should display the alert messages for success and failure
     messages.
+    
+-   The User role has the permissions to save the packets to the selected folder.
 
 
-**Class Diagram**
+**Class and Sequence Diagram**
 
-![Packet Export Class Diagram ](_images/_class_diagram/registration-packetexport-classDiagram.png)
-
-**Sequence Diagram**
-
-
-![Packet Export Sequence Diagram ](_images/_sequence_diagram/registration-packetexport-sequenceDiagram.png)
-
+![Packet Export Class and Sequence Diagram ](_images/reg_packet_export.png)
