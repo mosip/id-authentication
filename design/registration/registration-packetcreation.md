@@ -57,7 +57,7 @@ The key **non-functional requirements** are
     -   The IDIS application able to get the RSA public key from Core
         Kernel module.
 
-    -   The IDIS able to generate the AES key seed \[256-bit\] by using
+    -   The IDIS able to generate the AES key seed **[256-bit]** by using
         the EO ID, MAC of the machine and timestamp.
 
 -   Log the each state of the packet creation:
@@ -112,9 +112,9 @@ provided below:
     structure](#entity-object-structure) from the client application.
 
 -   Validate the request object against the Business rule and render the
-    respective error message \[user defined\] to the invoking client
-    application if any rule failed. \[this activity will be taken care
-    in the next sprint\]
+    respective error message [user defined] to the invoking client
+    application if any rule failed. [this activity will be taken care
+    in the next sprint]
 
 -   If the provided request object is valid then continue with the rest
     of the process.
@@ -140,7 +140,7 @@ provided below:
     -   Generate the Hash for the Biometric, Demographic and EID of
         Resident Information.
 
-    -   Use the HMAC generation from Java 8 \[MD5 Hashing -- SHA256\]
+    -   Use the HMAC generation from Java 8 **[MD5 Hashing -- SHA256]**
 
 -   Store the generated Hash in a file and append to the created Zip
     object.
@@ -153,10 +153,10 @@ provided below:
 
 -   Session Key Encryption:
 
-    -   Session key generation is \[MAC of machine + EO Id + Timestamp\]
+    -   Session key generation is **[Center ID + Dogle Id]**
         should not exceed 32 characters.
 
-    -   Pass the created Zip object \[in-memory\] through the AES-256
+    -   Pass the created Zip object **[in-memory]** through the AES-256
         bit encryption.
 
     -   Pass the Random Session Key as a seed to this AES encryption.
@@ -168,7 +168,7 @@ provided below:
     -   AES Session key bytes pass through the RSA public key
         encryption.
 
--   Use the "\#KEY\_SPLITTER\#" as a key separator for the AES encrypted
+-   Use the **#KEY_SPLITTER#** as a key separator for the AES encrypted
     bytes and the RSA Public key encrypted Session key seed.
 
 -   Append the RSA Public key Encrypted Session Key, Key Separator to
@@ -178,20 +178,20 @@ provided below:
     defined location in configuration file.
 
 -   Append the EO and machine information as a META-INFO JSON file and
-    create another ZIP out of it. \[Packet Zip + META-INFO JSON\]
+    create another ZIP out of it. **[Packet Zip + META-INFO JSON]**
 
 -   Audit the exception/start/exit of the each stages of the packet
     encryption mechanism using AuditManager component.
 
--   The final zip name should be as enrollemntid+CurrentTimestamp \[28
-    digit\].
+-   The final zip name should be as enrollemntid+CurrentTimestamp **[29
+    digit]**.
 
--   Timestamp format is \[DDMMYYYYHHMMSSS\]
+-   Timestamp format is **[DDMMYYYYHHMMSSS]**
 
 -   Once the packet has been successfully created then update the packet
     information in the 'Registration' table.
 
-**Client \[UI\] Application:**
+**Client [UI] Application:**
 
 -   Invoking client application should store all information about the
     resident as desired format of [DTO
@@ -235,242 +235,165 @@ Folder level Data:
 
 a.  Applicant
 
-    -   LetThumb.jpg/png
-    -   RightThumb.jpg/png
-    -   LeftPalm.jpg/png
-    -   RightPalm.jpg/png
-    -   LeftEye.jpg/png
-    -   RightEye.jpg/png
-
-b.  HOF
-
-    -   **HOF LeftThumb.jpg/png**
-
-c.  Introducer
-
-    -   **LeftThumb.jpg/png**
-
+    -   applicant_cbeff.xml
+	-   introducer_cbeff.xml
 2.  **Demographic**
 
     a.  Applicant
 
-        -   ProofOfIdentity.docx
+        -   ID.JSON
+		-   ProofOfIdentity.docx
         -   ProofOfResidenty.docx
         -   ProofOfAddress.docx
         -   ApplicantPhoto.jpg/png
         -   ExceptionPhoto.jpg/png \[If Exceptional cases\]
         -   Registration Acknowledgement.jpg
 
-    b.  Demographic\_info.json  - Follwed the Mosip ID spec and generated this Json structure. It contains the entire text data captured in the UI application. 
+    b.  ID.json  - Follwed the Mosip ID spec and generated this Json structure. It contains the entire text data captured in the UI application. 
 	
 					{
-				"identity": {
-					"firstName": [
-						{
-							"language": "ar",
-							"label": "الاسم الاول",
-							"value": "ابراهيم"
-						},
-						{
-							"language": "fr",
-							"label": "Prénom",
-							"value": "Ibrahim"
-						}
-					],
-					"middleName": [
-						{
-							"language": "ar",
-							"label": "الاسم الأوسط",
-							"value": "بن"
-						},
-						{
-							"language": "fr",
-							"label": "deuxième nom",
-							"value": "Ibn"
-						}
-					],
-					"lastName": [
-						{
-							"language": "ar",
-							"label": "الكنية",
-							"value": "علي"
-						},
-						{
-							"language": "fr",
-							"label": "nom de famille",
-							"value": "Ali"
-						}
-					],
-					"dateOfBirth": [
-						{
-							"language": "ar",
-							"label": "تاريخ الولادة",
-							"value": "16/04/1955"
-						},
-						{
-							"language": "fr",
-							"label": "date de naissance",
-							"value": "16/04/1955"
-						}
-					],
-					"gender": [
-						{
-							"language": "ar",
-							"label": "جنس",
-							"value": "الذكر"
-						},
-						{
-							"language": "fr",
-							"label": "le sexe",
-							"value": "mâle"
-						}
-					],
-					"addressLine1": [
-						{
-							"language": "ar",
-							"label": "العنوان السطر 1",
-							"value": "عنوان العينة سطر 1"
-						},
-						{
-							"language": "fr",
-							"label": "Adresse 1",
-							"value": "exemple d'adresse ligne 1"
-						}
-					],
-					"addressLine2": [
-						{
-							"language": "ar",
-							"label": "العنوان السطر 2",
-							"value": "عنوان العينة سطر 2"
-						},
-						{
-							"language": "fr",
-							"label": "Adresse 2",
-							"value": "exemple d'adresse ligne 2"
-						}
-					],
-					"addressLine3": [
-						{
-							"language": "ar",
-							"label": "العنوان السطر 3",
-							"value": "عنوان العينة سطر 3"
-						},
-						{
-							"language": "fr",
-							"label": "Adresse 3",
-							"value": "exemple d'adresse ligne 3"
-						}
-					],
-					"region": [
-						{
-							"language": "ar",
-							"label": "رمنطقة",
-							"value": "طنجة - تطوان - الحسيمة"
-						},
-						{
-							"language": "fr",
-							"label": "Région",
-							"value": "Tanger-Tétouan-Al Hoceima"
-						}
-					],
-					"province": [
-						{
-							"language": "ar",
-							"label": "المحافظة",
-							"value": "فاس-مكناس"
-						},
-						{
-							"language": "fr",
-							"label": "province",
-							"value": "Fès-Meknès"
-						}
-					],
-					"city": [
-						{
-							"language": "ar",
-							"label": "مدينة",
-							"value": "فاس-الدار البيضاء"
-						},
-						{
-							"language": "fr",
-							"label": "ville",
-							"value": "Casablanca"
-						}
-					],
-					"localAdministrativeAuthority": [
-						{
-							"language": "ar",
-							"label": "الهيئة الإدارية المحلية",
-							"value": "طنجة - تطوان - الحسيمة"
-						},
-						{
-							"language": "fr",
-							"label": "Autorité administrative locale",
-							"value": "Tanger-Tétouan-Al Hoceima"
-						}
-					],
-					"mobileNumber": [
-						{
-							"language": "ar",
-							"label": "رقم الهاتف المحمول",
-							"value": "+212-5398-12345"
-						},
-						{
-							"language": "fr",
-							"label": "numéro de portable",
-							"value": "+212-5398-12345"
-						}
-					],
-					"emailId": [
-						{
-							"language": "ar",
-							"label": "عنوان الايميل",
-							"value": "sample@samplamail.com"
-						},
-						{
-							"language": "fr",
-							"label": "identifiant email",
-							"value": "sample@samplamail.com"
-						}
-					],
-					"CNEOrPINNumber": [
-						{
-							"language": "ar",
-							"label": "رقم CNE / PIN",
-							"value": "AB453625"
-						},
-						{
-							"language": "fr",
-							"label": "Numéro CNE / PIN",
-							"value": "AB453625"
-						}
-					],
-					"parentOrGuardianName": [
-						{
-							"language": "ar",
-							"label": "اسم ولي الأمر / الوصي",
-							"value": "سلمى"
-						},
-						{
-							"language": "fr",
-							"label": "Nom du parent / tuteur",
-							"value": "salma"
-						}
-					],
-					"parentOrGuardianRIDOrUIN": [
-						{
-							"language": "ar",
-							"label": "الوالد / الوصي RID / UIN",
-							"value": "123456789123"
-						},
-						{
-							"language": "fr",
-							"label": "parent / tuteur RID / UIN",
-							"value": "123456789123"
-						}
-					]
-				}
-			}
+  "identity": {
+    "IDSchemaVersion": 1.0,
+    "UIN": 981576026435,
+    "fullName": [
+      {
+        "language": "ara",
+        "value": "ابراهيم بن علي"
+      },
+      {
+        "language": "fre",
+        "value": "Ibrahim Ibn Ali"
+      }
+    ],
+    "dateOfBirth": "1955/04/15",
+    "age": 45,
+    "gender": [
+      {
+        "language": "ara",
+        "value": "الذكر"
+      },
+      {
+        "language": "fre",
+        "value": "mâle"
+      }
+    ],
+    "addressLine1": [
+      {
+        "language": "ara",
+        "value": "عنوان العينة سطر 1"
+      },
+      {
+        "language": "fre",
+        "value": "exemple d'adresse ligne 1"
+      }
+    ],
+    "addressLine2": [
+      {
+        "language": "ara",
+        "value": "عنوان العينة سطر 2"
+      },
+      {
+        "language": "fre",
+        "value": "exemple d'adresse ligne 2"
+      }
+    ],
+    "addressLine3": [
+      {
+        "language": "ara",
+        "value": "عنوان العينة سطر 2"
+      },
+      {
+        "language": "fre",
+        "value": "exemple d'adresse ligne 2"
+      }
+    ],
+    "region": [
+      {
+        "language": "ara",
+        "value": "طنجة - تطوان - الحسيمة"
+      },
+      {
+        "language": "fre",
+        "value": "Tanger-Tétouan-Al Hoceima"
+      }
+    ],
+    "province": [
+      {
+        "language": "ara",
+        "value": "فاس-مكناس"
+      },
+      {
+        "language": "fre",
+        "value": "Fès-Meknès"
+      }
+    ],
+    "city": [
+      {
+        "language": "ara",
+        "value": "الدار البيضاء"
+      },
+      {
+        "language": "fre",
+        "value": "Casablanca"
+      }
+    ],
+    "postalCode": "570004",
+    "phone": "9876543210",
+    "email": "abc@xyz.com",
+    "CNIENumber": 6789545678909,
+    "localAdministrativeAuthority": [
+      {
+        "language": "ara",
+        "value": "سلمى"
+      },
+      {
+        "language": "fre",
+        "value": "salma"
+      }
+    ],
+    "parentOrGuardianRIDOrUIN": 212124324784912,
+    "parentOrGuardianName": [
+      {
+        "language": "ara",
+        "value": "سلمى"
+      },
+      {
+        "language": "fre",
+        "value": "salma"
+      }
+    ],
+    "proofOfAddress": {
+      "format": "pdf",
+      "type": "drivingLicense",
+      "value": "fileReferenceID"
+    },
+    "proofOfIdentity": {
+      "format": "txt",
+      "type": "passport",
+      "value": "fileReferenceID"
+    },
+    "proofOfRelationship": {
+      "format": "pdf",
+      "type": "passport",
+      "value": "fileReferenceID"
+    },
+    "proofOfDateOfBirth": {
+      "format": "pdf",
+      "type": "passport",
+      "value": "fileReferenceID"
+    },
+    "individualBiometrics": {
+      "format": "cbeff",
+      "version": 1.0,
+      "value": "fileReferenceID"
+    },
+    "parentOrGuardianBiometrics": {
+      "format": "cbeff",
+      "version": 1.0,
+      "value": "fileReferenceID"
+    }
+  }
+}
 
 3.  **RegistrationID.txt**
 
@@ -479,234 +402,332 @@ c.  Introducer
 5.  **Packet\_MetaInfo.json**
 	
 				{
-			  "identity" : {
-				"biometric" : {
-				  "applicant" : {
-					"leftEye" : {
-					  "language" : "en",
-					  "label" : "label",
-					  "imageName" : "LeftEye",
-					  "type" : "iris",
-					  "qualityScore" : 79.0,
-					  "numRetry" : 2,
-					  "forceCaptured" : false
-					},
-					"rightEye" : null,
-					"leftSlap" : {
-					  "language" : "en",
-					  "label" : "label",
-					  "imageName" : "LeftPalm",
-					  "type" : "fingerprint",
-					  "qualityScore" : 80.0,
-					  "numRetry" : 3,
-					  "forceCaptured" : false
-					},
-					"rightSlap" : {
-					  "language" : "en",
-					  "label" : "label",
-					  "imageName" : "RightPalm",
-					  "type" : "fingerprint",
-					  "qualityScore" : 95.0,
-					  "numRetry" : 2,
-					  "forceCaptured" : false
-					},
-					"thumbs" : {
-					  "language" : "en",
-					  "label" : "label",
-					  "imageName" : "BothThumbs",
-					  "type" : "fingerprint",
-					  "qualityScore" : 85.0,
-					  "numRetry" : 0,
-					  "forceCaptured" : false
-					}
-				  },
-				  "introducer" : {
-					"introducerFingerprint" : {
-					  "language" : "en",
-					  "label" : "label",
-					  "imageName" : "introducerLeftThumb",
-					  "type" : "fingerprint",
-					  "qualityScore" : 0.0,
-					  "numRetry" : 0,
-					  "forceCaptured" : false
-					},
-					"introducerIris" : null,
-					"introducerImage" : null
-				  }
-				},
-				"exceptionBiometrics" : [ {
-				  "language" : "en",
-				  "type" : "fingerprint",
-				  "missingBiometric" : "LeftThumb",
-				  "exceptionDescription" : "Due to accident",
-				  "exceptionType" : "Permananent"
-				}, {
-				  "language" : "en",
-				  "type" : "fingerprint",
-				  "missingBiometric" : "LeftForefinger",
-				  "exceptionDescription" : "Due to accident",
-				  "exceptionType" : "Permananent"
-				}, {
-				  "language" : "en",
-				  "type" : "iris",
-				  "missingBiometric" : "RightEye",
-				  "exceptionDescription" : "By birth",
-				  "exceptionType" : "Permananent"
-				} ],
-				"applicantPhotograph" : {
-				  "language" : "en",
-				  "label" : "label",
-				  "photographName" : "ApplicantPhoto",
-				  "numRetry" : 1,
-				  "qualityScore" : 89.0
-				},
-				"exceptionPhotograph" : {
-				  "language" : "en",
-				  "label" : "label",
-				  "photographName" : "ExceptionPhoto",
-				  "numRetry" : 0,
-				  "qualityScore" : 0.0
-				},
-				"documents" : [ {
-				  "documentName" : "ProofOfIdentity",
-				  "documentCategory" : "PoI",
-				  "documentOwner" : "Self",
-				  "documentType" : "PAN"
-				}, {
-				  "documentName" : "ProofOfAddress",
-				  "documentCategory" : "PoA",
-				  "documentOwner" : "hof",
-				  "documentType" : "passport"
-				}, {
-				  "documentName" : "RegistrationAcknowledgement",
-				  "documentCategory" : "RegistrationAcknowledgement",
-				  "documentOwner" : "Self",
-				  "documentType" : "RegistrationAcknowledgement"
-				} ],
-				"metaData" : [ {
-				  "label" : "geoLocLatitude",
-				  "value" : "13.0049"
-				}, {
-				  "label" : "geoLoclongitude",
-				  "value" : "80.24492"
-				}, {
-				  "label" : "registrationType",
-				  "value" : "Child"
-				}, {
-				  "label" : "applicantType",
-				  "value" : "New"
-				}, {
-				  "label" : "preRegistrationId",
-				  "value" : "PEN1345T"
-				}, {
-				  "label" : "registrationId",
-				  "value" : "2018782130000121112018103016"
-				}, {
-				  "label" : "registrationIdHash",
-				  "value" : "8ECBD20FB5D7561F265EB70613836780ACD3CFF1AF8CB1884C05F0B083D4ED38"
-				}, {
-				  "label" : "machineId",
-				  "value" : "yyeqy26356"
-				}, {
-				  "label" : "centerId",
-				  "value" : "12245"
-				}, {
-				  "label" : "uin",
-				  "value" : null
-				}, {
-				  "label" : "previousRID",
-				  "value" : null
-				}, {
-				  "label" : "introducerType",
-				  "value" : "Parent"
-				}, {
-				  "label" : "introducerRID",
-				  "value" : "2018234500321157812"
-				}, {
-				  "label" : "introducerRIDHash",
-				  "value" : "58086E976BA47A9F1A52099412665D8AF3FC587D946817553697E06A352D88E3"
-				}, {
-				  "label" : "introducerUIN",
-				  "value" : null
-				}, {
-				  "label" : "introducerUINHash",
-				  "value" : null
-				}, {
-				  "label" : "officerFingerprintType",
-				  "value" : "leftThumb"
-				}, {
-				  "label" : "officerIrisType",
-				  "value" : null
-				}, {
-				  "label" : "supervisorFingerprintType",
-				  "value" : "leftThumb"
-				}, {
-				  "label" : "supervisorIrisType",
-				  "value" : null
-				}, {
-				  "label" : "introducerFingerprintType",
-				  "value" : "leftThumb"
-				}, {
-				  "label" : "introducerIrisType",
-				  "value" : null
-				} ],
-				"osiData" : [ {
-				  "label" : "officerId",
-				  "value" : "op0r0s12"
-				}, {
-				  "label" : "officerFingerprintImage",
-				  "value" : "officerLeftThumb"
-				}, {
-				  "label" : "officerIrisImage",
-				  "value" : null
-				}, {
-				  "label" : "supervisorId",
-				  "value" : "s9ju2jhu"
-				}, {
-				  "label" : "supervisorFingerprintImage",
-				  "value" : "supervisorLeftThumb"
-				}, {
-				  "label" : "supervisorIrisImage",
-				  "value" : null
-				}, {
-				  "label" : "supervisorPassword",
-				  "value" : null
-				}, {
-				  "label" : "officerPassword",
-				  "value" : null
-				}, {
-				  "label" : "supervisorPIN",
-				  "value" : null
-				}, {
-				  "label" : "officerPIN",
-				  "value" : null
-				}, {
-				  "label" : "supervisorAuthenticationImage",
-				  "value" : null
-				}, {
-				  "label" : "officerAuthenticationImage",
-				  "value" : null
-				} ],
-				"hashSequence" : [ {
-				  "label" : "applicantBiometricSequence",
-				  "value" : [ "BothThumbs", "LeftPalm", "RightPalm", "LeftEye" ]
-				}, {
-				  "label" : "introducerBiometricSequence",
-				  "value" : [ "introducerLeftThumb" ]
-				}, {
-				  "label" : "applicantDemographicSequence",
-				  "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", 
-							  "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
-				} ],
-				"checkSum" : [ {
-				  "label" : "registration-service.jar",
-				  "value" : "65gfhab67586cjhsabcjk78"
-				}, {
-				  "label" : "registration-ui.jar",
-				  "value" : "uygdfajkdjkHHD56TJHASDJKA"
-				} ]
-			  }
-			}
+  "identity" : {
+    "biometric" : {
+      "applicant" : {
+        "leftEye" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "LeftEye",
+          "type" : "iris",
+          "qualityScore" : 79.0,
+          "numRetry" : 2,
+          "forceCaptured" : false
+        },
+        "rightEye" : null,
+        "leftIndex" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "LeftIndex",
+          "type" : "fingerprint",
+          "qualityScore" : 80.0,
+          "numRetry" : 3,
+          "forceCaptured" : false
+        },
+		"leftMiddle" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "LeftMiddle",
+          "type" : "fingerprint",
+          "qualityScore" : 80.0,
+          "numRetry" : 3,
+          "forceCaptured" : false
+        },
+		"leftRing" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "LeftRing",
+          "type" : "fingerprint",
+          "qualityScore" : 80.0,
+          "numRetry" : 3,
+          "forceCaptured" : false
+        },
+		"leftLittle" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "LeftLitle",
+          "type" : "fingerprint",
+          "qualityScore" : 80.0,
+          "numRetry" : 3,
+          "forceCaptured" : false
+        },
+		"leftThumb" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "LeftThumb",
+          "type" : "fingerprint",
+          "qualityScore" : 80.0,
+          "numRetry" : 3,
+          "forceCaptured" : false
+        },
+        "rightIndex" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "RightIndex",
+          "type" : "fingerprint",
+          "qualityScore" : 95.0,
+          "numRetry" : 2,
+          "forceCaptured" : false
+        },
+		"rightMiddle" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "RightMiddle",
+          "type" : "fingerprint",
+          "qualityScore" : 95.0,
+          "numRetry" : 2,
+          "forceCaptured" : false
+        },
+		"rightRing" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "RightRing",
+          "type" : "fingerprint",
+          "qualityScore" : 95.0,
+          "numRetry" : 2,
+          "forceCaptured" : false
+        },
+		"rightLittle" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "RightLittle",
+          "type" : "fingerprint",
+          "qualityScore" : 95.0,
+          "numRetry" : 2,
+          "forceCaptured" : false
+        },
+        "rightThumb" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "rightThumb",
+          "type" : "fingerprint",
+          "qualityScore" : 85.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        }
+      },
+      "introducer" : {
+        "introducerFingerprint" : {
+          "language" : "en",
+          "label" : "label",
+          "imageName" : "introducerLeftThumb",
+          "type" : "fingerprint",
+          "qualityScore" : 0.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "introducerIris" : null,
+        "introducerImage" : null
+      }
+    },
+    "exceptionBiometrics" : [ {
+      "language" : "en",
+      "type" : "fingerprint",
+      "missingBiometric" : "LeftThumb",
+      "exceptionDescription" : "Due to accident",
+      "exceptionType" : "Permananent"
+    }, {
+      "language" : "en",
+      "type" : "fingerprint",
+      "missingBiometric" : "LeftForefinger",
+      "exceptionDescription" : "Due to accident",
+      "exceptionType" : "Permananent"
+    }, {
+      "language" : "en",
+      "type" : "iris",
+      "missingBiometric" : "RightEye",
+      "exceptionDescription" : "By birth",
+      "exceptionType" : "Permananent"
+    } ],
+    "applicantPhotograph" : {
+      "language" : "en",
+      "label" : "label",
+      "photographName" : "ApplicantPhoto",
+      "numRetry" : 1,
+      "qualityScore" : 89.0
+    },
+    "exceptionPhotograph" : {
+      "language" : "en",
+      "label" : "label",
+      "photographName" : "ExceptionPhoto",
+      "numRetry" : 0,
+      "qualityScore" : 0.0
+    },
+    "documents" : [ {
+      "documentName" : "ProofOfIdentity",
+      "documentCategory" : "PoI",
+      "documentOwner" : "Self",
+      "documentType" : "PAN"
+    }, {
+      "documentName" : "ProofOfAddress",
+      "documentCategory" : "PoA",
+      "documentOwner" : "hof",
+      "documentType" : "passport"
+    }, {
+      "documentName" : "RegistrationAcknowledgement",
+      "documentCategory" : "RegistrationAcknowledgement",
+      "documentOwner" : "Self",
+      "documentType" : "RegistrationAcknowledgement"
+    } ],
+    "metaData" : [ {
+      "label" : "geoLocLatitude",
+      "value" : "13.0049"
+    }, {
+      "label" : "geoLoclongitude",
+      "value" : "80.24492"
+    }, {
+      "label" : "registrationType",
+      "value" : "Child"
+    }, {
+      "label" : "applicantType",
+      "value" : "New"
+    }, {
+      "label" : "preRegistrationId",
+      "value" : "PEN1345T"
+    }, {
+      "label" : "registrationId",
+      "value" : "2018782130000121112018103016"
+    }, {
+      "label" : "machineId",
+      "value" : "yyeqy26356"
+    },
+	{
+      "label" : "dongleId",
+      "value" : "yyeqy26356"
+    },
+	{
+      "label" : "macID",
+      "value" : "8F-23-12-45-FG-56"
+    },
+	{
+      "label" : "centerId",
+      "value" : "12245"
+    }, {
+      "label" : "uin",
+      "value" : null
+    }, {
+      "label" : "previousRID",
+      "value" : null
+    }, {
+      "label" : "introducerType",
+      "value" : "Parent"
+    }, {
+      "label" : "introducerRID",
+      "value" : "2018234500321157812"
+    }, {
+      "label" : "introducerUIN",
+      "value" : null
+    }, {
+      "label" : "officerFingerprintType",
+      "value" : "leftThumb"
+    }, {
+      "label" : "officerIrisType",
+      "value" : null
+    }, {
+      "label" : "supervisorFingerprintType",
+      "value" : "leftThumb"
+    }, {
+      "label" : "supervisorIrisType",
+      "value" : null
+    }, {
+      "label" : "introducerFingerprintType",
+      "value" : "leftThumb"
+    }, {
+      "label" : "introducerIrisType",
+      "value" : null
+    }],
+    "osiData" : [ {
+      "label" : "officerId",
+      "value" : "op0r0s12"
+    }, {
+      "label" : "officerFingerprintImage",
+      "value" : "officerLeftThumb"
+    }, {
+      "label" : "officerIrisImage",
+      "value" : null
+    }, {
+      "label" : "supervisorId",
+      "value" : "s9ju2jhu"
+    }, {
+      "label" : "supervisorFingerprintImage",
+      "value" : "supervisorLeftThumb"
+    }, {
+      "label" : "supervisorIrisImage",
+      "value" : null
+    }, {
+      "label" : "supervisorPassword",
+      "value" : null
+    }, {
+      "label" : "officerPassword",
+      "value" : null
+    }, {
+      "label" : "supervisorPIN",
+      "value" : null
+    }, {
+      "label" : "officerPIN",
+      "value" : null
+    }, {
+      "label" : "supervisorFaceImage",
+      "value" : null
+    }, 
+	{
+      "label" : "officerFaceImage",
+      "value" : null
+    }, 
+	{
+      "label" : "officerOTPAuthentication",
+      "value" : true/false
+    },
+	{
+      "label" : "supervisiorOTPAuthentication",
+      "value" : true/false
+    }
+	],
+    "hashSequence1" : [ {
+      "label" : "applicantBiometricSequence",
+      "value" : [ "applicant_bio_CBEFF.xml" ]
+    }, {
+      "label" : "introducerBiometricSequence",
+      "value" : [ "introducer_bio_CBEFF.xml" ]
+    }, {
+      "label" : "applicantDemographicSequence",
+      "value" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", "ApplicantPhoto", "ExceptionPhoto", "ProofOfBirth", "ProofOfRelation" ]
+    } ],
+	"hashSequence2" : [ {
+      "label" : "otherFiles",
+      "value" : [ "officerCBEFF", "supervisiorCBEFF", "PacketMetaInfo", "Audit"]
+    } ],
+	"capturedRegiseredDevices" : [ {
+      "label" : "fingerprint",
+      "value" : "123455YRHTIFHKJI8U90U2334"
+    },
+	"label" : "iris",
+      "value" : "123455YRHTIFHKJI8U90U5476"
+    },
+	"label" : "photo",
+      "value" : "123455YRHTIFHKJI8U90U4648"
+    }	
+	],
+	"capturedNonRegisteredDevices" : [ {
+      "label" : "GPS",
+      "value" : "123455YRHTIFHKJI8U90U2334"
+    },
+	"label" : "scanner",
+      "value" : "123455YRHTIFHKJI8U90U5476"
+    },
+	"label" : "printer",
+      "value" : "123455YRHTIFHKJI8U90U6786"
+    }	
+	],
+    "checkSum" : [ {
+      "label" : "registration-service.jar",
+      "value" : "65gfhab67586cjhsabcjk78"
+    }, {
+      "label" : "registration-ui.jar",
+      "value" : "uygdfajkdjkHHD56TJHASDJKA"
+    } ]
+  }
+}
 	
 
 6.  **Registration Officer Bio Image\[JPEG\]**

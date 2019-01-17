@@ -1,8 +1,8 @@
-Design -- EOD Process
+**Design -- EOD Process**
 
-\[Packet approval / action/ Re-Register\]
+**Packet approval / action/ Re-Register**
 
-Background
+**Background**
 
 The Supervisor logs in to the Registration Client and navigates to the
 end of day process page to view and act on 'Pending Approval', 'Pending
@@ -16,7 +16,10 @@ The **target users** are
 
 The key **requirements** are
 
-> Pending Approval:
+-- The EOD Process is a configurable for the application, if it is enabled then the below process will be considered. 
+    Otherwise the packet will uploaded directly to the server based on the network connectivity.
+
+Pending Approval:
 
 -   User views the list of Registration IDs pending approval.
 
@@ -33,7 +36,7 @@ The key **requirements** are
 
 -   User views confirmation of successful approval.
 
-> Pending Action:
+Pending Action:
 
 -   User views the list of Registration IDs which have been placed on
     hold.
@@ -52,7 +55,7 @@ The key **requirements** are
 
 -   User views confirmation of successful approval.
 
-> Re-Register:
+Re-Register:
 
 -   User View the list of registration IDs that have been flagged as
     're-register' during packet status sync from the processor.
@@ -63,7 +66,7 @@ The key **requirements** are
 -   Supervisor informs the individual by phone, email, physical mail or
     physical visit to re-register. This is an offline process.
 
-    -   Supervisor clicks on 'Informed'.
+-   Supervisor clicks on 'Informed'.
 
 -   If unable to contact the **individual**, Supervisor clicks on
     '**Can't inform**\'.
