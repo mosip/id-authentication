@@ -442,4 +442,15 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		return masterSyncDocumentCategoryRepository.findDocumentCategoryByLangCode(langCode);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.MasterSyncDao#getGenderDtls(java.lang.String)
+	 */
+	@Override
+	public List<MasterGender> getGenderDtls(String langCode) {
+
+		return masterSyncGenderRepository.findByLangCode(langCode);
+	}
+
 }
