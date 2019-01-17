@@ -35,6 +35,6 @@ public interface RidRepository extends BaseRepository<Rid, Integer> {
 	 * @return the number of rows updated.
 	 */
 	@Modifying
-	@Query("UPDATE Tsp SET currentSequenceNo=?1 WHERE currentSequenceNo=?2")
+	@Query("UPDATE Rid SET currentSequenceNo=?1 WHERE currentSequenceNo=?2")
 	int updateRid(int currentId, int previousId);
 }
