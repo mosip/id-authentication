@@ -146,6 +146,8 @@ public class RegistrationConstants {
 	public static final String ADDRESS_LINE2 = "addressLine2";
 	public static final String ADDRESS_LINE3 = "addressLine3";
 	public static final String FULL_NAME = "fullName";
+	public static final String PARENT_NAME = "parentName";
+
 	public static final String CHILD = "Child";
 	public static final String ADULT = "Adult";
 	public static final String AGE_DATEPICKER_CONTENT = "ageDatePickerContent";

@@ -307,6 +307,10 @@ public class BaseController {
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.IS_Child);
+		SessionContext.getInstance().getMapObject().remove("dd");
+		SessionContext.getInstance().getMapObject().remove("mm");
+		SessionContext.getInstance().getMapObject().remove("yyyy");
+
 		SessionContext.getInstance().getUserContext().getUserMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);

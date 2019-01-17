@@ -60,6 +60,9 @@ public class Validations extends BaseController {
 			noAlert.add("dd");
 			noAlert.add("mm");
 			noAlert.add("yyyy");
+			noAlert.add("ddLocalLanguage");
+			noAlert.add("mmLocalLanguage");
+			noAlert.add("yyyyLocalLanguage");
 			noAlert.add("mobileNo");
 			noAlert.add("postalCode");
 			noAlert.add("postalCode");

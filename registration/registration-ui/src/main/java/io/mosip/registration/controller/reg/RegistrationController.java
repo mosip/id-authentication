@@ -186,6 +186,12 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label toggleLabel2;
+	
+	@FXML
+	private Label toggleLabel1LocalLanguage;
+
+	@FXML
+	private Label toggleLabel2LocalLanguage;
 
 	@FXML
 	private AnchorPane childSpecificFields;
@@ -323,12 +329,6 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane anchorPaneRegistration;
 
-	@FXML
-	private Label copyAddressLabel;
-
-	@FXML
-	private ImageView copyAddressImage;
-
 	private boolean isChild;
 
 	private Node keyboardNode;
@@ -360,6 +360,9 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane dob;
+
+	@FXML
+	private AnchorPane dobLocalLanguage;
 
 	@FXML
 	private TextField dd;
@@ -470,7 +473,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.DISABLE);
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
-			isChild = true;
+			isChild = false;
 			toggleFunction();
 			toggleFunctionForBiometricException();
 			ageFieldValidations();
@@ -501,6 +504,7 @@ public class RegistrationController extends BaseController {
 			for (Node node : nodes) {
 				node.setDisable(true);
 			}
+			keyboardNode.setDisable(false);
 
 			applicationLanguagePane.setDisable(false);
 			localLanguagePane.setDisable(false);
@@ -546,12 +550,16 @@ public class RegistrationController extends BaseController {
 			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			boolean isChild = getRegistrationDtoContent().getSelectionListDTO().isChild()
-					|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
+			
+			if(!isChild)
+				isChild = getRegistrationDtoContent().getSelectionListDTO().isChild() || getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
+			
 			childSpecificFields.setDisable(!isChild);
 			childSpecificFieldsLocal.setDisable(!isChild);
 			childSpecificFields.setVisible(isChild);
 			childSpecificFieldsLocal.setVisible(isChild);
+			
+			
 
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child) != null) {
 				isChild = (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child);
@@ -632,6 +640,7 @@ public class RegistrationController extends BaseController {
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
+			ageField.setText(demo.getIdentity().getAge()+"");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
@@ -782,7 +791,6 @@ public class RegistrationController extends BaseController {
 				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
 						Integer.parseInt(dd.getText()));
 				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-				;
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
 						dateOfBirth);
 				SessionContext.getInstance().getMapObject().put("dd", dd.getText());
@@ -803,7 +811,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void setFocusonLocalField(MouseEvent event) {
 		try {
-			keyboardNode.setLayoutX(300.00);
+			keyboardNode.setLayoutX(400.00);
 			Node node = (Node) event.getSource();
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
@@ -824,6 +832,11 @@ public class RegistrationController extends BaseController {
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(120.00);
+			}
+			
+			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
+				parentNameLocalLanguage.requestFocus();
+				keyboardNode.setLayoutY(660.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 
@@ -853,11 +866,6 @@ public class RegistrationController extends BaseController {
 			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
 			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			if (validateDemographicPane(demoGraphicPane2)) {
-				if (isChild) {
-					if (ageField.isDisable()) {
-						isChild = false;
-					}
-				}
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, isChild);
 				demographicInfoDTO = buildDemographicInfo();
 
@@ -916,6 +924,7 @@ public class RegistrationController extends BaseController {
 				}
 			}
 		} catch (RuntimeException runtimeException) {
+			runtimeException.printStackTrace();
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
@@ -942,7 +951,7 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(dob.isDisabled()? null : DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd")))
+						.with(identity -> identity.setDateOfBirth(dateOfBirth!=null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : ""))
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? 0 : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
@@ -1228,6 +1237,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * Listening on the fields for any operation
 	 */
+	
 	private void listenerOnFields() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1248,17 +1258,13 @@ public class RegistrationController extends BaseController {
 			fxUtils.populateLocalComboBox(region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(province, provinceLocalLanguage);
 			fxUtils.populateLocalComboBox(localAdminAuthority, localAdminAuthorityLocalLanguage);
-			/*
-			 * dateValidation.validateDate(dd, mm,yyyy, validation, fxUtils);
-			 * dateValidation.validateMonth(dd, mm,yyyy, validation, fxUtils);
-			 * dateValidation.validateYear(dd, mm, yyyy, validation, fxUtils);
-			 */ copyAddressImage.setOnMouseEntered((e) -> {
-				copyAddressLabel.setVisible(true);
-			});
-			copyAddressImage.setOnMouseExited((e) -> {
-				copyAddressLabel.setVisible(false);
-			});
-
+			dateValidation.validateDate(dd, mm,yyyy, validation, fxUtils, ddLocalLanguage);
+			dateValidation.validateDate(ddLocalLanguage, mmLocalLanguage,yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateMonth(dd, mm,yyyy, validation, fxUtils, mmLocalLanguage);
+			dateValidation.validateMonth(ddLocalLanguage, mmLocalLanguage,yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateYear(dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
+			dateValidation.validateYear(ddLocalLanguage, mmLocalLanguage,yyyyLocalLanguage, validation, fxUtils, null);
+			fxUtils.dobListener(yyyy,ageField,"\\d{4}");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1330,26 +1336,46 @@ public class RegistrationController extends BaseController {
 
 			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+			toggleLabel1LocalLanguage.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+			toggleLabel2LocalLanguage.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			switchedOn.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
 						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						toggleLabel1LocalLanguage.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						toggleLabel2LocalLanguage.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						ageField.clear();
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
 						ageField.setDisable(false);
+						ageFieldLocalLanguage.setDisable(false);
+						ageFieldLocalLanguage.clear();
+						dob.setDisable(true);
+						dobLocalLanguage.setDisable(true);
+						
 
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
+						ageFieldLocalLanguage.clear();
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
 						ageField.setDisable(true);
+						ageFieldLocalLanguage.setDisable(true);
+						dob.setDisable(false);
+						dobLocalLanguage.setDisable(false);
 
 					}
+					dd.clear();
+					mm.clear();
+					yyyy.clear();
+
+					ddLocalLanguage.clear();
+					mmLocalLanguage.clear();
+					yyyyLocalLanguage.clear();
 				}
 			});
 
@@ -1359,6 +1385,15 @@ public class RegistrationController extends BaseController {
 			toggleLabel2.setOnMouseClicked((event) -> {
 				switchedOn.set(!switchedOn.get());
 			});
+			
+			toggleLabel1LocalLanguage.setOnMouseClicked((event) -> {
+				switchedOn.set(!switchedOn.get());
+			});
+			toggleLabel2LocalLanguage.setOnMouseClicked((event) -> {
+				switchedOn.set(!switchedOn.get());
+			});
+			
+			
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
@@ -1381,17 +1416,6 @@ public class RegistrationController extends BaseController {
 		List<String> excludedIds = new ArrayList<String>();
 		excludedIds.add("preRegistrationId");
 		excludedIds.add("virtualKeyboard");
-		excludedIds.add("genderLocalLanguage");
-		excludedIds.add("regionLocalLanguage");
-		excludedIds.add("cityLocalLanguage");
-		excludedIds.add("provinceLocalLanguage");
-		excludedIds.add("localAdminAuthorityLocalLanguage");
-		excludedIds.add("dd");
-		excludedIds.add("mm");
-		excludedIds.add("yyyy");
-		excludedIds.add("ddLocalLanguage");
-		excludedIds.add("mmLocalLanguage");
-		excludedIds.add("yyyyLocalLanguage");
 
 		validation.setChild(isChild);
 		validation.setValidationMessage();
