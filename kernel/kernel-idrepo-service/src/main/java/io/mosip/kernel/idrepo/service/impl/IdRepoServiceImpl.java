@@ -26,8 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.amazonaws.SdkBaseException;
@@ -73,9 +71,7 @@ import io.mosip.kernel.idrepo.entity.UinDocument;
 import io.mosip.kernel.idrepo.entity.UinDocumentHistory;
 import io.mosip.kernel.idrepo.entity.UinHistory;
 import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
-import io.mosip.kernel.idrepo.repository.UinBiometricRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
-import io.mosip.kernel.idrepo.repository.UinDocumentRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
@@ -205,14 +201,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/** The uin repo. */
 	@Autowired
 	private UinRepo uinRepo;
-
-	/** The uin detail repo. */
-	@Autowired
-	private UinDocumentRepo uinDocRepo;
-
-	/** The uin bio repo. */
-	@Autowired
-	private UinBiometricRepo uinBioRepo;
 
 	/** The uin detail repo. */
 	@Autowired

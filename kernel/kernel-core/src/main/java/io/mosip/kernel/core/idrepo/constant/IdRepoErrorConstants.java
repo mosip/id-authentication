@@ -43,7 +43,7 @@ public enum IdRepoErrorConstants {
 	RECORD_EXISTS("KER-IDR-012", "Record already exists in DB"),
 
 	/** The internal server error. */
-	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-013", "Encryption/Decryption failed"),
+	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-013", "Failed to either encrypt/decrypt message using Kernel Crypto Manager"),
 
 	/** The no record found. */
 	NO_RECORD_FOUND("KER-IDR-014", "No Record(s) found"),
