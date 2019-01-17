@@ -142,26 +142,36 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	@Override
 	public Map<String, String> getMachineCenterId() {
 
-		Map<String, String> centerIdMap = new HashMap<>();
-		String stationID = RegistrationConstants.EMPTY;
-		String centerID = RegistrationConstants.EMPTY;
+		Map<String, String> mapOfCenterId = new HashMap<>();
+		
+		String stationId = RegistrationConstants.EMPTY;
+		String centerId = RegistrationConstants.EMPTY;
 
+		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac Id....");
+		
 		try {
 
-			String macId = RegistrationSystemPropertiesChecker.getMachineId();
-			// get stationID
-			stationID = userOnBoardDao.getStationID(macId);
-			// get CenterID
-			centerID = userOnBoardDao.getCenterID(stationID);
+			// to get mac Id
+			String systemMacId = RegistrationSystemPropertiesChecker.getMachineId();
 
-			centerIdMap.put(RegistrationConstants.USER_STATION_ID, stationID);
-			centerIdMap.put(RegistrationConstants.USER_CENTER_ID, centerID);
+			// get stationID
+			stationId = userOnBoardDao.getStationID(systemMacId);
+
+			// get CenterID
+			centerId = userOnBoardDao.getCenterID(stationId);
+
+			// setting data into map
+			mapOfCenterId.put(RegistrationConstants.USER_STATION_ID, stationId);
+			mapOfCenterId.put(RegistrationConstants.USER_CENTER_ID, centerId);
+
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"station Id = " + stationId + "---->" + "center Id = " + centerId);
 
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, regBaseCheckedException.getMessage());
 		}
 
-		return centerIdMap;
+		return mapOfCenterId;
 	}
 
 	/**
