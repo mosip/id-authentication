@@ -9,15 +9,13 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 
 
+
+
+
 /**
- * 
- * @author Arun Bose S
  * The Class CogentIrisProvider.
- *
- * 
+ * @author Arun Bose S
  */
-
-
 public class CogentIrisProvider extends IrisProvider {
 
 	
