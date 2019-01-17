@@ -45,4 +45,6 @@ public interface AbisService {
 	 */
 	public IdentifyResponseDto performDedupe(IdentifyRequestDto identifyRequest)
 			throws ApisResourceAccessException, IOException, ParserConfigurationException, SAXException;
+	
+	public void delete();
 }

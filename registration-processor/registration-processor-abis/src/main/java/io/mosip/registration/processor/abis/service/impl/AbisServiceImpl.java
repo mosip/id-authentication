@@ -1,7 +1,5 @@
 package io.mosip.registration.processor.abis.service.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -61,16 +59,17 @@ public class AbisServiceImpl implements AbisService {
 
 	/** The Constant TESTFINGERPRINT. */
 	@Value("${TESTFINGERPRINT}")
-	private String TESTFINGERPRINT;
+	private String testFingerPrint;
 
 	/** The Constant TESTIRIS. */
 	@Value("${TESTIRIS}")
-	private String TESTIRIS;
+	private String testIris;
 
 	/** The Constant TESTFACE. */
 	@Value("${TESTFACE}")
-	private String TESTFACE;
+	private String testFace;
 
+	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisServiceImpl.class);
 
 	/**
@@ -98,14 +97,14 @@ public class AbisServiceImpl implements AbisService {
 
 			Document doc = getCbeffDocument(referenceId);
 
-			if (TESTFINGERPRINT == null || TESTIRIS == null || TESTFACE == null) {
+			if (testFingerPrint == null || testIris == null || testFace == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
 			}
 
-			NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
-			NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
-			NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
+			NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
+			NodeList irisNodeList = doc.getElementsByTagName(testIris);
+			NodeList faceNodeList = doc.getElementsByTagName(testFace);
 
 			if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
 				isPresent = true;
@@ -155,11 +154,6 @@ public class AbisServiceImpl implements AbisService {
 					referenceId, "Byte file not found from BioDedupe api");
 		}
 
-//		File testCbeff = new File("TestCbeff.xml");
-//		try (FileOutputStream fos = new FileOutputStream(testCbeff)) {
-//			fos.write(bytefile);
-//		}
-
 		String byteFileStr = new String(bytefile);
 
 		InputSource is = new InputSource();
@@ -198,13 +192,13 @@ public class AbisServiceImpl implements AbisService {
 		try {
 			Document doc = getCbeffDocument(referenceId);
 
-			NodeList fingerNodeList = doc.getElementsByTagName(TESTFINGERPRINT);
+			NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
 			duplicate = checkDuplicate(duplicate, fingerNodeList);
 
-			NodeList irisNodeList = doc.getElementsByTagName(TESTIRIS);
+			NodeList irisNodeList = doc.getElementsByTagName(testIris);
 			duplicate = checkDuplicate(duplicate, irisNodeList);
 
-			NodeList faceNodeList = doc.getElementsByTagName(TESTFACE);
+			NodeList faceNodeList = doc.getElementsByTagName(testFace);
 			duplicate = checkDuplicate(duplicate, faceNodeList);
 
 			response.setId(IDENTIFY);
@@ -251,5 +245,13 @@ public class AbisServiceImpl implements AbisService {
 			}
 		}
 		return duplicate;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.abis.service.impl.AbisService#delete()
+	 */
+	@Override
+	public void delete() {
+		
 	}
 }
