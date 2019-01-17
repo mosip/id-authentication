@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -55,18 +54,6 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	@Autowired
 	private Environment environment;
 
-	@Value("${javax.persistence.jdbc.driver}")
-	private String jdbcDriver;
-
-	@Value("${javax.persistence.jdbc.url}")
-	private String jdbcUrl;
-
-	@Value("${javax.persistence.jdbc.user}")
-	private String jdbcUser;
-
-	@Value("${javax.persistence.jdbc.password}")
-	private String jdbcPass;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -76,10 +63,10 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(jdbcDriver);
-		dataSource.setUrl(jdbcUrl);
-		dataSource.setUsername(jdbcUser);
-		dataSource.setPassword(jdbcPass);
+		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
+		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
+		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 		return dataSource;
 	}
 
@@ -201,7 +188,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
 				/**
-				 * We can add a default interceptor whenever we require here.
+				 * We can add a default interceptor whenever we require here. 
 				 */
 			} catch (BeanInstantiationException | ClassNotFoundException e) {
 				LOGGER.error("Error while configuring Interceptor.");
