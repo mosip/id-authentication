@@ -31,6 +31,14 @@ export class PreviewComponent implements OnInit {
       const born = new Date(this.previewData.dateOfBirth[0].value);
       const years = Math.floor((now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
       this.previewData.age = years;
+      let address = this.previewData.addressLine1[0].value 
+                      + (this.previewData.addressLine2[0].value ? ', ' + this.previewData.addressLine2[0].value : '')
+                      + (this.previewData.addressLine3[0].value ? ', ' + this.previewData.addressLine3[0].value : '');
+      this.previewData.primaryAddress = address;
+      address = this.previewData.addressLine1[1].value 
+                  + (this.previewData.addressLine2[1].value ? ', ' + this.previewData.addressLine2[1].value : '')
+                  + (this.previewData.addressLine3[1].value ? ', ' + this.previewData.addressLine3[1].value : '');
+      this.previewData.secondaryAddress = address;
       console.log(this.previewData);
       if (this.previewData['fullName'][1].language === 'ARB') {
         this.secondaryLanguage = 'ar';
