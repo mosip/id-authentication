@@ -31,6 +31,7 @@
                      </ImageView>
                      <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="10.0" prefHeight="540.0" prefWidth="918.0" visible="false">
                     	<children>
+                    	 <fx:include source="DocumentScan.fxml" /> 
                       <Button fx:id="pane2NextBtn" layoutX="770.0" layoutY="480.0" mnemonicParsing="false" onAction="#saveDetail" styleClass="RegbuttonStyle" text="%next" />
                   	   <Button fx:id="pane2PrevBtn" layoutX="700.0" layoutY="480.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" styleClass="RegbuttonStyle" text="%previous" />
                            <AnchorPane id="biometricException" layoutX="50.0" layoutY="280.0">
@@ -55,7 +56,7 @@
                                  <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
                                  <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" onAction="#fetchPreRegistration" text="%fetch" />
                                  <Line endX="700.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
-                                    <AnchorPane layoutX="31.0" layoutY="75.0">
+                                    <AnchorPane fx:id="applicationLanguagePane" layoutX="31.0" layoutY="75.0">
                                        <children>
                                           <Label fx:id="fullNameLabel" layoutX="13.0" prefHeight="10.0" prefWidth="320.0" text="%fullName" />
                                           <TextField id="fullName" fx:id="fullName" layoutX="13.0" layoutY="15.0" prefHeight="10.0" prefWidth="320.0" />
@@ -90,7 +91,6 @@
                                              <TextField fx:id="addressLine1" layoutX="14.0" layoutY="25.0" prefHeight="30.0" prefWidth="320.0" />
                                              <Label layoutX="17.0" layoutY="60.0" text="%addressLine2" />
                                              <TextField fx:id="addressLine2" layoutX="14.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
-                                  		   <Button layoutX="245.0" layoutY="129.0" mnemonicParsing="false" text="Copy Address" />
                                              <Label layoutX="17.0" layoutY="170.0" text="%region" />
                                              <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" onAction="#addProvince" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
                                              <Label layoutX="180.0" layoutY="170.0" text="%province" />
@@ -101,15 +101,17 @@
                                              <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                              <Label layoutX="17.0" layoutY="275.0" text="%postalCode" />
                                              <TextField fx:id="postalCode" layoutX="14.0" layoutY="292.0" prefHeight="30.0" prefWidth="157.0" />
+                                                <TextField fx:id="addressLine3" layoutX="14.0" layoutY="129.0" prefHeight="30.0" prefWidth="320.0" />
+                                                <Label layoutX="17.0" layoutY="114.0" text="%addressLine3" />
                                           </children>
                                        </AnchorPane>
                                           <Label fx:id="mobileNoLabel" layoutX="176.0" layoutY="410.0" text="%mobileNo" />
                                           <TextField fx:id="mobileNo" layoutX="180.0" layoutY="427.0" prefHeight="30.0" prefWidth="161.0" />
                                           <Label fx:id="cniOrPinNumberLabel" layoutX="16.0" layoutY="462.0" text="%cniOrPinNumber" />
                                           <TextField fx:id="cniOrPinNumber" layoutX="14.0" layoutY="480.0" prefHeight="35.0" prefWidth="159.0" />
-                                          <Label layoutX="180.0" layoutY="463.0" text="%emailId" />
+                                          <Label fx:id="emailIdLabel" layoutX="180.0" layoutY="463.0" text="%emailId" />
                                            <TextField fx:id="emailId" layoutX="183.0" layoutY="476.0" prefHeight="39.0" prefWidth="161.0" />
-                                          <AnchorPane fx:id="childSpecificFields" disable="true" layoutX="7.0" layoutY="530.0" prefHeight="124.0" prefWidth="345.0" visible="true">
+                                          <AnchorPane fx:id="childSpecificFields" disable="true" layoutX="7.0" layoutY="530.0" prefHeight="124.0" prefWidth="345.0" visible="false">
                                              <children>
                                                 <Label layoutX="5.0" layoutY="1.0" text="%parentName" />
                                                 <TextField fx:id="parentName" layoutX="5.0" layoutY="21.0" prefHeight="30.0" prefWidth="320.0" />
@@ -121,7 +123,7 @@
                                     </AnchorPane>
                                          <Button fx:id="autoFillBtn" layoutX="720.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                                     <Button fx:id="nextBtn" layoutX="700.0" layoutY="783.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" styleClass="RegbuttonStyle" text="%next" />
-                                    <AnchorPane layoutX="445.0" layoutY="75.0">
+                                    <AnchorPane fx:id="localLanguagePane" layoutX="445.0" layoutY="75.0">
                                        <children>
                                           <Label fx:id="fullNameLocalLanguageLabel" layoutX="118.0" prefHeight="10.0" prefWidth="320.0" text="FullName" />
                                              <TextField id="fullNameLocalLanguage" fx:id="fullNameLocalLanguage" layoutX="113.0" layoutY="15.0" prefHeight="10.0" prefWidth="320.0" />
@@ -161,7 +163,6 @@
                                                 <TextField fx:id="addressLine1LocalLanguage" layoutX="55.0" layoutY="28.0" prefHeight="20.0" prefWidth="320.0" />
                                                 <Label fx:id="addressLine2LocalLanguagelabel" layoutX="55.0" layoutY="60.0" text="%addressLine2" />
                                                 <TextField fx:id="addressLine2LocalLanguage" layoutX="55.0" layoutY="77.0" prefHeight="20.0" prefWidth="320.0" />
-                                                <Button layoutX="280.0" layoutY="128.0" mnemonicParsing="false" text="Copy Address" />
                                                 <Label fx:id="regionLocalLanguageLabel" layoutX="55.0" layoutY="170.0" text="%region" />
                                                 <ComboBox fx:id="regionLocalLanguage" layoutX="55.0" layoutY="188.0" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
                                                 <Label fx:id="provinceLocalLanguageLabel" layoutX="220.0" layoutY="170.0" text="%province" />
@@ -182,6 +183,8 @@
                                                 </ImageView>
                                                 <TextField fx:id="postalCodeLocalLanguage" layoutX="51.0" layoutY="278.0" prefHeight="39.0" prefWidth="157.0" />
                                                 <Label fx:id="postalCodeLocalLanguageLabel" layoutX="54.0" layoutY="263.0" text="%postalCode" />
+                                                <Label fx:id="addressLine3LocalLanguagelabel" layoutX="55.0" layoutY="114.0" text="%addressLine3" />
+                                                <TextField fx:id="addressLine3LocalLanguage" layoutX="55.0" layoutY="127.0" prefHeight="30.0" prefWidth="320.0" />
                                              </children>
                                           </AnchorPane>
                                           <Label fx:id="mobileNoLocalLanguageLabel" layoutX="274.0" layoutY="397.0" text="%mobileNo" />
@@ -190,7 +193,7 @@
                                           <Label fx:id="cniOrPinNumberLocalLanguageLabel" layoutX="274.0" layoutY="455.0" text="%cniOrPinNumber" />
                                           <TextField fx:id="emailIdLocalLanguage" layoutX="277.0" layoutY="468.0" prefHeight="39.0" prefWidth="161.0" />
                                           <Label fx:id="emailIdLocalLanguageLabel" layoutX="110.0" layoutY="460.0" text="%emailId" />
-                                          <AnchorPane fx:id="childSpecificFieldsLocal" disable="true" layoutX="83.0" layoutY="530.0" prefHeight="124.0" prefWidth="398.0" visible="true">
+                                          <AnchorPane fx:id="childSpecificFieldsLocal" disable="true" layoutX="83.0" layoutY="530.0" prefHeight="124.0" prefWidth="398.0" visible="false">
                                              <children>
                                                 <Label fx:id="parentNameLocalLanguageLabel" layoutX="29.0" layoutY="1.0" text="%parentName" />
                                                 <TextField fx:id="parentNameLocalLanguage" layoutX="30.0" layoutY="21.0" prefHeight="30.0" prefWidth="320.0" />

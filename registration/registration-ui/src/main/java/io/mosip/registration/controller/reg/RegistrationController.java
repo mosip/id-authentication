@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +15,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.imageio.IIOImage;
@@ -90,7 +88,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -175,11 +172,6 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label uinIdLocalLanguageLabel;
-
-	@FXML
-	private DatePicker ageDatePicker;
-
-	private DatePicker autoAgeDatePicker = new DatePicker();
 
 	@FXML
 	private TextField ageField;
@@ -389,14 +381,35 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TitledPane authenticationTitlePane;
+	
 
+	@FXML
+	private AnchorPane dob;
+
+	
+	@FXML
+	private TextField dd;
+
+	@FXML
+	private TextField mm;
+
+	@FXML
+	private TextField yyyy;
+	
+	@FXML
+	private TextField ddLocalLanguage;
+
+	@FXML
+	private TextField mmLocalLanguage;
+
+	@FXML
+	private TextField yyyyLocalLanguage;
+	
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
 
 	@Autowired
 	private WebCameraController webCameraController;
-
-	private boolean dobSelectionFromCalendar = true;
 
 	@Autowired
 	private IdValidator<String> pridValidatorImpl;
@@ -429,7 +442,13 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private Label emailIdLabel;
 	@FXML
-	private Label cnieLabel;
+	private Label cniOrPinNumberLabel;
+	@FXML
+	private AnchorPane applicationLanguagePane;
+	@FXML
+	private AnchorPane localLanguagePane;
+	@Autowired
+	DateValidation dateValidation;
 
 	FXUtils fxUtils;
 	List<LocationDto> locationDtoRegion;
@@ -485,18 +504,14 @@ public class RegistrationController extends BaseController {
 			switchedOn = new SimpleBooleanProperty(false);
 			switchedOnForBiometricException = new SimpleBooleanProperty(false);
 			isChild = true;
-			ageDatePicker.setDisable(false);
 			toggleFunction();
 			toggleFunctionForBiometricException();
 			ageFieldValidations();
-			ageValidationInDatePicker();
 			listenerOnFields();
 			loadLocalLanguageFields();
 			loadKeyboard();
 			ageField.setDisable(true);
 			accord.setExpandedPane(demoGraphicTitlePane);
-			fxUtils.dateFormatter(ageDatePicker);
-			fxUtils.disableFutureDays(ageDatePicker);
 			addRegions();
 
 			if (isEditPage() && getRegistrationDtoContent() != null) {
@@ -519,6 +534,9 @@ public class RegistrationController extends BaseController {
 			for (Node node : nodes) {
 				node.setDisable(true);
 			}
+			
+			applicationLanguagePane.setDisable(false);
+			localLanguagePane.setDisable(false);
 			paneLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 			fetchBtn.setVisible(false);
 			headerImage.setVisible(false);
@@ -557,7 +575,7 @@ public class RegistrationController extends BaseController {
 			emailIdLocalLanguageLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isContactDetails());
 
 			cniOrPinNumber.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			cnieLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
+			cniOrPinNumberLabel.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
@@ -652,21 +670,12 @@ public class RegistrationController extends BaseController {
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
-
+			dd.setText((String)SessionContext.getInstance().getMapObject().get("dd")); 
+			mm.setText((String)SessionContext.getInstance().getMapObject().get("mm")); 
+			yyyy.setText((String)SessionContext.getInstance().getMapObject().get("yyyy")); 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
 		
-			if (demo.getIdentity().getDateOfBirth() != null && getAgeDatePickerContent() != null
-					&& dobSelectionFromCalendar) {
-				ageDatePicker.setValue(getAgeDatePickerContent().getValue());
-			} else {
-			    switchedOn.set(true);
-				ageDatePicker.setDisable(true);
-				ageField.setDisable(false);
-				ageField.setText(String.valueOf(demo.getIdentity().getAge()));
-				if (isEditPage())
-					autoAgeDatePicker.setValue(getAgeDatePickerContent().getValue());
-			}
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child) != null) {
 
 				boolean isChild = (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child);
@@ -823,6 +832,12 @@ public class RegistrationController extends BaseController {
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
 				anchorPaneRegistration.setPrefHeight(700.00);
 				demoGraphicTitlePane.setExpanded(true);
+				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
+				dateOfBirth  = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant()); ;
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,dateOfBirth); 
+				SessionContext.getInstance().getMapObject().put("dd",dd.getText()); 
+				SessionContext.getInstance().getMapObject().put("mm",mm.getText()); 
+				SessionContext.getInstance().getMapObject().put("yyyy",yyyy.getText()); 
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO SECOND DEMOGRAPHIC PANE", APPLICATION_NAME,
@@ -896,8 +911,6 @@ public class RegistrationController extends BaseController {
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, isChild);
 				demographicInfoDTO = buildDemographicInfo();
 
-				dobSelectionFromCalendar = ageDatePicker.getValue() != null;
-
 				if (isChild) {
 
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
@@ -914,14 +927,6 @@ public class RegistrationController extends BaseController {
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Saved the demographic fields to DTO");
-
-				if (ageDatePicker.getValue() != null) {
-					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT,
-							ageDatePicker);
-				} else {
-					SessionContext.getInstance().getMapObject().put(RegistrationConstants.AGE_DATEPICKER_CONTENT,
-							autoAgeDatePicker);
-				}
 
 				toggleIrisCaptureVisibility(false);
 				togglePhotoCaptureVisibility(false);
@@ -965,6 +970,8 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
+	
+	Date dateOfBirth;
 
 	@SuppressWarnings("unchecked")
 	private DemographicInfoDTO buildDemographicInfo() {
@@ -985,11 +992,8 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(dateAnchorPane.isDisabled() ? null
-								: DateUtils.formatDate(
-										Date.from((ageDatePicker.getValue() == null ? autoAgeDatePicker : ageDatePicker)
-												.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-										"yyyy/MM/dd")))
+						.with(identity -> identity
+								.setDateOfBirth(DateUtils.formatDate(dateOfBirth,"yyyy/MM/dd")))
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? 0 : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
@@ -1408,40 +1412,6 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * Validating the age field for the child/Infant check.
-	 */
-	public void ageValidationInDatePicker() {
-		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validating the age given by DatePiker");
-
-			if (ageDatePicker.getValue() != null) {
-				LocalDate selectedDate = ageDatePicker.getValue();
-				Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-				long ageInMilliSeconds = new Date().getTime() - date.getTime();
-				long ageInDays = TimeUnit.MILLISECONDS.toDays(ageInMilliSeconds);
-				int age = (int) ageInDays / 365;
-				if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
-					childSpecificFields.setVisible(true);
-					childSpecificFieldsLocal.setVisible(true);
-					isChild = true;
-				} else {
-					isChild = false;
-					childSpecificFields.setVisible(false);
-					childSpecificFieldsLocal.setVisible(false);
-				}
-				// to populate age based on date of birth
-				ageField.setText("" + (Period.between(ageDatePicker.getValue(), LocalDate.now()).getYears()));
-			}
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validated the age given by DatePiker");
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - VALIDATION OF AGE FOR DATEPICKER FAILED ", APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-		}
-	}
-
-	/**
 	 * Listening on the fields for any operation
 	 */
 	private void listenerOnFields() {
@@ -1464,7 +1434,10 @@ public class RegistrationController extends BaseController {
 			fxUtils.populateLocalComboBox(region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(province, provinceLocalLanguage);
 			fxUtils.populateLocalComboBox(localAdminAuthority, localAdminAuthorityLocalLanguage);
-			copyAddressImage.setOnMouseEntered((e) -> {
+	/*		dateValidation.validateDate(dd, mm,yyyy, validation, fxUtils);
+			dateValidation.validateMonth(dd, mm,yyyy, validation, fxUtils);
+			dateValidation.validateYear(dd, mm, yyyy, validation, fxUtils);
+	*/		copyAddressImage.setOnMouseEntered((e) -> {
 				copyAddressLabel.setVisible(true);
 			});
 			copyAddressImage.setOnMouseExited((e) -> {
@@ -1500,8 +1473,7 @@ public class RegistrationController extends BaseController {
 					} else {
 						age = Integer.parseInt(ageField.getText());
 						LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-						LocalDate dob = currentYear.minusYears(age);
-						autoAgeDatePicker.setValue(dob);
+						dateOfBirth  = Date.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant()); 
 						if (age < Integer.parseInt(AppConfig.getApplicationProperty("age_limit_for_child"))) {
 							childSpecificFields.setVisible(true);
 							childSpecificFieldsLocal.setVisible(true);
@@ -1549,20 +1521,16 @@ public class RegistrationController extends BaseController {
 						toggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						ageField.clear();
-						ageDatePicker.setValue(null);
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
-						ageDatePicker.setDisable(true);
 						ageField.setDisable(false);
 
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
-						ageDatePicker.setValue(null);
 						childSpecificFields.setVisible(false);
 						childSpecificFieldsLocal.setVisible(false);
-						ageDatePicker.setDisable(false);
 						ageField.setDisable(true);
 
 					}
@@ -1602,6 +1570,12 @@ public class RegistrationController extends BaseController {
 		excludedIds.add("cityLocalLanguage");
 		excludedIds.add("provinceLocalLanguage");
 		excludedIds.add("localAdminAuthorityLocalLanguage");
+		excludedIds.add("dd");
+		excludedIds.add("mm");
+		excludedIds.add("yyyy");
+		excludedIds.add("ddLocalLanguage");
+		excludedIds.add("mmLocalLanguage");
+		excludedIds.add("yyyyLocalLanguage");
 
 		validation.setChild(isChild);
 		validation.setValidationMessage();
@@ -1676,11 +1650,6 @@ public class RegistrationController extends BaseController {
 	public RegistrationDTO getRegistrationDtoContent() {
 		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-	}
-
-	private DatePicker getAgeDatePickerContent() {
-		return (DatePicker) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_AGE_DATA);
 	}
 
 	private Boolean isEditPage() {
