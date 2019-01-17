@@ -34,7 +34,6 @@ import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
-import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
 import io.mosip.registration.dto.mastersync.TemplateDto;
 import io.mosip.registration.dto.mastersync.TemplateFileFormatDto;
 import io.mosip.registration.dto.mastersync.TemplateTypeDto;
@@ -242,7 +241,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into Insert Master Sync Data..");
 
-		List<RegistrationCenterDto> regCenter = masterSyncDto.getRegistrationCenter();
 		List<MachineDto> masterMachineDto = masterSyncDto.getMachineDetails();
 		List<MachineSpecificationDto> masterMachineSpecDto = masterSyncDto.getMachineSpecification();
 		List<MachineTypeDto> masterMachineTypeDto = masterSyncDto.getMachineType();
@@ -342,7 +340,6 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 			List<MasterReasonList> masterReasonListDtoEntity = MetaDataUtils.setCreateMetaData(masterReasonListDto,
 					MasterReasonList.class);
 			masterSyncReasonListRepository.saveAll(masterReasonListDtoEntity);
-			// MetaDataUtils.setCreateMetaData(regCenter, MasterRegistrationCenter.class);
 
 			List<MasterTemplateFileFormat> masterTemplateFileDtoEntity = MetaDataUtils
 					.setCreateMetaData(masterTemplateFileDto, MasterTemplateFileFormat.class);

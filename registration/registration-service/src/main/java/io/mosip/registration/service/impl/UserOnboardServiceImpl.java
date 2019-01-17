@@ -1,6 +1,5 @@
 package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOARD;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -34,19 +33,17 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
  */
 @Service
 public class UserOnboardServiceImpl implements UserOnboardService {
-	
+
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
-	
+
 	@Value("${USER_ON_BOARD_THRESHOLD_LIMIT}")
 	private int UserOnBoardThresholdLimit;
-	
+
 	/**
 	 * logger for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardServiceImpl.class);
-	
-	
 
 	/*
 	 * (non-Javadoc)
@@ -76,7 +73,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 		} else {
 
-			responseDTO = buildErrorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
+			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE,
 					RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
 		}
 
@@ -90,18 +87,16 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 	 * @return the string
 	 */
 	private ResponseDTO save(BiometricDTO biometricDTO) {
-		
+
 		ResponseDTO responseDTO = null;
 		String onBoardingResponse = RegistrationConstants.EMPTY;
-		
-		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-				"Entering save method");
-		
+
+		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering save method");
+
 		try {
-			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"Entering insert method");
-			
+
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering insert method");
+
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
 			if (onBoardingResponse.equals(RegistrationConstants.success)) {
@@ -114,85 +109,84 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 				responseDTO.setSuccessResponseDTO(sucessResponse);
 
 			}
-			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"user onbaording sucessful");
+
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");
 
 		} catch (RegBaseUncheckedException uncheckedException) {
 
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					uncheckedException.getMessage() + onBoardingResponse);
 
-			responseDTO = buildErrorRespone(RegistrationConstants.USER_ON_BOARDING_EXCEPTION_MSG_CODE,
+			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_EXCEPTION_MSG_CODE,
 					RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE);
-			
+
 		} catch (RuntimeException runtimeException) {
 
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + onBoardingResponse);
 
-			responseDTO = buildErrorRespone(RegistrationConstants.USER_ON_BOARDING_EXCEPTION_MSG_CODE,
+			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_EXCEPTION_MSG_CODE,
 					RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE);
 		}
 
 		return responseDTO;
 
 	}
-	
-	/**
-	 * Builds the error respone.
-	 *
-	 * @param errorCode the error code
-	 * @param message   the message
-	 * @return the response DTO
-	 */
-	private ResponseDTO buildErrorRespone(final String errorCode, final String message) {
 
-		ResponseDTO response = new ResponseDTO();
-
-		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<>();
-
-		/* Error response */
-		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setCode(errorCode);
-		errorResponse.setInfoType(RegistrationConstants.ERROR);
-		errorResponse.setMessage(message);
-
-		errorResponses.add(errorResponse);
-
-		/* Adding list of error responses to response */
-		response.setErrorResponseDTOs(errorResponses);
-
-		return response;
-	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.UserOnboardService#getStationID(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.UserOnboardService#getStationID(java.lang.
+	 * String)
 	 */
 	@Override
-	public Map<String,String> getMachineCenterId() {
+	public Map<String, String> getMachineCenterId() {
 
-		Map<String,String> centerIdMap = new HashMap<>();
+		Map<String, String> centerIdMap = new HashMap<>();
 		String stationID = RegistrationConstants.EMPTY;
 		String centerID = RegistrationConstants.EMPTY;
 
 		try {
-			
+
 			String macId = RegistrationSystemPropertiesChecker.getMachineId();
 			// get stationID
 			stationID = userOnBoardDao.getStationID(macId);
 			// get CenterID
 			centerID = userOnBoardDao.getCenterID(stationID);
-			
+
 			centerIdMap.put(RegistrationConstants.USER_STATION_ID, stationID);
 			centerIdMap.put(RegistrationConstants.USER_CENTER_ID, centerID);
-			
-			
+
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, regBaseCheckedException.getMessage());
 		}
 
 		return centerIdMap;
+	}
+
+	/**
+	 * Builds the error respone.
+	 *
+	 * @param errCode the error code
+	 * @param errMsg  the message
+	 * @return the response DTO
+	 */
+	private ResponseDTO errorRespone(final String errCode, final String errMsg) {
+
+		ResponseDTO responseDto = new ResponseDTO();
+
+		LinkedList<ErrorResponseDTO> errResponsesList = new LinkedList<>();
+
+		/* Error response Dto */
+		ErrorResponseDTO errResponse = new ErrorResponseDTO();
+		errResponse.setCode(errCode);
+		errResponse.setInfoType(RegistrationConstants.ERROR);
+		errResponse.setMessage(errMsg);
+		errResponsesList.add(errResponse);
+
+		responseDto.setErrorResponseDTOs(errResponsesList);
+
+		return responseDto;
 	}
 
 }
