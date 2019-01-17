@@ -30,6 +30,10 @@ public class BioAuthServiceImpl implements BioAuthService {
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
+	/**
+	 * Validate Bio Auth details based on Bio auth request and Biometric Identity
+	 * values
+	 */
 	@Override
 	public AuthStatusInfo validateBioDetails(AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> bioIdentity) throws IdAuthenticationBusinessException {
@@ -46,6 +50,12 @@ public class BioAuthServiceImpl implements BioAuthService {
 
 	}
 
+	/**
+	 * Constucts Match inputs based on Matched Bio Authtype and Bio Match type
+	 * 
+	 * @param authRequestDTO
+	 * @return
+	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
 		return idInfoHelper.constructMatchInput(authRequestDTO, BioAuthType.values(), BioMatchType.values());
 	}

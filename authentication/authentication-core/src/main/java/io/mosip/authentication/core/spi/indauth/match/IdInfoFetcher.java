@@ -17,7 +17,7 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;;
  * @author Loganathan.Sekaran
  */
 public interface IdInfoFetcher {
-	
+
 	/**
 	 * Get Language code for Language tupe.
 	 *
@@ -25,9 +25,9 @@ public interface IdInfoFetcher {
 	 * @return language code
 	 */
 	public String getLanguageCode(LanguageType langType);
-	
+
 	/**
-	 * Get language name for language code.
+	 * Get language name for Match Properties based on language code.
 	 *
 	 * @param languageCode language code
 	 * @return language name
@@ -38,11 +38,11 @@ public interface IdInfoFetcher {
 	 * Gets the identity info.
 	 *
 	 * @param matchType the match type
-	 * @param identity the identity
+	 * @param identity  the identity
 	 * @return the identity info
 	 */
 	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity);
-	
+
 	/**
 	 * Gets the iris provider.
 	 *
@@ -50,7 +50,7 @@ public interface IdInfoFetcher {
 	 * @return the iris provider
 	 */
 	public MosipBiometricProvider getIrisProvider(BioInfo bioinfovalue);
-	
+
 	/**
 	 * Gets the finger print provider.
 	 *
@@ -58,9 +58,5 @@ public interface IdInfoFetcher {
 	 * @return the finger print provider
 	 */
 	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue);
-	
-	
-	
-	
 
 }

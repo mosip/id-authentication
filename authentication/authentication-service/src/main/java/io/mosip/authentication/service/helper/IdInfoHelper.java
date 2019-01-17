@@ -88,11 +88,12 @@ public class IdInfoHelper implements IdInfoFetcher {
 	@Autowired
 	private Environment environment;
 
+	/** The BiometricProviderFactory value */
 	@Autowired
 	private BiometricProviderFactory biometricProviderFactory;
 
 	/**
-	 * The environment.
+	 * Fetch language name for Match Properties based on language code.
 	 *
 	 * @param languageCode the language code
 	 * @return the language name
@@ -112,12 +113,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 		return Optional.ofNullable(languagName);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getLanguageCode(
-	 * io.mosip.authentication.core.dto.indauth.LanguageType)
+	/**
+	 * Fetch language code from properties
+	 *
+	 * @param languageCode the language code
+	 * @return the language code
 	 */
 	public String getLanguageCode(LanguageType langType) {
 		if (langType == LanguageType.PRIMARY_LANG) {
@@ -127,13 +127,11 @@ public class IdInfoHelper implements IdInfoFetcher {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher#getIdentityInfo(
-	 * io.mosip.authentication.core.spi.indauth.match.MatchType,
-	 * io.mosip.authentication.core.dto.indauth.IdentityDTO)
+	/**
+	 * Fetch Identity info based on Match type and Identity
+	 *
+	 * @param languageCode the language code
+	 * @return Map
 	 */
 	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity) {
 		String language = getLanguageCode(matchType.getLanguageType());
@@ -141,7 +139,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	/**
-	 * Gets the info.
+	 * Fetch the Identity info based on Identity Info map and Language.
 	 *
 	 * @param idInfosMap           the id infos map
 	 * @param languageForMatchType the language for match type
@@ -162,7 +160,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 	}
 
 	/**
-	 * Gets the identity value.
+	 * Fetch the identity value.
 	 *
 	 * @param name                 the name
 	 * @param languageForMatchType the language for match type
