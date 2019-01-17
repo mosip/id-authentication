@@ -45,13 +45,13 @@ public class CryptomanagerUtil {
 	/**
 	 * Asymmetric Algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
 
 	/**
 	 * Symmetric Algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.crypto.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 
 	/**
@@ -76,7 +76,7 @@ public class CryptomanagerUtil {
 	 * {@link DataMapper} instance.
 	 */
 	@Autowired
-	private DataMapper dataMapper;
+	private DataMapper<CryptomanagerRequestDto,KeymanagerSymmetricKeyRequestDto> dataMapper;
 
 	/**
 	 * {@link RestTemplate} instance

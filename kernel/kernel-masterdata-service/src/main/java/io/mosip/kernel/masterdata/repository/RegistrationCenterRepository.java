@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -85,22 +86,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
 
 	/**
-	 * This method trigger query to fetch registration centers based on hierarchy
-	 * level,text input and language code
-	 * 
-	 * @param languageCode
-	 *            provided by user
-	 * @param hierarchyLevel
-	 *            provided by user
-	 * @param text
-	 *            provided by user
-	 * @return list of {@link RegistrationCenter} fetched from database
-	 */
-	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = ?1 AND loc.hierarchy_level_name = ?2 AND UPPER(loc.name) = UPPER(?3) AND (r.is_deleted is null or r.is_deleted = false) ", nativeQuery = true)
-	List<RegistrationCenter> findRegistrationCenterHierarchyLevelName(String languageCode, String hierarchyLevel,
-			String text);
-
-	/**
 	 * This method trigger query to fetch all registration centers based on deletion
 	 * condition.
 	 * 
@@ -150,19 +135,14 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 
 	/**
 	 * This method trigger query to fetch registration centers based on hierarchy
-	 * level,text input and language code
+	 * List of location_code
 	 * 
-	 * @param languageCode
-	 *            provided by user
-	 * @param hierarchyLevel
-	 *            provided by user
 	 * @param texts
 	 *            provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */
-	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time, r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = :languageCode AND loc.hierarchy_level = :hierarchyLevel AND UPPER(loc.name) in :texts AND (r.is_deleted is null or r.is_deleted = false)", nativeQuery = true)
-	List<RegistrationCenter> findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			@Param("languageCode") String languageCode, @Param("hierarchyLevel") int hierarchyLevel,
-			@Param("texts") List<String> texts);
+
+	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time, r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r  WHERE r.location_code in :codes AND (r.is_deleted is null or r.is_deleted = false)", nativeQuery = true)
+	List<RegistrationCenter> findRegistrationCenterByListOfLocationCode(@Param("codes") Set<String> codes);
 
 }

@@ -147,8 +147,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		assertThat(ValidationUtil.requstParamValidator(requestMap), is(true));
 	}
 
@@ -157,8 +157,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		Mockito.when(ValidationUtil.requstParamValidator(requestMap))
 				.thenThrow(InvalidRequestParameterException.class);
 	}
@@ -168,8 +168,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, null);
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		Mockito.when(ValidationUtil.requstParamValidator(requestMap))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
@@ -179,8 +179,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		Mockito.when(ValidationUtil.requstParamValidator(requestMap))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
@@ -190,8 +190,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, null);
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		Mockito.when(ValidationUtil.requstParamValidator(requestMap))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
@@ -201,8 +201,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		Mockito.when(ValidationUtil.requstParamValidator(requestMap))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
@@ -212,8 +212,8 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, null);
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		Mockito.when(ValidationUtil.requstParamValidator(requestMap))
 		.thenThrow(InvalidRequestParameterException.class);
 	}
@@ -224,7 +224,7 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
 		requestMap.put(RequestCodes.FROM_DATE, "");
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		assertThat(ValidationUtil.requstParamValidator(requestMap), is(true));
 	}
 	
@@ -234,7 +234,7 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
 		requestMap.put(RequestCodes.FROM_DATE, null);
-		requestMap.put(RequestCodes.TO_DATE, "2018-12-19T19:52:16.239Z");
+		requestMap.put(RequestCodes.TO_DATE, "2018-12-19 19:52:16");
 		assertThat(ValidationUtil.requstParamValidator(requestMap), is(true));
 	}
 	
@@ -243,7 +243,7 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
 		requestMap.put(RequestCodes.TO_DATE, "");
 		assertThat(ValidationUtil.requstParamValidator(requestMap), is(true));
 	}
@@ -253,7 +253,7 @@ public class ValidationUtilTest {
 		requestMap.put(RequestCodes.USER_ID, "9900806086");
 		requestMap.put(RequestCodes.PRE_REGISTRATION_ID, "70694681371453");
 		requestMap.put(RequestCodes.STATUS_CODE, "Pending_Appointment");
-		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19T18:52:16.239Z");
+		requestMap.put(RequestCodes.FROM_DATE, "2018-12-19 18:52:16");
 		requestMap.put(RequestCodes.TO_DATE, null);
 		assertThat(ValidationUtil.requstParamValidator(requestMap), is(true));
 	}

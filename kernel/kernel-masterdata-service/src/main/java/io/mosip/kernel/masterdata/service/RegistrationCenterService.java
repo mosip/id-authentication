@@ -97,10 +97,11 @@ public interface RegistrationCenterService {
 	 * 
 	 * @param hierarchyLevel
 	 *            input from user
-	 * @param text
-	 *            input from user
 	 * @param languageCode
 	 *            input from user
+	 * @param name
+	 *            input from user
+	 *
 	 * @return list of registration centers
 	 * @throws MasterDataServiceException
 	 *             when data not fetched from DB
@@ -108,7 +109,7 @@ public interface RegistrationCenterService {
 	 *             when data not found
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
-			String hierarchyLevel, String text, String languageCode);
+			String languageCode, Integer hierarchyLevel, String name);
 
 	/**
 	 * This service method can be used to create registration center.
@@ -157,7 +158,7 @@ public interface RegistrationCenterService {
 	 * 
 	 * @param hierarchyLevel
 	 *            input from user
-	 * @param texts
+	 * @param names
 	 *            input from user
 	 * @param languageCode
 	 *            input from user
@@ -168,6 +169,6 @@ public interface RegistrationCenterService {
 	 *             when data not found
 	 */
 	public RegistrationCenterResponseDto findRegistrationCenterByHierarchyLevelAndListTextAndlangCode(
-			String languageCode, Integer hierarchyLevel, List<String> texts);
+			String languageCode, Integer hierarchyLevel, List<String> names);
 
 }

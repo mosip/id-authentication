@@ -22,27 +22,50 @@ public class SystemFileIOException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param msg  pass the error message
+	 * Default constructor
 	 */
-	public SystemFileIOException(String msg) {
-		super("", msg);
+	public SystemFileIOException() {
+		super();
 	}
 
 	/**
-	 * @param errCode  pass the error code
-	 * @param msg  pass the error message
+	 * @param errorMessage
+	 *            pass the error message
 	 */
-	public SystemFileIOException(String errCode, String msg) {
-		super(errCode, msg);
+	public SystemFileIOException(String errorMessage) {
+		super("", errorMessage);
 	}
 
 	/**
-	 * @param errCode  pass the error code
-	 * @param msg  pass the error message
-	 * @param cause  pass the error cause
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
 	 */
-	public SystemFileIOException(String errCode, String msg, Throwable cause) {
-		super(errCode, msg, cause);
+	public SystemFileIOException(String errorCode, String errorMessage) {
+		super(errorCode, errorMessage, null);
+	}
+
+	/**
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public SystemFileIOException(String errorMessage, Throwable rootCause) {
+		super("", errorMessage, rootCause);
+	}
+
+	/**
+	 * @param errorCode
+	 *            pass the error code
+	 * @param errorMessage
+	 *            pass the error message
+	 * @param rootCause
+	 *            pass the cause
+	 */
+	public SystemFileIOException(String errorCode, String errorMessage, Throwable rootCause) {
+		super(errorCode, errorMessage, rootCause);
 	}
 
 }

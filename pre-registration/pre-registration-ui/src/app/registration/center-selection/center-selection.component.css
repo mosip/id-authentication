@@ -60,7 +60,8 @@
 .center-selection__button-container {
   width: 100%;
   height: 70px;
-  top: 45vh;
+  position: fixed;
+  bottom: 0;
   left: 0;
   padding-top: 10px;
   display: flex;

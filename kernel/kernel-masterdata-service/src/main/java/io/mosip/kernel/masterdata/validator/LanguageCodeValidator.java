@@ -12,8 +12,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.masterdata.constant.ValidLangCodeErrorCode;
-import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
+import lombok.Data;
 
 /**
  * To validate Language codes as per ISO:639-3 standard during creation and
@@ -23,6 +24,7 @@ import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
+@Data
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
 
 	@Autowired
@@ -37,9 +39,11 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Value("${mosip.kernel.supported-languages}")
 	private String supportedLanguages;
 
-	
-	/* (non-Javadoc)
-	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object, javax.validation.ConstraintValidatorContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object,
+	 * javax.validation.ConstraintValidatorContext)
 	 */
 	@Override
 	public boolean isValid(String langCode, ConstraintValidatorContext context) {
@@ -57,8 +61,7 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 					}
 				}
 			} catch (JSONException | RestClientException e) {
-				throw new MasterDataServiceException(
-						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
+				throw new RequestException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
 						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
 			}
 			return false;

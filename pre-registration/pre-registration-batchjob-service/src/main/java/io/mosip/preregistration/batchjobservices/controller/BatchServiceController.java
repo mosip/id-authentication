@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
 import io.mosip.preregistration.batchjobservices.service.BatchJobService;
 import io.mosip.preregistration.batchjobservices.service.impl.ExpiredStatusService;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.swagger.annotations.Api;
 
 @RestController
@@ -29,10 +29,10 @@ public class BatchServiceController {
 	@Autowired
 	private ExpiredStatusService expiredStatusService;
 	
-	@GetMapping(path="/state/ConsumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResponseDto<String>> demographicStatusUpdate(){
+	@GetMapping(path="/state/consumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MainResponseDTO<String>> demographicStatusUpdate(){
 		
-		ResponseDto<String> response=batchJobService.demographicConsumedStatus();
+		MainResponseDTO<String> response=batchJobService.demographicConsumedStatus();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -46,9 +46,9 @@ public class BatchServiceController {
 	}*/
 	
 	@GetMapping(path="state/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResponseDto<String>> expiredAppointments(){
+	public ResponseEntity<MainResponseDTO<String>> expiredAppointments(){
 		
-		ResponseDto<String> response=expiredStatusService.bookedPreIds();
+		MainResponseDTO<String> response=expiredStatusService.bookedPreIds();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

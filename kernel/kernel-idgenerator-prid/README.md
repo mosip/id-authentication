@@ -10,8 +10,8 @@
  ```
  
  **Properties to be added in Spring application environment using this component**
-
-[kernel-idgenerator-prid-dev.properties](../../config/kernel-idgenerator-prid-dev.properties)
+ 
+[application-dev.properties](../../config/application-dev.properties)
  
  **Database properties**
  
