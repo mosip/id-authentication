@@ -93,6 +93,8 @@ public class IdRequestValidator implements Validator {
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRequestValidator.class);
 
+	private static final String ID_REPO_SERVICE = "IdRepoService";
+
 	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "timestamp";
 
@@ -246,6 +248,8 @@ public class IdRequestValidator implements Validator {
 			try {
 				ridValidatorImpl.validateId(registrationId);
 			} catch (InvalidIDException e) {
+				mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "validateRegId",
+						"\n" + ExceptionUtils.getStackTrace(e));
 				errors.rejectValue(REGISTRATION_ID, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 			}
@@ -284,8 +288,7 @@ public class IdRequestValidator implements Validator {
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
-		} catch (FileIOException | NullJsonSchemaException
-				| NullJsonNodeException | JsonSchemaIOException e) {
+		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(),
@@ -316,8 +319,7 @@ public class IdRequestValidator implements Validator {
 			if (Objects.nonNull(documents) && documents instanceof List
 					&& !((List<Map<String, String>>) documents).isEmpty()) {
 				((List<Map<String, String>>) documents).parallelStream()
-						.filter(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT)))
-						.forEach(doc -> {
+						.filter(doc -> doc.containsKey(DOC_CAT) && Objects.nonNull(doc.get(DOC_CAT))).forEach(doc -> {
 							if (!identityMap.containsKey(doc.get(DOC_CAT))) {
 								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
@@ -362,6 +364,8 @@ public class IdRequestValidator implements Validator {
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 				}
 			} catch (IllegalArgumentException e) {
+				mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "validateReqTime",
+						"\n" + ExceptionUtils.getStackTrace(e));
 				errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 			}
@@ -382,6 +386,8 @@ public class IdRequestValidator implements Validator {
 			return mapper.readValue(mapper.writeValueAsBytes(identity), new TypeReference<Map<String, Object>>() {
 			});
 		} catch (IOException e) {
+			mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "convertToMap",
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST), e);
 		}

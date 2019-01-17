@@ -24,16 +24,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
+import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 import io.mosip.kernel.idrepo.util.DataValidationUtil;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import springfox.documentation.annotations.ApiIgnore;
@@ -46,6 +50,13 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoController {
 
+	private static final String RETRIEVE_IDENTITY = "retrieveIdentity";
+
+	/** The mosip logger. */
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoController.class);
+
+	private static final String ID_REPO_SERVICE = "IdRepoService";
+
 	private static final String ALL = "all";
 
 	private static final String UPDATE = "update";
@@ -55,6 +66,10 @@ public class IdRepoController {
 	private static final String TYPE = "type";
 
 	private static final String CREATE = "create";
+
+	private static final String ID_REPO_CONTROLLER = "IdRepoController";
+
+	private static final String ADD_IDENTITY = "addIdentity";
 
 	/** The id. */
 	@Resource
@@ -105,8 +120,12 @@ public class IdRepoController {
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.CREATED);
 		} catch (InvalidIDException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(CREATE));
 		} catch (IdRepoDataValidationException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(CREATE));
 		}
 	}
@@ -151,8 +170,12 @@ public class IdRepoController {
 			uinValidatorImpl.validateId(uin);
 			return new ResponseEntity<>(idRepoService.retrieveIdentity(uin, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(READ));
 		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(READ));
 		}
 	}
@@ -178,6 +201,8 @@ public class IdRepoController {
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(UPDATE));
 		}
 	}

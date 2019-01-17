@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
@@ -25,7 +26,6 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinHistory;
-import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 
 /**
  * The Class IdRepoEntityInterceptor.
@@ -35,6 +35,8 @@ import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 @Component
 public class IdRepoEntityInterceptor extends EmptyInterceptor {
 
+	private static final String ID_REPO_SERVICE = "IdRepoService";
+
 	private static final String UIN_DATA_HASH = "uinDataHash";
 
 	private static final String DECRYPT = "decrypt";
@@ -42,22 +44,10 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	private static final String UIN_DATA = "uinData";
 
 	/** The mosip logger. */
-	private transient Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
+	private transient Logger mosipLogger = IdRepoLogger.getLogger(IdRepoEntityInterceptor.class);
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4985336846122302850L;
-
-	/** The Constant DECRYPT_ENTITY. */
-	private static final String DECRYPT_ENTITY = "decryptEntity";
-
-	/** The Constant ENCRYPT_IDENTITY. */
-	private static final String ENCRYPT_IDENTITY = "encryptIdentity";
-
-	/** The Constant ID_REPO_SERVICE_IMPL. */
-	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 	/** The env. */
 	@Autowired
@@ -99,6 +89,8 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onSave",
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
@@ -125,6 +117,8 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				}
 			}
 		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onLoad",
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);

@@ -89,6 +89,9 @@ import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
 	private static final String ADD_IDENTITY = "addIdentity";
+	
+	/** The mosip logger. */
+	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
@@ -152,9 +155,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
-
-	/** The mosip logger. */
-	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
