@@ -10,6 +10,10 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
+/**
+ * The Enum IrisMatchingStrategy.
+ * @author Arun Bose S
+ */
 public enum IrisMatchingStrategy implements MatchingStrategy {
 	/** The Constant idvid. */
 	
@@ -42,9 +46,16 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 	
 	
 	
+	/** The Constant IDVID. */
 	private static final String IDVID = "idvid";
 
 
+	/**
+	 * Instantiates a new iris matching strategy.
+	 *
+	 * @param matchStrategyType the match strategy type
+	 * @param matchFunction the match function
+	 */
 	private IrisMatchingStrategy(MatchingStrategyType matchStrategyType,MatchFunction matchFunction) {
 		this.matchStrategyType=matchStrategyType;
 		this.matchFunction=matchFunction;
@@ -53,21 +64,32 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 	
 
 	
+	/** The match strategy type. */
 	private MatchingStrategyType matchStrategyType;
 	
+	/** The match function. */
 	private MatchFunction matchFunction;
 	
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getType()
+	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#getMatchFunction()
+	 */
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#match(java.util.Map, java.util.Map, java.util.Map)
+	 */
 	@Override
 	public int match(Map<String, String> reqValues, Map<String, String> entityValues,
 			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
@@ -75,6 +97,11 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 		return matchFunction.match(reqValues, entityValues, matchProperties);
 	}
 
+	/**
+	 * Gets the idvid.
+	 *
+	 * @return the idvid
+	 */
 	public static String getIdvid() {
 		return IDVID;
 	}

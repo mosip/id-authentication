@@ -55,11 +55,14 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class AuthFacadeImpl implements AuthFacade {
-
+	
+	/** The Constant DEMO_AUTHENTICATION_REQUESTED. */
 	private static final String DEMO_AUTHENTICATION_REQUESTED = "Demo Authentication requested";
 
+	/** The Constant OTP_AUTHENTICATION_REQUESTED. */
 	private static final String OTP_AUTHENTICATION_REQUESTED = "OTP Authentication requested";
 
+	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant STATUS_SUCCESS. */
@@ -96,13 +99,16 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;
-
+	
+	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
 
+	/** The BioAuthService */
 	@Autowired
 	private BioAuthService bioAuthService;
 
+	/** The NotificationService */
 	@Autowired
 	private NotificationService notificationService;
 

@@ -58,16 +58,8 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 		return null;
 	}
 
-	@Override
-	public double matchImage(Object reqInfo, Object entityInfo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	@Override
-	public double matchMultiImage(Object reqInfo, Object entityInfo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+
+	
 
 }

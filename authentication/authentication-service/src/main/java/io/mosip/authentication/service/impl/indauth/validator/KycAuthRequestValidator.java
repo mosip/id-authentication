@@ -21,6 +21,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  *
  * @author Prem Kumar
  * @author Dinesh Karuppiah.T
+ * 
+ * The Class For KycAuthRequestValidator extending the BaseAuthRequestValidator
  */
 
 @Component
