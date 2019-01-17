@@ -119,8 +119,8 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
-			String uin = ((Map<String, String>) reqInfo).get(IDVID);
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
+			String uin = reqInfoMap.get(IDVID);
 			if (reqInfoMap.containsKey(LEFTTEYE)) {
 				Map<String, String> requestInfo = new HashMap<>();
 				requestInfo.put(LEFTTEYE, reqInfoMap.get(LEFTTEYE));

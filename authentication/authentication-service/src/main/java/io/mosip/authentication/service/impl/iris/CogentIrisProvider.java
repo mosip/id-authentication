@@ -20,7 +20,6 @@ import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 public class CogentIrisProvider extends IrisProvider {
 
-	private Environment environment;
 	
 	public CogentIrisProvider(Environment environment) {
 		super(environment);
