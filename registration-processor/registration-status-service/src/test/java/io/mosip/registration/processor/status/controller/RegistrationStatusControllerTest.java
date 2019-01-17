@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.controller;
+/*package io.mosip.registration.processor.status.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,63 +35,63 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
-/**
+*//**
  * The Class RegistrationStatusControllerTest.
  * 
  * @author M1047487
- */
+ *//*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class RegistrationStatusControllerTest {
 
-	/** The registration status controller. */
+	*//** The registration status controller. *//*
 	@InjectMocks
 	RegistrationStatusController registrationStatusController = new RegistrationStatusController();
 
-	/** The registration status service. */
+	*//** The registration status service. *//*
 	@MockBean
 	RegistrationStatusService<String, InternalRegistrationStatusDto,RegistrationStatusDto> registrationStatusService;
 
-	/** The sync registration service. */
+	*//** The sync registration service. *//*
 	@MockBean
 	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
 
-	/** The sync registration dto. */
+	*//** The sync registration dto. *//*
 	@MockBean
 	SyncRegistrationDto syncRegistrationDto;
 
-	/** The mock mvc. */
+	*//** The mock mvc. *//*
 	@Autowired
 	private MockMvc mockMvc;
 
-	/** The registration ids. */
+	*//** The registration ids. *//*
 	private String registrationIds;
 
-	/** The registration dto list. */
+	*//** The registration dto list. *//*
 	private List<InternalRegistrationStatusDto> registrationDtoList;
 
-	/** The webApplicationContext. */
+	*//** The webApplicationContext. *//*
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
-	/** The list. */
+	*//** The list. *//*
 	private List<SyncRegistrationDto> list;
 	
-	/** The SyncResponseDtoList. */
+	*//** The SyncResponseDtoList. *//*
 	private List<SyncResponseDto> syncResponseDtoList;
 
-	/** The array to json. */
+	*//** The array to json. *//*
 	private String arrayToJson;
 	
-	/** The ridValidator. */
+	*//** The ridValidator. *//*
 	@MockBean
 	private RidValidator<String> ridValidator;
 
-	/**
+	*//**
 	 * Sets the up.
 	 * @throws JsonProcessingException
-	 */
+	 *//*
 	@Before
 	public void setUp() throws JsonProcessingException {
 
@@ -138,11 +138,11 @@ public class RegistrationStatusControllerTest {
 		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
 	}
 
-	/**
+	*//**
 	 * Search success test.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void searchSuccessTest() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders
@@ -151,11 +151,11 @@ public class RegistrationStatusControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
-	/**
+	*//**
 	 * Search failure test.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void searchFailureTest() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders
@@ -163,11 +163,11 @@ public class RegistrationStatusControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 
-	/**
+	*//**
 	 * Test creation of A new project succeeds.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void syncRegistrationControllerSuccessTest() throws Exception {
 
@@ -177,11 +177,11 @@ public class RegistrationStatusControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
 	}
 
-	/**
+	*//**
 	 * Sync registration controller failure check.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
@@ -191,3 +191,4 @@ public class RegistrationStatusControllerTest {
 	}
 
 }
+*/

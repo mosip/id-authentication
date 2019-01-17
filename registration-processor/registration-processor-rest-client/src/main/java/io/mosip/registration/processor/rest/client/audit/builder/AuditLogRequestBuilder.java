@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.rest.client.audit.builder;
 
+import java.time.OffsetDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ public class AuditLogRequestBuilder {
 			
 			auditRequestDto= new AuditRequestDto();
 			auditRequestDto.setDescription(description);
-			auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTime());
+			auditRequestDto.setActionTimeStamp(DateUtils.getCurrentDateTimeString());
 			auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
 			auditRequestDto.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString());
 			auditRequestDto.setCreatedBy(AuditLogConstant.SYSTEM.toString());
