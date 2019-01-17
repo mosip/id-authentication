@@ -128,7 +128,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
-		System.err.println();
+
 		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
@@ -165,7 +165,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = ex;
-		while (e.getCause() != null) {
+		while (e != null) {
 			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
 				response.setId(((IdRepoAppException) e).getId());
 			} else if (e instanceof IdRepoAppUncheckedException
@@ -174,7 +174,13 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			} else {
 				break;
 			}
-			e = e.getCause();
+
+			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
+					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
+				e = e.getCause();
+			} else {
+				break;
+			}
 		}
 
 		if (Objects.isNull(response.getId())) {
