@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
@@ -32,7 +34,6 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
-import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
@@ -40,17 +41,13 @@ import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
-import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
-import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
-import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
-import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -453,10 +450,44 @@ public class IdInfoHelper implements IdInfoFetcher {
 		listMatchOutputs.forEach((MatchOutput matchOutput) -> {
 			if (matchOutput.isMatched()) {
 				statusInfoBuilder.addAuthUsageDataBits(matchOutput.getMatchType().getMatchedBit());
+			} else {
+				prepareErrorList(matchOutput, statusInfoBuilder);
 			}
 		});
 	}
 
+	private void prepareErrorList(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+
+		if (matchOutput != null && !matchOutput.isMatched()) {
+			Optional<AuthType> authTypeForMatchType = null;
+			AuthType authType = null;
+			String category = matchOutput.getMatchType().getCategory().getType();
+			AuthType[] authTypes;
+			if (category.equalsIgnoreCase(Category.BIO.getType())) {
+				authTypes = BioAuthType.values();
+				authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+				
+				if (authTypeForMatchType.isPresent()) {
+					authType = authTypeForMatchType.get();
+					AuthError errors = null;
+
+					if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
+						errors = new AuthError(IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorCode(),
+								IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorMessage());
+					}
+
+					else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
+						errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
+								IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
+
+					}
+					statusInfoBuilder.addErrors(errors);
+				}
+			} 
+			//TODO to be applied for DEMO and OTP authentications
+
+		}
+	}
 	/**
 	 * Builds the match infos.
 	 *
