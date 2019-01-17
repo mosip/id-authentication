@@ -14,12 +14,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-import io.mosip.kernel.ridgenerator.entity.Rid;
-import io.mosip.kernel.ridgenerator.exception.EmptyInputException;
-import io.mosip.kernel.ridgenerator.exception.InputLengthException;
-import io.mosip.kernel.ridgenerator.exception.NullValueException;
-import io.mosip.kernel.ridgenerator.exception.RidException;
-import io.mosip.kernel.ridgenerator.repository.RidRepository;
+import io.mosip.kernel.idgenerator.rid.entity.Rid;
+import io.mosip.kernel.idgenerator.rid.exception.EmptyInputException;
+import io.mosip.kernel.idgenerator.rid.exception.InputLengthException;
+import io.mosip.kernel.idgenerator.rid.exception.NullValueException;
+import io.mosip.kernel.idgenerator.rid.exception.RidException;
+import io.mosip.kernel.idgenerator.rid.repository.RidRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

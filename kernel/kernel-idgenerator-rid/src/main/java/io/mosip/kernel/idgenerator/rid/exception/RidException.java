@@ -1,4 +1,4 @@
-package io.mosip.kernel.ridgenerator.exception;
+package io.mosip.kernel.idgenerator.rid.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 

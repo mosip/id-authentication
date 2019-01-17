@@ -22,7 +22,7 @@ public interface RidRepository extends BaseRepository<Rid, Integer> {
 	 * 
 	 * @return the entity.
 	 */
-	@Query(value = "SELECT r.currentSequenceNo FROM Rid r")
+	@Query(value = "select r.curr_seq_no FROM reg.rid_seq r ", nativeQuery = true)
 	Rid findLastRid();
 
 	/**
