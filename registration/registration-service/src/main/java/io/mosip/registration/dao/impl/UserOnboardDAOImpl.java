@@ -212,22 +212,29 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	 * io.mosip.registration.dao.MachineMappingDAO#getStationID(java.lang.String)
 	 */
 	@Override
-	public String getStationID(String macAddress) throws RegBaseCheckedException {
+	public String getStationID(String macAdres) throws RegBaseCheckedException {
 
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"getStationID() macAddress --> " + macAddress);
+		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+				"getStationID() macAddress --> " + macAdres);
 
 		try {
-			MachineMaster machineMaster = machineMasterRepository.findByMacAddress(macAddress);
 
-			if (machineMaster != null && machineMaster.getId() != null) {
-				return machineMaster.getId();
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
+
+			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByMacAddress(macAdres);
+
+			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getId() != null) {
+
+				return macAddressOfMachineMaster.getId();
+
 			} else {
+
 				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorCode(),
 						REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorMessage());
 			}
+
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_STATIONID_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
 					runtimeException.getMessage());
 		}
 	}
@@ -239,21 +246,30 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	 * io.mosip.registration.dao.MachineMappingDAO#getCenterID(java.lang.String)
 	 */
 	@Override
-	public String getCenterID(String stationID) throws RegBaseCheckedException {
+	public String getCenterID(String stationId) throws RegBaseCheckedException {
 
 		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"getCenterID() stationID --> " + stationID);
+				"getCenterID() stationID --> " + stationId);
 
 		try {
-			CenterMachine centerMachine = centerMachineRepository.findByCenterMachineIdId(stationID);
-			if (centerMachine != null && centerMachine.getCenterMachineId().getCentreId() != null) {
-				return centerMachine.getCenterMachineId().getCentreId();
+			
+			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching center details from reposiotry....");
+			
+			CenterMachine regCenterMachineDtls = centerMachineRepository.findByCenterMachineIdId(stationId);
+			
+			if (regCenterMachineDtls != null && regCenterMachineDtls.getCenterMachineId().getCentreId() != null) {
+				
+				return regCenterMachineDtls.getCenterMachineId().getCentreId();
+				
 			} else {
+				
 				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorCode(),
 						REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorMessage());
 			}
+			
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_CENTERID_RUN_TIME_EXCEPTION,
+			
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
 					runtimeException.getMessage());
 		}
 	}
