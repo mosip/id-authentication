@@ -73,11 +73,13 @@ public class RegistrationConstants {
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 	public static final String FINGER_PRINT_SINGLE = "single";
 	public static final String FINGER_PRINT_MULTIPLE = "multiple";
+	public static final String OTP_VALIDATION_SUCCESS = "success";
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
 	public static final String SUPERVISOR = "SUPERVISOR";
 	public static final String OFFICER = "OFFICER";
 	public static final String IRIS_STUB = "leftIris";
+	public static final String FACE_STUB = "face";
 
 	//Authentication Methods
 	public static final String PWORD = "PWD";
@@ -211,6 +213,9 @@ public class RegistrationConstants {
 	public static final String CBEFF_FILE_FORMAT = "cbeff";
 
 	// Validation Types
+	public static final String VALIDATION_TYPE_FP = "Fingerprint";
+	public static final String VALIDATION_TYPE_IRIS = "Iris";
+	public static final String VALIDATION_TYPE_FACE = "Face";
 	public static final String VALIDATION_TYPE_FP_SINGLE = "single";
 
 	// Supervisor Authentication
@@ -282,6 +287,7 @@ public class RegistrationConstants {
 	// OTP Related Details
 	public static final String OTP_GENERATOR_SERVICE_NAME = "otp_generator";
 	public static final String USERNAME_KEY = "key";
+	public static final String OTP_GENERATED = "otp";
 	public static final String OTP_VALIDATOR_SERVICE_NAME = "otp_validator";
 	public static final String OTP_GENERATOR_RESPONSE_DTO = "otpGeneratorResponseDTO";
 	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";
@@ -532,7 +538,7 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT = "POA";
 	public static final String POI_DOCUMENT = "POI";
 	public static final String POR_DOCUMENT = "POR";
-	public static final String DOB_DOCUMENT = "POB";
+	public static final String DOB_DOCUMENT = "DOB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
 
@@ -765,7 +771,7 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_ERROR_MESSAGE = "Sync failure";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE = "REG-MDS‌-002";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
-
+	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
 	
 	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
