@@ -284,12 +284,17 @@ public class IdRequestValidator implements Validator {
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
-		} catch (FileIOException | NullJsonSchemaException | ConfigServerConnectionException | HttpRequestException
+		} catch (FileIOException | NullJsonSchemaException
 				| NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
-			errors.rejectValue(REQUEST, IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorCode(),
-					IdRepoErrorConstants.INTERNAL_SERVER_ERROR.getErrorMessage());
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(),
+					IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorMessage());
+		} catch (ConfigServerConnectionException | HttpRequestException e) {
+			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
+			errors.rejectValue(REQUEST, IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorCode(),
+					IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorMessage());
 		}
 	}
 

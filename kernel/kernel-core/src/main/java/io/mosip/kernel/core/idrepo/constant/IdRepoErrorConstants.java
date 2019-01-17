@@ -14,48 +14,47 @@ public enum IdRepoErrorConstants {
 	INVALID_INPUT_PARAMETER("KER-IDR-002", "Invalid Input Parameter - %s"),
 
 	/** The identity mismatch. */
-	IDENTITY_MISMATCH("KER-IDR-003", "Identity Element entered does not match with hash"),
+	IDENTITY_HASH_MISMATCH("KER-IDR-003", "Identity Element hash does not match"),
+	
+	DOCUMENT_HASH_MISMATCH("KER-IDR-004", "Biometric/Document hash does not match"),
 
 	/** The unsupported lang code. */
-	UNSUPPORTED_LANG_CODE("KER-IDR-004", "Unsupported Language Code"),
+	UNSUPPORTED_LANG_CODE("KER-IDR-005", "Unsupported Language Code"),
 
 	/** The invalid uin. */
-	INVALID_UIN("KER-IDR-005", "Invalid UIN"),
+	INVALID_UIN("KER-IDR-006", "Invalid UIN"),
 
 	/** The data validation failed. */
-	DATA_VALIDATION_FAILED("KER-IDR-006", "Input Data Validation Failed"),
+	DATA_VALIDATION_FAILED("KER-IDR-007", "Input Data Validation Failed"),
 
 	/** The invalid request. */
-	INVALID_REQUEST("KER-IDR-007", "Invalid Request"),
+	INVALID_REQUEST("KER-IDR-008", "Invalid Request"),
 
 	/** The unknown error. */
-	UNKNOWN_ERROR("KER-IDR-008", "Unknown error occured"),
+	UNKNOWN_ERROR("KER-IDR-009", "Unknown error occured"),
 
 	/** The connection timed out. */
-	CONNECTION_TIMED_OUT("KER-IDR-009", "Connection Timed out"),
+	CONNECTION_TIMED_OUT("KER-IDR-010", "Connection Timed out"),
 
 	/** The database access error. */
-	DATABASE_ACCESS_ERROR("KER-IDR-010", "Error occured while performing DB operations"),
+	DATABASE_ACCESS_ERROR("KER-IDR-011", "Error occured while performing DB operations"),
 
 	/** The record exists. */
-	RECORD_EXISTS("KER-IDR-011", "Record already exists in DB"),
-
-	/** The non registered uin. */
-	NON_REGISTERED_UIN("KER-IDR-012", "Request UIN is %s, cannot retrieve/update this record."),
+	RECORD_EXISTS("KER-IDR-012", "Record already exists in DB"),
 
 	/** The internal server error. */
-	INTERNAL_SERVER_ERROR("KER-IDR-013", "Internal Server Error"),
+	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-013", "Encryption/Decryption failed"),
 
 	/** The no record found. */
 	NO_RECORD_FOUND("KER-IDR-014", "No Record(s) found"),
 
-	/** The uin generation failed. */
-	UIN_GENERATION_FAILED("KER-IDR-015", "Generation of UIN failed"),
-
-	/** The response construction error. */
-	RESPONSE_CONSTRUCTION_ERROR("KER-IDR-016", "Generation of UIN failed"), 
+	FILE_STORAGE_ACCESS_ERROR("KER-IDR-015", "Failed to store/retrieve files in DFS"), 
 	
-	FILE_STORAGE_ACCESS_ERROR("KER-IDR-017", "Failed to store/retrieve files in DFS");
+	JSON_PROCESSING_FAILED("KER-IDR-016", "Failed to parse/process json"),
+	
+	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-017", "Unable to process id object json schema"),
+	
+	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-018", "Unable to retrieve id object schema from server");
 
 	/** The error code. */
 	private final String errorCode;

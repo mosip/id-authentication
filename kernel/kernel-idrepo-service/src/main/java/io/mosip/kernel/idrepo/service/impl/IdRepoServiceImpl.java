@@ -21,6 +21,7 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,7 +262,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@Transactional
+	@Transactional(value = TxType.MANDATORY)
 	public Uin addIdentity(String uin, String regId, byte[] identityInfo, List<Documents> documents)
 			throws IdRepoAppException {
 		try {
@@ -435,12 +436,12 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
 						String data = getFile(uinObject.getUin(), fileName);
-						if (Objects.nonNull(data)
-								&& uinObject.getUinDataHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
-							throw new IdRepoAppException(IdRepoErrorConstants.IDENTITY_MISMATCH);
-						}
 						if (Objects.nonNull(data)) {
-							documents.add(new Documents(bio.getBiometricFileType(), data));
+							if (uinObject.getUinDataHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
+								documents.add(new Documents(bio.getBiometricFileType(), data));
+							} else {
+								throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
+							}
 						}
 					} catch (IdRepoAppException e) {
 						throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
@@ -456,8 +457,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
 							+ identityMap.get(demo.getDoctypCode()).get(FORMAT).asText();
 					String data = getFile(uinObject.getUin(), fileName);
-					if (Objects.nonNull(data)) {
+					if (uinObject.getUinDataHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
 						documents.add(new Documents(demo.getDoctypCode(), data));
+					} else {
+						throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
 					}
 				} catch (IdRepoAppException e) {
 					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
@@ -500,7 +503,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@Transactional
+	@Transactional(value = TxType.MANDATORY)
 	public Uin retrieveIdentityByUin(String uin) throws IdRepoAppException {
 		return uinRepo.findByUin(uin);
 	}
@@ -635,11 +638,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private void validateUIN(String uin) throws IdRepoAppException {
 		ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 		if (uinRepo.existsByUin(uin)) {
-			String status = uinRepo.getStatusByUin(uin);
-			if (!status.equals(env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED))) {
-				throw new IdRepoAppException(IdRepoErrorConstants.NON_REGISTERED_UIN.getErrorCode(),
-						String.format(IdRepoErrorConstants.NON_REGISTERED_UIN.getErrorMessage(), status));
-			}
 		} else {
 			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 		}
@@ -672,30 +670,27 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 		ResponseDTO response = new ResponseDTO();
 
-		try {
-			if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
-				response.setEntity(
-						linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null, null))
-								.toUri().toString());
-				mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-						SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERR, DOCUMENTS)));
+		if (id.equals(this.id.get(CREATE)) || id.equals(this.id.get(UPDATE))) {
+			response.setEntity(
+					linkTo(methodOn(IdRepoController.class).retrieveIdentity(uin.getUin().trim(), null, null)).toUri()
+							.toString());
+			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
+					SimpleBeanPropertyFilter.serializeAllExcept(IDENTITY, ERR, DOCUMENTS)));
+		} else {
+			ignoredProperties.add(ENTITY);
+			ignoredProperties.add(ERR);
+
+			if (Objects.isNull(documents)) {
+				ignoredProperties.add(DOCUMENTS);
 			} else {
-				ignoredProperties.add(ENTITY);
-				ignoredProperties.add(ERR);
-
-				if (Objects.isNull(documents)) {
-					ignoredProperties.add(DOCUMENTS);
-				} else {
-					response.setDocuments(documents);
-				}
-
-				response.setIdentity(convertToObject(uin.getUinData(), Object.class));
-
-				mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
-						SimpleBeanPropertyFilter.serializeAllExcept(ignoredProperties)));
+				response.setDocuments(documents);
 			}
-		} catch (IdRepoAppException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.RESPONSE_CONSTRUCTION_ERROR, e);
+
+			response.setIdentity(convertToObject(uin.getUinData(), Object.class));
+
+			mapper.setFilterProvider(new SimpleFilterProvider().addFilter(RESPONSE_FILTER,
+					SimpleBeanPropertyFilter.serializeAllExcept(ignoredProperties)));
+
 		}
 
 		idResponse.setResponse(response);
@@ -716,7 +711,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		try {
 			return mapper.writeValueAsBytes(identity);
 		} catch (JsonProcessingException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		}
 	}
 
@@ -736,7 +731,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			return mapper.readValue(identity, clazz);
 
 		} catch (IOException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
 		}
 	}
 
@@ -773,7 +768,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					DateUtils.formatDate(new Date(), env.getProperty(DATETIME_PATTERN)),
 					env.getProperty(DATETIME_PATTERN));
 		} catch (ParseException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), "DATETIME_PATTERN"), e);
 		}
 	}
 

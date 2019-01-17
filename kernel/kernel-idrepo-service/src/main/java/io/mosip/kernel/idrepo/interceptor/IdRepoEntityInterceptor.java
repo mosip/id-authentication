@@ -99,7 +99,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
 	}
@@ -121,11 +121,11 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], DECRYPT)));
 
 				if (!hash((byte[]) state[indexOfData]).equals(state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
-					throw new IdRepoAppException(IdRepoErrorConstants.IDENTITY_MISMATCH);
+					throw new IdRepoAppException(IdRepoErrorConstants.IDENTITY_HASH_MISMATCH);
 				}
 			}
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
 	}
@@ -160,7 +160,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		if (response.has("data")) {
 			return response.get("data").asText().getBytes();
 		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR);
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 		}
 	}
 
