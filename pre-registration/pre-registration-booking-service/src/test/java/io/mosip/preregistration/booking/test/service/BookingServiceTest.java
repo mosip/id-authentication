@@ -38,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
@@ -48,7 +49,6 @@ import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.CancelBookingResponseDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
-import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.booking.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
@@ -59,6 +59,7 @@ import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
+import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
 import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -68,8 +69,10 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
+import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
@@ -269,7 +272,6 @@ public class BookingServiceTest {
 		bookingEntity.setSlotToTime(LocalTime.parse(oldBooking.getSlotToTime()));
 
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
-
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
 
@@ -308,21 +310,62 @@ public class BookingServiceTest {
 		assertEquals("1", responseDto.getResponse().getRegCenterId());
 
 	}
+	
+	@Test(expected=TableNotAccessibleException.class)
+	public void getAvailabilityFailureTest() {
+
+		
+		Mockito.when(bookingDAO.findDate(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("", "", new Throwable()));
+		service.getAvailability("1");
+
+	}
 
 	@Test
-	public void getPreIdsByRegCenterId() {
+	public void getPreIdsByRegCenterIdSuccessTest() {
 
 		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
 		bookingEntities.add(bookingEntity);
 		Mockito.when(bookingDAO.findByRegistrationCenterIdAndStatusCode("1", StatusCodes.BOOKED.getCode()))
 				.thenReturn(bookingEntities);
 		MainListResponseDTO<PreRegIdsByRegCenterIdResponseDTO> response = service.getPreIdsByRegCenterId(requestDTO);
-		assertEquals(serviceUtil.getCurrentResponseTime(), response.getResTime());
+		assertEquals("1", response.getResponse().get(0).getRegistrationCenterId());
+
+	}
+@Test(expected=BookingDataNotFoundException.class)
+	public void getPreIdsByRegCenterIdFailureTest() {
+
+		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+		//bookingEntities.add(bookingEntity);
+		Mockito.when(bookingDAO.findByRegistrationCenterIdAndStatusCode("1", StatusCodes.BOOKED.getCode()))
+				.thenReturn(bookingEntities);
+		service.getPreIdsByRegCenterId(requestDTO);
 
 	}
 
 
-	/*@Test
+/**
+ * 
+ */
+@Test(expected=BookingDataNotFoundException.class)
+public void getPreIdsByRegCenterIdFailureTest2() {
+	List<String> preId = new ArrayList<>();
+	//preId.add("1234567890");
+	preRegIdsByRegCenterIdDTO.setRegistrationCenterId("1");
+	preRegIdsByRegCenterIdDTO.setPreRegistrationIds(preId);
+	requestDTO.setRequest(preRegIdsByRegCenterIdDTO);
+
+	requestDTO.setId("mosip.pre-registration.booking.book");
+	requestDTO.setVer("1.0");
+	requestDTO.setReqTime(new Date());
+	requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+	bookingEntities.add(bookingEntity);
+	Mockito.when(bookingDAO.findByRegistrationCenterIdAndStatusCode("1", StatusCodes.BOOKED.getCode()))
+			.thenReturn(bookingEntities);
+	service.getPreIdsByRegCenterId(requestDTO);
+
+}
+
+	@Test
 	public void successBookAppointment() {
 		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
@@ -334,9 +377,8 @@ public class BookingServiceTest {
 				.thenReturn(preRegistartionStatusDTO);
 
 		MainResponseDTO<List<BookingStatusDTO>> response = service.bookAppointment(bookingDto);
-		assertEquals(0, response.getResponse().size());
-	}*/
-
+		assertEquals(1, response.getResponse().size());
+	}
 
 	@Test
 	public void addAvailabilityServiceTest() {
@@ -392,6 +434,7 @@ public class BookingServiceTest {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void cancelAppointmentSuccessTest() {
+
 		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
 		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
 		statusList.add(preRegistartionStatusDTO);
@@ -426,13 +469,21 @@ public class BookingServiceTest {
 
 	}
 
-/*	@Test
+	@Test
 	public void getAppointmentDetailsTest() {
-		Mockito.when(bookingDAO.findPreIdAndStatusCode("23587986034785", StatusCodes.BOOKED.getCode()))
+		Mockito.when(bookingDAO.findPreIdAndStatusCode("23587986034785", StatusCodes.CANCELED.getCode()))
 				.thenReturn(bookingEntity);
 		MainResponseDTO<BookingRegistrationDTO> responseDto = service.getAppointmentDetails("23587986034785");
 		assertEquals("1", responseDto.getResponse().getRegistrationCenterId());
-	}*/
+	}
+
+	
+	@Test(expected=TableNotAccessibleException.class)
+	public void getAppointmentDetailsFailureTest() {
+		
+		Mockito.when(bookingDAO.findPreIdAndStatusCode(Mockito.anyString(),Mockito.anyString())).thenThrow(new DataAccessLayerException("","",new Throwable()));
+		service.getAppointmentDetails("23587986034785");
+	}
 
 	@Test
 	public void bookTest() {
@@ -456,4 +507,60 @@ public class BookingServiceTest {
 		assertEquals("APPOINTMENT_SUCCESSFULLY_BOOKED", response.getBookingMessage());
 	}
 
+	@Test
+	public void cancelSuccess() {
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+
+		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
+
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any())).thenReturn(availableEntity);
+
+		Mockito.when(bookingDAO.findPreIdAndStatusCode(Mockito.any(), Mockito.any())).thenReturn(bookingEntity);
+
+		Mockito.when(bookingDAO.saveRegistrationEntityForCancel(Mockito.any())).thenReturn(bookingEntity);
+
+		MainResponseDTO mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setErr(null);
+		mainResponseDTO.setStatus(true);
+		mainResponseDTO.setResponse(bookingEntity);
+		ResponseEntity<MainResponseDTO> resp = new ResponseEntity<>(mainResponseDTO, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.PUT), Mockito.any(),
+				Mockito.eq(MainResponseDTO.class))).thenReturn(resp);
+		availableEntity.setAvailableKiosks(availableEntity.getAvailableKiosks() + 1);
+		Mockito.when(bookingDAO.updateAvailibityEntity(availableEntity)).thenReturn(availableEntity);
+		boolean response=service.cancel("23587986034785", oldBooking, newBooking, StatusCodes.BOOKED.getCode());
+		assertEquals(true, response);
+		
+		
+	}
+	
+	@Test(expected=TableNotAccessibleException.class)
+	public void cancelBookingFailureTest() {
+		
+		preRegistartionStatusDTO.setStatusCode(StatusCodes.BOOKED.getCode());
+		preRegistartionStatusDTO.setPreRegistartionId("23587986034785");
+		statusList.add(preRegistartionStatusDTO);
+
+		requestValidatorFlag = ValidationUtil.requestValidator(requestMap1, requiredRequestMap);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+
+		ResponseEntity<MainListResponseDTO> res = new ResponseEntity<>(preRegResponse, HttpStatus.OK);
+
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainListResponseDTO.class))).thenReturn(res);
+		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any())).thenThrow(new DataAccessLayerException("","",new Throwable()));
+		service.cancelBooking(cancelbookingDto);
+	}
 }

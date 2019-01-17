@@ -50,7 +50,6 @@ import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.booking.dto.CancelBookingDTO;
 import io.mosip.preregistration.booking.dto.DateTimeDto;
 import io.mosip.preregistration.booking.dto.HolidayDto;
-import io.mosip.preregistration.booking.dto.MainRequestDTO;
 import io.mosip.preregistration.booking.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.booking.dto.RegistrationCenterDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
@@ -77,6 +76,7 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.BookingRegistrationDTO;
 import io.mosip.preregistration.core.common.dto.MainListRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 
@@ -156,11 +156,11 @@ public class BookingServiceUtil {
 				throw new RestCallException(errorResponse.getErrors().get(0).getErrorCode(),
 						errorResponse.getErrors().get(0).getErrorMessage());
 			} catch (JsonParseException | JsonMappingException | IOException e1) {
-				e1.printStackTrace();
 				log.error("sessionId", "idType", "id",
 						"In callRegCenterDateRestService method of Booking Service Util for JsonParseException- "
-								+ ex.getMessage());
-
+								+ e1.getMessage());
+				throw new RestCallException(e1.getErrorCode(),
+						e1.getErrorText());
 			}
 
 		}

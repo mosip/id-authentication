@@ -236,7 +236,7 @@ export class DashBoardComponent implements OnInit {
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
-                this.users[index].status = 'Pending_Appointment';
+                this.users[index].status = 'Pending Appointment';
                 this.users[index].appointmentDateTime = '-';
                 // this.dataSource.data[index].status = 'Pending_Appointment';
                 // this.dataSource.data[index].appointmentDateTime = '-';
