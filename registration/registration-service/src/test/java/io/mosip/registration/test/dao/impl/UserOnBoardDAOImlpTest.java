@@ -10,10 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.tools.ant.taskdefs.EchoXML;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -80,7 +78,6 @@ public class UserOnBoardDAOImlpTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void UserOnBoardSuccess() throws IOException {
 
