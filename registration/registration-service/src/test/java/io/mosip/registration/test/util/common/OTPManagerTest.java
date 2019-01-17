@@ -1,8 +1,6 @@
 package io.mosip.registration.test.util.common;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.net.SocketTimeoutException;
@@ -18,7 +16,6 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
 import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -26,6 +23,8 @@ import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import io.mosip.registration.validator.OTPValidatorImpl;
+
+
 
 public class OTPManagerTest {
 
@@ -89,7 +88,7 @@ public class OTPManagerTest {
 		otpValidatorResponseDTO.setstatus("failure");
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean())).thenReturn(otpValidatorResponseDTO);
 		
-		assertNotNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getErrorResponseDTOs());
 	}
 	
 	@Test
