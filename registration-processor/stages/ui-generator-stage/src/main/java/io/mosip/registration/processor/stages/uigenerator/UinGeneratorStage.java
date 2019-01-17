@@ -4,15 +4,17 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import com.google.gson.Gson;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -24,7 +26,6 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
-import io.mosip.registration.processor.core.constant.IdRepoStatusConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -159,7 +160,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		UinResponseDto uinResponseDto= null;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
 			try {
-
 			InputStream idJsonStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
 			String getJsonStringFromBytes = new String(idJsonBytes);
@@ -178,7 +178,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				idResponseDTO=updateIdRepowithUin(registrationId,uinFieldCheck);
 			}
 
-			if( !( ("".equals(idResponseDTO.getResponse().getEntity())) || (idResponseDTO.getResponse().getEntity()==null) ) ){
+			if((idResponseDTO.getResponse()!= null)){
 
 				demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());	
 				triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
@@ -188,11 +188,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				description = "UIN updated succesfully for : " + registrationId;
 
 			}	else {
-				registrationStatusDto.setStatusComment(idResponseDTO.getErr().get(0).getErrMessage());
+				String statusComment = idResponseDTO.getError().get(0).getErrMessage();
+				registrationStatusDto.setStatusComment(statusComment);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				isTransactionSuccessful = false;
 				description = "UIN updation failure for : " + registrationId;
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,idResponseDTO.getErr().get(0).getErrMessage()+"  :  "+idResponseDTO.toString());
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,idResponseDTO.getError().get(0).getErrMessage()+"  :  "+idResponseDTO.toString());
 
 			}
 			
@@ -250,6 +251,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV,pathsegments, "", "",
 					idRequestDTO, String.class);
+			System.out.println("Response from IDRepo API ::   "  +result.toString());
 			Gson gsonObj = new Gson();
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
@@ -273,8 +275,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				.getDocumentsByRegId(regId);
 		for (ApplicantDocument entity : applicantDocument) {
 			documentsInfoDto = new Documents();
-			documentsInfoDto.setDocType(entity.getDocName());
-			documentsInfoDto.setDocValue(CryptoUtil.encodeBase64(entity.getDocStore()));
+			documentsInfoDto.setCategory(entity.getDocName());
+			documentsInfoDto.setValue(CryptoUtil.encodeBase64(entity.getDocStore()));
 			applicantDocuments.add(documentsInfoDto);
 		}
 		return applicantDocuments;
@@ -317,9 +319,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-	mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
-
+	  mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+	  this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
 	}
 
 
