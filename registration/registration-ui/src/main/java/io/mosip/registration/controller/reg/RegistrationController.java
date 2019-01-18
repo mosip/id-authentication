@@ -827,27 +827,27 @@ public class RegistrationController extends BaseController {
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(270.00);
+				keyboardNode.setLayoutY(310.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(320.00);
+				keyboardNode.setLayoutY(360.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(375.00);
+				keyboardNode.setLayoutY(415.00);
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(120.00);
+				keyboardNode.setLayoutY(165.00);
 			}
 			
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
-				keyboardNode.setLayoutY(660.00);
+				keyboardNode.setLayoutY(705.00);
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 
