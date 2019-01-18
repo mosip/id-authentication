@@ -562,6 +562,11 @@ public class RegistrationConstants {
 	// UI Date Format
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
+	
+	//Biometric Exception style
+	public static final String ADD_BORDER = "addBorderStyle";
+	public static final String REMOVE_BORDER = "removeBorderStyle";
+	
 
 	// Iris & Fingerprint Capture for Individual Registration
 	public static final String IRIS_THRESHOLD = "IRIS_THRESHOLD";

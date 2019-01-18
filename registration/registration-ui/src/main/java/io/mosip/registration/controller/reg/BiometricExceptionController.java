@@ -147,14 +147,18 @@ public class BiometricExceptionController extends BaseController implements Init
 					image.setVisible(false);
 				}
 				if (fingerList.stream().anyMatch(fingerType -> fingerType.contains("left"))) {
-					leftHandPane.setStyle("-fx-border-color: black");
+					leftHandPane.getStyleClass().clear();
+					leftHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 				} else {
-					leftHandPane.setStyle("-fx-border-color: white");
+					leftHandPane.getStyleClass().clear();
+					leftHandPane.getStyleClass().add(RegistrationConstants.REMOVE_BORDER);
 				}
 				if (fingerList.stream().anyMatch(fingerType -> fingerType.contains("right"))) {
-					rightHandPane.setStyle("-fx-border-color: black");
+					rightHandPane.getStyleClass().clear();
+					rightHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 				} else {
-					rightHandPane.setStyle("-fx-border-color: white");
+					rightHandPane.getStyleClass().clear();
+					rightHandPane.getStyleClass().add(RegistrationConstants.REMOVE_BORDER);
 				}
 			}
 		});
@@ -181,14 +185,15 @@ public class BiometricExceptionController extends BaseController implements Init
 		Pane irisPane = (Pane) biometricException.lookup("#" + irisImage.getId() + "Pane");
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				irisPane.getStyleClass().clear();
 				if (newValue) {
 					irisList.add(irisImage.getId());
-					irisPane.setStyle("-fx-border-color: black");
+					irisPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 				} else {
 					if (irisList.indexOf(irisImage.getId()) >= 0) {
 						irisList.remove(irisImage.getId());
 					}
-					irisPane.setStyle("-fx-border-color: white");
+					irisPane.getStyleClass().add(RegistrationConstants.REMOVE_BORDER);
 				}
 			}
 		});
