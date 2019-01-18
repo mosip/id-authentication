@@ -56,7 +56,7 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  *
  * @author Manoj SP
  * @author Prem Kumar
- * @author Rakesh Roshan
+ * @author RakeshRoshan
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
@@ -274,7 +274,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * check for proper Make value.
+	 * checks for proper Make value present in the request.
 	 * 
 	 * @param bioInfo
 	 * @return
@@ -316,7 +316,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * check the deviceId value null or empty
+	 * check the deviceId value present in the request is null or empty
 	 * 
 	 * @param deviceInfoList
 	 * @return
@@ -349,7 +349,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validate Iris.
+	 * Validates the  Iris parameters present in thr request.
 	 *
 	 * @param authRequestDTO
 	 *            the auth request DTO
@@ -371,7 +371,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validation for MultiIris Values
+	 * Validation for MultiIris Values present in the request
 	 * 
 	 * @param authRequestDTO
 	 * @param errors

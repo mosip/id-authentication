@@ -346,22 +346,24 @@ public class KycServiceImpl implements KycService {
 	 */
 	private String getBootStrapFile() throws IdAuthenticationBusinessException {
 		String property = System.getProperty("java.io.tmpdir");
-		property = property.concat("bootstrap.min.css");
+		property = property.concat("/bootstrap.min.css");
 		File file = new File(property);
 		if (file.exists()) {
 			return file.getAbsolutePath();
 		} else {
 			try {
-				file.createNewFile();
+				boolean isFileCreated = file.createNewFile();
 				try (InputStream resourceInputStream = getClass().getClassLoader()
 						.getResourceAsStream("bootstrap.min.css");
 						BufferedReader buffIn = new BufferedReader(new InputStreamReader(resourceInputStream));
 						FileWriter fileWri = new FileWriter(file.getAbsolutePath(), true);
 						BufferedWriter out = new BufferedWriter(fileWri);) {
-					String inputLine = null;
-					while ((inputLine = buffIn.readLine()) != null) {
-						out.write(inputLine);
-						out.newLine();
+					if (isFileCreated) {
+						String inputLine = null;
+						while ((inputLine = buffIn.readLine()) != null) {
+							out.write(inputLine);
+							out.newLine();
+						}
 					}
 				}
 			} catch (IOException e) {
