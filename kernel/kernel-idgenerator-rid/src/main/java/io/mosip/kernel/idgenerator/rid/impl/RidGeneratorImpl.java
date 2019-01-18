@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
@@ -130,6 +129,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * @return generated five digit random number
 	 */
 	private String sequenceNumberGenerator() {
+		int sequenceId = 0;
 		Rid entity = null;
 		try {
 			entity = ridRepository.findLastRid();
@@ -140,19 +140,23 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 		try {
 			if (entity == null) {
 				entity = new Rid();
+				sequenceId = sequenceInitialValue;
 				entity.setCurrentSequenceNo(sequenceInitialValue);
 				ridRepository.save(entity);
 			} else {
-				if (entity.getCurrentSequenceNo() == sequenceEndvalue)
+				if (entity.getCurrentSequenceNo() == sequenceEndvalue) {
+					sequenceId = sequenceInitialValue;
 					ridRepository.updateRid(sequenceInitialValue, entity.getCurrentSequenceNo());
-				else
-					ridRepository.updateRid(entity.getCurrentSequenceNo() + 1, entity.getCurrentSequenceNo());
+				} else {
+					sequenceId = entity.getCurrentSequenceNo() + 1;
+					ridRepository.updateRid(sequenceId, entity.getCurrentSequenceNo());
+				}
 			}
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new RidException(RidGeneratorExceptionConstant.RID_UPDATE_EXCEPTION.getErrorCode(),
 					RidGeneratorExceptionConstant.RID_UPDATE_EXCEPTION.errorMessage, e);
 		}
-		return String.format(sequenceFormat, entity.getCurrentSequenceNo());
+		return String.format(sequenceFormat, sequenceId);
 	}
 
 	/**
