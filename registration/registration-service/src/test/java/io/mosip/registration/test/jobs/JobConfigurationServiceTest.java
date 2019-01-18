@@ -101,14 +101,12 @@ public class JobConfigurationServiceTest {
 
 	@Test
 	public void initiateJobTest() {
-		intiate();
 		jobConfigurationService.initiateJobs();
 
 	}
 
 	@Test
 	public void startJobs() throws SchedulerException {
-		intiate();
 		BaseJob job = new PacketSyncStatusJob();
 
 		// SchedulerFactoryBean
