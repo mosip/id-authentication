@@ -213,7 +213,8 @@ public class VirusScannerStageTest {
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.containsExactly(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1000 - The Virus Scan for the Packet Failed null"));
+						"SESSIONID - REGISTRATIONID - 1000 - The Virus Scan for the Packet Failed nullio.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException\r\n"
+								+ ""));
 
 	}
 }
