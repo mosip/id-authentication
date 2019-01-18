@@ -1102,7 +1102,7 @@ public class AuthRequestValidatorTest {
 
 		List<IdentityInfoDTO> emailId = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("sample@sample.com");
 		emailId.add(identityInfoDTO);
 		identity.setEmailId(emailId);
@@ -1126,7 +1126,7 @@ public class AuthRequestValidatorTest {
 
 		List<IdentityInfoDTO> phone = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("76598749689");
 		phone.add(identityInfoDTO);
 		identity.setEmailId(phone);

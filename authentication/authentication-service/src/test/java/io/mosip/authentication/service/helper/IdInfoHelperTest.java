@@ -49,7 +49,7 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void TestgetLanguageName() {
-		String langCode = "ar";
+		String langCode = "ara";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty("mosip.phonetic.lang.".concat(langCode.toLowerCase()), "arabic-ar");

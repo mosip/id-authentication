@@ -133,7 +133,7 @@ public class KycAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -236,7 +236,7 @@ public class KycAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -284,7 +284,7 @@ public class KycAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -350,7 +350,7 @@ public class KycAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -409,7 +409,7 @@ public class KycAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);

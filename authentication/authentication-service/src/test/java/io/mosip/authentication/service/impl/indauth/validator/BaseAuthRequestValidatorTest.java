@@ -1003,7 +1003,7 @@ public class BaseAuthRequestValidatorTest {
 
 		List<IdentityInfoDTO> emailId = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("sample@sample.com");
 		emailId.add(identityInfoDTO);
 		identity.setEmailId(emailId);
@@ -1030,7 +1030,7 @@ public class BaseAuthRequestValidatorTest {
 
 		List<IdentityInfoDTO> emailId = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("sample5878");
 		emailId.add(identityInfoDTO);
 		identity.setEmailId(emailId);
@@ -1053,7 +1053,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidatePhone_ValidatePhone_IsTrue() {
 		List<IdentityInfoDTO> phoneNumber = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("89754765987676");
 
 		phoneNumber.add(identityInfoDTO);
@@ -1079,7 +1079,7 @@ public class BaseAuthRequestValidatorTest {
 	public void testValidatePhone_ValidatePhone_IsFalse() {
 		List<IdentityInfoDTO> phoneNumber = new ArrayList<IdentityInfoDTO>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("8975476lghfhhj");
 
 		phoneNumber.add(identityInfoDTO);
@@ -1152,7 +1152,7 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy("E");
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matList = new ArrayList<>();
@@ -1201,7 +1201,7 @@ public class BaseAuthRequestValidatorTest {
 		matchInfo.setMatchingThreshold(100);
 		MatchInfo matchInfo111 = new MatchInfo();
 		matchInfo111.setAuthType("fullAddress");
-		matchInfo111.setLanguage("AR");
+		matchInfo111.setLanguage("ara");
 		matchInfo111.setMatchingStrategy("T");
 		matchInfo111.setMatchingThreshold(100);
 		List<MatchInfo> matList = new ArrayList<>();
@@ -1247,12 +1247,12 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy("E");
 		matchInfo.setMatchingThreshold(100);
 		MatchInfo matchInfo111 = new MatchInfo();
 		matchInfo111.setAuthType("fullAddress");
-		matchInfo111.setLanguage("AR");
+		matchInfo111.setLanguage("ara");
 		matchInfo111.setMatchingStrategy("T");
 		matchInfo111.setMatchingThreshold(100);
 		List<MatchInfo> matList = new ArrayList<>();
@@ -1300,31 +1300,31 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("AR");
+		matchInfo.setLanguage("ara");
 		matchInfo.setMatchingStrategy("Q");
 		matchInfo.setMatchingThreshold(100);
 
 		MatchInfo matchInfo1 = new MatchInfo();
 		matchInfo1.setAuthType("address");
-		matchInfo1.setLanguage("AR");
+		matchInfo1.setLanguage("ara");
 		matchInfo1.setMatchingStrategy("A");
 		matchInfo1.setMatchingThreshold(100);
 
 		MatchInfo matchInfo11 = new MatchInfo();
 		matchInfo11.setAuthType("personalIdentity");
-		matchInfo11.setLanguage("FR");
+		matchInfo11.setLanguage("fre");
 		matchInfo11.setMatchingStrategy("S");
 		matchInfo11.setMatchingThreshold(100);
 
 		MatchInfo matchInfo111 = new MatchInfo();
 		matchInfo111.setAuthType("fullAddress");
-		matchInfo111.setLanguage("AR");
+		matchInfo111.setLanguage("ara");
 		matchInfo111.setMatchingStrategy("T");
 		matchInfo111.setMatchingThreshold(100);
 
 		MatchInfo matchInfo1111 = new MatchInfo();
 		matchInfo1111.setAuthType("fullAddress");
-		matchInfo1111.setLanguage("FR");
+		matchInfo1111.setLanguage("fre");
 		matchInfo1111.setMatchingStrategy("T");
 		matchInfo1111.setMatchingThreshold(100);
 
