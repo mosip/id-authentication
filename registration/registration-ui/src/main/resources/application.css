@@ -522,3 +522,6 @@
 .removeBorderStyle{
 	-fx-border-color:white; 
 }
+.addBorderStyle{
+	-fx-border-color: black;
+}
