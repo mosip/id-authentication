@@ -95,8 +95,8 @@ The key solution considerations are --
 
 **Class Diagram:**
 
-![User On boarding class diagram](_images/_class_diagram/registration-usermapping-classDiagram.png)
+![User On boarding class diagram](_images/UserOnBoardingClassDiagram.png)
 
 **Sequence Diagram:**
 
-![User On boarding sequence diagram](_images/UserOnBoard_seq.png)
+![User On boarding sequence diagram](_images/UserOnBoardingSequnceDiagram.png)

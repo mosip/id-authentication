@@ -93,6 +93,9 @@
                                              <TextField fx:id="addressLine1" layoutX="14.0" layoutY="25.0" prefHeight="30.0" prefWidth="320.0" />
                                              <Label layoutX="17.0" layoutY="60.0" text="%addressLine2" />
                                              <TextField fx:id="addressLine2" layoutX="14.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
+                                             <Label layoutX="17.0" layoutY="114.0" text="%addressLine3" />
+                                             <TextField fx:id="addressLine3" layoutX="14.0" layoutY="129.0" prefHeight="30.0" prefWidth="200.0" />
+                                             <Button fx:id="copyPrevious" layoutX="240.0" layoutY="136.0" mnemonicParsing="false" text="%copyPrevious" onAction="#loadAddressFromPreviousEntry" />
                                              <Label layoutX="17.0" layoutY="170.0" text="%region" />
                                              <ComboBox fx:id="region" layoutX="17.00" layoutY="187.0" onAction="#addProvince" prefHeight="25.0" prefWidth="155.0" promptText="%select" />
                                              <Label layoutX="180.0" layoutY="170.0" text="%province" />
@@ -103,9 +106,7 @@
                                              <ComboBox fx:id="localAdminAuthority" layoutX="180.0" layoutY="235.0" prefHeight="25.0" prefWidth="153.0" promptText="%select" />
                                              <Label layoutX="17.0" layoutY="275.0" text="%postalCode" />
                                              <TextField fx:id="postalCode" layoutX="14.0" layoutY="292.0" prefHeight="30.0" prefWidth="157.0" />
-                                                <TextField fx:id="addressLine3" layoutX="14.0" layoutY="129.0" prefHeight="30.0" prefWidth="320.0" />
-                                                <Label layoutX="17.0" layoutY="114.0" text="%addressLine3" />
-                                          </children>
+                                            </children>
                                        </AnchorPane>
                                           <Label fx:id="mobileNoLabel" layoutX="176.0" layoutY="410.0" text="%mobileNo" />
                                           <TextField fx:id="mobileNo" layoutX="180.0" layoutY="427.0" prefHeight="30.0" prefWidth="161.0" />
@@ -142,9 +143,9 @@
                                                 <Label id="toggleLabel2" fx:id="toggleLabel2LocalLanguage" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                                 <AnchorPane fx:id="dobLocalLanguage" layoutX="129.0" layoutY="20.0" prefHeight="50.0" prefWidth="186.0">
                                                    <children>
-                                                      <TextField fx:id="ddLocalLanguage" layoutX="20.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
-                                                      <TextField fx:id="mmLocalLanguage" layoutX="80.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
-                                                      <TextField fx:id="yyyyLocalLanguage" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="60.0" />
+                                                      <TextField fx:id="ddLocalLanguage" layoutX="20.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" promptText="DD" />
+                                                      <TextField fx:id="mmLocalLanguage" layoutX="80.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" promptText="MM" />
+                                                      <TextField fx:id="yyyyLocalLanguage" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="60.0" promptText="YYYY" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>

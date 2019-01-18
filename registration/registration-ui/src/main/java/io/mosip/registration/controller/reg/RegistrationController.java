@@ -616,6 +616,7 @@ public class RegistrationController extends BaseController {
 			vk.changeControlOfKeyboard(addressLine1LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine2LocalLanguage);
 			vk.changeControlOfKeyboard(addressLine3LocalLanguage);
+			vk.changeControlOfKeyboard(parentNameLocalLanguage);
 			vk.focusListener(fullNameLocalLanguage, 120.00, keyboardNode);
 			vk.focusListener(addressLine1LocalLanguage, 270, keyboardNode);
 			vk.focusListener(addressLine2LocalLanguage, 320.00, keyboardNode);

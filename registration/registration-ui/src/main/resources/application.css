@@ -356,7 +356,7 @@
 	-fx-pref-width: 483px;
 }
 
-#submit, #rejectionSubmit,#submitBtn, #fetchBtn{
+#submit, #rejectionSubmit,#submitBtn, #fetchBtn, #copyPrevious{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
