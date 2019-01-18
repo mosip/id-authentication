@@ -43,7 +43,7 @@
                               </children>
                            </AnchorPane>
                              <Label fx:id="documentTitlePaneApplicationLanguage" layoutX="50.0" layoutY="1.0" prefHeight="20.0" prefWidth="200.0" text="%titleDemographicPane" />
-                           <Line endX="800.0" layoutX="50.0" layoutY="35.0"/>
+                           <Line endX="800.0" layoutX="50.0" layoutY="35.0" />
                     	</children>
                      </AnchorPane>
                   </children>
@@ -70,9 +70,9 @@
                                              <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="9.0" text="" />
                                                 <AnchorPane fx:id="dob" layoutX="129.0" layoutY="20.0" prefHeight="50.0" prefWidth="186.0">
                                                    <children>
-                                                      <TextField fx:id="dd" layoutX="20.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
-                                                      <TextField fx:id="mm" layoutX="80.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" />
-                                                      <TextField fx:id="yyyy" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="60.0" />
+                                                      <TextField fx:id="dd" layoutX="20.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" promptText="DD" />
+                                                      <TextField fx:id="mm" layoutX="80.0" layoutY="6.0" prefHeight="19.0" prefWidth="40.0" promptText="MM" />
+                                                      <TextField fx:id="yyyy" layoutX="140.0" layoutY="6.0" prefHeight="19.0" prefWidth="60.0" promptText="YYYY" />
                                                    </children>
                                                 </AnchorPane>
                                           </children>

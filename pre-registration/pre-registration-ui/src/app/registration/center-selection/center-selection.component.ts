@@ -64,7 +64,7 @@ export class CenterSelectionComponent implements OnInit {
       this.locationTypes = response['locations'];
       console.log(this.locationTypes);
     })
-    this.users = this.registrationService.getUsers();
+    this.users = this.service.getNameList();
   }
   setSearchClick(flag: boolean) {
     this.searchClick = flag;

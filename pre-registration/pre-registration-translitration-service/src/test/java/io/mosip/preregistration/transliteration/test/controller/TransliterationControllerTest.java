@@ -1,7 +1,7 @@
 /* 
  * Copyright
  * 
- */
+ 
 package io.mosip.preregistration.transliteration.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,27 +33,27 @@ import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.service.TransliterationService;
 
 
-/**
+*//**
  * 
  * Test class to test the pre-registration transliteration Controller methods
  * 
  * @author Kishan rathore
  * @since 1.0.0
  *
- */
+ *//*
 @RunWith(SpringRunner.class)
 @WebMvcTest(TransliterationControllerTest.class)
 public class TransliterationControllerTest {
 
-	/**
+	*//**
 	 * Autowired reference for {@link #MockMvc}
-	 */
+	 *//*
 	@Autowired
 	private MockMvc mockMvc;
 
-	/**
+	*//**
 	 * Creating Mock Bean for transliteration Service
-	 */
+	 *//*
 	@MockBean
 	private TransliterationService serviceImpl;
 
@@ -61,14 +61,14 @@ public class TransliterationControllerTest {
 
 	private Object jsonObject, failObject = null;
 
-	/**
+	*//**
 	 * @throws FileNotFoundException
 	 *             when file not found
 	 * @throws IOException
 	 *             on input error
 	 * @throws ParseException
 	 *             on json parsing error
-	 */
+	 *//*
 	@Before
 	public void setup() throws FileNotFoundException, IOException, ParseException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -80,9 +80,9 @@ public class TransliterationControllerTest {
 		failObject = parser.parse(new FileReader(failFile));
 	}
 
-	/**
+	*//**
 	 * @throws Exception on eoor
-	 */
+	 *//*
 	@Test
 	public void successTest() throws Exception {
 
@@ -99,11 +99,11 @@ public class TransliterationControllerTest {
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
-	/**
+	*//**
 	 * @throws Exception
 	 *             on error
-	 */
-	/*@Test
+	 *//*
+	@Test
 	public void failureTest() throws Exception {
 		logger.info("----------Unsuccessful transliteration controller operation-------");
 		Mockito.doThrow(new IllegalParamException("ex")).when(serviceImpl).translitratorService(Mockito.any());
@@ -112,5 +112,6 @@ public class TransliterationControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).content(failObject.toString());
 		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
-	}*/
+	}
 }
+*/

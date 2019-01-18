@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * 
  * @author Prem Kumar
  *
+ *The enum for EkycAuthType
+ *
  */
 
 public enum EkycAuthType {
@@ -31,8 +33,10 @@ public enum EkycAuthType {
 	/** For OTP */
 	OTP("O", AuthTypeDTO::isOtp);
 	
+	/** The EkycAuthType type */
+	private String type; 
 	
-	String type;
+	/** The authTypePredicate */
 	private Predicate<AuthTypeDTO> authTypePredicate;
 	
 	/**

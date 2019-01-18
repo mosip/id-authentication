@@ -1,7 +1,6 @@
 package io.mosip.authentication.service.impl.id.service.impl;
 
 import java.io.IOException;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -9,14 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
@@ -55,6 +49,9 @@ public class IdRepoServiceImpl implements IdRepoService {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
+	/**
+	 * Fetch data from Id Repo based on Individual's UIN / VID value
+	 */
 	public Map<String, Object> getIdRepo(String uin, boolean isBio) throws IdAuthenticationBusinessException {
 
 		RestRequestDTO buildRequest = null;
@@ -81,6 +78,9 @@ public class IdRepoServiceImpl implements IdRepoService {
 		return response;
 	}
 
+	/**
+	 * Fetch data from Identity info value based on Identity response
+	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
 			throws IdAuthenticationBusinessException {
@@ -110,7 +110,8 @@ public class IdRepoServiceImpl implements IdRepoService {
 									return idInfo;
 								}).collect(Collectors.toList());
 
-					} else if (val instanceof Boolean ||val instanceof String || val instanceof Long || val instanceof Integer || val instanceof Double) {
+					} else if (val instanceof Boolean || val instanceof String || val instanceof Long
+							|| val instanceof Integer || val instanceof Double) {
 						IdentityInfoDTO idInfo = new IdentityInfoDTO();
 						idInfo.setValue(String.valueOf(val));
 						return Stream.of(idInfo).collect(Collectors.toList());
@@ -120,17 +121,12 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 	}
 
-	private Map<String, Object> getIdentityValues(Map<String, Object> map) {
-		return map.entrySet().stream().filter(entry -> entry.getValue() instanceof Map)
-				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-					if (entry.getValue() instanceof List) {
-						List<Map<String, Object>> values = (List<Map<String, Object>>) entry.getValue();
-						return values;
-					}
-					return Collections.emptyList();
-				}));
-	}
-
+	/**
+	 * Fetch document values for Individual's
+	 * 
+	 * @param value
+	 * @return
+	 */
 	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
 		return value.stream().filter(map -> "individualBiometrics".equals(map.get("category")))
 				.flatMap(map -> map.entrySet().stream()).filter(entry -> entry.getKey().equalsIgnoreCase("value"))
@@ -146,6 +142,12 @@ public class IdRepoServiceImpl implements IdRepoService {
 				}));
 	}
 
+	/**
+	 * Decodes Identity value
+	 * 
+	 * @param value
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> decodeToMap(Object value) {
 		if (value instanceof String) {

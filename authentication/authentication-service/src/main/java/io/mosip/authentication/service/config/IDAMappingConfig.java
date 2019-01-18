@@ -27,7 +27,7 @@ import lombok.Data;
 @Data
 public class IDAMappingConfig implements MappingConfig {
 
-	/** The name. */
+	/** The Full name. */
 	private List<String> fullName;
 
 	/** The dob. */
