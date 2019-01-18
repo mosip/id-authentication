@@ -45,11 +45,11 @@ public abstract class BaseJob extends QuartzJobBean {
 	@Autowired
 	protected SyncManager syncManager;
 
-	protected  String jobId;
+	protected String jobId;
 
-	protected  String triggerPoint;
+	protected String triggerPoint;
 
-	protected  ResponseDTO responseDTO;
+	protected ResponseDTO responseDTO;
 
 	/**
 	 * LOGGER for logging
@@ -98,8 +98,8 @@ public abstract class BaseJob extends QuartzJobBean {
 					BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(childJob.getApiName());
 
 					// Response of parentBaseJob
-					ResponseDTO childJobResponseDTO = parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-							childJob.getId());
+					ResponseDTO childJobResponseDTO = parentBaseJob
+							.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM, childJob.getId());
 
 					if (childJobResponseDTO.getSuccessResponseDTO() != null) {
 						// Execute its next child Job
@@ -185,7 +185,7 @@ public abstract class BaseJob extends QuartzJobBean {
 
 			// Job Manager
 			jobManager = this.applicationContext.getBean(JobManager.class);
-			
+
 			triggerPoint = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 
 			// Get Job Map
