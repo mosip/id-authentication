@@ -25,8 +25,8 @@ create table kernel.sync_transaction (
 		sync_from 		character varying (32),
 		sync_to 		character varying (32),
 		
-		machine_id 		character varying (36),			-- master.reg_center_machine.(machine_id, cntr_id)
-		regcntr_id		character varying (36),				-- fk to master machine+center mapped table, not directly master tables.
+		machine_id 		character varying (10),			-- master.reg_center_machine.(machine_id, cntr_id)
+		regcntr_id		character varying (10),				-- fk to master machine+center mapped table, not directly master tables.
 
 		ref_id_type 	character varying(64),				-- master.id_type.code		
 		ref_id 		character varying (64),

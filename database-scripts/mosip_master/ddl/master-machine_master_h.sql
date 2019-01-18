@@ -12,7 +12,7 @@ create schema if not exists master
 -- table section -------------------------------------------------
 create table master.machine_master_h (
 
-	id 			character varying (36) not null,
+	id 			character varying (10) not null,
 
 	name 		character varying (64) not null,
 	mac_address character varying (64) not null,

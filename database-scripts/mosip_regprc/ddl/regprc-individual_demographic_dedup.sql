@@ -13,9 +13,9 @@ create schema if not exists regprc
 -- DROP TABLE IF EXISTS regprc.individual_demographic_dedup CASCADE;
 
 CREATE TABLE regprc.individual_demographic_dedup(
-	reg_id 			character varying(39) not null,	   -- regprc.registration.id
-	uin_ref_id		character varying(28),
-	name 			character varying(128),            -- Name of an individual, This is combination of fname, mname and lname or full name
+	reg_id 			character varying(39) not null,	   	-- regprc.registration.id
+	uin				character varying(28),				-- UIN of indivisuals and referenced from idrepo database
+	name 			character varying(128),            	-- Name of an individual, This is combination of fname, mname and lname or full name
 	phonetic_name 	character varying(128),
 	dob 	date,
 	gender 	character varying(64),
@@ -40,7 +40,7 @@ COMMENT ON TABLE regprc.individual_demographic_dedup IS 'Individual demographic 
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.reg_id IS 'Registration id of applicant';
 -- ddl-end --
-COMMENT ON COLUMN regprc.individual_demographic_dedup.uin_ref_id IS 'UIN reference id of Individuals';
+COMMENT ON COLUMN regprc.individual_demographic_dedup.uin IS 'UIN of Individuals';
 -- ddl-end --
 COMMENT ON COLUMN regprc.individual_demographic_dedup.name IS 'Name of an individual, This is combination of fname, mname and lname or full name';
 -- ddl-end --

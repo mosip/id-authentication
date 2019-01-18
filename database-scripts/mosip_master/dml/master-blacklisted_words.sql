@@ -1,0 +1,12 @@
+﻿INSERT INTO master.blacklisted_words(word,descr,lang_code,is_active,cr_by,cr_dtimes ) VALUES ('shit','Blacklisted Word','eng',true,'superadmin',now())
+, ('damn','Blacklisted Word','eng',true,'superadmin',now())
+, ('nigga','Blacklisted Word','eng',true,'superadmin',now())
+, ('dammit','Blacklisted Word','eng',true,'superadmin',now())
+, ('الخراء','كلمة القائمة السوداء','ara',true,'superadmin',now())
+, ('لعنة','كلمة القائمة السوداء','ara',true,'superadmin',now())
+, ('نيغا','كلمة القائمة السوداء','ara',true,'superadmin',now())
+, ('اللعنة','كلمة القائمة السوداء','ara',true,'superadmin',now())
+, ('Merde','Mot sur la liste noire','fra',true,'superadmin',now())
+, ('Damn','Mot sur la liste noire','fra',true,'superadmin',now())
+, ('nigga','Mot sur la liste noire','fra',true,'superadmin',now())
+, ('bon sang','Mot sur la liste noire','fra',true,'superadmin',now());

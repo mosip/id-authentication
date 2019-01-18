@@ -12,7 +12,7 @@ create schema if not exists master
 -- table section -------------------------------------------------
 create table master.reg_center_user_h (
 
-	regcntr_id character varying (36) not null,	 -- master.registration_center.id
+	regcntr_id character varying (10) not null,	 -- master.registration_center.id
 	usr_id  character varying (36) not null,		 -- master.user_detail.id
 	
 	is_active 	boolean not null,
