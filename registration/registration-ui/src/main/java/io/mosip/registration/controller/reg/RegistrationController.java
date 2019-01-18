@@ -583,7 +583,7 @@ public class RegistrationController extends BaseController {
 				toggleBiometricException = true;
 				SessionContext.getInstance().getUserContext().getUserMap()
 						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-				faceCaptureController.disableExceptionPhotoCapture(true);
+				faceCaptureController.disableExceptionPhotoCapture(false);
 			} else {
 				bioExceptionToggleLabel1.setDisable(true);
 				bioExceptionToggleLabel2.setDisable(true);
