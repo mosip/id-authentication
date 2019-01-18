@@ -23,16 +23,16 @@ import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 public class BiometricProviderFactory {
 
 	/** The Constant cogentBiometricProvider. */
-	private static final String COGENT_FP_PROVIDER = "bioprovider.cogent";
+	private static final String COGENT_FP_PROVIDER = "fingerprint.provider.cogent";
 	
 	/** The Constant mantraBiometricProvider. */
-	private static final String MANTRA_FP_PROVIDER = "bioprovider.mantra";
+	private static final String MANTRA_FP_PROVIDER = "fingerprint.provider.mantra";
 	
 	/** The Constant cogentBiometricProvider. */
-	private static final String COGENT_IRIS_PROVIDER = "bioprovider.cogent";
+	private static final String COGENT_IRIS_PROVIDER = "iris.provider.cogent";
 	
 	/** The Constant morphoBiometricProvider. */
-	private static final String MORHO_IRIS_PROVIDER = "bioprovider.morpho";
+	private static final String MORHO_IRIS_PROVIDER = "iris.provider.morpho";
 
 	
 	@Autowired
