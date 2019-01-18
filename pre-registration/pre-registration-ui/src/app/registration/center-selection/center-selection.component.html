@@ -119,7 +119,7 @@
   <!-- Header -->
   <mat-card class="center-selection__title-card">
     <mat-card-header>
-      <p class="center__title-card-text">Book Appointment</p>
+      <p class="center__title-card-text">{{ 'centerSelection.title' | translate }}</p>
     </mat-card-header>
   </mat-card>
   <!-- search container -->
@@ -152,10 +152,10 @@
       <!-- search container -->
       <div class="center_selection-intial-recommendation-container" *ngIf="searchClick; else elseBlock">
         <div class="center_selection-center_recommendation-display">
-          <span><b>Recommended Centers</b></span>
+          <span><b>{{ 'centerSelection.display_recommended' | translate }}</b></span>
           <button mat-button class="center_selection-nearby-btn" (click)="getLocation()">
-            Nearby</button><br />
-          <span class="center_selection-center-available-text">Found {{ dataSource.data.length }} centers
+            {{ 'centerSelection.action_nearBy' | translate }}</button><br />
+          <span class="center_selection-center-available-text">{{ 'centerSelection.text_found' | translate }} {{ dataSource.data.length }} {{ 'centerSelection.text_centers' | translate }}
           </span>
         </div>
         <span class="spacer"></span>
@@ -219,7 +219,7 @@
               <span class="spacer"></span>
               <div>
                 <div>
-                  <span>Timing:
+                  <span>{{ 'centerSelection.text_timing' | translate }} :
                     {{
                     changeTimeFormat(center.centerStartTime.substring(0, 5)) +
                     " - " +
@@ -232,7 +232,7 @@
                     changeTimeFormat(center.lunchEndTime.substring(0, 5))
                     }}</span>
                 </div>
-                <div><span>Open: Monday - Friday</span></div>
+                <div><span>{{ 'centerSelection.text_open' | translate }}: Monday - Friday</span></div>
               </div>
             </mat-card>
           </li>
@@ -254,14 +254,14 @@
   <div>
     <mat-card class="center-selection__button-container">
       <button mat-button (click)="routeBack()" class="user-back-btn">
-        Back
+        {{ 'centerSelection.action_back' | translate }}
       </button>
       <span class="spacer"></span>
       <button mat-button (click)="routeDashboard()" class="user-book_later-btn">
-        Book Later
+        {{ 'centerSelection.action_book_later' | translate }}
       </button>
       <button (click)="routeNext()" mat-button class="user-continue-btn">
-        Continue
+        {{ 'centerSelection.action_continue' | translate }}
       </button>
     </mat-card>
   </div>

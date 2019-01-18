@@ -7,23 +7,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="operatorAuthenticationPane" prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController">
+<AnchorPane id="operatorAuthenticationPane" styleClass="operatorAuthenticationAnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.AuthenticationController">
    <children>
-      <AnchorPane fx:id="pwdBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+      <AnchorPane fx:id="pwdBasedLogin" styleClass="operatorAuthenticationAnchorPaneStyle" visible="false">
          <children>
-            <Button layoutX="400.0" layoutY="244.0" mnemonicParsing="false" onAction="#validatePwd" text="Submit" />
-            <TextField fx:id="username" layoutX="316.0" layoutY="125.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
-            <Label fx:id="passwdLabel" layoutX="336.0" layoutY="77.0" text="Registration Officer Verification" />
-            <PasswordField fx:id="password" layoutX="316.0" layoutY="180.0" prefHeight="39.0" prefWidth="269.0" promptText="Password" />
+            <Button layoutX="400.0" layoutY="244.0" mnemonicParsing="false" onAction="#validatePwd" text="%submit" styleClass="RegbuttonStyle"/>
+            <TextField fx:id="username" layoutX="316.0" layoutY="125.0" styleClass="operatorAuthenticationStyle" promptText="%username" />
+            <Label fx:id="passwdLabel" layoutX="336.0" layoutY="77.0" text="%registrationofficerverification" />
+            <PasswordField fx:id="password" layoutX="316.0" layoutY="180.0" styleClass="operatorAuthenticationStyle" promptText="%password" />
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="otpBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+      <AnchorPane fx:id="otpBasedLogin" styleClass="operatorAuthenticationAnchorPaneStyle" visible="false">
          <children>
-            <Button layoutX="297.0" layoutY="217.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
-            <Label fx:id="otpLabel" layoutX="317.0" layoutY="58.0" text="Registration Officer Verification" />
-            <Button layoutX="485.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="Submit" />
-            <TextField fx:id="otpUserId" layoutX="297.0" layoutY="108.0" prefHeight="39.0" prefWidth="269.0" promptText="Username" />
-            <TextField fx:id="otp" layoutX="297.0" layoutY="159.0" prefHeight="39.0" prefWidth="269.0" promptText="Enter OTP" />
+            <Button layoutX="297.0" layoutY="217.0" mnemonicParsing="false" onAction="#generateOtp" text="%getotp" styleClass="RegbuttonStyle"/>
+            <Label fx:id="otpLabel" layoutX="317.0" layoutY="58.0" text="%registrationofficerverification" />
+            <Button layoutX="485.0" layoutY="217.0" mnemonicParsing="false" onAction="#validateOTP" text="%submit" styleClass="RegbuttonStyle"/>
+            <TextField fx:id="otpUserId" layoutX="297.0" layoutY="108.0" styleClass="operatorAuthenticationStyle" promptText="%username" />
+            <TextField fx:id="otp" layoutX="297.0" layoutY="159.0" styleClass="operatorAuthenticationStyle" promptText="%enterotp" />
             <Label fx:id="otpValidity" layoutX="297.0" layoutY="268.0">
                <font>
                   <Font size="10.0" />
@@ -31,17 +31,41 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="fingerprintBasedLogin" prefHeight="550.0" prefWidth="850.0" visible="false">
+      <AnchorPane fx:id="fingerprintBasedLogin" styleClass="operatorAuthenticationAnchorPaneStyle" visible="false">
          <children>
-            <Label fx:id="fingerPrintLabel" layoutX="352.0" layoutY="123.0" text="RO Fingerprint Authentication" />
-            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="360.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
+            <Label fx:id="fingerPrintLabel" layoutX="352.0" layoutY="123.0" text="%rofingerprintauthentication" />
+            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="300.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
             	<image>
 					<Image url="@../images/fingerprint.jpg" />
 				</image>
 			</ImageView>
-            <Button layoutX="490.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFingerprint" text="Scan" />
-            <TextField fx:id="fpUserId" layoutX="306.0" layoutY="174.0" prefHeight="39.0" prefWidth="308.0" promptText="Username" />
+            <Button layoutX="490.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFingerprint" text="%scan" styleClass="RegbuttonStyle"/>
+            <TextField fx:id="fpUserId" layoutX="306.0" layoutY="174.0" styleClass="operatorAuthenticationStyle" promptText="%username" />
          </children>
       </AnchorPane>
+      <AnchorPane fx:id="irisBasedLogin" styleClass="operatorAuthenticationAnchorPaneStyle" visible="false">
+         <children>
+            <Label fx:id="irisLabel" layoutX="352.0" layoutY="123.0" text="%roirisauthentication" />
+            <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="300.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                   <Image url="@../images/iris.jpg" />
+                </image>
+            </ImageView>
+         	<Button layoutX="490.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateIris" styleClass="RegbuttonStyle" text="%scan" />
+            <TextField fx:id="irisUserId" layoutX="306.0" layoutY="174.0" styleClass="operatorAuthenticationStyle" promptText="%username" />
+         </children>
+       </AnchorPane>
+       <AnchorPane fx:id="faceBasedLogin" styleClass="operatorAuthenticationAnchorPaneStyle" visible="false">
+         <children>
+            <Label fx:id="faceLabel" layoutX="352.0" layoutY="123.0" text="%rofaceauthentication"/>
+              <ImageView fitHeight="128.0" fitWidth="111.0" layoutX="300.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true" >
+                <image>
+                   <Image url="@../images/face.jpg" />
+                     </image>
+              </ImageView>
+              <Button layoutX="490.0" layoutY="309.0" mnemonicParsing="false" onAction="#validateFace" styleClass="RegbuttonStyle" text="%scan" />
+              <TextField fx:id="faceUserId" layoutX="306.0" layoutY="174.0" styleClass="operatorAuthenticationStyle" promptText="Username" />
+          </children>
+       </AnchorPane>
    </children>
 </AnchorPane>

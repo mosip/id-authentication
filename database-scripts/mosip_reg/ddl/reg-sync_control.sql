@@ -16,8 +16,8 @@ create table reg.sync_control (
 		
 		syncjob_id character varying (36) not null,	 	-- reg.sync_job_def.id
 		
-		machine_id 		character varying (36),			-- reg.reg_center_machine.(machine_id, reg_cntr_id)
-		regcntr_id 		character varying (36),				-- fk to master machine+center mapped table, not directly master tables.
+		machine_id 		character varying (10),			-- reg.reg_center_machine.(machine_id, reg_cntr_id)
+		regcntr_id 		character varying (10),				-- fk to master machine+center mapped table, not directly master tables.
 		
 		synctrn_id 	character varying (36) not null,	-- reg.sync_transaction.id
 

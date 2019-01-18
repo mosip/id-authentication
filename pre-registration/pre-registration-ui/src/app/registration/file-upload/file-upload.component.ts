@@ -41,7 +41,7 @@ export class FileUploadComponent implements OnInit {
           value: 'passport'
         },
         {
-          name: 'Electricity Bill',
+          name: 'CNIE Card',
           value: 'Electricity Bill'
         },
         // {
@@ -58,7 +58,7 @@ export class FileUploadComponent implements OnInit {
           value: 'passport'
         },
         {
-          name: 'Bank Account',
+          name: 'CNIE Card',
           value: 'Bank Account'
         }
       ]
@@ -70,6 +70,14 @@ export class FileUploadComponent implements OnInit {
           name: 'Passport',
           value: 'passport'
         },
+        {
+          name: 'CNIE Card',
+          value: 'Bank Account'
+        },
+        {
+          name: 'Birth Certificate',
+          value: 'Birth Certificate'
+        }
         // {
         //   name: 'Voter ID Card',
         //   value: 'Voter ID Card'
@@ -84,9 +92,10 @@ export class FileUploadComponent implements OnInit {
           value: 'passport'
         },
         {
-          name: 'Birth Certificate',
-          value: 'Birth Certificate'
+          name: 'CNIE Card',
+          value: 'CNIE Card'
         }
+        
       ]
     }
   ];

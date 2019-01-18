@@ -9,9 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseInfo;
@@ -124,7 +121,7 @@ public class AuthResponseBuilder {
 	 * @return the auth response builder
 	 */
 	public AuthResponseBuilder setVersion(String ver) {
-		responseDTO.getInfo().setVer(ver);
+		responseDTO.setVer(ver);
 		return this;
 	}
 

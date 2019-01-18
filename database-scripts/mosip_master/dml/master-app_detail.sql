@@ -1,0 +1,12 @@
+﻿INSERT INTO master.app_detail(id,name,descr,lang_code,is_active,cr_by,cr_dtimes)	VALUES ('10001','Pre-Registration','Web portal for pre-registrations','eng',true,'superadmin',now())
+, ('10002','ما قبل التسجيل','بوابة الويب للتسجيلات المسبقة','ara',true,'superadmin',now())
+, ('10003','Registration Client','Desktop application for Registrations','eng',true,'superadmin',now())
+, ('10004','عميل التسجيل','تطبيق سطح المكتب للتسجيلات','ara',true,'superadmin',now())
+, ('10005','Registration Processor','Application for post-registration process','eng',true,'superadmin',now())
+, ('10006','معالج التسجيل','طلب لعملية ما بعد التسجيل','ara',true,'superadmin',now())
+, ('10007','ID Authentication','Application for third party service provider authentication','eng',true,'superadmin',now())
+, ('10008','مصادقة الهوية','تطبيق لمصادقة موفر خدمة جهة خارجية','ara',true,'superadmin',now())
+, ('10009','ID Control','Web portal for configuring applications','eng',true,'superadmin',now())
+, ('10010','التحكم في الهوية','بوابة الويب لتكوين التطبيقات','ara',true,'superadmin',now())
+, ('10011','Resident Portal','Web portal for Post ID generation services','eng',true,'superadmin',now())
+, ('10012','بوابة المقيمين','البوابة الإلكترونية لخدمات إنشاء معرف المشاركة','ara',true,'superadmin',now());

@@ -55,6 +55,7 @@ public class RegistrationConstants {
 	public static final String USER_ONBOARD_FP = "/fxml/UserOnboardFPCapture.fxml";
 	public static final String USER_ONBOARD_IRIS = "/fxml/UserOnboardIrisCapture.fxml";
 	public static final String USER_ONBOARD_WEBCAM = "/fxml/UserOnboardWebCamera.fxml";
+	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -80,23 +81,20 @@ public class RegistrationConstants {
 	public static final String IRIS_STUB = "leftIris";
 	public static final String FACE_STUB = "face";
 
+	//Authentication Methods
+	public static final String PWORD = "PWD";
+	public static final String OTP = "OTP";
+	public static final String BIO = "BIO";
+	public static final String FACE = "FACE";
+	public static final String IRIS = "IRIS";
+	
+	public static final String LOGIN_OTP_PARAM = "otp";
+	
 	// Login
-	public static final String LOGIN_METHOD_PWORD = "PWD";
-	public static final String LOGIN_METHOD_OTP = "OTP";
-	public static final String LOGIN_METHOD_BIO = "BIO";
-	public static final String LOGIN_METHOD_IRIS = "IRIS";
-	public static final String LOGIN_METHOD_FACE = "FACE";
-	public static final String USR_TEXT = "Enter your Username";
-	public static final String PWORD_TEXT = "Enter your Password";
-	public static final String OTP_TEXT = "Enter OTP";
-	public static final String FINGERPRINT_TEXT = "Place your fingerprint on the device to scan it";
-	public static final String IRIS_TEXT = "Scan your eye on the iris scanner";
-	public static final String FACE_TEXT = "Bring your face near the camera";
 	public static final String BLOCKED = "BLOCKED";
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
-	public static final String BLACKLISTED = "BLOCKED";
-	public static final String NEW_USER = "isNewUser";
+	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
 	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
@@ -112,7 +110,6 @@ public class RegistrationConstants {
 
 	// Generic
 	public static final String ERROR = "ERROR";
-	public static final String SUCCESS_MSG = "Success";
 	public static final int PARAM_ONE = 1;
 	public static final int PARAM_ZERO = 0;
 
@@ -124,9 +121,10 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_PANE1_DATA = "demoGraphicPane1Content";
 	public static final String REGISTRATION_PANE2_DATA = "demoGraphicPane2Content";
 	public static final String REGISTRATION_ISEDIT = "isEditPage";
+	public static final String IS_Child = "isChild";
 	public static final String IS_CONSOLIDATED = "isConsolidated";
-	public static final String CONSOLIDATED_VALIDATION = "Y";
-	public static final String INDIVIDUAL_VALIDATION = "N";
+	public static final String ENABLE = "Y";
+	public static final String DISABLE = "N";
 	public static final String VALIDATION_SPLITTER = "\\s,";
 	public static final String ON_TYPE = "_ontype";
 	public static final String POR_DOCUMENTS = "porDocuments";
@@ -144,13 +142,13 @@ public class RegistrationConstants {
 	public static final String APPLICATION_LANGUAGE = "application_language";
 	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
 	public static final String PACKET_TYPE_NEW = "New";
-	public static final String FLAG_YES = "Y";
-	public static final String FLAG_NO = "N";
 	public static final String REGISTRATION_DTO = "registrationDto";
 	public static final String ADDRESS_LINE1 = "addressLine1";
 	public static final String ADDRESS_LINE2 = "addressLine2";
 	public static final String ADDRESS_LINE3 = "addressLine3";
 	public static final String FULL_NAME = "fullName";
+	public static final String PARENT_NAME = "parentName";
+
 	public static final String CHILD = "Child";
 	public static final String ADULT = "Adult";
 	public static final String AGE_DATEPICKER_CONTENT = "ageDatePickerContent";
@@ -193,13 +191,25 @@ public class RegistrationConstants {
 
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";
-	public static final String DEMOGRPAHIC_JSON_NAME = "demographicJson";
-	public static final String PACKET_META_JSON_NAME = "packetMetaJson";
-	public static final String ENROLLMENT_META_JSON_NAME = "enrollmentMetaJson";
-	public static final String HASHING_JSON_NAME = "hash";
+	public static final String DEMOGRPAHIC_JSON_NAME = "ID.json";
+	public static final String PACKET_META_JSON_NAME = "packet_meta_info.json";
+	public static final String PACKET_DATA_HASH_FILE_NAME = "packet_data_hash.txt";
+	public static final String PACKET_OSI_HASH_FILE_NAME = "packet_osi_hash.txt";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
+	public static final String APPLICANT_BIO_CBEFF_FILE_NAME = "applicant_bio_CBEFF.xml";
+	public static final String OFFICER_BIO_CBEFF_FILE_NAME = "officer_bio_CBEFF.xml";
+	public static final String SUPERVISOR_BIO_CBEFF_FILE_NAME = "supervisor_bio_CBEFF.xml";
+	public static final String INTRODUCER_BIO_CBEFF_FILE_NAME = "introducer_bio_CBEFF.xml";
+	public static final String MAX_REG_PACKET_SIZE_IN_MB = "MAX_REG_PACKET_SIZE";
+	public static final String INDIVIDUAL = "INDIVIDUAL";
+	public static final String INTRODUCER = "INTRODUCER";
+	public static final String CBEFF_BIR_UUIDS_MAP_NAME = "CBEFF_BIR_UUIDS";
+	public static final String RSA = "mosip.kernel.keygenerator.asymmetric-algorithm-name";
+	public static final String XML_FILE_FORMAT = ".xml";
+	public static final String FILE_NAME_TYPE_SEPERATOR = ".";
+	public static final String CBEFF_FILE_FORMAT = "cbeff";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";
@@ -260,7 +270,6 @@ public class RegistrationConstants {
 
 	// ALert related constants
 	public static final String ALERT_INFORMATION = "INFORMATION";
-	public static final String ALERT_ERROR = "ERROR";
 	public static final String ALERT_WARNING = "WARNING";
 	public static final String ALERT = "ALERT";
 
@@ -391,6 +400,8 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_UPDATED = "updated";
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
 	public static final String DEVICE_MAPPING_LOGGER_TITLE = "REGISTRATION - CENTER MACHINE DEVICE MAPPING";
+	public static final String SYNC_TRANSACTION_DAO_LOGGER_TITLE ="REGISTRATION-SYNC-TRANSACTION DAO";
+	public static final String SYNC_JOB_CONTROL_DAO_LOGGER_TITLE ="REGISTRATION-SYNC-JOB_CONTROL DAO";
 
 	// CENTER MACHINE DEVICE MAPPING
 	public static final String DEVICE_MAPPING_SUCCESS_CODE = "REG-DVO‌-001";
@@ -421,14 +432,11 @@ public class RegistrationConstants {
 	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
 	public static final String OPT_TO_REG_LOGGER_SESSION_ID = "REGISTRATION - SYNC - VALIDATION";
 	public static final String OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
-	public static final String OPT_TO_REG_GEO_FLAG_SINGLETIME = "Y";
-	public static final String OPT_TO_REG_GEO_FLAG_MULTIPLETIME = "N";
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
 	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
 	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
-	public static final String OPT_TO_REG_LATITUDE = "latitude";
-	public static final String OPT_TO_REG_LONGITUDE = "longitude";
+	public static final String LATITUDE = "latitude";
 	public static final String OPT_TO_REG_MDS_J00001 = "MDS_J00001";
 	public static final String OPT_TO_REG_LCS_J00002 = "LCS_J00002";
 	public static final String OPT_TO_REG_PDS_J00003 = "PDS_J00003";
@@ -439,6 +447,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_POS_J00008 = "POS_J00008";
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
 	public static final String OPT_TO_REG_RDJ_J00010 = "RDJ_J00010";
+	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -487,6 +496,7 @@ public class RegistrationConstants {
 	// Global configuration parameters
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
+	public static final String REGISTARTION_CENTER="REGISTARTION_CENTER";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -506,8 +516,7 @@ public class RegistrationConstants {
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
-	public static final String GPS_LATITUDE = "latitude";
-	public static final String GPS_LONGITUDE = "longitude";
+	public static final String LONGITUDE = "longitude";
 	public static final String GPS_DISTANCE = "distance";
 	public static final String GPS_CAPTURE_ERROR_MSG = "gpsErrorMessage";
 	public static final String GPS_CAPTURE_SUCCESS = "gpsCaptureSuccess";
@@ -555,6 +564,11 @@ public class RegistrationConstants {
 	// UI Date Format
 	public static final String DATE_FORMAT = "MM/dd/yyy hh:mm:ss";
 	public static final String HH_MM_SS = "HH:mm:ss";
+	
+	//Biometric Exception style
+	public static final String ADD_BORDER = "addBorderStyle";
+	public static final String REMOVE_BORDER = "removeBorderStyle";
+	
 
 	// Iris & Fingerprint Capture for Individual Registration
 	public static final String IRIS_THRESHOLD = "IRIS_THRESHOLD";
@@ -594,6 +608,17 @@ public class RegistrationConstants {
 			"/fingerprints/Srighthand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/thumb/leftThumb/",
 			"/fingerprints/thumb/rightThumb/" };
+	public static final String THUMB = "Thumb";
+	public static final String LEFT_HAND = "Left hand ";
+	public static final String RIGHT_HAND = "Right hand ";
+	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/lefthand/leftIndex/",
+			"/fingerprints/UserOnboard/lefthand/leftLittle/", "/fingerprints/UserOnboard/lefthand/leftMiddle/",
+			"/fingerprints/UserOnboard/lefthand/leftRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/righthand/rightIndex/",
+			"/fingerprints/UserOnboard/righthand/rightLittle/", "/fingerprints/UserOnboard/righthand/rightMiddle/",
+			"/fingerprints/UserOnboard/righthand/rightRing/" };
+	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/thumb/leftThumb/",
+	"/fingerprints/UserOnboard/thumb/rightThumb/" };
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
@@ -715,7 +740,9 @@ public class RegistrationConstants {
 	public static final String PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Job";
 	public static final String PRE_REG_DATA_SYNC_SERVICE_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync Service";
 	public static final String PRE_REG_DATA_SYNC_DAO_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
-	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Pre Registration Data Sync DAO";
+	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
+	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
+	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
 
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
@@ -752,6 +779,8 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE = "REG-MDS‌-002";
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
 	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
+	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
+	
 	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
 
 	// PRE-REG DELETE JOB
@@ -780,6 +809,9 @@ public class RegistrationConstants {
 	public static final String NO_JOB_COMPLETED = "NO JOBS COMPLETED";
 	public static final String NO_JOBS_TRANSACTION = "No Transaction History Available";
 	public static final String NO_JOBS_RUNNING = "Currently No Jobs Running";
+	public static final String JOB_UNKNOWN= "UNKNOWN";
+	
+
 	// Machine Mapping
 	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
 	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
@@ -794,7 +826,8 @@ public class RegistrationConstants {
 
 	// OTP
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
-	public static final String OTP_GENERATION_ERROR_MESSAGE = "Please Enter Valid Username";
+	public static final String OTP_GENERATION_ERROR_MESSAGE = "Unable Generate OTP for entered username";
+	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
 
 	// Sync Status
 	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
@@ -819,29 +852,19 @@ public class RegistrationConstants {
 	// Global-Config Constants
 	public static final String GET_GLOBAL_CONFIG = "get_registration_center_config";
 	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
+	public static final String GLOBAL_CONFIG_ERROR_MSG = "please synch the data before starting the application";
 
-	public enum mappedCodeForLang {
-		en("ENG"),ar("AR");
-		private String langCode;
-
-		mappedCodeForLang(String langCode) {
-			this.langCode = langCode;
-		}
-
-		public String getMappedCode() {
-			return langCode;
-		}
-
-	}
-	
 	// user on boarding
 	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
-	public static final String USER_ON_BOARDING_SUCCESS_RESPONSE = "success";
+	public static final String success = "success";
 	public static final String USER_ON_BOARDING_EXCEPTION = "USER_ON_BOARDING_EXCEPTION";
 	public static final String USER_ON_BOARDING_EXCEPTION_MSG_CODE = "REG-URE‌-000";
 	public static final String USER_ON_BOARDING_SUCCESS_CODE="REG-URE‌-002";
 	public static final String USER_ON_BOARDING_SUCCESS_MSG="User on-boarded successfully.";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_CODE="REG-URE‌-008";
 	public static final String USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG="Threshold for number of successful authentications not met.";
-
+	public static final String USER_STATION_ID="stationId";
+	public static final String USER_CENTER_ID="centerId";
+	public static final String USER_MACHINE_VALIDATION_CODE="REG-URE‌-009";
+	public static final String USER_MACHINE_VALIDATION_MSG="This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 }

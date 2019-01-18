@@ -15,7 +15,7 @@
             <AnchorPane fx:id="imageAnchorPane" layoutX="268.0" layoutY="10.0" styleClass="reRegAnchorPane" >
                <children>
                   <ImageView fx:id="imageView" fitHeight="272.0" fitWidth="613.0" layoutX="10.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true" />
-                  <ToggleButton fx:id="informedBtn" layoutX="445.0" layoutY="4.0" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="Informed">
+                  <ToggleButton fx:id="informedBtn" layoutX="445.0" layoutY="4.0" mnemonicParsing="false" onAction="#informedToUser" styleClass="reRegToggle" text="%informed">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -23,7 +23,7 @@
                         <ToggleGroup fx:id="informedStatus" />
                      </toggleGroup>
                   </ToggleButton>
-                  <ToggleButton fx:id="notInformedBtn" layoutX="537.0" layoutY="4.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="Can't Informed" toggleGroup="$informedStatus">
+                  <ToggleButton fx:id="notInformedBtn" layoutX="537.0" layoutY="4.0" mnemonicParsing="false" onAction="#notInformedToUser" styleClass="reRegToggle" text="%cantinformed" toggleGroup="$informedStatus">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -32,16 +32,16 @@
             </AnchorPane>
             <TableView fx:id="table" layoutX="14.0" layoutY="10.0" styleClass="reRegTable">
                <columns>
-                  <TableColumn fx:id="id" prefWidth="250.0" text="Registration ID" />
-                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="Registrtion ID" visible="false" />
+                  <TableColumn fx:id="id" prefWidth="250.0" text="%registrationid" />
+                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="%registrtionid" visible="false" />
                </columns>
             </TableView>
-            <Button fx:id="submitBtn" layoutX="251.0" layoutY="291.0" mnemonicParsing="false" onAction="#authenticateReregister" prefHeight="20.0" prefWidth="140.0" text="Authenticate">
+            <Button fx:id="submitBtn" layoutX="251.0" layoutY="291.0" mnemonicParsing="false" onAction="#authenticateReregister" prefHeight="20.0" prefWidth="140.0" text="%authenticate">
                <font>
                   <Font size="10.0" />
                </font>
             </Button>
-            <Label layoutX="398.0" layoutY="292.0" prefHeight="20.0" prefWidth="332.0" text="after all the applications have been Actioned.">
+            <Label layoutX="398.0" layoutY="292.0" prefHeight="20.0" prefWidth="332.0" text="%aplicatoinactioned">
                <font>
                   <Font size="10.0" />
                </font></Label>

@@ -12,14 +12,14 @@ public interface AppAuthenticationDetails {
 	/**
 	 * To fetch only selected columns from Embeddable
 	 */
-	AppAuthentication getregistrationAppAuthenticationMethodId();
+	AppAuthentication getAppAuthenticationMethodId();
 	
 	/**
 	 * To fetch only selected columns from table
 	 */
 	interface AppAuthentication{
 		String getProcessName();
-		String getLoginMethod();
+		String getAuthMethodCode();
 	}
 
 }

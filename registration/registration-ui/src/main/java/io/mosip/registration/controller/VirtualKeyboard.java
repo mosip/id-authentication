@@ -57,6 +57,8 @@ public class VirtualKeyboard {
 
 	private boolean capsLock;
 
+	private StringBuilder vkType=new StringBuilder();
+
 	private final ResourceBundle keyboard = ResourceBundle.getBundle("keyboards.keyboard",
 			new Locale(AppConfig.getApplicationProperty("local_language")));
 
@@ -256,7 +258,6 @@ public class VirtualKeyboard {
 		Button button = createButton(textProperty, code, modifiers, target);
 		return button;
 	}
-
 	private Button createButton(final ObservableStringValue text, final KeyCode code, final Modifiers modifiers,
 			final ReadOnlyObjectProperty<Node> target) {
 		final Button button = new Button();
@@ -267,12 +268,14 @@ public class VirtualKeyboard {
 		button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-
-				final Node targetNode;
+				vkType.append("vk");
+				Node targetNode;
 				if (target != null) {
 					targetNode = target.get();
 				} else {
 					targetNode = view().getScene().getFocusOwner();
+					if(!targetNode.getId().contains("Local"))
+						targetNode=null;
 				}
 
 				if (targetNode != null) {
@@ -294,6 +297,7 @@ public class VirtualKeyboard {
 						targetNode.fireEvent(keyTypedEvent);
 					}
 					modifiers.releaseKeys();
+					vkType.delete(0, vkType.length());
 				}
 			}
 		});
@@ -397,6 +401,7 @@ public class VirtualKeyboard {
 		textField.setOnKeyPressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
+				if(!vkType.toString().contains("vk")) {
 				KeyEvent e = ((KeyEvent) event);
 				if (e.getCode().getName().equals("Caps Lock")) {
 					if (capsLock) {
@@ -434,7 +439,7 @@ public class VirtualKeyboard {
 					}
 				}
 			}
-		});
+			}});
 
 		textField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -446,7 +451,22 @@ public class VirtualKeyboard {
 
 			}
 		});
+		
+		
 
 	}
 
+	public void focusListener(TextField field, double y, Node keyboardNode) {
+		field.focusedProperty().addListener(new ChangeListener<Boolean>()
+		{
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+		    {
+		        if (newPropertyValue)
+		        {
+		        	keyboardNode.setLayoutY(y);
+		        }
+		    }
+		});
+	}
 }

@@ -1,6 +1,9 @@
 package io.mosip.registration.dao;
 
+import java.util.List;
 import java.util.Map;
+
+import io.mosip.registration.entity.GlobalParam;
 
 /**
  * DAO class for GlobalParam
@@ -17,4 +20,7 @@ public interface GlobalParamDAO {
 	 * @return Map of global params
 	 */
 	Map<String,Object> getGlobalParams();
+	
+	void saveAll(List<GlobalParam> list);
+	
 }

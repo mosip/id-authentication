@@ -19,6 +19,8 @@ public class Identity {
 	private List<FieldValue> metaData;
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence;
+	private List<FieldValue> capturedRegisteredDevices;
+	private List<FieldValue> capturedNonRegisteredDevices;
 	private List<FieldValue> checkSum;
 
 	/**
@@ -139,6 +141,34 @@ public class Identity {
 	 */
 	public void setHashSequence(List<FieldValueArray> hashSequence) {
 		this.hashSequence = hashSequence;
+	}
+
+	/**
+	 * @return the capturedRegisteredDevices
+	 */
+	public List<FieldValue> getCapturedRegisteredDevices() {
+		return capturedRegisteredDevices;
+	}
+
+	/**
+	 * @param capturedRegisteredDevices the capturedRegisteredDevices to set
+	 */
+	public void setCapturedRegisteredDevices(List<FieldValue> capturedRegisteredDevices) {
+		this.capturedRegisteredDevices = capturedRegisteredDevices;
+	}
+
+	/**
+	 * @return the capturedNonRegisteredDevices
+	 */
+	public List<FieldValue> getCapturedNonRegisteredDevices() {
+		return capturedNonRegisteredDevices;
+	}
+
+	/**
+	 * @param capturedNonRegisteredDevices the capturedNonRegisteredDevices to set
+	 */
+	public void setCapturedNonRegisteredDevices(List<FieldValue> capturedNonRegisteredDevices) {
+		this.capturedNonRegisteredDevices = capturedNonRegisteredDevices;
 	}
 
 	/**

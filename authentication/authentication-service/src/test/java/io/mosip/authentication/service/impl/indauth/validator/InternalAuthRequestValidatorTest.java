@@ -295,7 +295,7 @@ public class InternalAuthRequestValidatorTest {
 		idInfoDTO.setValue("finger");
 		/*
 		 * IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		 * idInfoDTO1.setLanguage("FR"); idInfoDTO1.setValue("iris");
+		 * idInfoDTO1.setLanguage("fre"); idInfoDTO1.setValue("iris");
 		 */
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -363,7 +363,7 @@ public class InternalAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue(null);
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO.setValue(null);
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -400,7 +400,7 @@ public class InternalAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue(null);
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO.setValue(null);
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);

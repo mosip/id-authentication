@@ -12,6 +12,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.dto.RegistrationDTO;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -21,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 
 /**
@@ -47,7 +49,10 @@ public class DemographicPreviewController extends BaseController {
 	
 	@FXML
 	private ScrollPane demoRevScrollPane;
-
+	
+	@FXML
+	private Text registrationNavLabel;
+	
 	private boolean isInPane1;
 
 	/**
@@ -64,6 +69,9 @@ public class DemographicPreviewController extends BaseController {
 		demographicPreview.setDisable(true);
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
+		if(((RegistrationDTO)SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO()!=null) {
+			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+		}
 	}
 
 	/**
@@ -95,7 +103,6 @@ public class DemographicPreviewController extends BaseController {
 				demoGraphicPane2.lookup("#porDocuments").setDisable(true);
 				demoGraphicPane2.lookup("#dobDocuments").setDisable(true);
 				demoGraphicPane2.lookup("#biometricException").setDisable(true);
-				demoGraphicPane2.lookup("#childSpecificFields").setDisable(true);
 				String vBoxesId[] = { "#poaBox", "#poiBox", "#porBox", "#dobBox" };
 				for (String vBoxId : vBoxesId) {
 					VBox vbox = (VBox) demoGraphicPane2.lookup(vBoxId);

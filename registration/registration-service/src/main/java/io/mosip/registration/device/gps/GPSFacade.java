@@ -90,8 +90,8 @@ public class GPSFacade extends GPSBU343Connector {
 					|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE.equals(gpsRawData)
 					|| RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG.equals(gpsRawData)) {
 
-				gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, null);
-				gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, null);
+				gpsResponseMap.put(RegistrationConstants.LATITUDE, null);
+				gpsResponseMap.put(RegistrationConstants.LONGITUDE, null);
 				gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, null);
 				gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, gpsRawData);
 
@@ -104,8 +104,8 @@ public class GPSFacade extends GPSBU343Connector {
 				if (null != gpsdata && !gpsdata.getResponse().equals("failure")) {
 
 					LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-							RegistrationConstants.GPS_LATITUDE + " =====>" + gpsdata.getLat()
-									+ RegistrationConstants.GPS_LONGITUDE + " ====>" + gpsdata.getLon()
+							RegistrationConstants.LATITUDE + " =====>" + gpsdata.getLat()
+									+ RegistrationConstants.LONGITUDE + " ====>" + gpsdata.getLon()
 									+ RegistrationConstants.GPS_DISTANCE + " =====>" + gpsdata.getResponse());
 
 					double deviceLat = gpsdata.getLat();
@@ -122,16 +122,16 @@ public class GPSFacade extends GPSBU343Connector {
 					if ((BigDecimal.ZERO.compareTo(deviceLatitute) != 0)
 							&& (BigDecimal.ZERO.compareTo(deviceLongitude) != 0)) {
 
-						gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, deviceLatitute);
-						gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, deviceLongitude);
+						gpsResponseMap.put(RegistrationConstants.LATITUDE, deviceLatitute);
+						gpsResponseMap.put(RegistrationConstants.LONGITUDE, deviceLongitude);
 						gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, distance);
 						gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
 								RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
 					}
 				} else {
-					gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, null);
-					gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, null);
+					gpsResponseMap.put(RegistrationConstants.LATITUDE, null);
+					gpsResponseMap.put(RegistrationConstants.LONGITUDE, null);
 					gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, null);
 					gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
 							RegistrationConstants.GPS_CAPTURE_FAILURE_MSG);
@@ -153,8 +153,8 @@ public class GPSFacade extends GPSBU343Connector {
 		// TODO: Hard codded because if gps device and signa is not connected and weak
 		// it wont allow for new registarion
 
-		gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, 12.9913);
-		gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, 80.2457);
+		gpsResponseMap.put(RegistrationConstants.LATITUDE, 12.9913);
+		gpsResponseMap.put(RegistrationConstants.LONGITUDE, 80.2457);
 		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
 		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 

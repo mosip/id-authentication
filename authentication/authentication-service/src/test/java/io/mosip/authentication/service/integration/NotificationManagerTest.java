@@ -81,7 +81,7 @@ public class NotificationManagerTest {
 				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new String("success")), String.class));
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccessmail);
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		HttpServer.create(8001).start(adapter);
+		HttpServer.create(8010).start(adapter);
 
 		RouterFunction<?> functionSuccessmsg = RouterFunctions.route(RequestPredicates.POST("/notifier/sms"),
 				request -> ServerResponse.status(HttpStatus.OK).body(Mono.just(new String("success")), String.class));

@@ -17,13 +17,13 @@ public class BiometricInfoDTO extends BaseDTO {
 	private List<FingerprintDetailsDTO> fingerprintDetailsDTO;
 
 	/** The finger print biometric exception DTO. */
-	private List<BiometricExceptionDTO> fingerPrintBiometricExceptionDTO;
+	private List<BiometricExceptionDTO> biometricExceptionDTO;
 
 	/** The iris details DTO. */
 	private List<IrisDetailsDTO> irisDetailsDTO;
 
-	/** The iris biometric exception DTO. */
-	private List<BiometricExceptionDTO> irisBiometricExceptionDTO;
+	/** The face details DTO. */
+	private FaceDetailsDTO faceDetailsDTO;
 
 
 	/**
@@ -47,20 +47,20 @@ public class BiometricInfoDTO extends BaseDTO {
 	/**
 	 * Gets the finger print biometric exception DTO.
 	 *
-	 * @return the finger print biometric exception DTO
+	 * @return the biometric exception DTO
 	 */
-	public List<BiometricExceptionDTO> getFingerPrintBiometricExceptionDTO() {
-		return fingerPrintBiometricExceptionDTO;
+	public List<BiometricExceptionDTO> getBiometricExceptionDTO() {
+		return biometricExceptionDTO;
 	}
 
 	/**
-	 * Sets the finger print biometric exception DTO.
+	 * Sets the biometric exception DTO.
 	 *
-	 * @param fingerPrintBiometricExceptionDTO the new finger print biometric
+	 * @param biometricExceptionDTO the new biometric
 	 *                                         exception DTO
 	 */
-	public void setFingerPrintBiometricExceptionDTO(List<BiometricExceptionDTO> fingerPrintBiometricExceptionDTO) {
-		this.fingerPrintBiometricExceptionDTO = fingerPrintBiometricExceptionDTO;
+	public void setBiometricExceptionDTO(List<BiometricExceptionDTO> biometricExceptionDTO) {
+		this.biometricExceptionDTO = biometricExceptionDTO;
 	}
 
 	/**
@@ -81,21 +81,20 @@ public class BiometricInfoDTO extends BaseDTO {
 		this.irisDetailsDTO = irisDetailsDTO;
 	}
 
+	
 	/**
-	 * Gets the iris biometric exception DTO.
-	 *
-	 * @return the iris biometric exception DTO
+	 * Sets the face details DTO.
+	 * 
+	 * @return faceDetailsDTO
 	 */
-	public List<BiometricExceptionDTO> getIrisBiometricExceptionDTO() {
-		return irisBiometricExceptionDTO;
+	public FaceDetailsDTO getFaceDetailsDTO() {
+		return faceDetailsDTO;
 	}
 
 	/**
-	 * Sets the iris biometric exception DTO.
-	 *
-	 * @param irisBiometricExceptionDTO the new iris biometric exception DTO
+	 * @param faceDetailsDTO the faceDetailsDTO to set
 	 */
-	public void setIrisBiometricExceptionDTO(List<BiometricExceptionDTO> irisBiometricExceptionDTO) {
-		this.irisBiometricExceptionDTO = irisBiometricExceptionDTO;
+	public void setFaceDetailsDTO(FaceDetailsDTO faceDetailsDTO) {
+		this.faceDetailsDTO = faceDetailsDTO;
 	}
 }

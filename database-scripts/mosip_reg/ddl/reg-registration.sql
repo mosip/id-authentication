@@ -36,7 +36,7 @@ create table reg.registration (
 	indv_name character varying(128), 
 
 	reg_usr_id character varying (36) not null,			-- reg.user_detail.id
-	regcntr_id character varying (36) not null,			-- reg.registration_center.id
+	regcntr_id character varying (10) not null,			-- reg.registration_center.id
 	approver_usr_id character varying (36) not null,	-- reg.user_detail.id
 	
 	approver_role_code character varying (36),			-- master.role_list.code
