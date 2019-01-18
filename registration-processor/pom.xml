@@ -94,6 +94,41 @@
 		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
 		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
 		<registration.processor.rest.client>1.0.0-SNAPSHOT</registration.processor.rest.client>
+		
+		<sonar.coverage.exclusions>**/dto/**,
+		**/exception/*Exception.java,
+		**/core/code/*.java,
+		**/packet/storage/entity/*.java,
+		**/manager/exception/systemexception/*.java,
+		**/registration/processor/rest/client/*.java,
+**/registration/processor/rest/client/audit/builder/*.java,
+**/registration/processor/rest/client/utils/*.java,
+**/registration/processor/filesystem/ceph/adapter/impl/exception/*.java,
+**/registration/processor/filesystem/ceph/adapter/impl/exception/systemexception/*.java,
+**/registration/processor/packet/receiver/config/*.java,
+**/registration/processor/packet/receiver/*.java,
+**/registration/processor/packet/receiver/exception/systemexception/*.java,
+**/registration/processor/failoverstage/*.java,
+**/registration/processor/stages/*.java,
+**/registration/processor/retry/verticle/*.java,
+**/registration/processor/retry/verticle/stages/*.java,
+**/registration/processor/packet/decrypter/job/stage/*.java,
+**/registration/processor/packet/decryptor/job/exception/constant/*.java,
+**/registration/processor/ftp/scanner/job/exception/utils/*.java,
+**/registration/processor/virus/scanner/job/exceptions/*.java,
+**/registration/processor/virus/scanner/job/exceptions/util/*.java,
+**/registration/processor/manual/verification/util/*.java,
+**/registration/processor/stages/app/*.java,
+**/registration/processor/camel/bridge/processor/*.java,
+**/registration/processor/core/constant/*.java,
+**/registration/processor/core/packet/dto/demographicinfo/*.java,
+**/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
+**/registration/processor/core/packet/dto/regcentermachine/*.java,
+**/registration/processor/core/util/*.java,
+**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java
+		</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
+		
 	</properties>
 
 	<dependencyManagement>
@@ -131,7 +166,7 @@
 				<sonar.host.url>
 					http://104.215.158.154:9000
 				</sonar.host.url>
-				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+				<sonar.login>90903e93f9e6f0e73b5352382e7c51e0a18bfa80</sonar.login>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -142,9 +177,9 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://13.76.43.109:9000
+					http://104.215.158.154:9000
 				</sonar.host.url>
-				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.login>90903e93f9e6f0e73b5352382e7c51e0a18bfa80</sonar.login>
 				<sonar.ws.timeout>90000</sonar.ws.timeout>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
