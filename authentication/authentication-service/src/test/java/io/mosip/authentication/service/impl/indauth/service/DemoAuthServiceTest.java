@@ -121,7 +121,7 @@ public class DemoAuthServiceTest {
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("Test");
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
@@ -133,7 +133,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("fullAddress");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfo.setMatchingThreshold(60);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
@@ -145,7 +145,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO identityinfo = new IdentityInfoDTO();
-		identityinfo.setLanguage("FR");
+		identityinfo.setLanguage("fre");
 		identityinfo.setValue("exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3");
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> addresslist = new ArrayList<>();
@@ -204,7 +204,7 @@ public class DemoAuthServiceTest {
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(
 				"exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3 Casablanca Tanger-Tétouan-Al Hoceima Fès-Meknès");
 		infoList.add(identityInfoDTO);
@@ -217,7 +217,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("address");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
@@ -229,22 +229,22 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO address1 = new IdentityInfoDTO();
-		address1.setLanguage("FR");
+		address1.setLanguage("fre");
 		address1.setValue("exemple d'adresse ligne 1 ");
 		IdentityInfoDTO address2 = new IdentityInfoDTO();
-		address2.setLanguage("FR");
+		address2.setLanguage("fre");
 		address2.setValue("exemple d'adresse ligne 2");
 		IdentityInfoDTO address3 = new IdentityInfoDTO();
-		address3.setLanguage("FR");
+		address3.setLanguage("fre");
 		address3.setValue("exemple d'adresse ligne 3");
 		IdentityInfoDTO location1 = new IdentityInfoDTO();
-		location1.setLanguage("FR");
+		location1.setLanguage("fre");
 		location1.setValue("Casablanca");
 		IdentityInfoDTO location2 = new IdentityInfoDTO();
-		location2.setLanguage("FR");
+		location2.setLanguage("fre");
 		location2.setValue("Tanger-Tétouan-Al Hoceima");
 		IdentityInfoDTO location3 = new IdentityInfoDTO();
-		location3.setLanguage("FR");
+		location3.setLanguage("fre");
 		location3.setValue("Fès-Meknès");
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> addressLine1 = new ArrayList<>();
@@ -333,7 +333,7 @@ public class DemoAuthServiceTest {
 		/* Name */
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO nameInfoDTO = new IdentityInfoDTO();
-		nameInfoDTO.setLanguage("FR");
+		nameInfoDTO.setLanguage("fre");
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
 		identityDTO.setFullName(nameList);
@@ -345,7 +345,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
@@ -447,7 +447,7 @@ public class DemoAuthServiceTest {
 		Map<String, List<IdentityInfoDTO>> entityInfo = new HashMap<>();
 		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
 		IdentityInfoDTO infoDTO = new IdentityInfoDTO();
-		infoDTO.setLanguage("FR");
+		infoDTO.setLanguage("fre");
 		infoDTO.setValue("Ibrahim");
 		identityInfoList.add(infoDTO);
 		entityInfo.put("firstName", identityInfoList);
@@ -484,7 +484,7 @@ public class DemoAuthServiceTest {
 		/* Name */
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO nameInfoDTO = new IdentityInfoDTO();
-		nameInfoDTO.setLanguage("FR");
+		nameInfoDTO.setLanguage("fre");
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
 		identityDTO.setFullName(nameList);
@@ -496,7 +496,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
@@ -562,7 +562,7 @@ public class DemoAuthServiceTest {
 		List<MatchInfo> matchInfoList = new ArrayList<>();
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
@@ -580,7 +580,7 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Ibrahim";
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
 		identity.setFullName(nameList);
@@ -588,7 +588,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("FR");
+		identityInfoDTO1.setLanguage("fre");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -596,8 +596,8 @@ public class DemoAuthServiceTest {
 		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("mosip.primary.lang-code", "FR");
-		mockenv.setProperty("mosip.secondary.lang-code", "AR");
+		mockenv.setProperty("mosip.primary.lang-code", "fre");
+		mockenv.setProperty("mosip.secondary.lang-code", "ara");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
 		assertTrue(validateBioDetails.isStatus());
@@ -643,7 +643,7 @@ public class DemoAuthServiceTest {
 		List<MatchInfo> matchInfoList = new ArrayList<>();
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
@@ -661,7 +661,7 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Ibrahim";
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
 		identity.setFullName(nameList);

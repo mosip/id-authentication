@@ -91,11 +91,14 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
+	
+	
+
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(authRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		// ReflectionTestUtils.setField(idAuthValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);
@@ -1099,7 +1102,7 @@ public class AuthRequestValidatorTest {
 
 		List<IdentityInfoDTO> emailId = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("sample@sample.com");
 		emailId.add(identityInfoDTO);
 		identity.setEmailId(emailId);
@@ -1123,7 +1126,7 @@ public class AuthRequestValidatorTest {
 
 		List<IdentityInfoDTO> phone = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("76598749689");
 		phone.add(identityInfoDTO);
 		identity.setEmailId(phone);

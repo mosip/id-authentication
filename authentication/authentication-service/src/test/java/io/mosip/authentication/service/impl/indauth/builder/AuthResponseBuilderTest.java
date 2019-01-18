@@ -27,7 +27,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
  */
 public class AuthResponseBuilderTest {
 
-	private static final String PRIMARY_LANG_CODE = "FR";
+	private static final String PRIMARY_LANG_CODE = "fre";
 	private static final String STATUS_SUCCESS = "Y";
 	@Autowired
 	Environment env;

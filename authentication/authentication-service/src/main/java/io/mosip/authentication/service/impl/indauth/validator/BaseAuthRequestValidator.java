@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.text.ParseException;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +56,20 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  *
  * @author Manoj SP
  * @author Prem Kumar
- * @author Rakesh Roshan
+ * @author RakeshRoshan
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
 	
+	/** The Final Constant For MODEL */
+	private static final String MODEL = "model";
+	
+	/** The Final Constant For FINGERPRINT_PROVIDER_ALL */
+	private static final String FINGERPRINT_PROVIDER_ALL = "fingerprint.provider.all";
+	
+	/** The Final Constant For IRIS_PROVIDER_ALL */
+	private static final String IRIS_PROVIDER_ALL = "iris.provider.all";
+
 	/** The Final Constant For make */
 	private static final String MAKE = "Make";
 
@@ -134,6 +144,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/** The id info helper. */
 	@Autowired
 	protected IdInfoHelper idInfoHelper;
+	@Autowired
+	private Environment environment;
 
 	/*
 	 * (non-Javadoc)
@@ -223,21 +235,70 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * validates the DeviceInfo
 	 * 
-	 * @param bioInfo
+	 * @param bioInfos
 	 * @param errors
 	 */
-	private void validateDeviceInfo(List<BioInfo> bioInfo, Errors errors) {
-		if (!isContainDeviceId(bioInfo)) {
+	private void validateDeviceInfo(List<BioInfo> bioInfos, Errors errors) {
+		if (!isContainDeviceId(bioInfos)) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric Device id Info request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { DEVICE_ID },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
-		if (!isContainDeviceMake(bioInfo)) {
+		if (!isModelNullOrEmpty(bioInfos)) {
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing biometric model Info request");
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { MODEL },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		if (!isDeviceMakeNullOrEmpty(bioInfos)) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"missing biometric Device Make Info request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { MAKE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		}
+		validateMake(bioInfos,errors);
+			
+
+	}
+	
+	/**
+	 * check model attribute is empty or null
+	 * 
+	 * @param bioInfos
+	 * @return
+	 */
+	private boolean isModelNullOrEmpty(List<BioInfo> bioInfos) {
+		return bioInfos.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getModel() != null
+				&& !deviceInfo.getDeviceInfo().getModel().isEmpty());
+	}
+
+	/**
+	 * checks for proper Make value present in the request.
+	 * 
+	 * @param bioInfo
+	 * @return
+	 */
+	
+	private void validateMake(List<BioInfo> bioInfo, Errors errors) {
+		String deviceNameList = null;
+		if (isAvailableBioType(bioInfo, BioType.IRISIMG)) {
+			deviceNameList = environment.getProperty(IRIS_PROVIDER_ALL);
+		} else if (isAvailableBioType(bioInfo, BioType.FGRMIN) || isAvailableBioType(bioInfo, BioType.FGRIMG)) {
+			deviceNameList = environment.getProperty(FINGERPRINT_PROVIDER_ALL);
+		}
+		if (deviceNameList != null) {
+			String[] deviceName = deviceNameList.split(",");
+			List<String> wordList = Arrays.asList(deviceName);
+			bioInfo.stream().map(info -> info.getDeviceInfo().getMake()).filter(make -> !wordList.contains(make))
+					.forEach(make -> {
+						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+								"Invalid Input Make in DeviceInfo");
+						errors.rejectValue(REQUEST,
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								new Object[] { make },
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					});
 		}
 
 	}
@@ -248,13 +309,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param deviceInfoList
 	 * @return
 	 */
-	private boolean isContainDeviceMake(List<BioInfo> deviceInfoList) {
+	private boolean isDeviceMakeNullOrEmpty(List<BioInfo> deviceInfoList) {
 		return deviceInfoList.parallelStream().allMatch(deviceInfo -> deviceInfo.getDeviceInfo().getMake() != null
 				&& !deviceInfo.getDeviceInfo().getMake().isEmpty());
 	}
 
 	/**
-	 * check the deviceId value null or empty
+	 * check the deviceId value present in the request is null or empty
 	 * 
 	 * @param deviceInfoList
 	 * @return
@@ -287,7 +348,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validate Iris.
+	 * Validates the  Iris parameters present in thr request.
 	 *
 	 * @param authRequestDTO
 	 *            the auth request DTO
@@ -309,7 +370,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validation for MultiIris Values
+	 * Validation for MultiIris Values present in the request
 	 * 
 	 * @param authRequestDTO
 	 * @param errors
@@ -961,8 +1022,8 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 *            the errors
 	 */
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
-		String priLangCode = env.getProperty(PRIMARY_LANG_CODE);
-		String secLangCode = env.getProperty(SECONDARY_LANG_CODE);
+		String priLangCode = environment.getProperty(PRIMARY_LANG_CODE);
+		String secLangCode = environment.getProperty(SECONDARY_LANG_CODE);
 
 		Map<String, Long> langCount = identityInfos.stream().map((IdentityInfoDTO idInfo) -> {
 			String language = idInfo.getLanguage();

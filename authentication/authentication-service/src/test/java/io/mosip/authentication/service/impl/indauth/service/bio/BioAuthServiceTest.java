@@ -142,7 +142,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("fr");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(value);
 		leftIndexList.add(identityInfoDTO);
 		identity.setLeftIndex(leftIndexList);
@@ -150,14 +150,14 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("fr");
+		identityInfoDTO1.setLanguage("fre");
 		identityInfoDTO1.setValue(Base64.getEncoder().encodeToString(value.getBytes()));
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
 		bioIdentity.put("sample", identityList);
 
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
-		assertFalse(validateBioDetails.isStatus());
+		assertTrue(validateBioDetails.isStatus());
 	}
 
 	@Test
@@ -199,7 +199,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftIndexList.add(identityInfoDTO);
 		identity.setLeftIndex(leftIndexList);
@@ -207,7 +207,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -257,7 +257,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftIndexList.add(identityInfoDTO);
 		identity.setLeftIndex(leftIndexList);
@@ -265,7 +265,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -314,7 +314,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftIndexList.add(identityInfoDTO);
 		identity.setLeftIndex(leftIndexList);
@@ -322,7 +322,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -372,7 +372,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftIndexList.add(identityInfoDTO);
 		identity.setLeftIndex(leftIndexList);
@@ -380,7 +380,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -433,9 +433,9 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
-		identityInfoDTOList.setLanguage("AR");
+		identityInfoDTOList.setLanguage("ara");
 		identityInfoDTOList.setValue(value1);
 		fingerPrintList.add(identityInfoDTO);
 		fingerPrintLists.add(identityInfoDTOList);
@@ -454,9 +454,9 @@ public class BioAuthServiceTest {
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		IdentityInfoDTO identityInfoDTOList1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
-		identityInfoDTOList1.setLanguage("AR");
+		identityInfoDTOList1.setLanguage("ara");
 		identityInfoDTOList1.setValue(value1);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		List<IdentityInfoDTO> identityLists = new ArrayList<>();
@@ -519,9 +519,9 @@ public class BioAuthServiceTest {
 		IdentityInfoDTO identityInfoDTOList = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 		String value1 = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
-		identityInfoDTOList.setLanguage("AR");
+		identityInfoDTOList.setLanguage("ara");
 		identityInfoDTOList.setValue(value1);
 		fingerPrintList.add(identityInfoDTO);
 		fingerPrintLists.add(identityInfoDTOList);
@@ -532,9 +532,9 @@ public class BioAuthServiceTest {
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		IdentityInfoDTO identityInfoDTOList1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
-		identityInfoDTOList1.setLanguage("AR");
+		identityInfoDTOList1.setLanguage("ara");
 		identityInfoDTOList1.setValue(value1);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		List<IdentityInfoDTO> identityLists = new ArrayList<>();
@@ -543,7 +543,7 @@ public class BioAuthServiceTest {
 		bioIdentity.put("leftIndex", identityList);
 		bioIdentity.put("rightIndex", identityLists);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
-		assertTrue(validateBioDetails.isStatus());
+		assertFalse(validateBioDetails.isStatus());
 
 	}
 	
@@ -586,7 +586,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftEyeList.add(identityInfoDTO);
 		identity.setLeftEye(leftEyeList);
@@ -594,7 +594,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -643,7 +643,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftEyeList.add(identityInfoDTO);
 		identity.setLeftEye(leftEyeList);
@@ -651,7 +651,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -700,7 +700,7 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setLanguage("ara");
 		identityInfoDTO.setValue(value);
 		leftEyeList.add(identityInfoDTO);
 		List<IdentityInfoDTO> rightEyeList = new ArrayList<>();
@@ -711,7 +711,7 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setLanguage("ara");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
