@@ -22,7 +22,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -96,19 +95,6 @@ public class IdRepoExceptionHandlerTest {
 		errorCode.forEach(e -> {
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrCode());
 			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getErrMessage());
-		});
-	}
-
-	@Test
-	public void testHandleExceptionInternalTimeout() {
-		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
-				"handleExceptionInternal", new AsyncRequestTimeoutException(), null, null,
-				HttpStatus.EXPECTATION_FAILED, null);
-		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		List<ErrorDTO> errorCode = response.getError();
-		errorCode.forEach(e -> {
-			assertEquals(IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(), e.getErrCode());
-			assertEquals(IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage(), e.getErrMessage());
 		});
 	}
 

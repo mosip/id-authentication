@@ -33,28 +33,25 @@ public enum IdRepoErrorConstants {
 	/** The unknown error. */
 	UNKNOWN_ERROR("KER-IDR-009", "Unknown error occured"),
 
-	/** The connection timed out. */
-	CONNECTION_TIMED_OUT("KER-IDR-010", "Connection Timed out"),
-
 	/** The database access error. */
-	DATABASE_ACCESS_ERROR("KER-IDR-011", "Error occured while performing DB operations"),
+	DATABASE_ACCESS_ERROR("KER-IDR-010", "Error occured while performing DB operations"),
 
 	/** The record exists. */
-	RECORD_EXISTS("KER-IDR-012", "Record already exists in DB"),
+	RECORD_EXISTS("KER-IDR-011", "Record already exists in DB"),
 
 	/** The internal server error. */
-	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-013", "Failed to either encrypt/decrypt message using Kernel Crypto Manager"),
+	ENCRYPTION_DECRYPTION_FAILED("KER-IDR-012", "Failed to either encrypt/decrypt message using Kernel Crypto Manager"),
 
 	/** The no record found. */
-	NO_RECORD_FOUND("KER-IDR-014", "No Record(s) found"),
+	NO_RECORD_FOUND("KER-IDR-013", "No Record(s) found"),
 
-	FILE_STORAGE_ACCESS_ERROR("KER-IDR-015", "Failed to store/retrieve files in DFS"), 
+	FILE_STORAGE_ACCESS_ERROR("KER-IDR-014", "Failed to store/retrieve files in DFS"), 
 	
-	JSON_PROCESSING_FAILED("KER-IDR-016", "Failed to parse/process json"),
+	JSON_PROCESSING_FAILED("KER-IDR-015", "Failed to parse/process json"),
 	
-	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-017", "Unable to process id object json schema"),
+	JSON_SCHEMA_PROCESSING_FAILED("KER-IDR-016", "Unable to process id object json schema"),
 	
-	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-018", "Unable to retrieve id object schema from server");
+	JSON_SCHEMA_RETRIEVAL_FAILED("KER-IDR-017", "Unable to retrieve id object schema from server");
 
 	/** The error code. */
 	private final String errorCode;

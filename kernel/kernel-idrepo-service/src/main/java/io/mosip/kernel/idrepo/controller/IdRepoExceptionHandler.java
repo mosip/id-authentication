@@ -17,7 +17,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -107,12 +106,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-		} else if (ex instanceof AsyncRequestTimeoutException) {
-			ex = new IdRepoAppException(IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
-					IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage());
-
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-		} else {
+			} else {
 			return handleAllExceptions(ex, request);
 		}
 	}
