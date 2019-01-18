@@ -315,7 +315,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			webView.getEngine().print(job);
 			job.endJob();
 		}
-		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
+		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
 		goToHomePageFromRegistration();
 	}
 
