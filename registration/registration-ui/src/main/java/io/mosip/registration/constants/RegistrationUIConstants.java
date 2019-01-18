@@ -60,6 +60,7 @@ public class RegistrationUIConstants {
 
 	// SUCCESS
 	public static final String PACKET_CREATED_SUCCESS = bundle.getString("PACKET_CREATED_SUCCESS");
+	public static final String PRINT_INITIATION_SUCCESS = bundle.getString("PRINT_INITIATION_SUCCESS");
 	public static final String REREGISTRATION_APPROVE_SUCCESS = bundle.getString("REREGISTRATION_APPROVE_SUCCESS");
 	public static final String REREGISTER_TITLEPANE=bundle.getString("REREGISTER_TITLEPANE");
 	public static final String PENDING_APPROVAL=bundle.getString("PENDING_APPROVAL");
