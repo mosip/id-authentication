@@ -73,10 +73,10 @@ public class TriggerNotificationForUIN {
 	private MessageSenderUtil utility;
 
 	/** The Constant SMS_TEMPLATE_CODE. */
-	private static final String SMS_TEMPLATE_UIN_CREATE_CODE = "SMS_TEMP_FOR_UIN_GEN";
+	private static final String SMS_TEMPLATE_UIN_CREATE_CODE = "RPR_UIN_GEN_SMS";
 
 	/** The Constant EMAIL_TEMPLATE_CODE. */
-	private static final String EMAIL_TEMPLATE_UIN_CREATE_CODE = "EMAIL_TEMP_FOR_UIN_GEN";
+	private static final String EMAIL_TEMPLATE_UIN_CREATE_CODE = "RPR_UIN_GEN_EMAIL";
 
 	/** The Constant EMAIL_TEMPLATE_CODE. */
 	private static final String SMS_TEMPLATE_UIN_UPDATE_CODE = "SMS_TEMP_FOR_UIN_GEN";

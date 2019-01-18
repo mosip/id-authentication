@@ -7,12 +7,12 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -28,9 +28,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsRequestDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
@@ -49,17 +51,19 @@ import io.mosip.registration.processor.message.sender.exception.TemplateNotFound
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
+import io.mosip.registration.processor.message.sender.utility.StatusMessage;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * ServiceImpl class for sending notification.
  * 
- * @author Alok Shuchita Ayush
+ * @author Alok Ranjan
  * 
  * @since 1.0.0
  *
@@ -74,9 +78,6 @@ public class MessageNotificationServiceImpl
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
 
-	/** The Constant LABEL. */
-	private static final String LABEL = "label";
-
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
@@ -86,8 +87,8 @@ public class MessageNotificationServiceImpl
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
-	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessageNotificationServiceImpl.class);
+	/** The reg proc logger. */
+	private static Logger regProcLogger = (Logger) RegProcessorLogger.getLogger(MessageNotificationServiceImpl.class);
 
 	/** The primary language. */
 	@Value("${primary.language}")
@@ -125,6 +126,9 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The registration status dto. */
+	private InternalRegistrationStatusDto registrationStatusDto;
+
 	/** The sms dto. */
 	private SmsRequestDto smsDto = new SmsRequestDto();
 
@@ -147,6 +151,7 @@ public class MessageNotificationServiceImpl
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			if (templatejson.getPhoneNumber().isEmpty()) {
+				registrationStatusDto.setStatusComment(StatusMessage.PHONENUMBER_NOT_FOUND);
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
 			smsDto.setNumber(templatejson.getPhoneNumber());
@@ -156,10 +161,13 @@ public class MessageNotificationServiceImpl
 					SmsResponseDto.class);
 
 		} catch (TemplateNotFoundException | TemplateProcessingFailureException e) {
-			LOGGER.error("Template was not found for this templateTypeCode and langCode");
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
 		}
+
 		return response;
 	}
 
@@ -173,7 +181,7 @@ public class MessageNotificationServiceImpl
 	 */
 	public ResponseDto sendEmailNotification(String templateTypeCode, String id, IdType idType,
 			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment)
-			throws IOException, ApisResourceAccessException,Exception {
+			throws Exception {
 		ResponseDto response = null;
 
 		try {
@@ -183,18 +191,20 @@ public class MessageNotificationServiceImpl
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			if (template.getEmailID().isEmpty()) {
+				registrationStatusDto.setStatusComment(StatusMessage.EMAILID_NOT_FOUND);
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
 
 			String email = template.getEmailID();
 			String[] mailTo = new String[1];
 			mailTo[0] = email;
-			
 
 			response = sendEmail(mailTo, mailCc, subject, artifact, attachment);
 
 		} catch (TemplateNotFoundException | TemplateProcessingFailureException e) {
-			LOGGER.error("Template was not found for this templateTypeCode and langCode");
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.name() + e.getMessage()
+							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
 		}
@@ -216,7 +226,7 @@ public class MessageNotificationServiceImpl
 	 * @param attachment
 	 *            the attachment
 	 * @return the response dto
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private ResponseDto sendEmail(String[] mailTo, String[] mailCc, String subject, String artifact,
 			MultipartFile[] attachment) throws Exception {
@@ -265,8 +275,11 @@ public class MessageNotificationServiceImpl
 			throws IOException {
 		InputStream demographicInfoStream;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
+			attributes.put("UIN", id);
 			// get registration id using UIN
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
+		} else {
+			attributes.put("RID", id);
 		}
 
 		demographicInfoStream = adapter.getFile(id,
@@ -284,6 +297,7 @@ public class MessageNotificationServiceImpl
 				break;
 			}
 		}
+
 		attributes.put("FirstName", firstName);
 
 		return templatejson;
@@ -319,11 +333,11 @@ public class MessageNotificationServiceImpl
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 			template.setFirstName(getJsonValues(regProcessorTemplateJson.getFirstName()));
-			template.setEmailID((String)demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
-			template.setPhoneNumber((String)demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
-			
+			template.setEmailID((String) demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
+			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
+
 		} catch (ParseException e) {
-			LOGGER.error("Error while parsing Json file", e);
+			regProcLogger.error("Error while parsing Json file", e);
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
 
@@ -342,64 +356,9 @@ public class MessageNotificationServiceImpl
 		if (demographicIdentity != null)
 			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
 
-		return (demographicJsonNode != null)
-				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
-				: null;
+		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
 	}
 
-	/**
-	 * Map json node to java object.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param genericType
-	 *            the generic type
-	 * @param demographicJsonNode
-	 *            the demographic json node
-	 * @return the t[]
-	 */
-	/*@SuppressWarnings("unchecked")
-	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
-		String language;
-		String label;
-		String value;
-		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
-		try {
-			for (int i = 0; i < demographicJsonNode.size(); i++) {
-
-				T jsonNodeElement = (T) genericType.newInstance();
-
-				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
-				language = (String) objects.get(LANGUAGE);
-				label = (String) objects.get(LABEL);
-				value = (String) objects.get(VALUE);
-
-				Field labelField = jsonNodeElement.getClass().getDeclaredField(LABEL);
-				labelField.setAccessible(true);
-				labelField.set(jsonNodeElement, label);
-
-				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
-				languageField.setAccessible(true);
-				languageField.set(jsonNodeElement, language);
-
-				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
-				valueField.setAccessible(true);
-				valueField.set(jsonNodeElement, value);
-
-				javaObject[i] = jsonNodeElement;
-			}
-		} catch (InstantiationException | IllegalAccessException e) {
-			LOGGER.error("Error while Creating Instance of generic type", e);
-			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
-					e);
-		} catch (NoSuchFieldException | SecurityException e) {
-			LOGGER.error("no such field exception", e);
-			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
-		}
-
-		return javaObject;
-	}*/
-	
 	/**
 	 * Map json node to java object.
 	 *
@@ -436,12 +395,12 @@ public class MessageNotificationServiceImpl
 				javaObject[i] = jsonNodeElement;
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
-			LOGGER.error("Error while Creating Instance of generic type", e);
+			regProcLogger.error("Error while Creating Instance of generic type", e);
 			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
 					e);
 
 		} catch (NoSuchFieldException | SecurityException e) {
-			LOGGER.error("no such field exception", e);
+			regProcLogger.error("no such field exception", e);
 			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
 
 		}
