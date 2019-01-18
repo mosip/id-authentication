@@ -185,7 +185,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private Label toggleLabel2;
-	
+
 	@FXML
 	private Label toggleLabel1LocalLanguage;
 
@@ -303,13 +303,13 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private TitledPane biometricTitlePane;
-	
+
 	@FXML
 	private Label titleDemographicPaneApplicationLanguage;
-	
+
 	@FXML
 	private Label titleDemographicPaneLocalLanguage;
-	
+
 	@FXML
 	private Accordion accord;
 
@@ -558,16 +558,15 @@ public class RegistrationController extends BaseController {
 			cniOrPinNumberLocalLanguage.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
 			cniOrPinNumberLocalLanguageLabel
 					.setDisable(!getRegistrationDtoContent().getSelectionListDTO().isCnieNumber());
-			
-			if(!isChild)
-				isChild = getRegistrationDtoContent().getSelectionListDTO().isChild() || getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
-			
+
+			if (!isChild)
+				isChild = getRegistrationDtoContent().getSelectionListDTO().isChild()
+						|| getRegistrationDtoContent().getSelectionListDTO().isParentOrGuardianDetails();
+
 			childSpecificFields.setDisable(!isChild);
 			childSpecificFieldsLocal.setDisable(!isChild);
 			childSpecificFields.setVisible(isChild);
 			childSpecificFieldsLocal.setVisible(isChild);
-			
-			
 
 			if (SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child) != null) {
 				isChild = (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_Child);
@@ -649,7 +648,7 @@ public class RegistrationController extends BaseController {
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
-			ageField.setText(demo.getIdentity().getAge()+"");
+			ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
@@ -845,7 +844,7 @@ public class RegistrationController extends BaseController {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(165.00);
 			}
-			
+
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(705.00);
@@ -967,7 +966,8 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(dateOfBirth!=null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : ""))
+						.with(identity -> identity.setDateOfBirth(
+								dateOfBirth != null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : ""))
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? null : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
@@ -1142,8 +1142,7 @@ public class RegistrationController extends BaseController {
 	 * @param applicantImage
 	 *            the image that is captured as applicant photograph
 	 */
-	private void compressImageForQRCode(BufferedImage applicantImage) {
-		BufferedImage detectedFace = detectApplicantFace(applicantImage);
+	private void compressImageForQRCode(BufferedImage detectedFace) {
 		try {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -1204,33 +1203,39 @@ public class RegistrationController extends BaseController {
 		}
 		if (isValid) {
 			try {
-				compressImageForQRCode(applicantBufferedImage);
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-						byteArrayOutputStream);
-				byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-				ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
-						.getApplicantDocumentDTO();
-				applicantDocumentDTO.setPhoto(photoInBytes);
-				applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-				byteArrayOutputStream.close();
-				if (exceptionBufferedImage != null) {
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, outputStream);
-					byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-					applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
-					applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-					applicantDocumentDTO.setHasExceptionPhoto(true);
-					outputStream.close();
+				BufferedImage detectedFace = detectApplicantFace(applicantBufferedImage);
+				if (detectedFace != null) {
+					compressImageForQRCode(detectedFace);
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+							byteArrayOutputStream);
+					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+					ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDtoContent().getDemographicDTO()
+							.getApplicantDocumentDTO();
+					applicantDocumentDTO.setPhoto(photoInBytes);
+					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+					byteArrayOutputStream.close();
+					if (exceptionBufferedImage != null) {
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+								outputStream);
+						byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+						applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+						applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+						applicantDocumentDTO.setHasExceptionPhoto(true);
+						outputStream.close();
+					} else {
+						applicantDocumentDTO.setHasExceptionPhoto(false);
+					}
+
+					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
+
+					setPreviewContent();
+					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 				} else {
-					applicantDocumentDTO.setHasExceptionPhoto(false);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_CAPTURE_ERROR);
 				}
-
-				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-
-				setPreviewContent();
-				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
@@ -1253,7 +1258,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * Listening on the fields for any operation
 	 */
-	
+
 	private void listenerOnFields() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1274,13 +1279,14 @@ public class RegistrationController extends BaseController {
 			fxUtils.populateLocalComboBox(region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(province, provinceLocalLanguage);
 			fxUtils.populateLocalComboBox(localAdminAuthority, localAdminAuthorityLocalLanguage);
-			dateValidation.validateDate(dd, mm,yyyy, validation, fxUtils, ddLocalLanguage);
-			dateValidation.validateDate(ddLocalLanguage, mmLocalLanguage,yyyyLocalLanguage, validation, fxUtils, null);
-			dateValidation.validateMonth(dd, mm,yyyy, validation, fxUtils, mmLocalLanguage);
-			dateValidation.validateMonth(ddLocalLanguage, mmLocalLanguage,yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateDate(dd, mm, yyyy, validation, fxUtils, ddLocalLanguage);
+			dateValidation.validateDate(ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
+			dateValidation.validateMonth(dd, mm, yyyy, validation, fxUtils, mmLocalLanguage);
+			dateValidation.validateMonth(ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils,
+					null);
 			dateValidation.validateYear(dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage);
-			dateValidation.validateYear(ddLocalLanguage, mmLocalLanguage,yyyyLocalLanguage, validation, fxUtils, null);
-			fxUtils.dobListener(yyyy,ageField,"\\d{4}");
+			dateValidation.validateYear(ddLocalLanguage, mmLocalLanguage, yyyyLocalLanguage, validation, fxUtils, null);
+			fxUtils.dobListener(yyyy, ageField, "\\d{4}");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
@@ -1370,7 +1376,6 @@ public class RegistrationController extends BaseController {
 						ageFieldLocalLanguage.clear();
 						dob.setDisable(true);
 						dobLocalLanguage.setDisable(true);
-						
 
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
@@ -1401,15 +1406,14 @@ public class RegistrationController extends BaseController {
 			toggleLabel2.setOnMouseClicked((event) -> {
 				switchedOn.set(!switchedOn.get());
 			});
-			
+
 			toggleLabel1LocalLanguage.setOnMouseClicked((event) -> {
 				switchedOn.set(!switchedOn.get());
 			});
 			toggleLabel2LocalLanguage.setOnMouseClicked((event) -> {
 				switchedOn.set(!switchedOn.get());
 			});
-			
-			
+
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
