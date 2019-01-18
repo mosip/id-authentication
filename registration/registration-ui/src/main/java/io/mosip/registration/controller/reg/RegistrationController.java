@@ -593,6 +593,7 @@ public class RegistrationController extends BaseController {
 				SessionContext.getInstance().getUserContext().getUserMap()
 						.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
 				faceCaptureController.disableExceptionPhotoCapture(true);
+				faceCaptureController.clearExceptionImage();
 			}
 
 		}
@@ -1611,6 +1612,7 @@ public class RegistrationController extends BaseController {
 						bioExceptionToggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						toggleBiometricException = false;
 						faceCaptureController.disableExceptionPhotoCapture(true);
+						faceCaptureController.clearExceptionImage();
 					}
 					SessionContext.getInstance().getUserContext().getUserMap()
 							.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);

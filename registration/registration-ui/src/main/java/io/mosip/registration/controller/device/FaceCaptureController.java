@@ -21,6 +21,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -273,5 +274,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	public void disableExceptionPhotoCapture(boolean value) {
 		captureExceptionImage.setDisable(value);
+	}
+
+	public void clearExceptionImage() {
+		exceptionBufferedImage = null;
+		exceptionImage.setImage(defaultImage);
+		ApplicantDocumentDTO applicantDocumentDTO = getRegistrationDTOFromSession().getDemographicDTO()
+				.getApplicantDocumentDTO();
+		if (applicantDocumentDTO != null && applicantDocumentDTO.getExceptionPhoto() != null) {
+			applicantDocumentDTO.setExceptionPhoto(null);
+			if (applicantDocumentDTO.getExceptionPhotoName() != null) {
+				applicantDocumentDTO.setExceptionPhotoName(null);
+			}
+			applicantDocumentDTO.setHasExceptionPhoto(false);
+		}
 	}
 }
