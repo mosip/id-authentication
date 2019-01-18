@@ -275,7 +275,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
 					.getCurrentlyExecutingJobs();
 
-			if (isNull(executingJobList) && isEmpty(executingJobList)) {
+			if (isNull(executingJobList) || isEmpty(executingJobList)) {
 				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_RUNNING, null);
 			} else {
 				List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
@@ -287,7 +287,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				}).collect(Collectors.toList());
 
-				setResponseDTO(dataProcessDTOs, responseDTO, null, null);
+				setResponseDTO(dataProcessDTOs, responseDTO, null, RegistrationConstants.NO_JOBS_RUNNING);
 
 			}
 
