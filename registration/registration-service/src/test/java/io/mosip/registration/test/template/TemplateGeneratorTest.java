@@ -74,6 +74,7 @@ public class TemplateGeneratorTest {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
 		segmentedFingerprints.add(new FingerprintDetailsDTO());
+		
 		registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
 				.forEach(fingerPrintDTO -> {
 					fingerPrintDTO.setSegmentedFingerprints(segmentedFingerprints);
