@@ -145,6 +145,7 @@
 	<modules>
 		<module>registration-processor-core</module>
 		<module>registration-status-service</module>
+		<module>registration-status-api</module>
 		<module>filesystem-adapter-ceph</module>
 		<module>registration-processor-rest-client</module>
 		<module>packet-manager</module>

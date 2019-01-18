@@ -62,7 +62,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status</artifactId>
+			<artifactId>registration-status-service</artifactId>
 			<version>${registration.status.version}</version>
 		</dependency>
 		<dependency>
