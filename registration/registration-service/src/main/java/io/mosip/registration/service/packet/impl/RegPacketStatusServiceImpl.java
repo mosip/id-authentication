@@ -83,12 +83,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		Timestamp reqTime = new Timestamp(System.currentTimeMillis());
 
 		try {
-			/** Get Registrations to be deleted */
+			/* Get Registrations to be deleted */
 			List<Registration> registrations = registrationDAO.getRegistrationsToBeDeleted(
 					getPacketDeletionLastDate(reqTime), RegistrationClientStatusCode.DELETED.getCode());
 
 			for (Registration registration : registrations) {
-				/** Delete each registration */
+				/* Delete each registration */
 				delete(registration, registration.getStatusCode(), true);
 			}
 			setSuccessResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS, null);
@@ -110,12 +110,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	private Timestamp getPacketDeletionLastDate(Timestamp reqTime) {
 
-		/** Get Calendar instance */
+		/* Get Calendar instance */
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
 		cal.add(Calendar.DATE, -noOfDays);
 
-		/** To-Date */
+		/* To-Date */
 		return new Timestamp(cal.getTimeInMillis());
 	}
 
@@ -261,12 +261,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		
 		Registration updatedRegistration=null;
 
-		/** Get Registration Transaction List for each transaction */
+		/* Get Registration Transaction List for each transaction */
 		List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
 		if (transactionList == null) {
 			transactionList = new LinkedList<>();
 		}
-		/** Prepare Registration Transaction */
+		/* Prepare Registration Transaction */
 		RegistrationTransaction registrationTxn = new RegistrationTransaction();
 
 		registrationTxn.setRegId(registration.getId());
