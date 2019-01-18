@@ -83,10 +83,10 @@ public class RestApiClient {
 		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-
+			logger.info(uri);
+			logger.info(requestType.toString());
 			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
 		} catch (Exception e) {
-
 			logger.error("Error: {}", e);
 			throw e;
 		}
