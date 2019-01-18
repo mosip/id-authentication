@@ -87,7 +87,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	 */
 	@Override
 	public SyncControl update(SyncControl syncControl) {
-		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"updating sync details from databse started");
 		return syncJobRepository.update(syncControl);
 	}
@@ -97,7 +97,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	 */
 	@Override
 	public SyncControl save(SyncControl syncControl) {
-		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"saving sync details to databse started");
 		return syncJobRepository.save(syncControl);
 	}
@@ -107,7 +107,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	 */
 	@Override
 	public SyncControl findBySyncJobId(String syncJobId) {	
-		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the sync details from databse started");
 		return syncJobRepository.findBySyncJobId(syncJobId);		
 	}
@@ -117,7 +117,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	 */
 	@Override
 	public List<SyncControl> findAll() {
-		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the list of sync details from databse started");
 		return syncJobRepository.findAll();	
 	}
