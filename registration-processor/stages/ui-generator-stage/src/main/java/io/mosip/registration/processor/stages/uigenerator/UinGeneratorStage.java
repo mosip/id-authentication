@@ -191,6 +191,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}	else {
 				String statusComment = idResponseDTO.getError().get(0).getErrMessage();
 				registrationStatusDto.setStatusComment(statusComment);
+				object.setInternalError(Boolean.TRUE);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				isTransactionSuccessful = false;
 				description = "UIN updation failure for : " + registrationId;
