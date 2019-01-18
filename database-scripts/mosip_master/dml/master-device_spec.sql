@@ -1,0 +1,10 @@
+﻿INSERT INTO master.device_spec(id,name,brand,model,dtyp_code,min_driver_ver,descr,lang_code,is_active,cr_by,cr_dtimes ) VALUES ('165','Fingerprint Scanner','Safran Morpho','1300 E2','FRS','1.12','To scan fingerprint','eng',true,'superadmin',now())
+, ('276','فِنرِّنت سCَنّر ','سافران مورفو','1301 E2','FRS','1.12','لمسح بصمة','ara',true,'superadmin',now())
+, ('327','High Speed Dual Iris Scanner','Cogent ','3M ','IRS','2.34','To scan iris','eng',true,'superadmin',now())
+, ('482','هِغ سد دَُل ِرِس سCَنّر','نّت','3M ','IRS','2.34','لمسح قزحية العين','ara',true,'superadmin',now())
+, ('736','Webcam ','Logitech ','C270 ','CMR','2.086','To capture photo','eng',true,'superadmin',now())
+, ('769','وبَم   ','لِته   ','C270 ','CMR','2.086','لالتقاط صورة','ara',true,'superadmin',now())
+, ('801','imageFORMULA ','Canon ','DR-C130','SCN','1.02','To scan documents','eng',true,'superadmin',now())
+, ('822','مَفرمُلَ   ','َنّ','DR-C131','SCN','1.02','لمسح المستندات ضوئيًا','ara',true,'superadmin',now())
+, ('920','Single Function Inkjet ','Canon ','TS207 ','PRT','1.123','To print documents','eng',true,'superadmin',now())
+, ('967','سِنل فُنتٍ ِنكجت','َنّ','TS207 ','PRT','1.123','لطباعة الوثائق','ara',true,'superadmin',now());

@@ -14,7 +14,7 @@ create table reg.user_detail (
 	
 	id 			character varying (36) not null,
 	
-	uin_ref_id 	character varying (28),		-- uin.uin.uin_ref_id 
+	uin		 	character varying (28),			-- UIN of indivisuals and referenced from idrepo database 
 	
 	name 		character varying (64) not null,
 	

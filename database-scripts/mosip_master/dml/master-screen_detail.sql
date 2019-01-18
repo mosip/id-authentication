@@ -1,0 +1,13 @@
+﻿INSERT INTO master.screen_detail(id,app_id,name,descr,lang_code,is_active,cr_by,cr_dtimes ) VALUES ('approveRegistrationRoot','10003','approveRegistrationRoot','approveRegistrationRoot','eng',true,'superadmin',now())
+, ('loginRoot','10003','loginRoot','loginRoot','eng',true,'superadmin',now())
+, ('lostUINRoot','10003','lostUINRoot','lostUINRoot','eng',true,'superadmin',now())
+, ('newRegistrationRoot','10003','newRegistrationRoot','newRegistrationRoot','eng',true,'superadmin',now())
+, ('onBoardRoot','10003','onBoardRoot','onBoardRoot','eng',true,'superadmin',now())
+, ('registrationCorrectionRoot','10003','registrationCorrectionRoot','registrationCorrectionRoot','eng',true,'superadmin',now())
+, ('sendPacketServerRoot','10003','sendPacketServerRoot','sendPacketServerRoot','eng',true,'superadmin',now())
+, ('syncServerClientRoot','10003','syncServerClientRoot','syncServerClientRoot','eng',true,'superadmin',now())
+, ('uinActivationRoot','10003','uinActivationRoot','uinActivationRoot','eng',true,'superadmin',now())
+, ('uinUpdateRoot','10003','uinUpdateRoot','uinUpdateRoot','eng',true,'superadmin',now())
+, ('reportRoot','10003','reportRoot','reportRoot','eng',true,'superadmin',now())
+, ('syncClientServerRoot','10003','syncClientServerRoot','syncClientServerRoot','eng',true,'superadmin',now())
+, ('updateClientSoftwareRoot','10003','updateClientSoftwareRoot','updateClientSoftwareRoot','eng',true,'superadmin',now());

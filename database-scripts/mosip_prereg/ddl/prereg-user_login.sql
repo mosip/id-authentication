@@ -12,10 +12,12 @@ create schema if not exists prereg
 -- table section -------------------------------------------------
 create table prereg.user_login (
 
-	login_id character varying(64),
+	login_id 	character varying(64),
 
-	mobile 	character varying(16),	
-	email 	character varying(64),
+	mobile 		character varying(16),	
+	email 		character varying(64),
+	
+	lang_code  	character varying(3) not null ,		-- master.language.code
 
     last_login_dtimes timestamp,
 	is_active 	boolean,

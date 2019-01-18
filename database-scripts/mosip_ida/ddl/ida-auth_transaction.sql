@@ -18,13 +18,13 @@ create table ida.auth_transaction (
 	response_dtimes timestamp not null,
 	request_trn_id character varying(64),
 
-	auth_type_code character varying(36) not null,     -- master.authentication_type.code
-	status_code character varying(36) not null,		   -- ida.status_list.code 
+	auth_type_code character varying(36) not null,    	-- master.authentication_type.code
+	status_code character varying(36) not null,		   	-- ida.status_list.code 
 	status_comment character varying(1024),
 		lang_code character varying(3) not null, 		-- master.language.code
-												-- authtyp_code, status_code and ref_id_type must be from same lang_code.
+														-- authtyp_code, status_code and ref_id_type must be from same lang_code.
 
-	ref_id_type character varying(36),				-- master.id_type.code
+	ref_id_type character varying(36),					-- master.id_type.code
 	ref_id	 character varying(64),					
 	
 	static_tkn_id  character varying(64),

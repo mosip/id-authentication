@@ -9,8 +9,15 @@ alter table master.appl_form_type add constraint fk_applftyp_lang foreign key (l
 alter table master.app_detail add constraint fk_appdtl_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 
 alter table master.app_authentication_method add constraint fk_appauthm_appdtl foreign key (app_id) references master.app_detail(id) on delete no action on update no action ;
+alter table master.app_authentication_method add constraint fk_appauthm_prclst foreign key (process_id, lang_code) references master.process_list(id, lang_code) on delete no action on update no action ;
+alter table master.app_authentication_method add constraint fk_appauthm_rolelst foreign key (role_code, lang_code) references master.role_list(code, lang_code) on delete no action on update no action ;
 alter table master.app_authentication_method add constraint fk_appauthm_authmeth foreign key (auth_method_code, lang_code) references master.authentication_method(code, lang_code) on delete no action on update no action ;
 alter table master.app_authentication_method add constraint fk_appauthm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
+
+alter table master.app_role_priority add constraint fk_roleprt_appdtl foreign key (app_id) references master.app_detail(id) on delete no action on update no action ;
+alter table master.app_role_priority add constraint fk_roleprt_prclst foreign key (process_id, lang_code) references master.process_list(id, lang_code) on delete no action on update no action ;
+alter table master.app_role_priority add constraint fk_roleprt_rolelst foreign key (role_code, lang_code) references master.role_list(code, lang_code) on delete no action on update no action ;
+alter table master.app_role_priority add constraint fk_roleprt_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 
 alter table master.module_detail add constraint fk_moddtl_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.authentication_type add constraint fk_authtyp_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
@@ -98,3 +105,4 @@ alter table master.valid_document add constraint fk_valdoc_doctyp foreign key (d
 alter table master.valid_document add constraint fk_valdoc_doccat foreign key (doccat_code, lang_code) references master.doc_category(code, lang_code) on delete no action on update no action ;
 alter table master.valid_document add constraint fk_valdoc_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.blacklisted_words add constraint fk_blwrd_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
+
