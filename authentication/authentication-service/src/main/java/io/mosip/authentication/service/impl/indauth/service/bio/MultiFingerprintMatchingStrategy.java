@@ -30,26 +30,42 @@ public enum MultiFingerprintMatchingStrategy implements MatchingStrategy {
 		}
 		return 0;
 	});
-
+	
+	/** The Final for MatchingStatergyType */
 	private final MatchingStrategyType matchStrategyType;
-
+	
+	/** The Final for MatchFunction */
 	private final MatchFunction matchFunction;
 
+	/** The Constructor for MultiFingerprintMatchingStrategy */
 	private MultiFingerprintMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchStrategyType = matchStrategyType;
 		this.matchFunction = matchFunction;
 	}
-
+	
+	/**
+	 * get Method for MatchingStrategyType
+	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
+	/**
+	 * get Method for MatchFunction
+	 */
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 
+	/**
+	 * Method to return the match value 
+	 * @param reqValues the reqValues
+	 * @param entityValues the entityValues
+	 * @param matchProperties the matchProperties
+	 * @return match value the match value
+	 */
 	@Override
 	public int match(Map<String, String> reqValues, Map<String, String> entityValues,
 			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {

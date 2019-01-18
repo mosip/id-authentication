@@ -26,13 +26,13 @@ public class CancelBookingDTO implements Serializable {
 	/**
 	 * registration Center Id
 	 */
-	@JsonProperty("registartion_center_id")
-	@ApiModelProperty(value = "Registartion Center ID", position = 2)
+	@JsonProperty("registration_center_id")
+	@ApiModelProperty(value = "Registration Center ID", position = 2)
 	private String registrationCenterId;
 	/**
 	 * booked Date Time
 	 */
-	@JsonProperty("appointement_date")
+	@JsonProperty("appointment_date")
 	@ApiModelProperty(value = "Appointment Date", position = 3)
 	private String regDate;
 	/**
