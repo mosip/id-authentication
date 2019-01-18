@@ -19,6 +19,7 @@ import ma.glasnost.orika.metadata.TypeFactory;
 /**
  * Data Mapper implementation of the {@link DataMapper} interface.
  * 
+ * @author Urvil Joshi
  * @author Neha
  * @since 1.0.0
  * 
@@ -35,16 +36,12 @@ public class DataMapperImpl<S, D> implements DataMapper<S,D>{
 		ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
         classMapBuilder.mapNulls(mapNull);
 		if (excludeDataField != null && !(excludeDataField.isEmpty())) {
-			for (String excludedField : excludeDataField) {
-				classMapBuilder.exclude(excludedField);
-			}
+			excludeDataField.forEach(classMapBuilder::exclude);
 		}
 
 		if (includeDataField != null && !(includeDataField.isEmpty())) {
-			for (IncludeDataField includedField : includeDataField) {
-				classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull()).field(includedField.getSourceField(),
-						includedField.getDestinationField());
-			}
+			includeDataField.forEach(includedField ->classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull()).field(includedField.getSourceField(),
+					includedField.getDestinationField()));
 		}
 
 		if (byDefault) {
