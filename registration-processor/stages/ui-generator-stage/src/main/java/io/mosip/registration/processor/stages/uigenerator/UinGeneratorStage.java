@@ -133,7 +133,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The identity json. */
 	JSONObject identityJson = null;
-	
+
 	/** The demographic identity. */
 	JSONObject	demographicIdentity=null;
 
@@ -144,14 +144,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The trigger notification for UIN. */
 	@Autowired
 	TriggerNotificationForUIN triggerNotificationForUIN;
-	
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		
+
 		object.setMessageBusAddress(MessageBusAddress.UIN_GENERATION_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		String description = "";
@@ -159,14 +159,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		this.registrationId = object.getRid();
 		UinResponseDto uinResponseDto= null;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService.getRegistrationStatus(registrationId);
-			try {
+		try {
 			InputStream idJsonStream = adapter.getFile(registrationId,PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 			byte[] idJsonBytes = IOUtils.toByteArray(idJsonStream);
 			String getJsonStringFromBytes = new String(idJsonBytes);
 			JSONParser parser = new JSONParser(); 
 			identityJson = (JSONObject) parser.parse(getJsonStringFromBytes);
 			demographicIdentity = (JSONObject) identityJson.get("identity");
-			String uinFieldCheck=(String) demographicIdentity.get("UIN");
+			String uinFieldCheck=demographicIdentity.get("UIN").toString();
 			boolean isUinCreate=false;
 			if(uinFieldCheck==null || ("").equals(uinFieldCheck.trim())) {
 				uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
@@ -179,14 +179,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}
 
 			if((idResponseDTO.getResponse()!= null)){
-               if(isUinCreate) {
-				demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());	
-				triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
-               }else {
-            	   triggerNotificationForUIN.triggerNotification(uinFieldCheck, isUinCreate);
-                     
-               }
-				
+				if(isUinCreate) {
+					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());	
+					triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
+				}else {
+					triggerNotificationForUIN.triggerNotification(uinFieldCheck, isUinCreate);
+
+				}
+
 				registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
@@ -201,7 +201,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,idResponseDTO.getError().get(0).getErrMessage()+"  :  "+idResponseDTO.toString());
 
 			}
-			
+
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 		} 
@@ -238,15 +238,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * @return the id response DTO
 	 */
 	private IdResponseDTO sendIdRepoWithUin(String regId, String uin) {
-		
+
 		List<Documents> documentInfo = getAllDocumentsByRegId(regId);
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
-		
+
 		List<String> pathsegments=new ArrayList<>();
 		pathsegments.add(uin);
-		
+
 		idRequestDTO.setId(idRepoCreate);
 		idRequestDTO.setRegistrationId(regId);
 		idRequestDTO.setRequest(requestDto);
@@ -301,7 +301,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		RequestDto requestDto = new RequestDto();
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
-		
+
 		idRequestDTO.setId(idRepoUpdate);
 		idRequestDTO.setRegistrationId(regId);
 		idRequestDTO.setRequest(requestDto);
@@ -324,8 +324,8 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-	  mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
-	  this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
 	}
 
 
