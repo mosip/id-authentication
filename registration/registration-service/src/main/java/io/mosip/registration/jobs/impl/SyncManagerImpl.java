@@ -36,7 +36,7 @@ public class SyncManagerImpl implements SyncManager {
 
 	@Autowired
 	private SyncJobControlDAO syncJobDAO;
-	
+
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
 
@@ -44,8 +44,6 @@ public class SyncManagerImpl implements SyncManager {
 	 * LOGGER for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
-
-	
 
 	@Override
 	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) {
@@ -93,7 +91,6 @@ public class SyncManagerImpl implements SyncManager {
 
 		try {
 
-			
 			syncTransaction.setId(UUID.randomUUID().toString());
 
 			syncTransaction.setSyncJobId(syncJobId);
@@ -102,7 +99,6 @@ public class SyncManagerImpl implements SyncManager {
 			syncTransaction.setStatusCode(status);
 			syncTransaction.setStatusComment(statusComment);
 
-			// TODO
 			syncTransaction.setTriggerPoint(triggerPoint);
 
 			syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
@@ -111,15 +107,15 @@ public class SyncManagerImpl implements SyncManager {
 
 			try {
 				syncTransaction
-				.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
+						.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
 
 			} catch (RegBaseCheckedException exception) {
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage());
-				
+
 			}
-			
+
 			if (SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO() != null) {
 				syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 						.getRegistrationCenterId());
@@ -127,14 +123,13 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
-			
 			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
 			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 
-		}  catch (NullPointerException nullPointerException) {
+		} catch (NullPointerException nullPointerException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					nullPointerException.getMessage());

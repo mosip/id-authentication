@@ -111,7 +111,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			Map<String, String> requestParamMap = new HashMap<String, String>();
 			requestParamMap.put(RegistrationConstants.REGISTRATION_CENTER_ID, centerID);
 
-			/** REST CALL */
+			/* REST CALL */
 			@SuppressWarnings("unchecked")
 			HashMap<String, Object> globalParamJsonMap = (HashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true);
@@ -135,7 +135,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				list.add(globalParam);
 			}
 
-			/** Save all Global Params */
+			/* Save all Global Params */
 			globalParamDAO.saveAll(list);
 
 			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
