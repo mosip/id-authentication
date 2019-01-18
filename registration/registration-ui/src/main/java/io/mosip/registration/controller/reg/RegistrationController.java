@@ -1526,10 +1526,10 @@ public class RegistrationController extends BaseController {
 		region.setValue("Taramani");
 		city.setValue("Chennai");
 		province.setValue("Tamilnadu");
-		postalCode.setText("60011");
+		postalCode.setText("600111");
 		localAdminAuthority.setValue("MindTree");
-		mobileNo.setText("866769383");
-		emailId.setText("taleev.aalam@mindtree.com");
+		mobileNo.setText("9965625706");
+		emailId.setText("taleevaalam@mindtree.com");
 		cniOrPinNumber.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
