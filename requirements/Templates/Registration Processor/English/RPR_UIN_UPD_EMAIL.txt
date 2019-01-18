@@ -1,6 +1,0 @@
-Hi $name_lang1,
-
-Your UIN details have been updated corresponding to the Registration Number $RID and a Physical Copy of your UIN will reach you soon at your Postal Address.
-
-Thanks and Regards,
-MOSIP Team

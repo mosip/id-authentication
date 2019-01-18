@@ -1,6 +1,0 @@
-Hi $name_lang1,
-
-Your UIN for the Registration $RID has been successfully generated and will reach soon at your Postal Address.
-
-Thanks and Regards,
-MOSIP Team

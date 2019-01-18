@@ -1,3 +1,0 @@
-Bonjour $ name_lang3,
-
-Les détails de votre UIN correspondant au numéro d’enregistrement $RID ont été mis à jour et une copie physique de votre UIN vous parviendra sous peu à votre adresse postale.
