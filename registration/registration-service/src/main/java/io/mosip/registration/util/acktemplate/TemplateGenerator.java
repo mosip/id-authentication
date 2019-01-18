@@ -94,16 +94,18 @@ public class TemplateGenerator extends BaseService {
 					"generateTemplate had been called for preparing Acknowledgement Template.");
 
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
+			ResourceBundle applicationLanguageProperties = applicationContext.getApplicationLanguageBundle();
+
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
 			String platformLanguageCode = RegistrationConstants.mappedCodeForLang
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
-					.toLowerCase();
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+					.getMappedCode().toLowerCase();
 			String localLanguageCode = RegistrationConstants.mappedCodeForLang
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE)).getMappedCode()
-					.toLowerCase();
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
+					.getMappedCode().toLowerCase();
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
@@ -264,12 +266,12 @@ public class TemplateGenerator extends BaseService {
 
 			// QR Code Generation
 			StringBuilder qrCodeString = new StringBuilder();
-			qrCodeString.append("Name: ")
+			qrCodeString.append(applicationLanguageProperties.getString("fullName")).append(" : ")
 					.append(getValue(
 							registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							platformLanguageCode));
 			qrCodeString.append("\n");
-			qrCodeString.append("DOB: ");
+			qrCodeString.append(applicationLanguageProperties.getString("age/dob")).append(" : ");
 
 			if (dob == "") {
 				qrCodeString.append(getValue(
@@ -279,7 +281,7 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			qrCodeString.append("\n");
-			qrCodeString.append("Address: ");
+			qrCodeString.append(applicationLanguageProperties.getString("address")).append(" : ");
 			qrCodeString.append(
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine1(),
 							platformLanguageCode));
@@ -292,9 +294,10 @@ public class TemplateGenerator extends BaseService {
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAddressLine3(),
 							platformLanguageCode));
 			qrCodeString.append("\n");
-			qrCodeString.append("RID: ").append(registration.getRegistrationId());
+			qrCodeString.append(applicationLanguageProperties.getString("uinId")).append(" : ")
+					.append(registration.getRegistrationId());
 			qrCodeString.append("\n");
-			qrCodeString.append("Gender: ")
+			qrCodeString.append(applicationLanguageProperties.getString("gender")).append(" : ")
 					.append(getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getGender(),
 							platformLanguageCode));
 			qrCodeString.append("\n");
@@ -305,7 +308,8 @@ public class TemplateGenerator extends BaseService {
 					byte[] applicantPhoto = registration.getDemographicDTO().getApplicantDocumentDTO()
 							.getCompressedFacePhoto();
 
-					qrCodeString.append("Image: ").append(CryptoUtil.encodeBase64(applicantPhoto));
+					qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
+							.append(CryptoUtil.encodeBase64(applicantPhoto));
 
 					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 				} else {
@@ -455,14 +459,16 @@ public class TemplateGenerator extends BaseService {
 
 		try {
 			String applicationLanguageCode = RegistrationConstants.mappedCodeForLang
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
-					.toLowerCase();
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+					.getMappedCode().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());
 			Map<String, Object> values = new LinkedHashMap<>();
 
 			values.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME,
-					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),applicationLanguageCode));
-			values.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, getValue(registration.getRegistrationId(),applicationLanguageCode));
+					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
+							applicationLanguageCode));
+			values.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID,
+					getValue(registration.getRegistrationId(), applicationLanguageCode));
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 			String currentDate = sdf.format(new Date());
