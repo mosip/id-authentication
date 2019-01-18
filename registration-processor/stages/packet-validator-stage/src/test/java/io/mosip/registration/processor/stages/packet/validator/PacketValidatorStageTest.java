@@ -46,6 +46,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
+import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -78,7 +79,7 @@ public class PacketValidatorStageTest {
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
-	private Vertx vertx;
+
 	/** The packet validator stage. */
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage = new PacketValidatorStage() {
@@ -118,7 +119,12 @@ public class PacketValidatorStageTest {
 	/** The list. */
 	List<InternalRegistrationStatusDto> list;
 
+	/** The list appender. */
 	private ListAppender<ILoggingEvent> listAppender;
+
+	/** The document utility. */
+	@Mock
+	DocumentUtility documentUtility;
 
 	/**
 	 * Sets the up.
@@ -157,16 +163,17 @@ public class PacketValidatorStageTest {
 		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified));
 
 		Document documentPob = new Document();
-		documentPob.setDocumentCategory("pob");
+		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
 		documentPob.setDocumentName("ProofOfBirth");
 		Document document = new Document();
-		document.setDocumentCategory("poR");
+		document.setDocumentCategory("PROOFOFRELATIONSHIP");
 		document.setDocumentName("ProofOfRelation");
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
 		identity.setDocuments(documents);
 
+		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
 		FieldValueArray applicantBiometric = new FieldValueArray();
@@ -184,7 +191,6 @@ public class PacketValidatorStageTest {
 		FieldValueArray applicantDemographic = new FieldValueArray();
 		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 		List<String> applicantDemographicValues = new ArrayList<String>();
-		applicantDemographicValues.add(PacketFiles.ID.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
 		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfRelation");
@@ -214,7 +220,6 @@ public class PacketValidatorStageTest {
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		listAppender.start();
 		list.add(registrationStatusDto);
-		// registrationStatusService.addRegistrationStatus(registrationStatusDto);
 		Mockito.when(registrationStatusService.getByStatus(anyString())).thenReturn(list);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
@@ -228,8 +233,6 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
-		Mockito.doNothing().when(packetInfoManager).saveDemographicInfoJson(data,
-				packetMetaInfo.getIdentity().getMetaData());
 
 	}
 
@@ -276,7 +279,7 @@ public class PacketValidatorStageTest {
 		documentPob.setDocumentCategory("pob");
 		documentPob.setDocumentName("ProofOfBirth");
 		Document document = new Document();
-		document.setDocumentCategory("poR");
+		document.setDocumentCategory("ProofOfRelation");
 		document.setDocumentName("ProofOfRelation");
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
@@ -300,7 +303,6 @@ public class PacketValidatorStageTest {
 		FieldValueArray applicantDemographic = new FieldValueArray();
 		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 		List<String> applicantDemographicValues = new ArrayList<String>();
-		applicantDemographicValues.add(PacketFiles.ID.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
 		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfAddress");
@@ -345,15 +347,15 @@ public class PacketValidatorStageTest {
 		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified));
 
 		Document documentPob = new Document();
-		documentPob.setDocumentCategory("pob");
+		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
 		documentPob.setDocumentName("ProofOfBirth");
 
 		Document document = new Document();
-		document.setDocumentCategory("poA");
+		document.setDocumentCategory("PROOFOFADDRESS");
 		document.setDocumentName("ProofOfAddress");
 
 		Document document2 = new Document();
-		document2.setDocumentCategory("poI");
+		document2.setDocumentCategory("PROOFOFIDENTITY");
 		document2.setDocumentName("ProofOfIdentity");
 
 		List<Document> documents = new ArrayList<Document>();
@@ -361,7 +363,7 @@ public class PacketValidatorStageTest {
 		documents.add(document);
 		documents.add(document2);
 		identity.setDocuments(documents);
-
+		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
 		FieldValueArray applicantBiometric = new FieldValueArray();
@@ -379,7 +381,7 @@ public class PacketValidatorStageTest {
 		FieldValueArray applicantDemographic = new FieldValueArray();
 		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
 		List<String> applicantDemographicValues = new ArrayList<String>();
-		applicantDemographicValues.add(PacketFiles.ID.name());
+		// applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
 		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
 		applicantDemographicValues.add("ProofOfBirth");
 		applicantDemographicValues.add("ProofOfRelation");
@@ -561,6 +563,13 @@ public class PacketValidatorStageTest {
 
 	}
 
+	/**
+	 * Gets the by satus exception test.
+	 *
+	 * @return the by satus exception test
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void getBySatusExceptionTest() throws Exception {
 
