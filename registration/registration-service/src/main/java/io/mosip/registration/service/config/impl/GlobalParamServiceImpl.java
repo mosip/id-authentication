@@ -123,6 +123,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			for (Entry<String, String> key : globalParamMap.entrySet()) {
 				GlobalParam globalParam = new GlobalParam();
 				GlobalParamId globalParamId = new GlobalParamId();
+				globalParamId.setCode(UUID.randomUUID().toString());
 				globalParamId.setLangCode("ENG");
 				globalParam.setGlobalParamId(globalParamId);
 				globalParam.setName(key.getKey());
@@ -131,7 +132,6 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				globalParam.setCrBy("brahma");
 				globalParam.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
 				globalParam.setVal(globalParamMap.get(key.getValue()));
-				globalParamId.setCode(globalParam.getName());
 				list.add(globalParam);
 			}
 
