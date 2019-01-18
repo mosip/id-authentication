@@ -24,7 +24,7 @@ export class PreviewComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-   this.user = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1]; 
+   this.user = {...this.registrationService.getUser(this.registrationService.getUsers().length - 1)}; 
    console.log(this.user);
       this.previewData = this.user.request.demographicDetails.identity;
       const now = new Date();
@@ -39,14 +39,14 @@ export class PreviewComponent implements OnInit {
                   + (this.previewData.addressLine2[1].value ? ', ' + this.previewData.addressLine2[1].value : '')
                   + (this.previewData.addressLine3[1].value ? ', ' + this.previewData.addressLine3[1].value : '');
       this.previewData.secondaryAddress = address;
-      this.previewData.region[0].value = this.locCodeToName(this.previewData.region[0].value, this.previewData.region[0].language);
-      this.previewData.region[1].value = this.locCodeToName(this.previewData.region[1].value, this.previewData.region[1].language);
-      this.previewData.province[0].value = this.locCodeToName(this.previewData.province[0].value, this.previewData.province[0].language);
-      this.previewData.province[1].value = this.locCodeToName(this.previewData.province[1].value, this.previewData.province[1].language);
-      this.previewData.city[0].value = this.locCodeToName(this.previewData.city[0].value, this.previewData.city[0].language);
-      this.previewData.city[1].value = this.locCodeToName(this.previewData.city[1].value, this.previewData.city[1].language);
-      this.previewData.localAdministrativeAuthority[0].value = this.locCodeToName(this.previewData.localAdministrativeAuthority[0].value, this.previewData.localAdministrativeAuthority[0].language);
-      this.previewData.localAdministrativeAuthority[1].value = this.locCodeToName(this.previewData.localAdministrativeAuthority[1].value, this.previewData.localAdministrativeAuthority[1].language);
+      this.previewData.region[0].name = this.locCodeToName(this.previewData.region[0].value, this.previewData.region[0].language);
+      this.previewData.region[1].name = this.locCodeToName(this.previewData.region[1].value, this.previewData.region[1].language);
+      this.previewData.province[0].name = this.locCodeToName(this.previewData.province[0].value, this.previewData.province[0].language);
+      this.previewData.province[1].name = this.locCodeToName(this.previewData.province[1].value, this.previewData.province[1].language);
+      this.previewData.city[0].name = this.locCodeToName(this.previewData.city[0].value, this.previewData.city[0].language);
+      this.previewData.city[1].name = this.locCodeToName(this.previewData.city[1].value, this.previewData.city[1].language);
+      this.previewData.localAdministrativeAuthority[0].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[0].value, this.previewData.localAdministrativeAuthority[0].language);
+      this.previewData.localAdministrativeAuthority[1].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[1].value, this.previewData.localAdministrativeAuthority[1].language);
       console.log(this.previewData);
       if (this.previewData['fullName'][1].language === 'ARB') {
         this.secondaryLanguage = 'ar';
