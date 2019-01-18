@@ -29,8 +29,7 @@ import io.mosip.registration.service.external.impl.ZipCreationServiceImpl;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.ENROLLMENT_META_JSON_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.HASHING_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.PACKET_DATA_HASH_FILE_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.PACKET_META_JSON_NAME;
 
 public class ZipCreationServiceTest {
@@ -40,17 +39,21 @@ public class ZipCreationServiceTest {
 	@InjectMocks
 	private ZipCreationServiceImpl zipCreationService;
 	private RegistrationDTO registrationDTO;
-	private Map<String, byte[]> jsonMap;
+	private Map<String, byte[]> filesGeneratedForPacket;
 
 	@Before
 	public void initialize() throws RegBaseCheckedException {
 		registrationDTO = DataProvider.getPacketDTO();
-		jsonMap = new HashMap<>();
-		jsonMap.put(DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
-		jsonMap.put(PACKET_META_JSON_NAME, "Registration".getBytes());
-		jsonMap.put(ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
-		jsonMap.put(HASHING_JSON_NAME, "HASHCode".getBytes());
-		jsonMap.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
+		filesGeneratedForPacket = new HashMap<>();
+		filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
+		filesGeneratedForPacket.put(PACKET_META_JSON_NAME, "Registration".getBytes());
+		filesGeneratedForPacket.put(PACKET_DATA_HASH_FILE_NAME, "HASHCode".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, "packet_osi_hash".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME, "applicant_bio_cbeff".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME, "introducer_bio_cbeff".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, "officer_bio_cbeff".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, "supervisor_bio_cbeff".getBytes());
 	}
 
 	@Test
@@ -69,7 +72,7 @@ public class ZipCreationServiceTest {
 		irisDetailsDTOs.add(irisDetailsDTO);
 		registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 		registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFingerprintDetailsDTO(null);
-		byte[] packetZipInBytes = zipCreationService.createPacket(registrationDTO, jsonMap);
+		byte[] packetZipInBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 		Assert.assertNotNull(packetZipInBytes);
 	}
 
@@ -82,7 +85,7 @@ public class ZipCreationServiceTest {
 	public void testIOException() throws RegBaseCheckedException {
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setType("PoA");
 		documentDetailsResidenceDTO.setFormat("passport");
 		documentDetailsResidenceDTO.setValue("aaa");
 		documentDetailsResidenceDTO.setOwner("hof");
@@ -91,18 +94,24 @@ public class ZipCreationServiceTest {
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("PoA");
+		documentDetailsResidenceDTO.setType("PoA");
 		documentDetailsResidenceDTO.setFormat("passport");
 		documentDetailsResidenceDTO.setValue("aaa");
 		documentDetailsResidenceDTO.setOwner("hof");
 		registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 				.setProofOfIdentity(documentDetailsResidenceDTO);
 
-		zipCreationService.createPacket(registrationDTO, jsonMap);
+		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 	}
 	
 	@Test
 	public void emptyDataTest() throws RegBaseCheckedException {
+		filesGeneratedForPacket = new HashMap<>();
+		filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
+		filesGeneratedForPacket.put(PACKET_META_JSON_NAME, "Registration".getBytes());
+		filesGeneratedForPacket.put(PACKET_DATA_HASH_FILE_NAME, "HASHCode".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
+		filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, "packet_osi_hash".getBytes());
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
@@ -115,9 +124,9 @@ public class ZipCreationServiceTest {
 		registrationDTO.setRegistrationMetaDataDTO(new RegistrationMetaDataDTO());
 		registrationDTO.setRegistrationId("2018782130000128122018103836");
 		
-		zipCreationService.createPacket(registrationDTO, jsonMap);
+		zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 		
-		zipCreationService.createPacket(new RegistrationDTO(), jsonMap);
+		zipCreationService.createPacket(new RegistrationDTO(), filesGeneratedForPacket);
 	}
 
 }

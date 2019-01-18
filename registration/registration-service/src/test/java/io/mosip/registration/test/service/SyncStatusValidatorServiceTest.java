@@ -30,8 +30,8 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
 import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
@@ -48,7 +48,7 @@ public class SyncStatusValidatorServiceTest {
 	@InjectMocks
 	private SyncStatusValidatorServiceImpl syncStatusValidatorServiceImpl;
 	@Mock
-	private SyncJobDAO syncJobDAO;
+	private SyncJobControlDAO syncJobDAO;
 	@Mock
 	private SyncJobInfo syncJobnfo;
 	@Mock

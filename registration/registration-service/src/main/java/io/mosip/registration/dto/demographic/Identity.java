@@ -1,5 +1,12 @@
 package io.mosip.registration.dto.demographic;
 
+import java.math.BigInteger;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -9,64 +16,68 @@ import io.mosip.registration.dto.BaseDTO;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
+@JsonInclude(value = Include.NON_NULL)
 public class Identity extends BaseDTO {
 
 	/** The ID schema version. */
-	private String idSchemaVersion;
+	@JsonProperty("IDSchemaVersion")
+	private double idSchemaVersion;
 
 	/** The uin. */
-	private String uin;
+	@JsonProperty("UIN")
+	private BigInteger uin;
 
 	/** The full name. */
-	private ArrayPropertiesDTO fullName;
+	private List<ValuesDTO> fullName;
 
 	/** The date of birth. */
-	private SimplePropertiesDTO dateOfBirth;
+	private String dateOfBirth;
 
 	/** The age. */
-	private String age;
+	private Integer age;
 
 	/** The gender. */
-	private ArrayPropertiesDTO gender;
+	private List<ValuesDTO> gender;
 
 	/** The address line 1. */
-	private ArrayPropertiesDTO addressLine1;
+	private List<ValuesDTO> addressLine1;
 
 	/** The address line 2. */
-	private ArrayPropertiesDTO addressLine2;
+	private List<ValuesDTO> addressLine2;
 
 	/** The address line 3. */
-	private ArrayPropertiesDTO addressLine3;
+	private List<ValuesDTO> addressLine3;
 
 	/** The region. */
-	private ArrayPropertiesDTO region;
+	private List<ValuesDTO> region;
 
 	/** The province. */
-	private ArrayPropertiesDTO province;
+	private List<ValuesDTO> province;
 
 	/** The city. */
-	private ArrayPropertiesDTO city;
+	private List<ValuesDTO> city;
 
 	/** The postal code. */
 	private String postalCode;
 
 	/** The phone. */
-	private SimplePropertiesDTO phone;
+	private String phone;
 
 	/** The email. */
-	private SimplePropertiesDTO email;
+	private String email;
 
 	/** The CNIE number. */
-	private String cnieNumber;
+	@JsonProperty("CNIENumber")
+	private BigInteger cnieNumber;
 
 	/** The local administrative authority. */
-	private ArrayPropertiesDTO localAdministrativeAuthority;
-
-	/** The parent or guardian name. */
-	private ArrayPropertiesDTO parentOrGuardianName;
+	private List<ValuesDTO> localAdministrativeAuthority;
 
 	/** The parent or guardian RID or UIN. */
-	private String parentOrGuardianRIDOrUIN;
+	private BigInteger parentOrGuardianRIDOrUIN;
+
+	/** The parent or guardian name. */
+	private List<ValuesDTO> parentOrGuardianName;
 
 	/** The proof of address. */
 	private DocumentDetailsDTO proofOfAddress;
@@ -78,7 +89,7 @@ public class Identity extends BaseDTO {
 	private DocumentDetailsDTO proofOfRelationship;
 
 	/** The date of birth proof. */
-	private DocumentDetailsDTO dateOfBirthProof;
+	private DocumentDetailsDTO proofOfDateOfBirth;
 
 	/** The individual biometrics. */
 	private CBEFFFilePropertiesDTO individualBiometrics;
@@ -89,7 +100,7 @@ public class Identity extends BaseDTO {
 	/**
 	 * @return the idSchemaVersion
 	 */
-	public String getIdSchemaVersion() {
+	public double getIdSchemaVersion() {
 		return idSchemaVersion;
 	}
 
@@ -97,14 +108,14 @@ public class Identity extends BaseDTO {
 	 * @param idSchemaVersion
 	 *            the idSchemaVersion to set
 	 */
-	public void setIdSchemaVersion(String idSchemaVersion) {
+	public void setIdSchemaVersion(double idSchemaVersion) {
 		this.idSchemaVersion = idSchemaVersion;
 	}
 
 	/**
 	 * @return the uin
 	 */
-	public String getUin() {
+	public BigInteger getUin() {
 		return uin;
 	}
 
@@ -112,14 +123,14 @@ public class Identity extends BaseDTO {
 	 * @param uin
 	 *            the uin to set
 	 */
-	public void setUin(String uin) {
+	public void setUin(BigInteger uin) {
 		this.uin = uin;
 	}
 
 	/**
 	 * @return the fullName
 	 */
-	public ArrayPropertiesDTO getFullName() {
+	public List<ValuesDTO> getFullName() {
 		return fullName;
 	}
 
@@ -127,14 +138,14 @@ public class Identity extends BaseDTO {
 	 * @param fullName
 	 *            the fullName to set
 	 */
-	public void setFullName(ArrayPropertiesDTO fullName) {
+	public void setFullName(List<ValuesDTO> fullName) {
 		this.fullName = fullName;
 	}
 
 	/**
 	 * @return the dateOfBirth
 	 */
-	public SimplePropertiesDTO getDateOfBirth() {
+	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
 
@@ -142,14 +153,14 @@ public class Identity extends BaseDTO {
 	 * @param dateOfBirth
 	 *            the dateOfBirth to set
 	 */
-	public void setDateOfBirth(SimplePropertiesDTO dateOfBirth) {
+	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
 	/**
 	 * @return the age
 	 */
-	public String getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
@@ -157,14 +168,14 @@ public class Identity extends BaseDTO {
 	 * @param age
 	 *            the age to set
 	 */
-	public void setAge(String age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
 	/**
 	 * @return the gender
 	 */
-	public ArrayPropertiesDTO getGender() {
+	public List<ValuesDTO> getGender() {
 		return gender;
 	}
 
@@ -172,14 +183,14 @@ public class Identity extends BaseDTO {
 	 * @param gender
 	 *            the gender to set
 	 */
-	public void setGender(ArrayPropertiesDTO gender) {
+	public void setGender(List<ValuesDTO> gender) {
 		this.gender = gender;
 	}
 
 	/**
 	 * @return the addressLine1
 	 */
-	public ArrayPropertiesDTO getAddressLine1() {
+	public List<ValuesDTO> getAddressLine1() {
 		return addressLine1;
 	}
 
@@ -187,14 +198,14 @@ public class Identity extends BaseDTO {
 	 * @param addressLine1
 	 *            the addressLine1 to set
 	 */
-	public void setAddressLine1(ArrayPropertiesDTO addressLine1) {
+	public void setAddressLine1(List<ValuesDTO> addressLine1) {
 		this.addressLine1 = addressLine1;
 	}
 
 	/**
 	 * @return the addressLine2
 	 */
-	public ArrayPropertiesDTO getAddressLine2() {
+	public List<ValuesDTO> getAddressLine2() {
 		return addressLine2;
 	}
 
@@ -202,14 +213,14 @@ public class Identity extends BaseDTO {
 	 * @param addressLine2
 	 *            the addressLine2 to set
 	 */
-	public void setAddressLine2(ArrayPropertiesDTO addressLine2) {
+	public void setAddressLine2(List<ValuesDTO> addressLine2) {
 		this.addressLine2 = addressLine2;
 	}
 
 	/**
 	 * @return the addressLine3
 	 */
-	public ArrayPropertiesDTO getAddressLine3() {
+	public List<ValuesDTO> getAddressLine3() {
 		return addressLine3;
 	}
 
@@ -217,14 +228,14 @@ public class Identity extends BaseDTO {
 	 * @param addressLine3
 	 *            the addressLine3 to set
 	 */
-	public void setAddressLine3(ArrayPropertiesDTO addressLine3) {
+	public void setAddressLine3(List<ValuesDTO> addressLine3) {
 		this.addressLine3 = addressLine3;
 	}
 
 	/**
 	 * @return the region
 	 */
-	public ArrayPropertiesDTO getRegion() {
+	public List<ValuesDTO> getRegion() {
 		return region;
 	}
 
@@ -232,14 +243,14 @@ public class Identity extends BaseDTO {
 	 * @param region
 	 *            the region to set
 	 */
-	public void setRegion(ArrayPropertiesDTO region) {
+	public void setRegion(List<ValuesDTO> region) {
 		this.region = region;
 	}
 
 	/**
 	 * @return the province
 	 */
-	public ArrayPropertiesDTO getProvince() {
+	public List<ValuesDTO> getProvince() {
 		return province;
 	}
 
@@ -247,14 +258,14 @@ public class Identity extends BaseDTO {
 	 * @param province
 	 *            the province to set
 	 */
-	public void setProvince(ArrayPropertiesDTO province) {
+	public void setProvince(List<ValuesDTO> province) {
 		this.province = province;
 	}
 
 	/**
 	 * @return the city
 	 */
-	public ArrayPropertiesDTO getCity() {
+	public List<ValuesDTO> getCity() {
 		return city;
 	}
 
@@ -262,7 +273,7 @@ public class Identity extends BaseDTO {
 	 * @param city
 	 *            the city to set
 	 */
-	public void setCity(ArrayPropertiesDTO city) {
+	public void setCity(List<ValuesDTO> city) {
 		this.city = city;
 	}
 
@@ -284,7 +295,7 @@ public class Identity extends BaseDTO {
 	/**
 	 * @return the phone
 	 */
-	public SimplePropertiesDTO getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
@@ -292,14 +303,14 @@ public class Identity extends BaseDTO {
 	 * @param phone
 	 *            the phone to set
 	 */
-	public void setPhone(SimplePropertiesDTO phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
 	/**
 	 * @return the email
 	 */
-	public SimplePropertiesDTO getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
@@ -307,14 +318,14 @@ public class Identity extends BaseDTO {
 	 * @param email
 	 *            the email to set
 	 */
-	public void setEmail(SimplePropertiesDTO email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
 	/**
 	 * @return the cnieNumber
 	 */
-	public String getCnieNumber() {
+	public BigInteger getCnieNumber() {
 		return cnieNumber;
 	}
 
@@ -322,14 +333,14 @@ public class Identity extends BaseDTO {
 	 * @param cnieNumber
 	 *            the cnieNumber to set
 	 */
-	public void setCnieNumber(String cnieNumber) {
+	public void setCnieNumber(BigInteger cnieNumber) {
 		this.cnieNumber = cnieNumber;
 	}
 
 	/**
 	 * @return the localAdministrativeAuthority
 	 */
-	public ArrayPropertiesDTO getLocalAdministrativeAuthority() {
+	public List<ValuesDTO> getLocalAdministrativeAuthority() {
 		return localAdministrativeAuthority;
 	}
 
@@ -337,29 +348,14 @@ public class Identity extends BaseDTO {
 	 * @param localAdministrativeAuthority
 	 *            the localAdministrativeAuthority to set
 	 */
-	public void setLocalAdministrativeAuthority(ArrayPropertiesDTO localAdministrativeAuthority) {
+	public void setLocalAdministrativeAuthority(List<ValuesDTO> localAdministrativeAuthority) {
 		this.localAdministrativeAuthority = localAdministrativeAuthority;
-	}
-
-	/**
-	 * @return the parentOrGuardianName
-	 */
-	public ArrayPropertiesDTO getParentOrGuardianName() {
-		return parentOrGuardianName;
-	}
-
-	/**
-	 * @param parentOrGuardianName
-	 *            the parentOrGuardianName to set
-	 */
-	public void setParentOrGuardianName(ArrayPropertiesDTO parentOrGuardianName) {
-		this.parentOrGuardianName = parentOrGuardianName;
 	}
 
 	/**
 	 * @return the parentOrGuardianRIDOrUIN
 	 */
-	public String getParentOrGuardianRIDOrUIN() {
+	public BigInteger getParentOrGuardianRIDOrUIN() {
 		return parentOrGuardianRIDOrUIN;
 	}
 
@@ -367,8 +363,23 @@ public class Identity extends BaseDTO {
 	 * @param parentOrGuardianRIDOrUIN
 	 *            the parentOrGuardianRIDOrUIN to set
 	 */
-	public void setParentOrGuardianRIDOrUIN(String parentOrGuardianRIDOrUIN) {
+	public void setParentOrGuardianRIDOrUIN(BigInteger parentOrGuardianRIDOrUIN) {
 		this.parentOrGuardianRIDOrUIN = parentOrGuardianRIDOrUIN;
+	}
+
+	/**
+	 * @return the parentOrGuardianName
+	 */
+	public List<ValuesDTO> getParentOrGuardianName() {
+		return parentOrGuardianName;
+	}
+
+	/**
+	 * @param parentOrGuardianName
+	 *            the parentOrGuardianName to set
+	 */
+	public void setParentOrGuardianName(List<ValuesDTO> parentOrGuardianName) {
+		this.parentOrGuardianName = parentOrGuardianName;
 	}
 
 	/**
@@ -417,18 +428,18 @@ public class Identity extends BaseDTO {
 	}
 
 	/**
-	 * @return the dateOfBirthProof
+	 * @return the proofOfDateOfBirth
 	 */
-	public DocumentDetailsDTO getDateOfBirthProof() {
-		return dateOfBirthProof;
+	public DocumentDetailsDTO getProofOfDateOfBirth() {
+		return proofOfDateOfBirth;
 	}
 
 	/**
-	 * @param dateOfBirthProof
-	 *            the dateOfBirthProof to set
+	 * @param proofOfDateOfBirth
+	 *            the proofOfDateOfBirth to set
 	 */
-	public void setDateOfBirthProof(DocumentDetailsDTO dateOfBirthProof) {
-		this.dateOfBirthProof = dateOfBirthProof;
+	public void setProofOfDateOfBirth(DocumentDetailsDTO proofOfDateOfBirth) {
+		this.proofOfDateOfBirth = proofOfDateOfBirth;
 	}
 
 	/**

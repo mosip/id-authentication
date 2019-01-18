@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.dto.RegPacketStatusDTO;
+import io.mosip.registration.entity.Registration;
 
 /**
  * DAO class for Repository
@@ -15,16 +16,21 @@ public interface RegPacketStatusDAO {
 	/**
 	 * This method gets the list of packets which are having the status as uploaded-successfully
 	 * 
-	 * @return List<String>
+	 * @return List<Registration>
 	 * 				returns the list of registrationIds
 	 */
-	List<String> getPacketIdsByStatusUploaded();
+	List<Registration> getPacketIdsByStatusUploaded();
+	
 	
 	/**
-	 * This method updates the status of packets after sync with the server
-	 * 
-	 * @param packetStatus
-	 * 				the list of RegPacketStatusDTOs that represents registrationIds with their respective packet status
+	 * @param registrationId id
+	 * @return registration
 	 */
-	void updatePacketIdsByServerStatus(List<RegPacketStatusDTO> packetStatus);
+	Registration get(String registrationId);
+	
+	/**
+	 * @param registration entity
+	 * @return registration
+	 */
+	Registration update(Registration registration);
 }

@@ -15,24 +15,24 @@
             <AnchorPane fx:id="imageAnchorPane" layoutX="409.0" layoutY="10.0" prefHeight="246.0" prefWidth="490.0" styleClass="imageAnchorPaneStyle">
                <children>
                   <ImageView fx:id="imageView" fitHeight="251.0" fitWidth="488.0" layoutX="2.0" layoutY="4.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
-                  <ToggleButton fx:id="approvalBtn" layoutX="314.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="80.0" text="Approve">
+                  <ToggleButton fx:id="approvalBtn" layoutX="314.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="80.0" text="%approve">
                   </ToggleButton>
-                  <ToggleButton fx:id="rejectionBtn" layoutX="402.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="80.0" text="Reject">
+                  <ToggleButton fx:id="rejectionBtn" layoutX="402.0" layoutY="3.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="80.0" text="%reject">
                   </ToggleButton>
                </children>
             </AnchorPane>
             <TableView fx:id="table" layoutY="10.0" prefHeight="257.0" prefWidth="409.0">
                <columns>
-                  <TableColumn fx:id="id" prefWidth="245.0" text="Registration ID" />
-                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="Registrtion ID" visible="false" />
-                  <TableColumn fx:id="statusComment" prefWidth="163.0" text="Status" />
+                  <TableColumn fx:id="id" prefWidth="245.0" text="%registrationid" />
+                  <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="%registrtionid" visible="false" />
+                  <TableColumn fx:id="statusComment" prefWidth="163.0" text="%status" />
                </columns>
             </TableView>
          </children>
       </AnchorPane>
-      <ToggleButton fx:id="authenticateBtn" layoutX="245.0" layoutY="273.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="140.0" text="Authenticate">
+      <ToggleButton fx:id="authenticateBtn" layoutX="245.0" layoutY="273.0" mnemonicParsing="false" onAction="#updateStatus" prefHeight="20.0" prefWidth="140.0" text="%authenticate">
       </ToggleButton>
-      <Label layoutX="385.0" layoutY="272.0" prefHeight="20.0" prefWidth="425.0" text=" after all the applications have been Approved/Rejected">
+      <Label layoutX="385.0" layoutY="272.0" prefHeight="20.0" prefWidth="425.0" text="%approved/rejected">
          <font>
             <Font size="10.0" />
          </font></Label>

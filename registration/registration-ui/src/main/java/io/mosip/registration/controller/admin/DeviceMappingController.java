@@ -171,7 +171,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 									+ "-> Exception while searching the available devices based on search criteria: "
 									+ runtimeException.getMessage());
 
-					generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 				}
 			});
 
@@ -279,7 +279,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 							+ "-> Exception while loading devices based on selected device type: "
 							+ runtimeException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading list of available and mapped devices for selected device type method execution completed");
@@ -339,7 +339,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					RegistrationConstants.DEVICE_ONBOARD_MAPPING_DEVICES_EXCEPTION
 							+ "-> Exception while mapping devices: " + runtimeException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Mapping of selected devices method execution completed");
@@ -377,7 +377,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					RegistrationConstants.DEVICE_ONBOARD_UNMAPPING_DEVICES_EXCEPTION
 							+ "-> Exception while unmapping devices: " + runtimeException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Unmapping of selected devices method execution completed");
@@ -437,7 +437,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					RegistrationConstants.DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION
 							+ "-> Exception while navigating to Home page: " + ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Registration Home page method execution completed");
@@ -490,7 +490,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, responseDTO.getSuccessResponseDTO().getMessage());
 			} else {
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 			}
 
 			// Set the device type drop-down to 'All'
@@ -507,7 +507,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 							+ "-> Exception while updating the mapping of onboarding devices: "
 							+ runtimeException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Mapping of onboarding devices for Registration Machine method execution completed");

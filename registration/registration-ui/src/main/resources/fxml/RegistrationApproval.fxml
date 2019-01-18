@@ -12,12 +12,12 @@
 	<children>
       <Accordion fx:id="approvalAccordion" layoutX="18.0" layoutY="54.0" prefHeight="435.0" prefWidth="920.0">
         <panes>
-          <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="Pending Approval" styleClass="titledPaneStyle">
+          <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="%pendingapproval" styleClass="titledPaneStyle">
                <content>
                   <AnchorPane fx:id="pendingApprovalAnchorPane" prefHeight="200.0" prefWidth="200.0"  styleClass="anchorPanebgColor"/>
                </content>
             </TitledPane>
-            <TitledPane fx:id="reRegisterTitledPane" animated="false" prefWidth="850.0" text="Re Register" styleClass="titledPaneStyle">
+            <TitledPane fx:id="reRegisterTitledPane" animated="false" prefWidth="850.0" text="%reregister" styleClass="titledPaneStyle">
                <content>
                   <AnchorPane fx:id="reRegisterAnchorPane" prefHeight="200.0" prefWidth="200.0" styleClass="anchorPanebgColor"/>
                </content></TitledPane>
@@ -31,10 +31,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ Approve Registration">
+      <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/approveregistration">
          <font>
             <Font size="10.0" />
          </font></Text>
-		<Label layoutX="461.0" layoutY="19.0" text="EOD Process" />
+		<Label layoutX="461.0" layoutY="19.0" text="%eodprocess" />
 	</children>
 </AnchorPane>

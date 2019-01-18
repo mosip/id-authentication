@@ -1,4 +1,4 @@
-Technical Design for the User Mapping to Registration
+**Design for the User Mapping to Registration**
 
 Table of Contents:
 
@@ -24,8 +24,7 @@ II. Technical Approach
 
 III. Request and Response
 
-**[Functional Background]{.underline}**
-=======================================
+**Functional Background**
 
 On login successful of the user, we show off "New Registration" screen.
 There exists the "Menu", which lists the options/ features. On clicking
@@ -109,8 +108,7 @@ The key **non-functional requirements** are
         it along with the request to authenticate the request by the
         server.
 
- **[Technical Approach]{.underline}**
-=====================================
+**Technical Approach**
 
 The key solution considerations are --
 

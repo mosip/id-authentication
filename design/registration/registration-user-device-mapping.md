@@ -1,7 +1,6 @@
-Design - User Device Mapping
+**Design - User Device Mapping
 
 **Background**
-============================
 
 After successful login by the Admin person, user can tag the list of
 devices already configured in the admin portal with respect to the
@@ -43,7 +42,7 @@ The key **non-functional requirements** are
         format.
 
 **Solution**
-==========================
+
 
 The key solution considerations are --
 

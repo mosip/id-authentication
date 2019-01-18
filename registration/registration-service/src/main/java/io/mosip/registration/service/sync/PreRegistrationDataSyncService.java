@@ -1,9 +1,6 @@
 package io.mosip.registration.service.sync;
 
-import java.util.List;
-
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.PreRegistrationList;
 
 /**
  * Pre Registration Data Sync Service
