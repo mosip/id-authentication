@@ -86,7 +86,7 @@ import io.mosip.registration.entity.mastersync.id.CodeAndLanguageCodeID;
 import io.mosip.registration.entity.mastersync.id.HolidayID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.repositories.SyncJobRepository;
+import io.mosip.registration.repositories.SyncJobControlRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncApplicationRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncBiometricAttributeRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncBiometricTypeRepository;
@@ -131,7 +131,7 @@ public class MasterSyncDaoImplTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	private SyncJobRepository syncStatusRepository;
+	private SyncJobControlRepository syncStatusRepository;
 
 	@Mock
 	private MasterSyncApplicationRepository masterSyncApplicationRepository;
@@ -1422,12 +1422,12 @@ public class MasterSyncDaoImplTest {
 
 		Mockito.when(masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLanguageCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(locations);
-		
+
 		masterSyncDaoImpl.findLocationByLangCode("Region", "ENG");
 
 		assertTrue(locations != null);
 	}
-	
+
 	@Test
 	public void findLocationByParentLocCode() throws RegBaseCheckedException {
 
@@ -1441,13 +1441,14 @@ public class MasterSyncDaoImplTest {
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncLocationRepository.findMasterLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
-		
+		Mockito.when(masterSyncLocationRepository.findMasterLocationByParentLocCode(Mockito.anyString()))
+				.thenReturn(locations);
+
 		masterSyncDaoImpl.findLocationByParentLocCode("TPT");
 
 		assertTrue(locations != null);
 	}
-	
+
 	@Test
 	public void findAllReason() throws RegBaseCheckedException {
 
@@ -1458,17 +1459,18 @@ public class MasterSyncDaoImplTest {
 		reasons.setLangCode("FRE");
 		allReason.add(reasons);
 
-		Mockito.when(masterSyncReasonCategoryRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull()).thenReturn(allReason);
-		
+		Mockito.when(masterSyncReasonCategoryRepository.findReasonCategoryByIsDeletedFalseOrIsDeletedIsNull())
+				.thenReturn(allReason);
+
 		masterSyncDaoImpl.getAllReasonCatogery();
 
 		assertTrue(allReason != null);
 	}
-	
+
 	@Test
 	public void findAllReasonList() throws RegBaseCheckedException {
 
-		List<String> reasonCat=new ArrayList<>();
+		List<String> reasonCat = new ArrayList<>();
 		List<MasterReasonList> allReason = new ArrayList<>();
 		MasterReasonList reasons = new MasterReasonList();
 		reasons.setCode("DEMO");
@@ -1476,12 +1478,69 @@ public class MasterSyncDaoImplTest {
 		reasons.setLangCode("FRE");
 		allReason.add(reasons);
 
-		Mockito.when(masterSyncReasonListRepository.findByLangCodeAndReasonCategoryCodeIn(Mockito.anyString(), Mockito.anyList())).thenReturn(allReason);
-		
-		masterSyncDaoImpl.getReasonList("FRE",reasonCat);
+		Mockito.when(masterSyncReasonListRepository.findByLangCodeAndReasonCategoryCodeIn(Mockito.anyString(),
+				Mockito.anyList())).thenReturn(allReason);
+
+		masterSyncDaoImpl.getReasonList("FRE", reasonCat);
 
 		assertTrue(allReason != null);
 	}
 
+	@Test
+	public void findBlackWords() throws RegBaseCheckedException {
+
+		List<MasterBlacklistedWords> allBlackWords = new ArrayList<>();
+		MasterBlacklistedWords blackWord = new MasterBlacklistedWords();
+		blackWord.setWord("asdfg");
+		blackWord.setDescription("asdfg");
+		blackWord.setLangCode("ENG");
+		allBlackWords.add(blackWord);
+		allBlackWords.add(blackWord);
+
+		Mockito.when(masterSyncBlacklistedWordsRepository.findBlackListedWordsByLangCode(Mockito.anyString()))
+				.thenReturn(allBlackWords);
+
+		masterSyncDaoImpl.getBlackListedWords("ENG");
+
+		assertTrue(allBlackWords != null);
+	}
+	
+	@Test
+	public void findDocumentCategories() throws RegBaseCheckedException {
+	
+		List<MasterDocumentCategory> documents = new ArrayList<>();
+		MasterDocumentCategory document = new MasterDocumentCategory();
+		document.setName("Aadhar");
+		document.setDescription("Aadhar card");
+		document.setLangCode("ENG");
+		documents.add(document);
+		documents.add(document);
+	
+		Mockito.when(masterSyncDao.getDocumentCategories(Mockito.anyString())).thenReturn(documents);
+	
+		masterSyncDaoImpl.getDocumentCategories("ENG");
+		
+		assertTrue(documents!=null);
+	
+	}
+	
+	@Test
+	public void findGenders() throws RegBaseCheckedException {
+	
+		List<MasterGender> genderList = new ArrayList<>();
+		MasterGender gender = new MasterGender();
+		gender.setCode("1");
+		gender.setGenderName("male");
+		gender.setLangCode("ENG");
+		gender.setIsActive(true);
+		genderList.add(gender);
+	
+		Mockito.when(masterSyncDao.getGenderDtls(Mockito.anyString())).thenReturn(genderList);
+	
+		masterSyncDaoImpl.getGenderDtls("ENG");
+		
+		assertTrue(genderList!=null);
+	
+	}
 
 }

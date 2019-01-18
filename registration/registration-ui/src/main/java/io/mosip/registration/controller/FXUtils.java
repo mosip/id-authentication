@@ -11,6 +11,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -50,6 +51,12 @@ public class FXUtils {
 			}
 		});
 	}
+	
+	public void populateLocalComboBox(ComboBox<String> applicationField, ComboBox<String> localField) {
+		applicationField.getSelectionModel().selectedItemProperty().addListener((options,oldValue,newValue)->{
+			localField.setValue(applicationField.getValue());
+		});
+	}
 
 	/**
 	 * Validator method for field during onType and the local field population
@@ -60,12 +67,24 @@ public class FXUtils {
 					(String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
-				localField.setText(field.getText());
+				if(localField!=null)
+					localField.setText(field.getText());
 			}
 		});
 
 	}
 
+	public void dobListener(TextField field, TextField fieldToPopulate,String regex) {
+		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+			if (field.getText().matches(regex)) {
+				int year = Integer.parseInt(field.getText());
+				int age = LocalDate.now().getYear() - year;
+				if(age>=0&&age<=118)
+					fieldToPopulate.setText("" + age);
+			}
+		});
+	}
+	
 	/**
 	 * To display the selected date in the date picker in specific
 	 * format("dd-mm-yyyy").

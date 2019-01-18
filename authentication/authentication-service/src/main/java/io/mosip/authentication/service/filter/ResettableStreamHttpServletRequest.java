@@ -80,13 +80,17 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 		return new BufferedReader(new InputStreamReader(servletStream));
 	}
 
+	/**
+	 * Replace the request data with the given bytes
+	 * @param newData the new data to be replaced with
+	 */
 	public void replaceData(byte[] newData) {
 		rawData = newData;
 		servletStream.stream = new ByteArrayInputStream(rawData);
 	}
 
 	/**
-	 * The Class ResettableServletInputStream.
+	 * The Class ResettableServletInputStream - used in ResettableStreamHttpServletRequest 
 	 */
 	private class ResettableServletInputStream extends ServletInputStream {
 
@@ -168,8 +172,7 @@ class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 		 */
 		@Override
 		public void setReadListener(ReadListener listener) {
-			// TODO Auto-generated method stub
-
+			// Nothing to do
 		}
 	}
 

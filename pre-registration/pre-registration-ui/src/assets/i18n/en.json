@@ -6,7 +6,7 @@
   },
   "login": {
     "text": "Quick & Easy steps",
-    "sub_text": "To enroll ",
+    "sub_text": "Pre-register for",
     "sub_text_UID": "Unique Identification Number",
 
     "label_email_num": "Email ID or Phone Number",
@@ -41,7 +41,7 @@
     "label_region": "Region",
     "label_province": "Province",
     "label_city": "City",
-    "label_local_ administrative_authority": "Local Administrative Authority",
+    "label_local_administrative_authority": "Local Administrative Authority",
     "label_mob_num": "Mobile Number",
     "label_postalCode": "Postal Code",
     "label_email_id": "Email ID",
@@ -52,10 +52,10 @@
     "validation": {
       "name_required": "Full Name is required",
       "age_validation": "Age should be less than 150",
-      "DOB_validation": "Enter Valid DOB (Age should be less than 150)",
+      "DOB_validation": "Enter Valid DOB or age (Age should be less than 150 and whole number)",
       "date_required": "Enter 2 numeric digits for date",
       "month_required": "Enter 2 numeric digits for month",
-      "year_required": "Enter 2 numeric digits for year",
+      "year_required": "Enter 4 numeric digits for year",
       "address_required": "Address is required",
       "region_required": "Please select a Region",
       "province_required": "Please select a Province",
@@ -170,5 +170,36 @@
     "text_confirmation": "The Pre-Registarion id and Appointment details have been sent to registered email id and phone number",
     "action_download": "DOWNLOAD",
     "action_print": "PRINT"
+  },
+  "dialog":{
+    "title_applicant":"Number of Applicants",
+    "content_applicant":"The details of the first applicant will be treated as primary",
+    "invalidApplicantNumber_msg":"Number should be between 1 and 10",
+    "action_ok":"OK",
+    "title_discard":"Discard",
+    "action_discard_app":"Discard entire application",
+    "action_cancel":"Cancel appointment and save the details",
+    "action_submit":"Submit",
+    "action_dismiss":"Dismiss",
+    "action_add":"Add",
+    "action_close":"Close",
+    "action_add_to_slot":"Add to Slot"
+  },
+  "ack":{
+    "container_guideline":"Important Guidelines",
+    "action_download":"DOWNLOAD",
+    "action_print":"PRINT"
+  },
+  "centerSelection":{
+    "title":" Book Appointment ",
+    "action_nearBy":"Nearby",
+    "display_recommended":"Recommended Centres",
+    "text_found":"Found",
+    "text_centers":"centers",
+    "text_timing":"Timing",
+    "text_open":"Open",
+    "action_back":"Back",
+    "action_book_later":"Book Later",
+    "action_continue":"Continue"
   }
 }

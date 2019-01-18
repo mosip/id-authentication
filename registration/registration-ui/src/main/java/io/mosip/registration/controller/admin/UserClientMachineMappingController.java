@@ -105,7 +105,7 @@ public class UserClientMachineMappingController extends BaseController implement
 			/* Get error response */
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 			/* Generate Alert */
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
+			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 		}
 	}
 
@@ -202,7 +202,7 @@ public class UserClientMachineMappingController extends BaseController implement
 			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
 
 			/* Generate Alert*/
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
+			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 		}
 
 	}

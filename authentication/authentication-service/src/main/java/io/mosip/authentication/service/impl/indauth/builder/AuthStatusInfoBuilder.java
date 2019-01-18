@@ -6,30 +6,33 @@ import java.util.Arrays;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 /**
- * The builder class of AuthStatusInfo
- * 
- * @authour Loganathan Sekar
+ * The builder class of AuthStatusInfo.
+ *
+ * @author Loganathan Sekar
  */
 
 public class AuthStatusInfoBuilder {
 
+	/** The built flag. */
 	private boolean built;
 
 	/** The auth status info. */
 	private AuthStatusInfo authStatusInfo;
 
 	/**
-	 * Instantiates a new auth status info builder.
+	 * Instantiates a new AuthStatusInfoBuilder.
 	 */
 	private AuthStatusInfoBuilder() {
 		authStatusInfo = new AuthStatusInfo();
 	}
 
 	/**
-	 * New instance.
+	 * Gets new instance of AuthStatusInfo.
 	 *
 	 * @return the auth status info builder
 	 */
@@ -50,14 +53,15 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the message info.
+	 * Adds the match info to AuthStatusInfo.
 	 *
-	 * @param matchInfoType     the match info type
-	 * @param msType            the ms type
+	 * @param authType the auth type
+	 * @param matchingStrategy the matching strategy
 	 * @param matchingThreshold the mt
+	 * @param language the language
 	 * @return the auth status info builder
 	 */
-	public AuthStatusInfoBuilder addMessageInfo(String authType, String matchingStrategy, Integer matchingThreshold,
+	public AuthStatusInfoBuilder addMatchInfo(String authType, String matchingStrategy, Integer matchingThreshold,
 			String language) {
 		assertNotBuilt();
 		if (authStatusInfo.getMatchInfos() == null) {
@@ -66,9 +70,25 @@ public class AuthStatusInfoBuilder {
 		authStatusInfo.getMatchInfos().add(new MatchInfo(authType, language, matchingStrategy, matchingThreshold));
 		return this;
 	}
+	
+	/**
+	 * Adds the bio info to AuthStatusInfo.
+	 *
+	 * @param bioType the bio type
+	 * @param deviceInfo the device info
+	 * @return the auth status info builder
+	 */
+	public AuthStatusInfoBuilder addBioInfo(String bioType,DeviceInfo deviceInfo) {
+		assertNotBuilt();
+		if (authStatusInfo.getBioInfos() == null) {
+			authStatusInfo.setBioInfos(new ArrayList<>());
+		}
+		authStatusInfo.getBioInfos().add(new BioInfo(bioType,deviceInfo));
+		return this;
+	}
 
 	/**
-	 * Adds the auth usage data bits.
+	 * Adds the auth usage data bits to AuthStatusInfo.
 	 *
 	 * @param usageDataBits the usage data bits
 	 * @return the auth status info builder
@@ -84,7 +104,7 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the errors.
+	 * Adds the errors to the AuthStatusInfo.
 	 *
 	 * @param errors the errors
 	 * @return the auth status info builder
@@ -100,9 +120,9 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Builds the.
+	 * Builds the AuthStatusInfo.
 	 *
-	 * @return the auth status info
+	 * @return the AuthStatusInfo instance
 	 */
 	public AuthStatusInfo build() {
 		assertNotBuilt();
@@ -110,6 +130,9 @@ public class AuthStatusInfoBuilder {
 		return authStatusInfo;
 	}
 
+	/**
+	 * Assert that AuthStatusInfo is not built.
+	 */
 	private void assertNotBuilt() {
 		if (built) {
 			throw new IllegalStateException();

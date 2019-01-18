@@ -6,7 +6,7 @@
   },
   "login": {
     "text": "Étapes rapides et faciles",
-    "sub_text": "s'inscrire",
+    "sub_text": "Pré-inscription pour",
     "sub_text_UID": "Numéro d'identification unique",
     "label_select": "Choisissez votre langue",
     "label_email_num": "Email ID ou numéro de téléphone",
@@ -50,10 +50,10 @@
     "validation": {
       "name_required": "Le nom complet est requis",
       "age_validation": "L'âge devrait être inférieur à 150",
-      "DOB_validation": "Entrez une date de naissance valide (l'âge doit être inférieur à 150)",
+      "DOB_validation": "Entrez la date de naissance ou l'âge valide (l'âge doit être inférieur à 150 et le nombre entier)",
       "date_required": "Entrez 2 chiffres pour la date",
       "month_required": "Entrez 2 chiffres pour le mois",
-      "year_required": "Entrez 2 chiffres pour l'année",
+      "year_required": "Entrez 4 chiffres pour l'année",
       "address_required": "L'adresse est obligatoire",
       "region_required": "Veuillez sélectionner une région",
       "province_required": "Veuillez sélectionner une province",
@@ -168,5 +168,36 @@
     "text_confirmation": "L'identifiant pré-enregistrement et les détails du rendez-vous ont été envoyés à l'identifiant et au numéro de téléphone de l'e-mail enregistré.",
     "action_download": "TÉLÉCHARGER",
     "action_print": "IMPRESSION"
+  },
+  "dialog":{
+    "title_applicant":"Nombre de candidats",
+    "content_applicant":"Les détails du premier demandeur seront traités comme primaires",
+    "invalidApplicantNumber_msg":"Le nombre doit être compris entre 1 et 10",
+    "action_ok":"D'accord",
+    "title_discard":"Jeter",
+    "action_discard_app":"Jeter toute l'application",
+    "action_cancel":"Annuler un rendez-vous et sauvegarder les détails",
+    "action_submit":"Soumettre",
+    "action_dismiss":"Rejeter",
+    "action_add":"Ajouter",
+    "action_close":"Fermer",
+    "action_add_to_slot":"Ajouter à la fente"
+  },
+  "ack":{
+    "container_guideline":"Directives importantes",
+    "action_download":"TÉLÉCHARGER",
+    "action_print":"IMPRESSION"
+  },
+  "centerSelection":{
+    "title":" Rendez-vous du livre ",
+    "action_nearBy":"Proche",
+    "display_recommended":"Centres recommandés",
+    "text_found":"A trouvé",
+    "text_centers":"centres",
+    "text_timing":"Timing",
+    "text_open":"Ouvrir",
+    "action_back":"Retour",
+    "action_book_later":"Réservez plus tard",
+    "action_continue":"CONTINUER"
   }
 }

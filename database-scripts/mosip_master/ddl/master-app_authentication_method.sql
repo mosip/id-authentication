@@ -1,6 +1,6 @@
 -- create table section -------------------------------------------------
 -- schema 		: master	    			-- Master reference Module
--- table 		: app_authentication_method	-- List of application and their user authentication methods
+-- table 		: app_authentication_method	-- List of application, process, role and their user authentication methods with sequence
 -- table alias  : appauthm	
 
 -- schemas section -------------------------------------------------
@@ -13,13 +13,12 @@ create schema if not exists master
 create table master.app_authentication_method (
 	
 	app_id 			  	character varying (36) not null,  	-- master.app_detail.id
-	
+	process_id 			character varying (36) not null,    -- master.process_list.id -- login auth, packet auth, exception auth, eod auth, MV authentication..etc
+	role_code 			character varying (36) not null,  	-- master.role_list.code
 	auth_method_code 	character varying (36) not null,	-- master.authentication_method.code
-	process_name 		character varying (64) not null,    -- login aithentication, packet authentication, exception authentication, eod authentication, MV authentication..etc
+	method_seq 			smallint,
 	
-	method_seq 		smallint,
-	
-	lang_code 		character varying (3) not null,			-- master.language.code 
+	lang_code  		character varying(3) not null ,     	-- master.language.code
 	
 	is_active 		boolean not null,
 	cr_by 			character varying (32) not null,
@@ -33,15 +32,18 @@ create table master.app_authentication_method (
 ;
 
 -- keys section -------------------------------------------------
- alter table master.app_authentication_method add constraint pk_appauthm_id primary key (app_id, auth_method_code, process_name, lang_code)
+ alter table master.app_authentication_method add constraint pk_appauthm_id primary key (app_id, process_id, role_code, auth_method_code)
  ;
 
+ -- indexes section -------------------------------------------------
+create unique index uk_appauthm_id on master.app_authentication_method (app_id, process_id, role_code, method_seq) 
+;
 
 -- indexes section -------------------------------------------------
 -- create index idx_appauthm_<colX> on master.app_authentication_method (colX )
 -- ;
 
 -- comments section ------------------------------------------------- 
-comment on table master.app_authentication_method is 'Table to store all MOSIP Application, Application process and their user authentication methods'
+comment on table master.app_authentication_method is 'Table to store all List of application, process, role and their user authentication methods with sequence'
 ;
 

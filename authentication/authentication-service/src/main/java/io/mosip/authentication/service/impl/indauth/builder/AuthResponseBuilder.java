@@ -17,28 +17,26 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseInfo;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 /**
  * The builder class of AuthResponseDTO.
  *
- * @authour Loganathan Sekar
+ * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
 	
-	/** The Environment */
-	@Autowired
-	private Environment env;
-
+	/**  The date format to use*/
 	private SimpleDateFormat dateFormat;
 
-	/** The built. */
+	/** The built flag. */
 	private boolean built;
 
 	/** The Constant DEFAULT_USAGE_DATA_HEX_COUNT. */
 	private static final int DEFAULT_USAGE_DATA_HEX_COUNT = 16;
 	
-	/** The response DTO. */
+	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
 	
 	/** The auth status infos. */ 
@@ -46,7 +44,8 @@ public class AuthResponseBuilder {
 
 	/**
 	 * Instantiates a new auth response builder.
-	 * @param dateTimePattern 
+	 *
+	 * @param dateTimePattern the date time pattern
 	 */
 	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
@@ -155,6 +154,13 @@ public class AuthResponseBuilder {
 				.orElseGet(Stream::empty))
 				.collect(Collectors.toList());
 		responseDTO.getInfo().setMatchInfos(matchInfos);
+		
+		List<BioInfo> bioInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
+				.ofNullable(statusInfo.getBioInfos())
+				.map(List<BioInfo>::stream)
+				.orElseGet(Stream::empty))
+				.collect(Collectors.toList());
+		responseDTO.getInfo().setBioInfos(bioInfos);
 
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(DEFAULT_USAGE_DATA_HEX_COUNT);
 
@@ -179,6 +185,12 @@ public class AuthResponseBuilder {
 		}
 	}
 
+	/**
+	 * Get new instance of AuthResponseBuilder.
+	 *
+	 * @param dateTimePattern the date time pattern
+	 * @return the auth response builder
+	 */
 	public static AuthResponseBuilder newInstance(String dateTimePattern) {
 		return new AuthResponseBuilder(dateTimePattern);
 	}

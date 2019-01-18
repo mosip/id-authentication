@@ -45,6 +45,12 @@
     -fx-border-width : 1 1 0 1;
 }
 
+#titleDemographicPaneApplicationLanguage, #titleDemographicPaneLocalLanguage, #documentTitlePaneApplicationLanguage{
+	 -fx-font-size:20px;
+    -fx-font-weight:bold;
+   
+}
+
 #registrationAccordian.accordion >.titled-pane:collapsed > .title {	
  
  
@@ -69,7 +75,10 @@
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
-
+.biometricExceptionPane{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: white;
+}
 #anchor-pane-registration .text-field {		
 	-fx-background-color: white;
 	-fx-border-color: black;
@@ -347,7 +356,7 @@
 	-fx-pref-width: 483px;
 }
 
-#submit, #rejectionSubmit,#submitBtn{
+#submit, #rejectionSubmit,#submitBtn, #fetchBtn, #copyPrevious{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -411,7 +420,12 @@
 	-fx-pref-width: 500px;
 }
 
-.loginFieldStyle{
+.loginAnchorPaneStyle{
+	-fx-pref-height: 172px;
+	-fx-pref-width: 228px;
+}
+
+.loginTextStyle{
 	-fx-pref-height: 39px;
 	-fx-pref-width: 221px;
 }
@@ -419,26 +433,17 @@
 .loginSubmitStyle{
 	-fx-pref-height: 30px;
 	-fx-pref-width: 81px;
-}
-
-.loginOtpStyle{
-	-fx-pref-height: 30px;
-	-fx-pref-width: 89px;
-}
-
-.loginResendOtpStyle{
-	-fx-pref-height: 30px;
-	-fx-pref-width: 105px;
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
 
 .loginOtpValidStyle{
 	-fx-pref-height: 18px;
 	-fx-pref-width: 136px;
-}
-
-.loginfpStyle{
-	-fx-pref-height: 27px;
-	-fx-pref-width: 127px;
 }
 
 .headerStyle{
@@ -480,4 +485,43 @@
 	-fx-border-color: black;
 	-fx-background-insets: 0,0 0 1 0;
   	-fx-border-width: 0 0 1 0;	
+}
+.operatorAuthenticationStyle{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 269px;
+}
+.operatorAuthenticationAnchorPaneStyle{
+	-fx-pref-height: 550px; 
+	-fx-pref-width: 850px;
+}
+.operatorAuthenticationAnchorPane{
+	-fx-pref-height: 600px; 
+	-fx-pref-width: 850px;
+}
+#authenticateRootSubPane, .authenticationAnchorPaneStyle{
+	-fx-pref-height: 300px; 
+	-fx-pref-width: 480px;
+}
+.authenticationStyle{
+	-fx-pref-height: 39px; 
+	-fx-pref-width: 269px;
+}
+#authenticateRootPane{
+	-fx-pref-height: 54px; 
+	-fx-pref-width: 483px;
+}
+#fingerPrintScanRoot{
+	-fx-pref-height: 359px; 
+	-fx-pref-width: 477px;
+}
+.borderStyle{
+	-fx-border-color:black; 
+	-fx-border-width: 1.0; 
+	-fx-border-style: solid;
+}
+.removeBorderStyle{
+	-fx-border-color:white; 
+}
+.addBorderStyle{
+	-fx-border-color: black;
 }

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.ridgenerator.impl.RidGeneratorImpl
+io.mosip.kernel.idgenerator.rid.impl.RidGeneratorImpl

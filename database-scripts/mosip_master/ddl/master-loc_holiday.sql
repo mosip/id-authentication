@@ -36,6 +36,11 @@ create schema if not exists master
 -- keys section -------------------------------------------------------------------------------
 alter table master.loc_holiday add constraint pk_lochol_id primary key (location_code, holiday_date, holiday_name, lang_code)
  ;
+ 
+  -- indexes section -------------------------------------------------
+create unique index idx_lochol_id on master.loc_holiday (id, location_code)
+;
+
 
 -- comments section ---------------------------------------------------------------------------
 comment on table master.loc_holiday is 'Master loc_holiday table'

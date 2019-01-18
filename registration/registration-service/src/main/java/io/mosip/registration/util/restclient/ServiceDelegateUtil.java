@@ -1,7 +1,6 @@
 package io.mosip.registration.util.restclient;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
@@ -69,29 +68,45 @@ public class ServiceDelegateUtil {
 	 * @throws HttpServerErrorException
 	 *             when server exception from server
 	 */
-	public Object get(String serviceName, Map<String, String> requestParams)
+	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Get method has been called");
 
 		Object responseBody = null;
-		RequestHTTPDTO requestDto = null;
+		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		try {
-			requestDto = prepareGETRequest(serviceName, requestParams);
+			requestHTTPDTO = prepareGETRequest(requestHTTPDTO,serviceName, requestParams);
+			
+			// URI creation
+			String url = environment.getProperty(serviceName + "." + RegistrationConstants.SERVICE_URL);
+			
+			if(hasPathParams) {
+				requestHTTPDTO.setUri(UriComponentsBuilder.fromUriString(url).build(requestParams));
+			} else {
+				/** Set URI */
+				setURI(requestHTTPDTO,requestParams, url);
+			}
+			
+			LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+					"set uri method called");
 
 		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage());
 		}
 
-		responseBody = restClientUtil.invoke(requestDto);
+		responseBody = restClientUtil.invoke(requestHTTPDTO);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Get method has been ended");
 
 		return responseBody;
 
 	}
+	
+	
+
 
 	/**
 	 * prepare POST request
@@ -139,26 +154,13 @@ public class ServiceDelegateUtil {
 	 * @throws RegBaseCheckedException
 	 * 
 	 */
-	private RequestHTTPDTO prepareGETRequest(final String serviceName, final Map<String, String> requestParams)
+	private RequestHTTPDTO prepareGETRequest(RequestHTTPDTO requestHTTPDTO,final String serviceName, final Map<String, String> requestParams)
 			throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare Get request method called");
 
-		// DTO need to to be prepared
-		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
-
-		if (requestParams.containsKey(RegistrationConstants.IS_PRE_REG_SYNC)) {
-			requestHTTPDTO.setPregRegSync(true);
-			requestParams.remove(RegistrationConstants.IS_PRE_REG_SYNC);
-		}
 		// prepare httpDTO except rquest type and uri build
 		requestHTTPDTO = prepareRequest(requestHTTPDTO, serviceName, null);
-
-		// URI creation
-		String url = environment.getProperty(serviceName + "." + RegistrationConstants.SERVICE_URL);
-		URI uri = getUri(requestParams, url);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
-				"get uri method called");
 
 		// ResponseType
 		String responseClassName = environment.getProperty(serviceName + "." + RegistrationConstants.RESPONSE_TYPE);
@@ -171,7 +173,6 @@ public class ServiceDelegateUtil {
 		}
 
 		requestHTTPDTO.setClazz(responseClass);
-		requestHTTPDTO.setUri(uri);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare Get request method ended");
 
@@ -199,14 +200,13 @@ public class ServiceDelegateUtil {
 
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegistrationConstants.SERVICE_URL);
-		URI uri = getUri(null, url);
+		setURI(requestHTTPDTO,null, url);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"get uri method called");
 
 		// RequestType
 		String requestClassName = environment.getProperty(serviceName + "." + RegistrationConstants.REQUEST_TYPE);
 		Class<?> requestClass = null;
-		requestHTTPDTO.setUri(uri);
 		requestHTTPDTO.setClazz(Object.class);
 		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare post request method ended");
@@ -215,18 +215,12 @@ public class ServiceDelegateUtil {
 
 	}
 
-	/**
-	 * URI creation
-	 * 
-	 * @param requestParams
-	 *            params need to add along with url
-	 * @param url
-	 *            url to be invoked
-	 * @return URI uri created by url
-	 */
-	public URI getUri(Map<String, String> requestParams, String url) {
+	
+	private void setURI(RequestHTTPDTO requestHTTPDTO , Map<String, String> requestParams, String url) {
 		// BuildURIComponent
-		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
+		UriComponentsBuilder uriComponentsBuilder= UriComponentsBuilder.fromUriString(url);
+		
+		  
 		if (requestParams != null) {
 			Set<String> set = requestParams.keySet();
 			for (String queryParamName : set) {
@@ -235,7 +229,9 @@ public class ServiceDelegateUtil {
 			}
 		}
 		URI uri = uriComponentsBuilder.build().toUri();
-		return uri;
+		  
+		requestHTTPDTO.setUri(uri);
+		
 	}
 
 	/**

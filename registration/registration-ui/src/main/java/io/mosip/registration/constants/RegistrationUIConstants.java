@@ -16,7 +16,8 @@ public class RegistrationUIConstants {
 	public static final String CREDENTIALS_FIELD_EMPTY = bundle.getString("CREDENTIALS_FIELD_EMPTY");
 	public static final String USERNAME_FIELD_EMPTY = bundle.getString("USERNAME_FIELD_EMPTY");
 	public static final String PWORD_FIELD_EMPTY = bundle.getString("PWORD_FIELD_EMPTY");
-	public static final String USRNAME_PWORD_LENGTH = bundle.getString("USRNAME_PWORD_LENGTH");
+	public static final String USRNAME_LENGTH = bundle.getString("USRNAME_LENGTH");
+	public static final String PWORD_LENGTH = bundle.getString("PWORD_LENGTH");
 	public static final String USER_NOT_ONBOARDED = bundle.getString("USER_NOT_ONBOARDED");
 	public static final String USER_NOT_AUTHORIZED = bundle.getString("USER_NOT_AUTHORIZED");
 	public static final String INCORRECT_PWORD = bundle.getString("INCORRECT_PWORD");
@@ -28,6 +29,9 @@ public class RegistrationUIConstants {
 	public static final String OTP_VALIDATION_SUCCESS_MESSAGE = bundle.getString("OTP_VALIDATION_SUCCESS_MESSAGE");
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = bundle.getString("OTP_VALIDATION_ERROR_MESSAGE");
 	public static final String FINGER_PRINT_MATCH = bundle.getString("FINGER_PRINT_MATCH");
+	public static final String IRIS_MATCH = bundle.getString("IRIS_MATCH");
+	public static final String FACE_MATCH = bundle.getString("FACE_MATCH");
+	public static final String FINGERPRINT = bundle.getString("FINGERPRINT");
 
 	// AUTHORIZATION
 	public static final String ROLES_EMPTY_ERROR = bundle.getString("ROLES_EMPTY_ERROR");
@@ -40,6 +44,7 @@ public class RegistrationUIConstants {
 	public static final String FP_DEVICE_ERROR = bundle.getString("FP_DEVICE_ERROR");
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
+	public static final String FACE_CAPTURE_ERROR = bundle.getString("FACE_CAPTURE_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
 	// LOCK ACCOUNT
@@ -56,6 +61,9 @@ public class RegistrationUIConstants {
 	// SUCCESS
 	public static final String PACKET_CREATED_SUCCESS = bundle.getString("PACKET_CREATED_SUCCESS");
 	public static final String REREGISTRATION_APPROVE_SUCCESS = bundle.getString("REREGISTRATION_APPROVE_SUCCESS");
+	public static final String REREGISTER_TITLEPANE=bundle.getString("REREGISTER_TITLEPANE");
+	public static final String PENDING_APPROVAL=bundle.getString("PENDING_APPROVAL");
+
 
 	// DEVICE MAPPING
 
@@ -151,7 +159,16 @@ public class RegistrationUIConstants {
 			.getString("UNABLE_LOAD_FINGERPRINT_SCAN_POPUP");
 	public static final String IRIS_SCAN_RETRIES_EXCEEDED = bundle.getString("IRIS_SCAN_RETRIES_EXCEEDED");
 	public static final String IRIS_QUALITY_SCORE_ERROR = bundle.getString("IRIS_QUALITY_SCORE_ERROR");
-	
-	//UIN update
+	public static final String IRIS_SCAN = bundle.getString("IRIS_SCAN");
+
+	// UIN update
+	public static final String UPDATE_UIN_ENTER_UIN_ALERT = bundle.getString("UPDATE_UIN_ENTER_UIN_ALERT");
 	public static final String UPDATE_UIN_VALIDATION_ALERT = bundle.getString("UPDATE_UIN_VALIDATION_ALERT");
+	public static final String UPDATE_UIN_SELECTION_ALERT = bundle.getString("UPDATE_UIN_SELECTION_ALERT");
+	
+	// Biometric Exception
+	public static final String BIOMETRIC_EXCEPTION_ALERT = bundle.getString("BIOMETRIC_EXCEPTION_ALERT");
+
+	// User Onboard
+	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -49,6 +50,7 @@ import io.mosip.demo.authentication.service.dto.EncryptionRequestDto;
 import io.mosip.demo.authentication.service.dto.EncryptionResponseDto;
 import io.mosip.demo.authentication.service.dto.EncryptedRequest;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.swagger.annotations.ApiOperation;
@@ -137,9 +139,10 @@ public class Encrypt {
 		restTemplate.setErrorHandler(new TestErrorHandler());
 		CryptomanagerRequestDto request = new CryptomanagerRequestDto();
 		request.setApplicationId(appID);
-		request.setData(Base64.encodeBase64URLSafeString(data.getBytes()));
+		request.setData(Base64.encodeBase64URLSafeString(data.getBytes(StandardCharsets.UTF_8)));
 		request.setReferenceId(tspID);
-		request.setTimeStamp(LocalDateTime.now().toString());
+		String utcTime = DateUtils.getUTCCurrentDateTimeString();
+		request.setTimeStamp(utcTime);
 
 		ResponseEntity<CryptomanagerResponseDto> response = restTemplate.exchange(encryptURL, HttpMethod.POST,
 				getHeaders(request), CryptomanagerResponseDto.class);

@@ -40,10 +40,6 @@ public class OTPRequestValidator extends IdAuthValidator {
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
 
-	/** The env. */
-	@Autowired
-	private Environment env;
-
 	@Autowired
 	private DateHelper dateHelper;
 
@@ -71,6 +67,8 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 			validateReqTime(otpRequestDto.getReqTime(), errors);
 
+			validateTxnId(otpRequestDto.getTxnID(), errors);
+
 			if (!errors.hasErrors()) {
 				validateRequestTimedOut(otpRequestDto.getReqTime(), errors);
 			}
@@ -82,9 +80,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 				validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 
-				validateMuaCode(otpRequestDto.getMuaCode(), errors);
-
-				validateTxnId(otpRequestDto.getTxnID(), errors);
+				validateTspId(otpRequestDto.getTspID(), errors);
 			}
 		}
 

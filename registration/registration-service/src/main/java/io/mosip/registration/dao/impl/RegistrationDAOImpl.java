@@ -219,7 +219,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Registration reg = registrationRepository.getOne(packet.getId());
-		reg.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+		reg.setClientStatusCode(packet.getClientStatusCode());
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
@@ -252,4 +252,18 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByClientStatusCodeAndServerStatusCode(status[0], status[1]);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegistrationDAO#getRegistrationsToBeDeleted(java.sql.Timestamp, java.lang.String)
+	 */
+	@Override
+	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes, String clientStatus) {
+		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Retriving Registrations based on crDtime and status");
+
+		return registrationRepository.findByCrDtimeBeforeAndClientStatusCodeNot(crDtimes, clientStatus);
+
+	}
+
+	
 }

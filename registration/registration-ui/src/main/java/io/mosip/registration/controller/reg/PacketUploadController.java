@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -99,7 +100,7 @@ public class PacketUploadController extends BaseController {
 				}
 			});
 		} catch (RegBaseCheckedException checkedException) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, checkedException.getErrorText());
+			generateAlert(RegistrationConstants.ERROR, checkedException.getErrorText());
 		}
 
 	}
@@ -135,6 +136,19 @@ public class PacketUploadController extends BaseController {
 				response = packetSynchService.syncPacketsToServer(syncDtoList);
 			}
 			if (response != null) {
+				packetsToBeSynched.forEach(registration -> {
+					if (registration.getServerStatusCode().equals(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
+						String ackFileName = registration.getAckFilename();
+						int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+						String packetPath = ackFileName.substring(0, lastIndex);
+						File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+						if(packet.exists() && packet.delete()) {
+							registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
+						}
+					} else {
+						registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+					}
+				});
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
 		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {

@@ -61,22 +61,25 @@ public class PreRegZipHandlingServiceTest {
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
 		createRegistrationDTOObject();
-		URL url = PreRegZipHandlingServiceTest.class.getResource("/70694681371453.zip");
+		URL url = PreRegZipHandlingServiceTest.class.getResource("/97285429827016.zip");
 		File packetZipFile = new File(url.getFile());
-		preRegPacket=FileUtils.readFileToByteArray(packetZipFile);
-//		URL url = PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
-//		File packetZipFile = new File(url.getFile());
-//		BufferedReader bufferedReader = new BufferedReader(new FileReader(packetZipFile));
-//		String byteArrayContent = bufferedReader.readLine();
-//
-//		String[] byteValues = byteArrayContent.substring(1, byteArrayContent.length() - 1).split(",");
-//		preRegPacket = new byte[byteValues.length];
-//
-//		for (int i = 0, len = preRegPacket.length; i < len; i++) {
-//			preRegPacket[i] = Byte.parseByte(byteValues[i].trim());
-//		}
-//		bufferedReader.close();
-		
+		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
+		// URL url =
+		// PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
+		// File packetZipFile = new File(url.getFile());
+		// BufferedReader bufferedReader = new BufferedReader(new
+		// FileReader(packetZipFile));
+		// String byteArrayContent = bufferedReader.readLine();
+		//
+		// String[] byteValues = byteArrayContent.substring(1, byteArrayContent.length()
+		// - 1).split(",");
+		// preRegPacket = new byte[byteValues.length];
+		//
+		// for (int i = 0, len = preRegPacket.length; i < len; i++) {
+		// preRegPacket[i] = Byte.parseByte(byteValues[i].trim());
+		// }
+		// bufferedReader.close();
+
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
 
 	}
@@ -116,18 +119,25 @@ public class PreRegZipHandlingServiceTest {
 				encryptPacket().getEncryptedPacket());
 		assertNotNull(decrypted);
 	}
-//
-//	@Test(expected = RegBaseCheckedException.class)
-//	public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException {
-//		byte[] packetValue = "sampleTestForNegativeCase".getBytes();
-//		preRegZipHandlingServiceImpl.extractPreRegZipFile(packetValue);
-//
-//	}
+	//
+	// @Test(expected = RegBaseCheckedException.class)
+	// public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException
+	// {
+	// byte[] packetValue = "sampleTestForNegativeCase".getBytes();
+	// preRegZipHandlingServiceImpl.extractPreRegZipFile(packetValue);
+	//
+	// }
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void encryptAndSavePreRegPacketTestNegative() throws RegBaseCheckedException {
 		mockSecretKey();
 		preRegZipHandlingServiceImpl.encryptAndSavePreRegPacket("89149679063970", preRegPacket);
+	}
+
+	@Test(expected = RegBaseUncheckedException.class)
+	public void extractPreRegZipFileNegative() throws RegBaseCheckedException {
+		mockSecretKey();
+		preRegZipHandlingServiceImpl.extractPreRegZipFile(null);
 	}
 
 	private void mockSecretKey() {
@@ -175,9 +185,8 @@ public class PreRegZipHandlingServiceTest {
 
 	private static BiometricInfoDTO createBiometricInfoDTO() {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFingerPrintBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
-		biometricInfoDTO.setIrisBiometricExceptionDTO(new ArrayList<>());
 		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
 		return biometricInfoDTO;
 	}

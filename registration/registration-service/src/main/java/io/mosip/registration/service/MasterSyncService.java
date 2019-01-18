@@ -3,6 +3,9 @@ package io.mosip.registration.service;
 import java.util.List;
 
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 
@@ -47,5 +50,31 @@ public interface MasterSyncService {
 	 * @return the all reasons
 	 */
 	List<MasterReasonListDto> getAllReasonsList(String langCode);
+	
+	/**
+	 * Gets the all black listed words.
+	 *
+	 * @param langCode the lang code
+	 * @return the all black listed words
+	 */
+	List<BlacklistedWordsDto> getAllBlackListedWords(String langCode);
+	
+	/**
+	 * Gets all the document categories.
+	 *
+	 * @param langCode the lang code
+	 * @return all the document categories
+	 */
+	List<DocumentCategoryDto> getDocumentCategories(String langCode);
+	
+	/**
+	 * Gets the gender dtls.
+	 *
+	 * @param langCode the lang code
+	 * @return the gender dtls
+	 */
+	List<GenderDto> getGenderDtls(String langCode);
+	
+	
 
 }

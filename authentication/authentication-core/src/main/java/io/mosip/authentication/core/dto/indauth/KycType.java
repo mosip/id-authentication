@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 /**
  * 
  * @author Prem Kumar
+ * 
+ * The enum for KycType
  *
  */
 public enum KycType {
@@ -21,10 +23,15 @@ public enum KycType {
 	/** For Full Kyc */
 	FULL("full");
 	
+	/** The Type of Kyc*/
 	private String type;
-	
+	/** Final Constant for default_KYC_Type*/
 	private static final KycType DEFAULT_KYC_TYPE = FULL;
-	
+	/**
+	 * Constructor for KycType
+	 * 
+	 * @param type
+	 */
 	private KycType(String type)
 	{
 		this.type=type;

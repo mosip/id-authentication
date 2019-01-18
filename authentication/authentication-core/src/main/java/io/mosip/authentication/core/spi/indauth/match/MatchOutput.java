@@ -8,13 +8,10 @@ import lombok.Data;
 
 
 /**
+ * The Class MatchOutput.
+ *
  * @author Arun Bose
  * Instantiates a new match output.
- *
- * @param matchValue the match value
- * @param matched the matched
- * @param matchStrategyType the match strategy type
- * @param demoMatchType the demo match type
  */
 @Data
 @AllArgsConstructor

@@ -47,7 +47,7 @@ public class SyncTransaction  {
 	@Column(name = "lang_code")
 	private String langCode;
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 	
@@ -169,10 +169,10 @@ public class SyncTransaction  {
 		this.langCode = langCode;
 	}
 	
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 	public Timestamp getDeletedDateTime() {

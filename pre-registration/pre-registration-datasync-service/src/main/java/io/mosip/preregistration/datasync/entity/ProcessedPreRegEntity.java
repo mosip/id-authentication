@@ -23,9 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProcessedPreRegEntity implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -239434336226779852L;
 
 	/**

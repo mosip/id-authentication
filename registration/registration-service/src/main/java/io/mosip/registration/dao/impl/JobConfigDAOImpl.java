@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,9 @@ public class JobConfigDAOImpl implements SyncJobConfigDAO {
 	 */
 	@Override
 	public List<SyncJobDef> getAll() {
+		LOGGER.debug("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
+				APPLICATION_ID, "Get all Sync Jobs");
+
 		return jobConfigRepository.findAll();
 	}
 
@@ -41,6 +47,8 @@ public class JobConfigDAOImpl implements SyncJobConfigDAO {
 	 */
 	@Override
 	public List<SyncJobDef> getActiveJobs() {
+		LOGGER.debug("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
+				APPLICATION_ID, "Get all active Sync Jobs");
 		return jobConfigRepository.findByIsActiveTrue();
 	}
 

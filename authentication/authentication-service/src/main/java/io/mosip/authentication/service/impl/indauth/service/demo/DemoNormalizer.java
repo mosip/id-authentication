@@ -65,8 +65,6 @@ public final class DemoNormalizer {
 						.replaceAll("9[tT][hH]", "9")
 						.replaceAll("0[tT][hH]", "0")
 						.trim();
-		// i will see later
-		//StringUtils.replaceEach(text, searchList, replacementList)
 		
 		return address;
 	}

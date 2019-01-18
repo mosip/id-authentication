@@ -1,0 +1,1 @@
+لديك مصادقة UIN $uin باستخدام $authType على $date في $time Hs $status في جهاز تم نشره بواسطة "خدمات MOSIP".

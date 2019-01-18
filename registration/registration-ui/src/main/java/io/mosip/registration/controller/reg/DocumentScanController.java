@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -25,6 +27,8 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -56,6 +60,9 @@ public class DocumentScanController extends BaseController {
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanController.class);
 	private boolean isChild;
 
+	@Autowired 
+	MasterSyncService masterSync;
+	
 	@FXML
 	private ComboBox<String> poaDocuments;
 
@@ -100,12 +107,12 @@ public class DocumentScanController extends BaseController {
 	protected AnchorPane documentScan;
 
 	List<BufferedImage> scannedPages;
+	
+	private List<DocumentCategoryDto> documents;
+
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
-
-	@Value("${SCROLL_CHECK}")
-	public int scrollCheck;
 	
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;
@@ -128,7 +135,7 @@ public class DocumentScanController extends BaseController {
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 		}
 	}
 
@@ -188,19 +195,19 @@ public class DocumentScanController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorMessage);
+			generateAlert(RegistrationConstants.ERROR, errorMessage);
 			documents.requestFocus();
 		} else if (!vboxElement.getChildren().isEmpty()) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "One Document can be added to the Category");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
 				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
@@ -245,13 +252,13 @@ public class DocumentScanController extends BaseController {
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, ioException.getMessage(),
 							ioException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while scanning documents for registration  %s",
 							RegistrationConstants.USER_REG_DOC_SCAN_UPLOAD_EXP, runtimeException.getMessage()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 		}
 
 	}
@@ -263,7 +270,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 		if (byteArray.length > documentSize) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
 				
@@ -295,7 +302,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setDateOfBirthProof(documentDetailsDTO);
+							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
 					break;
@@ -312,7 +319,7 @@ public class DocumentScanController extends BaseController {
 
 	private void scanFromScanner() throws IOException {
 		if (!documentScanFacade.isConnected()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONNECTION_ERR);
 			return;
 		}
 
@@ -321,7 +328,7 @@ public class DocumentScanController extends BaseController {
 		BufferedImage bufferedImage = documentScanFacade.getScannedDocumentFromScanner();
 
 		if (bufferedImage == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 			return;
 		}
 		if (scannedPages == null) {
@@ -343,7 +350,7 @@ public class DocumentScanController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 		if (scannedPages == null || scannedPages.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
 			return;
 		}
 		byte[] byteArray;
@@ -353,11 +360,11 @@ public class DocumentScanController extends BaseController {
 			byteArray = documentScanFacade.asPDF(scannedPages);
 		}
 		if (byteArray == null) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_CONVERTION_ERR);
 			return;
 		}
 		if (byteArray.length > documentSize) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
@@ -386,7 +393,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setDateOfBirthProof(documentDetailsDTO);
+							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
 					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
 					break;
@@ -412,7 +419,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		documentDetailsDTO.setDocument(byteArray);
-		documentDetailsDTO.setCategory(document);
+		documentDetailsDTO.setType(document);
 		documentDetailsDTO.setFormat(scannerDocType);
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
 
@@ -502,7 +509,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case "dobBox":
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-							.setDateOfBirthProof(null);
+							.setProofOfDateOfBirth(null);
 					break;
 				default:
 				}
@@ -556,7 +563,7 @@ public class DocumentScanController extends BaseController {
 					break;
 				case "dobBox":
 					selectedDocumentToDisplay = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
-							.getIdentity().getDateOfBirthProof();
+							.getIdentity().getProofOfDateOfBirth();
 					break;
 				default:
 				}
@@ -589,8 +596,8 @@ public class DocumentScanController extends BaseController {
 			if (identity.getProofOfRelationship() != null) {
 				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
 			}
-			if (identity.getDateOfBirthProof() != null) {
-				addDocumentsToScreen(identity.getDateOfBirthProof().getValue(), dobBox);
+			if (identity.getProofOfDateOfBirth() != null) {
+				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(), dobBox);
 			}
 
 		}
@@ -606,11 +613,15 @@ public class DocumentScanController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-
-			poaDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
-			poiDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
-			porDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
-			dobDocuments.getItems().addAll(RegistrationConstants.DOCUMENT_LIST);
+			documents  = masterSync.getDocumentCategories(MappedCodeForLanguage
+					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+					.getMappedCode());
+			List<String> documentNames  = documents.stream().map(doc->doc.getName()).collect(Collectors.toList());
+			
+			poaDocuments.getItems().addAll(documentNames);
+			poiDocuments.getItems().addAll(documentNames);
+			porDocuments.getItems().addAll(documentNames);
+			dobDocuments.getItems().addAll(documentNames);
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
@@ -640,8 +651,8 @@ public class DocumentScanController extends BaseController {
 			if (identity.getProofOfRelationship() != null) {
 				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
 			}
-			if (identity.getDateOfBirthProof() != null) {
-				addDocumentsToScreen(identity.getDateOfBirthProof().getValue(), dobBox);
+			if (identity.getProofOfDateOfBirth() != null) {
+				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(), dobBox);
 			}
 		}
 		poaDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poa"));

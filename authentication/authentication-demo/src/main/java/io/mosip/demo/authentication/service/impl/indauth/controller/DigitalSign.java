@@ -50,7 +50,7 @@ public class DigitalSign {
 		cert = cert.replaceAll("\\s", "");
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(cert)));
-		List<X509Certificate> certList = new ArrayList<>();
+		List<X509Certificate> certList = new ArrayList<X509Certificate>();
 		certList.add(certificate);
 		X509Certificate[] certArray = certList.toArray(new X509Certificate[]{});
 		JsonWebSignature jws = new JsonWebSignature();

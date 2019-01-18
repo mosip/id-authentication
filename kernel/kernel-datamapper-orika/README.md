@@ -41,60 +41,77 @@ Input Parameters:-
  
 ** Usage1: **
  
-###### public <S, D> D map(S source, Class<D> destinationClass, boolean mapNull, List<IncludeDataField> includeDataField, List<String> excludeDataField, boolean applyDefault);
+
 
 Example1:-
 
 ```
-		@Autowired
-		DataMapper dataMapperImpl;
+   @Bean(name="applicationtoToApplicationDtoDefaultMapper")
+	public DataMapper<Application, ApplicationDto> applicationtoToApplicationDtoMapper(){
+		return new DataMapperBuilderImpl<>(Application.class, ApplicationDto.class).build();
+	}
+	
+	@Qualifier("applicationtoToApplicationDtoDefaultMapper")
+	@Autowired
+	private DataMapper<Application,ApplicationDto> applicationtoToApplicationDtoDefaultMapper;
 		
-		SourceModel sourceObject = new SourceModel("Mosip", 10);
-		DestinationModel destinationObject = dataMapperImpl.map(sourceObject, DestinationModel.class, true, null, null, true);
+		
+		
+	Application application = new Application("AP001","eng","applicationName","Description");
+	ApplicationDTO applicationDTO = applicationtoToApplicationDtoDefaultMapper.map(application);
 ```
 
 Example2:-
 
 ```
-		@Autowired
-		DataMapper dataMapperImpl;
+   @Bean(name="applicationtoToApplicationDtoMapper")
+	public DataMapper<Application, ApplicationDto> applicationtoToApplicationDtoMapper(){
+		return new DataMapperBuilderImpl<>(Application.class, ApplicationDto.class).mapNulls(true).byDefault(true).build();
+	}
+	
+	@Qualifier("applicationtoToApplicationDtoMapper")
+	@Autowired
+	private DataMapper<Application,ApplicationDto> applicationtoToApplicationDtoMapper;
 		
 		
-		List<String> excludeField = Arrays.asList("nom");
-		List<IncludeDataField> includeField = Arrays.asList(new IncludeDataField("surnom", "nickName", true));
-		Personne french = new Personne("Claire", "cla", 2);
-		Person2 english = dataMapperImpl.map(french, Person2.class, true, includeField, excludeField, true);
+	Application application = new Application("AP001","eng","applicationName","Description");
+	ApplicationDTO applicationDTO = applicationtoToApplicationDtoMapper.map(application);
 ```
 
 ** Usage2: **
-
-###### public <S, D> void map(S source, D destination, boolean mapNull, List<IncludeDataField> includeDataField, List<String> excludeDataField, boolean applyDefault);
  
 Example:-
  
  ```
-		@Autowired
-		DataMapper dataMapperImpl;
+	@Bean(name="applicationtoToApplicationDtoDefaultMapper")
+	public DataMapper<Application, ApplicationDto> applicationtoToApplicationDtoMapper(){
+		return new DataMapperBuilderImpl<>(Application.class, ApplicationDto.class).build();
+	}
+	
+	@Qualifier("applicationtoToApplicationDtoDefaultMapper")
+	@Autowired
+	private DataMapper<Application,ApplicationDto> applicationtoToApplicationDtoDefaultMapper;
 		
-		SourceModel src = new SourceModel(null, 10);
-		DestinationModel dest = new DestinationModel("Neha", 25);
-		dataMapperImpl.map(src, dest, true, null, null, true);
+		
+		
+	Application application = new Application("AP001","eng","applicationName","Description");
+	ApplicationDto applicationDTO= new ApplicationDto();
+	applicationtoToApplicationDtoDefaultMapper.map(application,applicationDTO);
  ```
 
 
 ** Usage3: **
 
-###### public <S, D> void map(S source, D destination, DataConverter<S, D> dataConverter);
 
 Example for creating customize converter:-
 
 ```
-		public class PersonListConverter implements DataConverter<List<Person>, List<Personne>> {
+		public class PersonListConverter implements DataConverter<List<Person>, List<PersonDto>> {
 
 		@Override
-		public void convert(List<Person> source, List<Personne> destination) {
+		public void convert(List<Person> source, List<PersonDto> destination) {
 		source.forEach((p) -> {
-			Personne personne = new Personne();
+			PersonDto personne = new PersonDto();
 			LocalDate date=p.getDob();
 			LocalDate now= LocalDate.now();
 			Period period = Period.between(date, now);
@@ -107,16 +124,24 @@ Example for creating customize converter:-
 ```
 
 ```
-		@Autowired
-		DataMapper dataMapperImpl;
+		@Bean(name="persontoToPersonDtoMapper")
+	public DataMapper<Person, PersonDto> persontoToPersonDtoMapper(){
+		return new DataMapperBuilderImpl<>(Person.class, PersonDto.class).build();
+	}
+	
+	@Qualifier("persontoToPersonDtoMapper")
+	@Autowired
+	private DataMapper<Person,PersonDto> persontoToPersonDtoMapper;
+		
+	
 		
 		
-		PersonListConverter personListConverter = new PersonListConverter();
-		Person person = new Person();
-		LocalDate dob = LocalDate.of(1994, Month.JANUARY, 1);
-		person.setDob(dob);
-		List<Person> personList = new ArrayList<>();
-		personList.add(person);
-		List<Personne> personneList = new ArrayList<Personne>();
-		dataMapperImpl.map(personList, personneList, personListConverter);
+	PersonListConverter personListConverter = new PersonListConverter();
+	Person person = new Person();
+	LocalDate dob = LocalDate.of(1994, Month.JANUARY, 1);
+	person.setDob(dob);
+	List<Person> personList = new ArrayList<>();
+	personList.add(person);
+	List<Personne> personneList = new ArrayList<Personne>();
+	persontoToPersonDtoMapper.map(personList, personneList, personListConverter);
 ```

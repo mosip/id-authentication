@@ -8,7 +8,7 @@ import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
 import io.mosip.registration.entity.RegistrationCenter;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -51,7 +51,7 @@ public interface MachineMappingDAO {
 	 * @return List of Users
 	 * @throws RegBaseCheckedException
 	 */
-	List<RegistrationUserDetail> getUsers(String ceneterID) throws RegBaseCheckedException;
+	List<UserDetail> getUsers(String ceneterID) throws RegBaseCheckedException;
 
 	/**
 	 * save user to UserMachineMapping

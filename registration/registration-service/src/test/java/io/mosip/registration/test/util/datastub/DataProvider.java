@@ -2,6 +2,7 @@ package io.mosip.registration.test.util.datastub;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -21,12 +22,10 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
-import io.mosip.registration.dto.demographic.ArrayPropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.dto.demographic.SimplePropertiesDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.kernal.RIDGenerator;
@@ -82,11 +81,16 @@ public class DataProvider {
 
 	private static BiometricInfoDTO buildBioMerticDTO(String persontype) throws RegBaseCheckedException {
 		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
+
 		if (persontype.equalsIgnoreCase(DataProvider.APPLICANT)) {
-			biometricInfoDTO.setFingerPrintBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
+			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
+			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
-			biometricInfoDTO.setIrisBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
+			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionIrisDetailsDTO());
+		} else if (persontype.equalsIgnoreCase("officer")) {
+			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
+		} else {
+			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
 		}
 		return biometricInfoDTO;
 	}
@@ -96,12 +100,35 @@ public class DataProvider {
 		List<FingerprintDetailsDTO> fingerList = new ArrayList<>();
 
 		if (personType.equals(DataProvider.APPLICANT)) {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "BothThumbs.jpg", 85.0, false,
-					"thumbs", 0));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm.jpg", 80.0, false,
-					"leftSlap", 3));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm.jpg", 95.0, false,
-					"rightSlap", 2));
+			FingerprintDetailsDTO fingerprint = DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"BothThumbs.jpg", 85.0, false, "thumbs", 0);
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightThumb.jpg", 80.0, false, "rightThumb", 2));
+			fingerList.add(fingerprint);
+
+			fingerprint = DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm.jpg", 80.0, false,
+					"leftSlap", 3);
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftIndex.jpg", 80.0, false, "leftIndex", 3));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftMiddle.jpg", 80.0, false, "leftMiddle", 1));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftRing.jpg", 80.0, false, "leftRing", 2));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"leftLittle.jpg", 80.0, false, "leftLittle", 0));
+			fingerList.add(fingerprint);
+
+			fingerprint = DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm.jpg", 95.0, false,
+					"rightSlap", 2);
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightIndex.jpg", 80.0, false, "rightIndex", 3));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightMiddle.jpg", 80.0, false, "rightMiddle", 1));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightRing.jpg", 80.0, false, "rightRing", 2));
+			fingerprint.getSegmentedFingerprints().add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG,
+					"rightLittle.jpg", 80.0, false, "rightLittle", 0));
+			fingerList.add(fingerprint);
 		} else {
 			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType + "LeftThumb.jpg", 0, false,
 					"leftThumb", 0));
@@ -120,6 +147,7 @@ public class DataProvider {
 		fingerprintDetailsDTO.setForceCaptured(isForceCaptured);
 		fingerprintDetailsDTO.setFingerType(fingerType);
 		fingerprintDetailsDTO.setNumRetry(numRetry);
+		fingerprintDetailsDTO.setSegmentedFingerprints(new ArrayList<>());
 		return fingerprintDetailsDTO;
 	}
 
@@ -127,8 +155,6 @@ public class DataProvider {
 		List<BiometricExceptionDTO> fingerExcepList = new ArrayList<>();
 
 		fingerExcepList.add(DataProvider.buildBiometricExceptionDTO("fingerprint", "LeftThumb", "Due to accident",
-				DataProvider.PERMANANENT));
-		fingerExcepList.add(DataProvider.buildBiometricExceptionDTO("fingerprint", "LeftForefinger", "Due to accident",
 				DataProvider.PERMANANENT));
 		return fingerExcepList;
 	}
@@ -182,140 +208,96 @@ public class DataProvider {
 	private static DemographicInfoDTO getDemoInLocalLang() {
 		String platformLanguageCode = "en";
 		String localLanguageCode = "ar";
-		
+
 		DemographicInfoDTO demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
-				.with(demographicDTO -> demographicDTO.setIdentity(Builder.build(Identity.class)
-						.with(identity -> identity.setFullName((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(name -> name.setLabel("First Name"))
-								.with(name -> name.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("John Lawernce Jr")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("John Lawernce Jr"))
-												.get()))
-										.get()))
+				.with(demographicInfo -> demographicInfo.setIdentity((Identity)Builder.build(Identity.class)
+						.with(identity -> identity.setFullName((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("John Lawernce Jr")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("John Lawernce Jr")).get()))
 								.get()))
-						.with(identity -> identity
-								.setDateOfBirth(
-										Builder.build(SimplePropertiesDTO.class)
-												.with(value -> value.setLabel("Date Of Birth")).with(
-														value -> value
-																.setValue("2018/01/01"))
-												.get()))
-						.with(identity -> identity.setAge("1"))
-						.with(identity -> identity.setGender((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(genderValue -> genderValue.setLabel("Gender"))
-								.with(genderValue -> genderValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Male")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Male")).get()))
-										.get()))
+						.with(identity -> identity.setDateOfBirth("2018/01/01")).with(identity -> identity.setAge(1))
+						.with(identity -> identity.setGender((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Male")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Male")).get()))
 								.get()))
-						.with(identity -> identity.setAddressLine1((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(addressValue -> addressValue.setLabel("Address Line 1"))
-								.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Address Line 1")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Address Line 1"))
-												.get()))
-										.get()))
+						.with(identity -> identity.setAddressLine1((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Address Line1")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Address Line1")).get()))
 								.get()))
-						.with(identity -> identity.setAddressLine2((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(addressValue -> addressValue.setLabel("Address Line 2"))
-								.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Address Line 2")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Address Line 2"))
-												.get()))
-										.get()))
+						.with(identity -> identity.setAddressLine2((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Address Line2")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Address Line2")).get()))
 								.get()))
-						.with(identity -> identity.setAddressLine3((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(addressValue -> addressValue.setLabel("Address Line 3"))
-								.with(addressValue -> addressValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Address Line 3")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Address Line 3"))
-												.get()))
-										.get()))
+						.with(identity -> identity.setAddressLine3((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Address Line3")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Address Line3")).get()))
 								.get()))
-						.with(identity -> identity.setRegion((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(regionValue -> regionValue.setLabel("Region"))
-								.with(regionValue -> regionValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Region")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Region")).get()))
-										.get()))
+						.with(identity -> identity.setRegion((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Region")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Region")).get()))
 								.get()))
-						.with(identity -> identity.setProvince((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(provinceValue -> provinceValue.setLabel("Province"))
-								.with(provinceValue -> provinceValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Province")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Province")).get()))
-										.get()))
+						.with(identity -> identity.setProvince((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Province")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Province")).get()))
 								.get()))
-						.with(identity -> identity.setCity((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(cityValue -> cityValue.setLabel("City"))
-								.with(cityValue -> cityValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("City")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("City")).get()))
-										.get()))
+						.with(identity -> identity.setCity((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("City")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("City")).get()))
 								.get()))
-						.with(identity -> identity.setPostalCode("600113"))
-						.with(identity -> identity.setPhone(
-								Builder.build(SimplePropertiesDTO.class).with(value -> value.setLabel("Land Line"))
-										.with(value -> value.setValue("8889992233")).get()))
-						.with(identity -> identity.setEmail(Builder.build(SimplePropertiesDTO.class)
-								.with(value -> value.setLabel("Business Email"))
-								.with(value -> value.setValue("john.lawerence@gmail.com")).get()))
-						.with(identity -> identity.setCnieNumber(""))
-						.with(identity -> identity.setLocalAdministrativeAuthority((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(localAdminAuthValue -> localAdminAuthValue.setLabel("Local Administrative Authority"))
-								.with(localAdminAuthValue -> localAdminAuthValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Local Administrative Authority")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Local Administrative Authority")).get()))
-										.get()))
+						.with(identity -> identity.setPostalCode("605110"))
+						.with(identity -> identity.setPhone("8889992233"))
+						.with(identity -> identity.setEmail("john.lawerence@gmail.com"))
+						.with(identity -> identity.setCnieNumber(new BigInteger("123456789012")))
+						.with(identity -> identity.setLocalAdministrativeAuthority((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Local Admin")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Local Admin")).get()))
 								.get()))
-						.with(identity -> identity.setParentOrGuardianName((ArrayPropertiesDTO)Builder.build(ArrayPropertiesDTO.class)
-								.with(parentValue -> parentValue.setLabel("Parent/Guardian"))
-								.with(parentValue -> parentValue.setValues(Builder.build(LinkedList.class)
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(platformLanguageCode))
-												.with(value -> value.setValue("Parent/Guardian")).get()))
-										.with(values -> values.add(Builder.build(ValuesDTO.class)
-												.with(value -> value.setLanguage(localLanguageCode))
-												.with(value -> value.setValue("Parent/Guardian")).get()))
-										.get()))
+						.with(identity -> identity.setParentOrGuardianRIDOrUIN(new BigInteger("98989898898921913131")))
+						.with(identity -> identity.setParentOrGuardianName((List<ValuesDTO>)Builder.build(LinkedList.class)
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(platformLanguageCode))
+										.with(value -> value.setValue("Parent/Guardian")).get()))
+								.with(values -> values.add(Builder.build(ValuesDTO.class)
+										.with(value -> value.setLanguage(localLanguageCode))
+										.with(value -> value.setValue("Parent/Guardian")).get()))
 								.get()))
-						.with(identity -> identity.setParentOrGuardianRIDOrUIN("2018234500321157812")).get()))
+						.with(identity -> identity.setIdSchemaVersion(1.0)).get()))
 				.get();
 
 		return demographicInfoDTO;
@@ -340,7 +322,7 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setCategory("Passport");
+		documentDetailsDTO.setType("Passport");
 		documentDetailsDTO.setFormat("jpg");
 		documentDetailsDTO.setValue("ProofOfIdentity.jpg");
 		documentDetailsDTO.setOwner("Self");
@@ -349,7 +331,7 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("Passport");
+		documentDetailsResidenceDTO.setType("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setOwner("hof");
@@ -358,7 +340,7 @@ public class DataProvider {
 
 		documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setCategory("Passport");
+		documentDetailsDTO.setType("Passport");
 		documentDetailsDTO.setFormat("jpg");
 		documentDetailsDTO.setValue("ProofOfRelationship.jpg");
 		documentDetailsDTO.setOwner("Self");
@@ -367,12 +349,12 @@ public class DataProvider {
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setCategory("Passport");
+		documentDetailsResidenceDTO.setType("Passport");
 		documentDetailsResidenceDTO.setFormat("jpg");
 		documentDetailsResidenceDTO.setValue("DateOfBirthProof.jpg");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
-		identity.setDateOfBirthProof(documentDetailsResidenceDTO);
+		identity.setProofOfDateOfBirth(documentDetailsResidenceDTO);
 	}
 
 	private static RegistrationMetaDataDTO getRegistrationMetaDataDTO() {

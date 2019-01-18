@@ -37,9 +37,9 @@ public class DateValidation extends BaseController {
 	}
 
 	public void validateDate(TextField date, TextField month, TextField year, Validations validations,
-			FXUtils fxUtils) {
+			FXUtils fxUtils, TextField localField) {
 
-		fxUtils.validateOnType(date, validation);
+		fxUtils.validateOnType(date, validation, localField);
 		date.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			int dateVal = 1;
 			if (date.getText().matches("\\d+")) {
@@ -59,8 +59,8 @@ public class DateValidation extends BaseController {
 	}
 
 	public void validateMonth(TextField date, TextField month, TextField year, Validations validations,
-			FXUtils fxUtils) {
-		fxUtils.validateOnType(month, validation);
+			FXUtils fxUtils, TextField localField) {
+		fxUtils.validateOnType(month, validation, localField);
 		month.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (month.getText().matches("\\d+")) {
 				int monthVal = Integer.parseInt(month.getText());
@@ -113,8 +113,8 @@ public class DateValidation extends BaseController {
 	}
 
 	public void validateYear(TextField date, TextField month, TextField year, Validations validations,
-			FXUtils fxUtils) {
-		fxUtils.validateOnType(year, validation);
+			FXUtils fxUtils, TextField localField) {
+		fxUtils.validateOnType(year, validation, localField);
 		year.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (year.getText().matches("\\d{4}")) {
 				int yearVal = Integer.parseInt(year.getText());

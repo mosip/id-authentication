@@ -6,14 +6,20 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.service.MasterSyncService;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -45,6 +51,7 @@ public class Validations extends BaseController {
 	private ResourceBundle labelBundle;
 	private String isConsolidated;
 	private StringBuilder validationMessage;
+	private List<String> blackListedWords;
 	private List<String> noAlert;
 
 	public Validations() {
@@ -54,13 +61,19 @@ public class Validations extends BaseController {
 			noAlert.add("dd");
 			noAlert.add("mm");
 			noAlert.add("yyyy");
+			noAlert.add("ddLocalLanguage");
+			noAlert.add("mmLocalLanguage");
+			noAlert.add("yyyyLocalLanguage");
+			noAlert.add("mobileNo");
+			noAlert.add("postalCode");
+			noAlert.add("postalCode");
+			noAlert.add("cniOrPinNumber");
 			validationMessage = new StringBuilder();
 			validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
 			messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
 			labelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
 	}
 
@@ -75,12 +88,12 @@ public class Validations extends BaseController {
 			} else {
 				if (nodeToValidate(notTovalidate, node)) {
 					isValid = validateTheNode(node, node.getId());
-					if (isConsolidated.equals(RegistrationConstants.CONSOLIDATED_VALIDATION)) {
+					if (isConsolidated.equals(RegistrationConstants.ENABLE)) {
 						isValid = getValidationMessage().toString().length() == 0;
 					}
 				}
 			}
-			if (!isValid && isConsolidated.equals(RegistrationConstants.INDIVIDUAL_VALIDATION))
+			if (!isValid && isConsolidated.equals(RegistrationConstants.DISABLE))
 				break;
 		}
 		return isValid;
@@ -94,14 +107,18 @@ public class Validations extends BaseController {
 				&& !(node instanceof Button) && !(node instanceof Label);
 	}
 
-	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid) {
+	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
+		this.blackListedWords=masterSync
+				.getAllBlackListedWords(MappedCodeForLanguage
+						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}
 
 	/**
-	 * Pass the node to check for the validation, specific validation method will be
-	 * called for each field
+	 * Pass the node to check for the validation, specific validation method
+	 * will be called for each field
 	 */
 	public boolean validateTheNode(Node node, String id) {
 
@@ -129,8 +146,7 @@ public class Validations extends BaseController {
 			generateAlert(messageBundle.getString(id), isConsolidated, validationMessage);
 			node.requestFocus();
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 		return false;
@@ -150,9 +166,9 @@ public class Validations extends BaseController {
 			String isMandetory = validationProperty[2];
 			String isFixed = validationProperty[3];
 			boolean showAlert = (noAlert.contains(node.getId()) && id.contains(RegistrationConstants.ON_TYPE));
-			if (isMandetory.equals("false") && node.getText().isEmpty())
-				return true;
 			if (node.isDisabled())
+				return true;
+			if (isMandetory.equals("false") && node.getText().isEmpty())
 				return true;
 			if (!id.contains(RegistrationConstants.ON_TYPE) && isMandetory.equals("true") && node.getText().isEmpty()) {
 				if(!showAlert)
@@ -161,6 +177,15 @@ public class Validations extends BaseController {
 				return false;
 			}
 			if (node.getText().matches(regex)) {
+				
+				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
+					if(!showAlert)
+						generateAlert(
+								node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
+								isConsolidated, validationMessage);
+					node.requestFocus();
+					return false;
+				}
 				
 				if (isFixed.equals("false")) {
 					if (node.getText().length() <= length) {
@@ -195,8 +220,7 @@ public class Validations extends BaseController {
 			node.requestFocus();
 			return false;
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 	}
@@ -209,16 +233,12 @@ public class Validations extends BaseController {
 			if (node.isDisabled())
 				return true;
 			if (node.getValue() == null) {
-				generateAlert(
-						labelBundle.getString(id).concat(" ")
-								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
-						isConsolidated, validationMessage);
+				generateAlert(labelBundle.getString(id).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
 		return true;
@@ -234,18 +254,39 @@ public class Validations extends BaseController {
 			if (node.isDisabled())
 				return true;
 			if (node.getValue() == null) {
-				generateAlert(
-						labelBundle.getString(id).concat(" ")
-								.concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)),
-						isConsolidated, validationMessage);
+				generateAlert(labelBundle.getString(id).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_LGN_001)), isConsolidated, validationMessage);
 				node.requestFocus();
 				return false;
 			}
 		} catch (RuntimeException exception) {
-			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage());
+			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
+		return true;
+	}
+
+	public boolean validateUinOrRid(TextField field, boolean isChild, IdValidator<String> uinValidator,
+			RidValidator<String> ridValidator) {
+		if (!isChild)
+			return true;
+		if (field.getText().length() <= Integer.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
+			try {
+				uinValidator.validateId(field.getText());
+			} catch (InvalidIDException invalidUinException) {
+				generateAlert(RegistrationConstants.ERROR, invalidUinException.getErrorText());
+				field.requestFocus();
+				return false;
+			}
+		} else {
+			try {
+				ridValidator.validateId(field.getText());
+			} catch (InvalidIDException invalidRidException) {
+				generateAlert(RegistrationConstants.ERROR, invalidRidException.getErrorText());
+				field.requestFocus();
+				return false;
+			}
+		}
+
 		return true;
 	}
 
