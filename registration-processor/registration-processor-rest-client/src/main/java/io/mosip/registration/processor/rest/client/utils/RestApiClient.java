@@ -95,6 +95,7 @@ public class RestApiClient {
 
 	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
 		if (Arrays.stream(environment.getActiveProfiles()).anyMatch("dev-k8"::equals)) {
+			logger.debug("Active profiles",Arrays.asList(environment.getActiveProfiles()));
 			return new RestTemplate();
 		} else {
 			TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
