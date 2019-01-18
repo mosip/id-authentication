@@ -168,7 +168,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			demographicIdentity = (JSONObject) identityJson.get("identity");
 			String uinFieldCheck=(String) demographicIdentity.get("UIN");
 			boolean isUinCreate=false;
-			if(uinFieldCheck==null || ("").equals(uinFieldCheck)) {
+			if(uinFieldCheck==null || ("").equals(uinFieldCheck.trim())) {
 				uinResponseDto=	(UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "","", UinResponseDto.class);
 				long uinInLong=Long.parseLong(uinResponseDto.getUin());
 				demographicIdentity.put("UIN", uinInLong);
@@ -179,9 +179,14 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}
 
 			if((idResponseDTO.getResponse()!= null)){
-
+               if(isUinCreate) {
 				demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());	
 				triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
+               }else {
+            	   triggerNotificationForUIN.triggerNotification(uinFieldCheck, isUinCreate);
+                     
+               }
+				
 				registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_SUCCESS.toString());
 				isTransactionSuccessful = true;
