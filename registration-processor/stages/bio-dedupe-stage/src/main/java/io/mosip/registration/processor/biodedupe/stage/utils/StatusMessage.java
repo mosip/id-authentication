@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.biodedupe.stage.utils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class StatusMessage.
  */
