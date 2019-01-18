@@ -854,20 +854,6 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_CENTER_ID = "registrationcenterid";
 	public static final String GLOBAL_CONFIG_ERROR_MSG = "please synch the data before starting the application";
 
-	public enum mappedCodeForLang {
-		en("ENG"),ar("ARB");
-		private String langCode;
-
-		mappedCodeForLang(String langCode) {
-			this.langCode = langCode;
-		}
-
-		public String getMappedCode() {
-			return langCode;
-		}
-
-	}
-	
 	// user on boarding
 	public static final String USER_ON_BOARDING_ERROR_RESPONSE = "failure";
 	public static final String success = "success";

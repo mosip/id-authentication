@@ -41,6 +41,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -100,10 +101,10 @@ public class TemplateGenerator extends BaseService {
 			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
-			String platformLanguageCode = RegistrationConstants.mappedCodeForLang
+			String platformLanguageCode = MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 					.getMappedCode().toLowerCase();
-			String localLanguageCode = RegistrationConstants.mappedCodeForLang
+			String localLanguageCode = MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
 					.getMappedCode().toLowerCase();
 
@@ -458,7 +459,7 @@ public class TemplateGenerator extends BaseService {
 			TemplateManagerBuilder templateManagerBuilder) throws RegBaseCheckedException {
 
 		try {
-			String applicationLanguageCode = RegistrationConstants.mappedCodeForLang
+			String applicationLanguageCode = MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 					.getMappedCode().toLowerCase();
 			InputStream is = new ByteArrayInputStream(templateText.getBytes());

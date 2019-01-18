@@ -18,6 +18,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
@@ -612,7 +613,7 @@ public class DocumentScanController extends BaseController {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-			documents  = masterSync.getDocumentCategories(RegistrationConstants.mappedCodeForLang
+			documents  = masterSync.getDocumentCategories(MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 					.getMappedCode());
 			List<String> documentNames  = documents.stream().map(doc->doc.getName()).collect(Collectors.toList());

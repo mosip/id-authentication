@@ -41,6 +41,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -686,10 +687,10 @@ public class RegistrationController extends BaseController {
 
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
-			String platformLanguageCode = RegistrationConstants.mappedCodeForLang
+			String platformLanguageCode = MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 					.getMappedCode();
-			String localLanguageCode = RegistrationConstants.mappedCodeForLang
+			String localLanguageCode = MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
 					.getMappedCode();
 			String valueInPlatformLang = "";
@@ -946,10 +947,10 @@ public class RegistrationController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private DemographicInfoDTO buildDemographicInfo() {
 
-		String platformLanguageCode = RegistrationConstants.mappedCodeForLang
+		String platformLanguageCode = MappedCodeForLanguage
 				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
 				.toLowerCase();
-		String localLanguageCode = RegistrationConstants.mappedCodeForLang
+		String localLanguageCode = MappedCodeForLanguage
 				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
 				.getMappedCode().toLowerCase();
 		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
@@ -1781,7 +1782,7 @@ public class RegistrationController extends BaseController {
 	private void addRegions() {
 		try {
 			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),
-					RegistrationConstants.mappedCodeForLang
+					MappedCodeForLanguage
 							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 							.getMappedCode());
 			region.getItems().addAll(

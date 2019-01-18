@@ -15,6 +15,7 @@ import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
@@ -108,7 +109,7 @@ public class Validations extends BaseController {
 
 	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
 		this.blackListedWords=masterSync
-				.getAllBlackListedWords(RegistrationConstants.mappedCodeForLang
+				.getAllBlackListedWords(MappedCodeForLanguage
 						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
