@@ -18,21 +18,21 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 public class AuthStatusInfoBuilder {
 
-	/** The built. */
+	/** The built flag. */
 	private boolean built;
 
 	/** The auth status info. */
 	private AuthStatusInfo authStatusInfo;
 
 	/**
-	 * Instantiates a new auth status info builder.
+	 * Instantiates a new AuthStatusInfoBuilder.
 	 */
 	private AuthStatusInfoBuilder() {
 		authStatusInfo = new AuthStatusInfo();
 	}
 
 	/**
-	 * New instance.
+	 * Gets new instance of AuthStatusInfo.
 	 *
 	 * @return the auth status info builder
 	 */
@@ -53,7 +53,7 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the match info.
+	 * Adds the match info to AuthStatusInfo.
 	 *
 	 * @param authType the auth type
 	 * @param matchingStrategy the matching strategy
@@ -72,7 +72,7 @@ public class AuthStatusInfoBuilder {
 	}
 	
 	/**
-	 * Adds the bio info.
+	 * Adds the bio info to AuthStatusInfo.
 	 *
 	 * @param bioType the bio type
 	 * @param deviceInfo the device info
@@ -88,7 +88,7 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the auth usage data bits.
+	 * Adds the auth usage data bits to AuthStatusInfo.
 	 *
 	 * @param usageDataBits the usage data bits
 	 * @return the auth status info builder
@@ -104,7 +104,7 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Adds the errors.
+	 * Adds the errors to the AuthStatusInfo.
 	 *
 	 * @param errors the errors
 	 * @return the auth status info builder
@@ -120,9 +120,9 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Builds the.
+	 * Builds the AuthStatusInfo.
 	 *
-	 * @return the auth status info
+	 * @return the AuthStatusInfo instance
 	 */
 	public AuthStatusInfo build() {
 		assertNotBuilt();
@@ -131,7 +131,7 @@ public class AuthStatusInfoBuilder {
 	}
 
 	/**
-	 * Assert not built.
+	 * Assert that AuthStatusInfo is not built.
 	 */
 	private void assertNotBuilt() {
 		if (built) {

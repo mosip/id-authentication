@@ -4,6 +4,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
 
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +35,9 @@ public class RestApiClient {
 	/** The builder. */
 	@Autowired
 	RestTemplateBuilder builder;
+
+	@Autowired
+	Environment environment;
 
 	/**
 	 * Gets the api.
@@ -88,22 +93,24 @@ public class RestApiClient {
 		return result;
 	}
 
-	public static RestTemplate getRestTemplate()
-			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		if (Arrays.stream(environment.getActiveProfiles()).anyMatch("dev-k8"::equals)) {
+			return new RestTemplate();
+		} else {
+			TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+					.loadTrustMaterial(null, acceptingTrustStrategy).build();
 
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
+			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
 
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
 
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
 
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-
-		requestFactory.setHttpClient(httpClient);
-		return new RestTemplate(requestFactory);
+			requestFactory.setHttpClient(httpClient);
+			return new RestTemplate(requestFactory);
+		}
 
 	}
 
