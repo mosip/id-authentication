@@ -12,7 +12,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -26,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -51,14 +51,12 @@ import io.mosip.registration.processor.message.sender.exception.TemplateNotFound
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
-import io.mosip.registration.processor.message.sender.utility.StatusMessage;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * ServiceImpl class for sending notification.
@@ -88,7 +86,7 @@ public class MessageNotificationServiceImpl
 	public static final String FILE_SEPARATOR = "\\";
 
 	/** The reg proc logger. */
-	private static Logger regProcLogger = (Logger) RegProcessorLogger.getLogger(MessageNotificationServiceImpl.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(MessageNotificationServiceImpl.class);
 
 	/** The primary language. */
 	@Value("${primary.language}")
@@ -126,9 +124,6 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	/** The registration status dto. */
-	private InternalRegistrationStatusDto registrationStatusDto;
-
 	/** The sms dto. */
 	private SmsRequestDto smsDto = new SmsRequestDto();
 
@@ -151,7 +146,6 @@ public class MessageNotificationServiceImpl
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			if (templatejson.getPhoneNumber().isEmpty()) {
-				registrationStatusDto.setStatusComment(StatusMessage.PHONENUMBER_NOT_FOUND);
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
 			smsDto.setNumber(templatejson.getPhoneNumber());
@@ -191,7 +185,6 @@ public class MessageNotificationServiceImpl
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			if (template.getEmailID().isEmpty()) {
-				registrationStatusDto.setStatusComment(StatusMessage.EMAILID_NOT_FOUND);
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
 
@@ -337,7 +330,8 @@ public class MessageNotificationServiceImpl
 			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
 
 		} catch (ParseException e) {
-			regProcLogger.error("Error while parsing Json file", e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
 
@@ -395,12 +389,14 @@ public class MessageNotificationServiceImpl
 				javaObject[i] = jsonNodeElement;
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
-			regProcLogger.error("Error while Creating Instance of generic type", e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "Error while Creating Instance of generic type" + ExceptionUtils.getStackTrace(e));
 			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
 					e);
 
 		} catch (NoSuchFieldException | SecurityException e) {
-			regProcLogger.error("no such field exception", e);
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "no such field exception" + ExceptionUtils.getStackTrace(e));
 			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
 
 		}

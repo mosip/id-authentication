@@ -67,13 +67,6 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The Constant LOGDISPLAY. */
-	private static final String LOGDISPLAY = "{} - {}";
-
-	/** The secs. */
-	// @Value("${landingzone.scanner.stage.time.interval}")
-	private long secs = 30;
-
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
@@ -145,6 +138,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 	@Autowired
 	TriggerNotificationForUIN triggerNotificationForUIN;
 
+
+	private String idRepoApiVersion = "1.0";
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
 	 */
@@ -195,6 +191,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			}	else {
 				String statusComment = idResponseDTO.getError().get(0).getErrMessage();
 				registrationStatusDto.setStatusComment(statusComment);
+				object.setInternalError(Boolean.TRUE);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_UIN_UPDATION_FAILURE.toString());
 				isTransactionSuccessful = false;
 				description = "UIN updation failure for : " + registrationId;
@@ -251,12 +248,12 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		idRequestDTO.setRegistrationId(regId);
 		idRequestDTO.setRequest(requestDto);
 		idRequestDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
-		idRequestDTO.setVersion("1.0");
+		idRequestDTO.setVersion(idRepoApiVersion);
 
 		try {
 			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV,pathsegments, "", "",
 					idRequestDTO, String.class);
-			System.out.println("Response from IDRepo API ::   "  +result.toString());
+			System.out.println("Response from IDRepo API ::   "  +result);
 			Gson gsonObj = new Gson();
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
@@ -302,11 +299,15 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		requestDto.setIdentity(demographicIdentity);
 		requestDto.setDocuments(documentInfo);
 
+		List<String> pathsegments=new ArrayList<>();
+		pathsegments.add(uin);
+
 		idRequestDTO.setId(idRepoUpdate);
 		idRequestDTO.setRegistrationId(regId);
 		idRequestDTO.setRequest(requestDto);
 		idRequestDTO.setTimestamp(DateUtils.formatToISOString(LocalDateTime.now()));
-		idRequestDTO.setVersion("1.0");
+		idRequestDTO.setVersion(idRepoApiVersion);
+		
 		try {
 			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
 					idRequestDTO, String.class);
@@ -316,6 +317,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()+ExceptionUtils.getStackTrace(e));
 		}
+		
 		return idResponseDTO;
 	}
 
@@ -327,6 +329,4 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN, MessageBusAddress.UIN_GENERATION_BUS_OUT);
 	}
-
-
 }
