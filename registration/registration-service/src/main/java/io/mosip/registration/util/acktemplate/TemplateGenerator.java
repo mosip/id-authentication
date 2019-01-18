@@ -311,7 +311,7 @@ public class TemplateGenerator extends BaseService {
 					qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
 							.append(CryptoUtil.encodeBase64(applicantPhoto));
 
-					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
+					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V30);
 				} else {
 					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 				}
