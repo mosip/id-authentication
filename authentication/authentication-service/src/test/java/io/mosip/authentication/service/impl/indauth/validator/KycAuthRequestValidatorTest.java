@@ -88,6 +88,7 @@ public class KycAuthRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
+		ReflectionTestUtils.setField(authRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
@@ -185,10 +186,10 @@ public class KycAuthRequestValidatorTest {
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setLanguage("ara");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setLanguage("ara");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);

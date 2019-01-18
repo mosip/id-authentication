@@ -175,6 +175,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *
 	 * @param idvIdType idType
 	 * @param idvId     id-number
+	 * @param isBio
 	 * @return map map
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception

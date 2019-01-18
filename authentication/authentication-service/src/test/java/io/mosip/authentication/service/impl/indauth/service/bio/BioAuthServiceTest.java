@@ -543,7 +543,7 @@ public class BioAuthServiceTest {
 		bioIdentity.put("leftIndex", identityList);
 		bioIdentity.put("rightIndex", identityLists);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
-		assertTrue(validateBioDetails.isStatus());
+		assertFalse(validateBioDetails.isStatus());
 
 	}
 	

@@ -86,6 +86,7 @@ public class InternalAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "datehelper", dateHelper);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(internalAuthRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
@@ -282,14 +283,14 @@ public class InternalAuthRequestValidatorTest {
 		bioInfo.setBioType("fgrImg");
 		dInfo.setModel("Mantra");
 		dInfo.setDeviceId("1234");
-		dInfo.setMake("test");
+		dInfo.setMake("mantra");
 		bioInfo.setDeviceInfo(dInfo);
 		List<BioInfo> lb = new ArrayList<>();
 		lb.add(bioInfo);
 		authRequestDTO.setBioInfo(lb);
 
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage("AR");
+		idInfoDTO.setLanguage("ara");
 
 		idInfoDTO.setValue("finger");
 		/*
