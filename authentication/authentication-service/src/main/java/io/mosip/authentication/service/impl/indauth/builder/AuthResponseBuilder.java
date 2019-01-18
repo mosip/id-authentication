@@ -27,19 +27,16 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
  */
 public class AuthResponseBuilder {
 	
-	/** The Environment */
-	@Autowired
-	private Environment env;
-
+	/**  The date format to use*/
 	private SimpleDateFormat dateFormat;
 
-	/** The built. */
+	/** The built flag. */
 	private boolean built;
 
 	/** The Constant DEFAULT_USAGE_DATA_HEX_COUNT. */
 	private static final int DEFAULT_USAGE_DATA_HEX_COUNT = 16;
 	
-	/** The response DTO. */
+	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
 	
 	/** The auth status infos. */ 
@@ -189,7 +186,7 @@ public class AuthResponseBuilder {
 	}
 
 	/**
-	 * New instance.
+	 * Get new instance of AuthResponseBuilder.
 	 *
 	 * @param dateTimePattern the date time pattern
 	 * @return the auth response builder

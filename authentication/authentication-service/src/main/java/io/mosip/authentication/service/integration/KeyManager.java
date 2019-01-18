@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 //import java.util.Base64;
 import java.util.Map;
@@ -122,7 +123,7 @@ public class KeyManager {
 					restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.DECRYPTION_SERVICE,
 							cryptoManagerRequestDto, CryptomanagerResponseDto.class);
 					cryptomanagerResponseDto = restHelper.requestSync(restRequestDTO);
-					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()));
+					decryptedData = new String(Base64.decodeBase64(cryptomanagerResponseDto.getData()), StandardCharsets.UTF_8);
 					logger.info("NA", "NA", "NA", "cryptomanagerResponseDto " + decryptedData);
 				} catch (RestServiceException e) {
 					logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());

@@ -37,7 +37,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserBiometricId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import javafx.scene.image.WritableImage;
+//import javafx.scene.image.WritableImage;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class })
@@ -75,13 +75,13 @@ public class FingerprintFacadeTest {
 		assertTrue(result.equals(testmin));
 	}
 
-	@Test
+	/*@Test
 	public void testGetFingerPrintImage() throws IOException {
 		WritableImage writableImage = new WritableImage(100, 100);
 		Mockito.when(fingerprintProvider.getFingerPrintImage()).thenReturn(writableImage);
 		WritableImage image = fingerprintProvider.getFingerPrintImage();
 		Assert.assertThat(image, CoreMatchers.is(writableImage));
-	}
+	}*/
 
 	@Test
 	public void testGetFingerPrintImageAsDTO() throws IOException, RegBaseCheckedException {

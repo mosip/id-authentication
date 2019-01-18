@@ -38,9 +38,11 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class AuthController {
-
+	
+	/** The Constant SUCCESS_STATUS. */
 	private static final String SUCCESS_STATUS = "Y";
 
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
@@ -50,6 +52,7 @@ public class AuthController {
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
 
+	/** The KycAuthRequestValidator */
 	@Autowired
 	private KycAuthRequestValidator kycReqValidator;
 
@@ -84,7 +87,7 @@ public class AuthController {
 	 *            - Authenticate Request
 	 * @param errors
 	 *            the errors
-	 * @return AuthResponseDTO
+	 * @return authResponsedto AuthResponseDTO
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
 	 * @throws IdAuthenticationDaoException
@@ -120,7 +123,7 @@ public class AuthController {
 	 *            the kyc auth request DTO
 	 * @param errors
 	 *            the errors
-	 * @return the kyc auth response DTO
+	 * @return kycAuthResponseDTO the kyc auth response DTO
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
 	 * @throws IdAuthenticationAppException

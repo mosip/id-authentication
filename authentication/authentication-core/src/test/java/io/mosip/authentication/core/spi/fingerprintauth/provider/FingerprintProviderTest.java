@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonSyntaxException;
@@ -78,17 +79,9 @@ public class FingerprintProviderTest {
 			return null;
 		}
 
-		@Override
-		public double matchImage(Object reqInfo, Object entityInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+		
 
-		@Override
-		public double matchMultiImage(Object reqInfo, Object entityInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+		
 	};
 
 	FingerprintProvider fingerPrint = new FingerprintProvider() {
@@ -117,17 +110,8 @@ public class FingerprintProviderTest {
 			return null;
 		}
 
-		@Override
-		public double matchImage(Object reqInfo, Object entityInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+		
 
-		@Override
-		public double matchMultiImage(Object reqInfo, Object entityInfo) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
 	};
 
 	@Test
@@ -211,6 +195,7 @@ public class FingerprintProviderTest {
 		entityInfo.put("leftIndex", leftIndex);
 		entityInfo.put("rightIndex", rightIndex);
 		double score = fingerPrint.matchMultiImage(reqInfo, entityInfo);
+		System.out.println(score);
 		assertTrue(score > 500);
 	}
 
