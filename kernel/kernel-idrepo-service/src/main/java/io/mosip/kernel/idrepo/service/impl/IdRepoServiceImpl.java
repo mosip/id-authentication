@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import javax.annotation.Resource;
 
@@ -33,16 +31,11 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.MapDifference.ValueDifference;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
@@ -85,7 +78,7 @@ import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
 	private static final String ADD_IDENTITY = "addIdentity";
-	
+
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
@@ -146,14 +139,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/** The Constant READ. */
 	private static final String READ = "read";
 
-	/** The Constant REQUEST. */
-	private static final String REQUEST = "request";
-
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
-
-	/** The Constant LANGUAGE. */
-	private static final String LANGUAGE = "language";
 
 	/** The Constant IDENTITY. */
 	private static final String IDENTITY = "identity";
@@ -230,7 +217,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Override
 	public IdResponseDTO addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
 		try {
-			validateUIN(uin);
+			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			return constructIdResponse(
 					this.id.get(CREATE), addIdentity(uin, request.getRegistrationId(),
 							convertToBytes(request.getRequest().getIdentity()), request.getRequest().getDocuments()),
@@ -415,11 +402,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "retrieveIdentity",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, this.id.get(READ));
 		} catch (IdRepoAppUncheckedException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "retrieveIdentity",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
@@ -522,147 +509,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		return uinRepo.findByUin(uin);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.idrepo.spi.IdRepoService#updateIdentity(java.lang.
-	 * Object)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public IdResponseDTO updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
-		try {
-			validateUIN(uin);
-			Uin dbUinData = retrieveIdentityByUin(uin);
-			Uin uinObject = null;
-			if (!request.getStatus().equals(dbUinData.getStatusCode())) {
-				uinObject = updateUinStatus(dbUinData, request.getStatus());
-			}
-
-			if (!Objects.equals(mapper.writeValueAsString(request.getRequest()), new String(dbUinData.getUinData()))) {
-				Map<String, List<Map<String, String>>> requestData = convertToMap(request.getRequest());
-				Map<String, List<Map<String, String>>> dbData = (Map<String, List<Map<String, String>>>) convertToObject(
-						dbUinData.getUinData(), Map.class);
-				MapDifference<String, List<Map<String, String>>> mapDifference = Maps.difference(requestData, dbData);
-				mapDifference.entriesOnlyOnLeft().forEach((key, value) -> dbData.put(key, value));
-				mapDifference.entriesDiffering()
-						.forEach((String key, ValueDifference<List<Map<String, String>>> value) -> dbData.put(key,
-								findDifference(value.leftValue(), value.rightValue())));
-
-				uinObject = updateIdentityInfo(dbUinData, convertToBytes(dbData));
-			}
-
-			if (Objects.isNull(uinObject)) {
-				return constructIdResponse(this.id.get(UPDATE), dbUinData, null);
-			} else {
-				return constructIdResponse(this.id.get(UPDATE), uinObject, null);
-			}
-		} catch (JsonProcessingException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "updateIdentity",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
-		}
-	}
-
-	/**
-	 * Find difference.
-	 *
-	 * @param leftValue
-	 *            the left value
-	 * @param rightValue
-	 *            the right value
-	 * @return the list
-	 */
-	private List<Map<String, String>> findDifference(List<Map<String, String>> leftValue,
-			List<Map<String, String>> rightValue) {
-
-		TreeSet<Map<String, String>> leftValueSet = Sets.newTreeSet((Map<String, String> map1,
-				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
-		leftValueSet.addAll(leftValue);
-		leftValue.clear();
-
-		TreeSet<Map<String, String>> rightValueSet = Sets.newTreeSet((Map<String, String> map1,
-				Map<String, String> map2) -> StringUtils.compareIgnoreCase(map1.get(LANGUAGE), map2.get(LANGUAGE)));
-		rightValueSet.addAll(rightValue);
-		rightValue.clear();
-
-		leftValue.addAll(Sets.difference(rightValueSet, leftValueSet).copyInto(leftValueSet));
-		rightValue.addAll(Sets.difference(leftValueSet, rightValueSet).copyInto(rightValueSet));
-
-		IntStream.range(0, leftValue.size())
-				.filter(i -> leftValue.get(i).get(LANGUAGE).equalsIgnoreCase(rightValue.get(i).get(LANGUAGE)))
-				.forEach(i -> Maps.difference(leftValue.get(i), rightValue.get(i)).entriesDiffering().entrySet()
-						.forEach(entry -> rightValue.get(i).put(entry.getKey(), entry.getValue().leftValue())));
-
-		return rightValue;
-	}
-
-	/**
-	 * Update uin status in DB.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param statusCode
-	 *            the status code
-	 * @return the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	@Transactional
-	public Uin updateUinStatus(Uin uin, String statusCode) throws IdRepoAppException {
-		try {
-			uinHistoryRepo.save(new UinHistory(uin.getUinRefId(), now(), uin.getUin(), uin.getUinData(),
-					uin.getUinDataHash(), uin.getUinRefId(), LANG_CODE, statusCode, CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
-			uin.setStatusCode(statusCode);
-			return uinRepo.save(uin);
-		} catch (DataAccessException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "updateUinStatus",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		}
-	}
-
-	/**
-	 * Update idenity info in DB.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param identityInfo
-	 *            the identity info
-	 * @return the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	@Transactional
-	public Uin updateIdentityInfo(Uin uin, byte[] identityInfo) throws IdRepoAppException {
-		try {
-			uin.setUinData(identityInfo);
-			return uinRepo.save(uin);
-		} catch (DataAccessException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "updateIdentityInfo",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
-		}
-	}
-
-	/**
-	 * Validate UIN.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private void validateUIN(String uin) throws IdRepoAppException {
-		ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
-		if (uinRepo.existsByUin(uin)) {
-		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
-		}
-	}
-
 	/**
 	 * Construct id response.
 	 *
@@ -760,28 +606,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	}
 
 	/**
-	 * Convert to map.
-	 *
-	 * @param identity
-	 *            the identity
-	 * @return the map
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private Map<String, List<Map<String, String>>> convertToMap(Object identity) throws IdRepoAppException {
-		try {
-			return mapper.readValue(mapper.writeValueAsBytes(identity),
-					new TypeReference<Map<String, Map<String, List<Map<String, String>>>>>() {
-					});
-		} catch (IOException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "convertToMap",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST), e);
-		}
-	}
-
-	/**
 	 * Get the current time.
 	 *
 	 * @return the date
@@ -809,6 +633,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	private String hash(byte[] identityInfo) {
 		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
+	}
+
+	@Override
+	public IdResponseDTO updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
+		return null;
 	}
 
 }

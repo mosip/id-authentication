@@ -122,7 +122,7 @@ public class Uin {
 	 * @return the uin data
 	 */
 	public byte[] getUinData() {
-		return uinData;
+		return uinData.clone();
 	}
 
 	/**

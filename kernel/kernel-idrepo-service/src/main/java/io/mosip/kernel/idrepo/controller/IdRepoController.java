@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +37,6 @@ import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
-import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 import io.mosip.kernel.idrepo.util.DataValidationUtil;
 import io.mosip.kernel.idrepo.validator.IdRequestValidator;
 import springfox.documentation.annotations.ApiIgnore;
@@ -58,8 +57,6 @@ public class IdRepoController {
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	private static final String ALL = "all";
-
-	private static final String UPDATE = "update";
 
 	private static final String READ = "read";
 
@@ -143,7 +140,7 @@ public class IdRepoController {
 	 */
 	@GetMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
-			@RequestParam(name = TYPE, required = false) String type, HttpServletRequest request)
+			@RequestParam(name = TYPE, required = false) @Nullable String type, @Nullable HttpServletRequest request)
 			throws IdRepoAppException {
 		if (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE))) {
@@ -157,10 +154,10 @@ public class IdRepoController {
 					throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 				} else {
-					if (typeList.parallelStream().filter(typeValue -> !typeValue.equals(ALL))
-							.allMatch(allowedTypes::contains)) {
+					if (typeList.contains(ALL) || allowedTypes.parallelStream()
+							.filter(allowedType -> !allowedType.equals(ALL)).allMatch(typeList::contains)) {
 						type = ALL;
-					} else {
+					} else if (!allowedTypes.containsAll(typeList)) {
 						throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 					}
@@ -180,30 +177,4 @@ public class IdRepoController {
 		}
 	}
 
-	/**
-	 * Update identity.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param request
-	 *            the request
-	 * @param errors
-	 *            the errors
-	 * @return the response entity
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	@PatchMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<IdResponseDTO> updateIdentity(@PathVariable String uin, @RequestBody IdRequestDTO request,
-			@ApiIgnore Errors errors) throws IdRepoAppException {
-		try {
-			validator.validate(request, errors);
-			DataValidationUtil.validate(errors);
-			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
-		} catch (IdRepoDataValidationException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, ADD_IDENTITY,
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(UPDATE));
-		}
-	}
 }

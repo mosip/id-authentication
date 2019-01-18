@@ -113,7 +113,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], DECRYPT)));
 
 				if (!hash((byte[]) state[indexOfData]).equals(state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
-					throw new IdRepoAppException(IdRepoErrorConstants.IDENTITY_HASH_MISMATCH);
+					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.IDENTITY_HASH_MISMATCH);
 				}
 			}
 		} catch (IdRepoAppException e) {
@@ -122,12 +122,6 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
-	}
-
-	@Override
-	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
-			String[] propertyNames, Type[] types) {
-		return false;
 	}
 
 	/**

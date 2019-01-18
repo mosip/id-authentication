@@ -55,10 +55,10 @@ public class IdRequestValidator implements Validator {
 	/** The Constant VER. */
 	private static final String VER = "version";
 
-	private static final Pattern verPattern = Pattern.compile("^\\d+(\\.\\d{1,1})?$");
+	private static final Pattern verPattern = Pattern.compile("^[0-9](\\.\\d{1,1})?$");
 
 	/** The Constant DOC_TYPE. */
-	private static final String DOC_CAT = "docCat";
+	private static final String DOC_CAT = "category";
 
 	/** The Constant DOCUMENTS. */
 	private static final String DOCUMENTS = "documents";
@@ -222,11 +222,9 @@ public class IdRequestValidator implements Validator {
 	 * @param method
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
-		if (method.equals(CREATE) && Objects.nonNull(status)
-				&& !status.equals(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED))) {
-			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
-		} else if (method.equals(UPDATE) && Objects.nonNull(status) && !this.status.contains(status)) {
+		if (Objects.nonNull(status)
+				&& ((method.equals(CREATE) && !status.equals(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED)))
+						|| (method.equals(UPDATE) && !this.status.contains(status)))) {
 			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
@@ -359,9 +357,7 @@ public class IdRequestValidator implements Validator {
 								String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 										TIMESTAMP));
 					}
-				} else {
-					errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
+
 				}
 			} catch (IllegalArgumentException e) {
 				mosipLogger.error(ID_REPO_SERVICE, "IdRequestValidator", "validateReqTime",
