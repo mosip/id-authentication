@@ -445,6 +445,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_POS_J00008 = "POS_J00008";
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
 	public static final String OPT_TO_REG_RDJ_J00010 = "RDJ_J00010";
+	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
