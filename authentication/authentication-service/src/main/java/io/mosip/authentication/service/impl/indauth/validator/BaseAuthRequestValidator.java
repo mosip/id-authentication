@@ -280,28 +280,27 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @return
 	 */
 	
-	private void validateMake(List<BioInfo> bioInfo,Errors errors) {
-		String deviceNameList =null;
-		if(isAvailableBioType(bioInfo, BioType.IRISIMG)) {
-			 deviceNameList=environment.getProperty(IRIS_PROVIDER_ALL);
+	private void validateMake(List<BioInfo> bioInfo, Errors errors) {
+		String deviceNameList = null;
+		if (isAvailableBioType(bioInfo, BioType.IRISIMG)) {
+			deviceNameList = environment.getProperty(IRIS_PROVIDER_ALL);
+		} else if (isAvailableBioType(bioInfo, BioType.FGRMIN) || isAvailableBioType(bioInfo, BioType.FGRIMG)) {
+			deviceNameList = environment.getProperty(FINGERPRINT_PROVIDER_ALL);
 		}
-		else if(isAvailableBioType(bioInfo, BioType.FGRMIN) || isAvailableBioType(bioInfo, BioType.FGRIMG)) {
-			 deviceNameList=environment.getProperty(FINGERPRINT_PROVIDER_ALL);
+		if (deviceNameList != null) {
+			String[] deviceName = deviceNameList.split(",");
+			List<String> wordList = Arrays.asList(deviceName);
+			bioInfo.stream().map(info -> info.getDeviceInfo().getMake()).filter(make -> !wordList.contains(make))
+					.forEach(make -> {
+						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
+								"Invalid Input Make in DeviceInfo");
+						errors.rejectValue(REQUEST,
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								new Object[] { make },
+								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+					});
 		}
-		
-		String[] deviceName=deviceNameList.split(",");
-		 List<String> wordList = Arrays.asList(deviceName);  
-		 bioInfo.stream()
-		 		.map(info->info.getDeviceInfo().getMake())
-		 		.filter(make -> !wordList.contains(make))
-		 		.forEach(make -> {
-		 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Invalid Input Make in DeviceInfo");
-					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { make },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-		 		});
-		 		
-							
+
 	}
 
 	/**
