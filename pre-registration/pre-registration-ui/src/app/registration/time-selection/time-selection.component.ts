@@ -102,7 +102,7 @@ export class TimeSelectionComponent implements OnInit {
         let toTime = slot.toTime.split(':');
         slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
         slot.displayTime += ':' + fromTime[1] + ' - ';
-        slot.displayTime += Number(toTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
+        slot.displayTime += Number(toTime[0]) > 12 ? Number(toTime[0]) - 12 : toTime[0];
         slot.displayTime += ':' + toTime[1];
       });
       element.TotalAvailable = sumAvailability;

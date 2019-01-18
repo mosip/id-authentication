@@ -32,12 +32,7 @@ export class CenterSelectionComponent implements OnInit {
   selection = new SelectionModel<RegistrationCentre>(true, []);
   searchClick: boolean = true;
 
-  locationTypes = [
-    { value: 'province', viewValue: 'Province' },
-    { value: 'city', viewValue: 'City' },
-    { value: 'local_admin_authority', viewValue: 'Local Admin Authority' },
-    { value: 'postal_code', viewValue: 'Postal Code' }
-  ];
+  locationTypes = [];
 
   locationType = null;
   searchText = null;
@@ -65,7 +60,11 @@ export class CenterSelectionComponent implements OnInit {
 
   ngOnInit() {
     this.getLocation();
-    this.users = this.registrationService.getUsers();
+    this.dataService.getLocationTypeData().subscribe(response => {
+      this.locationTypes = response['locations'];
+      console.log(this.locationTypes);
+    })
+    this.users = this.service.getNameList();
   }
   setSearchClick(flag: boolean) {
     this.searchClick = flag;

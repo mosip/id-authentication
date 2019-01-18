@@ -6,7 +6,7 @@
   },
   "login": {
     "text": "Quick & Easy steps",
-    "sub_text": "To enroll ",
+    "sub_text": "Pre-register for",
     "sub_text_UID": "Unique Identification Number",
 
     "label_email_num": "Email ID or Phone Number",
@@ -41,7 +41,7 @@
     "label_region": "Region",
     "label_province": "Province",
     "label_city": "City",
-    "label_local_ administrative_authority": "Local Administrative Authority",
+    "label_local_administrative_authority": "Local Administrative Authority",
     "label_mob_num": "Mobile Number",
     "label_postalCode": "Postal Code",
     "label_email_id": "Email ID",

@@ -41,7 +41,7 @@ public class BookingDAO {
 
 	/** Autowired reference for {@link #bookingRepository}. */
 	@Autowired
-	@Qualifier("bookingRepository")
+	@Qualifier("bookingAvailabilityRepository")
 	private BookingAvailabilityRepository bookingAvailabilityRepository;
 
 	/** Autowired reference for {@link #registrationBookingRepository}. */
@@ -201,6 +201,25 @@ public class BookingDAO {
 		}
 		return entity;
 	}
+	
+	/**
+	 * @param bookingEntity
+	 * @return RegistrationBookingEntity
+	 */
+	/*public RegistrationBookingEntity getRegistrationEntityByPreId(String preId) {
+		RegistrationBookingEntity entity = null;
+		try {
+//			entity = registrationBookingRepository.findBy
+			if (entity == null) {
+				throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
+						ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+		}
+		return entity;
+	}*/
 
 	/**
 	 * @param registrationCenterId
@@ -212,7 +231,7 @@ public class BookingDAO {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
 			entityList=registrationBookingRepository.findByRegistrationCenterIdAndStatusCode(registrationCenterId, statusCode);
-			if (entityList != null && !entityList.isEmpty()) {
+			if (entityList == null && entityList.isEmpty()) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 			}

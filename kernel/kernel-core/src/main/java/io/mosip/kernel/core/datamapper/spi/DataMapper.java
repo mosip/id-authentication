@@ -1,9 +1,5 @@
 package io.mosip.kernel.core.datamapper.spi;
 
-import java.util.List;
-
-import io.mosip.kernel.core.datamapper.model.IncludeDataField;
-
 /**
  * The main runtime interface between a Java application and a Data Mapper. This
  * is the central interface abstracting the service of a Java bean mapping.
@@ -28,15 +24,12 @@ import io.mosip.kernel.core.datamapper.model.IncludeDataField;
  * @since 1.0.0
  * 
  */
-public interface DataMapper {
+public interface DataMapper<S,D> {
 
 
-	public <S, D> D map(S source, Class<D> destinationClass, boolean mapNull, List<IncludeDataField> includeDataField,
-			List<String> excludeDataField, boolean byDefault);
+	public D map(S source);
 
+    public void map(S source, D destination);
 
-	public <S, D> void map(S source, D destination, boolean mapNull, List<IncludeDataField> includeDataField,
-			List<String> excludeDataField, boolean byDefault);
-
-	public <S, D> void map(S source, D destination, DataConverter<S, D> dataConverter);
+	public void map(S source, D destination, DataConverter<S, D> dataConverter);
 }

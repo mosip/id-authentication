@@ -6,7 +6,7 @@
   },
   "login": {
     "text": "خطوات سريعة وسهلة",
-    "sub_text": "للتسجيل ",
+    "sub_text": "التسجيل المسبق ل",
     "sub_text_UID": "رقم تعريف فريد",
 
     "label_email_num": "معرف البريد الإلكتروني أو رقم الهاتف",
@@ -41,7 +41,7 @@
     "label_region": "منطقة",
     "label_province": "المحافظة",
     "label_city": "مدينة",
-    "label_local_ administrative_authority": "الهيئة الإدارية المحلية",
+    "label_local_administrative_authority": "الهيئة الإدارية المحلية",
     "label_mob_num": "رقم الهاتف المحمول",
     "label_postalCode": "الرمز البريدي",
     "label_email_id": "عنوان الايميل",

@@ -120,9 +120,10 @@ public class DataSyncService {
 		PreRegArchiveDTO preRegArchiveDTO = new PreRegArchiveDTO();
 		log.info("sessionId", "idType", "id", "In getPreRegistrationData method of datasync service ");
 		try {
-			DemographicResponseDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId);
-			List<DocumentMultipartResponseDTO> documentlist = serviceUtil.callGetDocRestService(preId);
-			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil.callGetAppointmentDetailsRestService(preId);
+			DemographicResponseDTO preRegistrationDTO = serviceUtil.callGetPreRegInfoRestService(preId.trim());
+			List<DocumentMultipartResponseDTO> documentlist = serviceUtil.callGetDocRestService(preId.trim());
+			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil
+					.callGetAppointmentDetailsRestService(preId.trim());
 			preRegArchiveDTO = serviceUtil.archivingFiles(preRegistrationDTO, bookingRegistrationDTO, documentlist);
 			responseDto.setStatus(Boolean.TRUE);
 			responseDto.setResTime(serviceUtil.getCurrentResponseTime());

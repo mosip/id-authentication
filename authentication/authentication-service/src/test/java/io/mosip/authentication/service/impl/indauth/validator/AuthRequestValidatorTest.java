@@ -91,11 +91,14 @@ public class AuthRequestValidatorTest {
 
 	@InjectMocks
 	IdInfoHelper idinfoHelper;
+	
+	
+
 
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(authRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		// ReflectionTestUtils.setField(idAuthValidator, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
 		ReflectionTestUtils.setField(authRequestValidator, "emailValidatorImpl", emailValidatorImpl);

@@ -10,6 +10,7 @@ import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
+import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
 import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
 import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
@@ -21,22 +22,17 @@ import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 @Component
 public class BiometricProviderFactory {
 
-	/**
-	 * Gets the biometric provider.
-	 *
-	 * @return the biometric provider
-	 */
-
-	private static final String IRIS_IMG= "irisImg";
-
 	/** The Constant cogentBiometricProvider. */
-	private static final String COGENT_BIO_PROVIDER = "bioprovider.cogent";
+	private static final String COGENT_FP_PROVIDER = "bioprovider.cogent";
 	
 	/** The Constant mantraBiometricProvider. */
-	private static final String MANTRA_BIO_PROVIDER = "bioprovider.mantra";
+	private static final String MANTRA_FP_PROVIDER = "bioprovider.mantra";
+	
+	/** The Constant cogentBiometricProvider. */
+	private static final String COGENT_IRIS_PROVIDER = "bioprovider.cogent";
 	
 	/** The Constant morphoBiometricProvider. */
-	private static final String MORHO_BIO_PROVIDER = "bioprovider.morpho";
+	private static final String MORHO_IRIS_PROVIDER = "bioprovider.morpho";
 
 	
 	@Autowired
@@ -83,18 +79,18 @@ public class BiometricProviderFactory {
 	 */
 	public MosipBiometricProvider getBiometricProvider(BioInfo bioInfo) {
 
-		if (bioInfo.getBioType().equalsIgnoreCase(BiometricProviderFactory.IRIS_IMG)) {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER))) {
+		if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.IRIS_IMG.getType())) {
+			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_IRIS_PROVIDER))) {
 				return getCogentIrisProvider();
-			} else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORHO_BIO_PROVIDER))) {
+			} else if(bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MORHO_IRIS_PROVIDER))) {
 				return getMorphoIrisProvider();
 			}
 		}
 
-		else {
-			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_BIO_PROVIDER))) {
+		else if (bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_MIN.getType()) || bioInfo.getBioType().equalsIgnoreCase(BioAuthType.FGR_IMG.getType())) {
+			if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.COGENT_FP_PROVIDER))) {
 				return getCogentFingerProvider();
-			} else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_BIO_PROVIDER))) {
+			} else if (bioInfo.getDeviceInfo().getMake().equalsIgnoreCase(environment.getProperty(BiometricProviderFactory.MANTRA_FP_PROVIDER))) {
 				return getMantraFingerprintProvider();
 			}
 		}

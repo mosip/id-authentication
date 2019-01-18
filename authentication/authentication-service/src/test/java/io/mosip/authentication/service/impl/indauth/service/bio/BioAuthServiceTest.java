@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -45,6 +44,8 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.CogentFingerprintProvider;
 import io.mosip.authentication.service.impl.fingerauth.provider.impl.MantraFingerprintProvider;
 import io.mosip.authentication.service.impl.indauth.service.BioAuthServiceImpl;
+import io.mosip.authentication.service.impl.iris.CogentIrisProvider;
+import io.mosip.authentication.service.impl.iris.MorphoIrisProvider;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -66,6 +67,12 @@ public class BioAuthServiceTest {
 
 	@InjectMocks
 	private CogentFingerprintProvider cogentFingerprintProvider;
+	
+	@InjectMocks
+	private CogentIrisProvider cogentIrisProvider;
+	
+	@InjectMocks
+	private MorphoIrisProvider morphoIrisProvider;
 
 	@Autowired
 	Environment environment;
@@ -81,7 +88,11 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoHelper, "biometricProviderFactory", biometricProviderFactory);
 		ReflectionTestUtils.setField(biometricProviderFactory, "mantraFingerprintProvider", mantraFingerprintProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "cogentFingerProvider", cogentFingerprintProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "cogentIrisProvider", cogentIrisProvider);
+		ReflectionTestUtils.setField(biometricProviderFactory, "morphoIrisProvider", morphoIrisProvider);
 		ReflectionTestUtils.setField(biometricProviderFactory, "environment", environment);
+		ReflectionTestUtils.setField(cogentIrisProvider, "environment", environment);
+		ReflectionTestUtils.setField(morphoIrisProvider, "environment", environment);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
@@ -266,7 +277,7 @@ public class BioAuthServiceTest {
 	}
 
 	@Test
-	public void TestMatchFingerPrint() throws IdAuthenticationBusinessException {
+	public void TestMatchFingerPrintMantra() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setBio(true);
@@ -322,6 +333,64 @@ public class BioAuthServiceTest {
 		System.err.println(validateBioDetails.getErr());
 	}
 
+
+	@Test
+	public void TestMatchFingerPrintCogent() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("516283648960");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setKey(new AuthSecureDTO());
+		List<MatchInfo> matchInfoList = new ArrayList<>();
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("bio");
+		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		matchInfoList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matchInfoList);
+		authRequestDTO.setTspID("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		// authRequestDTO.setVer("1.0");
+		List<BioInfo> bioInfoList = new ArrayList<>();
+		BioInfo bioInfo = new BioInfo();
+		bioInfo.setBioType("fgrMin");
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("Test1");
+		deviceInfo.setMake("cogent");
+		deviceInfo.setModel("1.0");
+		bioInfo.setDeviceInfo(deviceInfo);
+		bioInfoList.add(bioInfo);
+		authRequestDTO.setBioInfo(bioInfoList);
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setValue(value);
+		leftIndexList.add(identityInfoDTO);
+		identity.setLeftIndex(leftIndexList);
+		requestDTO.setIdentity(identity);
+		authRequestDTO.setRequest(requestDTO);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setValue(value);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		bioIdentity.put("leftIndex", identityList);
+		String refId = "274390482564";
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
+		System.err.println(validateBioDetails.isStatus());
+		System.err.println(validateBioDetails.getErr());
+	}
+	
 	@Test
 	public void TestvalidateBioDetailsMulti() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -474,8 +543,184 @@ public class BioAuthServiceTest {
 		bioIdentity.put("leftIndex", identityList);
 		bioIdentity.put("rightIndex", identityLists);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
-		assertTrue(validateBioDetails.isStatus());
+		assertFalse(validateBioDetails.isStatus());
 
+	}
+	
+	
+	@Test
+	public void TestIrisMatchCogent() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("516283648960");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setKey(new AuthSecureDTO());
+		List<MatchInfo> matchInfoList = new ArrayList<>();
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("bio");
+		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		matchInfoList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matchInfoList);
+		authRequestDTO.setTspID("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		// authRequestDTO.setVer("1.0");
+		List<BioInfo> bioInfoList = new ArrayList<>();
+		BioInfo bioInfo = new BioInfo();
+		bioInfo.setBioType("irisImg");
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("Test1");
+		deviceInfo.setMake("cogent");
+		deviceInfo.setModel("1.0");
+		bioInfo.setDeviceInfo(deviceInfo);
+		bioInfoList.add(bioInfo);
+		authRequestDTO.setBioInfo(bioInfoList);
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setValue(value);
+		leftEyeList.add(identityInfoDTO);
+		identity.setLeftEye(leftEyeList);
+		requestDTO.setIdentity(identity);
+		authRequestDTO.setRequest(requestDTO);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setValue(value);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		bioIdentity.put("leftEye", identityList);
+		String refId = "274390482564";
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
+		System.err.println(validateBioDetails.isStatus());
+		System.err.println(validateBioDetails.getErr());
+	}
+	
+	@Test
+	public void TestIrisMatchMorpho() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("516283648960");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setKey(new AuthSecureDTO());
+		List<MatchInfo> matchInfoList = new ArrayList<>();
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("bio");
+		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		matchInfoList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matchInfoList);
+		authRequestDTO.setTspID("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		// authRequestDTO.setVer("1.0");
+		List<BioInfo> bioInfoList = new ArrayList<>();
+		BioInfo bioInfo = new BioInfo();
+		bioInfo.setBioType("irisImg");
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("Test1");
+		deviceInfo.setMake("morpho");
+		deviceInfo.setModel("1.0");
+		bioInfo.setDeviceInfo(deviceInfo);
+		bioInfoList.add(bioInfo);
+		authRequestDTO.setBioInfo(bioInfoList);
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setValue(value);
+		leftEyeList.add(identityInfoDTO);
+		identity.setLeftEye(leftEyeList);
+		requestDTO.setIdentity(identity);
+		authRequestDTO.setRequest(requestDTO);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setValue(value);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		bioIdentity.put("leftEye", identityList);
+		String refId = "274390482564";
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
+		System.err.println(validateBioDetails.isStatus());
+		System.err.println(validateBioDetails.getErr());
+	}
+	
+	@Test
+	public void TestIrisMultiMatch() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setBio(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("516283648960");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setKey(new AuthSecureDTO());
+		List<MatchInfo> matchInfoList = new ArrayList<>();
+		MatchInfo matchInfo = new MatchInfo();
+		matchInfo.setAuthType("bio");
+		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
+		matchInfoList.add(matchInfo);
+		authRequestDTO.setMatchInfo(matchInfoList);
+		authRequestDTO.setTspID("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		// authRequestDTO.setReqHmac("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		// authRequestDTO.setVer("1.0");
+		List<BioInfo> bioInfoList = new ArrayList<>();
+		BioInfo bioInfo = new BioInfo();
+		bioInfo.setBioType("irisImg");
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("Test1");
+		deviceInfo.setMake("cogent");
+		deviceInfo.setModel("1.0");
+		bioInfo.setDeviceInfo(deviceInfo);
+		bioInfoList.add(bioInfo);
+		authRequestDTO.setBioInfo(bioInfoList);
+		RequestDTO requestDTO = new RequestDTO();
+		IdentityDTO identity = new IdentityDTO();
+		List<IdentityInfoDTO> leftEyeList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
+		identityInfoDTO.setLanguage("AR");
+		identityInfoDTO.setValue(value);
+		leftEyeList.add(identityInfoDTO);
+		List<IdentityInfoDTO> rightEyeList = new ArrayList<>();
+		rightEyeList.add(identityInfoDTO);
+		identity.setLeftEye(leftEyeList);
+		identity.setRightEye(rightEyeList);
+		requestDTO.setIdentity(identity);
+		authRequestDTO.setRequest(requestDTO);
+		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
+		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
+		identityInfoDTO1.setLanguage("AR");
+		identityInfoDTO1.setValue(value);
+		List<IdentityInfoDTO> identityList = new ArrayList<>();
+		identityList.add(identityInfoDTO1);
+		bioIdentity.put("leftEye", identityList);
+		bioIdentity.put("rightEye", identityList);
+		String refId = "274390482564";
+		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
+		System.err.println(validateBioDetails.isStatus());
+		System.err.println(validateBioDetails.getErr());
 	}
 
 }

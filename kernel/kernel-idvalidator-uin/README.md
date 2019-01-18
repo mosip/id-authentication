@@ -13,7 +13,7 @@
  
 **Properties to be added in Spring application environment using this component**
 
-[kernel-idvalidator-uin-dev.properties](../../config/kernel-idvalidator-uin-dev.properties)
+[application-dev.properties](../../config/application-dev.properties)
 
  
  
