@@ -189,7 +189,7 @@ public class UserClientMachineMappingDAOTest {
 		userContext.setUserId("ID007");
 		Mockito.when(userDetailRepository
 				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-						"Center123", RegistrationConstants.BLACKLISTED, userContext.getUserId()))
+						"Center123", RegistrationConstants.BLOCKED, userContext.getUserId()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getUsers("Center123");
 	}
@@ -263,7 +263,7 @@ public class UserClientMachineMappingDAOTest {
 
 		Mockito.when(userDetailRepository
 				.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-						"Center123", RegistrationConstants.BLACKLISTED, userContext.getUserId()))
+						"Center123", RegistrationConstants.BLOCKED, userContext.getUserId()))
 				.thenReturn(userDetailList);
 
 		List<UserDetail> details = machineMappingDAOImpl.getUsers("Center123");
