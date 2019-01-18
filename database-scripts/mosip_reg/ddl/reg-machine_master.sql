@@ -13,7 +13,7 @@ create schema if not exists reg
 -- table section -------------------------------------------------
 create table reg.machine_master (
 
-	id 			character varying (36) not null,
+	id 			character varying (10) not null,
 
 	name 		character varying (64) not null,
 	mac_address character varying (64) not null,

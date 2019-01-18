@@ -102,7 +102,7 @@ public class RegPacketStatusController extends BaseController implements Initial
 		} else if (response.getErrorResponseDTOs() != null) {
 			/** Generate Alert to show No Packets Available. */
 			ErrorResponseDTO errorResponseDTO = response.getErrorResponseDTOs().get(0);
-			generateAlert(RegistrationConstants.ALERT_ERROR, errorResponseDTO.getMessage());
+			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
 
 		}
 

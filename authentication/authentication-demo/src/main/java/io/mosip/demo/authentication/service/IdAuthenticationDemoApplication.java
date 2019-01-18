@@ -2,6 +2,9 @@ package io.mosip.demo.authentication.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
+
+import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 
 /**
  * Spring-boot class for ID Authentication Application.
@@ -9,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
+@Import (JsonValidatorImpl.class)
 public class IdAuthenticationDemoApplication {
 	
 	/**

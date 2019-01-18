@@ -1,7 +1,5 @@
 package io.mosip.registration.processor.rest.client.audit.dto;
 	
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 

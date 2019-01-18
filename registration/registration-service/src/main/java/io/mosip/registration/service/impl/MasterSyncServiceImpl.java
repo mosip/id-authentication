@@ -30,10 +30,16 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
+import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
+import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
+import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
@@ -179,7 +185,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		requestParamMap.put("lastUpdated", lastSyncTime.toString());
 
 		try {
-			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap);
+			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,false);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server");
@@ -211,7 +217,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setCode(errorCode);
-		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponse.setInfoType(RegistrationConstants.ERROR);
 		errorResponse.setMessage(message);
 
 		errorResponses.add(errorResponse);
@@ -307,5 +313,78 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		return reasonListResponse;
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#getAllBlackListedWords(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<BlacklistedWordsDto> getAllBlackListedWords(String langCode) {
+
+		List<BlacklistedWordsDto> blackWords = new ArrayList<>();
+		List<MasterBlacklistedWords> blackListedWords = masterSyncDao.getBlackListedWords(langCode);
+
+		blackListedWords.forEach(blackList -> {
+
+			BlacklistedWordsDto words = new BlacklistedWordsDto();
+			words.setDescription(blackList.getDescription());
+			words.setLangCode(blackList.getLangCode());
+			words.setWord(blackList.getWord());
+			blackWords.add(words);
+
+		});
+
+		return blackWords;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#getDocumentCategories(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<DocumentCategoryDto> getDocumentCategories(String langCode) {
+
+		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
+		List<MasterDocumentCategory> masterDocuments = masterSyncDao.getDocumentCategories(langCode);
+
+		masterDocuments.forEach(document -> {
+
+			DocumentCategoryDto documents = new DocumentCategoryDto();
+			documents.setDescription(document.getDescription());
+			documents.setLangCode(document.getLangCode());
+			documents.setName(document.getName());
+			documentsDTO.add(documents);
+
+		});
+
+		return documentsDTO;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.MasterSyncService#getGenderDtls(java.lang.String)
+	 */
+	@Override
+	public List<GenderDto> getGenderDtls(String langCode) {
+
+		List<GenderDto> gendetDtoList = new ArrayList<>();
+		List<MasterGender> masterDocuments = masterSyncDao.getGenderDtls(langCode);
+
+		masterDocuments.forEach(gender -> {
+			GenderDto genders = new GenderDto();
+			genders.setCode(gender.getCode().trim());
+			genders.setGenderName(gender.getGenderName());
+			genders.setIsActive(gender.getIsActive());
+			genders.setLangCode(gender.getLangCode());
+			gendetDtoList.add(genders);
+		});
+
+		return gendetDtoList;
 	}
 }

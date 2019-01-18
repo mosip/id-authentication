@@ -1,5 +1,7 @@
 package io.mosip.preregistration.datasync.dto;
 
+import java.math.BigInteger;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;

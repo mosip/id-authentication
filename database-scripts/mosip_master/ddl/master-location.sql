@@ -19,7 +19,7 @@ create schema if not exists master
 		hierarchy_level smallint not null ,
 		hierarchy_level_name character varying (64) not null ,
 		
-		parent_loc_code character varying (32) ,        -- self joining,  master.location.code
+		parent_loc_code character varying (36) ,        -- self joining,  master.location.code
 		
 		lang_code  character varying(3) not null ,		-- master.language.code
 

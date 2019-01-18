@@ -1,7 +1,6 @@
 package io.mosip.kernel.idrepo.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

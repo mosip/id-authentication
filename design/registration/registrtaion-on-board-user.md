@@ -1,12 +1,11 @@
-**Design - On board User Mapping **
+**Design - On board User**
 
 **Background**
-==============
 
 The user can able to self on board to the registered machine.
-Users along with their bio-metric to the machine, which is tagged to a
-particular Registration center. Through admin portal all the users,
-machines and devices are configured. But mapping of the users and their
+Users along with their bio-metric will be captured and validate against the IDA. 
+Through Admin portal all the users,
+machines and devices are configured per center. But mapping of the users and their
 Bio-metric information to a particular machine would happen through this
 screen. These bio-metric detail would be used later to perform the
 de-duplication and authentication validation.
@@ -23,122 +22,81 @@ The key **requirements** are
 
 User Mapping:
 
-The default username/password screen will be displayed to the user for login. 
-After provided username/password, the validation will be validated agsint the master data locally and also validating the machine mapping informaiton. 
-If the mahcine mapping to the particular user name is not mapped then it will call the OTP service to generate the OTP to the registered mobile number of the user.
-After successful authentication of the OTP, the scrren rediects to the Onboard User mapping by providing the bio-metric[Fingerprint/Iris/Photo] information. 
+The default userid screen will be displayed to the user for login.
+After provided userid, the validation will be validated against the local master data and also validate the machine mapping information. 
+If the machine mapping to the entered userid is not mapped then it will route to the password screen. After provided the password it will be validated locally and after successful validation it will call the OPTService to generate the OTP to the user registered mobile number.
+ 
+The User can enter the same OTP which was received and will be validate against the OTPValidation Service. After successful authentication the system route to the On board User mapping screen,  by providing the bio-metric[Fingerprint/Iris/Photo] information and the same information will be validate against the IDA server and get the success count. The success count which we got form the server and the configured threshold success count will be validated if matched or exceeded, then the user on boarded will be considered as Done.
 
-After provided the bio-metirc information, the same information will be validate agsint the server and get the success count. The success count which we got form the server and the configured threshould success count will be matched, if more then the user on biarded will be considered as Done.
-screen. There exists the "Menu", which lists the options/ features. On
-clicking the "Upate User Bio-Metirc" link, it should land up in "On Board User
-Screen". This consist of captruing of the Bio-MEtric informaiton.
-center. A table with User name, User ID, User Role is shown off. On
+The user can use the menu option "Update User Bio-Metirc" to update the latets bio-metrics if online alone. If the valdiation succeess as like above then the new values will be persisted otherwise older values will be retained in the system.
 
-Capture the selected user's 10 finger print along with the IRIS detail
-and validate against the server. If valid then store the respective
-detail into the local system.
 
--   Super admin -- can map or unmap himself or other RO / RS.
+**Pre-requisite**
 
--   RS -- can map or unmap other RS/RO.
-
--   One Station ID can be mapped to multiple users
+1. The user/password sync should happen from Admin to client.
+2. The validation count condition check should be  based on the threshold. 
 
 The key **non-functional requirements** are
 
--   Security:
+- Security:
 
-    -   Should not store any sensitive information as plain text
+ 	- Should not store any sensitive information as plain text
         information.
-
-    -   The data which resides in the data-base should be in encrypted
+	-The data which resides in the data-base should be in encrypted
         format.
 
--   Network:
-
-    -   Should able to communicate to the configured REST URL with
+- Network:
+	
+   - Should able to communicate to the configured REST URL with
         proper authentication.
-
-    -   The http read timeout parameter to be explicitly set, if client
+   - The http read timeout parameter to be explicitly set, if client
         unable to connect to the REST service.
-
-    -   Connectivity should happen through SSL mode. The respective key
+   - Connectivity should happen through SSL mode. The respective key
         to be loaded during the call.
 
 **Solution**
-============
+
 
 The key solution considerations are --
 
-**Service **
-
--   On clicking the "User Mapping" list in menu tab on Registration
-    screen, it should hit the service \[**UserMappingService**\] to
-    fetch the user details like name, ID and role from local DB.
-
--   Create **UserMappingService** and create DTO for the same.
-
-    -   When this service is triggered for fetch() functionality - gets
-        the user details.
-
-    -   It hits DAO and repository to fetch **list\<users\>.**
-
-    -   When a particular user is selected and made active or inactive
-        then on saving it hits. save() functionality -- maps / Un-maps
-        the user from a Station ID.
-
-    -   It hits DAO and repository to map / um-map the user to a Station
-        ID \[which is machine specific\].
-
-    -   If user provided the fingerprint and iris in the UI and submit
-        the page, the same will be validated against the data available
-        in the server by calling the respective REST service.
-
-        -   One request per finger and iris. Totally there are 12
-            requests to be triggered. **TODO**: Need to plan for bunch
-            of image validation.
-
-    -   If most of the fingers and iris are matching \[based on ISO
-        template\] then activate the user mapping to the station id.
-
-    -   Send an Alert message (say) "User mapped successfully" or an
-        error message.
-
--   Handle exceptions in using custom Exception handler and send correct
-    response to client.
-
-> **UI:**
+**UI:**
 
 -   Design UI using FXML and map the UI individual components in
-    UserMappingController class.
+    UserOnboardController class.
 
--   UserMappingController -- it should communicate between UI screen and
-    Service 'UserMappingService' class to render the data to screen and
+-   UserOnboardController - it should communicate between UI screen and
+    Service 'UserOnboardService' class to render the data to screen and
     capture the data from screen.
 
 -   Based on validation across the POJO class from the
-    UserMappingService, build the UI screen
+    UserOnboardService, build the UI screen
 
 -   Create the proper alert success/error to intimate the user.
 
-**Classes**:
 
-**UI**: UserClientMachineMapping
+**Service **
 
-**Controller**: UserClientMachineMappingController
+- **LoginController.java**
+	To validate the userid/password and which was enter by the user.
+- **RegistrtaionUserDetailRepository.java**
+	To get the user detail information [including the password].
+- **OTPService [Online Service]**
+	To generate and validate the OTP which was entered by the User
+- **Bio-metric Authentication Service [Online Service]**
+	To validate the Bio-metric information provided by the user.
+- **UserBiometricRepostiry.java**
+	To capture the validated bio-metric into the local DB of client.
+-  **BiometricException.java**
+	To capture the exception related information to capture.
+	
+-   Handle exceptions in using custom Exception handler and send correct
+    response to client.
 
-**Service**: MachineMappingServiceImpl
-
-**DAO**: MachineMappingDAOImpl
-
-**Repository:** UserMachineMappingRepository
-
-**DTO**: UserMachineMappingDTO
 
 **Class Diagram:**
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-usermapping-classDiagram.png>
+![User On boarding class diagram](_images/UserOnBoardingClassDiagram.png)
 
 **Sequence Diagram:**
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-usermapping-sequenceDiagram.png>
+![User On boarding sequence diagram](_images/UserOnBoardingSequnceDiagram.png)

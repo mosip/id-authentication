@@ -12,7 +12,8 @@ create schema if not exists prereg
 -- table section -------------------------------------------------
 	create table prereg.reg_appointment (
 		
-		regcntr_id 			character varying (36) not null ,	 -- master.registration_center
+		id 					character varying (36) not null ,
+		regcntr_id 			character varying (10) not null ,	 -- master.registration_center
 		prereg_id 			character varying(36) not null ,     -- prereg.applicant_demographic.prereg_id
 		booking_dtimes		timestamp not null,
 		appointment_date 	date,
@@ -33,7 +34,11 @@ create schema if not exists prereg
 ;
 
 -- keys section -------------------------------------------------
-alter table prereg.reg_appointment add constraint pk_rappmnt_id primary key (prereg_id, booking_dtimes)
+alter table prereg.reg_appointment add constraint pk_rappmnt_id primary key (id)
+;
+
+-- indexes section -------------------------------------------------
+create unique index idx_rappmnt_id on prereg.reg_appointment (prereg_id, booking_dtimes)
 ;
 
 -- indexes section -------------------------------------------------

@@ -28,7 +28,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.impl.RegistrationApprovalServiceImpl;
@@ -66,7 +66,7 @@ public class RegistrationApprovalServiceTest {
 	public void testGetEnrollmentByStatus() {
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();
-		RegistrationUserDetail regUserDetail = new RegistrationUserDetail();
+		UserDetail regUserDetail = new UserDetail();
 
 		regUserDetail.setId("Mosip123");
 		regUserDetail.setName("RegistrationOfficer");
@@ -95,7 +95,7 @@ public class RegistrationApprovalServiceTest {
 	@Test
 	public void testPacketUpdateStatus() {
 		Registration regobject = new Registration();
-		RegistrationUserDetail regUserDetail = new RegistrationUserDetail();
+		UserDetail regUserDetail = new UserDetail();
 
 		regUserDetail.setId("Mosip1214");
 		regUserDetail.setName("RegistrationOfficerName");

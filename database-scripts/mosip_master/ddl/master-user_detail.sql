@@ -14,7 +14,7 @@ create table master.user_detail (
 	
 	id 			character varying (36) not null,
 	
-	uin_ref_id 	character varying (28),		-- uin.uin.uin_ref_id 
+	uin		 	character varying (28),					-- UIN of indivisuals and referenced from idrepo database 
 	
 	name 		character varying (64) not null,
 	
@@ -44,7 +44,7 @@ create table master.user_detail (
  ;
 
 -- indexes section -------------------------------------------------
--- create index idx_usrdtl_uin_ref_id on master.user_detail (uin_ref_id)
+-- create index idx_usrdtl_<ColX> on master.user_detail (<ColX>)
 -- ;
 
 -- comments section ------------------------------------------------- 

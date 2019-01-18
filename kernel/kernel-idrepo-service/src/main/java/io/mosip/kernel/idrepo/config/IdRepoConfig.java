@@ -77,6 +77,8 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The allowed bio types. */
 	private List<String> allowedBioTypes;
 
+	private List<String> allowedTypes;
+
 	/** The id. */
 	private Map<String, String> id;
 
@@ -149,10 +151,19 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the allowed bio types.
 	 *
-	 * @param allowedBioTypes the new allowed bio types
+	 * @param allowedBioTypes
+	 *            the new allowed bio types
 	 */
 	public void setAllowedBioTypes(List<String> allowedBioTypes) {
 		this.allowedBioTypes = allowedBioTypes;
+	}
+
+	public List<String> getAllowedTypes() {
+		return allowedTypes;
+	}
+
+	public void setAllowedTypes(List<String> allowedTypes) {
+		this.allowedTypes = allowedTypes;
 	}
 
 	/**
@@ -209,6 +220,11 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	@Bean
 	public List<String> allowedBioTypes() {
 		return Collections.unmodifiableList(allowedBioTypes);
+	}
+
+	@Bean
+	public List<String> allowedTypes() {
+		return Collections.unmodifiableList(allowedTypes);
 	}
 
 	/**

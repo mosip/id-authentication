@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity"
+<HBox fx:id="headerId" maxHeight="-Infinity" maxWidth="-Infinity"
 	minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0"
 	prefWidth="959.0" xmlns="http://javafx.com/javafx/8"
 	xmlns:fx="http://javafx.com/fxml/1"
@@ -32,22 +32,20 @@
 				<Label fx:id="registrationOfficeLocation" layoutX="414.0"
 					layoutY="94.0" />
 				<Label layoutX="43.0" layoutY="94.0"
-					text="RO Office                                          :" />
+					text="%rooffice" />
 				<Label fx:id="registrationOfficeId" layoutX="414.0"
 					layoutY="55.0" />
 				<Label layoutX="43.0" layoutY="55.0"
-					text="RO ID                                                :" />
+					text="%roid" />
 				<Label fx:id="registrationOfficerName" layoutX="414.0"
 					layoutY="16.0" />
 				<Label layoutX="42.0" layoutY="16.0"
-					text="RO Name                                          :" />
+					text="%roname" />
 
 				<MenuBar fx:id="menu" layoutX="650.0" layoutY="24.0"
 					prefHeight="15.0" prefWidth="15.0">
 					<menus>
-
-
-						<Menu mnemonicParsing="false">
+						<Menu fx:id="accountMenu" mnemonicParsing="false">
 							<graphic>
 								<ImageView fitHeight="23.0" fitWidth="23.0"
 									layoutX="49.0" layoutY="32.0" pickOnBounds="true"
@@ -59,10 +57,10 @@
 							</graphic>
 							<items>
 								<MenuItem mnemonicParsing="false" onAction="#logout"
-									text="Logout" />
+									text="%logout" />
 							</items>
 						</Menu>
-						<Menu mnemonicParsing="false">
+						<Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
 							<graphic>
 								<ImageView fitHeight="20.0" fitWidth="20.0"
 									layoutX="49.0" layoutY="32.0" pickOnBounds="true"
@@ -74,28 +72,28 @@
 							</graphic>
 							<items>
 								<MenuItem mnemonicParsing="false"
-									onAction="#eodProcess" text="EOD Process" />
+									onAction="#eodProcess" text="%eodprocess" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false"
-									onAction="#uploadPacketToServer" text="Upload Packet" />
+									onAction="#uploadPacketToServer" text="%uploadpacket" />
 								<SeparatorMenuItem />
-								<MenuItem mnemonicParsing="false" text="Virus Scan" />
+								<MenuItem mnemonicParsing="false" text="%virusscan" />
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#syncData"
-									text="Sync Data" />
+									text="%syncdata" />
 									<SeparatorMenuItem />
 									<MenuItem mnemonicParsing="false"
 										onAction="#downloadPreRegData"
-										text="Download Pre-Registration Data" />
+										text="%downloadpre-registrationdata" />
 									<SeparatorMenuItem />
 									<MenuItem mnemonicParsing="false"
-										onAction="#onBoardUser" text="On Board User" />
+										onAction="#onBoardUser" text="%onboarduser" />
 									<SeparatorMenuItem />
 									<MenuItem mnemonicParsing="false"
-										onAction="#onBoardDevice" text="Device Onboarding" />
+										onAction="#onBoardDevice" text="%deviceonboarding" />
 									<SeparatorMenuItem />
 									<MenuItem mnemonicParsing="false"
-										onAction="#redirectHome" text="Home" />
+										onAction="#redirectHome" text="%home" />
 							</items>
 						</Menu>
 					</menus>

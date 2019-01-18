@@ -18,8 +18,6 @@ import com.github.sarxos.webcam.WebcamPanel;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.MosipWebcamProvider;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
@@ -61,7 +59,6 @@ public class WebCameraController extends BaseController implements Initializable
 
 	private BufferedImage capturedImage = null;
 
-	
 	private MosipWebcamProvider photoProvider = null;
 	@Autowired
 	private PhotoCaptureFacade photoCaptureFacade;
@@ -75,26 +72,13 @@ public class WebCameraController extends BaseController implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Page loading has been started");		
+				"Page loading has been started");
 		
-		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
-		
-		if (webcam != null) {
-			photoProvider.close(webcam);
-		}		
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Connecting to the webcam");
-		webcam = photoProvider.connect(640, 480);
-		if (webcam != null) {
-			WebcamPanel cameraPanel = new WebcamPanel(webcam);
-			JPanel jPanelWindow = new JPanel();
-			jPanelWindow.add(cameraPanel);
-			jPanelWindow.setVisible(true);
-			webcamera.setContent(jPanelWindow);
-		} else {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
-			((Stage) webCameraPane.getScene().getWindow()).close();			
-		}
+		WebcamPanel cameraPanel = new WebcamPanel(webcam);
+		JPanel jPanelWindow = new JPanel();
+		jPanelWindow.add(cameraPanel);
+		jPanelWindow.setVisible(true);
+		webcamera.setContent(jPanelWindow);
 	}
 
 	public void init(BaseController parentController, String imageType) {
@@ -103,6 +87,21 @@ public class WebCameraController extends BaseController implements Initializable
 
 		this.parentController = parentController;
 		this.imageType = imageType;
+	}
+
+	public boolean isWebcamPluggedIn() {
+		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Connecting to the webcam");
+		
+		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
+		if (webcam != null) {
+			photoProvider.close(webcam);
+		}
+		webcam = photoProvider.connect(640, 480);
+		if (webcam != null) {
+			return true;
+		} 
+		return false;
 	}
 
 	@FXML

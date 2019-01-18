@@ -3,6 +3,7 @@ package io.mosip.kernel.datamapper.orika.constant;
 /**
  * Error code constants for Data Mapper implementation
  * 
+ * @author Urvil Joshi
  * @author Neha
  * @since 1.0.0
  */

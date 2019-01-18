@@ -25,7 +25,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
@@ -45,6 +45,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -132,7 +133,7 @@ public class BaseController {
 	 */
 	public static <T> T load(URL url) throws IOException {
 		clearDeviceOnboardingContext();
-		FXMLLoader loader = new FXMLLoader(url);
+		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
@@ -163,6 +164,8 @@ public class BaseController {
 		alert.setContentText(context);
 		alert.setTitle(title);
 		alert.setGraphic(null);
+		alert.setResizable(true);
+		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
 	}
 	
@@ -179,6 +182,8 @@ public class BaseController {
 		alert.setHeaderText(null);
 		alert.setContentText(context);
 		alert.setGraphic(null);
+		alert.setResizable(true);
+		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
 	}
 	
@@ -192,11 +197,13 @@ public class BaseController {
 	 *            alert context
 	 */
 	protected void generateAlert(String context, String isConsolidated, StringBuilder validationMessage) {
-		if (isConsolidated.equals(RegistrationConstants.INDIVIDUAL_VALIDATION)) {
+		if (isConsolidated.equals(RegistrationConstants.DISABLE)) {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setHeaderText(null);
 			alert.setContentText(context);
 			alert.setGraphic(null);
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			alert.setResizable(true);
 			alert.showAndWait();
 		} else {
 			validationMessage.append("* ").append(context).append(System.getProperty("line.separator"));
@@ -274,7 +281,7 @@ public class BaseController {
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage());
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
@@ -299,13 +306,18 @@ public class BaseController {
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_PANE2_DATA);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_AGE_DATA);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.REGISTRATION_DATA);
+		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.IS_Child);
+		SessionContext.getInstance().getMapObject().remove("dd");
+		SessionContext.getInstance().getMapObject().remove("mm");
+		SessionContext.getInstance().getMapObject().remove("yyyy");
+
 		SessionContext.getInstance().getUserContext().getUserMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
 	}
 	
 	public static FXMLLoader loadChild(URL url) throws IOException {
-		FXMLLoader loader = new FXMLLoader(url);
+		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader;
 	}
@@ -410,17 +422,12 @@ public class BaseController {
 
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-		String validationStatus = "";
-		if (username.isEmpty() && password.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
-		} else if (username.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
-		} else if (password.isEmpty()) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
-		} else if (username.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
-		} else if (password.length() > usernamePwdLength) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USRNAME_PWORD_LENGTH);
+		if (password.isEmpty()) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
+			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
+		}  else if (password.length() > usernamePwdLength) {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
+			return RegistrationUIConstants.PWORD_LENGTH;
 		} else {
 			String hashPassword = null;
 
@@ -433,19 +440,12 @@ public class BaseController {
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(username);
 			authenticationValidatorDTO.setPassword(hashPassword);
-			String userStatus = validatePassword(authenticationValidatorDTO);
 
-			if (userStatus.equals(RegistrationUIConstants.USER_NOT_ONBOARDED)) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
-			} else {
-				if (userStatus.equals(RegistrationConstants.PWD_MATCH)) {
-					validationStatus = "Success";
-				} else {
-					validationStatus = "Fail";
-				}
-			}
+			if (validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
+				return RegistrationConstants.SUCCESS;
+			} 
+			return RegistrationConstants.FAILURE;
 		}
-		return validationStatus;
 	}
 
 	/**
@@ -459,12 +459,8 @@ public class BaseController {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating credentials using database");
 
-		RegistrationUserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
-		if (userDetail == null) {
-			return RegistrationUIConstants.USER_NOT_ONBOARDED;
-		} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-			return RegistrationUIConstants.BLOCKED_USER_ERROR;
-		} else if (userDetail.getRegistrationUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
+		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());
+		if (userDetail.getUserPassword().getPwd().equals(authenticationValidatorDTO.getPassword())) {
 			return RegistrationConstants.PWD_MATCH;
 		} else {
 			return RegistrationConstants.PWD_MISMATCH;

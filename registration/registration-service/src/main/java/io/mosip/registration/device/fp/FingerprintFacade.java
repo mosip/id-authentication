@@ -26,6 +26,9 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -208,34 +211,49 @@ public class FingerprintFacade {
 
 		try {
 
+			List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getInstance()
+					.getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
+							.getApplicantBiometricDTO().getBiometricExceptionDTO();
+
 			List<String> filePaths = Arrays.asList(path);
 
+			boolean isExceptionFinger = false;
+			
 			for (String folderPath : filePaths) {
-
+				isExceptionFinger = false;
 				String[] imageFileName = folderPath.split("/");
-				FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
 
-				byte[] isoTemplateBytes = IOUtils
-						.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_FILE));
-				segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+				for (BiometricExceptionDTO exceptionDTO : biometricExceptionDTOs) {
 
-				byte[] isoImageBytes = IOUtils
-						.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
-				segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
-
-				segmentedDetailsDTO.setFingerType(imageFileName[3]);
-				segmentedDetailsDTO.setFingerprintImageName(imageFileName[3]);
-				segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
-				segmentedDetailsDTO.setForceCaptured(false);
-				segmentedDetailsDTO.setQualityScore(90);
-
-				if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
-					List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
-					fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
+					if (imageFileName[3].equals(exceptionDTO.getMissingBiometric())) {
+						isExceptionFinger = true;
+						break;
+					}
 				}
-				fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-			}
+				if (!isExceptionFinger) {
+					FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
 
+					byte[] isoTemplateBytes = IOUtils
+							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_FILE));
+					segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
+
+					byte[] isoImageBytes = IOUtils
+							.resourceToByteArray(folderPath.concat(RegistrationConstants.ISO_IMAGE_FILE));
+					segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
+
+					segmentedDetailsDTO.setFingerType(imageFileName[3]);
+					segmentedDetailsDTO.setFingerprintImageName(imageFileName[3]);
+					segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
+					segmentedDetailsDTO.setForceCaptured(false);
+					segmentedDetailsDTO.setQualityScore(90);
+
+					if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
+						List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
+						fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
+					}
+					fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
+				}
+			}
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_FINGERPRINT_SCANNING_ERROR.getErrorCode(),
@@ -266,7 +284,7 @@ public class FingerprintFacade {
 		userFingerprintDetails.forEach(fingerPrintTemplateEach -> {
 			if (fingerprintProvider.scoreCalculator(minutiae,
 					fingerPrintTemplateEach.getBioMinutia()) > fingerPrintScore) {
-				fingerprintDetailsDTO.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode()+".jpg");
+				fingerprintDetailsDTO.setFingerType(fingerPrintTemplateEach.getUserBiometricId().getBioAttributeCode());
 			}
 		});
 		return userFingerprintDetails.stream()

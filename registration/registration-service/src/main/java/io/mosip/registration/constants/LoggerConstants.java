@@ -25,6 +25,7 @@ public class LoggerConstants {
 	private static final String USER_REGISTRATION = APP_NAME + "USER_REGISTRATION - ";
 	private static final String MASTER_SYNC = APP_NAME + "MASTER_SYNC - ";
 	private static final String UIN_UPDATE = APP_NAME + "UIN_UPDATE - ";
+	private static final String USER_ONBOARD = APP_NAME + "USER_ONBOARD - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -57,5 +58,14 @@ public class LoggerConstants {
 	public static final String LOG_REG_UIN_UPDATE = UIN_UPDATE + "UIN_UPDATE_CONTROLLER";
 	public static final String LOG_TEMPLATE_GENERATOR = PKT_CREATION + "TEMPLATE_GENERATOR";
 	public static final String LOG_REG_DOC_SCAN_CONTROLLER = USER_REGISTRATION + "DOCUMENT_SCAN_CONTROLLER";
+	public static final String LOG_REG_IRIS_VALIDATOR = USER_REGISTRATION + "IRIS_VALIDATOR_IMPL";
+	public static final String LOG_REG_FACE_VALIDATOR = USER_REGISTRATION + "FACE_VALIDATOR_IMPL";
+	public static final String LOG_REG_FACE_FACADE = USER_REGISTRATION + "FACE_FACADE";
+	public static final String LOG_REG_USER_ONBOARD = USER_ONBOARD + "USER_ONBOARD_IMLP";
+	
+	//USER ONBOARD
+	public static final String LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD = USER_ONBOARD + "FINGERPRINT_CAPTURE_CONTROLLER";
+	public static final String LOG_REG_IRIS_CAPTURE_USER_ONBOARD = USER_ONBOARD + "IRIS_CAPTURE_CONTROLLER";
+	
 
 }

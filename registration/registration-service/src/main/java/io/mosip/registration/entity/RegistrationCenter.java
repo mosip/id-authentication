@@ -73,7 +73,7 @@ public class RegistrationCenter extends RegistrationCommonFields {
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
-	private RegistrationCenterUser registrationCenterUser;
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "userDetail")
+	private RegCenterUser regCenterUser;
 
 }

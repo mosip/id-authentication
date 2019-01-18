@@ -156,6 +156,8 @@ this.secondaryLanguage='ar';
 
     if (this.regService.getUser(this.step) != null) {
       this.user = this.regService.getUser(this.step);
+      console.log(this.user);
+      
       this.preRegId = this.user.preRegId;
       fullName = this.user.request.demographicDetails.identity.fullName[0].value;
       gender = this.user.request.demographicDetails.identity.gender[0].value;

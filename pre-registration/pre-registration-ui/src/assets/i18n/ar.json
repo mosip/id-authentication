@@ -52,7 +52,7 @@
     "validation": {
       "name_required": "الإسم الكامل ضروري",
       "age_validation": "يجب أن يكون العمر أقل من 150",
-      "DOB_validation": "أدخل DOB صالح ",
+      "DOB_validation": "أدخل DOB صالحًا أو العمر  ",
       "date_required": "مطلوب رقمين التاريخ",
       "month_required": "أدخل رقمين رقميين للشهر",
       "year_required": "أدخل رقمين رقميين للسنة",
@@ -171,5 +171,36 @@
     "text_confirmation": "تم إرسال تفاصيل معرف التسجيل ال  و الموعد  إلى معرف البريد الإلكتروني المسجل ورقم الهاتف",
     "action_download": "تحميل",
     "action_print": "طباعة"
+  },
+  "dialog": {
+    "title_applicant": "عدد المتقدمون",
+    "content_applicant": "سيتم التعامل مع تفاصيل مقدم الطلب الأول على أنها أساسية",
+    "invalidApplicantNumber_msg": "يجب أن يكون الرقم بين 1 و 10",
+    "action_ok": "حسنا",
+    "title_discard": "تجاهل",
+    "action_discard_app": "تجاهل التطبيق بأكمله",
+    "action_cancel": "إلغاء الموعد وحفظ التفاصيل",
+    "action_submit": "خضع",
+    "action_dismiss": "رفض",
+    "action_add": "إضافة",
+    "action_close": "قريب",
+    "action_add_to_slot": "أضف إلى الفتحة"
+  },
+  "ack": {
+    "container_guideline": "المبادئ التوجيهية الهامة",
+    "action_download": "تحميل",
+    "action_print": "طباعة"
+  },
+  "centerSelection": {
+    "title": " موعد الكتاب ",
+    "action_nearBy": "مجاوز",
+    "display_recommended": "المراكز الموصى بها",
+    "text_found": "وجدت",
+    "text_centers": "مراكز",
+    "text_timing": "توقيت",
+    "text_open": "افتح",
+    "action_back": "الى الخلف",
+    "action_book_later": "كتاب لاحقا",
+    "action_continue": "استمر"
   }
 }
