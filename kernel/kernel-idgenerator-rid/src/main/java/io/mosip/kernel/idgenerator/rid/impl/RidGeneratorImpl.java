@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
@@ -137,12 +138,15 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 					RidGeneratorExceptionConstant.RID_FETCH_EXCEPTION.errorMessage, e);
 		}
 		try {
-			if (entity == null || entity.getCurrentSequenceNo() == sequenceEndvalue) {
+			if (entity == null) {
 				entity = new Rid();
 				entity.setCurrentSequenceNo(sequenceInitialValue);
 				ridRepository.save(entity);
 			} else {
-				ridRepository.updateRid(entity.getCurrentSequenceNo() + 1, entity.getCurrentSequenceNo());
+				if (entity.getCurrentSequenceNo() == sequenceEndvalue)
+					ridRepository.updateRid(sequenceInitialValue, entity.getCurrentSequenceNo());
+				else
+					ridRepository.updateRid(entity.getCurrentSequenceNo() + 1, entity.getCurrentSequenceNo());
 			}
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new RidException(RidGeneratorExceptionConstant.RID_UPDATE_EXCEPTION.getErrorCode(),
