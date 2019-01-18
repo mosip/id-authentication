@@ -68,6 +68,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
+	
+	@Value("${PRE_REG_STUB_ENABLED}")
+	private String isStubEnabled;
 
 	/**
 	 * Instance of LOGGER
@@ -90,12 +93,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		/** prepare request DTO to pass on through REST call */
+		/* prepare request DTO to pass on through REST call */
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareDataSyncRequestDTO();
 
 		try {
 
-			/** REST call to get Pre Registartion Id's */
+			/* REST call to get Pre Registartion Id's */
 			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
 					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
 
@@ -106,13 +109,9 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				Map<String, String> preRegIds = (Map<String, String>) preRegistrationIdsDTO.getPreRegistrationIds();
 
-				/** Get Packets Using pre registration ID's */
+				/* Get Packets Using pre registration ID's */
 				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
 
-					/**
-					 * TODO null has to be replaced with last updated time stamp details from api
-					 * call
-					 */
 					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
 							Timestamp.from(Instant.parse(preRegDetail.getValue())));
 					if (responseDTO.getErrorResponseDTOs() != null) {
@@ -171,12 +170,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching Pre-Registration started");
 
-		/** Check in Database whether required record already exists or not */
+		/* Check in Database whether required record already exists or not */
 		PreRegistrationList preRegistration = preRegistrationDAO.get(preRegistrationId);
 
-		/** Has Network Connectivity */
+		/* Has Network Connectivity */
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
-		
+
 		/* check if the packet is not available in db and the machine is offline */
 		if (!isOnline && preRegistration == null) {
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
@@ -208,9 +207,21 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			try {
 				/* REST call to get packet */
-
-				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
-						.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
+				MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO;
+				if (!"yes".equalsIgnoreCase(isStubEnabled)) {
+					mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
+							.get(RegistrationConstants.GET_PRE_REGISTRATION, requestParamMap, false);
+				} else {
+					/* TestData....stub code to be removed-start TODO */
+					mainResponseDTO = new MainResponseDTO<>();
+					LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
+					linkedHashMap.put("appointment-date", "2019-01-12");
+					linkedHashMap.put("zip-bytes",
+							FileUtils.readFileToByteArray(new File(PreRegistrationDataSyncServiceImpl.class
+									.getResource("/dataprovider/97285429827016.zip").getFile())));
+					mainResponseDTO.setResponse(linkedHashMap);
+					/* TestData.....stub code to be removed-end TODO */
+				}
 
 				if (isResponseNotEmpty(mainResponseDTO) && mainResponseDTO.getResponse().get("zip-bytes") != null) {
 
@@ -256,7 +267,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				}
 
 			} catch (HttpClientErrorException | RegBaseCheckedException | java.io.IOException
-					| HttpServerErrorException exception) {
+					| HttpServerErrorException | IOException exception) {
 
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -314,7 +325,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	private void setPacketToResponse(ResponseDTO responseDTO, byte[] decryptedPacket, String preRegistrationId) {
 
 		try {
-			/** create attributes */
+			/* create attributes */
 			RegistrationDTO registrationDTO = preRegZipHandlingService.extractPreRegZipFile(decryptedPacket);
 			registrationDTO.setPreRegistrationId(preRegistrationId);
 			Map<String, Object> attributes = new HashMap<>();
@@ -378,9 +389,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
 
-		/** TODO shouldn't be hard-coded */
-		// return formatDate(cal);
-		return "2018-12-15 11:52:2";
+		return formatDate(cal);
 	}
 
 	private PreRegistrationList preparePreRegistration(SyncTransaction syncTransaction,

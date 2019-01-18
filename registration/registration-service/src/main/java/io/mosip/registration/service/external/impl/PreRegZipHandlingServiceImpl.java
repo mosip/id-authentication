@@ -30,6 +30,7 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -143,14 +144,17 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * @throws RegBaseCheckedException
 	 */
 	private void parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry) throws RegBaseCheckedException {
-
-		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream))) {
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
+		try {
 			String value;
+			StringBuilder jsonString = new StringBuilder();
 			while ((value = bufferedReader.readLine()) != null) {
+				jsonString.append(value);
+			}
 
-				getRegistrationDtoContent().getDemographicDTO()
-						.setDemographicInfoDTO(new ObjectMapper().readValue(value, DemographicInfoDTO.class));
-
+			if (!StringUtils.isEmpty(jsonString)) {
+				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(
+						new ObjectMapper().readValue(jsonString.toString(), DemographicInfoDTO.class));
 			}
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
