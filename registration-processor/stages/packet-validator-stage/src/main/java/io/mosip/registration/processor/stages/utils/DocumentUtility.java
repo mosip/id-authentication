@@ -109,4 +109,12 @@ public class DocumentUtility {
 
 	}
 
+	public boolean checkSum(String registrationId) {
+		boolean result = true;
+		if (registrationId == null)
+			result = false;
+
+		return result;
+	}
+
 }

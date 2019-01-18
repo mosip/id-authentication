@@ -176,9 +176,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							documentList = documentUtility.getDocumentList(bytes);
 							CheckSumValidation checkSumValidation = new CheckSumValidation(adapter,
 									registrationStatusDto);
+							isCheckSumValidated = documentUtility.checkSum(registrationId);
 							// isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 							// packetMetaInfo.getIdentity());
-							isCheckSumValidated = true;
+
 							if (isCheckSumValidated) {
 								ApplicantDocumentValidation applicantDocumentValidation = new ApplicantDocumentValidation(
 										registrationStatusDto);

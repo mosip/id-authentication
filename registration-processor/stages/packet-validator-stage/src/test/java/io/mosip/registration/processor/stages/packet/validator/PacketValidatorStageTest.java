@@ -46,6 +46,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
+import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -76,6 +77,12 @@ public class PacketValidatorStageTest {
 	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
+	@Mock
+	InternalRegistrationStatusDto registrationStatusDto;
+
+	@Mock
+	CheckSumValidation checkSumValidation = new CheckSumValidation(filesystemCephAdapterImpl, registrationStatusDto);
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -172,7 +179,7 @@ public class PacketValidatorStageTest {
 		documents.add(documentPob);
 		documents.add(document);
 		identity.setDocuments(documents);
-
+		Mockito.when(documentUtility.checkSum(anyString())).thenReturn(true);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -410,6 +417,7 @@ public class PacketValidatorStageTest {
 		String test = "123456789";
 		byte[] data = "1234567890".getBytes();
 
+		Mockito.when(documentUtility.checkSum(anyString())).thenReturn(false);
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
@@ -521,7 +529,7 @@ public class PacketValidatorStageTest {
 	public void testCheckSumValidationFailureWithRetryCount() throws Exception {
 		String test = "123456789";
 		byte[] data = "1234567890".getBytes();
-
+		Mockito.when(documentUtility.checkSum(anyString())).thenReturn(false);
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
