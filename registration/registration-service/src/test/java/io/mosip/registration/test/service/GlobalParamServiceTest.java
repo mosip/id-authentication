@@ -109,7 +109,7 @@ public class GlobalParamServiceTest {
 		gloablContextParamServiceImpl.synchConfigData();
 	}
 	
-	@Test
+	//@Test
 	public void syncConfigDataTest2() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException { 
 		
 			Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("STN123");
