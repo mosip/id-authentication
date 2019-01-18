@@ -309,7 +309,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		idRequestDTO.setVersion(idRepoApiVersion);
 		
 		try {
-			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, "", "",
+			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV,pathsegments, "", "",
 					idRequestDTO, String.class);
 			Gson gsonObj = new Gson();
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
