@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 	<artifactId>registration-status-api</artifactId>
 
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-status-service</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0</version>
 		</dependency>
 	</dependencies>
 	<build>
