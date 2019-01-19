@@ -1,0 +1,40 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sample-nginx
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: sample-nginx
+    spec:
+      containers:
+      - name: sample-nginx
+        image: nginx:1.15.5
+        ports:
+            - containerPort: 80
+        volumeMounts:
+        - mountPath: "/var/log"
+          name: volume-233
+      volumes:
+        - name: volume-233
+          persistentVolumeClaim:
+            claimName: azurefile
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-nginx
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: sample-nginx

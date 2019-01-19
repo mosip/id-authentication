@@ -1,0 +1,39 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pre-registration-demographic-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: pre-registration-demographic-service
+    spec:
+      containers:
+      - name: pre-registration-demographic-service
+        image: docker-registry.mosip.io:5000/pre-registration-demographic-service
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 9092
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pre-registration-demographic-service
+spec:
+  ports:
+    - port: 9092
+  selector:
+    app: pre-registration-demographic-service
