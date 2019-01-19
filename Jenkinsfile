@@ -20,7 +20,7 @@ node{
  }
  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
 
-  rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
 
   
  }
