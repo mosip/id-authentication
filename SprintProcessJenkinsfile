@@ -7,7 +7,7 @@ import jenkins.model.Jenkins;
 
 node {
  def mvnHome = tool name: 'M2_HOME', type: 'maven'
- def branch = 'master'
+ def branch = 'DEV'
  def newVersion
  
  // Asking user if he wants to start a new sprint, user will choose either proceed or abort
