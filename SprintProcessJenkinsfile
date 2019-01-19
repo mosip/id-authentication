@@ -54,23 +54,8 @@ node {
    sh "${mvnHome}/bin/mvn versions:commit"
   }
  }
- stage('GIT - Create new branch') {
-  dir(branch) {
-   sh "git checkout -b ${newVersion}"
-   sh "git add ."
-   sh "git commit -m 'new branch created'"
-
-   sshagent(['fd9c5f45-e6ac-45ea-b345-f6fbeb303044']) {
-    sh "git push origin ${newVersion}"
-   }
-  }
-
- // Setting global environment variable for Branch name
-	echo "Setting global variable NEXT_BRANCH_NAME to "+newVersion
-	createGlobalEnvironmentVariables("NEXT_BRANCH_NAME",newVersion)
- }
  
-  stage('--------- Artifactory configuration ----------------') {
+   stage('--------- Artifactory configuration ----------------') {
   /*
   JFrog artifactory configuration
   */
@@ -93,7 +78,21 @@ node {
   */
   server.publishBuildInfo buildInfo
  }
- 
+ stage('GIT - Create new branch') {
+  dir(branch) {
+   sh "git checkout -b ${newVersion}"
+   sh "git add ."
+   sh "git commit -m 'new branch created'"
+
+   sshagent(['fd9c5f45-e6ac-45ea-b345-f6fbeb303044']) {
+    sh "git push origin ${newVersion}"
+   }
+  }
+
+ // Setting global environment variable for Branch name
+	echo "Setting global variable NEXT_BRANCH_NAME to "+newVersion
+	createGlobalEnvironmentVariables("NEXT_BRANCH_NAME",newVersion)
+ } 
 
 }
 
