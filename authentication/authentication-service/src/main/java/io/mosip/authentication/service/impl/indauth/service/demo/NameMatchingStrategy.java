@@ -1,35 +1,51 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import java.util.function.ToIntBiFunction;
+import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * 
- * @author Dinesh Karuppiah
+ * @author Dinesh Karuppiah.T
  */
 
 public enum NameMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
-			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
+			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
-			return 0;
+			return throwError(props);
 		}
-	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
-			return MatcherUtil.doPartialMatch(refInfoName, entityInfoName);
-		} else {
-			return 0;
-		}
-	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo) -> 0);
 
-	private final ToIntBiFunction<Object, Object> matchFunction;
+	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
+		if (reqInfo instanceof String && entityInfo instanceof String) {
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
+		} else {
+			return throwError(props);
+		}
+	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
+		if (reqInfo instanceof String && entityInfo instanceof String) {
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			String language = (String) props.get("language");
+			return DemoMatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+		} else {
+			return throwError(props);
+		}
+	});
+
+	private final MatchFunction matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
 
@@ -39,9 +55,23 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	NameMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	NameMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
+	}
+
+	private static int throwError(Map<String, Object> props) throws IdAuthenticationBusinessException {
+		final Object object = props.get("languageType");
+		if (object instanceof LanguageType) {
+			final LanguageType langType = ((LanguageType) object);
+			if (langType.equals(LanguageType.PRIMARY_LANG)) {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NAMEPRI_MISMATCH);
+			} else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NAMESEC_MISMATCH);
+			}
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+		}
 	}
 
 	@Override
@@ -50,7 +80,7 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 

@@ -1,26 +1,34 @@
 package io.mosip.authentication.service.helper;
 
+import java.io.IOException;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import javax.net.ssl.SSLException;
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyExtractors;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -30,8 +38,16 @@ import reactor.core.publisher.Mono;
  * @author Manoj SP
  */
 @Component
+
+/**
+ * Instantiates a new rest helper.
+ */
 @NoArgsConstructor
 public class RestHelper {
+
+	/** The mapper. */
+	@Autowired
+	private ObjectMapper mapper;
 
 	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";
@@ -54,71 +70,104 @@ public class RestHelper {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	private static final String THROWING_REST_SERVICE_EXCEPTION = "Throwing RestServiceException";
+
+	private static final String REQUEST_SYNC_RUNTIME_EXCEPTION = "requestSync-RuntimeException";
+
 	/** The mosipLogger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestHelper.class);
-	
+	private static Logger mosipLogger = IdaLogger.getLogger(RestHelper.class);
+
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param request
-	 *            the request
+	 * @param         <T> the generic type
+	 * @param request the request
 	 * @return the response object or null in case of exception
-	 * @throws RestServiceException
-	 *             the rest service exception
+	 * @throws RestServiceException the rest service exception
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
 		Object response;
-		if (request.getTimeout() != null) {
-			try {
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
-				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
+		try {
+			if (request.getTimeout() != null) {
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_REQUEST + request + "\n" + request.getHeaders().getContentType());
+				response = request(request, getSslContext()).timeout(Duration.ofSeconds(request.getTimeout())).block();
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_RESPONSE + response);
 				return (T) response;
-			} catch (RuntimeException e) {
-				if (e.getCause().getClass().equals(TimeoutException.class)) {
-					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-							"Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
-					throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
-				} else {
-					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
-							"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
-					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
-				}
+			} else {
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
+				response = request(request, getSslContext()).block();
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_RESPONSE + response);
+				return (T) response;
 			}
-		} else {
-			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
-			response = request(request).block();
-			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
-			return (T) response;
+		} catch (WebClientResponseException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + ExceptionUtils.getStackTrace(e)
+							+ " \n Response Body : \n" + e.getResponseBodyAsString());
+			throw handleStatusError(e, request.getResponseType());
+		} catch (RuntimeException e) {
+			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n "
+								+ ExceptionUtils.getStackTrace(e));
+				throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
+			} else {
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e);
+				throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+			}
 		}
+
 	}
 
 	/**
 	 * Request to send/receive HTTP requests and return the response asynchronously.
 	 *
-	 * @param request
-	 *            the request
+	 * @param request the request
 	 * @return the supplier
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
-		mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
-		Mono<?> sendRequest = request(request);
-		sendRequest.subscribe();
-		mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
-		return () -> sendRequest.block();
+		try {
+			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+			Mono<?> sendRequest = request(request, getSslContext());
+			sendRequest.subscribe();
+			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+			return () -> sendRequest.block();
+		} catch (RestServiceException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+			return () -> new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+		}
+	}
+
+	/**
+	 * Gets the ssl context.
+	 *
+	 * @return the ssl context
+	 * @throws RestServiceException the rest service exception
+	 */
+	private SslContext getSslContext() throws RestServiceException {
+		try {
+			return SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+		} catch (SSLException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+					"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+			throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+		}
 	}
 
 	/**
 	 * Method to send/receive HTTP requests and return the response as Mono.
 	 *
-	 * @param request
-	 *            the request
+	 * @param request    the request
+	 * @param sslContext the ssl context
 	 * @return the mono
 	 */
-	private Mono<?> request(RestRequestDTO request) {
+	@SuppressWarnings("unchecked")
+	private Mono<?> request(RestRequestDTO request, SslContext sslContext) {
 		WebClient webClient;
 		Mono<?> monoResponse;
 		RequestBodySpec uri;
@@ -126,9 +175,14 @@ public class RestHelper {
 		RequestBodyUriSpec method;
 
 		if (request.getHeaders() != null) {
-			webClient = WebClient.builder().baseUrl(request.getUri()).defaultHeaders(request.getHeaders()).build();
+			webClient = WebClient.builder()
+					.clientConnector(new ReactorClientHttpConnector(builder -> builder.sslContext(sslContext)))
+					.baseUrl(request.getUri())
+					.defaultHeader(HttpHeaders.CONTENT_TYPE, request.getHeaders().getContentType().toString()).build();
 		} else {
-			webClient = WebClient.builder().baseUrl(request.getUri()).build();
+			webClient = WebClient.builder()
+					.clientConnector(new ReactorClientHttpConnector(builder -> builder.sslContext(sslContext)))
+					.baseUrl(request.getUri()).build();
 		}
 
 		method = webClient.method(request.getHttpMethod());
@@ -146,8 +200,7 @@ public class RestHelper {
 			exchange = uri.retrieve();
 		}
 
-		monoResponse = exchange.onStatus(HttpStatus::isError, this::handleStatusError)
-				.bodyToMono(request.getResponseType());
+		monoResponse = exchange.bodyToMono(request.getResponseType());
 
 		return monoResponse;
 	}
@@ -155,24 +208,29 @@ public class RestHelper {
 	/**
 	 * Handle 4XX/5XX status error.
 	 *
-	 * @param response
-	 *            the response
+	 * @param e            the response
+	 * @param responseType the response type
 	 * @return the mono<? extends throwable>
 	 */
-	private Mono<Throwable> handleStatusError(ClientResponse response) {
-		Mono<Object> body = response.body(BodyExtractors.toMono(Object.class));
-		mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-				"Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
-		if (response.statusCode().is4xxClientError()) {
+	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType) {
+		try {
 			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-					"Status error - returning RestServiceException - CLIENT_ERROR");
-			return body.flatMap(responseBody -> Mono.error(
-					new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, Optional.of(responseBody))));
-		} else {
-			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
-					"Status error - returning RestServiceException - SERVER_ERROR");
-			return body.flatMap(responseBody -> Mono.error(
-					new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR, Optional.of(responseBody))));
+					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
+			if (e.getStatusCode().is4xxClientError()) {
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+						"Status error - returning RestServiceException - CLIENT_ERROR");
+				return new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR,
+						e.getResponseBodyAsString(),
+						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
+			} else {
+				mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+						"Status error - returning RestServiceException - SERVER_ERROR");
+				return new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR,
+						e.getResponseBodyAsString(),
+						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
+			}
+		} catch (IOException ex) {
+			return new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, ex);
 		}
 
 	}

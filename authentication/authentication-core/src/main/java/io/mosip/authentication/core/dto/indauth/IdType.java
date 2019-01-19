@@ -25,14 +25,16 @@ public enum IdType {
 	private String type;
 
 	/**
+	 * construct enum with id-type.
 	 * 
-	 * @param type
+	 * @param type id type
 	 */
 	private IdType(String type) {
 		this.type = type;
 	}
 
 	/**
+	 * get id-type.
 	 * 
 	 * @return type
 	 */
@@ -50,12 +52,11 @@ public enum IdType {
 	/**
 	 * Look for id type either "D" or "V". default id is "D"
 	 * 
-	 * @param type
-	 * @return IDType
+	 * @param type String id-type
+	 * @return IDType Optional with IdType
 	 */
 	public static Optional<IdType> getIDType(String type) {
-		return Stream.of(values()).filter(t -> t.getType().equals(type))
-				                                .findAny();
+		return Stream.of(values()).filter(t -> t.getType().equalsIgnoreCase(type)).findAny();
 
 	}
 }

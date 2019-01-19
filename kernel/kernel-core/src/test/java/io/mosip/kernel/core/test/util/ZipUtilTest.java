@@ -3,17 +3,17 @@ package io.mosip.kernel.core.test.util;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
+
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.FileNotFoundException;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.util.ZipUtils;
-import io.mosip.kernel.core.util.exception.MosipFileNotFoundException;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
 /**
  * Test class for ZipUtil class
@@ -27,7 +27,7 @@ public class ZipUtilTest {
 	public static ZipUtils zip;
 	
 	@Test
-	public void zipByteArray() throws MosipFileNotFoundException, MosipIOException, IOException, URISyntaxException {
+	public void zipByteArray() throws FileNotFoundException, IOException, java.io.IOException, URISyntaxException {
  
     	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
     	    byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
@@ -42,7 +42,7 @@ public class ZipUtilTest {
 	
 	
 	@Test
-	public void unzipByteArray() throws MosipFileNotFoundException, MosipIOException, IOException, URISyntaxException {
+	public void unzipByteArray() throws FileNotFoundException, IOException, java.io.IOException, URISyntaxException {
  
     	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
     	    byte[] returnedzippedByteArray = ZipUtils.zipByteArray(data);
@@ -59,7 +59,7 @@ public class ZipUtilTest {
 
 
 	@Test
-	public void zipFileTest() throws MosipFileNotFoundException, MosipIOException, IOException {
+	public void zipFileTest() throws FileNotFoundException, IOException, java.io.IOException {
 
 		String outputFile = System.getProperty("user.dir") + "\\compressed.zip";
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -71,15 +71,15 @@ public class ZipUtilTest {
 		file.delete();
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void zipFileFileNotFoundExceptionTestWithInputFile() throws MosipFileNotFoundException, MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void zipFileFileNotFoundExceptionTestWithInputFile() throws FileNotFoundException, IOException {
 		String inputFile = null;
 		String outputFile = "";
 		ZipUtils.zipFile(inputFile, outputFile);
 	}
 
 	@Test
-	public void zipMultipleFileTest() throws MosipFileNotFoundException, MosipIOException {
+	public void zipMultipleFileTest() throws FileNotFoundException, IOException {
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputMultFile1 = classLoader.getResource("File1.txt").getFile();
@@ -94,8 +94,8 @@ public class ZipUtilTest {
 		file.delete();
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void zipMultFileNotFoundExceptionTest() throws MosipFileNotFoundException, MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void zipMultFileNotFoundExceptionTest() throws FileNotFoundException, IOException {
 		String[] inputMultFile = { "" };
 		String outputMulFile = "";
 
@@ -103,7 +103,7 @@ public class ZipUtilTest {
 	}
 
 	@Test
-	public void zipDirectoryTest() throws MosipFileNotFoundException, MosipIOException {
+	public void zipDirectoryTest() throws FileNotFoundException, IOException {
 
 		String outputDir = System.getProperty("user.dir") + "\\compressedDir.zip";
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -116,8 +116,8 @@ public class ZipUtilTest {
 		file.delete();
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void zipDirFileNotFoundExceptionTest() throws MosipFileNotFoundException, MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void zipDirFileNotFoundExceptionTest() throws FileNotFoundException, IOException {
 		String inputDir = "";
 		String outputDir = "";
 
@@ -125,7 +125,7 @@ public class ZipUtilTest {
 	}
 
 	@Test
-	public void unZipFileTest() throws MosipFileNotFoundException, MosipIOException {
+	public void unZipFileTest() throws FileNotFoundException, IOException {
 
 		String outputUnZip = System.getProperty("user.dir") + "\\unzip";
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -138,16 +138,16 @@ public class ZipUtilTest {
 		file.delete();
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void unZipFileNotFoundExceptionTest() throws MosipFileNotFoundException, MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void unZipFileNotFoundExceptionTest() throws FileNotFoundException, IOException {
 
 		String inputZipFile = "";
 		String outputUnZip = "";
 		ZipUtils.unZipFile(inputZipFile, outputUnZip);
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void unZipNullPointerException() throws MosipFileNotFoundException, MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void unZipNullPointerException() throws FileNotFoundException, IOException {
 
 		String inputZipFile = null;
 		String outputUnZip = null;
@@ -155,7 +155,7 @@ public class ZipUtilTest {
 	}
 
 	@Test
-	public void unzipDTest() throws MosipFileNotFoundException, MosipIOException, IOException {
+	public void unzipDTest() throws FileNotFoundException, IOException, java.io.IOException {
 
 		String outputUnZip = System.getProperty("user.dir") + "\\unzip";
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -180,8 +180,8 @@ public class ZipUtilTest {
 		dir.delete();
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void unZipDirNotFoundExceptionTest() throws MosipFileNotFoundException, MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void unZipDirNotFoundExceptionTest() throws FileNotFoundException, IOException {
 		String outputFile = "";
 		String outputUnZip = "";
 		ZipUtils.unZipDirectory(outputFile, outputUnZip);

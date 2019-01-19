@@ -15,8 +15,8 @@ import io.mosip.registration.repositories.TemplateTypeRepository;
 
 /**
  * DaoImpl for calling the respective template repositories and getting data from database
+ * 
  * @author Himaja Dhanyamraju
- * @since 1.0.0
  */
 @Repository
 public class TemplateDaoImpl implements TemplateDao{
@@ -31,15 +31,14 @@ public class TemplateDaoImpl implements TemplateDao{
 	private TemplateFileFormatRepository<TemplateFileFormat> fileFormatRepository;
 	
 	public List<Template> getAllTemplates(){
-		return (List<Template>)templateRepository.findByIsActiveTrue();
+		return templateRepository.findByIsActiveTrue();
 	}
 	
 	public List<TemplateType> getAllTemplateTypes(){
-		return (List<TemplateType>)typeRepository.findByIsActiveTrue();
+		return typeRepository.findByIsActiveTrue();
 	}
 	
 	public List<TemplateFileFormat> getAllTemplateFileFormats(){
-		return (List<TemplateFileFormat>)fileFormatRepository.findByIsActiveTrue();
-	}
-	
+		return fileFormatRepository.findByIsActiveTrue();
+	}	
 }

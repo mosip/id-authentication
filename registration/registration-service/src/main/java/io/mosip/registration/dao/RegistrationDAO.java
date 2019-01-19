@@ -1,5 +1,6 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import io.mosip.registration.entity.Registration;
@@ -9,11 +10,12 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  * DAO class for Repository
  * 
  * @author Balaji Sridharan
+ * @author Mahesh Kumar
+ * @author Saravanakumar Gnanaguru
  * @since 1.0.0
  *
  */
 public interface RegistrationDAO {
-
 	/**
 	 * Saves the Registration entity
 	 * 
@@ -26,30 +28,18 @@ public interface RegistrationDAO {
 	void save(String zipFileName, String individualName) throws RegBaseCheckedException;
 
 	/**
-	 * This methods is used to approve the packet
-	 * 
-	 * @return List of Registration Packets which are in created state.
-	 */
-	List<Registration> approvalList();
-
-	/**
 	 * This method updates the status of the packet
 	 * 
-	 * @param id
+	 * @param registrationID
 	 *            the id of the {@link Registration} entity to be updated
-	 * @param clientStatus_code
+	 * @param clientStatusCode
 	 *            the status to be updated
-	 * @param approverUsrId
-	 *            the user id of the approver
 	 * @param statusComments
 	 *            the status comments to be updated
-	 * @param updBy
-	 *            the user id of the user
 	 * 
 	 * @return the updated {@link Registration} entity
 	 */
-	Registration updateStatus(String id, String clientStatus_code, String approverUsrId, String statusComments,
-			String updBy);
+	Registration updateRegistration(String registrationID,String statusComments,String clientStatusCode);
 
 	/**
 	 * This method retrieves the list of Registrations by status.
@@ -60,10 +50,6 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> getEnrollmentByStatus(String status);
 
-	boolean upload(Object object);
-
-	List<String> view(String zipFileName);
-	
 	/**
 	 * 
 	 * This method is used to get the Packet details using the Id.
@@ -71,16 +57,42 @@ public interface RegistrationDAO {
 	 * @param packetNames
 	 * @return
 	 */
-	
-	List<Registration> getRegistrationById(List<String> packetNames);
-	
+	List<Registration> getRegistrationByStatus(List<String> packetStatus);
 	/**
 	 * 
-	 * This method is used to update the registration status in the Registration table.
+	 * This method is used to update the registration status in the Registration
+	 * table.
 	 * 
 	 * @param regId
 	 * @return
 	 */
+	Registration updateRegStatus(Registration packetStatus);
 	
-	Registration updateRegStatus(String regId);
+	/**Fetch the packets that needs to be Synched with the server.
+	 * @param statusCodes
+	 * @return
+	 */
+	List<Registration> getPacketsToBeSynched(List<String> statusCodes);
+	
+	/**Update the Packet sync status in the database
+	 * @param packet
+	 * @return
+	 */
+	Registration updatePacketSyncStatus(Registration packet);
+	
+	/**
+	 * Get all the Re-Registration packets
+	 * @param status
+	 * @return
+	 */
+	List<Registration> getAllReRegistrationPackets(String[] status);
+	
+	/**
+	 * Find by CrDtimes and client status code
+	 * @param crDtimes the date upto packets to be deleted
+	 * @param clientStatus status of resgistrationPacket
+	 * @return list of registrations
+	 */
+	List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes, String clientStatus);
+
 }

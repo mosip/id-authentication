@@ -1,0 +1,40 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kernel-emailnotification-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: kernel-emailnotification-service
+    spec:
+      containers:
+      - name: kernel-emailnotification-service
+        image: docker-registry.mosip.io:5000/kernel-emailnotification-service
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 8083
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kernel-emailnotification-service
+spec:
+  ports:
+    - port: 8083
+  selector:
+    app: kernel-emailnotification-service
+

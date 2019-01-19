@@ -1,8 +1,8 @@
 package io.mosip.registration.util.kernal;
 
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_FILE_NOT_FOUND_ERROR_CODE;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_FTP_CONNECTION_ERROR_CODE;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_FTP_PROPERTIES_SET_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_FILE_NOT_FOUND_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_FTP_CONNECTION_ERROR_CODE;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_FTP_PROPERTIES_SET_ERROR_CODE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,7 @@ import io.mosip.registration.dto.PacketUploadDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 @Configuration
-@PropertySource("classpath:constants.properties")
+@PropertySource("classpath:application.properties")
 
 @Service
 public class FTPUploadManager {

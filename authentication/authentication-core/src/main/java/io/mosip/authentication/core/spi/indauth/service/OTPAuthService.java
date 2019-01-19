@@ -16,12 +16,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface OTPAuthService {
 
 	/**
-	 * 
-	 * @param pinValue - pin value
-	 * @param UIN      - Unique Number
-	 * @return
+	 * Validate otp.
+	 *
+	 * @param authreqdto AuthRequestDTO
+	 * @param uin the uin
+	 * @return AuthStatusInfo
+	 * @throws IdAuthenticationBusinessException exception
 	 */
-
-	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
-
+	AuthStatusInfo validateOtp(AuthRequestDTO authreqdto,String uin) throws IdAuthenticationBusinessException;
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -7,27 +9,30 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="309.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.OnHoldController">
+<AnchorPane fx:id="onHoldPane" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.OnHoldController" styleClass="rootPaneStyle">
    <children>
-      <SplitPane dividerPositions="0.1498371335504886" orientation="VERTICAL" prefHeight="309.0" prefWidth="410.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="12.0" prefWidth="408.0">
-               <children>
-                  <Label layoutX="113.0" layoutY="7.0" prefHeight="21.0" prefWidth="182.0" text="Reason for On Hold">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <Label layoutX="14.0" layoutY="50.0" prefHeight="27.0" prefWidth="88.0" text="Reason    :" />
-                  <ComboBox fx:id="onHoldComboBox" layoutX="102.0" layoutY="44.0" prefHeight="39.0" prefWidth="292.0" promptText="Select" />
-                  <Button fx:id="submit" layoutX="165.0" layoutY="177.0" mnemonicParsing="false" onAction="#updatePacketStatus" text="Submit" />
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
+      <AnchorPane fx:id="onHoldLabelAnchorPane" prefHeight="47.0" prefWidth="400.0" styleClass="labelAnchorPanebgColor">
+         <children>
+            <Label layoutX="127.0" layoutY="12.0" text="%reasonforonhold">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Hyperlink fx:id="exitButton" layoutX="377.0" layoutY="12.0" onAction="#exitWindow" text="%x" styleClass="exitButtonStyle">
+            </Hyperlink>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="onHoldAnchorPane" layoutX="1.0" layoutY="47.0" prefHeight="152.0" prefWidth="399.0" styleClass="anchorPanebgColor">
+         <children>
+            <ComboBox fx:id="onHoldComboBox" layoutX="100.0" layoutY="38.0" onAction="#onHoldComboboxAction" prefHeight="39.0" prefWidth="200.0" promptText="Select">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></ComboBox>
+            <Button fx:id="submit" layoutX="170.0" layoutY="111.0" mnemonicParsing="false" onAction="#updatePacketStatus" prefWidth="60.0" text="%submit" styleClass="comboboxStyle">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></Button>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

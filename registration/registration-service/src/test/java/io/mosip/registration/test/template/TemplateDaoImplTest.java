@@ -9,12 +9,10 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.dao.impl.TemplateDaoImpl;
 import io.mosip.registration.entity.Template;
@@ -25,7 +23,6 @@ import io.mosip.registration.repositories.TemplateFileFormatRepository;
 import io.mosip.registration.repositories.TemplateRepository;
 import io.mosip.registration.repositories.TemplateTypeRepository;
 
-@RunWith(SpringRunner.class)
 public class TemplateDaoImplTest {
 
 	@Mock

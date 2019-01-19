@@ -17,17 +17,19 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * @author Loganathan Sekar
  */
 class CharResponseWrapper extends HttpServletResponseWrapper {
-	
+
 	/** The output. */
 	private ByteArrayOutputStream output;
-	
+
 	/** The closed. */
 	private boolean closed;
-	
+
 	/** The writer. */
 	private PrintWriter writer;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -37,23 +39,30 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	/**
 	 * Instantiates a new char response wrapper.
 	 *
-	 * @param response the response
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param response
+	 *            the response
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
-	public CharResponseWrapper(HttpServletResponse response) throws IOException {
+	public CharResponseWrapper(HttpServletResponse response)
+			throws IOException {
 		super(response);
-		writer = response.getWriter();
-		output = new ByteArrayOutputStream();
+		this.writer = response.getWriter();
+		this.output = new ByteArrayOutputStream();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletResponseWrapper#getWriter()
 	 */
 	public PrintWriter getWriter() {
 		return new PrintWriter(new OutputStreamWriter(output));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletResponseWrapper#getOutputStream()
 	 */
 	@Override
@@ -63,12 +72,11 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 			@Override
 			public void write(int b) throws IOException {
 				output.write(b);
-//				writer.write(b);
 			}
 
 			@Override
 			public void setWriteListener(WriteListener listener) {
-
+			    //override method
 			}
 
 			@Override

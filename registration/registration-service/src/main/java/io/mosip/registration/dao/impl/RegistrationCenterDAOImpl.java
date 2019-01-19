@@ -1,10 +1,15 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.RegistrationCenter;
@@ -18,46 +23,52 @@ import io.mosip.registration.repositories.RegistrationCenterRepository;
  */
 @Repository
 public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
-	
+
+	/**
+	 * Instance of LOGGER
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationCenterDAOImpl.class);
+
 	/** The registrationCenter repository. */
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
-	
-	/* (non-Javadoc)
-	 * @see org.mosip.registration.dao.RegistrationCenterDAO#getCenterName(java.lang.String)
-	 */
-	public String getCenterName(String centerId) {
-		
-		String centerName = "";
-		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
-		if(registrationCenter.isPresent()) {
-			centerName = registrationCenter.get().getCenterName();
-		}
-		
-		return centerName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.mosip.registration.dao.RegistrationCenterDAO#getRegistrationCenterDetails(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegistrationCenterDAO#getRegistrationCenterDetails
+	 * (java.lang.String)
 	 */
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
-		
-		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId); 
+
+		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching Registration Center details");
+
+		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
+				.findByCenterIdAndIsActiveTrue(centerId);
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
-		if(registrationCenter.isPresent()) {
-			registrationCenterDetailDTO.setRegistrationCenterCode(registrationCenter.get().getCenterId());
+		if (registrationCenter.isPresent()) {
+			registrationCenterDetailDTO
+					.setRegistrationCenterId(registrationCenter.get().getCenterId());
+			registrationCenterDetailDTO.setRegistrationCenterName(registrationCenter.get().getCenterName());
+			registrationCenterDetailDTO.setRegsitrationCenterTypeCode(registrationCenter.get().getCntrTypCode());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine1(registrationCenter.get().getAddrLine1());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine2(registrationCenter.get().getAddrLine2());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine3(registrationCenter.get().getAddrLine3());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine1(registrationCenter.get().getLocLine1());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine2(registrationCenter.get().getLocLine2());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine3(registrationCenter.get().getLocLine3());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine4(registrationCenter.get().getLocLine4());
-			registrationCenterDetailDTO.setRegistrationCenterCountry(registrationCenter.get().getCountry());
 			registrationCenterDetailDTO.setRegistrationCenterLatitude(registrationCenter.get().getLatitude());
 			registrationCenterDetailDTO.setRegistrationCenterLongitude(registrationCenter.get().getLongitude());
-			registrationCenterDetailDTO.setRegistrationCenterPincode(registrationCenter.get().getPincode());
+			registrationCenterDetailDTO.setRegistrationCenterLocationCode(registrationCenter.get().getLocationCode());
+			registrationCenterDetailDTO.setRegistrationCenterContactPhone(registrationCenter.get().getContactPhone());
+			registrationCenterDetailDTO.setRegistrationCenterWorkingHours(registrationCenter.get().getWorkingHours());
+			registrationCenterDetailDTO.setRegistrationCenterNumberOfKiosks(registrationCenter.get().getNumberOfKiosks());
+			registrationCenterDetailDTO.setRegistrationCenterPerKioskProcessTime(registrationCenter.get().getPerKioskProcessTime());
+			registrationCenterDetailDTO.setRegistrationCenterHolidayLocCode(registrationCenter.get().getHolidayLocCode());
 		}
+
+		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Registration Center details fetched successfulyy");
+
 		return registrationCenterDetailDTO;
 	}
 

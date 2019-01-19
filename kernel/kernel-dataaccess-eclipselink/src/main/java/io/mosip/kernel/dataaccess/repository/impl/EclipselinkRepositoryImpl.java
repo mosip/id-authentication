@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.eclipse.persistence.exceptions.EclipseLinkException;
-import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.dataaccess.constants.EclipselinkErrorCodes;
 import io.mosip.kernel.dataaccess.constants.EclipselinkPersistenceConstants;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;

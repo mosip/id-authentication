@@ -1,6 +1,6 @@
 package io.mosip.kernel.auditmanager.entity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * The Audit Entity class with {@link #actor}, {@link #action}, {@link #origin},
- * {@link #device}, {@link #description} fields to be captured and recorded
+ * The Audit Entity class with required fields to be captured and recorded
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
@@ -24,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "app_audit_log", schema = "audit")
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Audit extends BaseAudit {
@@ -45,8 +44,8 @@ public class Audit extends BaseAudit {
 	private String eventType;
 
 	@NotNull
-	@Column(name = "action_dtimesz", nullable = false, updatable = false)
-	private OffsetDateTime actionTimeStamp;
+	@Column(name = "action_dtimes", nullable = false, updatable = false)
+	private LocalDateTime actionTimeStamp;
 
 	@NotNull
 	@Size(min = 1, max = 32)

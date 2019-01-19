@@ -1,10 +1,12 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
-import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -15,6 +17,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
+	
 
 /**
  * This abstract class is Vert.x implementation for MOSIP.
@@ -29,6 +32,7 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 public abstract class MosipVerticleManager extends AbstractVerticle
 		implements EventBusManager<MosipEventBus, MessageBusAddress, MessageDTO> {
 
+	/** The logger. */
 	private Logger logger = LoggerFactory.getLogger(MosipVerticleManager.class);
 
 	/*
@@ -39,10 +43,17 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Class<?> verticleName) {
+	public MosipEventBus getEventBus(Class<?> verticleName, String clusterManagerUrl) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		ClusterManager clusterManager = new IgniteClusterManager();
+		URL url = null;
+		try {
+			url = new URL(clusterManagerUrl);
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
 				.setHAEnabled(true);
 		Vertx.clusteredVertx(options, result -> {
@@ -52,7 +63,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			} else {
-				throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE);
+				throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage());
 			}
 		});
 
@@ -60,7 +71,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 			mosipEventBus = new MosipEventBus(eventBus.get());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
-			throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE, e);
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage(), e);
 
 		}
 		return mosipEventBus;
@@ -93,6 +104,8 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	}
 
 	/**
+	 * Send.
+	 *
 	 * @param mosipEventBus
 	 *            The Eventbus instance for communication
 	 * @param toAddress
@@ -108,6 +121,8 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	}
 
 	/**
+	 * Consume.
+	 *
 	 * @param mosipEventBus
 	 *            The Eventbus instance for communication
 	 * @param fromAddress

@@ -4,12 +4,12 @@
 package io.mosip.kernel.core.util;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+//import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.util.constant.HMACUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipNoSuchAlgorithmException;
 
 /**
  * This class defines the HMAC Util to be used in MOSIP Project. The HMAC Util
@@ -79,15 +79,15 @@ public final class HMACUtils {
 	 * @param algorithm
 	 *            the standard name of the digest algorithm.
 	 * 
-	 * @throws MosipNoSuchAlgorithmException
+	 * @throws NoSuchAlgorithmException
 	 *             if specified algorithm went wrong
 	 * @description loaded messageDigest with specified algorithm
 	 */
 	static {
 		try {
 			messageDigest = messageDigest != null ? messageDigest : MessageDigest.getInstance(HMAC_ALGORITHM_NAME);
-		} catch (NoSuchAlgorithmException exception) {
-			throw new MosipNoSuchAlgorithmException(HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
+		} catch (java.security.NoSuchAlgorithmException exception) {
+			throw new NoSuchAlgorithmException(HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					HMACUtilConstants.MOSIP_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), exception.getCause());
 		}
 	}

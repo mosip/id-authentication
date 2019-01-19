@@ -20,4 +20,10 @@ local.properties
 .loadpath
 .DS_Store
 test.txt
+.idea/
+.settings/
+.sonarlint/
+.recommenders/
+/.recommenders/
+**/*.iml
 META-INF/

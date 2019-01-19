@@ -7,18 +7,19 @@ import lombok.Data;
  * then <b>otp</b> attribute set as <b>true</b>
  * 
  * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @Data
 public class AuthTypeDTO {
 
 	/** For personal identity Authentication */
-	private boolean pi;
+	private boolean personalIdentity;
 
 	/** For address Authentication */
-	private boolean ad;
+	private boolean address;
 
 	/** For Full address Authentication */
-	private boolean fad;
+	private boolean fullAddress;
 
 	/** For biometric Authentication */
 	private boolean bio;

@@ -1,11 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- <parent> <groupId>io.mosip</groupId> <artifactId>mosip-parent</artifactId> 
-		<version>1.0.0-SNAPSHOT</version> </parent> -->
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.7.0</version>
+	</parent>
+	
 	<groupId>io.mosip.registration</groupId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.7.0</version>
 	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
@@ -46,10 +52,33 @@
 		<jackson.version>2.8.8</jackson.version>
 		<jackson.mapper.asl.version>1.7.1</jackson.mapper.asl.version>
 
-		<mosip.core.kernel.version>1.0.0-SNAPSHOT</mosip.core.kernel.version>
+		<mosip.core.kernel.version>0.7.0-SNAPSHOT</mosip.core.kernel.version>
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
 
+		<!-- sourceafis Version -->
+		<sourceafis.version>3.4.0</sourceafis.version>
+		
+		<!-- openimaj version -->
+		<org.openimaj.version>1.3.5</org.openimaj.version>
+		
+		<!-- webcam-capture version -->
+		<webcam-capture.version>0.3.12</webcam-capture.version>
+
+		<sonar.exclusions>
+			src/main/java/io/mosip/registration/util/**/*,
+			src/main/java/io/mosip/registration/repositories/**/*,
+			src/main/java/io/mosip/registration/context/**/*,
+			src/main/java/io/mosip/registration/controller/**/*,
+			src/main/java/io/mosip/registration/ui/constants/**/*,
+			src/main/java/io/mosip/registration/scheduler/**/*,
+			src/main/java/io/mosip/registration/dto/**/*,
+			src/main/java/io/mosip/registration/constants/**/*,
+			src/main/java/io/mosip/registration/entity/**/*,
+			src/main/java/io/mosip/registration/exception/**/*,
+			src/main/java/io/mosip/registration/config/**/*,
+			src/main/java/io/mosip/registration/device/**/*
+		</sonar.exclusions>
 	</properties>
 
 	<modules>
@@ -131,6 +160,31 @@
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idgenerator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-templatemanager-velocity</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-qrcodegenerator-zxing</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derby</artifactId>
 				<version>${apache.derby.version}</version>
@@ -169,11 +223,35 @@
 				<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
 				<scope>system</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz</artifactId>
+				<version>2.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.24.0-GA</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-crypto-jce</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-jsonvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -192,42 +270,11 @@
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Project-Name>${project.name}</Project-Name>
-							<Project-Version>${project.version}</Project-Version>
-							<Built-By>${user.name}</Built-By>
-							<Built-OS>${os.name}</Built-OS>
-							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-							<Build-Date>${env.BUILD_ID}</Build-Date>
-							<Build-URL>${env.BUILD_URL}</Build-URL>
-							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-							<SCM-Path>${scm.path}</SCM-Path>
-							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${maven.jacoco.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>**/*IntegrationTest.java</exclude>
-						<exclude> org/mosip/registration/controller/**</exclude>
-					</excludes>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -251,20 +298,15 @@
 		</plugins>
 	</build>
 	<profiles>
-		<!-- <profile> <id>sonar</id> <activation> <activeByDefault>true</activeByDefault> 
-			</activation> <properties> Optional URL to server. Default value is http://localhost:9000 
-			<sonar.host.url> http://13.67.91.2:9000 http://172.25.166.136:9000 </sonar.host.url> 
-			<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
-			</properties> </profile> -->
 		<profile>
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
 				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
-				<sonar.projectName>MOSIP Parent Module-DEV</sonar.projectName>
+				<sonar.projectName>Registration-DEV</sonar.projectName>
 				<sonar.projectVersion>master</sonar.projectVersion>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-				<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
+				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -272,22 +314,17 @@
 		</profile>
 		<profile>
 			<id>LOCAL</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<properties>
-				<sonar.host.url>http://13.67.91.2:9000</sonar.host.url>
-				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
-				<sonar.projectName>MOSIP Parent Module-Local</sonar.projectName>
+				<sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
+				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+				<sonar.projectName>Registration</sonar.projectName>
 				<sonar.projectVersion>master</sonar.projectVersion>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-				<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
+				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
 			</properties>
 		</profile>
-
 	</profiles>
-
 </project>

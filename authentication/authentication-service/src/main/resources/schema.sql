@@ -352,14 +352,11 @@ create schema if not exists master
 
 
 -- keys section -------------------------------------------------------------------------------
-alter table master.location add constraint pk_loc_code primary key (code, is_active)
- ;
+-- alter table master.location add constraint pk_loc_code primary key (code, is_active);
 
 -- indexes section -----------------------------------------------------------------------
-create index if not exists idx_loc_name on master.location (name)
-;
+--create index if not exists idx_loc_name on master.location (name);
 
 -- comments section -------------------------------------------------------------------------- 
-comment on table master.location is 'Master location table'
-;
+--comment on table master.location is 'Master location table';
 

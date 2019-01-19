@@ -1,0 +1,42 @@
+node {
+ def rtMaven = Artifactory.newMavenBuild()
+ def buildInfo
+ def branch = 'DEV_SPRINT7_LOGA_IRIS_AUTH'
+ def projectToBuild = 'authentication'
+ stage('------- Checkout --------') {
+  // Checkout only Authentication Module
+  dir(branch) {
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    userRemoteConfigs: [
+     [url: 'https://github.com/mosip/mosip', credentialsId: 'GITHUB_Credentials']
+    ],
+    extensions: [
+
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
+     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+     ]]
+
+    ],
+   ])
+  }
+ }
+
+stage ('---------- mvn-clean-install ---------------') {
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+}
+
+stage('---------- SonarQube Analysis --------------') {
+  def mvnHome = tool name: 'M2_HOME', type: 'maven'
+  withSonarQubeEnv('sonar') {
+   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
+  }
+ }
+
+
+ 
+
+}

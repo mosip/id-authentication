@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.mosip.registration.processor.camel.bridge.MosipBridgeFactory;
-import io.mosip.registration.processor.camel.bridge.MosipCamelBridge;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.vertx.core.Vertx;
@@ -35,9 +34,9 @@ public class MosipCamelBridgeTest {
 		dto.setRetryCount(0);
 		dto.setIsValid(false);
 		dto.setInternalError(true);
-		dto.setMessageBusAddress( MessageBusAddress.STRUCTURE_BUS_IN);
+		dto.setMessageBusAddress( MessageBusAddress.PACKET_VALIDATOR_BUS_IN);
 		
-		vertx.deployVerticle(MosipCamelBridge.class.getName(), testContext.asyncAssertSuccess());
+		vertx.deployVerticle(MosipBridgeFactory.class.getName(), testContext.asyncAssertSuccess());
 		
 	}
 	
@@ -55,11 +54,11 @@ public class MosipCamelBridgeTest {
 	public void checkBridge(TestContext testContext) {
 		final Async async = testContext.async();
 		JsonObject jsonObject = JsonObject.mapFrom(dto);
-		vertx.eventBus().send(MessageBusAddress.STRUCTURE_BUS_IN.getAddress(), jsonObject);
-		vertx.eventBus().send(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress(), jsonObject);
+		vertx.eventBus().send(MessageBusAddress.PACKET_VALIDATOR_BUS_IN.getAddress(), jsonObject);
+		vertx.eventBus().send(MessageBusAddress.PACKET_VALIDATOR_BUS_OUT.getAddress(), jsonObject);
 		vertx.eventBus().send(MessageBusAddress.BATCH_BUS.getAddress(), jsonObject);
 		
-		vertx.eventBus().send(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress(), jsonObject);
+		vertx.eventBus().send(MessageBusAddress.QUALITY_CHECK_BUS.getAddress(), jsonObject);
 		
 		vertx.eventBus().send(MessageBusAddress.ERROR.getAddress(), jsonObject);
 		vertx.eventBus().send(MessageBusAddress.RETRY_BUS.getAddress(), jsonObject);

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="onBoardRoot" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.admin.UserClientMachineMappingController">
+	<children>
+		<TableView fx:id="mapTable" layoutX="66.0" layoutY="63.0" onMouseClicked="#showSelectedUserDetails" prefHeight="150.0" prefWidth="800.0">
+			<columns>
+				<TableColumn fx:id="usernameColumn" prefWidth="200.0" text="%username" />
+				<TableColumn fx:id="userIDColumn" prefWidth="200.0" text="%userid" />	
+				<TableColumn fx:id="roleColumn" prefWidth="200.0" text="%role" />
+				<TableColumn fx:id="statusColumn" prefWidth="200.0" text="%status" />
+			</columns>
+		</TableView>
+		<Label fx:id="userClientMachineMappingLabel" graphicTextGap="10.0" layoutX="401.0" layoutY="14.0" prefHeight="34.0" prefWidth="150.0" text="%onboarduser">
+         <font>
+            <Font size="23.0" />
+         </font></Label>
+		<AnchorPane fx:id="userClientMachineMappingEditPane" layoutX="14.0" layoutY="213.0" prefHeight="250.0" prefWidth="932.0" visible="false">
+			<children>
+				<Label layoutX="52.0" layoutY="13.0" prefHeight="27.0" prefWidth="79.0" text="%status" />
+				<Button fx:id="update" disable="true" layoutX="748.0" layoutY="200.0" mnemonicParsing="false" onAction="#updateUserMapDetails" prefHeight="29.0" prefWidth="83.0" text="%update" />
+				<AnchorPane fx:id="fingerprintDetailsPane" disable="true" layoutX="59.0" layoutY="95.0" prefHeight="97.0" prefWidth="325.0">
+					<children>
+						<Label prefHeight="27.0" prefWidth="226.0" text="%fingerprintimage" />
+					</children>
+				</AnchorPane>
+				<AnchorPane fx:id="irisDetailsPane" layoutX="629.0" layoutY="92.0" prefHeight="103.0" prefWidth="294.0">
+					<children>
+						<Label disable="true" prefHeight="27.0" prefWidth="226.0" text="%irisimage" />
+					</children>
+				</AnchorPane>
+				<ComboBox fx:id="statusComboBox" layoutX="158.0" layoutY="15.0" onAction="#changeStatus" prefHeight="17.0" prefWidth="150.0" />
+				<Label layoutX="627.0" layoutY="12.0" prefHeight="27.0" prefWidth="117.0" text="%stationid" />
+				<Label fx:id="stationIdResult" layoutX="748.0" layoutY="12.0" prefHeight="27.0" prefWidth="117.0" />
+            <Button fx:id="biometricScan" disable="true" layoutX="59.0" layoutY="200.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="83.0" text="%scan" />
+            <Label fx:id="bioDetails" layoutX="59.0" layoutY="51.0" prefHeight="30.0" prefWidth="363.0" text="%biometrics" />
+			</children>
+		</AnchorPane>
+	</children>
+</AnchorPane>

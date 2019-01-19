@@ -2,9 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.7.0</version>
+	</parent>
+	
 	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.7.0</version>
 
 	<packaging>pom</packaging>
 
@@ -21,51 +27,113 @@
 		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
 		<maven.sonar.plugin.version>3.5.0.1254</maven.sonar.plugin.version>
+		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+
+		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
+		<javax.el-api.version>3.0.0</javax.el-api.version>
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
 		<jackson.version>2.9.5</jackson.version>
+		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
+		<modelmapper.version>2.1.1</modelmapper.version>
+		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
 
+		<!-- Data Access -->
+		<eclipselink.version>2.5.0</eclipselink.version>
+		<mysql.connector.version>5.1.46</mysql.connector.version>
+		<h2.version>1.4.195</h2.version>
+		<postgresql.version>42.2.2</postgresql.version>
+
+		<!-- Lombok -->
+		<lombok.version>1.16.18</lombok.version>
+
 		<!-- For Cache -->
 		<ignite.version>2.3.0</ignite.version>
+
+		<!--For Security -->
+		<bouncycastle.version>1.60</bouncycastle.version>
 
 		<!-- Support tools & utilities -->
 		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
+		<commons-io>2.6</commons-io>
+		<commons-codec>1.10</commons-codec>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<commons.io.version>2.6</commons.io.version>
-		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
+		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
-		<logback.version>1.1.6</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<slf4j.version>1.7.19</slf4j.version>
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
 		<awaitility.version>3.1.0</awaitility.version>
-		
+		<jsonsimple.version>1.1.1</jsonsimple.version>
+		<commons.codec.version>1.9</commons.codec.version>
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
-		
+
 		<!-- Vert.x -->
 		<vertx.version>3.5.3</vertx.version>
-		
+		<camel.vertx.version>2.23.0</camel.vertx.version>
+		<!-- json-simple -->
+		<jsonsimple.version>1.1.1</jsonsimple.version>
 		<!-- local -->
-		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
-		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
-		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
-		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
+		<registration.status.version>0.7.0-SNAPSHOT</registration.status.version>
+		<registration.processor.core.version>0.7.0-SNAPSHOT</registration.processor.core.version>
+		<filesystem.adapter.version>0.7.0-SNAPSHOT</filesystem.adapter.version>
+		<packet.manager.version>0.7.0-SNAPSHOT</packet.manager.version>
+		<registration.processor.rest.client>0.7.0-SNAPSHOT</registration.processor.rest.client>
+	
+		<sonar.coverage.exclusions>**/dto/**,
+		**/exception/*Exception.java,
+		**/core/code/*.java,
+		**/packet/storage/entity/*.java,
+		**/manager/exception/systemexception/*.java,
+		**/registration/processor/rest/client/*.java,
+**/registration/processor/rest/client/audit/builder/*.java,
+**/registration/processor/rest/client/utils/*.java,
+**/registration/processor/filesystem/ceph/adapter/impl/exception/*.java,
+**/registration/processor/filesystem/ceph/adapter/impl/exception/systemexception/*.java,
+**/registration/processor/packet/receiver/config/*.java,
+**/registration/processor/packet/receiver/*.java,
+**/registration/processor/packet/receiver/exception/systemexception/*.java,
+**/registration/processor/failoverstage/*.java,
+**/registration/processor/stages/*.java,
+**/registration/processor/retry/verticle/*.java,
+**/registration/processor/retry/verticle/stages/*.java,
+**/registration/processor/packet/decrypter/job/stage/*.java,
+**/registration/processor/packet/decryptor/job/exception/constant/*.java,
+**/registration/processor/ftp/scanner/job/exception/utils/*.java,
+**/registration/processor/virus/scanner/job/exceptions/*.java,
+**/registration/processor/virus/scanner/job/exceptions/util/*.java,
+**/registration/processor/manual/verification/util/*.java,
+**/registration/processor/stages/app/*.java,
+**/registration/processor/camel/bridge/processor/*.java,
+**/registration/processor/core/constant/*.java,
+**/registration/processor/core/packet/dto/demographicinfo/*.java,
+**/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
+**/registration/processor/core/packet/dto/regcentermachine/*.java,
+**/registration/processor/core/util/*.java,
+**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java
+		</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
+		
 	</properties>
 
 	<dependencyManagement>
@@ -82,14 +150,16 @@
 
 	<modules>
 		<module>registration-processor-core</module>
-		<module>packet-receiver</module>
 		<module>registration-status-service</module>
+		<module>registration-status-api</module>
 		<module>filesystem-adapter-ceph</module>
+		<module>registration-processor-rest-client</module>
 		<module>packet-manager</module>
-		<module>jobs</module>
 		<module>registration-processor-camel-bridge</module>
-    	<module>stages</module>
-    	<module>packet-info-storage-service</module>
+		<module>stages</module>
+		<module>packet-info-storage-service</module>
+		<module>quality-checker</module>
+		<module>registration-processor-message-sender</module>
   </modules>
 
 	<profiles>
@@ -97,9 +167,9 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://13.67.91.2:9000
+					http://104.215.158.154:9000
 				</sonar.host.url>
-				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
+				<sonar.login>90903e93f9e6f0e73b5352382e7c51e0a18bfa80</sonar.login>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -110,9 +180,10 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://13.76.43.109:9000
+					http://104.215.158.154:9000
 				</sonar.host.url>
-				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.login>90903e93f9e6f0e73b5352382e7c51e0a18bfa80</sonar.login>
+				<sonar.ws.timeout>90000</sonar.ws.timeout>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -120,6 +191,7 @@
 			</properties>
 		</profile>
 	</profiles>
+
 
 	<build>
 		<pluginManagement>
@@ -232,7 +304,14 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.otpgen.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Test functionality
@@ -58,7 +59,7 @@ public class OTPControllerTest {
 	@Mock
 	OtpResponseDTO otpResponseDTO;
 	@Mock
-	MosipLogger LOGGER;
+	Logger LOGGER;
 	@Mock
 	BindingResult result;
 	@Mock
@@ -128,7 +129,6 @@ public class OTPControllerTest {
 	public void testConstraintVoilation() throws IdAuthenticationAppException {
 		boolean hasError = true;
 		otpRequestDto = getOtpRequestDTO();
-		otpRequestDto.setMsaLicenseKey("54645");
 		otpResponseDTO = getOtpResponseDTO();
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
@@ -197,13 +197,12 @@ public class OTPControllerTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setMsaLicenseKey("1234567890");
-		otpRequestDto.setMuaCode("1234567890");
-		otpRequestDto.setIdType(IdType.UIN.getType());
+		otpRequestDto.setTspID("1234567890");
+		otpRequestDto.setIdvIdType(IdType.UIN.getType());
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
-		otpRequestDto.setId("1234567890");
-		otpRequestDto.setVer("1.0");
+		otpRequestDto.setIdvId("1234567890");
+		//otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
 	}
@@ -211,7 +210,7 @@ public class OTPControllerTest {
 	private OtpResponseDTO getOtpResponseDTO() {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		otpResponseDTO.setStatus("OTP_GENERATED");
-		otpResponseDTO.setResponseTime(new Date());
+		otpResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 
 		return otpResponseDTO;
 	}

@@ -9,10 +9,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.datavalidator.phone.PhoneValidator;
+import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
+import io.mosip.kernel.core.datavalidator.spi.PhoneValidator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.datavalidator.phone.constant.PhoneConstant;
-import io.mosip.kernel.datavalidator.phone.exception.InvalidPhoneNumberException;
 
 /**
  * This class for validate the Given Phone number in String format
@@ -55,7 +55,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 	private String phoneRegex;
 
 	@PostConstruct
-	public void prepareRegEx() {
+	private void phoneValidatorImplPostConstruct() {
 		phoneRegex = "[\\d" + phoneSpecialChar + "]{" + phoneMinLength + "," + phoneMaxLength + "}";
 		
 	}
@@ -63,7 +63,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 	/**
 	 * Method used for Validate Phone number against acceptance Criteria
 	 * 
-	 * @param phonenum
+	 * @param phoneNum
 	 *            pass a Phone number in String format
 	 * 
 	 * @return return boolean value true or false

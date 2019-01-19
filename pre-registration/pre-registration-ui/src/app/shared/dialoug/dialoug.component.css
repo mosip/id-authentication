@@ -1,0 +1,13 @@
+.body-height{
+    height: 60px;
+}
+
+.button-placer{
+    margin: 0 0 0 20px;
+}
+
+.close-button-sizing {
+    color: red;
+    margin-left: 4px;
+    font-size: 12px;
+}

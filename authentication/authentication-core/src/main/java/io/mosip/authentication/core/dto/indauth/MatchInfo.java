@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
  * @author Loganathan Sekaran
  */
 
-/* (non-Javadoc)
+/*
+ * (non-Javadoc)
+ * 
  * @see java.lang.Object#toString()
  */
 @Data
@@ -19,19 +21,23 @@ import lombok.NoArgsConstructor;
  * Instantiates a new match info.
  *
  * @param authType the auth type
- * @param ms the ms
- * @param mt the mt
+ * @param ms       the ms
+ * @param mt       the mt
  */
 @NoArgsConstructor
 @AllArgsConstructor
 public class MatchInfo {
-	
+
 	/** The auth type. */
 	private String authType;
-	
-	/** The ms. */
-	private String ms;
-	
-	/** The mt. */
-	private Integer mt;
+
+	/** Match Language */
+	private String language;
+
+	/** The Mathcing Strategy. */
+	private String matchingStrategy;
+
+	/** The Matching Threshold. */
+	private Integer matchingThreshold;
+
 }

@@ -7,8 +7,8 @@
 package io.mosip.kernel.crypto.jce.processor;
 
 import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+
+
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -19,12 +19,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
-import io.mosip.kernel.crypto.jce.constant.MosipSecurityExceptionCodeConstant;
-import io.mosip.kernel.crypto.jce.constant.MosipSecurityMethod;
-import io.mosip.kernel.crypto.jce.exception.MosipInvalidDataException;
-import io.mosip.kernel.crypto.jce.exception.MosipInvalidKeyException;
-import io.mosip.kernel.crypto.jce.exception.MosipNoSuchAlgorithmException;
-import io.mosip.kernel.crypto.jce.util.SecurityUtils;
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
+import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
+import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
+import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
 /**
  * Symmetric Encryption/Decryption processor
@@ -54,8 +54,7 @@ public class SymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] process(MosipSecurityMethod method, SecretKey key,
-			byte[] data, int mode) {
+	public static byte[] process(SecurityMethod method, SecretKey key, byte[] data, int mode) {
 
 		if (mode == Cipher.ENCRYPT_MODE) {
 			return encrypt(method, key, data, mode);
@@ -78,9 +77,8 @@ public class SymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	private static byte[] encrypt(MosipSecurityMethod method, SecretKey key,
-			byte[] data, int mode) {
-		SecurityUtils.verifyData(data);
+	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		byte[] output = null;
 		byte[] randomIV = null;
@@ -88,20 +86,19 @@ public class SymmetricProcessor {
 			cipher = Cipher.getInstance(method.getValue());
 			randomIV = generateIV(cipher.getBlockSize());
 			cipher.init(mode, key, new IvParameterSpec(randomIV), random);
-			output = new byte[cipher.getOutputSize(data.length)
-					+ cipher.getBlockSize()];
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException
-				| InvalidAlgorithmParameterException e) {
-			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
-		} catch (InvalidKeyException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION);
+			output = new byte[cipher.getOutputSize(data.length) + cipher.getBlockSize()];
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),e);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(),e);
 		}
 		byte[] processData = process(data, cipher);
 		System.arraycopy(processData, 0, output, 0, processData.length);
-		System.arraycopy(randomIV, 0, output, processData.length,
-				randomIV.length);
+		System.arraycopy(randomIV, 0, output, processData.length, randomIV.length);
 		return output;
 	}
 
@@ -118,11 +115,14 @@ public class SymmetricProcessor {
 		try {
 			return cipher.doFinal(data);
 		} catch (BadPaddingException | IllegalStateException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
+							.getErrorMessage(),e);
 		} catch (IllegalBlockSizeException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorMessage(),e);
 		}
 	}
 
@@ -139,29 +139,28 @@ public class SymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	private static byte[] decrypt(MosipSecurityMethod method, SecretKey key,
-			byte[] data, int mode) {
-		SecurityUtils.verifyData(data);
+	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
+		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
 			cipher.init(mode, key,
-					new IvParameterSpec(Arrays.copyOfRange(data,
-							data.length - cipher.getBlockSize(), data.length)),
+					new IvParameterSpec(Arrays.copyOfRange(data, data.length - cipher.getBlockSize(), data.length)),
 					random);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException
-				| InvalidAlgorithmParameterException e) {
-			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
-		} catch (InvalidKeyException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION);
+		} catch (java.security.NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+			throw new NoSuchAlgorithmException(
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage(),e);
+		} catch (java.security.InvalidKeyException e) {
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage(),e);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage(),e);
 		}
-		return process(Arrays.copyOf(data, data.length - cipher.getBlockSize()),
-				cipher);
+		return process(Arrays.copyOf(data, data.length - cipher.getBlockSize()), cipher);
 	}
 
 	/**

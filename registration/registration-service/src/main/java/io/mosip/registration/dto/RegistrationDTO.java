@@ -16,10 +16,12 @@ public class RegistrationDTO extends BaseDTO {
 	private BiometricDTO biometricDTO;
 	private DemographicDTO demographicDTO;
 	private String registrationId;
+	private String registrationIdHash;
 	private String preRegistrationId;
 	private RegistrationMetaDataDTO registrationMetaDataDTO;
 	private OSIDataDTO osiDataDTO;
 	private List<AuditDTO> auditDTOs;
+	private SelectionListDTO selectionListDTO;
 
 	/**
 	 * @return the biometricDTO
@@ -64,6 +66,14 @@ public class RegistrationDTO extends BaseDTO {
 	 */
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
+	}
+
+	public String getRegistrationIdHash() {
+		return registrationIdHash;
+	}
+
+	public void setRegistrationIdHash(String registrationIdHash) {
+		this.registrationIdHash = registrationIdHash;
 	}
 
 	/**
@@ -124,5 +134,19 @@ public class RegistrationDTO extends BaseDTO {
 	 */
 	public void setAuditDTOs(List<AuditDTO> auditDTOs) {
 		this.auditDTOs = auditDTOs;
+	}
+
+	/**
+	 * @return the selectionListDTO
+	 */
+	public SelectionListDTO getSelectionListDTO() {
+		return selectionListDTO;
+	}
+
+	/**
+	 * @param selectionListDTO the selectionListDTO to set
+	 */
+	public void setSelectionListDTO(SelectionListDTO selectionListDTO) {
+		this.selectionListDTO = selectionListDTO;
 	}
 }

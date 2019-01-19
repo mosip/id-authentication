@@ -1,14 +1,14 @@
 package io.mosip.kernel.auditmanager.impl;
 
 import org.modelmapper.ModelMapper;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.auditmanager.repository.AuditRepository;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.util.AuditUtils;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 
 /**
  * Implementation of {@link AuditHandler} with function to write
@@ -42,7 +42,7 @@ public class AuditHandlerImpl implements AuditHandler<AuditRequestDto> {
 	 * core.audit.dto.AuditRequest)
 	 */
 	@Override
-	public boolean writeAudit(AuditRequestDto auditRequest) {
+	public boolean addAudit(AuditRequestDto auditRequest) {
 		
 		AuditUtils.validateAuditRequest(auditRequest);
 

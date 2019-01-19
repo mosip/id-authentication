@@ -1,9 +1,9 @@
 package io.mosip.registration.scheduler;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_ARG_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_STATE_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_ARG_EXCEPTION;
+import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_UI_SHEDULER_STATE_EXCEPTION;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -13,21 +13,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.RegistrationUIExceptionCode;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -38,22 +36,13 @@ import javafx.scene.layout.BorderPane;
  * @author M1047595
  *
  */
-// TODO Interval time has to read from Config
-// TODO Audit has to be implemented
-// TODO Unit Test Testing
-// TODO Code Coverage
 @Component
 public class SchedulerUtil {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final Logger LOGGER = AppConfig.getLogger(SchedulerUtil.class);
 
 	private static long startTime = System.currentTimeMillis();
 	private static long refreshTime;
@@ -64,9 +53,6 @@ public class SchedulerUtil {
 
 	@FXML
 	private static BorderPane content;
-
-	@Autowired
-	AuditFactory auditFactory;
 
 	/**
 	 * Constructor to invoke scheduler method once login success
@@ -125,24 +111,26 @@ public class SchedulerUtil {
 								String loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
 								AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
 								content.setCenter(loginType);
+								getScene().setRoot(content);
 							} catch (IOException ioException) {
 								LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 							}
-							
-							RegistrationAppInitialization.getScene().setRoot(content);
 						}
 					});
 				}
 			};
 			timer.schedule(task, 1000, findPeriod(refreshTime, sessionTimeOut));
 		}catch (IllegalArgumentException illegalArgumentException) {
+			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, illegalArgumentException.getMessage());
 			throw new RegBaseCheckedException(REG_UI_SHEDULER_ARG_EXCEPTION.getErrorCode(),
 					REG_UI_SHEDULER_ARG_EXCEPTION.getErrorMessage());
 		} catch (IllegalStateException illegalStateException) {
+			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, illegalStateException.getMessage());
 			throw new RegBaseCheckedException(REG_UI_SHEDULER_STATE_EXCEPTION.getErrorCode(),
 					REG_UI_SHEDULER_STATE_EXCEPTION.getErrorMessage());
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
+		}catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
 			runtimeException.getMessage());
 		}
 	}
@@ -186,4 +174,12 @@ public class SchedulerUtil {
 		}
 	} 
 	
+	private static Scene getScene() throws IOException {
+		BorderPane loginRoot = BaseController.load(BaseController.class.getResource(RegistrationConstants.INITIAL_PAGE),
+				ApplicationContext.getInstance().getApplicationMessagesBundle());
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		Scene scene = new Scene(loginRoot, 950, 630);
+		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		return scene;
+	}
 }

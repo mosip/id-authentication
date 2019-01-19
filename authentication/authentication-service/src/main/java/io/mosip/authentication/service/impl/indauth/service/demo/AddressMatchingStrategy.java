@@ -1,8 +1,14 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import java.util.function.ToIntBiFunction;
+import java.util.Map;
 
-import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.util.DemoMatcherUtil;
 
 /**
  * The Enum AddressMatchingStrategy.
@@ -12,18 +18,28 @@ import io.mosip.authentication.core.util.MatcherUtil;
 public enum AddressMatchingStrategy implements MatchingStrategy {
 
 	/** The exact. */
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
-			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
+			return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
-			return 0;
+			Object object = props.get("languageType");
+			if (object instanceof LanguageType) {
+				LanguageType langType = ((LanguageType) object);
+				if (langType.equals(LanguageType.PRIMARY_LANG)) {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ADDR_PRI_MISMATCH);
+				} else {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ADDR_SEC_MISMATCH);
+				}
+			} else {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
+			}
 		}
 	});
 
 	/** The match function. */
-	private final ToIntBiFunction<Object, Object> matchFunction;
+	private final MatchFunction matchFunction;
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
@@ -32,26 +48,34 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	 * Constructor for Address Matching Strategy.
 	 *
 	 * @param matchStrategyType the match strategy type
-	 * @param matchFunction the match function
+	 * @param matchFunction     the match function
 	 */
-	AddressMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	AddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getType()
 	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getMatchFunction()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getMatchFunction()
 	 */
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
 }

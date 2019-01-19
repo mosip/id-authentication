@@ -29,9 +29,9 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.IllegalStateException;
 import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstant;
-import io.mosip.kernel.packetserver.sftp.exception.MosipIllegalStateException;
-import io.mosip.kernel.packetserver.sftp.exception.MosipInvalidSpecException;
+import io.mosip.kernel.packetserver.sftp.exception.InvalidSpecException;
 import io.mosip.kernel.packetserver.sftp.util.PacketUtils;
 
 /**
@@ -99,22 +99,16 @@ public class PacketServer {
 		PublicKey allowed = loadAllowedKey();
 		this.server.setHost(host);
 		this.server.setPort(port);
-		this.server.setKeyPairProvider(
-				new SimpleGeneratorHostKeyProvider(new File(hostKeyFileName)));
-		this.server.setSubsystemFactories(
-				Collections.<NamedFactory<Command>>singletonList(
-						new SftpSubsystemFactory()));
-		this.server.setFileSystemFactory(new VirtualFileSystemFactory(
-				new File(sftpRemoteDirectory).toPath()));
+		this.server.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File(hostKeyFileName)));
+		this.server.setSubsystemFactories(Collections.<NamedFactory<Command>>singletonList(new SftpSubsystemFactory()));
+		this.server.setFileSystemFactory(new VirtualFileSystemFactory(new File(sftpRemoteDirectory).toPath()));
 		this.server.setCommandFactory(new ScpCommandFactory());
 		List<NamedFactory<UserAuth>> userAuthFactories = new ArrayList<>();
 		userAuthFactories.add(new UserAuthPasswordFactory());
 		userAuthFactories.add(new UserAuthPublicKeyFactory());
 		this.server.setUserAuthFactories(userAuthFactories);
-		this.server.setPasswordAuthenticator((user, key,
-				session) -> key.equals(password) && user.equals(username));
-		this.server.setPublickeyAuthenticator((user, key,
-				session) -> key.equals(allowed) && user.equals(username));
+		this.server.setPasswordAuthenticator((user, key, session) -> key.equals(password) && user.equals(username));
+		this.server.setPublickeyAuthenticator((user, key, session) -> key.equals(allowed) && user.equals(username));
 		this.start();
 	}
 
@@ -129,15 +123,14 @@ public class PacketServer {
 	 */
 	private PublicKey loadAllowedKey() {
 		byte[] keyBytes = packetUtils.getFileBytes(publicKey);
-		X509EncodedKeySpec spec = new X509EncodedKeySpec(
-				Base64.decodeBase64(keyBytes));
+		X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decodeBase64(keyBytes));
 		PublicKey key = null;
 		try {
 			KeyFactory kf = KeyFactory.getInstance("RSA");
 			key = kf.generatePublic(spec);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-			throw new MosipInvalidSpecException(
-					PacketServerExceptionConstant.MOSIP_INVALID_SPEC_EXCEPTION);
+			throw new InvalidSpecException(PacketServerExceptionConstant.MOSIP_INVALID_SPEC_EXCEPTION.getErrorCode(),
+					PacketServerExceptionConstant.MOSIP_INVALID_SPEC_EXCEPTION.getErrorMessage());
 		}
 		return key;
 	}
@@ -149,9 +142,8 @@ public class PacketServer {
 		try {
 			this.server.start();
 		} catch (IOException e) {
-			throw new MosipIllegalStateException(
-					PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION,
-					e.getCause());
+			throw new IllegalStateException(PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION.getErrorCode(),
+					PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION.getErrorMessage(), e);
 		}
 	}
 
@@ -163,9 +155,8 @@ public class PacketServer {
 		try {
 			server.stop(false);
 		} catch (IOException e) {
-			throw new MosipIllegalStateException(
-					PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION,
-					e.getCause());
+			throw new IllegalStateException(PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION.getErrorCode(),
+					PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION.getErrorMessage(), e);
 		}
 	}
 

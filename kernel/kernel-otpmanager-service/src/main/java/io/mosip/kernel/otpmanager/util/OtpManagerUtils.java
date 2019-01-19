@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.util;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
-import io.mosip.kernel.otpmanager.exception.Error;
 import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentException;
 
 /**
@@ -51,7 +52,7 @@ public class OtpManagerUtils {
 	 * @return The current local date and time.
 	 */
 	public static LocalDateTime getCurrentLocalDateTime() {
-		return LocalDateTime.now();
+		return LocalDateTime.now(ZoneId.of("UTC"));
 	}
 
 	/**
@@ -62,23 +63,25 @@ public class OtpManagerUtils {
 	 * @param otp
 	 *            The OTP to be validated against the given key.
 	 */
+
 	public void validateOtpRequestArguments(String key, String otp) {
-		List<Error> validationErrorsList = new ArrayList<>();
+		List<ServiceError> validationErrorsList = new ArrayList<>();
 		if (key == null || key.isEmpty()) {
-			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
+			validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		} else {
 			if ((key.length() < Integer.parseInt(keyMinLength)) || (key.length() > Integer.parseInt(keyMaxLength))) {
-				validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorCode(),
+
+				validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorCode(),
 						OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorMessage()));
 			}
 		}
 		if (otp == null || otp.isEmpty()) {
-			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorCode(),
+			validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorMessage()));
 		}
 		if ((otp != null) && (!StringUtils.isNumeric(otp))) {
-			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorCode(),
+			validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorMessage()));
 		}
 		if (!validationErrorsList.isEmpty()) {

@@ -1,66 +1,126 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.documents.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
- * Document Entity
+ * This entity class defines the database table details for Document.
  * 
- * @author M1037717
+ * @author Rajath KR
+ * @author Kishan Rathore
+ * @author Sanober Noor
+ * @author Tapaswini Behera
+ * @author Jagadishwari S
+ * @since 1.0.0
  *
  */
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "document", schema = "prereg")
-@ToString
+@Table(name = "applicant_document", schema = "prereg")
+@NamedQuery(name = "DocumentEntity.findSingleDocument", query = "SELECT d FROM DocumentEntity d WHERE d.preregId= :preId AND d.docCatCode= :catCode")
 public class DocumentEntity implements Serializable {
-	/**
-	 * 
-	 */
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1692781286748263575L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int documentId;
+	/**
+	 * Document Id
+	 */
+	//@Id
+	//@SequenceGenerator(name = "applicant_document_id_seq", sequenceName = "applicant_document_id_seq", allocationSize = 1)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "applicant_document_id_seq")
+	@Id @GeneratedValue(generator="system-uuid" )
+	@GenericGenerator(name="system-uuid", strategy = "uuid" )
+	@Column(name = "id")
+	private String documentId;
 
+	/**
+	 * PreRegistration Id
+	 */
+	@Column(name = "prereg_id")
 	private String preregId;
 
-	private String doc_name;
+	/**
+	 * Document Name
+	 */
+	@Column(name = "doc_name")
+	private String docName;
 
-	private String doc_cat_code;
+	/**
+	 * Document Category
+	 */
+	@Column(name = "doc_cat_code")
+	private String docCatCode;
 
-	private String doc_typ_code;
+	/**
+	 * Document Type
+	 */
+	@Column(name = "doc_typ_code")
+	private String docTypeCode;
 
-	private String doc_file_format;
+	/**
+	 * Document File Format
+	 */
+	@Column(name = "doc_file_format")
+	private String docFileFormat;
 
-	private byte[] doc_store;
+	/**
+	 * Status Code
+	 */
+	@Column(name = "status_code")
+	private String statusCode;
 
-	private String status_code;
+	/**
+	 * Language Code
+	 */
+	@Column(name = "lang_code")
+	private String langCode;
 
-	private String lang_code;
+	/**
+	 * Created By
+	 */
+	@Column(name = "cr_by")
+	private String crBy;
 
-	private String cr_by;
+	/**
+	 * Created Date Time
+	 */
+	@Column(name = "cr_dtimes")
+	private LocalDateTime crDtime;
 
-	private Timestamp cr_dtimesz;
+	/**
+	 * Updated By
+	 */
+	@Column(name = "upd_by")
+	private String updBy;
 
-	private String upd_by;
-
-	private Timestamp upd_dtimesz;
+	/**
+	 * Updated Date Time
+	 */
+	@Column(name = "upd_dtimes")
+	private LocalDateTime updDtime;
 
 }

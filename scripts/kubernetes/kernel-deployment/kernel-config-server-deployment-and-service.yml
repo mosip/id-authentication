@@ -1,0 +1,37 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kernel-config-server
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: kernel-config-server
+    spec:
+      containers:
+      - name: kernel-config-server
+        image: docker-registry.mosip.io:5000/kernel-config-server
+        ports:
+        - containerPort: 51000
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kernel-config-server
+spec:
+  ports:
+    - port: 51000
+  selector:
+    app: kernel-config-server
+

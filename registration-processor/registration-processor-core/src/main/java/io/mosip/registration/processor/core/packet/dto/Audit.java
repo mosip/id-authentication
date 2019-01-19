@@ -1,16 +1,23 @@
 package io.mosip.registration.processor.core.packet.dto;
 
-
 import lombok.Data;
+/**
+ * Instantiates a new audit.
+ */
 
+/**
+ * Instantiates a new audit.
+ */
 @Data
-public class Audit
-{
-    private String eventId;
+public class Audit {
 
-    private String startTimestamp;
+	/** The event id. */
+	private String eventId;
 
-    private String endTimestamp;    
-   
+	/** The start timestamp. */
+	private String startTimestamp;
+
+	/** The end timestamp. */
+	private String endTimestamp;
+
 }
-

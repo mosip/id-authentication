@@ -1,6 +1,6 @@
 package io.mosip.kernel.auditmanager.builder;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
@@ -8,9 +8,7 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
  * The Audit request builder class is used to create new {@link AuditRequestDto}
- * with {@link AuditRequestDto#actor}, {@link AuditRequestDto#action},
- * {@link AuditRequestDto#origin}, {@link AuditRequestDto#device},
- * {@link AuditRequestDto#description} fields
+ * with all required fields
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
@@ -32,21 +30,23 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add actionTimeStamp to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param actionTimeStamp
+	 *            actionTimeStamp
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
-	public AuditRequestBuilder setActionTimeStamp(OffsetDateTime actionTimeStamp) {
+	public AuditRequestBuilder setActionTimeStamp(LocalDateTime actionTimeStamp) {
 		auditRequest.setActionTimeStamp(actionTimeStamp);
 		return this;
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add applicationId to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param applicationId
+	 *            applicationId
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -56,9 +56,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add applicationName to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param applicationName
+	 *            applicationName
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -68,9 +69,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add createdBy to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param createdBy
+	 *            createdBy
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -80,9 +82,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add description to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param description
+	 *            description
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -92,9 +95,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add eventId to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param eventId
+	 *            eventId
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -104,9 +108,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add eventName to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param eventName
+	 *            eventName
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -116,9 +121,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add eventType to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param eventType
+	 *            eventType
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -128,9 +134,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add hostIp to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param hostIp
+	 *            hostIp
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -140,9 +147,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add hostName to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param hostName
+	 *            hostName
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -152,9 +160,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add id to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param id
+	 *            id
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -164,9 +173,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add idType to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param idType
+	 *            idType
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -176,9 +186,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add moduleId to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param moduleId
+	 *            moduleId
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -188,9 +199,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add moduleName to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param moduleName
+	 *            moduleName
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -200,9 +212,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add sessionUserId to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param sessionUserId
+	 *            sessionUserId
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
@@ -212,9 +225,10 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Add to this {@link AuditRequestBuilder}
+	 * Add sessionUserName to this {@link AuditRequestBuilder}
 	 * 
-	 * @param
+	 * @param sessionUserName
+	 *            sessionUserName
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */

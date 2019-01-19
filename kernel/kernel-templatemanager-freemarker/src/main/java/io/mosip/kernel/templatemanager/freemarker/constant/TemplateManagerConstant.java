@@ -4,7 +4,7 @@ package io.mosip.kernel.templatemanager.freemarker.constant;
  * Constants for NullPointerException Messages
  * 
  * @author Abhishek Kumar
- * @since 2018-10-10
+ * @since 10-10-2018
  * @version 1.0.0
  */
 public enum TemplateManagerConstant {

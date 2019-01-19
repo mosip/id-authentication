@@ -1,0 +1,138 @@
+{
+	"$id": "http://mosip.io/schemas/mosip-id-schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "MOSIP ID schema",
+	"description": "Sample ID schema to refer to",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"identity": {
+			"title": "identity",
+			"description": "This holds all the attributes of an Identity",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"firstName": {
+					"$ref": "#/definitions/values"
+				},
+				"middleName": {
+					"$ref": "#/definitions/values"
+				},
+				"lastName": {
+					"$ref": "#/definitions/values"
+				},
+				"dateOfBirth": {
+					"$ref": "#/definitions/values"
+				},
+				"dateOfBirthType": {
+					"$ref": "#/definitions/values"
+				},
+				"gender": {
+					"$ref": "#/definitions/values"
+				},
+				"mobileNumber": {
+					"$ref": "#/definitions/values"
+				},
+				"emailId": {
+					"$ref": "#/definitions/values"
+				},
+				"addressLine1": {
+					"$ref": "#/definitions/values"
+				},
+				"addressLine2": {
+					"$ref": "#/definitions/values"
+				},
+				"addressLine3": {
+					"$ref": "#/definitions/values"
+				},
+				"region": {
+					"$ref": "#/definitions/values"
+				},
+				"province": {
+					"$ref": "#/definitions/values"
+				},
+				"city": {
+					"$ref": "#/definitions/values"
+				},
+				"localAdministrativeAuthority": {
+					"$ref": "#/definitions/values"
+				},
+				"CNEOrPINNumber": {
+					"$ref": "#/definitions/values"
+				},
+				"parentOrGuardianName": {
+					"$ref": "#/definitions/values"
+				},
+				"parentOrGuardianRIDOrUIN": {
+					"$ref": "#/definitions/values"
+				},
+				"leftEye": {
+					"$ref": "#/definitions/values"
+				},
+				"rightEye": {
+					"$ref": "#/definitions/values"
+				},
+				"leftIndex": {
+					"$ref": "#/definitions/values"
+				},
+				"leftLittle": {
+					"$ref": "#/definitions/values"
+				},
+				"leftMiddle": {
+					"$ref": "#/definitions/values"
+				},
+				"leftRing": {
+					"$ref": "#/definitions/values"
+				},
+				"leftThumb": {
+					"$ref": "#/definitions/values"
+				},
+				"rightIndex": {
+					"$ref": "#/definitions/values"
+				},
+				"rightLittle": {
+					"$ref": "#/definitions/values"
+				},
+				"rightMiddle": {
+					"$ref": "#/definitions/values"
+				},
+				"rightRing": {
+					"$ref": "#/definitions/values"
+				},
+				"rightThumb": {
+					"$ref": "#/definitions/values"
+				},
+				"face": {
+					"$ref": "#/definitions/values"
+				}
+			}
+		}
+	},
+	"definitions": {
+		"values": {
+			"type": "array",
+			"additionalItems": false,
+			"uniqueItems": true,
+			"items": {
+				"type": "object",
+				"required": [
+					"language",
+					"label",
+					"value"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"language": {
+						"type": "string"
+					},
+					"label": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}

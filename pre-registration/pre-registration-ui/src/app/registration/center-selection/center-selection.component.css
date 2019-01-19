@@ -1,0 +1,255 @@
+/* .expansionPanelPlacer{
+    margin: 30px 30px;
+    padding: 15px 15px;
+}
+
+.spacer{
+    margin: 15px 0 0 0;
+}
+
+.inlineSpacer{
+    margin: 0 35px 0 0;
+}
+
+.right-align{
+    text-align: right;
+}
+
+.img-spacer{
+    margin: 0 0 0 -6px;
+    cursor: pointer;
+}
+
+.hyperlink{
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.map-placer{
+    position: relative;
+}
+
+@media(max-width: 500px) {
+    .expansionPanelPlacer{
+        padding: 0;
+        margin: 5px;
+    }
+}
+
+@media(max-width: 765px) {
+    
+    .mat-table {
+        overflow: auto;
+      }
+      
+    .mat-header-row, .mat-row {
+        min-width: 1000px;
+      }
+} */
+.center-selection__title-card {
+  color: #ff4081;
+  font-size: 20px;
+  padding: 0;
+  margin: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.center-selection__button-container {
+  width: 100%;
+  height: 70px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding-top: 10px;
+  display: flex;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+section{
+  display: flex;
+  
+}
+.centers-wrapper{
+  margin-left: 25px;
+  margin-right: 2vw;
+  width: 60vw;
+
+}
+
+.centers-list ul{
+  list-style-type: none;
+  padding: 0%;
+  font-size: 0.8rem;
+}
+
+.center-card{
+  margin: 2% 0;
+  display: flex;
+}
+
+input[type="radio"] {
+  -ms-transform: scale(1.5); 
+  -webkit-transform: scale(1.5); 
+  transform: scale(1.5);
+  height: 2rem;
+  margin-right: 1.2rem;
+}
+
+.map{
+  width: 400px;
+  height: 700px;
+  display: flex;
+}
+
+.user-back-btn {
+  color: #fd518c;
+  background-color: white;
+  font-family: Roboto;
+  margin-right: 10px;
+  border: 1px solid #fd518c;
+  opacity: 100%;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-radius: 0;
+}
+.user-book_later-btn {
+  color: #fd518c;
+  background-color: white;
+  font-family: Roboto;
+  margin-right: 20px;
+  border: 1px solid #fd518c;
+  opacity: 100%;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-radius: 0;
+}
+.user-continue-btn {
+  background-color: #ff4081;
+  border-radius: 0;
+  color: white;
+  opacity: 100%;
+  font-family: Roboto;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.center_selection-intial-recommendation-container {
+  display: flex;
+  align-items: center;
+}
+.center_selection-center_recommendation-display {
+  color: #30badd;
+  opacity: 100%;
+  font-family: Roboto;
+  white-space: nowrap;
+}
+.center_selection-nearby-btn {
+  color: #afafaf;
+  font-family: Roboto;
+  opacity: 100%;
+  margin-left: 30px;
+  margin-right: 15px;
+  padding: 0;
+}
+.center_selection-center-available-text {
+  color: #6e6e6e;
+  opacity: 100%;
+  font-family: Roboto;
+  font-size: 12px;
+}
+img {
+  height: 17px;
+}
+.search-btn {
+  width: 35px;
+  height: 35px;
+  background-color: #f4f4f4;
+  border: 1px solid #fd518c;
+  border-radius: 0;
+  opacity: 100%;
+  line-height: 30px;
+}
+.center_selection-form-container {
+  margin-left: 25px;
+  width:100%;
+  padding: 0;
+  animation: 1.3s anim ease-out;
+}
+@keyframes anim {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.search-cancel-btn {
+  width: 35px;
+  height: 40px;
+  background-color: #fd518c;
+  border-radius: 0;
+  opacity: 100%;
+}
+.search-input {
+  padding: 10px;
+  outline: none;
+  color: #707070;
+  font-family: Roboto;
+  opacity: 100%;
+  background-color: white;
+  border: none;
+  width: 225px;
+}
+.select-input {
+  outline: none;
+  font-family: Roboto;
+  color: #000000;
+  opacity: 100%;
+  padding: 10px;
+  background-color: white;
+  appearance: none;
+  width: 245px;
+  font-size: 14px;
+}
+.mat-option:hover {
+  background-color: #d8f7ff;
+  opacity: 100%;
+}
+.select-card {
+  padding: 0;
+  box-shadow: 4px black;
+  border-radius: 0;
+  height: 40px;
+  width: 250px;
+  margin-top: 10px;
+}
+.search-text {
+  display: flex;
+  font-family: Roboto;
+  font-size: 14px;
+  color: #707070;
+  width: 100%;
+  margin-top: 10px;
+  margin-left: 25px;
+}
+.search-card {
+  width: 300px;
+  height: 40px;
+  padding: 0;
+  box-shadow: 4px black;
+  border-radius: 0;
+  margin-top: 10px;
+  display: inline-flex;
+  
+}
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+}

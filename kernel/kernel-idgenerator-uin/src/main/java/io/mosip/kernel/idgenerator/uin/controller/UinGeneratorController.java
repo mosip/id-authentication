@@ -30,11 +30,9 @@ public class UinGeneratorController {
 	 * 
 	 * @return uin
 	 */
-	@GetMapping(value = "/idgenerator/uin")
+	@GetMapping(value = "/v1.0/uin")
 	public ResponseEntity<UinResponseDto> getUin() {
-
 		UinResponseDto idDto = uinGeneratorService.getUin();
-
 		return new ResponseEntity<>(idDto, HttpStatus.OK);
 	}
 

@@ -20,16 +20,16 @@ public final class DataValidationUtil {
 	/**
 	 * Get list of errors from error object and throws {@link IDDataValidationException}, if any error is present.
 	 *
-	 * @param exceptionConstant the exception constant
 	 * @param errors the errors
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	public static void validate(Errors errors) throws IDDataValidationException {
 		if (errors.hasErrors()) {
 			IDDataValidationException exception = new IDDataValidationException();
+			exception.clearArgs();
 			errors.getAllErrors()
 			.forEach(error -> exception.addInfo(error.getCode(),
-					error.getDefaultMessage()));
+					error.getDefaultMessage(), error.getArguments()));
 			throw exception;
 		}
 	}

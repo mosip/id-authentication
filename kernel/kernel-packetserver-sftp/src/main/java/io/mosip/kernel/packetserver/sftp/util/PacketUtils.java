@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
 import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstant;
-import io.mosip.kernel.packetserver.sftp.exception.MosipPublicKeyException;
+import io.mosip.kernel.packetserver.sftp.exception.PublicKeyException;
 
 /**
  * Utils class for this server
@@ -44,15 +44,13 @@ public class PacketUtils {
 	public byte[] getFileBytes(String fileLocation) {
 		String key = null;
 		try {
-			key = FileCopyUtils.copyToString(new FileReader(
-					new ClassPathResource(fileLocation).getFile()));
+			key = FileCopyUtils.copyToString(new FileReader(new ClassPathResource(fileLocation).getFile()));
 		} catch (IOException e) {
-			throw new MosipPublicKeyException(
-					PacketServerExceptionConstant.MOSIP_PUBLIC_KEY_EXCEPTION);
+			throw new PublicKeyException(PacketServerExceptionConstant.MOSIP_PUBLIC_KEY_EXCEPTION.getErrorCode(),
+					PacketServerExceptionConstant.MOSIP_PUBLIC_KEY_EXCEPTION.getErrorMessage());
 		}
 
-		return key.replaceAll(FILE_START, "").replaceAll(FILE_STOP, "")
-				.getBytes();
+		return key.replaceAll(FILE_START, "").replaceAll(FILE_STOP, "").getBytes();
 	}
 
 }

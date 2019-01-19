@@ -3,9 +3,9 @@
  */
 package io.mosip.kernel.auditmanager.service;
 
+import io.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
  * Interface for AuditManager Serivce having function to add new {@link Audit}

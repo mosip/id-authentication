@@ -1,6 +1,6 @@
 package io.mosip.kernel.auditmanager.request;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,8 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Audit Request class with {@link #actor}, {@link #action},
- * {@link #origin}, {@link #device}, {@link #description} fields to be captured
+ * The Audit Request class with required fields to be captured
  * and recorded
  * 
  * @author Dharmesh Khandelwal
@@ -36,7 +35,7 @@ public class AuditRequestDto {
 	private String eventType;
 
 	@NotNull
-	private OffsetDateTime actionTimeStamp;
+	private LocalDateTime actionTimeStamp;
 
 	@NotNull
 	@Size(min = 1, max = 32)

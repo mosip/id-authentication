@@ -18,9 +18,6 @@ import lombok.Setter;
 @NoArgsConstructor
 class InfoItem implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -779695043380592601L;
 
 	@Getter

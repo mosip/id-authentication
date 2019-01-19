@@ -2,36 +2,32 @@ package io.mosip.registration.util.hmac;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import io.mosip.kernel.core.util.HMACUtils;
-
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.biometric.BiometricDTO;
-import io.mosip.registration.dto.biometric.BiometricInfoDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 
 /**
  * Hash generation for packet DTO
  * 
  * @author YASWANTH S
+ * @author Balaji Sridharan
  * @since 1.0.0
  */
 public class HMACGeneration {
-	
+
 	private HMACGeneration() {
-		
+
 	}
 
-	private static LinkedList<String> hmacApplicantSequence;
-	private static LinkedList<String> hmacHOFSequence;
-	private static LinkedList<String> hmacIntroducerSequence;
-
 	/**
-	 * * Generates hash for registration Dto and Demographic json file which includes
-	 * biometric, demographic and registration Id
+	 * Generates hash for registrationDTO and Demographic JSON file which includes
+	 * biometric and demographic
 	 * 
 	 * @param registrationDTO
 	 *            has to be hash updation
@@ -42,164 +38,117 @@ public class HMACGeneration {
 	 * 
 	 * @return hash byte array
 	 */
-	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final byte[] demographicJsonBytes,
-			HashSequence hashSequence) {
-
-		hmacApplicantSequence = hashSequence.getApplicant();
-		hmacHOFSequence = hashSequence.getHof();
-		hmacIntroducerSequence = hashSequence.getIntroducer();
-
-		// generates packet biometric hash which may includes applicant, hof and
-		// introducer
+	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket,
+			HashSequence sequence) {
+		// generates packet biometric hash which may includes applicant and introducer
 		if (registrationDTO.getBiometricDTO() != null) {
-			generatesPacketBiometricsHash(registrationDTO.getBiometricDTO());
+			generateHash(filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
+					RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
+					sequence.getBiometricSequence().getApplicant());
+			generateHash(filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
+					RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME,
+					sequence.getBiometricSequence().getIntroducer());
 		}
 
 		// Demographic json hash
-		generateHash(demographicJsonBytes, "DemographicJson", hmacApplicantSequence);
+		generateHash(filesGeneratedForPacket.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME),
+				RegistrationConstants.DEMOGRPAHIC_JSON_NAME, sequence.getDemographicSequence().getApplicant());
 
 		// generates demographic hash
 		if (registrationDTO.getDemographicDTO() != null) {
-			generateDemographicHash(registrationDTO.getDemographicDTO());
-		}
-
-		// generates enrollment id hash
-		if (registrationDTO.getRegistrationId() != null) {
-			generateHash(registrationDTO.getRegistrationId().getBytes(), "applicantRegistrationId", hmacApplicantSequence);
+			generateDemographicHash(registrationDTO.getDemographicDTO(), sequence.getDemographicSequence());
 		}
 
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
 	}
 
-	/**
-	 * generates hash which may includes applicant, hof and introducer
-	 * 
-	 * @param biometricDTO
-	 *            has to be hash updation
-	 */
-	private static void generatesPacketBiometricsHash(final BiometricDTO biometricDTO) {
-		// hash for applicant
-		if (biometricDTO.getApplicantBiometricDTO() != null) {
-			generateBiometricInfoHash(biometricDTO.getApplicantBiometricDTO(), hmacApplicantSequence);
-		}
-		// hash for hof
-		if (biometricDTO.getHofBiometricDTO() != null) {
-			generateBiometricInfoHash(biometricDTO.getHofBiometricDTO(), hmacHOFSequence);
-		}
-		// hash for introducer
-		if (biometricDTO.getIntroducerBiometricDTO() != null) {
-			generateBiometricInfoHash(biometricDTO.getIntroducerBiometricDTO(), hmacIntroducerSequence);
-		}
-
-	}
-
-	/**
-	 * Generates hash for applicant biometric hash which includes fingerprints and
-	 * iris
-	 * 
-	 * @param biometricInfoDTO
-	 *            has to be hash updation
-	 * @param hashOrder
-	 *            has to be updated in specified hmacSequenceList
-	 *
-	 */
-	private static void generateBiometricInfoHash(final BiometricInfoDTO biometricInfoDTO,
-			LinkedList<String> hashOrder) {
-		// hash for finger prints
-		if (biometricInfoDTO.getFingerprintDetailsDTO() != null) {
-			biometricInfoDTO.getFingerprintDetailsDTO().forEach(fingerprintDetailsDTO -> {
-				if (fingerprintDetailsDTO != null)
-					generateHash(fingerprintDetailsDTO.getFingerPrint(), fingerprintDetailsDTO.getFingerPrintName(),
-							hashOrder);
-			});
-		}
-		// hash for iris
-		if (biometricInfoDTO.getIrisDetailsDTO() != null) {
-			biometricInfoDTO.getIrisDetailsDTO().forEach(irisDetailsDTO -> {
-				if (irisDetailsDTO != null)
-					generateHash(irisDetailsDTO.getIris(), irisDetailsDTO.getIrisName(), hashOrder);
-			});
-		}
-
-	}
-
-	/**
-	 * Generates hash for demographic documents which may includes ProofOfIdentity,
-	 * ProofOfResidenty, ProofOfAddress ApplicantPhoto, ExceptionPhoto and
-	 * demographic json file
-	 * 
-	 * @param demographicDTO
-	 *            has to be hash updation
-	 */
-	private static void generateDemographicHash(final DemographicDTO demographicDTO) {
+	private static void generateDemographicHash(final DemographicDTO demographicDTO,
+			final DemographicSequence demographicSequence) {
 		// generates applicant document hash
-		if (demographicDTO.getApplicantDocumentDTO() != null) {
-			generateApplicantDocumentHash(demographicDTO.getApplicantDocumentDTO(), hmacApplicantSequence);
-		}
-		// generates hofUIN hash
-		if (demographicDTO.getHOFUIN() != null) {
-			generateHash(demographicDTO.getHOFUIN().getBytes(), "hofUIN", hmacHOFSequence);
-		}
-		// generates introducerUIN hash
-		if (demographicDTO.getIntroducerUIN() != null) {
-			generateHash(demographicDTO.getIntroducerUIN().getBytes(), "introducerUIN", hmacIntroducerSequence);
-		}
-
+		generateApplicantDocumentHash(demographicDTO, demographicSequence.getApplicant());
 	}
 
-	/**
-	 * generates hash for applicant documents, photo and exception photo (In
-	 * exceptional cases)
-	 * 
-	 * @param applicantDocument
-	 *            has to be hash updation
-	 * @param hashOrder
-	 *            has to be updated in specified hmacSequenceList
-	 *
-	 */
-	private static void generateApplicantDocumentHash(final ApplicantDocumentDTO applicantDocument,
-			LinkedList<String> hashOrder) {
-		List<DocumentDetailsDTO> documentDetailsDTOList = applicantDocument.getDocumentDetailsDTO();
-		byte[] applicantPhotoBytes = applicantDocument.getPhoto();
-		byte[] applicantExceptionPhotoBytes = applicantDocument.getExceptionPhoto();
+	private static void generateApplicantDocumentHash(final DemographicDTO demographicDTO,
+			List<String> hashOrder) {
+		byte[] applicantPhotoBytes = demographicDTO.getApplicantDocumentDTO().getPhoto();
+		byte[] applicantExceptionPhotoBytes = demographicDTO.getApplicantDocumentDTO().getExceptionPhoto();
+		byte[] registrationAck = demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt();
 
-		// for documents hash
-		if (documentDetailsDTOList != null) {
-			documentDetailsDTOList.forEach(document -> {
-				if (document != null)
-					generateHash(document.getDocument(), document.getDocumentName(), hashOrder);
-			});
+		DocumentDetailsDTO documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity()
+				.getProofOfIdentity();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
+		}
+
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
+
+		if (documentDetailsDTO != null) {
+			generateHash(documentDetailsDTO.getDocument(), documentDetailsDTO.getValue(), hashOrder);
 		}
 
 		// hash for applicant photo
-		if (applicantExceptionPhotoBytes != null) {
-			generateHash(applicantPhotoBytes, "applicantPhoto", hashOrder);
+		if (applicantPhotoBytes != null) {
+			generateHash(applicantPhotoBytes, demographicDTO.getApplicantDocumentDTO().getPhotographName(), hashOrder);
 		}
 		// hash for exception Photo
 		if (applicantExceptionPhotoBytes != null) {
-			generateHash(applicantExceptionPhotoBytes, "applicantExceptionPhoto", hashOrder);
+			generateHash(applicantExceptionPhotoBytes, demographicDTO.getApplicantDocumentDTO().getExceptionPhotoName(),
+					hashOrder);
+		}
+
+		// Hash for Acknowledgement Receipt
+		if (registrationAck != null) {
+			generateHash(registrationAck, demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceiptName(),
+					hashOrder);
 		}
 
 	}
 
-	/**
-	 * Generates hash for byte Array and store its type to hash sequence
-	 * 
-	 * @param byteArray
-	 *            has to be hash updation
-	 * @param filename
-	 *            to add it in hash sequence
-	 * @param hashOrder
-	 *            has to be updated in specified hmacSequenceList
-	 *
-	 */
-	private static void generateHash(final byte[] byteArray, final String filename, LinkedList<String> hashOrder) {
+	private static void generateHash(final byte[] byteArray, final String filename, List<String> hashOrder) {
 		// Hash updation
 		if (byteArray != null) {
 			HMACUtils.update(byteArray);
-			hashOrder.add(filename);
+			if (hashOrder != null) {
+				if (filename.contains(".")) {
+					hashOrder.add(filename.substring(0, filename.lastIndexOf('.')));
+				} else {
+					hashOrder.add(filename);
+				}
+			}
 		}
-
 	}
+
+	public static byte[] generatePacketOSIHash(final Map<String, byte[]> generatedFilesForPacket) {
+		List<String> packetOSIHashingOrder = new LinkedList<>();
+
+		// Generate Hash for Officer CBEFF file
+		generateHash(generatedFilesForPacket.get(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
+				RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, packetOSIHashingOrder);
+
+		// Generate Hash for Officer CBEFF file
+		generateHash(generatedFilesForPacket.get(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
+				RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, packetOSIHashingOrder);
+
+		// Generate Hash for Audit.json
+		generateHash(generatedFilesForPacket.get(RegistrationConstants.AUDIT_JSON_FILE),
+				RegistrationConstants.AUDIT_JSON_FILE, packetOSIHashingOrder);
+
+		// generated hash
+		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
+	}
+
 }

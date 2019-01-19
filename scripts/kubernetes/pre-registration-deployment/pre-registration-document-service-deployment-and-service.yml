@@ -1,0 +1,39 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pre-registration-document-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: pre-registration-document-service
+    spec:
+      containers:
+      - name: pre-registration-document-service
+        image: docker-registry.mosip.io:5000/pre-registration-document-service
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 9093
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pre-registration-document-service
+spec:
+  ports:
+    - port: 9093
+  selector:
+    app: pre-registration-document-service

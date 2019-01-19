@@ -5,13 +5,16 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.function.ToIntBiFunction;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 public class DOBMatchingStrategyTest {
 	SimpleDateFormat sdf = null;
@@ -20,6 +23,7 @@ public class DOBMatchingStrategyTest {
 	public void setup() {
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 	}
+
 	/**
 	 * Check for Exact type matched with Enum value of DOB Matching Strategy
 	 */
@@ -49,52 +53,53 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
-	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
-		try {
-			value = matchFunction.applyAsInt("1993-02-07", sdf.parse("1993-02-07"));
-		} catch (ParseException e) {
-			
-		}
-				
+
+		value = matchFunction.match("1993-02-07", "1993-02-07", null);
+
 		assertEquals(100, value);
 	}
 
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
-	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-		try {
-			int value = matchFunction.applyAsInt("1993-02-07", sdf.parse("1993-02-27"));
-			assertEquals(0, value);
+	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 
-			int value1 = matchFunction.applyAsInt(2, sdf.parse("1993-02-07"));
-			assertEquals(0, value1);
+		int value = matchFunction.match("1993-02-07", "1993-02-27", null);
+		assertEquals(0, value);
 
-			int value2 = matchFunction.applyAsInt("1993-02-07", null);
-			assertEquals(0, value2);
+		int value1 = matchFunction.match(2, "1993-02-07", null);
+		assertEquals(0, value1);
 
-			int value3 = matchFunction.applyAsInt(null, null);
-			assertEquals(0, value3);
+		int value3 = matchFunction.match(null, null, null);
+		assertEquals(0, value3);
 
+	}
 
-			matchFunction.applyAsInt("xyz", new Date());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidDate() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match("test", "test-02-27", matchProperties);
+		assertEquals(0, value);
 	}
 
 }

@@ -8,25 +8,31 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.mosip.registration.processor.retry.verticle.stages.RetryStage;
 
-/**
- * 
- * @author Jyoti prakash nayak
+/**	
+ * The Class RetryVerticleApplication.
  *
+ * @author Jyoti prakash nayak
  */
 @SpringBootApplication
 public class RetryVerticleApplication {
 
 	
 
+	/** The retry satge. */
 	@Autowired
 	RetryStage retrySatge;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(RetryVerticleApplication.class, args);
 	}
 
 	/**
-	 * method to deploy retry-stage
+	 * method to deploy retry-stage.
 	 */
 	@PostConstruct
 	void deployVerticle() {

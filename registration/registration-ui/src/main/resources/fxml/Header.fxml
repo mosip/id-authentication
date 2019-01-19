@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -7,30 +8,106 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="166.0" prefWidth="959.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationOfficerDetailsController">
-   <children>
-   <AnchorPane fx:id="commonImage" prefHeight="200.0" prefWidth="200.0">
-         <children>
-            <ImageView fx:id="headerImage" fitHeight="93.0" fitWidth="133.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
-            	<image>
-                  <Image url="@../images/logo-final-small.png" />
-               </image>
-            </ImageView>
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="commonHeader" prefHeight="174.0" prefWidth="774.0">
-         <children>
-              <Label layoutX="42.0" layoutY="132.0" text="Select Language                               :" />
-		      <Label fx:id="registrationOfficeLocation" layoutX="414.0" layoutY="94.0" />
-		      <Label layoutX="43.0" layoutY="94.0" text="RO Office                                          :" />
-		      <Label fx:id="registrationOfficeId" layoutX="414.0" layoutY="55.0" />
-		      <Label layoutX="43.0" layoutY="55.0" text="RO ID                                                :" />
-		      <Label fx:id="registrationOfficerName" layoutX="414.0" layoutY="16.0" />
-		      <Label layoutX="42.0" layoutY="16.0" text="RO Name                                          :" />
-		      <Button layoutX="643.0" layoutY="75.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
-		      <ComboBox layoutX="414.0" layoutY="126.0" prefWidth="150.0" promptText="English" />
-             <Button fx:id="headerRoot" layoutX="643.0" layoutY="24.0" mnemonicParsing="false" onAction="#redirectHome" prefHeight="39.0" prefWidth="81.0" text="Home" />
-         </children>
-      </AnchorPane>
-   </children>
+<HBox fx:id="headerId" maxHeight="-Infinity" maxWidth="-Infinity"
+	minHeight="-Infinity" minWidth="-Infinity" prefHeight="140.0"
+	prefWidth="959.0" xmlns="http://javafx.com/javafx/8"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="io.mosip.registration.controller.reg.HeaderController">
+	<children>
+		<AnchorPane fx:id="commonImage" prefHeight="200.0"
+			prefWidth="200.0">
+			<children>
+				<ImageView fx:id="headerImage" fitHeight="93.0"
+					fitWidth="133.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true"
+					preserveRatio="true">
+					<image>
+						<Image url="@../images/logo-final-small.png" />
+					</image>
+				</ImageView>
+			</children>
+		</AnchorPane>
+		<AnchorPane fx:id="commonHeader" prefHeight="174.0"
+			prefWidth="774.0">
+			<children>
+				<Label fx:id="registrationOfficeLocation" layoutX="414.0"
+					layoutY="94.0" />
+				<Label layoutX="43.0" layoutY="94.0"
+					text="%rooffice" />
+				<Label fx:id="registrationOfficeId" layoutX="414.0"
+					layoutY="55.0" />
+				<Label layoutX="43.0" layoutY="55.0"
+					text="%roid" />
+				<Label fx:id="registrationOfficerName" layoutX="414.0"
+					layoutY="16.0" />
+				<Label layoutX="42.0" layoutY="16.0"
+					text="%roname" />
+
+				<MenuBar fx:id="menu" layoutX="650.0" layoutY="24.0"
+					prefHeight="15.0" prefWidth="15.0">
+					<menus>
+						<Menu fx:id="accountMenu" mnemonicParsing="false">
+							<graphic>
+								<ImageView fitHeight="23.0" fitWidth="23.0"
+									layoutX="49.0" layoutY="32.0" pickOnBounds="true"
+									preserveRatio="true">
+									<image>
+										<Image url="@../images/accountIcon.png" />
+									</image>
+								</ImageView>
+							</graphic>
+							<items>
+								<MenuItem mnemonicParsing="false" onAction="#logout"
+									text="%logout" />
+							</items>
+						</Menu>
+						<Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
+							<graphic>
+								<ImageView fitHeight="20.0" fitWidth="20.0"
+									layoutX="49.0" layoutY="32.0" pickOnBounds="true"
+									preserveRatio="true">
+									<image>
+										<Image url="@../images/MenuIcon.jpg" />
+									</image>
+								</ImageView>
+							</graphic>
+							<items>
+								<MenuItem mnemonicParsing="false"
+									onAction="#eodProcess" text="%eodprocess" />
+								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false"
+									onAction="#uploadPacketToServer" text="%uploadpacket" />
+								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false" text="%virusscan" />
+								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false" onAction="#syncData"
+									text="%syncdata" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#downloadPreRegData"
+										text="%downloadpre-registrationdata" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#onBoardUser" text="%onboarduser" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#onBoardDevice" text="%deviceonboarding" />
+									<SeparatorMenuItem />
+									<MenuItem mnemonicParsing="false"
+										onAction="#redirectHome" text="%home" />
+							</items>
+						</Menu>
+					</menus>
+				</MenuBar>
+				<ImageView fx:id="availableIcon" fitHeight="15.0"
+					fitWidth="15.0" layoutX="338.0" layoutY="16.0" pickOnBounds="true"
+					preserveRatio="true" visible="false">
+					<image>
+						<Image url="@../images/Available_Icon.png" />
+					</image>
+				</ImageView>
+
+
+			</children>
+		</AnchorPane>
+	</children>
 </HBox>

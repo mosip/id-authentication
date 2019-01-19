@@ -4,7 +4,7 @@ package io.mosip.kernel.templatemanager.freemarker.constant;
  * Exception constants for template manager
  * 
  * @author Abhishek Kumar
- * @since 2018-10-3
+ * @since 03-10-2018
  * @version 1.0.0
  */
 public enum TemplateManagerExceptionCodeConstant {

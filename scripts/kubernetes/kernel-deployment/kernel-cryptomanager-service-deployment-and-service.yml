@@ -1,0 +1,39 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kernel-cryptomanager-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: kernel-cryptomanager-service
+    spec:
+      containers:
+      - name: kernel-cryptomanager-service
+        image: docker-registry.mosip.io:5000/kernel-cryptomanager-service
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 8087
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kernel-cryptomanager-service
+spec:
+  ports:
+    - port: 8087
+  selector:
+    app: kernel-cryptomanager-service

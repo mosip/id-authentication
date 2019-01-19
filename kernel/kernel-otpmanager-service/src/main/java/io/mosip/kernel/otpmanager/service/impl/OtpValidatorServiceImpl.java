@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,15 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.otpmanager.spi.OtpValidator;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.constant.SqlQueryConstants;
 import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exception.Error;
 import io.mosip.kernel.otpmanager.exception.RequiredKeyNotFoundException;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
-import io.mosip.kernel.otpmanager.service.OtpValidatorService;
 import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
 
 /**
@@ -31,7 +32,7 @@ import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
  *
  */
 @Service
-public class OtpValidatorServiceImpl implements OtpValidatorService {
+public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpValidatorResponseDto>> {
 	/**
 	 * The reference that autowires OtpRepository.
 	 */
@@ -65,12 +66,9 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		// This method validates the input parameters.
 		otpUtils.validateOtpRequestArguments(key, otp);
 		OtpValidatorResponseDto responseDto;
-
 		ResponseEntity<OtpValidatorResponseDto> validationResponseEntity;
-
 		// The OTP entity for a specific key.
 		OtpEntity otpResponse = otpRepository.findById(OtpEntity.class, key);
-
 		responseDto = new OtpValidatorResponseDto();
 		responseDto.setMessage(OtpStatusConstants.FAILURE_MESSAGE.getProperty());
 		responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
@@ -81,11 +79,10 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		 * exception.
 		 */
 		if (otpResponse == null) {
-			List<Error> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
+			List<ServiceError> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new ServiceError(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorMessage()));
 			throw new RequiredKeyNotFoundException(validationErrorsList);
-
 		}
 		// This variable holds the update query to be performed.
 		String updateString;
@@ -104,7 +101,8 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
 					+ " SET validation_retry_count = :newNumOfAttempt,"
 					+ "upd_dtimes = :newValidationTime WHERE id=:id";
-			HashMap<String, Object> updateMap = createUpdateMap(key, null, attemptCount + 1, LocalDateTime.now());
+			HashMap<String, Object> updateMap = createUpdateMap(key, null, attemptCount + 1,
+					LocalDateTime.now(ZoneId.of("UTC")));
 			updateData(updateString, updateMap);
 		}
 		/*
@@ -162,7 +160,7 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 	 *            the response dto.
 	 * @param validationResponseEntity
 	 *            the validation response entity.
-	 * @return
+	 * @return the response entity.
 	 */
 	private ResponseEntity<OtpValidatorResponseDto> unFreezeKey(String key, String otp, OtpEntity otpResponse,
 			int attemptCount, OtpValidatorResponseDto responseDto,
@@ -203,7 +201,7 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 	 *            the new number of attempt value.
 	 * @param localDateTime
 	 *            the new LocalDateTime.
-	 * @return
+	 * @return the map.
 	 */
 	private HashMap<String, Object> createUpdateMap(String key, String status, Integer newNumberOfAttempt,
 			LocalDateTime localDateTime) {

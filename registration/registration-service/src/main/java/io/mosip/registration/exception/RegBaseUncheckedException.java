@@ -1,15 +1,11 @@
 package io.mosip.registration.exception;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 
 /**
  * Class for handling the REG unchecked exception
@@ -18,23 +14,16 @@ import org.springframework.stereotype.Component;
  * @since 1.0.0
  *
  */
-@Component
 public class RegBaseUncheckedException extends BaseUncheckedException {
 
 	/**
 	 * Serializable Version Id
 	 */
-	private static final long serialVersionUID = 6619611228939411700L;
-	
+	private static final long serialVersionUID = 276197701640260133L;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final Logger LOGGER = AppConfig.getLogger(RegBaseUncheckedException.class);
 	
 	/**
 	 * Constructs a new unchecked exception
@@ -53,8 +42,8 @@ public class RegBaseUncheckedException extends BaseUncheckedException {
 	 */
 	public RegBaseUncheckedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		LOGGER.error("REGISTRATION - UNCHECKED_EXCEPTION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), errorCode + "-->" + errorMessage);
+		LOGGER.error("REGISTRATION - UNCHECKED_EXCEPTION", APPLICATION_NAME,
+				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 
 	/**
@@ -69,7 +58,7 @@ public class RegBaseUncheckedException extends BaseUncheckedException {
 	 */
 	public RegBaseUncheckedException(String errorCode, String errorMessage, Throwable throwable) {
 		super(errorCode, errorMessage, throwable);
-		LOGGER.error("REGISTRATION - UNCHECKED_EXCEPTION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), errorCode + "-->" + errorMessage);
+		LOGGER.error("REGISTRATION - UNCHECKED_EXCEPTION", APPLICATION_NAME,
+				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 }

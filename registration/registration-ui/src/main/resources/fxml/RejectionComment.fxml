@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="309.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RejectionController">
+<AnchorPane fx:id="rejectionPane" prefHeight="200.0" prefWidth="400.0" styleClass="rootPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.RejectionController">
    <children>
-      <SplitPane dividerPositions="0.18892508143322476" orientation="VERTICAL" prefHeight="309.0" prefWidth="410.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <Label layoutX="113.0" layoutY="13.0" prefHeight="27.0" prefWidth="182.0" text="Reason for Rejection">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-               <children>
-                  <Label layoutX="14.0" layoutY="50.0" prefHeight="27.0" prefWidth="88.0" text="Reason    :" />
-                  <ComboBox fx:id="rejectionComboBox" layoutX="102.0" layoutY="44.0" prefHeight="39.0" prefWidth="292.0" promptText="Select" />
-                  <Button fx:id="rejectionSubmit" layoutX="165.0" layoutY="177.0" mnemonicParsing="false" onAction="#packetUpdateStatus" text="Submit" />
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
+      <AnchorPane fx:id="rejectionLabelPane" prefHeight="47.0" prefWidth="404.0" styleClass="labelAnchorPanebgColor">
+         <children>
+            <Hyperlink fx:id="rejectionExit" layoutX="379.0" layoutY="10.0" onAction="#rejectionWindowExit" styleClass="exitButtonStyle" text="%x">
+            </Hyperlink>
+            <Label layoutX="115.0" layoutY="14.0" text="%reasonforrejection">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="rejectionAnchorPane" layoutX="4.0" layoutY="47.0" prefHeight="152.0" prefWidth="396.0" styleClass="anchorPanebgColor">
+         <children>
+            <Button fx:id="rejectionSubmit" layoutX="168.0" layoutY="99.0" mnemonicParsing="false" onAction="#packetUpdateStatus" prefWidth="60.0" text="%submit">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <ComboBox fx:id="rejectionComboBox" layoutX="49.0" layoutY="26.0" onAction="#rejectionComboboxAction" prefHeight="39.0" prefWidth="299.0" promptText="%select" styleClass="comboboxStyle">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></ComboBox>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

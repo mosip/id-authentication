@@ -3,7 +3,7 @@ package io.mosip.kernal.auditmanager.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,10 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.config.AuditConfig;
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.auditmanager.exception.MosipAuditManagerException;
 import io.mosip.kernel.auditmanager.impl.AuditHandlerImpl;
 import io.mosip.kernel.auditmanager.repository.AuditRepository;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.auditmanager.exception.AuditManagerException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AuditConfig.class)
@@ -39,19 +39,19 @@ public class AuditEventTest {
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId("applicationId")
+		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now()).setApplicationId("applicationId")
 				.setApplicationName("applicationName").setCreatedBy("createdBy").setDescription("description")
 				.setEventId("eventId").setEventName("eventName").setEventType("eventType").setHostIp("hostIp")
 				.setHostName("hostName").setId("id").setIdType("idType").setModuleId("moduleId")
 				.setModuleName("moduleName").setSessionUserId("sessionUserId").setSessionUserName("sessionUserName");
 
 		AuditRequestDto auditRequest = auditRequestBuilder.build();
-		auditHandlerImpl.writeAudit(auditRequest);
+		auditHandlerImpl.addAudit(auditRequest);
 
-		assertThat(auditHandlerImpl.writeAudit(auditRequestBuilder.build()), is(true));
+		assertThat(auditHandlerImpl.addAudit(auditRequestBuilder.build()), is(true));
 	}
 
-	@Test(expected = MosipAuditManagerException.class)
+	@Test(expected = AuditManagerException.class)
 	public void auditBuilderExceptionTest() {
 
 		Mockito.when(auditRepository.create(ArgumentMatchers.any(Audit.class))).thenReturn(new Audit());
@@ -65,7 +65,7 @@ public class AuditEventTest {
 				.setSessionUserName("sessionUserName");
 
 		AuditRequestDto auditRequest = auditRequestBuilder.build();
-		auditHandlerImpl.writeAudit(auditRequest);
+		auditHandlerImpl.addAudit(auditRequest);
 
 	}
 

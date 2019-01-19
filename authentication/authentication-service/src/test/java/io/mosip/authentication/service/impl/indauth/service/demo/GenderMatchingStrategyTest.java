@@ -5,9 +5,14 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.function.ToIntBiFunction;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
+
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
+import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
 public class GenderMatchingStrategyTest {
 
@@ -40,59 +45,60 @@ public class GenderMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
+		MatchFunction matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
 
 	/**
 	 * Tests doMatch function on Matching Strategy Function
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
 	@Test
-	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();		
-		int value = matchFunction.applyAsInt("M","M");
+	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+
+		MatchFunction matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match("M", "M", null);
 		assertEquals(100, value);
-		int value1 = matchFunction.applyAsInt("F","F");
+
+		int value1 = matchFunction.match("F", "F", null);
 		assertEquals(100, value1);
-		int value2 = matchFunction.applyAsInt("Male","Male");
+
+		int value2 = matchFunction.match("Male", "Male", null);
 		assertEquals(100, value2);
-		int value3 = matchFunction.applyAsInt("Female","Female");
+
+		int value3 = matchFunction.match("Female", "Female", null);
 		assertEquals(100, value3);
 	}
 
 	/**
 	 * 
 	 * Tests the Match function with in-valid values
+	 * 
+	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test
-	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
-		
-		int value = matchFunction.applyAsInt("M","F");
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		MatchFunction matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
+
+		int value = matchFunction.match("M", "F", matchProperties);
 		assertEquals(0, value);
-		
-		int value1 = matchFunction.applyAsInt("F","Female");
+
+		int value1 = matchFunction.match("F", "Female", matchProperties);
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.applyAsInt("Male","M");
+		int value2 = matchFunction.match("Male", "M", matchProperties);
 		assertEquals(0, value2);
-		
-		int value3 = matchFunction.applyAsInt("Female","Male");
+
+		int value3 = matchFunction.match("Female", "Male", matchProperties);
 		assertEquals(0, value3);
-		
-		int value4 = matchFunction.applyAsInt(1,2);
+
+		int value4 = matchFunction.match(1, "2", null);
 		assertEquals(0, value4);
-		
-		int value5 = matchFunction.applyAsInt(1,"Male");
-		assertEquals(0, value5);
-		
-		int value6 = matchFunction.applyAsInt("Female",1);
-		assertEquals(0, value6);
+
 	}
-
-
-
-
 
 }

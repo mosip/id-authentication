@@ -9,7 +9,7 @@
  */
 package io.mosip.kernel.core.security.exception;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.security.constants.MosipSecurityExceptionCodeConstants;
 
 /**
@@ -18,7 +18,7 @@ import io.mosip.kernel.core.security.constants.MosipSecurityExceptionCodeConstan
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class MosipInvalidKeyException extends BaseCheckedException {
+public class MosipInvalidKeyException extends BaseUncheckedException {
 
 	/**
 	 * Unique id for serialization

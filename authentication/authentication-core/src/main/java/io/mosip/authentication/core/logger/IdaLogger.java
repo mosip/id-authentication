@@ -1,8 +1,8 @@
 package io.mosip.authentication.core.logger;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.Logfactory;
 
 /**
  * Logger for IDA which provides implementation from kernel logback.
@@ -11,6 +11,21 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
  *
  */
 public final class IdaLogger {
+	
+	private static RollingFileAppender mosipRollingFileAppender;
+	
+	static {
+		mosipRollingFileAppender = new RollingFileAppender();
+		mosipRollingFileAppender.setAppend(true);
+		mosipRollingFileAppender.setAppenderName("fileappender");
+		mosipRollingFileAppender.setFileName("logs/id-auth.log");
+		mosipRollingFileAppender.setFileNamePattern("logs/id-auth-%d{yyyy-MM-dd}-%i.log");
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setMaxFileSize("1mb");
+		mosipRollingFileAppender.setMaxHistory(3);
+		mosipRollingFileAppender.setPrudent(false);
+		mosipRollingFileAppender.setTotalCap("10mb");
+	}
 
 	/**
 	 * Instantiates a new ida logger.
@@ -25,17 +40,7 @@ public final class IdaLogger {
 	 *            the clazz
 	 * @return the logger
 	 */
-	public static MosipLogger getLogger(Class<?> clazz) {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppend(true);
-		mosipRollingFileAppender.setAppenderName("fileappender");
-		mosipRollingFileAppender.setFileName("logs/id-auth.log");
-		mosipRollingFileAppender.setFileNamePattern("logs/id-auth-%d{yyyy-MM-dd}-%i.log");
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setMaxFileSize("1mb");
-		mosipRollingFileAppender.setMaxHistory(3);
-		mosipRollingFileAppender.setPrudent(true);
-		mosipRollingFileAppender.setTotalCap("10mb");
-		return MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, clazz);
+	public static Logger getLogger(Class<?> clazz) {
+		return Logfactory.getDefaultRollingFileLogger(mosipRollingFileAppender, clazz);
 	}
 }

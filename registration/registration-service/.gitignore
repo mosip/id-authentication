@@ -26,3 +26,8 @@ local.properties
 
 #not ignore files
 !jfxrt.jar
+!MFS100-1.0.jar
+!rxtxcomm-2.2.jar
+!RXTXcomm.jar
+!89149679063970.zip
+

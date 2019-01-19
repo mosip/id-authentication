@@ -1,0 +1,149 @@
+{
+	"ida-mapping" : 
+		{
+			"fullName" : 
+				[
+					"firstName",
+					"middleName",
+					"lastName"
+				],
+			"dob" : 
+				[
+					"dateOfBirth"
+				],
+			"dobType":
+				[
+					"dateOfBirthType"
+				],
+			"age" :
+				[
+					"dateOfBirth"
+				],
+			"gender" : 
+				[
+					"gender"
+				],
+			"phoneNumber" : 
+				[
+					"mobileNumber"
+				],
+			"emailId" : 
+				[
+					"emailId"
+				],
+			"addressLine1" : 
+				[
+					"addressLine1"
+				],
+			"addressLine2" : 
+				[
+					"addressLine2"
+				],
+			"addressLine3" : 
+				[
+					"addressLine3"
+				],
+			"location1" : 
+				[
+					"city"
+				],
+			"location2" : [
+					"region"
+				],
+			"location3" : [
+					"province"
+				],
+			"postalCode" : 
+				[
+					"postalCode"
+				],
+			"fullAddress" : 
+				[
+					"addressLine1", 
+					"addressLine2", 
+					"addressLine3", 
+					"city",
+					"region",
+					"province",
+					"postalCode"
+				],
+			"otp" : 
+				[
+					"otp"
+				],
+			"pin" : 
+				[
+					"pin"
+				],
+			"iris" : 
+				[
+					"leftEye", 
+					"rightEye"
+				],
+			"fingerprint" : 
+				[
+					"leftIndex", 
+					"leftLittle",
+					"leftMiddle",
+					"leftRing",
+					"leftThumb",
+					"rightIndex", 
+					"rightLittle",
+					"rightMiddle",
+					"rightRing",
+					"rightThumb"
+				],
+			"leftIndex" :
+				[
+					"leftIndex"
+				],
+			"leftLittle" :
+				[
+					"leftLittle"
+				],
+			"leftMiddle" :
+				[
+					"leftMiddle"
+				],
+			"leftRing" :
+				[
+					"leftRing"
+				],
+			"leftThumb" :
+				[
+					"leftThumb"
+				],
+			"rightIndex" :
+				[
+					"rightIndex"
+				],
+			"rightLittle" :
+				[
+					"rightLittle"
+				],
+			"rightMiddle" :
+				[
+					"rightMiddle"
+				],
+			"rightRing" :
+				[
+					"rightRing"
+				],
+			"rightThumb" :
+				[
+					"rightThumb"
+				],
+			"leftEye" :
+				[
+					"leftEye"
+				],
+			"rightEye" :
+				[
+					"rightEye"
+				],
+			"face" : 
+				[
+					"face"
+				]
+		}	
+}

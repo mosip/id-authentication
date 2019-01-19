@@ -14,14 +14,14 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.ArithmeticException;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
+import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.util.MathUtils;
-import io.mosip.kernel.core.util.exception.MosipArithmeticException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipNotANumberException;
-import io.mosip.kernel.core.util.exception.MosipNotFiniteNumberException;
-import io.mosip.kernel.core.util.exception.MosipNotPositiveException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
-import io.mosip.kernel.core.util.exception.MosipNumberIsTooLargeException;
+import io.mosip.kernel.core.util.exception.NotANumberException;
+import io.mosip.kernel.core.util.exception.NotFiniteNumberException;
+import io.mosip.kernel.core.util.exception.NotPositiveException;
+import io.mosip.kernel.core.util.exception.NumberIsTooLargeException;
 
 public class MathUtilTest {
 	int a[] = new int[3];
@@ -77,13 +77,13 @@ public class MathUtilTest {
 		assertThat(MathUtils.getPow(2, 3), is(8));
 	}
 
-	@Test(expected = MosipNotPositiveException.class)
+	@Test(expected = NotPositiveException.class)
 	public void getPowExceptionTest1() {
 		MathUtils.getPow(2, -2);
 
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getPowExceptionTest2() {
 		MathUtils.getPow(2, 9999999);
 	}
@@ -93,12 +93,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getPow(9L, 2), is(81L));
 	}
 
-	@Test(expected = MosipNotPositiveException.class)
+	@Test(expected = NotPositiveException.class)
 	public void getPowExceptionTest3() {
 		MathUtils.getPow(9L, -2);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getPowExceptionTest4() {
 		MathUtils.getPow(99999999L, 9);
 	}
@@ -109,7 +109,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getPow(bi, 2), is(bi.pow(2)));
 	}
 
-	@Test(expected = MosipNotPositiveException.class)
+	@Test(expected = NotPositiveException.class)
 	public void getPowExceptionTest5() {
 		BigInteger bi = new BigInteger("2");
 		MathUtils.getPow(bi, -2);
@@ -123,7 +123,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getPow(bi, bint), is(bi2));
 	}
 
-	@Test(expected = MosipNotPositiveException.class)
+	@Test(expected = NotPositiveException.class)
 	public void getPowExceptionTest6() {
 		BigInteger bi = new BigInteger("2");
 		BigInteger bint = new BigInteger("3");
@@ -131,13 +131,13 @@ public class MathUtilTest {
 		MathUtils.getPow(bi, bint);
 	}
 
-	@Test(expected = MosipNullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void getPowExceptionTest7() {
 		MathUtils.getPow(null, null);
 
 	}
 
-	@Test(expected = MosipNullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void getPowExceptionTest8() {
 		MathUtils.getPow(null, 2);
 
@@ -198,12 +198,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getFactorial(3), is(6L));
 	}
 
-	@Test(expected = MosipNotPositiveException.class)
+	@Test(expected = NotPositiveException.class)
 	public void getFactorialExceptionTest1() {
 		MathUtils.getFactorial(-1);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getFactorialExceptionTest2() {
 		MathUtils.getFactorial(999999);
 	}
@@ -223,7 +223,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getGcd(2, 3), is(1));
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getGcdExceptionTest1() {
 		MathUtils.getGcd(Integer.MIN_VALUE, Integer.MIN_VALUE);
 	}
@@ -233,7 +233,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getGcd(2L, 3L), is(1L));
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getGcdExceptionTest2() {
 		MathUtils.getGcd(Long.MIN_VALUE, Long.MIN_VALUE);
 	}
@@ -243,7 +243,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayMaxValue(b), is(3.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayMaxValueExceptionTest1() {
 		MathUtils.getArrayMaxValue(null);
 	}
@@ -253,12 +253,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayMaxValue(b, 1, 2), is(3.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayMaxValueExceptionTest2() {
 		MathUtils.getArrayMaxValue(b, -1, 2);
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayMaxValueExceptionTest3() {
 		MathUtils.getArrayMaxValue(null, 0, 2);
 	}
@@ -268,7 +268,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayMinValue(b), is(1.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayMinValueExceptionTest1() {
 		MathUtils.getArrayMinValue(null);
 	}
@@ -278,12 +278,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayMinValue(b, 1, 2), is(2.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayMinValueExceptionTest2() {
 		MathUtils.getArrayMinValue(b, -1, 2);
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayMinValueExceptionTest3() {
 		MathUtils.getArrayMinValue(null, 0, 2);
 	}
@@ -293,7 +293,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayValuesProduct(b), is(6.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayProductExceptionTest1() {
 		MathUtils.getArrayValuesProduct(null);
 	}
@@ -303,12 +303,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayValuesProduct(b, 0, 2), is(2.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayProductExceptionTest2() {
 		MathUtils.getArrayValuesProduct(b, -1, 2);
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayProductExceptionTest3() {
 		MathUtils.getArrayValuesProduct(null, 1, 2);
 	}
@@ -318,7 +318,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayValuesSum(b), is(6.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArraySumExceptionTest1() {
 		MathUtils.getArrayValuesSum(null);
 	}
@@ -328,12 +328,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayValuesSum(b, 1, 2), is(5.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getarraySumExceptionTest2() {
 		MathUtils.getArrayValuesSum(b, -1, 2);
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getarraySumExceptionTest3() {
 		MathUtils.getArrayValuesSum(null, 1, 2);
 	}
@@ -353,7 +353,7 @@ public class MathUtilTest {
 		assertEquals(true, 3 <= randomFloat && randomFloat <= 9);
 	}
 
-	@Test(expected = MosipNumberIsTooLargeException.class)
+	@Test(expected = NumberIsTooLargeException.class)
 	public void getRandomExceptionTest2() {
 		MathUtils.getRandom(4, 1);
 	}
@@ -365,7 +365,7 @@ public class MathUtilTest {
 		assertEquals(true, 8L <= randomFloat && randomFloat <= 9L);
 	}
 
-	@Test(expected = MosipNumberIsTooLargeException.class)
+	@Test(expected = NumberIsTooLargeException.class)
 	public void getRandomExceptionTest3() {
 		MathUtils.getRandom(4L, 1L);
 	}
@@ -377,17 +377,17 @@ public class MathUtilTest {
 		assertTrue(8.0 <= randomFloat && randomFloat <= 9.0);
 	}
 
-	@Test(expected = MosipNumberIsTooLargeException.class)
+	@Test(expected = NumberIsTooLargeException.class)
 	public void getRandomExceptionTest4() {
 		MathUtils.getRandom(6.0, 1.0);
 	}
 
-	@Test(expected = MosipNotFiniteNumberException.class)
+	@Test(expected = NotFiniteNumberException.class)
 	public void getRandomExceptionTest5() {
 		MathUtils.getRandom(6, Double.POSITIVE_INFINITY);
 	}
 
-	@Test(expected = MosipNotANumberException.class)
+	@Test(expected = NotANumberException.class)
 	public void getRandomExceptionTest6() {
 		MathUtils.getRandom(6, Double.NaN);
 	}
@@ -402,7 +402,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.nextPrimeNumber(1), is(2));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void nextPrimeExceptionTest() {
 		MathUtils.nextPrimeNumber(-1);
 	}
@@ -412,7 +412,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayValuesMean(b), is(2.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayValueMeanExceptionTest1() {
 		MathUtils.getArrayValuesMean(null);
 	}
@@ -422,12 +422,12 @@ public class MathUtilTest {
 		assertThat(MathUtils.getArrayValuesMean(b, 0, 3), is(2.0));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayValueMeanExceptionTest2() {
 		MathUtils.getArrayValuesMean(b, -1, 3);
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getArrayValueMeanExceptionTest3() {
 		MathUtils.getArrayValuesMean(null, 0, 3);
 	}
@@ -437,7 +437,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getPrimeFactors(18), is(list));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void getPrimeFactorExceptionTest() {
 		MathUtils.getPrimeFactors(1);
 	}

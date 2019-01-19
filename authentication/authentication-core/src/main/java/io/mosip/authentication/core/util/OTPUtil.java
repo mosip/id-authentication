@@ -14,25 +14,15 @@ public final class OTPUtil {
 
 	/**
 	 * Generate key.
-	 *
-	 * @param productId
-	 *            the product id
-	 * @param tokenId
-	 *            the token id or ref id
-	 * @param txnId
-	 *            the txn id
-	 * @param auaCode
-	 *            the aua code or TSP code
-	 * @return the encoded key
+	 * 
+	 * @param productId productId
+	 * @param uin     uin
+	 * @param txnId     txnId
+	 * @param auaCode   auaCode
+	 * @return generated key.
 	 */
-	public static String generateKey(String productId, String refId, String txnId, String auaCode) {
-		return productId.concat("_")
-				.concat(Base64.getEncoder()
-						.encodeToString(
-								refId.getBytes()))
-										.concat("_")
-											.concat(txnId)
-												.concat("_")
-													.concat(auaCode);
+	public static String generateKey(String productId, String uin, String txnId, String auaCode) {
+		return productId.concat("_").concat(Base64.getEncoder().encodeToString(uin.getBytes())).concat("_")
+				.concat(txnId).concat("_").concat(auaCode);
 	}
 }

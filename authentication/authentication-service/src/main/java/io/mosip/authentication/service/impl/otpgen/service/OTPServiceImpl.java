@@ -8,7 +8,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Service implementation of OtpTriggerService.
@@ -19,16 +19,19 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 @Service
 public class OTPServiceImpl implements OTPService {
 	
+	/** The otp manager. */
 	@Autowired
 	private OTPManager otpManager;
 
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
+	/** The mosip logger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 	
 	/**
-	 * 
-	 * @param otpKey
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Generate otp.
+	 *
+	 * @param otpKey the otp key
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Override
 	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException {

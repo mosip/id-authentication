@@ -10,16 +10,16 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.test.model.Car;
 import io.mosip.kernel.core.test.model.JsonUtilTestConstants;
 import io.mosip.kernel.core.test.model.ParentCar2;
 import io.mosip.kernel.core.test.model.SampleClass;
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonGenerationException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.util.exception.JsonGenerationException;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 
 /**
  * Unit test for JsonUtil class
@@ -36,14 +36,14 @@ public class JsonUtilTest {
 
 	@Test
 	public void testJavaObjectToJsonFile()
-			throws MosipJsonGenerationException, MosipJsonMappingException, MosipIOException {
+			throws JsonGenerationException, JsonMappingException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("sample.json").getFile());
 		assertThat(JsonUtils.javaObjectToJsonFile(car, file.getAbsolutePath()), is(true));
 	}
 
 	@Test
-	public void testJavaObjectToJsonString() throws MosipJsonProcessingException {
+	public void testJavaObjectToJsonString() throws JsonProcessingException {
 		String jsonString = JsonUtils.javaObjectToJsonString(car);
 
 		jsonString = jsonString.replaceAll("\r", "");// \r and \n
@@ -53,7 +53,7 @@ public class JsonUtilTest {
 
 	@Test
 	public void testJsonStringToJavaObject()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 		Car car2 = (Car) JsonUtils.jsonStringToJavaObject(Car.class, JsonUtilTestConstants.json);
 		assertNotNull(car2);
 		assertThat(car2.getColor(), is("Black"));
@@ -62,7 +62,7 @@ public class JsonUtilTest {
 	}
 
 	@Test
-	public void testJsonFileToJavaObject() throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+	public void testJsonFileToJavaObject() throws JsonParseException, JsonMappingException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("sample2.json").getFile());
 		Car car2 = (Car) JsonUtils.jsonFileToJavaObject(Car.class, file.getAbsolutePath());
@@ -72,98 +72,98 @@ public class JsonUtilTest {
 	}
 
 	@Test
-	public void testJsonToJacksonJsonNode() throws MosipIOException {
+	public void testJsonToJacksonJsonNode() throws IOException {
 
 		assertThat(JsonUtils.jsonToJacksonJson(JsonUtilTestConstants.jsonString, "type"), is("FIAT"));
 	}
 
 	@Test
-	public void testJsonStringToJavaList() throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+	public void testJsonStringToJavaList() throws JsonParseException, JsonMappingException, IOException {
 		List<Object> listElements = JsonUtils.jsonStringToJavaList(JsonUtilTestConstants.jsonCarArray);
 		assertThat(listElements.toString(), is("[{color=Black, type=BMW}, {color=Red, type=FIAT}]"));
 	}
 
 	@Test
-	public void testJsonStringToJavaMap() throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+	public void testJsonStringToJavaMap() throws JsonParseException, JsonMappingException, IOException {
 		Map<String, Object> mapElements = JsonUtils.jsonStringToJavaMap(JsonUtilTestConstants.jsonString);
 		assertThat(mapElements.toString(), is("{color=Black, type=FIAT}"));
 	}
 
-	@Test(expected = MosipIOException.class)
+	@Test(expected = IOException.class)
 	public void testJavaObjectToJsonFileWithIOException()
-			throws MosipJsonGenerationException, MosipJsonMappingException, MosipIOException {
+			throws JsonGenerationException, JsonMappingException, IOException {
 
 		JsonUtils.javaObjectToJsonFile("", "C:/InvalidLocation");
 	}
 
-	@Test(expected = MosipJsonParseException.class)
+	@Test(expected = JsonParseException.class)
 	public void testjsonStringtoJavaObjectWithParseException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonStringToJavaObject(Car.class, JsonUtilTestConstants.jsonParserError);
 	}
 
-	@Test(expected = MosipJsonMappingException.class)
+	@Test(expected = JsonMappingException.class)
 	public void testjsonStringtoJavaObjectWithMappingException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonStringToJavaObject(Car.class, JsonUtilTestConstants.jsonCarArray2);
 	}
 
-	@Test(expected = MosipJsonParseException.class)
+	@Test(expected = JsonParseException.class)
 	public void testjsonFiletoJavaObjectWithParseException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("sampleParse.json").getFile());
 
 		JsonUtils.jsonFileToJavaObject(SampleClass.class, file.getAbsolutePath());
 	}
 
-	@Test(expected = MosipJsonMappingException.class)
+	@Test(expected = JsonMappingException.class)
 	public void testjsonFiletoJavaObjectWithMappingException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("samplex.json").getFile());
 
 		JsonUtils.jsonFileToJavaObject(ParentCar2.class, file.getAbsolutePath());
 	}
 
-	@Test(expected = MosipIOException.class)
+	@Test(expected = IOException.class)
 	public void testjsonFiletoJavaObjectWithIOException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonFileToJavaObject(ParentCar2.class, "C:/InvalidLocation");
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void testJsonToJacksonJsonWithIOException() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void testJsonToJacksonJsonWithIOException() throws IOException {
 		JsonUtils.jsonToJacksonJson(JsonUtilTestConstants.jsonCarArray2, "");
 	}
 
-	@Test(expected = MosipJsonParseException.class)
+	@Test(expected = JsonParseException.class)
 	public void testjsonStringToJavaListWithParseException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonStringToJavaList(JsonUtilTestConstants.jsonParserError2);
 	}
 
-	@Test(expected = MosipJsonMappingException.class)
+	@Test(expected = JsonMappingException.class)
 	public void testjsonStringToJavaListWithMappingException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonStringToJavaList(JsonUtilTestConstants.jsonCarArray2);
 	}
 
-	@Test(expected = MosipJsonParseException.class)
+	@Test(expected = JsonParseException.class)
 	public void testjsonStringToJavaMapWithParseException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonStringToJavaMap(JsonUtilTestConstants.jsonParserError);
 	}
 
-	@Test(expected = MosipJsonMappingException.class)
+	@Test(expected = JsonMappingException.class)
 	public void testjsonStringToJavaMapWithMappingException()
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonUtils.jsonStringToJavaMap(JsonUtilTestConstants.jsonCarArray2);
 	}

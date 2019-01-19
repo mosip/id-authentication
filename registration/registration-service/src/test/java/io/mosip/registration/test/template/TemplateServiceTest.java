@@ -1,23 +1,20 @@
-package io.mosip.registration.test.template;
+ package io.mosip.registration.test.template;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.dao.TemplateDao;
 import io.mosip.registration.entity.Template;
@@ -25,16 +22,15 @@ import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.TemplateService;
+import io.mosip.registration.service.template.impl.TemplateServiceImpl;
 
-@RunWith(SpringRunner.class)
 public class TemplateServiceTest {
 
 	@Mock
-	TemplateDao templateDao;
+	private TemplateDao templateDao;
 	
 	@InjectMocks
-	TemplateService templateService;
+	private TemplateServiceImpl templateService;
 	
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -42,6 +38,9 @@ public class TemplateServiceTest {
 	public List<Template> getAllDummyTemplates(){
 		List<Template> templates = new ArrayList<>();
 		Template template = new Template();
+		template.setName("AckTemplate");
+		template.setTemplateTypCode("vel");
+		template.setFileFormatCode("vel");
 		template.setId("T01");
 		template.setFileTxt("sample text");
 		template.setLangCode("en");
@@ -82,7 +81,7 @@ public class TemplateServiceTest {
 		when(templateDao.getAllTemplateTypes()).thenReturn(templateTypes);
 		List<TemplateFileFormat> fileFormats = getAllDummyFormats();
 		when(templateDao.getAllTemplateFileFormats()).thenReturn(fileFormats);
-		assertThat(templateService.getTemplate(), is(templates.get(0)));
+		assertThat(templateService.getTemplate("AckTemplate"), is(templates.get(0)));
 	}
 	
 	@Test
@@ -100,7 +99,7 @@ public class TemplateServiceTest {
 		List<TemplateFileFormat> fileFormats = getAllDummyFormats();
 		when(templateDao.getAllTemplateFileFormats()).thenReturn(fileFormats);
 		Template templ = new Template();
-		assertThat(templateService.getTemplate(), is(templ));
+		assertThat(templateService.getTemplate("AckTemplate"), is(templ));
 	}
 	
 	@Test
@@ -110,12 +109,13 @@ public class TemplateServiceTest {
 		template.setFileTxt("sample text");
 		template.setLangCode("en");
 		template.setActive(true);
+		template.setName("AckTemplate");
 		
-		TemplateService temp = new TemplateService();
-		TemplateService spyTemp = Mockito.spy(temp);
+		TemplateServiceImpl temp = new TemplateServiceImpl();
+		TemplateServiceImpl spyTemp = Mockito.spy(temp);
 
-	    Mockito.doReturn(template).when(spyTemp).getTemplate(); 
-	    File ack = spyTemp.createReceipt();
+	    Mockito.doReturn(template).when(spyTemp).getTemplate("AckTemplate"); 
+	    String ack = spyTemp.getHtmlTemplate("AckTemplate");
 	    
 		assertNotNull(ack);
 	}

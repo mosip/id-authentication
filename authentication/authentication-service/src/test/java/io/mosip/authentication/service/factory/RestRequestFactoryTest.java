@@ -11,9 +11,11 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.env.MockEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -74,13 +76,33 @@ public class RestRequestFactoryTest {
 		testRequest.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		testRequest.setRequestBody(auditRequest);
 		testRequest.setResponseType(AuditResponseDto.class);
-		testRequest.setHeaders(headers -> headers.setContentType(MediaType.valueOf(mediaType)));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.valueOf(mediaType));
+		testRequest.setHeaders(headers);
 		testRequest.setTimeout(Integer.parseInt(timeout));
 
 		request.setHeaders(null);
 		testRequest.setHeaders(null);
 
 		assertEquals(testRequest, request);
+
+	}
+	
+	@Test(expected=IDDataValidationException.class)
+	public void testBuildRequestWithMultiValueMap() throws IDDataValidationException {
+	    
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
+
+		ReflectionTestUtils.setField(restFactory, "env", environment);
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+		auditRequest.setActionTimeStamp(null);
+
+		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+
 
 	}
 
@@ -99,6 +121,7 @@ public class RestRequestFactoryTest {
 	}
 
 	@Test(expected = IDDataValidationException.class)
+	@DirtiesContext
 	public void testBuildRequestNullProperties() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();

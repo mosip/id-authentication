@@ -10,12 +10,12 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
+
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.vid.constant.MosipVidExceptionConstant;
+import io.mosip.kernel.idvalidator.vid.constant.VidExceptionConstant;
 
 /**
  * Class to validate the VID
@@ -25,7 +25,7 @@ import io.mosip.kernel.idvalidator.vid.constant.MosipVidExceptionConstant;
  * @since 1.0.0
  */
 @Component
-public class VidValidatorImpl implements MosipIdValidator<String> {
+public class VidValidatorImpl implements IdValidator<String> {
 
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
@@ -39,7 +39,7 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
 	@PostConstruct
-	public void preparNumaricRegEx() {
+	private void VidValidatorImplPostConstruct() {
 		numaricRegEx = "\\d{" + vidLength + "}";
 	}
 
@@ -61,18 +61,18 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 	 *            "426789089018"
 	 * @return true if entered VID is valid
 	 * 
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered VID is empty or null.
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered VID contain any sequential and repeated block of
 	 *             number for 2 or more than two digits",
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered VID length should be specified number of digits.
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered VID contain any alphanumeric characters
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered VID should not match with checksum
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered VID contain Zero or One as first Digit.
 	 */
 
@@ -84,8 +84,8 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (StringUtils.isEmpty(id)) {
-			throw new MosipInvalidIDException(MosipVidExceptionConstant.VID_VAL_INVALID_NULL.getErrorCode(),
-					MosipVidExceptionConstant.VID_VAL_INVALID_NULL.getErrorMessage());
+			throw new InvalidIDException(VidExceptionConstant.VID_VAL_INVALID_NULL.getErrorCode(),
+					VidExceptionConstant.VID_VAL_INVALID_NULL.getErrorMessage());
 		}
 
 		/**
@@ -94,8 +94,8 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (id.length() != vidLength) {
-			throw new MosipInvalidIDException(MosipVidExceptionConstant.VID_VAL_ILLEGAL_LENGTH.getErrorCode(),
-					MosipVidExceptionConstant.VID_VAL_ILLEGAL_LENGTH.getErrorMessage());
+			throw new InvalidIDException(VidExceptionConstant.VID_VAL_ILLEGAL_LENGTH.getErrorCode(),
+					VidExceptionConstant.VID_VAL_ILLEGAL_LENGTH.getErrorMessage());
 		}
 
 		/**
@@ -104,8 +104,8 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!Pattern.matches(numaricRegEx, id)) {
-			throw new MosipInvalidIDException(MosipVidExceptionConstant.VID_VAL_INVALID_DIGITS.getErrorCode(),
-					MosipVidExceptionConstant.VID_VAL_INVALID_DIGITS.getErrorMessage());
+			throw new InvalidIDException(VidExceptionConstant.VID_VAL_INVALID_DIGITS.getErrorCode(),
+					VidExceptionConstant.VID_VAL_INVALID_DIGITS.getErrorMessage());
 		}
 
 		/**
@@ -116,29 +116,30 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			throw new MosipInvalidIDException(MosipVidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					MosipVidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorMessage());
+			throw new InvalidIDException(VidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorCode(),
+					VidExceptionConstant.VID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
-		/**
-		 * 
-		 * The method isValidId(id) from MosipIDFilter will validate the VID for the
-		 * following conditions
-		 * 
-		 * The VID should not contain any sequential number for 2 or more than two
-		 * digits
-		 * 
-		 * The VID should not contain any repeating numbers for 2 or more than two
-		 * digits
-		 * 
-		 * The VID should not have repeated block of numbers for more than 2 digits
-		 * 
-		 */
-		if (!IdFilterUtils.isValidId(id)) {
-			throw new MosipInvalidIDException(
-					MosipVidExceptionConstant.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					MosipVidExceptionConstant.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
-		}
+//TODO : Need to write logic for Sequence validation without using Generator's util	
+//		/**
+//		 * 
+//		 * The method isValidId(id) from MosipIDFilter will validate the VID for the
+//		 * following conditions
+//		 * 
+//		 * The VID should not contain any sequential number for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The VID should not contain any repeating numbers for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The VID should not have repeated block of numbers for more than 2 digits
+//		 * 
+//		 */
+//		if (!IdFilterUtils.isValidId(id)) {
+//			throw new InvalidIDException(
+//					VidExceptionConstant.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+//					VidExceptionConstant.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+//		}
 
 		/**
 		 * 
@@ -147,8 +148,8 @@ public class VidValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!ChecksumUtils.validateChecksum(id)) {
-			throw new MosipInvalidIDException(MosipVidExceptionConstant.VID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
-					MosipVidExceptionConstant.VID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
+			throw new InvalidIDException(VidExceptionConstant.VID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
+					VidExceptionConstant.VID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}
 
 		/**

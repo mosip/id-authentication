@@ -18,6 +18,12 @@ tmp/
 local.properties
 .loadpath
 .DS_Store
+reg/log
+reg/seg0
+reg/service.properties
+reg/db.lck
+reg/README_DO_NOT_TOUCH_FILES.txt
 
 #not ignore files
 !jfxrt.jar
+/Key_Store/

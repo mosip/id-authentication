@@ -3,19 +3,33 @@ package io.mosip.registration.dto.biometric;
 import io.mosip.registration.dto.BaseDTO;
 
 /**
- * This class contains the information on captured Iris
- * 
+ * This class contains the information on captured Iris.
+ *
  * @author Dinesh Asokan
  * @since 1.0.0
  */
 public class IrisDetailsDTO extends BaseDTO {
+
+	/** The iris. */
 	private byte[] iris;
-	protected String irisName;
+
+	/** The iris image name. */
+	protected String irisImageName;
+
+	/** The quality score. */
 	protected double qualityScore;
+
+	/** The is force captured. */
 	protected boolean isForceCaptured;
+
+	/** The iris type. */
 	protected String irisType;
+	/** The num of iris retry. */
+	private int numOfIrisRetry;
 
 	/**
+	 * Gets the iris.
+	 *
 	 * @return the iris
 	 */
 	public byte[] getIris() {
@@ -23,70 +37,104 @@ public class IrisDetailsDTO extends BaseDTO {
 	}
 
 	/**
+	 * Sets the iris.
+	 *
 	 * @param iris
-	 *            the iris to set
+	 *            the new iris
 	 */
 	public void setIris(byte[] iris) {
 		this.iris = iris;
 	}
 
 	/**
-	 * @return the irisName
+	 * Gets the iris image name.
+	 *
+	 * @return the iris image name
 	 */
-	public String getIrisName() {
-		return irisName;
+	public String getIrisImageName() {
+		return irisImageName;
 	}
 
 	/**
-	 * @param irisName
-	 *            the irisName to set
+	 * Sets the iris image name.
+	 *
+	 * @param irisImageName
+	 *            the new iris image name
 	 */
-	public void setIrisName(String irisName) {
-		this.irisName = irisName;
+	public void setIrisImageName(String irisImageName) {
+		this.irisImageName = irisImageName;
 	}
 
 	/**
-	 * @return the qualityScore
+	 * Gets the quality score.
+	 *
+	 * @return the quality score
 	 */
 	public double getQualityScore() {
 		return qualityScore;
 	}
 
 	/**
+	 * Sets the quality score.
+	 *
 	 * @param qualityScore
-	 *            the qualityScore to set
+	 *            the new quality score
 	 */
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
 
 	/**
-	 * @return the isForceCaptured
+	 * Checks if is force captured.
+	 *
+	 * @return true, if is force captured
 	 */
 	public boolean isForceCaptured() {
 		return isForceCaptured;
 	}
 
 	/**
+	 * Sets the force captured.
+	 *
 	 * @param isForceCaptured
-	 *            the isForceCaptured to set
+	 *            the new force captured
 	 */
 	public void setForceCaptured(boolean isForceCaptured) {
 		this.isForceCaptured = isForceCaptured;
 	}
 
 	/**
-	 * @return the irisType
+	 * Gets the iris type.
+	 *
+	 * @return the iris type
 	 */
 	public String getIrisType() {
 		return irisType;
 	}
 
 	/**
+	 * Sets the iris type.
+	 *
 	 * @param irisType
-	 *            the irisType to set
+	 *            the new iris type
 	 */
 	public void setIrisType(String irisType) {
 		this.irisType = irisType;
 	}
+
+	/**
+	 * @return the numOfIrisRetry
+	 */
+	public int getNumOfIrisRetry() {
+		return numOfIrisRetry;
+	}
+
+	/**
+	 * @param numOfIrisRetry
+	 *            the numOfIrisRetry to set
+	 */
+	public void setNumOfIrisRetry(int numOfIrisRetry) {
+		this.numOfIrisRetry = numOfIrisRetry;
+	}
+
 }

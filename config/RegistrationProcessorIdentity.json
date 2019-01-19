@@ -1,0 +1,34 @@
+{
+	"identity": {
+		"name": {
+			"value": "fullName",
+			"weight": 20
+		},
+		"gender": {
+			"value": "gender",
+			"weight": 20
+		},
+		"dob": {
+			"value": "dateOfBirth",
+			"weight": 20
+		},
+		"pheoniticName": {
+			"weight": 20
+		},
+		"poa": {
+			"value" : "proofOfAddress"
+		},
+		"poi": {
+			"value" : "proofOfIdentity"
+		},
+		"por": {
+			"value" : "proofOfRelationship"
+		},
+		"pob": {
+			"value" : "proofOfDateOfBirth"
+		}
+		
+		
+
+	}
+} 

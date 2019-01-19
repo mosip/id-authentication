@@ -1,15 +1,11 @@
 package io.mosip.registration.exception;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 
 /**
  * The class to handle all the checked exception in REG
@@ -18,22 +14,16 @@ import org.springframework.stereotype.Component;
  * @since 1.0.0
  *
  */
-@Component
 public class RegBaseCheckedException extends BaseCheckedException {
 
 	/**
 	 * Serializable Version Id
 	 */
-	private static final long serialVersionUID = 1287307733283461272L;
+	private static final long serialVersionUID = 7381314129809012005L;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final Logger LOGGER = AppConfig.getLogger(RegBaseCheckedException.class);
 
 	/**
 	 * Constructs a new checked exception
@@ -53,8 +43,8 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	public RegBaseCheckedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), errorCode + "-->" + errorMessage);
+		LOGGER.error("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
+				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 
 	/**
@@ -70,7 +60,7 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	public RegBaseCheckedException(String errorCode, String errorMessage, Throwable throwable) {
 		super(errorCode, errorMessage, throwable);
-		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), errorCode + "-->" + errorMessage);
+		LOGGER.error("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
+				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 }

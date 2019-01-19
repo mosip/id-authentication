@@ -1,5 +1,7 @@
 package io.mosip.registration.dto;
 
+import java.sql.Time;
+
 /**
  * This class contains the Registration Center details.
  * 
@@ -7,164 +9,279 @@ package io.mosip.registration.dto;
  * @since 1.0.0
  *
  */
-public class RegistrationCenterDetailDTO {	
-	
-	private String registrationCenterCode;	
+public class RegistrationCenterDetailDTO {
+
+	private String registrationCenterId;
+	private String registrationCenterName;
+	private String regsitrationCenterTypeCode;
 	private String registrationCenterAddrLine1;
 	private String registrationCenterAddrLine2;
 	private String registrationCenterAddrLine3;
-	private String registrationCenterLocLine1;
-	private String registrationCenterLocLine2;
-	private String registrationCenterLocLine3;
-	private String registrationCenterLocLine4;
-	private double registrationCenterLatitude;
-	private double registrationCenterLongitude;
-	private String registrationCenterCountry;
-	private String registrationCenterPincode;
+	private String registrationCenterLatitude;
+	private String registrationCenterLongitude;
+	private String registrationCenterLocationCode;
+	private int registrationCenterNumberOfStations;
+	private String registrationCenterWorkingHours;
+	private String registrationCenterContactPhone;
+	private Integer registrationCenterNumberOfKiosks;
+	private Time registrationCenterPerKioskProcessTime;
+	private Time registrationCenterProcessStartTime;
+	private Time registrationCenterProcessEndTime;
+	private String registrationCenterHolidayLocCode;
+
 	/**
-	 * @return the registrationCenterCode
+	 * @return the registrationCenterId
 	 */
-	public String getRegistrationCenterCode() {
-		return registrationCenterCode;
+	public String getRegistrationCenterId() {
+		return registrationCenterId;
 	}
+
 	/**
-	 * @param registrationCenterCode the registrationCenterCode to set
+	 * @param registrationCenterId
+	 *            the registrationCenterId to set
 	 */
-	public void setRegistrationCenterCode(String registrationCenterCode) {
-		this.registrationCenterCode = registrationCenterCode;
+	public void setRegistrationCenterId(String registrationCenterId) {
+		this.registrationCenterId = registrationCenterId;
 	}
+
+	/**
+	 * @return the registrationCenterName
+	 */
+	public String getRegistrationCenterName() {
+		return registrationCenterName;
+	}
+
+	/**
+	 * @param registrationCenterName
+	 *            the registrationCenterName to set
+	 */
+	public void setRegistrationCenterName(String registrationCenterName) {
+		this.registrationCenterName = registrationCenterName;
+	}
+
+	/**
+	 * @return the regsitrationCenterTypeCode
+	 */
+	public String getRegsitrationCenterTypeCode() {
+		return regsitrationCenterTypeCode;
+	}
+
+	/**
+	 * @param regsitrationCenterTypeCode
+	 *            the regsitrationCenterTypeCode to set
+	 */
+	public void setRegsitrationCenterTypeCode(String regsitrationCenterTypeCode) {
+		this.regsitrationCenterTypeCode = regsitrationCenterTypeCode;
+	}
+
 	/**
 	 * @return the registrationCenterAddrLine1
 	 */
 	public String getRegistrationCenterAddrLine1() {
 		return registrationCenterAddrLine1;
 	}
+
 	/**
-	 * @param registrationCenterAddrLine1 the registrationCenterAddrLine1 to set
+	 * @param registrationCenterAddrLine1
+	 *            the registrationCenterAddrLine1 to set
 	 */
 	public void setRegistrationCenterAddrLine1(String registrationCenterAddrLine1) {
 		this.registrationCenterAddrLine1 = registrationCenterAddrLine1;
 	}
+
 	/**
 	 * @return the registrationCenterAddrLine2
 	 */
 	public String getRegistrationCenterAddrLine2() {
 		return registrationCenterAddrLine2;
 	}
+
 	/**
-	 * @param registrationCenterAddrLine2 the registrationCenterAddrLine2 to set
+	 * @param registrationCenterAddrLine2
+	 *            the registrationCenterAddrLine2 to set
 	 */
 	public void setRegistrationCenterAddrLine2(String registrationCenterAddrLine2) {
 		this.registrationCenterAddrLine2 = registrationCenterAddrLine2;
 	}
+
 	/**
 	 * @return the registrationCenterAddrLine3
 	 */
 	public String getRegistrationCenterAddrLine3() {
 		return registrationCenterAddrLine3;
 	}
+
 	/**
-	 * @param registrationCenterAddrLine3 the registrationCenterAddrLine3 to set
+	 * @param registrationCenterAddrLine3
+	 *            the registrationCenterAddrLine3 to set
 	 */
 	public void setRegistrationCenterAddrLine3(String registrationCenterAddrLine3) {
 		this.registrationCenterAddrLine3 = registrationCenterAddrLine3;
 	}
-	/**
-	 * @return the registrationCenterLocLine1
-	 */
-	public String getRegistrationCenterLocLine1() {
-		return registrationCenterLocLine1;
-	}
-	/**
-	 * @param registrationCenterLocLine1 the registrationCenterLocLine1 to set
-	 */
-	public void setRegistrationCenterLocLine1(String registrationCenterLocLine1) {
-		this.registrationCenterLocLine1 = registrationCenterLocLine1;
-	}
-	/**
-	 * @return the registrationCenterLocLine2
-	 */
-	public String getRegistrationCenterLocLine2() {
-		return registrationCenterLocLine2;
-	}
-	/**
-	 * @param registrationCenterLocLine2 the registrationCenterLocLine2 to set
-	 */
-	public void setRegistrationCenterLocLine2(String registrationCenterLocLine2) {
-		this.registrationCenterLocLine2 = registrationCenterLocLine2;
-	}
-	/**
-	 * @return the registrationCenterLocLine3
-	 */
-	public String getRegistrationCenterLocLine3() {
-		return registrationCenterLocLine3;
-	}
-	/**
-	 * @param registrationCenterLocLine3 the registrationCenterLocLine3 to set
-	 */
-	public void setRegistrationCenterLocLine3(String registrationCenterLocLine3) {
-		this.registrationCenterLocLine3 = registrationCenterLocLine3;
-	}
-	/**
-	 * @return the registrationCenterLocLine4
-	 */
-	public String getRegistrationCenterLocLine4() {
-		return registrationCenterLocLine4;
-	}
-	/**
-	 * @param registrationCenterLocLine4 the registrationCenterLocLine4 to set
-	 */
-	public void setRegistrationCenterLocLine4(String registrationCenterLocLine4) {
-		this.registrationCenterLocLine4 = registrationCenterLocLine4;
-	}
+
 	/**
 	 * @return the registrationCenterLatitude
 	 */
-	public double getRegistrationCenterLatitude() {
+	public String getRegistrationCenterLatitude() {
 		return registrationCenterLatitude;
 	}
+
 	/**
-	 * @param registrationCenterLatitude the registrationCenterLatitude to set
+	 * @param registrationCenterLatitude
+	 *            the registrationCenterLatitude to set
 	 */
-	public void setRegistrationCenterLatitude(double registrationCenterLatitude) {
+	public void setRegistrationCenterLatitude(String registrationCenterLatitude) {
 		this.registrationCenterLatitude = registrationCenterLatitude;
 	}
+
 	/**
 	 * @return the registrationCenterLongitude
 	 */
-	public double getRegistrationCenterLongitude() {
+	public String getRegistrationCenterLongitude() {
 		return registrationCenterLongitude;
 	}
+
 	/**
-	 * @param registrationCenterLongitude the registrationCenterLongitude to set
+	 * @param registrationCenterLongitude
+	 *            the registrationCenterLongitude to set
 	 */
-	public void setRegistrationCenterLongitude(double registrationCenterLongitude) {
+	public void setRegistrationCenterLongitude(String registrationCenterLongitude) {
 		this.registrationCenterLongitude = registrationCenterLongitude;
 	}
+
 	/**
-	 * @return the registrationCenterCountry
+	 * @return the registrationCenterLocationCode
 	 */
-	public String getRegistrationCenterCountry() {
-		return registrationCenterCountry;
+	public String getRegistrationCenterLocationCode() {
+		return registrationCenterLocationCode;
 	}
+
 	/**
-	 * @param registrationCenterCountry the registrationCenterCountry to set
+	 * @param registrationCenterLocationCode
+	 *            the registrationCenterLocationCode to set
 	 */
-	public void setRegistrationCenterCountry(String registrationCenterCountry) {
-		this.registrationCenterCountry = registrationCenterCountry;
+	public void setRegistrationCenterLocationCode(String registrationCenterLocationCode) {
+		this.registrationCenterLocationCode = registrationCenterLocationCode;
 	}
+
 	/**
-	 * @return the registrationCenterPincode
+	 * @return the registrationCenterNumberOfStations
 	 */
-	public String getRegistrationCenterPincode() {
-		return registrationCenterPincode;
+	public int getRegistrationCenterNumberOfStations() {
+		return registrationCenterNumberOfStations;
 	}
+
 	/**
-	 * @param registrationCenterPincode the registrationCenterPincode to set
+	 * @param registrationCenterNumberOfStations
+	 *            the registrationCenterNumberOfStations to set
 	 */
-	public void setRegistrationCenterPincode(String registrationCenterPincode) {
-		this.registrationCenterPincode = registrationCenterPincode;
+	public void setRegistrationCenterNumberOfStations(int registrationCenterNumberOfStations) {
+		this.registrationCenterNumberOfStations = registrationCenterNumberOfStations;
 	}
-	
-		
+
+	/**
+	 * @return the registrationCenterWorkingHours
+	 */
+	public String getRegistrationCenterWorkingHours() {
+		return registrationCenterWorkingHours;
+	}
+
+	/**
+	 * @param registrationCenterWorkingHours
+	 *            the registrationCenterWorkingHours to set
+	 */
+	public void setRegistrationCenterWorkingHours(String registrationCenterWorkingHours) {
+		this.registrationCenterWorkingHours = registrationCenterWorkingHours;
+	}
+
+	/**
+	 * @return the registrationCenterContactPhone
+	 */
+	public String getRegistrationCenterContactPhone() {
+		return registrationCenterContactPhone;
+	}
+
+	/**
+	 * @param registrationCenterContactPhone
+	 *            the registrationCenterContactPhone to set
+	 */
+	public void setRegistrationCenterContactPhone(String registrationCenterContactPhone) {
+		this.registrationCenterContactPhone = registrationCenterContactPhone;
+	}
+
+	/**
+	 * @return the registrationCenterNumberOfKiosks
+	 */
+	public Integer getRegistrationCenterNumberOfKiosks() {
+		return registrationCenterNumberOfKiosks;
+	}
+
+	/**
+	 * @param registrationCenterNumberOfKiosks
+	 *            the registrationCenterNumberOfKiosks to set
+	 */
+	public void setRegistrationCenterNumberOfKiosks(Integer registrationCenterNumberOfKiosks) {
+		this.registrationCenterNumberOfKiosks = registrationCenterNumberOfKiosks;
+	}
+
+	/**
+	 * @return the registrationCenterPerKioskProcessTime
+	 */
+	public Time getRegistrationCenterPerKioskProcessTime() {
+		return registrationCenterPerKioskProcessTime;
+	}
+
+	/**
+	 * @param registrationCenterPerKioskProcessTime
+	 *            the registrationCenterPerKioskProcessTime to set
+	 */
+	public void setRegistrationCenterPerKioskProcessTime(Time registrationCenterPerKioskProcessTime) {
+		this.registrationCenterPerKioskProcessTime = registrationCenterPerKioskProcessTime;
+	}
+
+	/**
+	 * @return the registrationCenterProcessStartTime
+	 */
+	public Time getRegistrationCenterProcessStartTime() {
+		return registrationCenterProcessStartTime;
+	}
+
+	/**
+	 * @param registrationCenterProcessStartTime
+	 *            the registrationCenterProcessStartTime to set
+	 */
+	public void setRegistrationCenterProcessStartTime(Time registrationCenterProcessStartTime) {
+		this.registrationCenterProcessStartTime = registrationCenterProcessStartTime;
+	}
+
+	/**
+	 * @return the registrationCenterProcessEndTime
+	 */
+	public Time getRegistrationCenterProcessEndTime() {
+		return registrationCenterProcessEndTime;
+	}
+
+	/**
+	 * @param registrationCenterProcessEndTime
+	 *            the registrationCenterProcessEndTime to set
+	 */
+	public void setRegistrationCenterProcessEndTime(Time registrationCenterProcessEndTime) {
+		this.registrationCenterProcessEndTime = registrationCenterProcessEndTime;
+	}
+
+	/**
+	 * @return the registrationCenterHolidayLocCode
+	 */
+	public String getRegistrationCenterHolidayLocCode() {
+		return registrationCenterHolidayLocCode;
+	}
+
+	/**
+	 * @param registrationCenterHolidayLocCode
+	 *            the registrationCenterHolidayLocCode to set
+	 */
+	public void setRegistrationCenterHolidayLocCode(String registrationCenterHolidayLocCode) {
+		this.registrationCenterHolidayLocCode = registrationCenterHolidayLocCode;
+	}
+
 }

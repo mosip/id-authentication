@@ -1,8 +1,9 @@
 package io.mosip.authentication.service.impl.indauth.builder;
 
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,44 +14,42 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseInfo;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 
 /**
  * The builder class of AuthResponseDTO.
  *
- * @authour Loganathan Sekar
+ * @author Loganathan Sekar
  */
 public class AuthResponseBuilder {
+	
+	/**  The date format to use*/
+	private SimpleDateFormat dateFormat;
 
-	/** The built. */
+	/** The built flag. */
 	private boolean built;
 
 	/** The Constant DEFAULT_USAGE_DATA_HEX_COUNT. */
 	private static final int DEFAULT_USAGE_DATA_HEX_COUNT = 16;
 	
-	/** The response DTO. */
+	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
 	
-	/** The auth status infos. */
+	/** The auth status infos. */ 
 	private List<AuthStatusInfo> authStatusInfos;
 
 	/**
 	 * Instantiates a new auth response builder.
+	 *
+	 * @param dateTimePattern the date time pattern
 	 */
-	private AuthResponseBuilder() {
+	private AuthResponseBuilder(String dateTimePattern) {
 		responseDTO = new AuthResponseDTO();
 		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
 		responseDTO.setInfo(authResponseInfo);
 		authStatusInfos = new ArrayList<>();
-	}
-
-	/**
-	 * New instance.
-	 *
-	 * @return the auth response builder
-	 */
-	public static AuthResponseBuilder newInstance() {
-		return new AuthResponseBuilder();
+		dateFormat = new SimpleDateFormat(dateTimePattern);
 	}
 
 	/**
@@ -101,7 +100,6 @@ public class AuthResponseBuilder {
 	 */
 	public AuthResponseBuilder setIdType(String idType) {
 		responseDTO.getInfo().setIdType(idType);
-		;
 		return this;
 	}
 
@@ -123,7 +121,7 @@ public class AuthResponseBuilder {
 	 * @return the auth response builder
 	 */
 	public AuthResponseBuilder setVersion(String ver) {
-		responseDTO.getInfo().setVer(ver);
+		responseDTO.setVer(ver);
 		return this;
 	}
 
@@ -135,9 +133,13 @@ public class AuthResponseBuilder {
 	public AuthResponseDTO build() {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
-		responseDTO.setStatus(status);
+		if(status) {
+			responseDTO.setStatus("Y");
+		} else {
+			responseDTO.setStatus("N");
+		}
 
-		responseDTO.setResTime(Instant.now().toString());
+		responseDTO.setResTime(dateFormat.format(new Date()));
 
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
@@ -149,6 +151,13 @@ public class AuthResponseBuilder {
 				.orElseGet(Stream::empty))
 				.collect(Collectors.toList());
 		responseDTO.getInfo().setMatchInfos(matchInfos);
+		
+		List<BioInfo> bioInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
+				.ofNullable(statusInfo.getBioInfos())
+				.map(List<BioInfo>::stream)
+				.orElseGet(Stream::empty))
+				.collect(Collectors.toList());
+		responseDTO.getInfo().setBioInfos(bioInfos);
 
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(DEFAULT_USAGE_DATA_HEX_COUNT);
 
@@ -171,6 +180,16 @@ public class AuthResponseBuilder {
 		if (built) {
 			throw new IllegalStateException();
 		}
+	}
+
+	/**
+	 * Get new instance of AuthResponseBuilder.
+	 *
+	 * @param dateTimePattern the date time pattern
+	 * @return the auth response builder
+	 */
+	public static AuthResponseBuilder newInstance(String dateTimePattern) {
+		return new AuthResponseBuilder(dateTimePattern);
 	}
 
 }

@@ -2,9 +2,12 @@ package io.mosip.authentication.core.spi.fingerprintauth.provider;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.JsonSyntaxException;
@@ -69,35 +72,75 @@ public class FingerprintProviderTest {
 		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
 			return null;
 		}
+
+		@Override
+		public String createMinutiae(byte[] inputImage) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		
+
+		
+	};
+
+	FingerprintProvider fingerPrint = new FingerprintProvider() {
+
+		@Override
+		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public FingerprintDeviceInfo deviceInfo() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String createMinutiae(byte[] inputImage) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		
+
 	};
 
 	@Test
 	public void testISOScoreCalculatorSameFingerDiffScan() {
-		double score = fp.scoreCalculator(finger1, finger1scan2);
+		double score = fp.matchScoreCalculator(finger1, finger1scan2);
 		assertTrue(score > 100);
 	}
 
 	@Test
 	public void testISOScoreCalculatorDiffFinger() {
-		double score = fp.scoreCalculator(finger1, finger2);
+		double score = fp.matchScoreCalculator(finger1, finger2);
 		assertTrue(score < 100);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testISOScoreCalculatorException() {
-		fp.scoreCalculator(new byte[] { 1, 2 }, new byte[] { 1, 2 });
+		fp.matchScoreCalculator(new byte[] { 1, 2 }, new byte[] { 1, 2 });
 	}
 
 	@Test(expected = JsonSyntaxException.class)
 	public void testMinutiaeScoreCalculatorException() {
-		fp.scoreCalculator("123", "123");
+		fp.matchScoreCalculator("123", "123");
 	}
 
 	@Test
 	public void testMinutiaeScoreSameFingerDiffScan() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
 		FingerprintTemplate template2 = new FingerprintTemplate().convert(finger1scan2);
-		double score = fp.scoreCalculator(template1.serialize(), template2.serialize());
+		double score = fp.matchScoreCalculator(template1.serialize(), template2.serialize());
 		assertTrue(score > 100);
 	}
 
@@ -105,8 +148,70 @@ public class FingerprintProviderTest {
 	public void testMinutiaeScoreDiffFinger() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
 		FingerprintTemplate template2 = new FingerprintTemplate().convert(finger2);
-		double score = fp.scoreCalculator(template1.serialize(), template2.serialize());
+		double score = fp.matchScoreCalculator(template1.serialize(), template2.serialize());
 		assertTrue(score < 100);
+	}
+
+	@Test
+	public void testmatchMinutiea() {
+		byte[] refInfo = Base64.getEncoder().encode(finger1);
+		String value = new String(refInfo);
+		fingerPrint.matchMinutiae(value, value);
+		fingerPrint.matchImage(value, value);
+		fingerPrint.decodeValue(value);
+	}
+
+	@Test
+	public void testMultiMatchMinutae() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String leftIndex = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
+		reqInfo.put("leftIndex", leftIndex);
+		String rightIndex = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
+		reqInfo.put("rightIndex", rightIndex);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("leftIndex", leftIndex);
+		entityInfo.put("rightIndex", rightIndex);
+		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
+		fingerPrint.matchMultiImage(reqInfo, entityInfo);
+		assertTrue(score > 500);
+	}
+
+	@Test
+	public void testmatcImage() {
+		byte[] refInfo = Base64.getEncoder().encode(finger1);
+		String value = new String(refInfo);
+		fingerPrint.matchImage(value, value);
+		fingerPrint.decodeValue(value);
+	}
+
+	@Test
+	public void testMultiMatchImage() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String leftIndex = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
+		reqInfo.put("leftIndex", leftIndex);
+		String rightIndex = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
+		reqInfo.put("rightIndex", rightIndex);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("leftIndex", leftIndex);
+		entityInfo.put("rightIndex", rightIndex);
+		double score = fingerPrint.matchMultiImage(reqInfo, entityInfo);
+		System.out.println(score);
+		assertTrue(score > 500);
+	}
+
+	@Test
+	public void testInavalidMultiMatchMinutae() {
+		Map<String, String> reqInfo = new HashMap<>();
+		String leftIndex = "Rk1SACAyMAAAAADkAAABPAFiAMUAxQEAAAAoIYCiANo5ZICOAMKzUECuALHAZEDSAMHGZECaASQqZEDpAM7OZED/APlQZEDdAT4KKIC5AVEHV4B3AG0TZED3AVeCG4CVAN08ZEDTAPK3V0DbAN3IXYCAALOnUIBgAN8pZICFAJ77UEClAUkTPECgAHniZECIAVAKIUDnAVcCNUChAFPxV4CQAPmtZECTALS/UECFARkrXUDeAQHEV0BjAMYoZIDCAT8bV0DZAJXPZIBZAJcjZIBrAUkONUBQAVAKG0BeAFQZZAAA";
+		String rightIndex = "Rk1SACAyMAAAAADeAAABPAFiAMUAxQEAAAAoIECOARQNZICKASsEZEBjAO4mZEDrARVVZID5AORUZEDuATpfV4DKAJ9rZIBTALMjZIDQAJLcZEB6AIgfZIC5AHmDZECBAQ8fZEDJASleZEDVASZYZEB6AUYGZEDGAVZ6NUCBAJ+jZEBjAVEHV0A/ANIiUEBDAVEKPIB7AH6jZEB8AEaNV4CMANkXZEC/ATJpZIC4AUd0ZICoAVJ9KEB4AVMASYBMATUYZEDzAURrV4CfAIr+ZED4AVeASUECAVsCKAAA";
+		reqInfo.put("leftIndex", rightIndex);
+		reqInfo.put("rightIndex", leftIndex);
+		Map<String, String> entityInfo = new HashMap<>();
+		entityInfo.put("leftIndex", leftIndex);
+		entityInfo.put("rightIndex", rightIndex);
+		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
+		fingerPrint.matchMultiImage(reqInfo, entityInfo);
+		assertTrue(score > 60);
 	}
 
 }

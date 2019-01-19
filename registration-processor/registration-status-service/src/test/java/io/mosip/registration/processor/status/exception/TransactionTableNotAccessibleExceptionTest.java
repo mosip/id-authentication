@@ -9,15 +9,12 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.dto.TransactionDto;
-import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
-import io.mosip.registration.processor.status.exception.utils.RegistrationStatusErrorCodes;
 import io.mosip.registration.processor.status.service.TransactionService;
 
 @RunWith(SpringRunner.class)
 public class TransactionTableNotAccessibleExceptionTest {
-
-	private static final String TRANSACTION_TABLE_NOTACCESSIBLE = "Transaction table not accessible exception";
 
 	@Mock
 	TransactionService<TransactionDto> registrationTransactionService;
@@ -29,7 +26,7 @@ public class TransactionTableNotAccessibleExceptionTest {
 	public void TestTransactionTableNotAccessibleException() {
 
 		TransactionTableNotAccessibleException ex = new TransactionTableNotAccessibleException(
-				TRANSACTION_TABLE_NOTACCESSIBLE);
+				PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage());
 
 		Mockito.when(registrationTransactionService.addRegistrationTransaction(registrationTransactionDto)).thenThrow(ex);
 		try {
@@ -38,9 +35,9 @@ public class TransactionTableNotAccessibleExceptionTest {
 
 		} catch (TransactionTableNotAccessibleException e) {
 			assertThat("Should throw TransactionTableNotAccessibleException with correct error codes", e.getErrorCode()
-					.equalsIgnoreCase(RegistrationStatusErrorCodes.IIS_EPU_ATU_TRANSACTION_TABLE_NOTACCESSIBLE));
+					.equalsIgnoreCase(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getCode()));
 			assertThat("Should throw TransactionTableNotAccessibleException  with correct messages",
-					e.getErrorText().equalsIgnoreCase(TRANSACTION_TABLE_NOTACCESSIBLE));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage()));
 
 		}
 

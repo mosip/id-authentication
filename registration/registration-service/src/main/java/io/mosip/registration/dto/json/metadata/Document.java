@@ -1,39 +1,77 @@
 package io.mosip.registration.dto.json.metadata;
 
-import java.util.List;
-
+/**
+ * This class contains the attributes to be displayed for Document object in
+ * PacketMetaInfo JSON
+ * 
+ * @author Balaji Sridharan
+ * @since 1.0.0
+ */
 public class Document {
-	private List<DocumentDetails> documentDetails;
-	private String registrationAckCopy;
+
+	private String documentName;
+	private String documentCategory;
+	private String documentOwner;
+	private String documentType;
 
 	/**
-	 * @return the documentDetails
+	 * @return the documentName
 	 */
-	public List<DocumentDetails> getDocumentDetails() {
-		return documentDetails;
+	public String getDocumentName() {
+		return documentName;
 	}
 
 	/**
-	 * @param documentDetails
-	 *            the documentDetails to set
+	 * @param documentName
+	 *            the documentName to set
 	 */
-	public void setDocumentDetails(List<DocumentDetails> documentDetails) {
-		this.documentDetails = documentDetails;
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
 	}
 
 	/**
-	 * @return the registrationAckCopy
+	 * @return the documentCategory
 	 */
-	public String getRegistrationAckCopy() {
-		return registrationAckCopy;
+	public String getDocumentCategory() {
+		return documentCategory;
 	}
 
 	/**
-	 * @param registrationAckCopy
-	 *            the registrationAckCopy to set
+	 * @param documentCategory
+	 *            the documentCategory to set
 	 */
-	public void setRegistrationAckCopy(String registrationAckCopy) {
-		this.registrationAckCopy = registrationAckCopy;
+	public void setDocumentCategory(String documentCategory) {
+		this.documentCategory = documentCategory;
 	}
+
+	/**
+	 * @return the documentOwner
+	 */
+	public String getDocumentOwner() {
+		return documentOwner;
+	}
+
+	/**
+	 * @param documentOwner
+	 *            the documentOwner to set
+	 */
+	public void setDocumentOwner(String documentOwner) {
+		this.documentOwner = documentOwner;
+	}
+
+	/**
+	 * @return the documentType
+	 */
+	public String getDocumentType() {
+		return documentType;
+	}
+
+	/**
+	 * @param documentType
+	 *            the documentType to set
+	 */
+	public void setDocumentType(String documentType) {
+		this.documentType = documentType;
+	}
+
 }
-		

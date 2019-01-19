@@ -11,7 +11,7 @@ public enum KeyGeneratorExceptionConstant {
 	/**
 	 * {@link #MOSIP_NO_SUCH_ALGORITHM_EXCEPTION} exception constant
 	 */
-	MOSIP_NO_SUCH_ALGORITHM_EXCEPTION("KER-FTU-010", "no such algorithm is present");
+	MOSIP_NO_SUCH_ALGORITHM_EXCEPTION("KER-KEG-010", "no such algorithm is present");
 
 	/**
 	 * Constructor for this {@link Enum}

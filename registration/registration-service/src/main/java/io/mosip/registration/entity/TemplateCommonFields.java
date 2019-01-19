@@ -5,15 +5,12 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
-import org.hibernate.annotations.Type;
-
 @MappedSuperclass
 public class TemplateCommonFields {
 	
 	protected String descr;
 	@Column(name="is_active")
-	@Type(type= "true_false")
-	protected boolean isActive;
+	protected Boolean isActive;
 	@Column(name="cr_by")
 	protected String crBy;
 	@Column(name="cr_dtimes")
@@ -23,7 +20,7 @@ public class TemplateCommonFields {
 	@Column(name="upd_dtimes")
 	protected Date updDtimes;
 	@Column(name="is_deleted")
-	protected boolean isDeleted;
+	protected Boolean isDeleted;
 	@Column(name="del_dtimes")
 	protected Date delDtimes;
 	
@@ -33,10 +30,10 @@ public class TemplateCommonFields {
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
-	public boolean isActive() {
+	public Boolean isActive() {
 		return isActive;
 	}
-	public void setActive(boolean isActive) {
+	public void setActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 	public String getCrBy() {
@@ -63,10 +60,10 @@ public class TemplateCommonFields {
 	public void setUpdDtimes(Date updDtimes) {
 		this.updDtimes = updDtimes;
 	}
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 	public Date getDelDtimes() {

@@ -7,10 +7,10 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.ArrayIndexOutOfBoundsException;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
+import io.mosip.kernel.core.exception.PatternSyntaxException;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.core.util.exception.MosipArrayIndexOutOfBoundsException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipPatternSyntaxException;
 
 /**
  * Test classes for String Util
@@ -279,7 +279,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.join(testArray, ';', 0, 2), is("test;abc"));
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinObjectArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -291,7 +291,7 @@ public class StringUtilTest {
 
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinLongArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -302,7 +302,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.join(testArr, ';', 0, 3), is(joinedTestArr));
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinIntArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -319,7 +319,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.join(testArr, ';', 0, 3), is(joinedTestArr));
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinByteArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -330,7 +330,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.join(testArr, ';', 0, 3), is("a;b;c"));
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinCharArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -341,7 +341,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.join(testArr, ';', 0, 3), is("1.0;2.0;3.0"));
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinFloatArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -352,7 +352,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.join(testArr, ';', 0, 3), is("1.0;2.0;3.0"));
 	}
 
-	@Test(expected = MosipArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void joinDoubleArrayTestWithArrayIndexException() {
 		StringUtils.join(testArray, ';', -1, 2);
 	}
@@ -382,7 +382,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.removeAll(testString, "t"), is("es"));
 	}
 
-	@Test(expected = MosipPatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void removeAllTestWithPatternException() {
 		StringUtils.removeAll(testString, "[");
 	}
@@ -401,7 +401,7 @@ public class StringUtilTest {
 	public void replacePatternTest() {
 		assertThat(StringUtils.replacePattern("ABCabc123", "[a-z]", "_"), is("ABC___123"));
 	}
-	@Test(expected = MosipPatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void replacePatternTestWithException() {
 		StringUtils.replacePattern("ABCabc123", "[", "_");
 	}
@@ -410,7 +410,7 @@ public class StringUtilTest {
 	public void removePatternTest() {
 		assertThat(StringUtils.removePattern("ABCabc123", "[a-z]"), is("ABC123"));
 	}
-	@Test(expected = MosipPatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void removePatternTestWithException() {
 		StringUtils.removePattern("ABCabc123", "[");
 	}
@@ -420,7 +420,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.replaceAll("abc", "", "ZZZ"), is("ZZZaZZZbZZZcZZZ"));
 	}
 
-	@Test(expected = MosipPatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void replaceAllTestWithPatternException() {
 		StringUtils.replaceAll("abc", "[", "ZZ");
 	}
@@ -601,7 +601,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.abbreviate("abcdefghijkl", 6), is("abc..."));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void abbreviateTestWithIllegalArgumentException() {
 		StringUtils.abbreviate("aa", -1);
 	}
@@ -611,7 +611,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.abbreviate("abcdefghijkl", 10, 7), is("...ijkl"));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void abbreviateTestWithOffsetWithIllegalArgumentException() {
 		StringUtils.abbreviate("aa", 10, -1);
 	}
@@ -621,7 +621,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.abbreviate("abcdefghijkl", "@", 3), is("ab@"));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void abbreviateTestWithMarkerWithIllegalArgumentException() {
 		StringUtils.abbreviate("aa", "@", -1);
 	}
@@ -631,7 +631,7 @@ public class StringUtilTest {
 		assertThat(StringUtils.abbreviate("abcdefghijkl", "*", 6, 4), is("*gh*"));
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void abbreviateTestWithMarkerAndOffsetWithIllegalArgumentException() {
 		StringUtils.abbreviate("abcdefghijkl", "*", 4, -1);
 	}

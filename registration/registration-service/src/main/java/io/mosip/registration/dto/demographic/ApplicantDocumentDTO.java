@@ -1,54 +1,59 @@
 package io.mosip.registration.dto.demographic;
 
-import java.util.List;
-
 import io.mosip.registration.dto.BaseDTO;
 
 /**
  * This class used to capture the documents, photograph, exceptional photograph
- * and Acknowledgement Receipt of the Individual
- * 
+ * and Acknowledgement Receipt of the Individual.
+ *
  * @author Dinesh Asokan
  * @since 1.0.0
  */
 public class ApplicantDocumentDTO extends BaseDTO {
-	private List<DocumentDetailsDTO> documentDetailsDTO;
-	private String photoName;
+
+	/** The photograph name. */
+	private String photographName;
+
+	/** The photo. */
 	private byte[] photo;
+	
+	/** The compressed photo for QR Code. */
+	private byte[] compressedFacePhoto;
+
+	/** The has exception photo. */
 	private boolean hasExceptionPhoto;
+
+	/** The exception photo. */
 	private byte[] exceptionPhoto;
+
+	/** The exception photo name. */
 	private String exceptionPhotoName;
+
+	/** The quality score. */
+	private double qualityScore;
+
+	/** The num retry. */
+	private int numRetry;
+
+	/** The acknowledge receipt. */
 	private byte[] acknowledgeReceipt;
+
+	/** The acknowledge receipt name. */
 	private String acknowledgeReceiptName;
 
 	/**
-	 * @return the documentDetailsDTO
+	 * @return the photographName
 	 */
-	public List<DocumentDetailsDTO> getDocumentDetailsDTO() {
-		return documentDetailsDTO;
+	public String getPhotographName() {
+		return photographName;
 	}
 
 	/**
-	 * @param documentDetailsDTO
-	 *            the documentDetailsDTO to set
+	 * @param photographName
+	 *            the photographName to set
 	 */
-	public void setDocumentDetailsDTO(List<DocumentDetailsDTO> documentDetailsDTO) {
-		this.documentDetailsDTO = documentDetailsDTO;
-	}
-
-	/**
-	 * @return the photoName
-	 */
-	public String getPhotoName() {
-		return photoName;
-	}
-
-	/**
-	 * @param photoName
-	 *            the photoName to set
-	 */
-	public void setPhotoName(String photoName) {
-		this.photoName = photoName;
+	public void setPhotographName(String photographName) {
+		this.photographName = photographName;
 	}
 
 	/**
@@ -64,6 +69,21 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	 */
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
+	}
+	
+	/**
+	 * @return the compressedFacePhoto
+	 */
+	public byte[] getCompressedFacePhoto() {
+		return compressedFacePhoto;
+	}
+
+	/**
+	 * @param compressedFacePhoto
+	 *            the compressed face photo to set
+	 */
+	public void setCompressedFacePhoto(byte[] compressedFacePhoto) {
+		this.compressedFacePhoto = compressedFacePhoto;
 	}
 
 	/**
@@ -112,6 +132,36 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	}
 
 	/**
+	 * @return the qualityScore
+	 */
+	public double getQualityScore() {
+		return qualityScore;
+	}
+
+	/**
+	 * @param qualityScore
+	 *            the qualityScore to set
+	 */
+	public void setQualityScore(double qualityScore) {
+		this.qualityScore = qualityScore;
+	}
+
+	/**
+	 * @return the numRetry
+	 */
+	public int getNumRetry() {
+		return numRetry;
+	}
+
+	/**
+	 * @param numRetry
+	 *            the numRetry to set
+	 */
+	public void setNumRetry(int numRetry) {
+		this.numRetry = numRetry;
+	}
+
+	/**
 	 * @return the acknowledgeReceipt
 	 */
 	public byte[] getAcknowledgeReceipt() {
@@ -140,4 +190,5 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	public void setAcknowledgeReceiptName(String acknowledgeReceiptName) {
 		this.acknowledgeReceiptName = acknowledgeReceiptName;
 	}
+
 }

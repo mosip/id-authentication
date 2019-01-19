@@ -1,14 +1,13 @@
 package io.mosip.registration.repositories;
 
+import java.sql.Timestamp;
 import java.util.List;
 
-import  io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.Registration;
-
 
 /**
  * The repository interface for {@link Registration}
@@ -26,7 +25,9 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the list of entity id's
 	 * @return the list of {@link Registration}
 	 */
-	List<Registration> findByIdIn(List<String> idList);
+	@Query("select reg from Registration reg where reg.clientStatusCode= :syncStatus and (reg.serverStatusCode=:resendStatus or reg.serverStatusCode IS NULL) or reg.fileUploadStatus=:fileUploadStatus")
+	List<Registration> findByStatusCodes(@Param("syncStatus") String clientstatusCode,
+			@Param("resendStatus") String serverStatusCode, @Param("fileUploadStatus") String fileUploadStatus);
 
 	/**
 	 * This method returns the list of {@link Registration} based on status code
@@ -38,15 +39,29 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	List<Registration> findByclientStatusCode(String statusCode);
 
 	/**
-	 * This method updates the client status code of the {@link Registration} entity
+	 * This method fetches the registration packets based on given client status
+	 * codes.
+	 *
+	 * @param statusCodes
+	 *            the status codes
+	 * @return List of registration packets
+	 */
+	List<Registration> findByClientStatusCodeIn(List<String> statusCodes);
+
+	/**
+	 * Fetching all the re registration records
 	 * 
 	 * @param status
-	 *            the client status code to be updated
-	 * @param idList
-	 *            the list of entity id's
-	 * @return the status of the update
+	 * @return
 	 */
-	@Modifying(clearAutomatically = true)
-	@Query("update Registration r set r.clientStatusCode = ?1 where r.id IN ?2")
-	public int updateClientStatus(@Param("status") String status, @Param("idList") List<String> idList);
+	List<Registration> findByClientStatusCodeAndServerStatusCode(String clientStatus, String serverStatus);
+	
+	/**
+	 * Find by CrDtimes and client status code
+	 * @param crDtimes the date upto packets to be deleted
+	 * @param clientStatus status of resgistrationPacket
+	 * @return list of registrations
+	 */
+	List<Registration> findByCrDtimeBeforeAndClientStatusCodeNot(Timestamp crDtimes, String clientStatus);
+
 }

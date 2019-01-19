@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-/**
+/**	
  * The Class TransactionEntity.
  */
 @Entity
@@ -52,9 +52,14 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	@Column(name = "ref_id_type")
 	private String referenceIdType;
 
-	/** The is active. */
-	@Column(name = "is_active")
-	private Boolean isActive = true;
+	/**  is deleted?. */
+	@Column(name = "is_deleted", length = 32)
+	private Boolean isDeleted ;
+
+	/** The update date time. */
+	@Column(name = "del_dtimes")
+	@UpdateTimestamp
+	private LocalDateTime deleteDateTime;
 
 	/** The created by. */
 	@Column(name = "cr_by")
@@ -84,16 +89,12 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	/**
 	 * Instantiates a new transaction entity.
 	 *
-	 * @param transactionId
-	 *            the transaction id
-	 * @param registrationId
-	 *            the registration id
-	 * @param parentid
-	 *            the parentid
-	 * @param trntypecode
-	 *            the trntypecode
-	 * @param statusCode
-	 *            the status code
+	 * @param transactionId            the transaction id
+	 * @param registrationId            the registration id
+	 * @param parentid            the parentid
+	 * @param trntypecode            the trntypecode
+	 * @param statusCode            the status code
+	 * @param statusComment the status comment
 	 */
 	public TransactionEntity(String transactionId, String registrationId, String parentid, String trntypecode,
 			String statusCode, String statusComment) {
@@ -277,23 +278,42 @@ public class TransactionEntity extends BaseRegistrationEntity {
 		this.statusComment = statusComment;
 	}
 
+	
+
 	/**
-	 * Get is Active from transaction table.
-	 * 
-	 * @return the isActive
+	 * Gets the checks if is deleted.
+	 *
+	 * @return the checks if is deleted
 	 */
-	public Boolean getIsActive() {
-		return isActive;
+	public Boolean getIsDeleted() {
+		return isDeleted;
 	}
 
 	/**
-	 * Set is Active to transaction table.
-	 * 
-	 * @param isActive
-	 *            the isActive to set
+	 * Sets the checks if is deleted.
+	 *
+	 * @param isDeleted the new checks if is deleted
 	 */
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	/**
+	 * Gets the delete date time.
+	 *
+	 * @return the delete date time
+	 */
+	public LocalDateTime getDeleteDateTime() {
+		return deleteDateTime;
+	}
+
+	/**
+	 * Sets the delete date time.
+	 *
+	 * @param deleteDateTime the new delete date time
+	 */
+	public void setDeleteDateTime(LocalDateTime deleteDateTime) {
+		this.deleteDateTime = deleteDateTime;
 	}
 
 	/**

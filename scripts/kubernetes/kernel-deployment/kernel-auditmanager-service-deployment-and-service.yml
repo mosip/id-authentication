@@ -1,0 +1,39 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kernel-auditmanager-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: kernel-auditmanager-service
+    spec:
+      containers:
+      - name: kernel-auditmanager-service
+        image: docker-registry.mosip.io:5000/kernel-auditmanager-service
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 8081
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kernel-auditmanager-service
+spec:
+  ports:
+    - port: 8081
+  selector:
+    app: kernel-auditmanager-service

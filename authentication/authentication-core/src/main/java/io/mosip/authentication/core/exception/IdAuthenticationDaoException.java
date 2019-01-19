@@ -1,7 +1,6 @@
 package io.mosip.authentication.core.exception;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
@@ -10,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  *
  * @author Manoj SP
  */
-public class IdAuthenticationDaoException extends BaseCheckedException {
+public class IdAuthenticationDaoException extends IdAuthenticationBaseException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -7770924160513076138L;
@@ -53,7 +52,7 @@ public class IdAuthenticationDaoException extends BaseCheckedException {
 	 * @see BaseUncheckedException#BaseUncheckedException(String, String)
 	 */
 	public IdAuthenticationDaoException(IdAuthenticationErrorConstants exceptionConstant) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
+		super(exceptionConstant);
 	}
 
 	/**
@@ -64,7 +63,7 @@ public class IdAuthenticationDaoException extends BaseCheckedException {
 	 * @see BaseUncheckedException#BaseUncheckedException(String, String, Throwable)
 	 */
 	public IdAuthenticationDaoException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
+		super(exceptionConstant, rootCause);
 	}
 
 }

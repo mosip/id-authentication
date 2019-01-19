@@ -1,92 +1,163 @@
 package io.mosip.registration.dto.biometric;
 
+import java.util.List;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
- * This class contains the information on captured Finger prints
- * 
+ * This class contains the information on captured Finger prints.
+ *
  * @author Dinesh Asokan
  * @since 1.0.0
  */
 public class FingerprintDetailsDTO extends BaseDTO {
+
+	/** The finger print. */
 	private byte[] fingerPrint;
-	protected String fingerPrintName;
+
+	/** The finger print. */
+	private byte[] fingerPrintISOImage;
+
+	/** The fingerprint image name. */
+	protected String fingerprintImageName;
+
+	/** The quality score. */
 	protected double qualityScore;
+
+	/** The is force captured. */
 	protected boolean isForceCaptured;
+
+	/** The finger type. */
 	protected String fingerType;
 
+	/** The num retry. */
+	protected int numRetry;
+
+	/** The segmented fingerprints. */
+	private List<FingerprintDetailsDTO> segmentedFingerprints;
+
 	/**
-	 * @return the fingerPrint
+	 * Gets the finger print.
+	 *
+	 * @return the finger print
 	 */
 	public byte[] getFingerPrint() {
 		return fingerPrint;
 	}
 
 	/**
-	 * @param fingerPrint
-	 *            the fingerPrint to set
+	 * Sets the finger print.
+	 *
+	 * @param fingerPrint the new finger print
 	 */
 	public void setFingerPrint(byte[] fingerPrint) {
 		this.fingerPrint = fingerPrint;
 	}
 
 	/**
-	 * @return the fingerPrintName
+	 * Gets the fingerprint image name.
+	 *
+	 * @return the fingerprint image name
 	 */
-	public String getFingerPrintName() {
-		return fingerPrintName;
+	public String getFingerprintImageName() {
+		return fingerprintImageName;
 	}
 
 	/**
-	 * @param fingerPrintName
-	 *            the fingerPrintName to set
+	 * Sets the fingerprint image name.
+	 *
+	 * @param fingerprintImageName the new fingerprint image name
 	 */
-	public void setFingerPrintName(String fingerPrintName) {
-		this.fingerPrintName = fingerPrintName;
+	public void setFingerprintImageName(String fingerprintImageName) {
+		this.fingerprintImageName = fingerprintImageName;
 	}
 
 	/**
-	 * @return the qualityScore
+	 * Gets the quality score.
+	 *
+	 * @return the quality score
 	 */
 	public double getQualityScore() {
 		return qualityScore;
 	}
 
 	/**
-	 * @param qualityScore
-	 *            the qualityScore to set
+	 * Sets the quality score.
+	 *
+	 * @param qualityScore the new quality score
 	 */
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
 
 	/**
-	 * @return the isForceCaptured
+	 * Checks if is force captured.
+	 *
+	 * @return true, if is force captured
 	 */
 	public boolean isForceCaptured() {
 		return isForceCaptured;
 	}
 
 	/**
-	 * @param isForceCaptured
-	 *            the isForceCaptured to set
+	 * Sets the force captured.
+	 *
+	 * @param isForceCaptured the new force captured
 	 */
 	public void setForceCaptured(boolean isForceCaptured) {
 		this.isForceCaptured = isForceCaptured;
 	}
 
 	/**
-	 * @return the fingerType
+	 * Gets the finger type.
+	 *
+	 * @return the finger type
 	 */
 	public String getFingerType() {
 		return fingerType;
 	}
 
 	/**
-	 * @param fingerType
-	 *            the fingerType to set
+	 * Sets the finger type.
+	 *
+	 * @param fingerType the new finger type
 	 */
 	public void setFingerType(String fingerType) {
 		this.fingerType = fingerType;
 	}
+
+	/**
+	 * Gets the num retry.
+	 *
+	 * @return the num retry
+	 */
+	public int getNumRetry() {
+		return numRetry;
+	}
+
+	/**
+	 * Sets the num retry.
+	 *
+	 * @param numRetry the new num retry
+	 */
+	public void setNumRetry(int numRetry) {
+		this.numRetry = numRetry;
+	}
+
+	public List<FingerprintDetailsDTO> getSegmentedFingerprints() {
+		return segmentedFingerprints;
+	}
+
+	public void setSegmentedFingerprints(List<FingerprintDetailsDTO> segmentedFingerprints) {
+		this.segmentedFingerprints = segmentedFingerprints;
+	}
+
+	public byte[] getFingerPrintISOImage() {
+		return fingerPrintISOImage;
+	}
+
+	public void setFingerPrintISOImage(byte[] fingerPrintISOImage) {
+		this.fingerPrintISOImage = fingerPrintISOImage;
+	}
+
 }

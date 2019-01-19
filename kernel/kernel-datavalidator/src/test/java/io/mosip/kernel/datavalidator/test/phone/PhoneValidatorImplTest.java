@@ -9,17 +9,15 @@ package io.mosip.kernel.datavalidator.test.phone;
  */
 import static org.junit.Assert.assertEquals;
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.datavalidator.phone.exception.InvalidPhoneNumberException;
-import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
+import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
+import io.mosip.kernel.core.datavalidator.spi.PhoneValidator;
 
 /**
  * Test class for testing PhoneValidator class
@@ -33,7 +31,7 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
 public class PhoneValidatorImplTest {
 
 	@Autowired
-	PhoneValidatorImpl phonevalidator;
+	PhoneValidator<String> phonevalidatorImpl;
 	
 	@Value("${mosip.kernel.phone.test.null}")
 	String phoneNull;
@@ -58,43 +56,43 @@ public class PhoneValidatorImplTest {
 
 	@Test
 	public void phoneValidatorTestTrue() {
-		assertEquals(true, phonevalidator.validatePhone(phoneTrue));
+		assertEquals(true, phonevalidatorImpl.validatePhone(phoneTrue));
 	}
 
 	@Test(expected = InvalidPhoneNumberException.class)
 	public void testNull() throws InvalidPhoneNumberException {
 
-		phonevalidator.validatePhone(phoneNull);
+		phonevalidatorImpl.validatePhone(phoneNull);
 	}
 
 	@Test(expected = InvalidPhoneNumberException.class)
 	public void testEmpty() throws InvalidPhoneNumberException {
 
-		phonevalidator.validatePhone(phoneEmpty);
+		phonevalidatorImpl.validatePhone(phoneEmpty);
 	}
 
 	@Test(expected = InvalidPhoneNumberException.class)
 	public void testMaxLenght() throws InvalidPhoneNumberException {
 
-		phonevalidator.validatePhone(phoneMaxLength);
+		phonevalidatorImpl.validatePhone(phoneMaxLength);
 	}
 
 	@Test(expected = InvalidPhoneNumberException.class)
 	public void testMinLenght() throws InvalidPhoneNumberException {
 
-		phonevalidator.validatePhone(phoneMinLength);
+		phonevalidatorImpl.validatePhone(phoneMinLength);
 	}
 
 	@Test(expected = InvalidPhoneNumberException.class)
 	public void testAlphanumeric() throws InvalidPhoneNumberException {
 
-		phonevalidator.validatePhone(phoneAlpanumaric);
+		phonevalidatorImpl.validatePhone(phoneAlpanumaric);
 	}
 
 	@Test(expected = InvalidPhoneNumberException.class)
 	public void testSpecialChar() throws InvalidPhoneNumberException {
 
-		phonevalidator.validatePhone(phoneSpecialChar);
+		phonevalidatorImpl.validatePhone(phoneSpecialChar);
 	}
 
 }

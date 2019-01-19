@@ -38,7 +38,7 @@ public class OtpGeneratorControllerTest {
 		dto.setOtp(otp);
 		given(service.getOtp(Mockito.any())).willReturn(dto);
 		String json = "{\"key\":\"123456789\"}";
-		mockMvc.perform(post("/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/otp/generate").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.otp", is("3214")));
 	}
 

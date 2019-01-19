@@ -1,10 +1,11 @@
 package io.mosip.registration.service;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
+import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.UserDetail;
 
 /**
  * Service Class for Login
@@ -14,83 +15,49 @@ import io.mosip.registration.dto.ResponseDTO;
  *
  */
 public interface LoginService {
-	
+
 	/**
 	 * get login modes
 	 * 
 	 * @return Map of login modes along with sequence
 	 */
-	Map<String, Object> getModesOfLogin();
-
-	/**
-	 * validating user credentials
-	 * 
-	 * @param userId
-	 * 		  entered userId
-	 * @param hashPassword
-	 * 		  entered password with hashing		
-	 * @return boolean true or false
-	 */
-	boolean validateUserPassword(String userId, String hashPassword);
+	List<String> getModesOfLogin(String authType, Set<String> roleList);
 
 	/**
 	 * fetching user details
 	 * 
 	 * @param userId
-	 * 		  entered userId 		
-	 * @return map with user details
+	 *            entered userId
+	 * @return UserDetail
 	 */
-	Map<String, String> getUserDetail(String userId);
-
-	/**
-	 * fetching registration center name
-	 * 
-	 * @param centerId
-	 * 		  centerId corresponding to entered userId
-	 * @return String center name
-	 */
-	String getCenterName(String centerId);
-
+	UserDetail getUserDetail(String userId);
+	
 	/**
 	 * fetching registration center details
 	 * 
 	 * @param centerId
-	 * 		  centerId corresponding to entered userId
+	 *            centerId corresponding to entered userId
 	 * @return RegistrationCenterDetailDTO center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
 
 	/**
-	 * fetching registration user roles
+	 * fetching registration screen authorization details
 	 * 
-	 * @param userId
-	 * 		  entered userId 		
-	 * @return List of user roles
+	 * @param roleCode
+	 *            list of roles
+	 * @return AuthorizationDTO authorization details
 	 */
-	List<String> getRoles(String userId);
+	AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode);
 	
-	String getBlockedUserCheck(String userId);
-
 	/**
-	 * get otp
+	 *updating login params on invalid login attempts
 	 * 
-	 * @param key
-	 *            eoUserName to generate OTP
-	 * @return Response success or Error
+	 * @param UserDetail
+	 *            user details
 	 */
-	public ResponseDTO getOTP(String key);
-
-
-	/**
-	 * OTP validation entered by user
-	 * 
-	 * @param key
-	 *            is eoUsername
-	 * @param otp
-	 *            user entered
-	 * @return Response success or error
-	 */
-
-	public ResponseDTO validateOTP(String key, String otp);
+	void updateLoginParams(UserDetail userDetail);
 
 }
+
+

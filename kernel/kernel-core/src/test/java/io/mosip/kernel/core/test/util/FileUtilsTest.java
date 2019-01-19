@@ -7,7 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -27,13 +27,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import io.mosip.kernel.core.exception.FileExistsException;
+import io.mosip.kernel.core.exception.FileNotFoundException;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
+import io.mosip.kernel.core.exception.NullPointerException;
+import io.mosip.kernel.core.exception.UnsupportedCharsetException;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.exception.MosipFileExistsException;
-import io.mosip.kernel.core.util.exception.MosipFileNotFoundException;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
-import io.mosip.kernel.core.util.exception.MosipUnsupportedCharsetException;
 
 /**
  * @author Priya Soni
@@ -41,8 +41,6 @@ import io.mosip.kernel.core.util.exception.MosipUnsupportedCharsetException;
  */
 public class FileUtilsTest {
 	FileUtils fileutils;
-	
-	
 
 	@Test
 	public void byteCountToDisplaySizeTest() {
@@ -53,8 +51,8 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipNullPointerException.class)
-	public void checksumNullPOinterTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void checksumNullPOinterTest() throws IOException {
 
 		FileUtils.checksum(null, null);
 
@@ -63,22 +61,22 @@ public class FileUtilsTest {
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
 
-	@Test(expected = MosipIllegalArgumentException.class)
-	public void checksumIllegalArgTest() throws MosipIOException {
+	@Test(expected = IllegalArgumentException.class)
+	public void checksumIllegalArgTest() throws IOException {
 
 		File directory;
 		try {
 			directory = folder.newFolder("sampleDirectory");
 
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 		FileUtils.checksum(directory, new CRC32());
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void checksumIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void checksumIOTest() throws IOException {
 
 		File file = new File("");
 		FileUtils.checksum(file, new CRC32());
@@ -86,13 +84,13 @@ public class FileUtilsTest {
 	}
 
 	@Test
-	public void checksumTest() throws MosipIOException {
+	public void checksumTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			long cksm = FileUtils.checksum(file, new CRC32()).getValue();
 			assertEquals(0, cksm);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null);
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null);
 		}
 
 	}
@@ -100,39 +98,39 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void checksumCRC32Test() throws MosipIOException {
+	public void checksumCRC32Test() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			long cksm = FileUtils.checksumCRC32(file);
 			assertEquals(0, cksm);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null);
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null);
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void checksumCRC32NullPOinterTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void checksumCRC32NullPOinterTest() throws IOException {
 
 		FileUtils.checksumCRC32(null);
 
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
-	public void checksumCRC32IllegalArgTest() throws MosipIOException {
+	@Test(expected = IllegalArgumentException.class)
+	public void checksumCRC32IllegalArgTest() throws IOException {
 
 		File directory;
 		try {
 			directory = folder.newFolder("sampleDirectory");
 
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 		FileUtils.checksumCRC32(directory);
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void checksumCRC32IOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void checksumCRC32IOTest() throws IOException {
 
 		File file = new File("");
 		FileUtils.checksumCRC32(file);
@@ -141,26 +139,26 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipIllegalArgumentException.class)
-	public void cleanDirectoryIllegalArgTest() throws MosipIOException {
+	@Test(expected = IllegalArgumentException.class)
+	public void cleanDirectoryIllegalArgTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			FileUtils.cleanDirectory(file);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 
 	}
 
 	@Test
-	public void cleanDirectoryTest() throws MosipIOException {
+	public void cleanDirectoryTest() throws IOException {
 
 		File directory;
 		try {
 			directory = folder.newFolder("sampleDir");
 			FileUtils.cleanDirectory(directory);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 
 	}
@@ -168,25 +166,25 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void contentEqualsTest() throws MosipIOException {
+	public void contentEqualsTest() throws IOException {
 
 		try {
 			File file1 = folder.newFile("file1.txt");
 			File file2 = folder.newFile("file2.txt");
 			assertThat(FileUtils.contentEquals(file1, file2), is(true));
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void contentEqualsIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void contentEqualsIOTest() throws IOException {
 		try {
 			File file1 = folder.newFolder("file1.txt");
 			File file2 = folder.newFolder("file2.txt");
 			assertThat(FileUtils.contentEquals(file1, file2), is(false));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
@@ -194,25 +192,25 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void contentEqualsIgnoreEOLTest() throws MosipIOException {
+	public void contentEqualsIgnoreEOLTest() throws IOException {
 		try {
 			File file1 = folder.newFile("file1.txt");
 			File file2 = folder.newFile("file2.txt");
 			assertThat(FileUtils.contentEqualsIgnoreEOL(file1, file2, null), is(true));
-		} catch (IOException e) {
-			throw new MosipIOException("", "", e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException("", "", e.getCause());
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void contentEqualsIgnoreEOLIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void contentEqualsIgnoreEOLIOTest() throws IOException {
 
 		File file1;
 		try {
 			file1 = folder.newFolder("abc");
 			File file2 = folder.newFolder("def");
 			FileUtils.contentEqualsIgnoreEOL(file1, file2, null);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -221,7 +219,7 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void convertFileCollectionToFileArrayTest() throws MosipIOException {
+	public void convertFileCollectionToFileArrayTest() throws IOException {
 		File[] fileArray = new File[2];
 
 		try {
@@ -235,38 +233,38 @@ public class FileUtilsTest {
 
 			assertTrue(Arrays.equals(FileUtils.convertFileCollectionToFileArray(listFile), fileArray));
 
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 	}
 
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void copyDirectoryTest() throws MosipIOException {
+	public void copyDirectoryTest() throws IOException {
 		try {
 			File dir1 = folder.newFolder("dir1");
 			File dir2 = folder.newFolder("dir2");
 			FileUtils.copyDirectory(dir1, dir2);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void copyDirectoryNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void copyDirectoryNullPTest() throws IOException {
 		try {
 			File dir1 = folder.newFolder("dir1");
 			File dir2 = folder.newFolder("dir2");
 			dir1 = null;
 			FileUtils.copyDirectory(dir1, dir2);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void copyDirectoryIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void copyDirectoryIOTest() throws IOException {
 
 		File dir1 = new File("");
 		File dir2 = new File("");
@@ -277,32 +275,32 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void copyFileTest() throws MosipIOException {
+	public void copyFileTest() throws IOException {
 		try {
 			File file1 = folder.newFile("file1.txt");
 			File file2 = folder.newFile("file2.txt");
 			FileUtils.copyFile(file1, file2);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void copyFileNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void copyFileNullPTest() throws IOException {
 		try {
 			File file1 = folder.newFolder("file1");
 			File file2 = folder.newFolder("file2");
 			file1 = null;
 			FileUtils.copyFile(file1, file2);
-		} catch (IOException e) {
-			throw new MosipIOException(null, null, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(null, null, e.getCause());
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void copyFileIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void copyFileIOTest() throws IOException {
 		File file1 = new File("");
 		File file2 = new File("");
 		FileUtils.copyFile(file1, file2);
@@ -311,53 +309,53 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void copyFileStreamTest() throws MosipIOException {
+	public void copyFileStreamTest() throws IOException {
 		try {
 			File file = folder.newFile("file1.txt");
 			OutputStream os = new OutputStream() {
 
 				@Override
-				public void write(int b) throws IOException {
+				public void write(int b) throws java.io.IOException {
 					// do nothing
 
 				}
 			};
 
 			FileUtils.copyFile(file, os);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void copyFileStreamNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void copyFileStreamNullPTest() throws IOException {
 		try {
 			File file = folder.newFile("file.txt");
 			OutputStream os = new OutputStream() {
 
 				@Override
-				public void write(int b) throws IOException {
+				public void write(int b) throws java.io.IOException {
 					// do nothing
 
 				}
 			};
 			file = null;
 			FileUtils.copyFile(file, os);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void copyFileStreamIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void copyFileStreamIOTest() throws IOException {
 
 		File file = new File("");
 		OutputStream os = new OutputStream() {
 
 			@Override
-			public void write(int b) throws IOException {
+			public void write(int b) throws java.io.IOException {
 				// do nothing
 
 			}
@@ -369,13 +367,13 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipIOException.class)
-	public void copyInputStreamToFileIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void copyInputStreamToFileIOTest() throws IOException {
 
 		InputStream istream = new InputStream() {
 
 			@Override
-			public int read() throws IOException {
+			public int read() throws java.io.IOException {
 				return 0;
 			}
 		};
@@ -386,13 +384,13 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipIOException.class)
-	public void copyToFileIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void copyToFileIOTest() throws IOException {
 
 		InputStream istream = new InputStream() {
 
 			@Override
-			public int read() throws IOException {
+			public int read() throws java.io.IOException {
 				return 0;
 			}
 		};
@@ -400,7 +398,7 @@ public class FileUtilsTest {
 		try {
 			file1 = folder.newFolder("dir");
 			FileUtils.copyToFile(istream, file1);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -409,22 +407,22 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void deleteDirectoryTest() throws MosipIOException {
+	public void deleteDirectoryTest() throws IOException {
 		try {
 			File dir = folder.newFolder("dir");
 			FileUtils.deleteDirectory(dir);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
-	public void deleteDirectoryIllegalArgTest() throws MosipIOException {
+	@Test(expected = IllegalArgumentException.class)
+	public void deleteDirectoryIllegalArgTest() throws IOException {
 		try {
 			File dir = folder.newFile("dir");
 			FileUtils.deleteDirectory(dir);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -433,11 +431,11 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void deleteQuietlyTest() throws MosipIOException {
+	public void deleteQuietlyTest() throws IOException {
 		try {
 			File dir = folder.newFile("dir");
 			FileUtils.deleteQuietly(dir);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -446,26 +444,26 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void directoryContainsTest() throws MosipIOException {
+	public void directoryContainsTest() throws IOException {
 		try {
 			File dir = folder.newFolder("parentDir");
 			File file = dir.getParentFile();
 			assertFalse(FileUtils.directoryContains(dir, file));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
-	public void directoryContainsIllegalArgTest() throws MosipIOException {
+	@Test(expected = IllegalArgumentException.class)
+	public void directoryContainsIllegalArgTest() throws IOException {
 
 		File dir;
 		try {
 			dir = folder.newFile("sampleFile.txt");
 			File file = dir.getParentFile();
 			assertFalse(FileUtils.directoryContains(dir, file));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -474,25 +472,25 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void forceDeleteTest() throws MosipIOException {
+	public void forceDeleteTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			FileUtils.forceDelete(file);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void forceDeleteNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void forceDeleteNullPTest() throws IOException {
 
 		File file = null;
 		FileUtils.forceDelete(file);
 
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void forceDeleteFileNFTest() throws MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void forceDeleteFileNFTest() throws IOException {
 
 		File file = new File("sampleFile");
 		FileUtils.forceDelete(file);
@@ -502,17 +500,17 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void forceDeleteOnExitTest() throws MosipIOException {
+	public void forceDeleteOnExitTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			FileUtils.forceDeleteOnExit(file);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void forceDeleteOnExitNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void forceDeleteOnExitNullPTest() throws IOException {
 
 		File file = null;
 		FileUtils.forceDeleteOnExit(file);
@@ -527,7 +525,7 @@ public class FileUtilsTest {
 			File dir = folder.newFolder("dir");
 			String[] names = { "file1.txt", "file2.txt" };
 			FileUtils.getFile(dir, names);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
@@ -548,12 +546,12 @@ public class FileUtilsTest {
 			File file = folder.newFile("sampleFile.txt");
 			Date date = new Date(10000);
 			assertTrue(FileUtils.isFileNewer(file, date));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void isFileNewerIllegalArgTest() {
 
 		File file = null;
@@ -570,12 +568,12 @@ public class FileUtilsTest {
 			File file = folder.newFile("sampleFile.txt");
 			Date date = new Date(10000);
 			assertFalse(FileUtils.isFileOlder(file, date));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void isFileOlderIllegalArgTest() {
 
 		File file = null;
@@ -587,22 +585,15 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void isSymlinkTest() throws MosipIOException {
+	public void isSymlinkTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			assertFalse(FileUtils.isSymlink(file));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void isSymlinkNullPTest() throws MosipIOException {
-
-		File file = null;
-		assertFalse(FileUtils.isSymlink(file));
-
-	}
 
 	///////////////////////////////////////////////////////////
 
@@ -612,7 +603,7 @@ public class FileUtilsTest {
 			File directory = folder.newFolder("sampleFolder");
 			Iterator<File> fileIt = FileUtils.iterateFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 			fileIt.hasNext();
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -621,18 +612,18 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void lineIteratorTest() throws MosipIOException {
+	public void lineIteratorTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			LineIterator lItr = FileUtils.lineIterator(file);
 			lItr.hasNext();
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void lineIteratorIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void lineIteratorIOTest() throws IOException {
 
 		File file = new File("");
 		LineIterator lItr = FileUtils.lineIterator(file);
@@ -643,19 +634,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void lineIteratorWithEncodingTest() throws MosipIOException {
+	public void lineIteratorWithEncodingTest() throws IOException {
 		try {
 			File file = folder.newFile("sampleFile.txt");
 			LineIterator lItr = FileUtils.lineIterator(file, "UTF-8");
 			lItr.hasNext();
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void lineIteratorWithEncodingIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void lineIteratorWithEncodingIOTest() throws IOException {
 
 		File file = new File("");
 		LineIterator lItr = FileUtils.lineIterator(file, "UTF-8");
@@ -672,7 +663,7 @@ public class FileUtilsTest {
 		try {
 			directory = folder.newFolder("directory");
 			FileUtils.listFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -687,7 +678,7 @@ public class FileUtilsTest {
 		try {
 			directory = folder.newFolder("directory");
 			FileUtils.listFilesAndDirs(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -695,131 +686,131 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipFileExistsException.class)
-	public void moveDirectoryFileExistsTest() throws MosipIOException {
+	@Test(expected = FileExistsException.class)
+	public void moveDirectoryFileExistsTest() throws IOException {
 		try {
 			File dir1 = folder.newFolder("dir1");
 			File dir2 = folder.newFolder("dir2");
 			FileUtils.moveDirectory(dir1, dir2);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void moveDirectoryIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void moveDirectoryIOTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");
 			File dirDest = new File("");
 			FileUtils.moveDirectory(dirSource, dirDest);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void moveDirectoryNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void moveDirectoryNullPTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");
 			File dirDest = null;
 			FileUtils.moveDirectory(dirSource, dirDest);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
 	@Test
-	public void moveDirectoryTest() throws MosipIOException {
+	public void moveDirectoryTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");
 			File dirDest = new File("moveDirSampleFolder");
 			FileUtils.moveDirectory(dirSource, dirDest);
 			FileUtils.deleteQuietly(dirDest);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipIOException.class)
-	public void moveDirectoryToDirectoryIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void moveDirectoryToDirectoryIOTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");
 			File dirDest = new File("sampleFolder");
 			FileUtils.moveDirectoryToDirectory(dirSource, dirDest, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
 	@Test
-	public void moveDirectoryToDirectoryTest() throws MosipIOException {
+	public void moveDirectoryToDirectoryTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");
 			File dirDest = folder.newFolder("sampleFolder");
 			FileUtils.moveDirectoryToDirectory(dirSource, dirDest, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void moveDirectoryToDirectoryNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void moveDirectoryToDirectoryNullPTest() throws IOException {
 		try {
 			File dirSource = folder.newFolder("dirSource");
 			File dirDest = null;
 			FileUtils.moveDirectoryToDirectory(dirSource, dirDest, false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipFileExistsException.class)
-	public void moveFileFileExistsTest() throws MosipIOException {
+	@Test(expected = FileExistsException.class)
+	public void moveFileFileExistsTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile");
 			File destFile = folder.newFile("destFile");
 			FileUtils.moveFile(srcFile, destFile);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
 	@Test
-	public void moveFileTest() throws MosipIOException {
+	public void moveFileTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destFile = new File("moveFileDestFile.txt");
 			FileUtils.moveFile(srcFile, destFile);
 			FileUtils.deleteQuietly(destFile);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void moveFileNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void moveFileNullPTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destFile = null;
 			FileUtils.moveFile(srcFile, destFile);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void moveFileIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void moveFileIOTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile");
 			File destFile = new File("");
 			FileUtils.moveFile(srcFile, destFile);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
@@ -827,35 +818,35 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void moveFileToDirectoryTest() throws MosipIOException {
+	public void moveFileToDirectoryTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destDir = folder.newFolder("moveFileToDirectoryDestDir");
 			FileUtils.moveFileToDirectory(srcFile, destDir, false);
 			FileUtils.deleteQuietly(destDir);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void moveFileToDirectoryNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void moveFileToDirectoryNullPTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destDir = null;
 			FileUtils.moveFileToDirectory(srcFile, destDir, false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void moveFileToDirectoryIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void moveFileToDirectoryIOTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile");
 			File destDir = new File("");
 			FileUtils.moveFileToDirectory(srcFile, destDir, false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
@@ -863,37 +854,37 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void moveToDirectoryTest() throws MosipIOException {
+	public void moveToDirectoryTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destDir = folder.newFolder("moveToDirectoryDestDir");
 			FileUtils.moveToDirectory(srcFile, destDir, false);
 			FileUtils.deleteQuietly(destDir);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void moveToDirectoryIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void moveToDirectoryIOTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destDir = new File("");
 			FileUtils.moveToDirectory(srcFile, destDir, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void moveToDirectoryNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void moveToDirectoryNullPTest() throws IOException {
 		try {
 			File srcFile = folder.newFile("srcFile.txt");
 			File destDir = null;
 			FileUtils.moveToDirectory(srcFile, destDir, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
@@ -901,35 +892,35 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void openInputStreamTest() throws MosipIOException {
+	public void openInputStreamTest() throws IOException {
 
 		try {
 
 			File file = folder.newFile();
 			FileUtils.openInputStream(file);
-		
-		} catch (IOException e) {
+
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipFileNotFoundException.class)
-	public void openInputStreamFileNFTest() throws MosipIOException {
+	@Test(expected = FileNotFoundException.class)
+	public void openInputStreamFileNFTest() throws IOException {
 
 		File file = new File("openIPStramfile.txt");
 		FileUtils.openInputStream(file);
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void openInputStreamIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void openInputStreamIOTest() throws IOException {
 
 		File file;
 		try {
 			file = folder.newFolder();
 			FileUtils.openInputStream(file);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -938,25 +929,25 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void openOutputStreamTest() throws MosipIOException {
-		
+	public void openOutputStreamTest() throws IOException {
+
 		try {
 			File file = folder.newFile();
 			FileUtils.openOutputStream(file);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void openOutputStreamIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void openOutputStreamIOTest() throws IOException {
 
 		File file;
 		try {
 			file = folder.newFolder();
 			FileUtils.openOutputStream(file);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -965,25 +956,25 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void openOutputStreamWithAppendTest() throws MosipIOException {
-		
+	public void openOutputStreamWithAppendTest() throws IOException {
+
 		try {
 			File file = folder.newFile();
 			FileUtils.openOutputStream(file, true);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void openOutputStreamWithAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void openOutputStreamWithAppendIOTest() throws IOException {
 
 		File file;
 		try {
 			file = folder.newFolder();
 			FileUtils.openOutputStream(file, true);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -992,19 +983,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void readFileToByteArrayTest() throws MosipIOException {
+	public void readFileToByteArrayTest() throws IOException {
 
 		try {
 			File file = folder.newFile();
 			FileUtils.readFileToByteArray(file);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void readFileToByteArrayIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void readFileToByteArrayIOTest() throws IOException {
 		File file = new File("");
 		FileUtils.readFileToByteArray(file);
 	}
@@ -1012,19 +1003,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void readFileToStringTest() throws MosipIOException {
+	public void readFileToStringTest() throws IOException {
 
 		try {
 			File file = folder.newFile();
 			FileUtils.readFileToString(file, null);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void readFileToStringIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void readFileToStringIOTest() throws IOException {
 		File file = new File("");
 		FileUtils.readFileToString(file, null);
 	}
@@ -1032,22 +1023,22 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void readLinesTest() throws MosipIOException {
+	public void readLinesTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.readLines(file, Charset.forName("UTF-8"));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void readLinesIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void readLinesIOTest() throws IOException {
 
 		try {
 			File file = folder.newFolder();
 			FileUtils.readLines(file, Charset.forName("UTF-8"));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -1056,31 +1047,31 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void readLinesWithStringEncodingTest() throws MosipIOException {
+	public void readLinesWithStringEncodingTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.readLines(file, "UTF-8");
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipUnsupportedCharsetException.class)
-	public void readLinesWithStringEncodingUCharsetTest() throws MosipIOException {
+	@Test(expected = UnsupportedCharsetException.class)
+	public void readLinesWithStringEncodingUCharsetTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.readLines(file, "UT");
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void readLinesWithStringEncodingIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void readLinesWithStringEncodingIOTest() throws IOException {
 		try {
 			File file = folder.newFolder();
 			FileUtils.readLines(file, "UTF-8");
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
@@ -1091,26 +1082,26 @@ public class FileUtilsTest {
 	public void sizeOfTest() {
 		try {
 			File file = folder.newFile();
-			assertEquals(0,FileUtils.sizeOf(file));
-		} catch (IOException e) {
+			assertEquals(0, FileUtils.sizeOf(file));
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipNullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void sizeOfNullPTest() {
 
 		File file = null;
-		assertEquals(0,FileUtils.sizeOf(file));
+		assertEquals(0, FileUtils.sizeOf(file));
 
 	}
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void sizeOfIllegalArgTest() {
 
 		File file = new File("");
-		assertEquals(0,FileUtils.sizeOf(file));
+		assertEquals(0, FileUtils.sizeOf(file));
 
 	}
 
@@ -1120,18 +1111,18 @@ public class FileUtilsTest {
 	public void sizeOfDirectoryTest() {
 		try {
 			File dir = folder.newFolder();
-			assertEquals(0,FileUtils.sizeOfDirectory(dir));
-		} catch (IOException e) {
+			assertEquals(0, FileUtils.sizeOfDirectory(dir));
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipNullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void sizeOfDirectoryNullPTest() {
 
 		File dir = null;
-		assertEquals(0,FileUtils.sizeOfDirectory(dir));
+		assertEquals(0, FileUtils.sizeOfDirectory(dir));
 
 	}
 
@@ -1140,7 +1131,7 @@ public class FileUtilsTest {
 	@Test
 	public void toFileTest() {
 		try {
-		 FileUtils.toFile(new URL("http://www.example.com/docs/resource1.html"));
+			FileUtils.toFile(new URL("http://www.example.com/docs/resource1.html"));
 		} catch (MalformedURLException e) {
 
 		}
@@ -1148,7 +1139,7 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipIllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void toFilesTest() {
 
 		try {
@@ -1168,26 +1159,26 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void toURLsTest() throws MosipIOException {
+	public void toURLsTest() throws IOException {
 		try {
 			File file1 = folder.newFile();
 			File file2 = folder.newFile();
 			File[] fileArray = { file1, file2 };
 			FileUtils.toURLs(fileArray);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipNullPointerException.class)
-	public void toURLsNullPTest() throws MosipIOException {
+	@Test(expected = NullPointerException.class)
+	public void toURLsNullPTest() throws IOException {
 		try {
 			File file1 = folder.newFile();
 			File file2 = null;
 			File[] fileArray = { file1, file2 };
 			FileUtils.toURLs(fileArray);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -1195,7 +1186,7 @@ public class FileUtilsTest {
 
 	///////////////////////////////////////////////////////////
 
-	@Test(expected = MosipNullPointerException.class)
+	@Test(expected = NullPointerException.class)
 	public void waitForNullPTest() {
 
 		File file = null;
@@ -1210,7 +1201,7 @@ public class FileUtilsTest {
 		try {
 			file = folder.newFile("waitForFile.txt");
 			assertTrue(FileUtils.waitFor(file, 2));
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
@@ -1219,17 +1210,17 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeWithStringEncTest() throws MosipIOException {
+	public void writeWithStringEncTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.write(file, "", "UTF-8");
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeWithStringEncIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeWithStringEncIOTest() throws IOException {
 
 		File file = new File("");
 		FileUtils.write(file, "", "UTF-8");
@@ -1239,17 +1230,17 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeWithCharsetEncTest() throws MosipIOException {
+	public void writeWithCharsetEncTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.write(file, "", Charset.defaultCharset());
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeWithCharsetEncIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeWithCharsetEncIOTest() throws IOException {
 
 		File file = new File("");
 		FileUtils.write(file, "", Charset.defaultCharset());
@@ -1259,17 +1250,17 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeWithCharsetEncAndAppendTest() throws MosipIOException {
+	public void writeWithCharsetEncAndAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.write(file, "", Charset.defaultCharset(), false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeWithCharsetEncAndAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeWithCharsetEncAndAppendIOTest() throws IOException {
 
 		File file = new File("");
 		FileUtils.write(file, "", Charset.defaultCharset(), false);
@@ -1279,17 +1270,17 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeWithStringEncAndAppendTest() throws MosipIOException {
+	public void writeWithStringEncAndAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			FileUtils.write(file, "", "UTF-8", false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeWithStringEncAndAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeWithStringEncAndAppendIOTest() throws IOException {
 
 		File file = new File("");
 		FileUtils.write(file, "", "UTF-8", false);
@@ -1299,19 +1290,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeByteArrayToFileTest() throws MosipIOException {
+	public void writeByteArrayToFileTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			byte[] data = new byte[2];
 			FileUtils.writeByteArrayToFile(file, data);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeByteArrayToFileIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeByteArrayToFileIOTest() throws IOException {
 
 		File file = new File("");
 		byte[] data = new byte[2];
@@ -1322,19 +1313,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeByteArrayToFileWithAppendTest() throws MosipIOException {
+	public void writeByteArrayToFileWithAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			byte[] data = new byte[2];
 			FileUtils.writeByteArrayToFile(file, data, false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeByteArrayToFileWithAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeByteArrayToFileWithAppendIOTest() throws IOException {
 
 		File file = new File("");
 		byte[] data = new byte[2];
@@ -1345,19 +1336,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeByteArrayToFileWithOffsetTest() throws MosipIOException {
+	public void writeByteArrayToFileWithOffsetTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			byte[] data = new byte[2];
 			FileUtils.writeByteArrayToFile(file, data, 0, 1);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeByteArrayToFileWithOffsetIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeByteArrayToFileWithOffsetIOTest() throws IOException {
 
 		File file = new File("");
 		byte[] data = new byte[2];
@@ -1368,19 +1359,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeByteArrayToFileWithOffsetAndAppendTest() throws MosipIOException {
+	public void writeByteArrayToFileWithOffsetAndAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			byte[] data = new byte[2];
 			FileUtils.writeByteArrayToFile(file, data, 0, 1, false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeByteArrayToFileWithOffsetAndAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeByteArrayToFileWithOffsetAndAppendIOTest() throws IOException {
 
 		File file = new File("");
 		byte[] data = new byte[2];
@@ -1391,19 +1382,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesTest() throws MosipIOException {
+	public void writeLinesTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, lines);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1414,19 +1405,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithAppendTest() throws MosipIOException {
+	public void writeLinesWithAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, lines, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithAppendIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1437,19 +1428,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithAppendAndLineEndingAndEncTest() throws MosipIOException {
+	public void writeLinesWithAppendAndLineEndingAndEncTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, "UTF-8", lines, null, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithAppendAndLineEndingAndEncIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithAppendAndLineEndingAndEncIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1460,19 +1451,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithLineEndingTest() throws MosipIOException {
+	public void writeLinesWithLineEndingTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, lines, null);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithLineEndingIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithLineEndingIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1483,19 +1474,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithLineEndingAndEncTest() throws MosipIOException {
+	public void writeLinesWithLineEndingAndEncTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, "UTF-8", lines, null);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithLineEndingAndEncIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithLineEndingAndEncIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1506,19 +1497,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithEncTest() throws MosipIOException {
+	public void writeLinesWithEncTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, "UTF-8", lines);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithEncIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithEncIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1529,19 +1520,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithEncAndAppendTest() throws MosipIOException {
+	public void writeLinesWithEncAndAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, "UTF-8", lines, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithEncAndAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithEncAndAppendIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1552,19 +1543,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeLinesWithLineEndingAndAppendTest() throws MosipIOException {
+	public void writeLinesWithLineEndingAndAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			Collection<String> lines = new ArrayList<String>();
 			FileUtils.writeLines(file, lines, null, false);
 
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeLinesWithLineEndingAndAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeLinesWithLineEndingAndAppendIOTest() throws IOException {
 
 		File file = new File("");
 		Collection<String> lines = new ArrayList<String>();
@@ -1575,19 +1566,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeStringToFileTest() throws MosipIOException {
+	public void writeStringToFileTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			String data = "sampleData";
 			FileUtils.writeStringToFile(file, data, Charset.defaultCharset());
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeStringToFileIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeStringToFileIOTest() throws IOException {
 
 		File file = new File("");
 		String data = "sampleData";
@@ -1598,19 +1589,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeStringToFileWithStringEncAndAppendTest() throws MosipIOException {
+	public void writeStringToFileWithStringEncAndAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			String data = "sampleData";
 			FileUtils.writeStringToFile(file, data, "UTF-8", false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeStringToFileWithStringEncAndAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeStringToFileWithStringEncAndAppendIOTest() throws IOException {
 
 		File file = new File("");
 		String data = "sampleData";
@@ -1621,19 +1612,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeStringToFileWithStringEncTest() throws MosipIOException {
+	public void writeStringToFileWithStringEncTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			String data = "sampleData";
 			FileUtils.writeStringToFile(file, data, "UTF-8");
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeStringToFileWithStringEncIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeStringToFileWithStringEncIOTest() throws IOException {
 
 		File file = new File("");
 		String data = "sampleData";
@@ -1644,19 +1635,19 @@ public class FileUtilsTest {
 	///////////////////////////////////////////////////////////
 
 	@Test
-	public void writeStringToFileWithAppendTest() throws MosipIOException {
+	public void writeStringToFileWithAppendTest() throws IOException {
 		try {
 			File file = folder.newFile();
 			String data = "sampleData";
 			FileUtils.writeStringToFile(file, data, Charset.defaultCharset(), false);
-		} catch (IOException e) {
+		} catch (java.io.IOException e) {
 
 		}
 
 	}
 
-	@Test(expected = MosipIOException.class)
-	public void writeStringToFileWithAppendIOTest() throws MosipIOException {
+	@Test(expected = IOException.class)
+	public void writeStringToFileWithAppendIOTest() throws IOException {
 
 		File file = new File("");
 		String data = "sampleData";
