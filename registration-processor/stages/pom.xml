@@ -10,6 +10,7 @@
 		<artifactId>registration-processor</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
+	
 	<artifactId>stages</artifactId>
 	<name>stages</name>
 	<url>http://maven.apache.org</url>
