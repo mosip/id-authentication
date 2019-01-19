@@ -7,7 +7,7 @@ import jenkins.model.Jenkins;
 
 node {
  def mvnHome = tool name: 'M2_HOME', type: 'maven'
- def branch = 'DEV'
+ def branch = 'master'
  def newVersion
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
