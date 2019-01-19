@@ -9,6 +9,9 @@ node {
  def mvnHome = tool name: 'M2_HOME', type: 'maven'
  def branch = 'DEV'
  def newVersion
+ def server = Artifactory.server 'ART'
+ def rtMaven = Artifactory.newMavenBuild()
+ def buildInfo
  
  // Asking user if he wants to start a new sprint, user will choose either proceed or abort
  stage('checkout') {
@@ -65,6 +68,30 @@ node {
  // Setting global environment variable for Branch name
 	echo "Setting global variable NEXT_BRANCH_NAME to "+newVersion
 	createGlobalEnvironmentVariables("NEXT_BRANCH_NAME",newVersion)
+ }
+ 
+  stage('--------- Artifactory configuration ----------------') {
+  /*
+  JFrog artifactory configuration
+  */
+  rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
+  rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+  rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+  buildInfo = Artifactory.newBuildInfo()
+  buildInfo.env.capture = true
+ }
+
+ 
+ 
+  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
+  rtMaven.run pom: branch + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+ }
+ 
+  stage('----------- Publish build info -------------') {
+  /*
+  Publishing build info to Artifcatory (JFrog)
+  */
+  server.publishBuildInfo buildInfo
  }
  
 
