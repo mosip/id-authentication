@@ -2,7 +2,7 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = '${env.NEXT_BRANCH_NAME}'
+ def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'pre-registration'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
