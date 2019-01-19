@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -35,10 +35,10 @@
 		<maven.sonar.version>3.2</maven.sonar.version>
 		
 		<!-- Kernel components -->
-		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
-		<kernel.hibernate.version>1.0.0-SNAPSHOT</kernel.hibernate.version>
-		<kernel.template.version>1.0.0-SNAPSHOT</kernel.template.version>
-		<kernel.pdfgenerate.version>1.0.0-SNAPSHOT</kernel.pdfgenerate.version>
+		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
+		<kernel.hibernate.version>0.7.0-SNAPSHOT</kernel.hibernate.version>
+		<kernel.template.version>0.7.0-SNAPSHOT</kernel.template.version>
+		<kernel.pdfgenerate.version>0.7.0-SNAPSHOT</kernel.pdfgenerate.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
@@ -170,7 +170,7 @@
 				 	d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624
 				 </sonar.login>
 				 <sonar.projectName>IdAuthentication</sonar.projectName>
-                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
+                 <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -184,7 +184,7 @@
 				</sonar.host.url>
 				 <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
                  <sonar.projectName>IdAuthentication</sonar.projectName>
-                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
+                 <sonar.projectVersion>0.7.0-SNAPSHOT</sonar.projectVersion>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>

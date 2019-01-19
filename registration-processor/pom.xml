@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	
 	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -72,7 +72,7 @@
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<commons.io.version>2.6</commons.io.version>
-		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
+		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -94,11 +94,11 @@
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 		<!-- local -->
-		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
-		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
-		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
-		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
-		<registration.processor.rest.client>1.0.0-SNAPSHOT</registration.processor.rest.client>
+		<registration.status.version>0.7.0-SNAPSHOT</registration.status.version>
+		<registration.processor.core.version>0.7.0-SNAPSHOT</registration.processor.core.version>
+		<filesystem.adapter.version>0.7.0-SNAPSHOT</filesystem.adapter.version>
+		<packet.manager.version>0.7.0-SNAPSHOT</packet.manager.version>
+		<registration.processor.rest.client>0.7.0-SNAPSHOT</registration.processor.rest.client>
 	
 		<sonar.coverage.exclusions>**/dto/**,
 		**/exception/*Exception.java,
