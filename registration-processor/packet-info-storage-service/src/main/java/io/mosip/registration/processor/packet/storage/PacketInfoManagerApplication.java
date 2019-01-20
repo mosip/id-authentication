@@ -21,8 +21,6 @@ public class PacketInfoManagerApplication{
 	 * @param args
 	 *            the arguments
 	 */
-	@Autowired
-	PacketInfoManagerImpl packetInfoManagerImpl;
 	public static void main(String[] args) {
 		SpringApplication.run(PacketInfoManagerApplication.class, args);
 	}
