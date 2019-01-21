@@ -89,7 +89,7 @@ public class DemographicServiceUtilTest {
 
 		demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId("35760478648170");
-		demographicEntity.setApplicantDetailJson(Mockito.anyString().getBytes());
+		demographicEntity.setApplicantDetailJson(jsonObject.toJSONString().getBytes());
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
