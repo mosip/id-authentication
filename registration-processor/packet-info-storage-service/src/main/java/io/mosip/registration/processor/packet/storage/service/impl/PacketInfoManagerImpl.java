@@ -369,20 +369,38 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveDocument(Document documentDetail) {
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
-
+		boolean isTransactionSuccessful = false;
 		String fileName;
 
-		fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + documentDetail.getDocumentName().toUpperCase();
+		try {
+			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + documentDetail.getDocumentName().toUpperCase();
 
-		Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
-				.findFirst();
+			Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
+					.findFirst();
 
-		String registrationId = "";
-		if (filterRegId.isPresent())
-			registrationId = filterRegId.get().getValue();
-		applicantDocumentEntity.setDocStore(getDocumentAsByteArray(registrationId, fileName));
-		applicantDocumentRepository.save(applicantDocumentEntity);
-		LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId(), "  Document Demographic DATA SAVED");
+			String registrationId = "";
+			if (filterRegId.isPresent())
+				registrationId = filterRegId.get().getValue();
+			applicantDocumentEntity.setDocStore(getDocumentAsByteArray(registrationId, fileName));
+			applicantDocumentRepository.save(applicantDocumentEntity);
+			LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId(), "  Document Demographic DATA SAVED");
+			isTransactionSuccessful = true;
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Document Demographic DATA SAVED successfully"
+					: "Document Demographic DATA  Failed to save";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
+		}
 	}
 
 	/**
