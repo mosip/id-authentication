@@ -31,6 +31,7 @@ import io.mosip.preregistration.application.exception.MissingRequestParameterExc
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 /**
