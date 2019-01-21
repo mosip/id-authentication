@@ -40,6 +40,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -57,6 +58,7 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
@@ -113,6 +115,12 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+
+	@Mock
+	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
+
+	@Mock
+	RegAbisRefEntity regAbisRefEntity;
 
 	byte[] byteArray = null;
 
@@ -755,6 +763,24 @@ public class PacketInfoManagerImplTest {
 
 		packetInfoManagerImpl.savePacketData(identity);
 		packetInfoManagerImpl.saveDocuments(documents);
+	}
+
+	@Test
+	public void testSaveManualAdjudicationDataSuccess() {
+		String registrationId = "1234";
+		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+	}
+
+	@Test
+	public void testSaveAbisRefSuccess() {
+
+		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
+		regAbisRefDto.setAbis_ref_id("ref1234");
+		regAbisRefDto.setReg_id("1234");
+		Mockito.when(regAbisRefRepository.save(ArgumentMatchers.any())).thenReturn(regAbisRefEntity);
+		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
+
 	}
 
 }

@@ -130,7 +130,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The Reg abis ref repository. */
 	@Autowired
-	private BasePacketRepository<RegAbisRefEntity, String> RegAbisRefRepository;
+	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
 
 	/** The applicant demographic repository. */
 	@Autowired
@@ -829,7 +829,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public List<String> getReferenceIdByRid(String rid) {
-		return RegAbisRefRepository.getReferenceIdByRid(rid);
+		return regAbisRefRepository.getReferenceIdByRid(rid);
 	}
 
 	/*
@@ -841,7 +841,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public List<String> getRidByReferenceId(String refId) {
-		return RegAbisRefRepository.getRidByReferenceId(refId);
+		return regAbisRefRepository.getRidByReferenceId(refId);
 	}
 
 	/*
@@ -855,7 +855,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
 		if (regAbisRefDto != null) {
 			RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
-			RegAbisRefRepository.save(regAbisRefEntity);
+			regAbisRefRepository.save(regAbisRefEntity);
 			LOGGER.info(LOG_FORMATTER, regAbisRefEntity.getId(), "Registration ABIS Reference Date saved");
 		}
 	}
