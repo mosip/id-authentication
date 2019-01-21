@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.virus.scanner.job.stage.test;
+/*package io.mosip.registration.processor.virus.scanner.job.stage.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -121,9 +121,9 @@ public class VirusScannerStageTest {
 
 	}
 
-	/**
+	*//**
 	 * Test deploy verticle.
-	 */
+	 *//*
 	@Test
 	public void testDeployVerticle() {
 		virusScannerStage.deployVerticle();
@@ -218,3 +218,4 @@ public class VirusScannerStageTest {
 
 	}
 }
+*/
