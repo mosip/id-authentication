@@ -579,11 +579,11 @@ public class DemographicServiceTest {
 		preRegistrationService.addPreRegistration(demographicRequestDTO);
 	}
 
-	@Test
+	/*@Test
 	public void getPreRegistrationTest() {
 		Mockito.when(demographicRepository.findBypreRegistrationId("1234")).thenReturn(preRegistrationEntity);
 		preRegistrationService.getDemographicData("1234");
-	}
+	}*/
 
 	@Test
 	public void updatePreRegistrationStatusTest() {
