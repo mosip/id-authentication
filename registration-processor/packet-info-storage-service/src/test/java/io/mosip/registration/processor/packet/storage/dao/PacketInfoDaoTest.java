@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -15,11 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
@@ -45,6 +49,9 @@ public class PacketInfoDaoTest {
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 	@Mock
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
+	
+	@Mock
+	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentEntity;
 
 	private IndividualDemographicDedupeEntity dedupeEntity;
 	private IndividualDemographicDedupePKEntity dedupePKEntity;
@@ -194,6 +201,31 @@ public class PacketInfoDaoTest {
 
 		List<String> result = packetInfodao.getApplicantIrisImageNameById("2018782130000224092018121229");
 		assertEquals("leftThumb", result.get(0));
+
+	}
+	
+	@Test
+	public void getRegIdByUINTest() {
+		List<String> regIdList = new ArrayList<>();
+		regIdList.add("2018782130000224092018121229");
+		Mockito.when(demographicDedupeRepository.getRegIdByUIN("493410317027")).thenReturn(regIdList);
+		List<String> result = packetInfodao.getRegIdByUIN("493410317027");
+		assertEquals("2018782130000224092018121229", result.get(0));
+	}
+	
+	@Test
+	public void getDocumentsByRegIdTest() {
+		List<ApplicantDocumentEntity> applicantDocumentEntities = new ArrayList<>();
+		ApplicantDocumentEntity applicantDocument = new ApplicantDocumentEntity();
+		String docValue = "dGVzdA";
+		byte[] docStore = docValue.getBytes();
+		applicantDocument.setDocName("individualBiometrics");
+		applicantDocument.setDocStore(docStore);
+
+		applicantDocumentEntities.add(applicantDocument);
+		Mockito.when(applicantDocumentEntity.getDocumentsByRegId("2018782130000224092018121229")).thenReturn(applicantDocumentEntities);
+		List<ApplicantDocument> result = packetInfodao.getDocumentsByRegId("2018782130000224092018121229");
+		assertEquals("individualBiometrics", result.get(0).getDocName());
 
 	}
 }
