@@ -3,10 +3,15 @@ package io.mosip.registration.processor.stages.uigenerator.util.test;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import ch.qos.logback.classic.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
@@ -85,19 +90,13 @@ public class TriggerNotificationForUINTest {
 		fooLogger = (Logger) LoggerFactory.getLogger(TriggerNotificationForUIN.class);
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmails", "alokranjan1106@gmail.com");
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmailSubject", "UIN Generated");
-		String value = "\r\n" + "{\r\n" + "\r\n" + "		\"archivalPolicy\":\"arc_policy_2\",\r\n" + "\r\n"
-				+ "		\"otpTimeOutInMinutes\":2,\r\n" + "\r\n" + "		\"numberOfWrongAttemptsForOtp\":5,\r\n"
-				+ "\r\n" + "		\"accountFreezeTimeoutInHours\":10, \r\n" + "\r\n" + "		\"uinLength\":24,\r\n"
-				+ "\r\n" + "		\"vidLength\":32,\r\n" + "\r\n" + "		\"pridLength\":32,\r\n" + "\r\n"
-				+ "		\"tokenIdLength\":23,\r\n" + "\r\n" + "		\"tspIdLength\":24,\r\n" + "\r\n"
-				+ "		\"registrationCenterId\":\"KDUE83CJ3\",\r\n" + "\r\n" + "		\"machineId\":\"MCBD3UI3\",\r\n"
-				+ "\r\n" + "		\"mobilenumberlength\":10,\r\n" + "\r\n" + "		\"restrictedNumbers\":[\r\n"
-				+ "\r\n" + "			\"8732\",\"321\",\"65\"\r\n" + "\r\n" + "		],\r\n" + "\r\n"
-				+ "		\"supportedLanguages\":[\r\n" + "\r\n" + "			\"eng\",\"ara\",\"deu\"\r\n" + "\r\n"
-				+ "		],\r\n" + "\r\n" + "		\"notificationtype\":\"SMS|EMAIL\" \r\n" + "\r\n" + "}";
-
+		
+		ClassLoader classLoader = getClass().getClassLoader();
+		File idJsonFile = new File(classLoader.getResource("ID2.json").getFile());
+		InputStream idJsonStream = new FileInputStream(idJsonFile);
+		String theString = IOUtils.toString(idJsonStream, StandardCharsets.UTF_8);
 		PowerMockito.mockStatic(MessageSenderUtil.class);
-		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(value);
+		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(theString);
 		smsResponseDto.setMessage("test");
 		responseDto.setStatus("ok");
 		Mockito.when(service.sendSmsNotification(anyString(), any(), any(), any())).thenReturn(null);
@@ -110,10 +109,10 @@ TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
 
-		templateDto.setTemplateTypeCode("SMS_TEMP_FOR_UIN_GEN");
+		templateDto.setTemplateTypeCode("RPR_UIN_GEN_SMS");
 		List<TemplateDto> list = new ArrayList<TemplateDto>();
 		list.add(templateDto);
-		templateDto1.setTemplateTypeCode("EMAIL_TEMP_FOR_UIN_GEN");
+		templateDto1.setTemplateTypeCode("RPR_UIN_GEN_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
 		Mockito.when(restClientService.getApi(any(),any(),any(),any(),any())).thenReturn(templateResponseDto);
@@ -121,7 +120,7 @@ TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		
 	}
 
-	/*@Test
+	@Test
 	public void testTriggerNotificationSuccess() throws Exception {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
@@ -131,11 +130,22 @@ TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 		.contains(
 				Tuple.tuple(Level.INFO, "SESSIONID - UIN - 123456789 - Sms sent Successfully"));
-	}*/
+	}
 	
 	@Test
 	public void testTriggerNotificationUpdateSuccess() throws Exception {
-		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmails",null);
+TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+		
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+
+		templateDto.setTemplateTypeCode("SMS_TEMP_FOR_UIN_GEN");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("EMAIL_TEMP_FOR_UIN_GEN");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		Mockito.when(restClientService.getApi(any(),any(),any(),any(),any())).thenReturn(templateResponseDto);
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 
@@ -193,7 +203,7 @@ TemplateResponseDto templateResponseDto = new TemplateResponseDto();
 		EmailIdNotFoundException exp = new EmailIdNotFoundException();
 		Mockito.doThrow(exp).when(service).sendSmsNotification(anyString(), any(), any(), any());
 
-		triggerNotificationForUIN.triggerNotification(uin, false);
+		triggerNotificationForUIN.triggerNotification(uin, true);
 		
 	}
 	
