@@ -240,7 +240,7 @@ public class DemographicServiceTest {
 	/**
 	 * @throws Exception
 	 */
-	@Test
+	/*@Test
 	public void successSaveImplTest() throws Exception {
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
 		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
@@ -265,7 +265,7 @@ public class DemographicServiceTest {
 		MainListResponseDTO<DemographicResponseDTO> actualRes = preRegistrationService
 				.addPreRegistration(demographicRequestDTO);
 		assertEquals(actualRes.getResponse().get(0).getStatusCode(), responseDTO.getResponse().get(0).getStatusCode());
-	}
+	}*/
 
 	/**
 	 * @throws Exception
