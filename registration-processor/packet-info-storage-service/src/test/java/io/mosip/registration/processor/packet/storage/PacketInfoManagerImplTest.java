@@ -708,5 +708,27 @@ public class PacketInfoManagerImplTest {
 		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
 		assertEquals("27847657360002520181208094056", ridList.get(0));
 	}
+	
+	@Test
+	public void testGetReferenceIdByRid() {
+		String rid = "27847657360002520181208094056";
+		List<String> referenceIdList = new ArrayList<>();
+		referenceIdList.add("01234567-89AB-CDEF-0123-456789ABCDEF");
+		Mockito.when(packetInfoManagerImpl.getReferenceIdByRid(rid)).thenReturn(referenceIdList);
+		
+		List<String> resultList = packetInfoManagerImpl.getReferenceIdByRid(rid);
+		assertEquals("01234567-89AB-CDEF-0123-456789ABCDEF", resultList.get(0));
+	}
+	
+	@Test
+	public void testGetRidByReferenceId() {
+		String referenceId = "01234567-89AB-CDEF-0123-456789ABCDEF";
+		List<String> regIdList = new ArrayList<>();
+		regIdList.add("27847657360002520181208094056");
+		Mockito.when(packetInfoManagerImpl.getRidByReferenceId(referenceId)).thenReturn(regIdList);
+		
+		List<String> resultList = packetInfoManagerImpl.getRidByReferenceId(referenceId);
+		assertEquals("27847657360002520181208094056", resultList.get(0));
+	}
 
 }
