@@ -118,7 +118,7 @@ public class DemographicServiceUtilTest {
 
 	@Test(expected = OperationNotAllowedException.class)
 	public void checkStatusForDeletionFailureTest() {
-		Mockito.when(demographicServiceUtil.checkStatusForDeletion(Mockito.anyString()))
+		Mockito.when(demographicServiceUtil.checkStatusForDeletion(StatusCodes.EXPIRED.getCode()))
 				.thenThrow(OperationNotAllowedException.class);
 	}
 
