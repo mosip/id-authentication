@@ -23,6 +23,7 @@ import io.mosip.registration.processor.virus.scanner.job.decrypter.constant.Pack
 import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerRequestDto;
 import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerResponseDto;
+import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException;
 
 /**
  * Decryptor class for packet decryption.
@@ -114,5 +115,10 @@ public class Decryptor {
 
 		logger.info(DECRYPTION_SUCCESS, registrationId);
 		return outstream;
+	}
+
+	public boolean getScanResult() throws VirusScanFailedException {
+		return true;
+
 	}
 }

@@ -116,7 +116,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		try (InputStream encryptedPacket = new FileInputStream(encryptedFile)) {
 
 			// isEncryptedFileCleaned = virusScannerService.scanFile(encryptedPacketPath);
-			isEncryptedFileCleaned = true;
+			isEncryptedFileCleaned = decryptor.getScanResult();
 
 			if (isEncryptedFileCleaned) {
 				decryptedData = decryptor.decrypt(encryptedPacket, registrationId);
@@ -129,7 +129,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 				ZipUtils.unZipDirectory(decryptedPacketPath, unpackedPacketPath);
 				// isUnpackedFileCleaned = virusScannerService.scanFolder(unpackedPacketPath);
-				isUnpackedFileCleaned = true;
+				isUnpackedFileCleaned = decryptor.getScanResult();
 
 				if (isUnpackedFileCleaned) {
 					sendToPacketUploaderStage(registrationStatusDto);
@@ -151,6 +151,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					VIRUS_SCAN_FAILED + " " + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			object.setInternalError(Boolean.TRUE);
 		} catch (PacketDecryptionFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					e.getErrorCode(), e.getErrorText());
@@ -159,6 +160,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = false;
+			object.setInternalError(Boolean.TRUE);
 			description = "Packet decryption failed for packet " + registrationId;
 		} catch (Exception ex) {
 

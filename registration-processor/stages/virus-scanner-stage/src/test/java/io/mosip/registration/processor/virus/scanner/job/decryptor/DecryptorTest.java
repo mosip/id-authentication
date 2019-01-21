@@ -29,7 +29,7 @@ import io.mosip.registration.processor.virus.scanner.job.decrypter.exception.Pac
 import io.mosip.registration.processor.virus.scanner.job.dto.CryptomanagerResponseDto;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Decryptor.class })
+@PrepareForTest({ DecryptorTest.class })
 public class DecryptorTest {
 
 	@InjectMocks
