@@ -414,14 +414,14 @@ public class DemographicServiceTest {
 	//
 	// }
 
-	@Test(expected = RecordNotFoundException.class)
+	/*@Test(expected = RecordNotFoundException.class)
 	public void getApplicationDetailsFailureTest() {
 		String userId = "12345";
 		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn(null);
 		preRegistrationService.getAllApplicationDetails(userId);
 
-	}
+	}*/
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void getApplicationDetailsInvalidRequestTest() {
