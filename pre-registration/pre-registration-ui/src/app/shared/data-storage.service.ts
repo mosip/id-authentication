@@ -41,7 +41,7 @@ export class DataStorageService {
     });
   }
 
-  getTransliteration(request) {
+  getTransliteration(request: any) {
     const obj = {
       id: appConstants.IDS.transliteration,
       reqTime: Utils.getCurrentDate(),
