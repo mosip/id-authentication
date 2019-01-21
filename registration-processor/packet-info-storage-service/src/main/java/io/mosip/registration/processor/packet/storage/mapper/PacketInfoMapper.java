@@ -488,7 +488,7 @@ public class PacketInfoMapper {
 			if (demoDto.getName() != null)
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
 			entity.setName(applicantName);
-
+/*
 			Locale loc = new Locale(languageArray[i]);
 			String languageName = loc.getDisplayLanguage();
 
@@ -500,7 +500,7 @@ public class PacketInfoMapper {
 					Languages.LanguageSet.from(languageSet));
 			Soundex soundex = new Soundex();
 			entity.setPhoneticName(
-					!soundex.encode(encodedInputString).isEmpty() ? soundex.encode(encodedInputString) : null);
+					!soundex.encode(encodedInputString).isEmpty() ? soundex.encode(encodedInputString) : null);*/
 
 			if (demoDto.getDateOfBirth() != null) {
 				try {

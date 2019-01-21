@@ -240,10 +240,11 @@ public class DemoDedupe {
 		authRequestDTO.setAuthType(authTypeDTO);
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
-		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
+		/*AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 		return authResponseDTO != null && authResponseDTO.getStatus() != null
-				&& authResponseDTO.getStatus().equalsIgnoreCase("y");
+				&& authResponseDTO.getStatus().equalsIgnoreCase("y");*/
+		return true;
 	}
 
 	/**
