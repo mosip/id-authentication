@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 
 	<artifactId>registration-service</artifactId>

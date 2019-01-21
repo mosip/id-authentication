@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>stages</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 	<artifactId>retry-stage</artifactId>
 	<properties>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0</version>
 		</dependency>
 		<dependency>
 			   <groupId>org.springframework.cloud</groupId>

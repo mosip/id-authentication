@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 	
 	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
-	<version>0.7.0-SNAPSHOT</version>
+	<version>0.8.0</version>
 
 	<packaging>pom</packaging>
 
