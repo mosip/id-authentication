@@ -173,7 +173,7 @@ public class MessageNotificationServiceImpl
 	 */
 	public ResponseDto sendEmailNotification(String templateTypeCode, String id, IdType idType,
 			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment)
-			throws IOException, ApisResourceAccessException {
+			throws IOException, ApisResourceAccessException,Exception {
 		ResponseDto response = null;
 
 		try {
@@ -216,9 +216,10 @@ public class MessageNotificationServiceImpl
 	 * @param attachment
 	 *            the attachment
 	 * @return the response dto
+	 * @throws Exception 
 	 */
 	private ResponseDto sendEmail(String[] mailTo, String[] mailCc, String subject, String artifact,
-			MultipartFile[] attachment) {
+			MultipartFile[] attachment) throws Exception {
 
 		LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
 

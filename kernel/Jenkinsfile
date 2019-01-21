@@ -3,7 +3,7 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = 'DEV'
+ def branch = env.NEXT_BRANCH_NAME
  projectToBuild = 'kernel'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
@@ -13,6 +13,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
+ k8DevContext = 'dev-k8-cluster'
 
 
  stage('------- Checkout --------') {
@@ -269,6 +270,18 @@ stage('---------- SonarQube Analysis --------------') {
     Using sshPublisher class to publish this command over to the deployement server
     */
         sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
+    }
+    stage('Kubernetes Deploy : DEV-INT'){
+      //this stage will rollout the changes on Kubernetes Cluster
+      sh "kubectl config use-context $k8DevContext"
+      for(int i = 0; i<updatedDockerImages.size(); i++){
+        def updatedDockerImage = updatedDockerImages[i]
+        def updatedService = updatedServices[i]
+        echo "Updating [ Service:$updatedService, Image:$updatedDockerImage ]"
+        sh "kubectl set image deployment/$updatedService $updatedService=$updatedDockerImage"
+      }
+      echo "Getting list of all services" 
+      sh "kubectl get services"
     }
 }
 

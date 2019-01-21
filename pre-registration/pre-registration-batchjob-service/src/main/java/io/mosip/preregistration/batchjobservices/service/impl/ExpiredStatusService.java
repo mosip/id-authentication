@@ -15,12 +15,12 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.code.ErrorCode;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessage;
-import io.mosip.preregistration.batchjobservices.code.StatusCodes;
 import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistartionExpiredStatusRepository;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationDemographicRepository;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 

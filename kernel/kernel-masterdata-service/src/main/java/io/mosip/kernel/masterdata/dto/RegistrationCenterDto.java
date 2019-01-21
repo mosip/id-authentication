@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -57,8 +58,7 @@ public class RegistrationCenterDto {
 	@Size(min = 1, max = 32)
 	private String workingHours;
 
-	@NotBlank
-	@Size(min = 1, max = 3)
+	@ValidLangCode
 	private String languageCode;
 
 	private Short numberOfKiosks;

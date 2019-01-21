@@ -49,7 +49,7 @@ public class IdInfoHelperTest {
 
 	@Test
 	public void TestgetLanguageName() {
-		String langCode = "ar";
+		String langCode = "ara";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
 		mockenv.setProperty("mosip.phonetic.lang.".concat(langCode.toLowerCase()), "arabic-ar");
@@ -66,12 +66,12 @@ public class IdInfoHelperTest {
 		String secLangCode = "mosip.secondary.lang-code";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) environment));
-		mockenv.setProperty(priLangCode, "AR");
-		mockenv.setProperty(secLangCode, "FR");
+		mockenv.setProperty(priLangCode, "fre");
+		mockenv.setProperty(secLangCode, "ara");
 		String languageCode = idInfoHelper.getLanguageCode(LanguageType.PRIMARY_LANG);
-		assertEquals("AR", languageCode);
+		assertEquals("fre", languageCode);
 		String languageCode2 = idInfoHelper.getLanguageCode(LanguageType.SECONDARY_LANG);
-		assertEquals("FR", languageCode2);
+		assertEquals("ara", languageCode2);
 	}
 
 }

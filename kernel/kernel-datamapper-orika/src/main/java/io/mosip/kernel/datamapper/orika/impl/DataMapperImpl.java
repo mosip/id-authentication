@@ -8,64 +8,81 @@ import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.model.IncludeDataField;
 import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.datamapper.orika.config.MapClassBuilder;
 import io.mosip.kernel.datamapper.orika.constant.DataMapperErrorCodes;
+import io.mosip.kernel.datamapper.orika.provider.MapperFactoryProvider;
+import ma.glasnost.orika.BoundMapperFacade;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.metadata.ClassMapBuilder;
+import ma.glasnost.orika.metadata.MapperKey;
+import ma.glasnost.orika.metadata.TypeFactory;
 
 /**
  * Data Mapper implementation of the {@link DataMapper} interface.
  * 
+ * @author Urvil Joshi
  * @author Neha
  * @since 1.0.0
  * 
  */
 @Component
-public class DataMapperImpl implements DataMapper {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.spi.datamapper.DataMapper#map(java.lang.Object,
-	 * java.lang.Class, java.util.List, java.util.List, boolean)
+public class DataMapperImpl<S, D> implements DataMapper<S,D>{
+
+	private BoundMapperFacade<S, D> mapper;
+
+	public DataMapperImpl(Class<S> sourceClass, Class<D> destinationClass, boolean mapNull, boolean byDefault,
+			List<IncludeDataField> includeDataField, List<String> excludeDataField) {
+		DefaultMapperFactory mapperFactory = MapperFactoryProvider.getMapperFactory();
+		MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
+		ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
+        classMapBuilder.mapNulls(mapNull);
+		if (excludeDataField != null && !(excludeDataField.isEmpty())) {
+			excludeDataField.forEach(classMapBuilder::exclude);
+		}
+
+		if (includeDataField != null && !(includeDataField.isEmpty())) {
+			includeDataField.forEach(includedField ->classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull()).field(includedField.getSourceField(),
+					includedField.getDestinationField()));
+		}
+
+		if (byDefault) {
+			classMapBuilder.byDefault().register();
+		} else {
+			classMapBuilder.register();
+		}
+		this.mapper = mapperFactory.getMapperFacade(sourceClass, destinationClass, false);
+	}
+    
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object)
 	 */
 	@Override
-	public <S, D> D map(S source, Class<D> destinationClass, boolean mapNull, List<IncludeDataField> includeDataField,
-			List<String> excludeDataField, boolean applyDefault) {
+	public D map(S source) {
 		try {
-			MapClassBuilder<S, D> mapClassBuilder = new MapClassBuilder<>(mapNull);
-			mapClassBuilder.mapClass(source, destinationClass, includeDataField, excludeDataField, applyDefault);
-			return mapClassBuilder.configure().map(source, destinationClass);
+		return mapper.map(source);
 		} catch (Exception e) {
 			throw new DataMapperException(DataMapperErrorCodes.MAPPING_ERR.getErrorCode(),
 					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.spi.datamapper.DataMapper#map(java.lang.Object,
-	 * java.lang.Object, java.util.List, java.util.List, boolean)
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public <S, D> void map(S source, D destination, boolean mapNull, List<IncludeDataField> includeDataField,
-			List<String> excludeDataField, boolean applyDefault) {
+	public void map(S source, D destination) {
 		try {
-			MapClassBuilder<S, D> mapClassBuilder = new MapClassBuilder<>(mapNull);
-			mapClassBuilder.mapClass(source, destination, includeDataField, excludeDataField, applyDefault);
-			mapClassBuilder.configure().map(source, destination);
+		mapper.map(source, destination);
 		} catch (Exception e) {
 			throw new DataMapperException(DataMapperErrorCodes.MAPPING_ERR.getErrorCode(),
 					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.core.spi.datamapper.DataMapper#map(java.lang.Object,
-	 * java.lang.Class, java.lang.Class)
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object, java.lang.Object, io.mosip.kernel.core.datamapper.spi.DataConverter)
 	 */
 	@Override
-	public <S, D> void map(S source, D destination, DataConverter<S, D> dataConverter) {
+	public void map(S source, D destination, DataConverter<S, D> dataConverter) {
 		try {
 			dataConverter.convert(source, destination);
 		} catch (Exception e) {
@@ -73,5 +90,4 @@ public class DataMapperImpl implements DataMapper {
 					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
 		}
 	}
-
 }

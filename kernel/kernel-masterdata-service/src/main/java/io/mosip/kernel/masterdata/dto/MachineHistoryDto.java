@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -49,6 +50,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field for language code
 	 */
+	@ValidLangCode
 	private String langCode;
 	/**
 	 * Field for is active

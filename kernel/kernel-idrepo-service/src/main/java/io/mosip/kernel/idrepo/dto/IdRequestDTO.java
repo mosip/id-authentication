@@ -1,7 +1,5 @@
 package io.mosip.kernel.idrepo.dto;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,9 +12,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class IdRequestDTO extends BaseIdRequestResponseDTO {
 	
-	/** The uin. */
-	private String uin;
-	
 	/** The status. */
 	private String status;
 	
@@ -24,7 +19,5 @@ public class IdRequestDTO extends BaseIdRequestResponseDTO {
 	private String registrationId;
 	
 	/** The request. */
-	private Object request;
-	
-	private List<Documents> documents;
+	private RequestDTO request;
 }

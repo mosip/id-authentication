@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NotFound;
@@ -19,17 +18,19 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * The Class Uin.
  *
  * @author Manoj SP
  */
-@Data
+@Getter
+@Setter
+@ToString(exclude = { "biometrics", "documents" })
 @Entity
 @NoArgsConstructor
 @Table(schema = "idrepo")
@@ -37,7 +38,8 @@ public class Uin {
 
 	public Uin(String uinRefId, String uin, byte[] uinData, String uinDataHash, String regId, String statusCode,
 			String langCode, String createdBy, LocalDateTime createdDateTime, String updatedBy,
-			LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+			LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime,
+			List<UinBiometric> biometrics, List<UinDocument> documents) {
 		this.uinRefId = uinRefId;
 		this.uin = uin;
 		this.uinData = uinData.clone();
@@ -51,6 +53,8 @@ public class Uin {
 		this.updatedDateTime = updatedDateTime;
 		this.isDeleted = isDeleted;
 		this.deletedDateTime = deletedDateTime;
+		this.biometrics = biometrics;
+		this.documents = documents;
 	}
 
 	/** The uin ref id. */
@@ -105,11 +109,11 @@ public class Uin {
 	private LocalDateTime deletedDateTime;
 
 	@OneToMany(mappedBy = "uin", cascade = CascadeType.ALL)
-	@NotFound(action=NotFoundAction.IGNORE)
+	@NotFound(action = NotFoundAction.IGNORE)
 	private List<UinBiometric> biometrics;
 
-	@OneToMany(mappedBy = "uin", cascade = CascadeType.ALL)
-	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "uin", cascade = CascadeType.ALL)
+	@NotFound(action = NotFoundAction.IGNORE)
 	private List<UinDocument> documents;
 
 	/**
@@ -118,7 +122,7 @@ public class Uin {
 	 * @return the uin data
 	 */
 	public byte[] getUinData() {
-		return uinData;
+		return uinData.clone();
 	}
 
 	/**

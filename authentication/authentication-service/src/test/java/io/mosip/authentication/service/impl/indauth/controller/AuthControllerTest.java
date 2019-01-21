@@ -180,9 +180,9 @@ public class AuthControllerTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		//authRequestDTO.setVer("1.1");
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqHmac("zdskfkdsnj");
+//		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setOtp(true);
@@ -190,13 +190,13 @@ public class AuthControllerTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
+		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);

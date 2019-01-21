@@ -16,5 +16,6 @@
 		],
 		"supportedLanguages":[
 			"eng","ara","deu"
-		]
+		],
+		"notificationtype":"SMS|EMAIL" 
 }

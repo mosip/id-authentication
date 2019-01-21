@@ -31,6 +31,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+
 /**
  * This class provides different API's to perform operations on Document upload.
  * 
@@ -52,6 +53,7 @@ public class DocumentController {
 	 */
 	@Autowired
 	private DocumentService documentUploadService;
+
 
 	/**
 	 * Logger configuration for DocumentController
@@ -75,12 +77,14 @@ public class DocumentController {
 	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> fileUpload(
 			@RequestPart(value = "Document request DTO", required = true) String reqDto,
 			@RequestPart(value = "file", required = true) MultipartFile file) {
+
 		log.info("sessionId", "idType", "id",
 				"In fileUpload method of document controller to upload the document for request " + reqDto);
 		return ResponseEntity.status(HttpStatus.OK).body(documentUploadService.uploadDoucment(file, reqDto));
 	}
 
 	/**
+
 	 * Post API to copy the document from source to destination by Preregistration
 	 * Id
 	 * 
@@ -98,6 +102,7 @@ public class DocumentController {
 			@ApiResponse(code = 400, message = "Document copying failed") })
 	public ResponseEntity<MainListResponseDTO<DocumentCopyResponseDTO>> copyDocument(@RequestParam String catCode,
 			@RequestParam String sourcePrId, @RequestParam String destinationPreId) {
+
 		log.info("sessionId", "idType", "id",
 				"In copyDocument method of document controller to copy the document for request " + catCode + ","
 						+ sourcePrId + "," + destinationPreId);
@@ -116,6 +121,7 @@ public class DocumentController {
 	@ApiOperation(value = "Get All Document for Pre-Registration Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Documents reterived successfully"),
 			@ApiResponse(code = 400, message = "Documents failed to reterive") })
+
 	public ResponseEntity<MainListResponseDTO<DocumentMultipartResponseDTO>> getAllDocumentforPreid(
 			@RequestParam String pre_registration_id) {
 		log.info("sessionId", "idType", "id",
@@ -128,6 +134,7 @@ public class DocumentController {
 	/**
 	 * Delete API to delete the document for a Document Id
 	 * 
+
 	 * @param documentId
 	 *            pass documentId
 	 * @return response in a format specified in API document
@@ -136,6 +143,7 @@ public class DocumentController {
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted"),
 			@ApiResponse(code = 400, message = "Document failed to delete") })
+
 	public ResponseEntity<MainListResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(
 			@RequestParam String documentId) {
 		log.info("sessionId", "idType", "id",

@@ -191,7 +191,7 @@ public class RestRequestFactory {
 	} else {
 
 	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
-		    "throwing IDDataValidationException - INVALID_RETURN_TYPE" + returnType);
+		    "throwing IDDataValidationException - INVALID_RETURN_TYPE");
 	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
 	}
     }

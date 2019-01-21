@@ -19,10 +19,12 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 
@@ -59,6 +61,9 @@ public class BiometricPreviewController extends BaseController {
 	private ImageView thumb;
 
 	@FXML
+	private Label exceptionLabel;
+
+	@FXML
 	private ImageView individualPhoto;
 
 	@FXML
@@ -87,15 +92,45 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private Text thumbsThresholdScoreLbl;
+
 	@FXML
 	private Text leftIrisThreshold;
+
 	@FXML
 	private Text rightIrisThreshold;
+
 	@FXML
 	private ScrollPane bioScrollPane;
+
+	@FXML
+	private AnchorPane fingerprintAnchorPane;
+
+	@FXML
+	private AnchorPane irisAnchorPane;
+
+	@FXML
+	private AnchorPane photoAnchorPane;
+
+	@FXML
+	private AnchorPane leftSlapAnchorPane;
+
+	@FXML
+	private AnchorPane rightSlapAnchorPane;
+
+	@FXML
+	private AnchorPane thumbAnchorPane;
+
+	@FXML
+	private AnchorPane leftIrisAnchorPane;
+
+	@FXML
+	private AnchorPane rightIrisAnchorPane;
+
 	@Autowired
 	private RegistrationController registrationController;
 
+	@FXML
+	private Text registrationNavLabel;
 	/**
 	 * Instance of {@link Logger}
 	 */
@@ -108,8 +143,13 @@ public class BiometricPreviewController extends BaseController {
 		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 				.get(RegistrationConstants.REGISTRATION_DATA);
-		registrationDTOContent.getBiometricDTO();
+
+		if (registrationDTOContent.getSelectionListDTO() != null) {
+			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+		}
 		
+		paneVisibility(registrationDTOContent);
+
 		String irisThreshold = ((String) applicationContext.getApplicationMap()
 				.get(RegistrationConstants.IRIS_THRESHOLD)).concat(RegistrationConstants.PERCENTAGE);
 		leftIrisThreshold.setText(irisThreshold);
@@ -141,6 +181,7 @@ public class BiometricPreviewController extends BaseController {
 				}
 			} else {
 				exceptionPhoto.setImage(null);
+				exceptionLabel.setVisible(false);
 			}
 
 			for (FingerprintDetailsDTO fpDetailsDTO : registrationDTOContent.getBiometricDTO()
@@ -172,6 +213,73 @@ public class BiometricPreviewController extends BaseController {
 				rightEye.setImage(convertBytesToImage(capturedIris.getIris()));
 				rightEyeQualityScore.setText(getQualityScore(capturedIris.getQualityScore()));
 			}
+		}
+	}
+
+	/**
+	 * Pane visibility depending on capturing.
+	 *
+	 * @param registrationDTOContent the registration DTO content
+	 */
+	private void paneVisibility(RegistrationDTO registrationDTOContent) {
+		leftSlapAnchorPane.setVisible(false);
+		rightSlapAnchorPane.setVisible(false);
+		thumbAnchorPane.setVisible(false);
+		leftIrisAnchorPane.setVisible(false);
+		rightIrisAnchorPane.setVisible(false);
+
+		if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()
+				&& registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
+			fingerprintAnchorPane.setVisible(false);
+			irisAnchorPane.setVisible(false);
+			photoAnchorPane.setLayoutY(14);
+
+		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+				.isEmpty()) {
+			irisAnchorPane.setLayoutY(14);
+			photoAnchorPane.setLayoutY(303);
+			fingerprintAnchorPane.setVisible(false);
+		} else if (registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO().isEmpty()) {
+			fingerprintAnchorPane.setLayoutY(14);
+			photoAnchorPane.setLayoutY(303);
+			irisAnchorPane.setVisible(false);
+		}
+
+		boolean isLeftEyeCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO().stream().anyMatch(bio -> bio.getIrisType()
+						.equalsIgnoreCase(RegistrationConstants.LEFT.concat(RegistrationConstants.EYE)));
+
+		boolean isRightEyeCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getIrisDetailsDTO().stream().anyMatch(bio -> bio.getIrisType()
+						.equalsIgnoreCase(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE)));
+
+		boolean isLeftPalmCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO().stream()
+				.anyMatch(bio -> bio.getFingerType().equalsIgnoreCase(RegistrationConstants.LEFTPALM));
+		boolean isRightPalmCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO().stream()
+				.anyMatch(bio -> bio.getFingerType().equalsIgnoreCase(RegistrationConstants.RIGHTPALM));
+		boolean isThumbCaptured = registrationDTOContent.getBiometricDTO().getApplicantBiometricDTO()
+				.getFingerprintDetailsDTO().stream()
+				.anyMatch(bio -> bio.getFingerType().equalsIgnoreCase(RegistrationConstants.THUMBS));
+
+		leftSlapAnchorPane.setVisible(isLeftPalmCaptured);
+		rightSlapAnchorPane.setVisible(isRightPalmCaptured);
+		thumbAnchorPane.setVisible(isThumbCaptured);
+		leftIrisAnchorPane.setVisible(isLeftEyeCaptured);
+		rightIrisAnchorPane.setVisible(isRightEyeCaptured);
+
+		if (!isLeftPalmCaptured && !isRightPalmCaptured && isThumbCaptured) {
+			thumbAnchorPane.setLayoutX(0);
+		} else if (isLeftPalmCaptured && !isRightPalmCaptured && isThumbCaptured) {
+			thumbAnchorPane.setLayoutX(258);
+		} else if (!isLeftPalmCaptured && isRightPalmCaptured) {
+			rightSlapAnchorPane.setLayoutX(0);
+			thumbAnchorPane.setLayoutX(258);
+		}
+
+		if (!isLeftEyeCaptured && isRightEyeCaptured) {
+			rightIrisAnchorPane.setLayoutX(0);
 		}
 	}
 

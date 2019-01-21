@@ -18,17 +18,14 @@
 				"UIN": {
 					"type": "number"
 				},
-				"firstName": {
-					"$ref": "#/definitions/simpleType"
-				},
-				"middleName": {
-					"$ref": "#/definitions/simpleType"
-				},
-				"lastName": {
+				"fullName": {
 					"$ref": "#/definitions/simpleType"
 				},
 				"dateOfBirth": {
 					"$ref": "#/definitions/dateOfBirthType"
+				},
+				"age": {
+					"type": "number"
 				},
 				"gender": {
 					"$ref": "#/definitions/simpleType"
@@ -37,6 +34,9 @@
 					"$ref": "#/definitions/simpleType"
 				},
 				"addressLine2": {
+					"$ref": "#/definitions/simpleType"
+				},
+				"addressLine3": {
 					"$ref": "#/definitions/simpleType"
 				},
 				"region": {
@@ -49,7 +49,7 @@
 					"$ref": "#/definitions/simpleType"
 				},
 				"postalCode": {
-					"type": "number"
+					"$ref": "#/definitions/postalCodeType"
 				},
 				"phone": {
 					"$ref": "#/definitions/phoneType"
@@ -59,6 +59,9 @@
 				},
 				"CNIENumber": {
 					"type": "number"
+				},
+				"localAdministrativeAuthority": {
+					"$ref": "#/definitions/simpleType"
 				},
 				"parentOrGuardianName": {
 					"$ref": "#/definitions/simpleType"
@@ -75,10 +78,13 @@
 				"proofOfRelationship": {
 					"$ref": "#/definitions/documentType"
 				},
+				"proofOfDateOfBirth": {
+					"$ref": "#/definitions/documentType"
+				},
 				"individualBiometrics": {
 					"$ref": "#/definitions/biometricsType"
 				},
-                                "parentOrGuardianBiometrics": {
+				"parentOrGuardianBiometrics": {
 					"$ref": "#/definitions/biometricsType"
 				}
 			}
@@ -86,86 +92,42 @@
 	},
 	"definitions": {
 		"simpleType": {
-			"type": "object",
-			"properties": {
-				"label": {
-					"type": "string"
-				},
-				"values": {
-					"type": "array",
-					"additionalItems": false,
-					"uniqueItems": true,
-					"items": {
-						"type": "object",
-						"required": [
-							"language",
-							"value"
-						],
-						"additionalProperties": false,
-						"properties": {
-							"language": {
-								"type": "string"
-							},
-							"value": {
-								"type": "string"
-							}
-						}
+			"type": "array",
+			"additionalItems": false,
+			"uniqueItems": true,
+			"items": {
+				"type": "object",
+				"required": [
+					"language",
+					"value"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"language": {
+						"type": "string",
+						"pattern": "^[(?i)a-z]{3}$"
+					},
+					"value": {
+						"type": "string"
 					}
 				}
-			},
-			"required": [
-				"label",
-				"values"
-			]
+			}
 		},
 		"dateOfBirthType": {
-			"type": "object",
-			"properties": {
-				"label": {
-					"type": "string"
-				},
-				"value": {
-					"type": "string",
-					"pattern": "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$"
-				}
-			},
-			"required": [
-				"label",
-				"value"
-			]
+			"type": "string",
+			"pattern": "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$"
 		},
-		"phoneType": {
-			"type": "object",
-			"properties": {
-				"label": {
-					"type": "string"
-				},
-				"value": {
-					"type": "string",
-					"length": "10",
-					"pattern": "^([9]{1})([234789]{1})([0-9]{8})$"
-				}
-			},
-			"required": [
-				"label",
-				"value"
-			]
+		"phoneType": {		
+			"type": "string",
+			"pattern": "^([6-9]{1})([0-9]{9})$"
+		},
+		"postalCodeType": {		
+			"type": "string",
+			"pattern": "^[(?i)A-Z0-9]{6}$"
 		},
 		"emailType": {
-			"type": "object",
-			"properties": {
-				"label": {
-					"type": "string"
-				},
-				"value": {
-					"type": "string",
-					"pattern": "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"
-				}
-			},
-			"required": [
-				"label",
-				"value"
-			]
+			"type": "string",
+			"pattern": "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"
 		},
 		"documentType": {
 			"type": "object",
@@ -173,7 +135,7 @@
 				"format": {
 					"type": "string"
 				},
-				"category": {
+				"type": {
 					"type": "string"
 				},
 				"fileReference": {

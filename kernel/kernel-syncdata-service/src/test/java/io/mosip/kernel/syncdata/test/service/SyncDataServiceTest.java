@@ -185,4 +185,15 @@ public class SyncDataServiceTest {
 		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withBadRequest());
 		syncConfigDetailsService.getGlobalConfigDetails();
 	}
+
+	//@Test
+	public void getConfigurationSuccess() {
+		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
+		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
+		uriBuilder = new StringBuilder();
+		uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
+				.append(configLabel + "/");
+		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
+		syncConfigDetailsService.getConfiguration("1");
+	}
 }

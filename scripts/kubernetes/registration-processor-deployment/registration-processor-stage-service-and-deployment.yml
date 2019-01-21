@@ -1,0 +1,45 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: registration-processor-stages
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: registration-processor-stages
+    spec:
+      containers:
+      - name: registration-processor-packet-validator-service
+        image: docker-registry.mosip.io:5000/packet-validator-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
+      - name: registration-processor-osi-validator
+        image: docker-registry.mosip.io:5000/osi-validator-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
+      - name: registration-processor-demo-dedupe-stage
+        image: docker-registry.mosip.io:5000/demo-dedupe-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
+      - name: registration-processor-manual-verification-stage
+        image: docker-registry.mosip.io:5000/manual-verification-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred

@@ -9,15 +9,15 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineDeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
-import io.mosip.kernel.masterdata.dto.ResponseRrgistrationCenterMachineDeviceDto;
+import io.mosip.kernel.masterdata.dto.ResponseRegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceID;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
-import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
+import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineDeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
@@ -36,7 +36,7 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 
 	@Autowired
-	private RegistrationCenterMachineDeviceHistoryRepository registrationCenterMachineDeviceHistoryRepository;
+	private RegistrationCenterMachineDeviceHistoryService registrationCenterMachineDeviceHistoryService;
 
 	/*
 	 * (non-Javadoc)
@@ -48,9 +48,9 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 	 */
 	@Override
 	@Transactional
-	public ResponseRrgistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
+	public ResponseRegistrationCenterMachineDeviceDto createRegistrationCenterMachineAndDevice(
 			RequestDto<RegistrationCenterMachineDeviceDto> requestDto) {
-		ResponseRrgistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
+		ResponseRegistrationCenterMachineDeviceDto responseRrgistrationCenterMachineDeviceDto = null;
 
 		try {
 			RegistrationCenterMachineDevice registrationCenterMachineDevice = MetaDataUtils
@@ -68,11 +68,12 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 			registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk()
 					.setEffectivetimes(savedRegistrationCenterMachineDevice.getCreatedDateTime());
 
-			registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
+			registrationCenterMachineDeviceHistoryService
+					.createRegCenterMachineDeviceHistoryMapping(registrationCenterMachineDeviceHistory);
 
 			responseRrgistrationCenterMachineDeviceDto = MapperUtils.map(
 					savedRegistrationCenterMachineDevice.getRegistrationCenterMachineDevicePk(),
-					ResponseRrgistrationCenterMachineDeviceDto.class);
+					ResponseRegistrationCenterMachineDeviceDto.class);
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_CREATE_EXCEPTION
@@ -124,7 +125,8 @@ public class RegistrationCenterMachineDeviceServiceImpl implements RegistrationC
 				registrationCenterMachineDeviceHistory.getRegistrationCenterMachineDeviceHistoryPk()
 						.setEffectivetimes(registrationCenterMachineDevice.getDeletedDateTime());
 
-				registrationCenterMachineDeviceHistoryRepository.create(registrationCenterMachineDeviceHistory);
+				registrationCenterMachineDeviceHistoryService
+						.createRegCenterMachineDeviceHistoryMapping(registrationCenterMachineDeviceHistory);
 			} else {
 				throw new RequestException(
 						RegistrationCenterMachineDeviceErrorCode.REGISTRATION_CENTER_MACHINE_DEVICE_DATA_NOT_FOUND_EXCEPTION

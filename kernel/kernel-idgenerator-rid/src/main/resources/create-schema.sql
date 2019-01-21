@@ -1,8 +1,7 @@
-CREATE schema IF NOT EXISTS ids;
+CREATE schema IF NOT EXISTS REG;
 
-create table  if not exists  ids.rid (
-dongle_id character varying(64) not null primary key,
-sequence_id NUMERIC(5) not null
+create table  if not exists  REG.REG_SEQ (
+CURR_SEQ_NO int varying(64) not null primary key,
 );
 
 

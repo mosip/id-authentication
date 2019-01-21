@@ -46,6 +46,6 @@ public interface MessageNotificationService<T, U, V> {
 	 */
 	public U sendEmailNotification(String templateTypeCode, String id,
 			IdType idType, Map<String, Object> attributes, String[] mailCc, String subject,
-			V attachment) throws IOException, ApisResourceAccessException;
+			V attachment) throws IOException, ApisResourceAccessException,Exception;
 	
 }

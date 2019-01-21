@@ -1,4 +1,3 @@
-
 package io.mosip.preregistration.booking.test.service;
 
 import static org.junit.Assert.assertEquals;

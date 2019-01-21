@@ -97,6 +97,8 @@ public class ScanPopUpViewController extends BaseController {
 				saveBtn.setVisible(false);
 				scannedPagesLabel.setVisible(false);
 				scanningMsg.setVisible(false);
+			} else {
+				isDocumentScan = false;
 			}
 			LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
@@ -107,7 +109,7 @@ public class ScanPopUpViewController extends BaseController {
 							"%s -> Exception while Opening pop-up screen to capture in user registration  %s -> %s",
 							RegistrationConstants.USER_REG_SCAN_EXP, ioException.getMessage(), ioException.getCause()));
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_SCAN_POPUP);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_SCAN_POPUP);
 		}
 
 	}
@@ -149,7 +151,7 @@ public class ScanPopUpViewController extends BaseController {
 				documentScanController.attachScannedDocument(popupStage);
 			} catch (IOException e) {
 				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
-				generateAlert(RegistrationConstants.ALERT_ERROR, e.getMessage());
+				generateAlert(RegistrationConstants.ERROR, e.getMessage());
 			}
 		}
 

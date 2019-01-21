@@ -5,7 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +27,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.google.common.collect.Lists;
 
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
@@ -60,17 +65,21 @@ public class IdRepoControllerTest {
 	@InjectMocks
 	IdRepoController controller;
 
+	@Mock
+	HttpServletRequest request;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(controller, "id", id);
+		ReflectionTestUtils.setField(controller, "allowedTypes", Lists.newArrayList("bio", "demo", "all"));
 	}
 
 	@Test
 	public void testAddIdentity() throws IdRepoAppException {
 		IdResponseDTO response = new IdResponseDTO();
 		IdRequestDTO request = new IdRequestDTO();
-		when(idRepoService.addIdentity(any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity(request,
+		when(idRepoService.addIdentity(any(), any())).thenReturn(response);
+		ResponseEntity<IdResponseDTO> responseEntity = controller.addIdentity("1234", request,
 				new BeanPropertyBindingResult(request, "IdRequestDTO"));
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
@@ -87,7 +96,15 @@ public class IdRepoControllerTest {
 		IdRequestDTO request = new IdRequestDTO();
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
 		errors.reject("errorCode");
-		controller.addIdentity(request, errors);
+		controller.addIdentity("1234", request, errors);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testAddIdentityExceptionInvalidUin() throws IdRepoAppException {
+		IdRequestDTO request = new IdRequestDTO();
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
+		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		controller.addIdentity("1234", request, errors);
 	}
 
 	/**
@@ -101,7 +118,7 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo");
+		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentity("1234", "demo", request);
 		assertEquals(response, responseEntity.getBody());
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
@@ -117,7 +134,56 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
-		controller.retrieveIdentity("1234", "demo");
+		controller.retrieveIdentity("1234", "demo", request);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityInvalidType() throws IdRepoAppException {
+		IdResponseDTO response = new IdResponseDTO();
+		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
+		controller.retrieveIdentity("1234", "dem", request);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityMultipleInvalidType() throws IdRepoAppException {
+		IdResponseDTO response = new IdResponseDTO();
+		when(uinValidatorImpl.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
+		controller.retrieveIdentity("1234", "dem, abc", request);
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityMultipleValidType() throws IdRepoAppException {
+		IdResponseDTO response = new IdResponseDTO();
+		when(uinValidatorImpl.validateId(anyString())).thenReturn(true);
+		when(idRepoService.retrieveIdentity(any(), any())).thenReturn(response);
+		controller.retrieveIdentity("1234", "demo, all, bio", request);
+	}
+
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityRequestParameterMap() throws IdRepoAppException {
+		Map<String, String[]> paramMap = new HashMap<>();
+		paramMap.put("k", new String[] { "v" });
+		when(request.getParameterMap()).thenReturn(paramMap);
+		controller.retrieveIdentity("1234", "dem, abc", request);
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityRequestParameterMapValid() throws IdRepoAppException {
+		Map<String, String[]> paramMap = new HashMap<>();
+		paramMap.put("type", new String[] { "demo" });
+		when(request.getParameterMap()).thenReturn(paramMap);
+		controller.retrieveIdentity("1234", "demo, bio", request);
+	}
+	
+	@Test(expected = IdRepoAppException.class)
+	public void testRetrieveIdentityRequestMultiParameterMap() throws IdRepoAppException {
+		Map<String, String[]> paramMap = new HashMap<>();
+		paramMap.put("type", new String[] { "demo" });
+		paramMap.put("k", new String[] { "v" });
+		when(request.getParameterMap()).thenReturn(paramMap);
+		controller.retrieveIdentity("1234", "demo, bio", request);
 	}
 
 	/**
@@ -128,38 +194,8 @@ public class IdRepoControllerTest {
 	 */
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityNullId() throws IdRepoAppException {
-		controller.retrieveIdentity(null, null);
-	}
-
-	/**
-	 * Test update identity.
-	 *
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	@Test
-	public void testUpdateIdentity() throws IdRepoAppException {
-		IdResponseDTO response = new IdResponseDTO();
-		IdRequestDTO request = new IdRequestDTO();
-		when(idRepoService.updateIdentity(any())).thenReturn(response);
-		ResponseEntity<IdResponseDTO> responseEntity = controller.updateIdentity("1234", request,
-				new BeanPropertyBindingResult(request, "IdRequestDTO"));
-		assertEquals(response, responseEntity.getBody());
-		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-	}
-
-	/**
-	 * Test update identity exception.
-	 *
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	@Test(expected = IdRepoAppException.class)
-	public void testUpdateIdentityException() throws IdRepoAppException {
-		IdRequestDTO request = new IdRequestDTO();
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
-		errors.reject("errorCode");
-		controller.updateIdentity("1234", request, errors);
+		when(uinValidatorImpl.validateId(any())).thenThrow(new InvalidIDException(null, null));
+		controller.retrieveIdentity(null, null, request);
 	}
 
 	/**

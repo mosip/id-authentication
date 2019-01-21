@@ -29,7 +29,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 public class RegistrationCenterDeviceHistoryServiceImpl implements RegistrationCenterDeviceHistoryService {
 
 	@Autowired
-	RegistrationCenterDeviceHistoryRepository repository;
+	RegistrationCenterDeviceHistoryRepository registrationCenterDeviceHistoryRepository;
 
 	
 	/* (non-Javadoc)
@@ -52,7 +52,7 @@ public class RegistrationCenterDeviceHistoryServiceImpl implements RegistrationC
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDto;
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		try {
-			registrationCenterDeviceHistory = repository
+			registrationCenterDeviceHistory = registrationCenterDeviceHistoryRepository
 					.findByFirstByRegCenterIdAndDeviceIdAndEffectDtimesLessThanEqualAndIsDeletedFalseOrIsDeletedIsNull(
 							regCenterId, deviceId, lDateAndTime);
 		} catch (DataAccessException | DataAccessLayerException e) {

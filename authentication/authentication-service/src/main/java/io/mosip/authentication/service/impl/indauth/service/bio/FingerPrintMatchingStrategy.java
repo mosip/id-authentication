@@ -10,8 +10,6 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.authentication.service.impl.indauth.service.demo.AgeMatchingStrategy;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**

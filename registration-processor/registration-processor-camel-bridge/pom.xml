@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>registration-processor-camel-bridge</artifactId>
 	<packaging>jar</packaging>
@@ -23,22 +23,23 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-camel-bridge</artifactId>
-			<version>${vertx.version}</version>
+			<version>0.7.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jul-to-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jcl-over-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-ignite</artifactId>
 			<version>${vertx.version}</version>
-			</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-unit</artifactId>
@@ -46,22 +47,34 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-         <groupId>io.vertx</groupId>
-         <artifactId>vertx-config-spring-config-server</artifactId>
-          <version>3.5.4</version>
-        </dependency>
-        <dependency>
-         <groupId>io.vertx</groupId>
-         <artifactId>vertx-config</artifactId>
-         <version>3.5.4</version>
-         </dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config-spring-config-server</artifactId>
+			<version>3.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-config</artifactId>
+			<version>3.5.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-vertx -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-vertx</artifactId>
+			<version>${camel.vertx.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-		        <version>${h2.version}</version>
+				<version>${h2.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -46,6 +46,7 @@ import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.kernel.core.util.DateUtils;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -122,6 +123,7 @@ public class KycFilterTest{
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testTxnId() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {
 		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setResponseParam",
@@ -160,9 +162,9 @@ public class KycFilterTest{
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		//authRequestDTO.setVer("1.1");
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqHmac("zdskfkdsnj");
+//		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
@@ -175,7 +177,7 @@ public class KycFilterTest{
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
+		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -184,7 +186,7 @@ public class KycFilterTest{
 		
 		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
 		IdentityDTO idDTO3 = new IdentityDTO();
-		idInfoDTO3.setLanguage("FR");
+		idInfoDTO3.setLanguage("fre");
 		idInfoDTO3.setValue("Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA");
 		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
 		idInfoList1.add(idInfoDTO3);
@@ -218,6 +220,7 @@ public class KycFilterTest{
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResponse(kycResponseDTO);
 		kycAuthResponseDTO.setTxnID("12345");
+		kycAuthResponseDTO.setResTime(DateUtils.getUTCCurrentDateTimeString());
 		String kycAuthResponse =mapper.writeValueAsString(kycAuthResponseDTO);
 		Map<String, Object> map =(Map<String, Object>) mapper.readValue(kycAuthResponse.getBytes(), Map.class);
 		return map;

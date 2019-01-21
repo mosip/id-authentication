@@ -1,13 +1,17 @@
 package io.mosip.kernel.idrepo.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,15 +24,22 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
+@IdClass(BiometricPK.class)
 @Table(schema = "idrepo")
-public class UinBiometric {
+public class UinBiometric implements Serializable {
 
-	public UinBiometric(String uinRefId, String bioFileId, String biometricFileName, String biometricFileHash,
-			String langCode, String createdBy, LocalDateTime createdDateTime, String updatedBy,
-			LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6571434413414922814L;
+
+	public UinBiometric(String uinRefId, String bioFileId, String biometricFileType, String biometricFileName,
+			String biometricFileHash, String langCode, String createdBy, LocalDateTime createdDateTime,
+			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
 		super();
 		this.uinRefId = uinRefId;
 		this.bioFileId = bioFileId;
+		this.biometricFileType = biometricFileType;
 		this.biometricFileName = biometricFileName;
 		this.biometricFileHash = biometricFileHash;
 		this.langCode = langCode;
@@ -46,6 +57,9 @@ public class UinBiometric {
 
 	/** The bio file id. */
 	private String bioFileId;
+
+	@Id
+	private String biometricFileType;
 
 	/** The biometric file name. */
 	private String biometricFileName;
@@ -81,5 +95,6 @@ public class UinBiometric {
 
 	@ManyToOne
 	@JoinColumn(name = "uinRefId", insertable = false, updatable = false)
+	@JsonBackReference
 	private Uin uin;
 }

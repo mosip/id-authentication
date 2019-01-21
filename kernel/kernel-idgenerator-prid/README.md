@@ -10,8 +10,8 @@
  ```
  
  **Properties to be added in Spring application environment using this component**
-
-[kernel-idgenerator-prid-dev.properties](../../config/kernel-idgenerator-prid-dev.properties)
+ 
+[application-dev.properties](../../config/application-dev.properties)
  
  **Database properties**
  
@@ -37,11 +37,11 @@ table:prid
 1.**ADMIN** _can only configure the length_ 
 
 2.Logic behind generating prid
-  1. _The Id should not be generated sequentially._
-  2. _cannot not have repeated numbers,cannot contain any repeating numbers for 2 or more than 2 digits._
-  3. _cannot have repeated block of numbers for 2 or more than 2 digits._ 
-  4. _cannot contain any sequential number for 3 or more than 3 digits and cannot contain alphanumeric values._
-  5. _The last digit of the generated  id should have checksum_  
+  1. _The  Id should not be generated sequentially._
+  2. _cannot not have repeated numbers,cannot contain any repeating numbers for configured number of digit or more than configured number of digits in property file._
+  3. _cannot have repeated block of numbers for configured number of digits in property file._ 
+  4. _cannot contain any sequential number for configured number of digits or more than configured number of  digits in property file and cannot contain alphanumeric values._
+  5. _The last digit of the generated id should be reserved for checksum_  
   6. _The number should not contain '0' or '1' as the first digit._
   
 **Sample Usage**

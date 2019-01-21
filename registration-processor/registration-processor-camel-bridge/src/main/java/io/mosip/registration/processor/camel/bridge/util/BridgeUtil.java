@@ -3,8 +3,6 @@ package io.mosip.registration.processor.camel.bridge.util;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import io.mosip.registration.processor.camel.bridge.MosipCamelBridge;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.exception.ConfigurationServerFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.vertx.config.ConfigRetriever;
@@ -33,7 +31,7 @@ public class BridgeUtil {
 	 * locally
 	 */
 	public static void getConfiguration() {
-		String url = PropertyFileUtil.getProperty(MosipCamelBridge.class, "bootstrap.properties", "url");
+		String url = PropertyFileUtil.getProperty(BridgeUtil.class, "bootstrap.properties", "url");
 		CompletableFuture<JsonObject> configuration = new CompletableFuture<>();
 
 		ConfigStoreOptions configStoreOptions = new ConfigStoreOptions().setType("spring-config-server")
@@ -68,11 +66,10 @@ public class BridgeUtil {
 	 *            The address to be used for endpoint
 	 * @return The address as per the configured camel component
 	 */
-	public static String getEndpoint(MessageBusAddress messageBusAddress) {
+	public static String getPropertyFromConfigServer(String key) {
 		if (BridgeUtil.bridgeConfiguration == null) {
 			getConfiguration();
 		}
-		return BridgeUtil.bridgeConfiguration.getString("registration.processor.component")
-				+ messageBusAddress.getAddress();
+		return BridgeUtil.bridgeConfiguration.getString(key);
 	}
 }

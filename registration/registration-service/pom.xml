@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.7.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>registration-service</artifactId>
@@ -117,6 +117,10 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-keygenerator-bouncycastle</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-qrcodegenerator-zxing</artifactId>
+		</dependency>
 		<!-- FTP Packet Upload -->
 		<dependency>
 			<groupId>com.jcraft</groupId>
@@ -204,13 +208,18 @@
 		<dependency>
 			<groupId>com.github.sarxos</groupId>
 			<artifactId>webcam-capture</artifactId>
-			<version>0.3.12</version>
+			<version>${webcam-capture.version}</version>
+		</dependency>
+		
+		<dependency>
+			<artifactId>faces</artifactId>
+			<groupId>org.openimaj</groupId>
+			<version>${org.openimaj.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-templatemanager-velocity</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- scanner dependencies -->
@@ -224,7 +233,15 @@
 		    <artifactId>itextpdf</artifactId>
 		    <version>5.0.6</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-crypto-jce</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-jsonvalidator</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>

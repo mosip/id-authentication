@@ -32,7 +32,7 @@ public class TriggerNotificationForUINTest {
 	private TriggerNotificationForUIN triggerNotificationForUIN;
 
 	@Test
-	public void testTriggerNotificationSuccess() throws ApisResourceAccessException, IOException {
+	public void testTriggerNotificationSuccess() throws Exception {
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationTypes", "SMS|EMAIL");
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmails", "alokranjan1106@gmail.com");
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmailSubject", "UIN Generated");
@@ -47,7 +47,7 @@ public class TriggerNotificationForUINTest {
 	}
 
 	@Test(expected = ConfigurationNotFoundException.class)
-	public void testConfigNotFoundException() throws ApisResourceAccessException, IOException {
+	public void testConfigNotFoundException() throws Exception {
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationTypes", "");
 		String uin = "123456789";
 
@@ -55,7 +55,7 @@ public class TriggerNotificationForUINTest {
 	}
 
 	@Test(expected = TemplateGenerationFailedException.class)
-	public void testTemplateGenerationFailedException() throws ApisResourceAccessException, IOException {
+	public void testTemplateGenerationFailedException() throws Exception {
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationTypes", "SMS|EMAIL");
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmails", "alokranjan1106@gmail.com");
 		ReflectionTestUtils.setField(triggerNotificationForUIN, "notificationEmailSubject", "UIN Generated");

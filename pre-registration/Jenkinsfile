@@ -2,11 +2,12 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = 'DEV'
+ def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'pre-registration'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
+ k8DevContext = 'dev-k8-cluster'
 
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
@@ -67,7 +68,7 @@ stage ('---------- build ---------------') {
 			print file.exists()
 			if(file.exists()){
 			// installing node modules and building the angular project
-			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --output-path=dist && popd"
+			sh "pushd $parentDirectoryPath && npm install && npm run-script build -- --configuration=dev-k8 --output-path=dist && popd"
 			}
 		}
 	}
@@ -112,4 +113,20 @@ stage ('---------- build ---------------') {
    }
   }
  }
+	
+	stage('Kubernetes Deploy : DEV-INT'){
+      //this stage will rollout the changes on Kubernetes Cluster
+      sh "kubectl config use-context $k8DevContext"
+     
+	sh "kubectl set image deployment/pre-registration-auth-service pre-registration-auth-service=docker-registry.mosip.io:5000/pre-registration-auth-service:$BUILD_NUMBER"
+sh "kubectl set image deployment/pre-registration-batchjob-service pre-registration-batchjob-service=docker-registry.mosip.io:5000/pre-registration-batchjob-service:$BUILD_NUMBER"
+sh "kubectl set image deployment/pre-registration-booking-service pre-registration-booking-service=docker-registry.mosip.io:5000/pre-registration-booking-service:$BUILD_NUMBER"
+sh "kubectl set image deployment/pre-registration-datasync-service pre-registration-datasync-service=docker-registry.mosip.io:5000/pre-registration-datasync-service:$BUILD_NUMBER"
+sh "kubectl set image deployment/pre-registration-demographic-service pre-registration-demographic-service=docker-registry.mosip.io:5000/pre-registration-demographic-service:$BUILD_NUMBER"
+sh "kubectl set image deployment/pre-registration-document-service pre-registration-document-service=docker-registry.mosip.io:5000/pre-registration-document-service:$BUILD_NUMBER"
+sh "kubectl set image deployment/pre-registration-ui pre-registration-ui=docker-registry.mosip.io:5000/pre-registration-ui:$BUILD_NUMBER"
+		
+      echo "Getting list of all services" 
+      sh "kubectl get services"
+    }
 }

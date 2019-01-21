@@ -42,69 +42,40 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusDAOImpl.class);
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegPacketStatusDAO#getPacketIdsByStatusUploaded()
+	 */
 	@Override
-	public List<String> getPacketIdsByStatusUploaded() {
+	public List<Registration> getPacketIdsByStatusUploaded() {
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"getting packets by status uploaded-successfully has been started");
 
-		List<Registration> registrationList = registrationRepository
+		return registrationRepository
 				.findByclientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-		List<String> packetIds = new ArrayList<>();
-		for (Registration registration : registrationList) {
-			packetIds.add(registration.getId());
-		}
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"getting packets by status post-sync has been ended");
-		return packetIds;
+		
 	}
 
+		/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegPacketStatusDAO#get(java.lang.String)
+	 */
 	@Override
-	public void updatePacketIdsByServerStatus(List<RegPacketStatusDTO> packetStatus) {
-		try {
-			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
-					"packets status sync from server has been started");
-			for (RegPacketStatusDTO regPacketStatusDTO : packetStatus) {
-				Registration registration = registrationRepository.findById(Registration.class,
-						regPacketStatusDTO.getPacketId());
-				registration.setServerStatusCode(regPacketStatusDTO.getStatus());
-				registration.setServerStatusTimestamp(new Timestamp(System.currentTimeMillis()));
-				List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
-				RegistrationTransaction registrationTxn = new RegistrationTransaction();
+	public Registration get(String registrationId) {
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Get registration has been started");
+	
+		return registrationRepository.findById(Registration.class,
+				registrationId);
+	}
 
-				registrationTxn.setRegId(registration.getId());
-				registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
-				registrationTxn.setLangCode("ENG");
-				registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
-				registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
-
-				File ackFile = null;
-				File zipFile = null;
-				if (regPacketStatusDTO.getStatus()
-						.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)) {
-					registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
-					registrationTxn.setStatusCode(registration.getClientStatusCode());
-					String ackPath = registration.getAckFilename();
-					ackFile = new File(ackPath);
-					String zipPath = ackPath.replace("_Ack.png", RegistrationConstants.ZIP_FILE_EXTENSION);
-					zipFile = new File(zipPath);
-				} else {
-					registrationTxn.setStatusCode(registration.getClientStatusCode());
-				}
-				transactionList.add(registrationTxn);
-				registration.setRegistrationTransaction(transactionList);
-				Registration updatedRegistration = registrationRepository.update(registration);
-				if (ackFile != null && updatedRegistration != null) {
-					Files.delete(ackFile);
-					Files.delete(zipFile);
-				}
-			}
-			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
-					"packets status sync from server has been ended");
-		} catch (RuntimeException runtimeException) {			
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
-					runtimeException.toString());
-		}
-
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegPacketStatusDAO#update(io.mosip.registration.entity.Registration)
+	 */
+	@Override
+	public Registration update(Registration registration) {
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Update registration has been started");
+		return registrationRepository.update(registration);
+	
 	}
 
 }

@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,13 +22,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
-import io.mosip.kernel.idrepo.controller.IdRepoExceptionHandler;
+import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.idrepo.dto.ErrorDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 
@@ -41,6 +41,9 @@ import io.mosip.kernel.idrepo.dto.IdResponseDTO;
 @WebMvcTest
 @ActiveProfiles("test")
 public class IdRepoExceptionHandlerTest {
+
+	@Autowired
+	Environment env;
 
 	/** The mapper. */
 	@Autowired
@@ -59,6 +62,7 @@ public class IdRepoExceptionHandlerTest {
 	 */
 	@Before
 	public void before() {
+		ReflectionTestUtils.setField(handler, "env", env);
 		ReflectionTestUtils.setField(handler, "mapper", mapper);
 	}
 
@@ -70,10 +74,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleAllExceptions = ReflectionTestUtils.invokeMethod(handler, "handleAllExceptions",
 				new RuntimeException("Runtime Exception"), null);
 		IdResponseDTO response = (IdResponseDTO) handleAllExceptions.getBody();
-		List<ErrorDTO> errorCode = response.getErr();
+		List<ErrorDTO> errorCode = response.getError();
 		errorCode.forEach(e -> {
-			assertEquals("KER-IDR-008", e.getErrCode());
-			assertEquals("Unknown error occured", e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorCode(), e.getErrCode());
+			assertEquals(IdRepoErrorConstants.UNKNOWN_ERROR.getErrorMessage(), e.getErrMessage());
 		});
 	}
 
@@ -87,23 +91,10 @@ public class IdRepoExceptionHandlerTest {
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null,
 				HttpStatus.EXPECTATION_FAILED, null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		List<ErrorDTO> errorCode = response.getErr();
+		List<ErrorDTO> errorCode = response.getError();
 		errorCode.forEach(e -> {
-			assertEquals("KER-IDR-007", e.getErrCode());
-			assertEquals("Invalid Request", e.getErrMessage());
-		});
-	}
-
-	@Test
-	public void testHandleExceptionInternalTimeout() {
-		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
-				"handleExceptionInternal", new AsyncRequestTimeoutException(), null, null,
-				HttpStatus.EXPECTATION_FAILED, null);
-		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		List<ErrorDTO> errorCode = response.getErr();
-		errorCode.forEach(e -> {
-			assertEquals("KER-IDR-009", e.getErrCode());
-			assertEquals("Connection Timed out", e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(), e.getErrCode());
+			assertEquals(IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage(), e.getErrMessage());
 		});
 	}
 
@@ -115,10 +106,10 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN), null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getErr();
+		List<ErrorDTO> errorCode = response.getError();
 		errorCode.forEach(e -> {
-			assertEquals("KER-IDR-005", e.getErrCode());
-			assertEquals("Invalid UIN", e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
 		});
 	}
 
@@ -132,10 +123,38 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppException",
 				ex, null);
 		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
-		List<ErrorDTO> errorCode = response.getErr();
+		List<ErrorDTO> errorCode = response.getError();
 		errorCode.forEach(e -> {
-			assertEquals("KER-IDR-005", e.getErrCode());
-			assertEquals("Invalid UIN", e.getErrMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
+		});
+	}
+	
+	@Test
+	public void testHandleIdAppExceptionWithUncheckedCause() {
+		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN,
+				new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN, "mosip.id.create"), "mosip.id.create");
+		ResponseEntity<Object> handleIdAppException = ReflectionTestUtils.invokeMethod(handler, "handleIdAppUncheckedException",
+				ex, null);
+		IdResponseDTO response = (IdResponseDTO) handleIdAppException.getBody();
+		List<ErrorDTO> errorCode = response.getError();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
+		});
+	}
+
+	@Test
+	public void testHandleIdAppUncheckedException() {
+		IdRepoAppUncheckedException ex = new IdRepoAppUncheckedException(IdRepoErrorConstants.INVALID_UIN,
+				new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, "mosip.id.create"), "mosip.id.create");
+		ResponseEntity<Object> handleIdAppUncheckedException = ReflectionTestUtils.invokeMethod(handler,
+				"handleIdAppUncheckedException", ex, null);
+		IdResponseDTO response = (IdResponseDTO) handleIdAppUncheckedException.getBody();
+		List<ErrorDTO> errorCode = response.getError();
+		errorCode.forEach(e -> {
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorCode(), e.getErrCode());
+			assertEquals(IdRepoErrorConstants.INVALID_UIN.getErrorMessage(), e.getErrMessage());
 		});
 	}
 
@@ -149,7 +168,7 @@ public class IdRepoExceptionHandlerTest {
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null, null,
 				null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		response.getErr();
+		response.getError();
 	}
 
 	@Test
@@ -157,6 +176,6 @@ public class IdRepoExceptionHandlerTest {
 		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,
 				"handleExceptionInternal", new IdRepoAppException(), null, null, null, null);
 		IdResponseDTO response = (IdResponseDTO) handleExceptionInternal.getBody();
-		response.getErr();
+		response.getError();
 	}
 }

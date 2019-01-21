@@ -99,7 +99,7 @@ public class PacketUploadController extends BaseController {
 				}
 			});
 		} catch (RegBaseCheckedException checkedException) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, checkedException.getErrorText());
+			generateAlert(RegistrationConstants.ERROR, checkedException.getErrorText());
 		}
 
 	}
@@ -128,7 +128,6 @@ public class PacketUploadController extends BaseController {
 					syncDto.setStatusComment(packetToBeSynch.getClientStatusCode() + " " + "-" + " "
 							+ packetToBeSynch.getClientStatusComments());
 					syncDto.setRegistrationId(packetToBeSynch.getId());
-					syncDto.setParentRegistrationId(packetToBeSynch.getId());
 					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
 					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 					syncDtoList.add(syncDto);
@@ -136,6 +135,25 @@ public class PacketUploadController extends BaseController {
 				response = packetSynchService.syncPacketsToServer(syncDtoList);
 			}
 			if (response != null) {
+				packetsToBeSynched.forEach(registration -> {
+					if (registration.getServerStatusCode() != null) {
+						if (registration.getServerStatusCode()
+								.equals(RegistrationClientStatusCode.RE_REGISTER.getCode())) {
+							String ackFileName = registration.getAckFilename();
+							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+							String packetPath = ackFileName.substring(0, lastIndex);
+							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+							if (packet.exists() && packet.delete()) {
+								registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
+							} else {
+								registration.setClientStatusCode(
+										RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+							}
+						}
+					} else {
+						registration.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+					}
+				});
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
 		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
@@ -143,7 +161,8 @@ public class PacketUploadController extends BaseController {
 					APPLICATION_ID, "Error while Synching packets to the server");
 			if (e instanceof RegBaseUncheckedException) {
 
-				throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 			} else {
 				syncErrorStatus = e.getMessage();
@@ -243,7 +262,7 @@ public class PacketUploadController extends BaseController {
 										|| "E".equals(synchedPacket.getFileUploadStatus())) {
 									Object response = packetUploadService.pushPacket(packet);
 									String responseCode = response.toString();
-									if (responseCode.equals("PACKET_UPLOADED_TO_LANDING_ZONE")) {
+									if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
 										synchedPacket.setClientStatusCode(
 												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 										synchedPacket.setFileUploadStatus(
@@ -288,7 +307,7 @@ public class PacketUploadController extends BaseController {
 								}
 								break;
 							}
-								
+
 							this.updateProgress(i, synchedPackets.size());
 						}
 						packetUploadService.updateStatus(packetUploadList);

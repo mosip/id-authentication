@@ -58,7 +58,7 @@ public class RidValidatorImpl implements RidValidator<String> {
 
 		if (id.length() != ridLength) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID_LENGTH.getErrorCode(),
-					RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage());
+					RidExceptionProperty.INVALID_RID_LENGTH.getErrorMessage() + ridLength);
 		}
 
 		if (!StringUtils.isNumeric(id)) {
@@ -103,5 +103,18 @@ public class RidValidatorImpl implements RidValidator<String> {
 					RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorMessage());
 		}
 		return true;
+	}
+
+	@Override
+	public boolean validateId(String id, String centerId, String machineId, int centerIdLength, int machineIdLength,
+			int timeStampLength) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean validateId(String id, int centerIdLength, int machineIdLength, int timeStampLength) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

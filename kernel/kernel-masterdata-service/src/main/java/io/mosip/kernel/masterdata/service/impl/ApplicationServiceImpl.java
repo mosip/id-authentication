@@ -3,9 +3,8 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,7 @@ import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
+
 
 /**
  * Service API implementaion class for Application
@@ -39,19 +36,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Autowired
 	private ApplicationRepository applicationRepository;
-
+	
+	@Qualifier("applicationtoToApplicationDtoDefaultMapper")
 	@Autowired
-	private DataMapper dataMapper;
-
-	MapperFactory mapperFactory = null;
-	MapperFacade mapper = null;
-
-	@PostConstruct
-	private void postConsApplicationServiceImpl() {
-		mapperFactory = new DefaultMapperFactory.Builder().build();
-		mapperFactory.classMap(Application.class, ApplicationDto.class);
-		mapper = mapperFactory.getMapperFacade();
-	}
+	private DataMapper<Application,ApplicationDto> applicationtoToApplicationDtoDefaultMapper;
+	
+	@Qualifier("applicationToCodeandlanguagecodeDefaultMapper")
+	@Autowired
+	private DataMapper<Application,CodeAndLanguageCodeID> applicationToCodeandlanguagecodeDefaultMapper;
 
 	/*
 	 * (non-Javadoc)
@@ -61,7 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplication() {
-		List<ApplicationDto> applicationDtoList = new ArrayList<>();
+		List<ApplicationDto> applicationDtoList= new ArrayList<>();
 		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByIsDeletedFalseOrIsDeletedNull(Application.class);
@@ -72,9 +64,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> {
-				applicationDtoList.add(mapper.map(application, ApplicationDto.class));
-			});
+			applicationList.forEach(application -> 
+			applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application))
+		);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -92,7 +84,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	 */
 	@Override
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
-		List<ApplicationDto> applicationDtoList = new ArrayList<>();
+		List<ApplicationDto> applicationDtoList= new ArrayList<>();
 		List<Application> applicationList;
 		try {
 			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalseOrIsDeletedIsNull(languageCode);
@@ -102,11 +94,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (!(applicationList.isEmpty())) {
-			applicationList.forEach(application -> {
-				ApplicationDto applicationDto = new ApplicationDto();
-				dataMapper.map(application, applicationDto, true, null, null, true);
-				applicationDtoList.add(applicationDto);
-			});
+			applicationList.forEach(application -> 
+			applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application))
+		);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -125,7 +115,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Override
 	public ApplicationResponseDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
 		Application application;
-		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
 			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(code,
@@ -136,8 +125,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 							+ ExceptionUtils.parseException(e));
 		}
 		if (application != null) {
-			dataMapper.map(application, applicationDto, true, null, null, true);
-			applicationDtoList.add(applicationDto);
+	     applicationDtoList.add(applicationtoToApplicationDtoDefaultMapper.map(application));
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
@@ -165,8 +153,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		CodeAndLanguageCodeID codeLangCodeId = new CodeAndLanguageCodeID();
-		dataMapper.map(application, codeLangCodeId, true, null, null, true);
-		return codeLangCodeId;
+		return applicationToCodeandlanguagecodeDefaultMapper.map(application);
 	}
 }

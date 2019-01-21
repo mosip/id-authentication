@@ -52,29 +52,24 @@ public class MasterSyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			if (context != null) {
-				this.jobId = loadContext(context);
-				masterSyncService = applicationContext.getBean(MasterSyncService.class);
+			this.jobId = loadContext(context);
+			masterSyncService = applicationContext.getBean(MasterSyncService.class);
 
+			// Run the Parent JOB always first
+			this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
+
+			// To run the child jobs after the parent job Success
+			if (responseDTO.getSuccessResponseDTO() != null) {
+				executeChildJob(jobId, jobMap);
 			}
+
+			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
 			LOGGER.error(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
-
-		this.triggerPoint = (context != null) ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM : triggerPoint;
-
-		// Run the Parent JOB always first
-		this.responseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001);
-
-		// To run the child jobs after the parent job Success
-		if (responseDTO.getSuccessResponseDTO() != null) {
-			executeChildJob(jobId, jobMap);
-		}
-
-		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.debug(RegistrationConstants.MASTER_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");

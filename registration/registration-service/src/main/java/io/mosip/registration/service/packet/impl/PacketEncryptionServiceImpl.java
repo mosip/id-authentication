@@ -13,6 +13,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -20,6 +21,7 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
@@ -80,6 +82,18 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			
 			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet encrypted successfully");
+			
+			// Validate the size of the generated registration packet
+			long maxPacketSizeInBytes = Long.parseLong((String) ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.MAX_REG_PACKET_SIZE_IN_MB)) * 1024 * 1024;
+			if (encryptedPacket.length > maxPacketSizeInBytes) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorCode(),
+						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());
+			}
+
+			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID, "Packet size validated successfully");
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
@@ -89,7 +103,8 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					"Encrypted Packet and Acknowledgement Receipt saved successfully");
 
 			// Insert the Registration Details into DB
-			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName().getValues().getFirst().getValue());
+			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					.getFullName().get(0).getValue());
 			
 			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Encrypted Packet persisted");
@@ -116,8 +131,6 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			successResponseDTO.setMessage("Success");
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			return responseDTO;
-		} catch (RegBaseCheckedException checkedException) {
-			throw checkedException;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ENCRYPTION_MANAGER,
 					runtimeException.toString());

@@ -16,6 +16,9 @@ public class ApplicantDocumentDTO extends BaseDTO {
 
 	/** The photo. */
 	private byte[] photo;
+	
+	/** The compressed photo for QR Code. */
+	private byte[] compressedFacePhoto;
 
 	/** The has exception photo. */
 	private boolean hasExceptionPhoto;
@@ -66,6 +69,21 @@ public class ApplicantDocumentDTO extends BaseDTO {
 	 */
 	public void setPhoto(byte[] photo) {
 		this.photo = photo;
+	}
+	
+	/**
+	 * @return the compressedFacePhoto
+	 */
+	public byte[] getCompressedFacePhoto() {
+		return compressedFacePhoto;
+	}
+
+	/**
+	 * @param compressedFacePhoto
+	 *            the compressed face photo to set
+	 */
+	public void setCompressedFacePhoto(byte[] compressedFacePhoto) {
+		this.compressedFacePhoto = compressedFacePhoto;
 	}
 
 	/**

@@ -10,8 +10,8 @@
 <AnchorPane fx:id="webCameraPane" prefHeight="400.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.WebCameraController">
    <children>
       <SwingNode fx:id="webcamera" layoutX="10.0" />
-      <Button layoutX="100.0" layoutY="347.0" mnemonicParsing="false" onAction="#captureImage" text="Capture" />
-      <Button fx:id="clear" layoutX="193.0" layoutY="347.0" mnemonicParsing="false" onAction="#clearImage" text="Clear" />
-      <Button fx:id="close" layoutX="264.0" layoutY="347.0" mnemonicParsing="false" onAction="#closeWindow" text="Close" />
+      <Button layoutX="100.0" layoutY="347.0" mnemonicParsing="false" onAction="#captureImage" text="%capture" />
+      <Button fx:id="clear" layoutX="193.0" layoutY="347.0" mnemonicParsing="false" onAction="#clearImage" text="%clear" />
+      <Button fx:id="close" layoutX="264.0" layoutY="347.0" mnemonicParsing="false" onAction="#closeWindow" text="%close" />
    </children>
 </AnchorPane>

@@ -8,6 +8,9 @@ public enum NotificationType {
 
 	EMAIL("email"), SMS("sms"), NONE("none");
 
+	/**
+	 * Variable to hold name
+	 */
 	private String name;
 
 	NotificationType(String name) {

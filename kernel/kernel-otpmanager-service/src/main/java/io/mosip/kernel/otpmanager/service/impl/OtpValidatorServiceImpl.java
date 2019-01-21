@@ -1,6 +1,7 @@
 package io.mosip.kernel.otpmanager.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +101,8 @@ public class OtpValidatorServiceImpl implements OtpValidator<ResponseEntity<OtpV
 			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
 					+ " SET validation_retry_count = :newNumOfAttempt,"
 					+ "upd_dtimes = :newValidationTime WHERE id=:id";
-			HashMap<String, Object> updateMap = createUpdateMap(key, null, attemptCount + 1, LocalDateTime.now());
+			HashMap<String, Object> updateMap = createUpdateMap(key, null, attemptCount + 1,
+					LocalDateTime.now(ZoneId.of("UTC")));
 			updateData(updateString, updateMap);
 		}
 		/*

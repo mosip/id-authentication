@@ -1,11 +1,15 @@
 package io.mosip.kernel.masterdata.service;
 
+import java.util.List;
+import java.util.Map;
+
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.entity.Location;
 
 /**
  * Interface class from which various implementation can be performed
@@ -37,7 +41,8 @@ public interface LocationService {
 
 	/**
 	 * 
-	 * @param locationRequestDto - location request object
+	 * @param locationRequestDto
+	 *            - location request object
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
 	public PostLocationCodeResponseDto createLocationHierarchy(RequestDto<LocationDto> locationRequestDto);
@@ -52,18 +57,20 @@ public interface LocationService {
 
 	/**
 	 * 
-	 * @param locationRequestDto - location request DTO
+	 * @param locationRequestDto
+	 *            - location request DTO
 	 * @return {@link PostLocationCodeResponseDto}
 	 */
 	public PostLocationCodeResponseDto updateLocationDetails(RequestDto<LocationDto> locationRequestDto);
-	
+
 	/**
 	 * 
-	 * @param locationCode - location code
+	 * @param locationCode
+	 *            - location code
 	 * @return {@link CodeResponseDto}
 	 */
 	public CodeResponseDto deleteLocationDetials(String locationCode);
-	
+
 	/**
 	 * 
 	 * @param locCode
@@ -73,6 +80,16 @@ public interface LocationService {
 	 * @return location response dto
 	 */
 	public LocationResponseDto getImmediateChildrenByLocCodeAndLangCode(String locCode, String langCode);
-	
+
+	/**
+	 * 
+	 * @param langCode
+	 *            - language code
+	 * @param hierarchyLevel
+	 *            - hierarchyLevel
+	 * @return map contain key as parentCode and value as List of Location
+	 * 
+	 */
+	public Map<Integer, List<Location>> getLocationByLangCodeAndHierarchyLevel(String langCode, Integer hierarchyLevel);
 
 }

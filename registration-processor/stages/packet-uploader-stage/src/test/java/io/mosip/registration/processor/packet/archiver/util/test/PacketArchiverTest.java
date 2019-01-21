@@ -31,11 +31,10 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 
-///**
-// * The Class PacketArchiverTest.
-// * 
-// * @author M1039285
-// */
+/**
+ * @author M1039285
+ *
+ */
 @RunWith(SpringRunner.class)
 public class PacketArchiverTest {
 
@@ -87,12 +86,10 @@ public class PacketArchiverTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
 		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn("src/test/resources/");
-
-		AuditLogRequestBuilder auditRequestBuilder = new AuditLogRequestBuilder();
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		auditRequestDto = new AuditRequestDto();
 		auditRequestDto.setDescription("description");
-		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now().toString());
 		auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
 		auditRequestDto.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString());
 		auditRequestDto.setCreatedBy(AuditLogConstant.SYSTEM.toString());

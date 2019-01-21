@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -32,10 +32,10 @@ public class FingerprintValidatorTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	RegistrationUserDetailDAO registrationUserDetailDAO;
+	private UserDetailDAO userDetailDAO;
 	
 	@Mock
-	FingerprintFacade fingerprintFacade;
+	private FingerprintFacade fingerprintFacade;
 
 	AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 
@@ -69,7 +69,7 @@ public class FingerprintValidatorTest {
 		List<UserBiometric> userBiometrics = new ArrayList<>();
 		userBiometrics.add(userBiometric);
 
-		when(registrationUserDetailDAO.getUserSpecificFingerprintDetails("mosip")).thenReturn(userBiometrics);
+		when(userDetailDAO.getUserSpecificBioDetails("mosip","Fingerprint")).thenReturn(userBiometrics);
 		when(fingerprintFacade.validateFP(authenticationValidatorDTO.getFingerPrintDetails().get(0), userBiometrics)).thenReturn(true);
 		authenticationValidatorDTO.setAuthValidationType("single");
 		assertThat(fingerprintValidator.validate(authenticationValidatorDTO), is(true));
