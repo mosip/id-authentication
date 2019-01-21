@@ -90,6 +90,10 @@ spec:
         backend:
           serviceName: registration-processor-dmz
           servicePort: 8081
+      - path: /registrationstatus
+        backend:
+          serviceName: registration-processor-registration-status-api
+          servicePort: 8083
       - path: /nginx
         backend:
           serviceName: sample-nginx
