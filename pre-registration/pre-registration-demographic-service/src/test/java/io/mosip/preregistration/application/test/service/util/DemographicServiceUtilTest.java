@@ -89,7 +89,7 @@ public class DemographicServiceUtilTest {
 
 		demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId("35760478648170");
-		demographicEntity.setApplicantDetailJson(jsonObject.toJSONString().getBytes());
+		demographicEntity.setApplicantDetailJson((jsonObject.toJSONString()+"623744").getBytes());
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
