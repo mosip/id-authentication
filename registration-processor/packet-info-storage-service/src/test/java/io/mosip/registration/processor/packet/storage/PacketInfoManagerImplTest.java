@@ -114,7 +114,7 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
-	byte[] byteArray =null;
+	byte[] byteArray = null;
 
 	private Identity identity;
 	private ApplicantDocumentEntity applicantDocumentEntity;
@@ -128,17 +128,16 @@ public class PacketInfoManagerImplTest {
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException, FileNotFoundException {
-		
-		
+
 		ClassLoader classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
 		try {
-			byteArray= IOUtils.toByteArray(demographicJsonStream);
+			byteArray = IOUtils.toByteArray(demographicJsonStream);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		identity = new Identity();
 		Photograph applicantPhotograph = new Photograph();
 
@@ -255,15 +254,6 @@ public class PacketInfoManagerImplTest {
 		checksum.add(registrationService);
 		checksum.add(registrationUi);
 		identity.setCheckSum(checksum);
-
-		Document document = new Document();
-		List<Document> documents = new ArrayList<Document>();
-		document.setDocumentCategory("poA");
-		document.setDocumentOwner("self");
-		document.setDocumentName("ResidenceCopy");
-		document.setDocumentType("Passport");
-		documents.add(document);
-		identity.setDocuments(documents);
 
 		BiometricExceptionDto thumb = new BiometricExceptionDto();
 		thumb.setExceptionDescription("Lost in accident");
@@ -484,7 +474,7 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 		exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", new Exception());
-		 classLoader = getClass().getClassLoader();
+		classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
 
@@ -504,7 +494,8 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 
-		//Mockito.when(inputStream.read(ArgumentMatchers.any())).thenThrow(new IOException());
+		// Mockito.when(inputStream.read(ArgumentMatchers.any())).thenThrow(new
+		// IOException());
 
 		packetInfoManagerImpl.savePacketData(identity);
 		assertEquals(inputStream, filesystemCephAdapterImpl.getFile("1234", PacketFiles.DEMOGRAPHIC.name()));
@@ -514,7 +505,7 @@ public class PacketInfoManagerImplTest {
 	@Test
 	public void savePacketDataTableNotAccessibleTest() throws IOException {
 
-	//	Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		// Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 
 		packetInfoManagerImpl.savePacketData(identity);
 
@@ -708,27 +699,62 @@ public class PacketInfoManagerImplTest {
 		List<String> ridList = packetInfoManagerImpl.getRegIdByUIN(uin);
 		assertEquals("27847657360002520181208094056", ridList.get(0));
 	}
-	
+
 	@Test
 	public void testGetReferenceIdByRid() {
 		String rid = "27847657360002520181208094056";
 		List<String> referenceIdList = new ArrayList<>();
 		referenceIdList.add("01234567-89AB-CDEF-0123-456789ABCDEF");
 		Mockito.when(packetInfoManagerImpl.getReferenceIdByRid(rid)).thenReturn(referenceIdList);
-		
+
 		List<String> resultList = packetInfoManagerImpl.getReferenceIdByRid(rid);
 		assertEquals("01234567-89AB-CDEF-0123-456789ABCDEF", resultList.get(0));
 	}
-	
+
 	@Test
 	public void testGetRidByReferenceId() {
 		String referenceId = "01234567-89AB-CDEF-0123-456789ABCDEF";
 		List<String> regIdList = new ArrayList<>();
 		regIdList.add("27847657360002520181208094056");
 		Mockito.when(packetInfoManagerImpl.getRidByReferenceId(referenceId)).thenReturn(regIdList);
-		
+
 		List<String> resultList = packetInfoManagerImpl.getRidByReferenceId(referenceId);
 		assertEquals("27847657360002520181208094056", resultList.get(0));
+	}
+
+	@Test
+	public void saveDocumentTest() {
+
+		Document document = new Document();
+		List<Document> documents = new ArrayList<Document>();
+		document.setDocumentCategory("poA");
+		document.setDocumentOwner("self");
+		document.setDocumentName("ResidenceCopy");
+		document.setDocumentType("Passport");
+		documents.add(document);
+		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(demographicJsonStream);
+
+		packetInfoManagerImpl.savePacketData(identity);
+		packetInfoManagerImpl.saveDocuments(documents);
+	}
+
+	@Test(expected = UnableToInsertData.class)
+	public void saveDocumentTestException() {
+		Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+
+		Document document = new Document();
+		List<Document> documents = new ArrayList<Document>();
+		document.setDocumentCategory("poA");
+		document.setDocumentOwner("self");
+		document.setDocumentName("ResidenceCopy");
+		document.setDocumentType("Passport");
+		documents.add(document);
+		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(demographicJsonStream);
+
+		packetInfoManagerImpl.savePacketData(identity);
+		packetInfoManagerImpl.saveDocuments(documents);
 	}
 
 }
