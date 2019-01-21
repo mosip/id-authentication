@@ -40,6 +40,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -57,6 +58,8 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
@@ -68,63 +71,125 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
+/**
+ * The Class PacketInfoManagerImplTest.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
+
+	/** The packet info manager impl. */
 	@InjectMocks
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
+	/** The audit log request builder. */
 	@Mock
 	AuditLogRequestBuilder auditLogRequestBuilder;
+
+	/** The applicant document repository. */
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
+	/** The biometric exception repository. */
 	@Mock
 	private BasePacketRepository<BiometricExceptionEntity, String> biometricExceptionRepository;
 
+	/** The applicant fingerprint repository. */
 	@Mock
 	private BasePacketRepository<ApplicantFingerprintEntity, String> applicantFingerprintRepository;
 
+	/** The applicant iris repository. */
 	@Mock
 	private BasePacketRepository<ApplicantIrisEntity, String> applicantIrisRepository;
 
+	/** The applicant photograph repository. */
 	@Mock
 	private BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
 
+	/** The reg osi repository. */
 	@Mock
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
+	/** The applicant demographic repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> applicantDemographicRepository;
 
+	/** The reg center machine repository. */
 	@Mock
 	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
 
+	/** The demographic json repository. */
 	@Mock
 	private BasePacketRepository<ApplicantDemographicInfoJsonEntity, String> demographicJsonRepository;
 
+	/** The demographic dedupe repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 
+	/** The utility. */
 	@Mock
 	private Utilities utility;
 
+	/** The packet info dao. */
 	@Mock
 	private PacketInfoDao packetInfoDao;
 
+	/** The filesystem ceph adapter impl. */
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
+	/** The reg abis ref repository. */
+	@Mock
+	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
+
+	/** The reg abis ref entity. */
+	@Mock
+	RegAbisRefEntity regAbisRefEntity;
+
+	/** The manual verfication repository. */
+	@Mock
+	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
+
+	/** The byte array. */
 	byte[] byteArray = null;
 
+	/** The identity. */
 	private Identity identity;
+
+	/** The applicant document entity. */
 	private ApplicantDocumentEntity applicantDocumentEntity;
+
+	/** The applicant document PK entity. */
 	private ApplicantDocumentPKEntity applicantDocumentPKEntity;
+
+	/** The meta data list. */
 	private List<FieldValue> metaDataList;
+
+	/** The exp. */
 	private DataAccessLayerException exp;
+
+	/** The demographic json stream. */
 	private InputStream demographicJsonStream;
+
+	/** The demographic json file. */
 	private File demographicJsonFile;
+
+	/** The Constant CONFIG_SERVER_URL. */
 	private static final String CONFIG_SERVER_URL = "http://104.211.212.28:51000/registration-processor/default/DEV/";
 
+	/**
+	 * Setup.
+	 *
+	 * @throws NoSuchFieldException
+	 *             the no such field exception
+	 * @throws SecurityException
+	 *             the security exception
+	 * @throws IllegalArgumentException
+	 *             the illegal argument exception
+	 * @throws IllegalAccessException
+	 *             the illegal access exception
+	 * @throws FileNotFoundException
+	 *             the file not found exception
+	 */
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException, FileNotFoundException {
@@ -483,6 +548,12 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentityNew.json");
 	}
 
+	/**
+	 * Save packet test.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void savePacketTest() throws IOException {
 
@@ -502,6 +573,12 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Save packet data table not accessible test.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void savePacketDataTableNotAccessibleTest() throws IOException {
 
@@ -511,6 +588,9 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Save demographic info json test.
+	 */
 	@Test
 	public void saveDemographicInfoJsonTest() {
 
@@ -518,11 +598,17 @@ public class PacketInfoManagerImplTest {
 		assertEquals("identity", utility.getGetRegProcessorDemographicIdentity());
 	}
 
+	/**
+	 * File not found in packet store test.
+	 */
 	@Test(expected = FileNotFoundInPacketStore.class)
 	public void fileNotFoundInPacketStoreTest() {
 		packetInfoManagerImpl.saveDemographicInfoJson(null, metaDataList);
 	}
 
+	/**
+	 * Unable to insert data test.
+	 */
 	@Test(expected = UnableToInsertData.class)
 	public void unableToInsertDataTest() {
 
@@ -531,6 +617,9 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 	}
 
+	/**
+	 * Demographic dedupe unable to insert data test.
+	 */
 	@Test(expected = UnableToInsertData.class)
 	public void demographicDedupeUnableToInsertDataTest() {
 
@@ -539,6 +628,9 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Identity not found exception test.
+	 */
 	@Test(expected = IdentityNotFoundException.class)
 	public void identityNotFoundExceptionTest() {
 
@@ -549,6 +641,11 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveDemographicInfoJson(byteArray, metaDataList);
 	}
 
+	/**
+	 * Gets the packets for QC users test.
+	 *
+	 * @return the packets for QC users test
+	 */
 	@Test
 	public void getPacketsForQCUsersTest() {
 		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
@@ -575,6 +672,11 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Gets the packets for qc user tablenot accessible exception test.
+	 *
+	 * @return the packets for qc user tablenot accessible exception test
+	 */
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsForQcUserTablenotAccessibleExceptionTest() {
 
@@ -583,6 +685,9 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Save json unable to insert data test.
+	 */
 	@Test(expected = UnableToInsertData.class)
 	public void saveJsonUnableToInsertDataTest() {
 
@@ -591,6 +696,11 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Gets the osi test.
+	 *
+	 * @return the osi test
+	 */
 	@Test
 	public void getOsiTest() {
 		RegOsiDto regOsi = new RegOsiDto();
@@ -604,6 +714,12 @@ public class PacketInfoManagerImplTest {
 		assertEquals("verifing regOsi dto", "2018782130000224092018121229", regOsiDto.getRegId());
 	}
 
+	/**
+	 * Find demo by id test.
+	 *
+	 * @throws ParseException
+	 *             the parse exception
+	 */
 	@Test
 	public void findDemoByIdTest() throws ParseException {
 		List<DemographicInfoDto> depdupeList = new ArrayList<>();
@@ -640,6 +756,11 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Gets the registration center machine test.
+	 *
+	 * @return the registration center machine test
+	 */
 	@Test
 	public void getRegistrationCenterMachineTest() {
 		RegistrationCenterMachineDto regCenterMachineDto = new RegistrationCenterMachineDto();
@@ -658,6 +779,11 @@ public class PacketInfoManagerImplTest {
 				"2018782130000103122018100224", resultDto.getRegId());
 	}
 
+	/**
+	 * Gets the applicant finger print image name by id test.
+	 *
+	 * @return the applicant finger print image name by id test
+	 */
 	@Test
 	public void getApplicantFingerPrintImageNameByIdTest() {
 		List<String> applicantFingerPrintImages = new ArrayList<>();
@@ -675,6 +801,11 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	/**
+	 * Gets the applicant iris image name by id test.
+	 *
+	 * @return the applicant iris image name by id test
+	 */
 	@Test
 	public void getApplicantIrisImageNameByIdTest() {
 		List<String> applicantIrisImageList = new ArrayList<>();
@@ -689,6 +820,9 @@ public class PacketInfoManagerImplTest {
 				"LeftEye", resultList.get(0));
 	}
 
+	/**
+	 * Test get reg idby UIN.
+	 */
 	@Test
 	public void testGetRegIdbyUIN() {
 		String uin = "123456789";
@@ -700,6 +834,9 @@ public class PacketInfoManagerImplTest {
 		assertEquals("27847657360002520181208094056", ridList.get(0));
 	}
 
+	/**
+	 * Test get reference id by rid.
+	 */
 	@Test
 	public void testGetReferenceIdByRid() {
 		String rid = "27847657360002520181208094056";
@@ -711,6 +848,9 @@ public class PacketInfoManagerImplTest {
 		assertEquals("01234567-89AB-CDEF-0123-456789ABCDEF", resultList.get(0));
 	}
 
+	/**
+	 * Test get rid by reference id.
+	 */
 	@Test
 	public void testGetRidByReferenceId() {
 		String referenceId = "01234567-89AB-CDEF-0123-456789ABCDEF";
@@ -722,6 +862,9 @@ public class PacketInfoManagerImplTest {
 		assertEquals("27847657360002520181208094056", resultList.get(0));
 	}
 
+	/**
+	 * Save document test.
+	 */
 	@Test
 	public void saveDocumentTest() {
 
@@ -739,6 +882,9 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveDocuments(documents);
 	}
 
+	/**
+	 * Save document test exception.
+	 */
 	@Test(expected = UnableToInsertData.class)
 	public void saveDocumentTestException() {
 		Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenThrow(exp);
@@ -757,4 +903,50 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveDocuments(documents);
 	}
 
+	/**
+	 * Test save manual adjudication data success.
+	 */
+	@Test
+	public void testSaveManualAdjudicationDataSuccess() {
+		String registrationId = "1234";
+		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+	}
+
+	/**
+	 * Test save manual adjudication data exception.
+	 */
+	@Test(expected = UnableToInsertData.class)
+	public void testSaveManualAdjudicationDataException() {
+		Mockito.when(manualVerficationRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		String registrationId = "1234";
+		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+	}
+
+	/**
+	 * Test save abis ref success.
+	 */
+	@Test
+	public void testSaveAbisRefSuccess() {
+
+		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
+		regAbisRefDto.setAbis_ref_id("ref1234");
+		regAbisRefDto.setReg_id("1234");
+		Mockito.when(regAbisRefRepository.save(ArgumentMatchers.any())).thenReturn(regAbisRefEntity);
+		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
+
+	}
+
+	/**
+	 * Save abis ref test exception.
+	 */
+	@Test(expected = UnableToInsertData.class)
+	public void saveAbisRefTestException() {
+		Mockito.when(regAbisRefRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
+		regAbisRefDto.setAbis_ref_id("ref1234");
+		regAbisRefDto.setReg_id("1234");
+		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
+	}
 }
