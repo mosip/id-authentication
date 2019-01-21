@@ -853,10 +853,28 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
-		if (regAbisRefDto != null) {
-			RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
-			regAbisRefRepository.save(regAbisRefEntity);
-			LOGGER.info(LOG_FORMATTER, regAbisRefEntity.getId(), "Registration ABIS Reference Date saved");
+		boolean isTransactionSuccessful = false;
+		try {
+			if (regAbisRefDto != null) {
+				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
+				regAbisRefRepository.save(regAbisRefEntity);
+				isTransactionSuccessful = true;
+				LOGGER.info(LOG_FORMATTER, regAbisRefEntity.getId(), "Registration ABIS Reference Date saved");
+			}
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "ABIS data saved successfully" : "ABIS data Failed to save";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
 		}
 	}
 

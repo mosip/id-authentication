@@ -58,6 +58,7 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
@@ -121,6 +122,9 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	RegAbisRefEntity regAbisRefEntity;
+
+	@Mock
+	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
 	byte[] byteArray = null;
 
@@ -772,6 +776,14 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
 	}
 
+	@Test(expected = UnableToInsertData.class)
+	public void testSaveManualAdjudicationDataException() {
+		Mockito.when(manualVerficationRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		String registrationId = "1234";
+		List<String> uniqueMatchedRefIds = Arrays.asList("123av", "124abc", "125abcd");
+		packetInfoManagerImpl.saveManualAdjudicationData(uniqueMatchedRefIds, registrationId);
+	}
+
 	@Test
 	public void testSaveAbisRefSuccess() {
 
@@ -783,4 +795,12 @@ public class PacketInfoManagerImplTest {
 
 	}
 
+	@Test(expected = UnableToInsertData.class)
+	public void saveAbisRefTestException() {
+		Mockito.when(regAbisRefRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		RegAbisRefDto regAbisRefDto = new RegAbisRefDto();
+		regAbisRefDto.setAbis_ref_id("ref1234");
+		regAbisRefDto.setReg_id("1234");
+		packetInfoManagerImpl.saveAbisRef(regAbisRefDto);
+	}
 }
