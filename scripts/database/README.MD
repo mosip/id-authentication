@@ -1,4 +1,4 @@
-## MOSIP Database scripts execution guidelines 
+## MOSIP Database scripts execution guidelines  
 
 The database objects related to MOSIP modules is stored under <mosip_home>/scripts/database/mosip_<module abbreviation> folder on git. for example, the pre-registration module script folder is <mosip_home>/scripts/database/mosip_prereg where all the scripts related to pre-registration are managed. 
 
