@@ -17,12 +17,11 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.auditmanager.config.AuditConfig;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
-import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl;
+import io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
@@ -41,7 +40,8 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @Import({ DaoConfig.class, AuditConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan({ "io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
-		"io.mosip.kernel.idvalidator" , "io.mosip.kernel.ridgenerator"})
+		"io.mosip.kernel.idvalidator", "io.mosip.kernel.ridgenerator", "io.mosip.kernel.qrcode",
+		"io.mosip.kernel.crypto", "io.mosip.kernel.jsonvalidator", "io.mosip.kernel.idgenerator" })
 @PropertySource("spring.properties")
 public class AppConfig {
 
@@ -101,6 +101,12 @@ public class AppConfig {
 	public IdValidator<String> getUINValidator() {
 		return new UinValidatorImpl();
 	}
+	
+	@Bean(name="ridValidator")
+	public RidValidator<String> getRIDValidator() {
+		return new RidValidatorImpl();
+	}
+
 	
 	
 	/**

@@ -23,7 +23,7 @@ import io.mosip.authentication.service.helper.DateHelper;
  */
 @Component
 public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
-
+	/** The Final Constant For allowed Internal auth  type*/
 	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
 	/** The Constant REQ_TIME. */

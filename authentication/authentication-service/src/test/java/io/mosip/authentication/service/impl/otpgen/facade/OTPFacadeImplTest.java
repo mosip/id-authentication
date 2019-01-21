@@ -131,7 +131,7 @@ public class OTPFacadeImplTest {
 
 		String date = null;
 		String time = null;
-		String language = "fr";
+		String language = "fre";
 		String mobileNumber = "7697698650";
 		String emailId = "abc@abc.com";
 		String name = "mosip";
@@ -174,7 +174,7 @@ public class OTPFacadeImplTest {
 
 		String date = null;
 		String time = null;
-		String language = "fr";
+		String language = "fre";
 		String mobileNumber = "7697698650";
 		String emailId = "abc@abc.com";
 		String name = "mosip";

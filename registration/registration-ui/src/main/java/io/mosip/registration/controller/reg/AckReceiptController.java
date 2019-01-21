@@ -3,7 +3,6 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
@@ -48,8 +48,10 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
 import javafx.scene.image.WritableImage;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
@@ -67,18 +69,24 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Autowired
 	private PacketHandlerController packetController;
+
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 
 	@Autowired
 	private TemplateService templateService;
+
 	@Autowired
 	private NotificationService notificationService;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
 
-	private TemplateGenerator templateGenerator = new TemplateGenerator();
+	@Autowired
+	private RidGenerator<String> ridGeneratorImpl;
+
+	@Autowired
+	private TemplateGenerator templateGenerator;
 
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
@@ -95,8 +103,13 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@FXML
 	private Button print;
 
+	@FXML
+	private Text registrationNavLabel;
+
 	@Autowired
 	private Environment environment;
+
+	private String notificationAlertData = null;
 
 	private byte[] acknowledgement = null;
 
@@ -114,6 +127,38 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Page loading has been started");
+
+		if (getRegistrationData().getSelectionListDTO() != null) {
+			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
+			newRegistration.setVisible(false);
+		}
+
+		WebEngine engine = webView.getEngine();
+		// loads the generated HTML template content into webview
+		engine.loadContent(stringWriter.toString());
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Acknowledgement template has been loaded to webview");
+		
+		// pauses the view for 3 seconds so that the webview will be loaded with the
+		// content and calls the method to create packet after 3 seconds
+		PauseTransition pause = new PauseTransition(Duration.seconds(3));
+		pause.setOnFinished(e -> saveRegistrationData());
+		pause.play();		
+		if (notificationAlertData != null) {
+			generateNotificationAlert(notificationAlertData);
+		}
+	}
+
+	/**
+	 * To generate email and SMS notification to the user after successful
+	 * registration
+	 */
+	private void generateEmailNotification() {
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
+
 		try {
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -134,9 +179,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 								notificationTemplate, getRegistrationData(), templateManagerBuilder);
 
 						String number = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getPhone().getValue();
+								.getPhone();
 						String rid = getRegistrationData() == null ? "RID"
-								: getRegistrationData().getRegistrationId();
+								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
+										RegistrationConstants.MACHINE_ID_GEN);
 
 						if (!number.isEmpty()
 								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
@@ -150,7 +196,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 
 						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
-								.getEmail().getValue();
+								.getEmail();
 
 						if (!emailId.isEmpty() && notificationServiceName
 								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
@@ -164,13 +210,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 						}
 						// generate alert
 						if (!alert.equals("")) {
-							String data = RegistrationUIConstants.NOTIFICATION_FAIL;
+							notificationAlertData = RegistrationUIConstants.NOTIFICATION_FAIL;
 							if (alert.equals("SMS")) {
-								data = RegistrationUIConstants.NOTIFICATION_SMS_FAIL;
+								notificationAlertData = RegistrationUIConstants.NOTIFICATION_SMS_FAIL;
 							} else if (alert.equals("EMAIL")) {
-								data = RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL;
+								notificationAlertData = RegistrationUIConstants.NOTIFICATION_EMAIL_FAIL;
 							}
-							generateNotificationAlert(data);
 						}
 					}
 				}
@@ -182,14 +227,17 @@ public class AckReceiptController extends BaseController implements Initializabl
 			LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage());
 		}
-		WebEngine engine = webView.getEngine();
-		engine.loadContent(stringWriter.toString());
-		PauseTransition pause = new PauseTransition(Duration.seconds(3));
-		pause.setOnFinished(e -> saveRegistrationData());
-		pause.play();
 	}
 
+	/**
+	 * To save the acknowledgement receipt along with the registration data and
+	 * create packet
+	 */
 	private void saveRegistrationData() {
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "packet creation has been started");
+
+		// take a snapshot of the webview to save it along with the packet
 		WritableImage ackImage = webView.snapshot(null, null);
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
@@ -207,64 +255,84 @@ public class AckReceiptController extends BaseController implements Initializabl
 					.setAcknowledgeReceiptName("RegistrationAcknowledgement." + RegistrationConstants.IMAGE_FORMAT);
 		}
 
+		// packet creation
 		ResponseDTO response = packetHandlerService.handle(registrationData);
+
 		if (response.getSuccessResponseDTO() != null
 				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
-			Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
-			AddressDTO addressDTO = Builder.build(AddressDTO.class)
-					.with(address -> address
-							.setAddressLine1(identity.getAddressLine1().getValues().getFirst().getValue()))
-					.with(address -> address
-							.setAddressLine2(identity.getAddressLine2().getValues().getFirst().getValue()))
-					.with(address -> address.setLine3(identity.getAddressLine3().getValues().getFirst().getValue()))
-					.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
-							.with(location -> location.setCity(identity.getCity().getValues().getFirst().getValue()))
-							.with(location -> location
-									.setProvince(identity.getProvince().getValues().getFirst().getValue()))
-							.with(location -> location
-									.setRegion(identity.getRegion().getValues().getFirst().getValue()))
-							.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
-					.get();
-			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
-			addr.put("PrevAddress", addressDTO);
-			SessionContext.getInstance().setMapObject(addr);
+			generateEmailNotification();
+			try {
+				// Generate the file path for storing the Encrypted Packet and Acknowledgement
+				// Receipt
+				String seperator = "/";
+				String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
+						+ formatDate(new Date(),
+								environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
+										.concat(seperator).concat(registrationData.getRegistrationId());
+
+				// Storing the Registration Acknowledge Receipt Image
+				FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
+						new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
+
+				LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+						"Registration's Acknowledgement Receipt saved");
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+						ioException.getMessage());
+			}
+
+			if (registrationData.getSelectionListDTO() == null) {
+
+				Identity identity = registrationData.getDemographicDTO().getDemographicInfoDTO().getIdentity();
+				AddressDTO addressDTO = Builder.build(AddressDTO.class)
+						.with(address -> address.setAddressLine1(identity.getAddressLine1().get(0).getValue()))
+						.with(address -> address.setAddressLine2(identity.getAddressLine2().get(0).getValue()))
+						.with(address -> address.setLine3(identity.getAddressLine3().get(0).getValue()))
+						.with(address -> address.setLocationDTO(Builder.build(LocationDTO.class)
+								.with(location -> location.setCity(identity.getCity().get(0).getValue()))
+								.with(location -> location.setProvince(identity.getProvince().get(0).getValue()))
+								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
+								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
+						.get();
+				Map<String, Object> addr = SessionContext.getInstance().getMapObject();
+				addr.put("PrevAddress", addressDTO);
+				SessionContext.getInstance().setMapObject(addr);
+			}
 		}
+	}
+
+	/**
+	 * To print the acknowledgement receipt after packet creation when the user
+	 * clicks on print button.
+	 */
+	@FXML
+	public void printReceipt(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Printing the Acknowledgement Receipt");
+
+		PrinterJob job = PrinterJob.createPrinterJob();
+		if (job != null) {
+			webView.getEngine().print(job);
+			job.endJob();
+		}
+		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
+		goToHomePageFromRegistration();
 	}
 
 	@FXML
-	public void saveReceipt(ActionEvent event) throws RegBaseCheckedException {
-		try {
-			// Generate the file path for storing the Encrypted Packet and Acknowledgement
-			// Receipt
-			Button button = (Button) event.getSource();
-			String seperator = "/";
-			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + seperator
-					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
-							.concat(seperator).concat(registrationData.getRegistrationId());
+	public void goToNewRegistration(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to New Registration Page after packet creation");
 
-			// Storing the Registration Acknowledge Receipt Image
-			FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
-					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
-
-			LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
-					"Registration's Acknowledgement Receipt saved");
-
-			if (button.getId().equals(print.getId())) {
-				generateAlert(RegistrationConstants.SUCCESS_MSG, RegistrationUIConstants.PACKET_CREATED_SUCCESS);
-				goToHomePageFromRegistration();
-			}
-			if (button.getId().equals(newRegistration.getId())) {
-				clearRegistrationData();
-				packetController.createPacket();
-			}
-
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
-		}
+		clearRegistrationData();
+		packetController.createPacket();
 	}
 
+	/**
+	 * To generate alert if the email/sms notification is not sent
+	 */
 	private void generateNotificationAlert(String alertMessage) {
 		/* Generate Alert */
-		generateAlert(RegistrationConstants.ALERT_ERROR, alertMessage);
+		generateAlert(RegistrationConstants.ERROR, alertMessage);
 	}
 }

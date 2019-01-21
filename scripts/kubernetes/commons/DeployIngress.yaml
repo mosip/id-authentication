@@ -1,0 +1,99 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: myingress  
+  annotations:    
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/proxy-body-size: "50m"
+spec:  
+  rules:
+  - http:
+      paths:    
+      - path: /ping
+        backend:
+          serviceName: ping-server
+          servicePort: 3000  
+      - path: /uingenerator
+        backend:
+          serviceName: kernel-idgenerator-uin
+          servicePort: 8080
+      - path: /auditmanager
+        backend:
+          serviceName: kernel-auditmanager-service
+          servicePort: 8081
+      - path: /packetserver
+        backend:
+          serviceName: kernel-packetserver-http
+          servicePort: 8082
+      - path: /emailnotifier
+        backend:
+          serviceName: kernel-emailnotification-service
+          servicePort: 8083
+      - path: /smsnotifier
+        backend:
+          serviceName: kernel-smsnotification-service
+          servicePort: 8084
+      - path: /otpmanager
+        backend:
+          serviceName: kernel-otpmanager-service
+          servicePort: 8085
+      - path: /masterdata
+        backend:
+          serviceName: kernel-masterdata-service
+          servicePort: 8086
+      - path: /syncdata
+        backend:
+          serviceName: kernel-syncdata-service
+          servicePort: 8089
+      - path: /idrepo
+        backend:
+          serviceName: kernel-idrepo-service
+          servicePort: 8090
+      - path: /config
+        backend:
+          serviceName: kernel-config-server
+          servicePort: 51000
+      - path: /auth
+        backend:
+          serviceName: pre-registration-auth-service
+          servicePort: 9090
+      - path: /demographic
+        backend:
+          serviceName: pre-registration-demographic-service
+          servicePort: 9092
+      - path: /document
+        backend:
+          serviceName: pre-registration-document-service
+          servicePort: 9093
+      - path: /datasync
+        backend:
+          serviceName: pre-registration-datasync-service
+          servicePort: 9094
+      - path: /booking
+        backend:
+          serviceName: pre-registration-booking-service
+          servicePort: 9095
+      - path: /batchjob
+        backend:
+          serviceName: pre-registration-batchjob-service
+          servicePort: 9096
+      - path: /identity
+        backend:
+          serviceName: authentication-service
+          servicePort: 8090
+      - path: /pre-registration-ui
+        backend:
+          serviceName: pre-registration-ui
+          servicePort: 80
+      - path: /packetreceiver
+        backend:
+          serviceName: registration-processor-dmz
+          servicePort: 8081
+      - path: /nginx
+        backend:
+          serviceName: sample-nginx
+          servicePort: 80
+          
+      
+          

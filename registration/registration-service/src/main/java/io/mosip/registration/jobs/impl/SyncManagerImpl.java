@@ -11,8 +11,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
-import io.mosip.registration.dao.SyncJobDAO;
-import io.mosip.registration.dao.SyncJobTransactionDAO;
+import io.mosip.registration.dao.SyncJobControlDAO;
+import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -32,11 +32,11 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 public class SyncManagerImpl implements SyncManager {
 
 	@Autowired
-	private SyncJobTransactionDAO jobTransactionDAO;
+	private SyncTransactionDAO jobTransactionDAO;
 
 	@Autowired
-	private SyncJobDAO syncJobDAO;
-	
+	private SyncJobControlDAO syncJobDAO;
+
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
 
@@ -45,10 +45,8 @@ public class SyncManagerImpl implements SyncManager {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
 
-	
-
 	@Override
-	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) throws NullPointerException {
+	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) {
 
 		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncTransaction.getSyncJobId());
 
@@ -61,7 +59,7 @@ public class SyncManagerImpl implements SyncManager {
 			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
 
 			syncControl.setRegcntrId(syncTransaction.getCntrId());
-			syncControl.setLangCode("EN");
+			syncControl.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
 			syncControl.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			syncControl.setCrDtime(new Timestamp(System.currentTimeMillis()));
@@ -93,7 +91,6 @@ public class SyncManagerImpl implements SyncManager {
 
 		try {
 
-			
 			syncTransaction.setId(UUID.randomUUID().toString());
 
 			syncTransaction.setSyncJobId(syncJobId);
@@ -102,7 +99,6 @@ public class SyncManagerImpl implements SyncManager {
 			syncTransaction.setStatusCode(status);
 			syncTransaction.setStatusComment(statusComment);
 
-			// TODO
 			syncTransaction.setTriggerPoint(triggerPoint);
 
 			syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
@@ -111,29 +107,29 @@ public class SyncManagerImpl implements SyncManager {
 
 			try {
 				syncTransaction
-				.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
+						.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
 
 			} catch (RegBaseCheckedException exception) {
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 						exception.getMessage());
+
 			}
-			
+
 			if (SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO() != null) {
 				syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 						.getRegistrationCenterId());
 			}
 
-			syncTransaction.setLangCode("EN");
+			syncTransaction.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
-			
 			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
 			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 
-		}  catch (NullPointerException nullPointerException) {
+		} catch (NullPointerException nullPointerException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					nullPointerException.getMessage());

@@ -18,5 +18,11 @@ import lombok.EqualsAndHashCode;
 public class AuthResponseDTO extends BaseAuthResponseDTO {
 
 	private AuthResponseInfo info;
+	
+	/**
+	 * Version
+	 */
+	private String ver;
+
 
 }

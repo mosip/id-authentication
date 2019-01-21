@@ -9,9 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseInfo;
@@ -27,19 +24,16 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
  */
 public class AuthResponseBuilder {
 	
-	/** The Environment */
-	@Autowired
-	private Environment env;
-
+	/**  The date format to use*/
 	private SimpleDateFormat dateFormat;
 
-	/** The built. */
+	/** The built flag. */
 	private boolean built;
 
 	/** The Constant DEFAULT_USAGE_DATA_HEX_COUNT. */
 	private static final int DEFAULT_USAGE_DATA_HEX_COUNT = 16;
 	
-	/** The response DTO. */
+	/** The Auth response DTO. */
 	private final AuthResponseDTO responseDTO;
 	
 	/** The auth status infos. */ 
@@ -127,7 +121,7 @@ public class AuthResponseBuilder {
 	 * @return the auth response builder
 	 */
 	public AuthResponseBuilder setVersion(String ver) {
-		responseDTO.getInfo().setVer(ver);
+		responseDTO.setVer(ver);
 		return this;
 	}
 
@@ -189,7 +183,7 @@ public class AuthResponseBuilder {
 	}
 
 	/**
-	 * New instance.
+	 * Get new instance of AuthResponseBuilder.
 	 *
 	 * @param dateTimePattern the date time pattern
 	 * @return the auth response builder

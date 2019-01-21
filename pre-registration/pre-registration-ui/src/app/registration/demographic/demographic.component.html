@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="secondaryLanguagelabels">
   <div class="wrapper">
     <div class="user">
       <header>{{ 'demographic.title' | translate }}</header>
@@ -81,19 +81,19 @@
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
             >
-              Enter 2 numeric digits for date
+            {{ 'demographic.validation.date_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('month').valid && userForm.get('month').touched"
             >
-              Enter 2 numeric digits for month
+            {{ 'demographic.validation.month_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
             >
-              Enter 4 numeric digits for year
+            {{ 'demographic.validation.year_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
@@ -102,7 +102,7 @@
                 (userForm.get('age').touched && !userForm.get('age').valid)
               "
             >
-              Enter Valid DOB or age (Age should be less than 150 and whole number)
+            {{ 'demographic.validation.DOB_validation' | translate }}
             </div>
 
             <div class="user__gender">
@@ -137,7 +137,7 @@
                 (change)="onTransliteration(addressLine1, t_addressLine1)"
               />
               <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
-              <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
+              <mat-error *ngIf="!addressLine1.invalid">{{ 'demographic.validation.address_required' | translate }}</mat-error>
             </mat-form-field>
             <mat-form-field>
               <input
@@ -176,7 +176,7 @@
                     region.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!region.invalid">Please select region</mat-error>
+                <mat-error *ngIf="!region.invalid">{{ 'demographic.validation.region_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
 
@@ -192,7 +192,7 @@
                     province.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!province.invalid">Please select province</mat-error>
+                <mat-error *ngIf="!province.invalid">{{ 'demographic.validation.province_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -214,14 +214,14 @@
                     city.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!city.invalid">Please select city</mat-error>
+                <mat-error *ngIf="!city.invalid">{{ 'demographic.validation.city_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
               <mat-form-field>
                 <mat-select
                   (selectionChange)="onLocationSelect($event, null, null, transLocalAdministrativeAuthorities)"
-                  placeholder="{{ 'demographic.label_local_ administrative_authority' | translate }}"
+                  placeholder="{{ 'demographic.label_local_administrative_authority' | translate }}"
                   formControlName="localAdministrativeAuthority"
                   #authority
                 >
@@ -231,7 +231,7 @@
                     >{{ localAdministrativeAuthoritie.locationName }}</mat-option
                   >
                 </mat-select>
-                <mat-error *ngIf="!authority.invalid">Please select localAdministrativeAuthority</mat-error>
+                <mat-error *ngIf="!authority.invalid">{{ 'demographic.validation.admin_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -246,7 +246,7 @@
                   #postalCode
                 />
                 <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
-                <mat-error *ngIf="!postalCode.invalid">Please enter valid postalCode</mat-error>
+                <mat-error *ngIf="!postalCode.invalid">{{ 'demographic.validation.postal_code_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -260,7 +260,7 @@
                   formControlName="mobileNumber"
                 />
                 <mat-hint align="end">{{ mobileNumber.value.length }} / 9</mat-hint>
-                <mat-error *ngIf="!mobileNumber.invalid">Please enter valid mobile number</mat-error>
+                <mat-error *ngIf="!mobileNumber.invalid">{{ 'demographic.validation.mobile_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -273,7 +273,7 @@
                   formControlName="email"
                 />
                 <mat-hint align="end">{{ email.value.length }} / 50</mat-hint>
-                <mat-error *ngIf="!email.invalid">Please enter valid email id</mat-error>
+                <mat-error *ngIf="!email.invalid">{{ 'demographic.validation.email_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -287,13 +287,13 @@
                   formControlName="pin"
                 />
                 <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
-                <mat-error *ngIf="!pin.invalid">Please enter valid pin</mat-error>
+                <mat-error *ngIf="!pin.invalid">{{ 'demographic.validation.pin_required' | translate }}</mat-error>
               </mat-form-field>
             </div>
           </form>
         </div>
       </div>
-      <div *ngIf="secondaryLanguagelabels" class="user__container">
+      <div  class="user__container">
         <form [formGroup]="transUserForm" class="user__form">
           <h6>Language - Arabic</h6>
           <mat-form-field>
@@ -350,8 +350,7 @@
             <br />
           </div>
           <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
+          *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
           >
             <br />
           </div>

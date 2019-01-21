@@ -1,7 +1,5 @@
 package io.mosip.kernel.idrepo.dto;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

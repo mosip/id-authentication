@@ -37,28 +37,28 @@ export class FileUploadComponent implements OnInit {
       document_name: 'POA',
       valid_docs: [
         {
-          name: 'passport',
+          name: 'Passport',
           value: 'passport'
         },
         {
-          name: 'Electricity Bill',
+          name: 'CNIE Card',
           value: 'Electricity Bill'
         },
-        {
-          name: 'Passbook',
-          value: 'Passbook'
-        }
+        // {
+        //   name: 'Passbook',
+        //   value: 'Passbook'
+        // }
       ]
     },
     {
       document_name: 'POI',
       valid_docs: [
         {
-          name: 'passport',
+          name: 'Passport',
           value: 'passport'
         },
         {
-          name: 'Bank Account',
+          name: 'CNIE Card',
           value: 'Bank Account'
         }
       ]
@@ -67,26 +67,35 @@ export class FileUploadComponent implements OnInit {
       document_name: 'POB',
       valid_docs: [
         {
-          name: 'passport',
+          name: 'Passport',
           value: 'passport'
         },
         {
-          name: 'Voter ID Card',
-          value: 'Voter ID Card'
+          name: 'CNIE Card',
+          value: 'Bank Account'
+        },
+        {
+          name: 'Birth Certificate',
+          value: 'Birth Certificate'
         }
+        // {
+        //   name: 'Voter ID Card',
+        //   value: 'Voter ID Card'
+        // }
       ]
     },
     {
       document_name: 'POR',
       valid_docs: [
         {
-          name: 'passport',
+          name: 'Passport',
           value: 'passport'
         },
         {
-          name: 'Birth Certificate',
-          value: 'Birth Certificate'
+          name: 'CNIE Card',
+          value: 'CNIE Card'
         }
+        
       ]
     }
   ];

@@ -5,7 +5,9 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 /**
- * The Class HexSpliterator.
+ * The HexSpliterator used to iterate the boolean Spliterator and produce
+ * Integer Stream out of that. Here Four bits (booleans) are processed and
+ * converted to a hexadecimal Integer value.
  * 
  * @author Loganathan Sekar
  */

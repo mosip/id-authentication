@@ -1,5 +1,6 @@
 package io.mosip.registration.mapper;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,9 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.BaseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
@@ -32,6 +35,8 @@ import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.dto.json.metadata.Photograph;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.checksum.CheckSumUtil;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
@@ -68,7 +73,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			biometric.setIntroducer(introducer);
 
 			// Load from ApplicationContext
-			String language = "en";
+			String language = "eng";
 
 			ApplicantDocumentDTO documentDTO = source.getDemographicDTO().getApplicantDocumentDTO();
 
@@ -82,7 +87,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 			// Set Documents
 			identity.setDocuments(buildDocuments(source.getDemographicDTO()));
-			
+
 			// Add Biometric Details
 			BiometricInfoDTO biometricInfoDTO = source.getBiometricDTO().getApplicantBiometricDTO();
 
@@ -93,19 +98,53 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			Map<String, FingerprintDetailsDTO> fingerprintMap = new HashMap<>();
 			if (fingerprintDetailsDTOs != null) {
 				for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
-					fingerprintMap.put(fingerprintDetailsDTO.getFingerType().toUpperCase(), fingerprintDetailsDTO);
+					for (FingerprintDetailsDTO segmentedFingerprint : fingerprintDetailsDTO
+							.getSegmentedFingerprints()) {
+						fingerprintMap.put(segmentedFingerprint.getFingerType().toUpperCase(), segmentedFingerprint);
+					}
 				}
 			}
 
-			// Set Left Slap
-			String biometricType = "fingerprint";
-			applicant.setLeftSlap(getBiometric(fingerprintMap.get("LEFTSLAP"), language, biometricType));
+			// Set Left Index Finger
+			String biometricType = RegistrationConstants.FINGERPRINT.toLowerCase();
+			applicant.setLeftIndex(getBiometric(fingerprintMap.get("LEFTINDEX"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
 
-			// Set Right Slap
-			applicant.setRightSlap(getBiometric(fingerprintMap.get("RIGHTSLAP"), language, biometricType));
+			// Set Left Middle Finger
+			applicant.setLeftMiddle(getBiometric(fingerprintMap.get("LEFTMIDDLE"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
 
-			// Set Thumbs
-			applicant.setThumbs(getBiometric(fingerprintMap.get("THUMBS"), language, biometricType));
+			// Set Left Ring Finger
+			applicant.setLeftRing(getBiometric(fingerprintMap.get("LEFTRING"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Left Little Finger
+			applicant.setLeftLittle(getBiometric(fingerprintMap.get("LEFTLITTLE"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Left Thumb Finger
+			applicant.setLeftThumb(getBiometric(fingerprintMap.get("LEFTTHUMB"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Right Index Finger
+			applicant.setRightIndex(getBiometric(fingerprintMap.get("RIGHTINDEX"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Left Middle Finger
+			applicant.setRightMiddle(getBiometric(fingerprintMap.get("RIGHTMIDDLE"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Left Ring Finger
+			applicant.setRightRing(getBiometric(fingerprintMap.get("RIGHTRING"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Left Little Finger
+			applicant.setRightLittle(getBiometric(fingerprintMap.get("RIGHTLITTLE"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
+
+			// Set Left Thumb Finger
+			applicant.setRightThumb(getBiometric(fingerprintMap.get("RIGHTTHUMB"), language, biometricType,
+					RegistrationConstants.INDIVIDUAL));
 
 			// Get captured Iris Details
 			List<IrisDetailsDTO> irisDetailsDTOs = biometricInfoDTO.getIrisDetailsDTO();
@@ -119,42 +158,33 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			}
 
 			// Set Left Eye
-			biometricType = "iris";
-			applicant.setLeftEye(getBiometric(irisMap.get("LEFTEYE"), language, biometricType));
+			biometricType = RegistrationConstants.IRIS.toLowerCase();
+			applicant.setLeftEye(
+					getBiometric(irisMap.get("LEFTEYE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
 			// Set Right Eye
-			applicant.setRightEye(getBiometric(irisMap.get("RIGHTKEY"), language, biometricType));
+			applicant.setRightEye(
+					getBiometric(irisMap.get("RIGHTEYE"), language, biometricType, RegistrationConstants.INDIVIDUAL));
 
-			// Add captured Finger-print biometric exceptions
+			// Add captured biometric exceptions
 			identity.getExceptionBiometrics()
-					.addAll(getExceptionBiometrics(biometricInfoDTO.getFingerPrintBiometricExceptionDTO(), language));
-
-			// Add captured iris biometric exceptions
-			identity.getExceptionBiometrics()
-					.addAll(getExceptionBiometrics(biometricInfoDTO.getIrisBiometricExceptionDTO(), language));
+					.addAll(getExceptionBiometrics(biometricInfoDTO.getBiometricExceptionDTO(), language));
 
 			// Set Parent Finger-print Image
-			biometricInfoDTO = source.getBiometricDTO().getIntroducerBiometricDTO();
-			if (biometricInfoDTO != null) {
-				List<FingerprintDetailsDTO> fingerprints = biometricInfoDTO.getFingerprintDetailsDTO();
-				if (fingerprintDetailsDTOs != null && !fingerprints.isEmpty()) {
-					biometricType = "fingerprint";
-					introducer.setIntroducerFingerprint(getBiometric(fingerprints.get(0), language, biometricType));
-				}
-
-				List<IrisDetailsDTO> parentIris = biometricInfoDTO.getIrisDetailsDTO();
-				if (parentIris != null && !parentIris.isEmpty() ) {
-					biometricType = "iris";
-					introducer.setIntroducerIris(getBiometric(parentIris.get(0), language, biometricType));
-				}
-			}
+			getIntroducerBiometrics(source, introducer, language);
 
 			// Set MetaData
 			identity.setMetaData(getMetaData(source));
 
 			// Set OSIData
 			identity.setOsiData(getOSIData(source));
-			
+
+			// Set Registered Device
+			identity.setCapturedRegisteredDevices(getRegisteredDevices());
+
+			// Set Registered Device
+			identity.setCapturedNonRegisteredDevices(getNonRegisteredDevices());
+
 			// Set Checksum
 			List<FieldValue> checkSums = new LinkedList<>();
 			Map<String, String> checkSumMap = CheckSumUtil.getCheckSumMap();
@@ -165,6 +195,27 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 					runtimeException.toString());
 		}
 		return packetMetaInfo;
+	}
+
+	private void getIntroducerBiometrics(RegistrationDTO source, Introducer introducer, String language) {
+		BiometricInfoDTO biometricInfoDTO;
+		String biometricType;
+		biometricInfoDTO = source.getBiometricDTO().getIntroducerBiometricDTO();
+		if (biometricInfoDTO != null) {
+			List<FingerprintDetailsDTO> fingerprints = biometricInfoDTO.getFingerprintDetailsDTO();
+			if (fingerprints != null && !fingerprints.isEmpty()) {
+				biometricType = RegistrationConstants.FINGERPRINT.toLowerCase();
+				introducer.setIntroducerFingerprint(
+						getBiometric(fingerprints.get(0), language, biometricType, RegistrationConstants.INTRODUCER));
+			}
+
+			List<IrisDetailsDTO> parentIris = biometricInfoDTO.getIrisDetailsDTO();
+			if (parentIris != null && !parentIris.isEmpty()) {
+				biometricType = RegistrationConstants.IRIS.toLowerCase();
+				introducer.setIntroducerIris(
+						getBiometric(parentIris.get(0), language, biometricType, RegistrationConstants.INTRODUCER));
+			}
+		}
 	}
 
 	private Photograph buildPhotograph(String label, String language, int numRetry, String photographName,
@@ -181,7 +232,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		return photograph;
 	}
-	
+
 	private List<Document> buildDocuments(DemographicDTO demographicDTO) {
 		List<Document> documents = new ArrayList<>();
 
@@ -189,29 +240,29 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				.getProofOfIdentity();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoI",
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoA",
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoR",
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getDateOfBirthProof();
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 
 		if (documentDetailsDTO != null) {
-			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), documentDetailsDTO.getFormat(),
-					documentDetailsDTO.getCategory(), documentDetailsDTO.getOwner()));
+			documents.add(getDocument(removeFileExt(documentDetailsDTO.getValue()), "PoB",
+					documentDetailsDTO.getType(), documentDetailsDTO.getOwner()));
 		}
 
 		if (demographicDTO.getApplicantDocumentDTO().getAcknowledgeReceipt() != null) {
@@ -235,29 +286,32 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return document;
 	}
 
-	private BiometricDetails getBiometric(BaseDTO biometricDTO, String language, String biometricType) {
+	private BiometricDetails getBiometric(BaseDTO biometricDTO, String language, String biometricType,
+			String personType) {
 		BiometricDetails biometricDetails = null;
 		if (biometricDTO != null) {
 			if (biometricDTO instanceof FingerprintDetailsDTO) {
 				FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) biometricDTO;
-				biometricDetails = buildBiometric("label", language, biometricType, fingerprint.getFingerprintImageName(),
-						fingerprint.getQualityScore(), fingerprint.getNumRetry(), fingerprint.isForceCaptured());
+				biometricDetails = buildBiometric("label", language, biometricType,
+						getBIRUUID(personType, fingerprint.getFingerType()), fingerprint.getQualityScore(),
+						fingerprint.getNumRetry(), fingerprint.isForceCaptured());
 			} else if (biometricDTO instanceof IrisDetailsDTO) {
 				IrisDetailsDTO iris = (IrisDetailsDTO) biometricDTO;
-				biometricDetails = buildBiometric("label", language, biometricType, iris.getIrisImageName(),
-						iris.getQualityScore(), iris.getNumOfIrisRetry(), iris.isForceCaptured());
+				biometricDetails = buildBiometric("label", language, biometricType,
+						getBIRUUID(personType, iris.getIrisType()), iris.getQualityScore(), iris.getNumOfIrisRetry(),
+						iris.isForceCaptured());
 			}
 		}
 		return biometricDetails;
 	}
 
-	private BiometricDetails buildBiometric(String label, String language, String type, String imageName, double qualityScore,
-			int numRetry, boolean forceCaptured) {
+	private BiometricDetails buildBiometric(String label, String language, String type, String birIndex,
+			double qualityScore, int numRetry, boolean forceCaptured) {
 		BiometricDetails biometricDetails = new BiometricDetails();
 		biometricDetails.setLabel(label);
 		biometricDetails.setLanguage(language);
 		biometricDetails.setType(type);
-		biometricDetails.setImageName(removeFileExt(imageName));
+		biometricDetails.setImageName(birIndex);
 		biometricDetails.setQualityScore(qualityScore);
 		biometricDetails.setNumRetry(numRetry);
 		biometricDetails.setForceCaptured(forceCaptured);
@@ -315,30 +369,34 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("registrationIdHash",
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(registrationDTO.getRegistrationId().getBytes()))));
 		// Add Machine ID
-		metaData.add(buildFieldValue("machineId", metaDataDTO.getMachineId()));
+		metaData.add(buildFieldValue("machineId", "12334"));
+		// Add Dongle ID
+		metaData.add(buildFieldValue("dongleId", "67890"));
+		// Add MAC ID
+		metaData.add(buildFieldValue("macId", RegistrationSystemPropertiesChecker.getMachineId()));
 		// Add Center ID
-		metaData.add(buildFieldValue("centerId", metaDataDTO.getCenterId()));
+		metaData.add(buildFieldValue("centerId", "54321"));
 		// Add UIN
 		metaData.add(buildFieldValue("uin", metaDataDTO.getUin()));
 		// Add Previous Registration ID
 		metaData.add(buildFieldValue("previousRID", metaDataDTO.getPreviousRID()));
 		// Add Introducer Type
 		metaData.add(buildFieldValue("introducerType", registrationDTO.getOsiDataDTO().getIntroducerType()));
-		
+
 		// Validate whether Introducer has provided UIN or RID
 		String introducerRID = null;
 		String introducerUIN = null;
-		String introducerRIDorUIN = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+		BigInteger introducerRIDorUIN = registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 				.getParentOrGuardianRIDOrUIN();
-		if (introducerRIDorUIN != null && !introducerRIDorUIN.isEmpty()) {
-			if (introducerRIDorUIN.length() == Integer
+		if (introducerRIDorUIN != null) {
+			if (introducerRIDorUIN.toString().length() == Integer
 					.parseInt(AppConfig.getApplicationProperty("uin_length"))) {
-				introducerRID = introducerRIDorUIN;
+				introducerUIN = introducerRIDorUIN.toString();
 			} else {
-				introducerUIN = introducerRIDorUIN;
+				introducerRID = introducerRIDorUIN.toString();
 			}
 		}
-		
+
 		// Add Introducer RID
 		metaData.add(buildFieldValue("introducerRID", introducerRID));
 		// Add Hash of Introducer RID
@@ -349,49 +407,65 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("introducerUINHash", getHash(introducerUIN)));
 		// Add Officer Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
-				"officer", RegistrationConstants.BIOMETRIC_TYPE));
+				RegistrationConstants.OFFICER.toLowerCase(), RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Supervisor Biometrics
-		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), "supervisor",
-				RegistrationConstants.BIOMETRIC_TYPE));
+		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(),
+				RegistrationConstants.SUPERVISOR.toLowerCase(), RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Introducer Biometrics
-		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), "introducer",
-				RegistrationConstants.BIOMETRIC_TYPE));
+		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(),
+				RegistrationConstants.INTRODUCER.toLowerCase(), RegistrationConstants.BIOMETRIC_TYPE));
 		// Add Registration Creation Date
-		metaData.add(buildFieldValue("creationDate", String.valueOf(LocalDateTime.now())));
-		// Add DOB Verified
-		metaData.add(buildFieldValue("isVerified", String.valueOf(false)));
+		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
 		return metaData;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<FieldValue> getOSIData(RegistrationDTO registrationDTO) {
 		List<FieldValue> osiData = new LinkedList<>();
 		// Add Operator ID
 		osiData.add(buildFieldValue("officerId", registrationDTO.getOsiDataDTO().getOperatorID()));
-		// Add Name of Operator Fingerprint and Iris Images
-		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), "officer",
-				RegistrationConstants.BIOMETRIC_IMAGE));
+		// Add Officer CBEFF File
+		if (((Map<String, String>) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet().stream()
+						.anyMatch(key -> key.startsWith(RegistrationConstants.OFFICER.toLowerCase()))) {
+			osiData.add(buildFieldValue("officerBiometricFileName",
+					removeFileExt(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME)));
+		} else {
+			osiData.add(buildFieldValue("officerBiometricFileName", null));
+		}
 
 		// Add Supervisor ID
 		osiData.add(buildFieldValue("supervisorId", registrationDTO.getOsiDataDTO().getSupervisorID()));
-		// Add Name of Supervisor Fingerprint and Iris Images
-		osiData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), "supervisor",
-				RegistrationConstants.BIOMETRIC_IMAGE));
-		
+		// Add Officer CBEFF File
+		if (((Map<String, String>) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME)).keySet().stream()
+						.anyMatch(key -> key.startsWith(RegistrationConstants.SUPERVISOR.toLowerCase()))) {
+			osiData.add(buildFieldValue("supervisorBiometricFileName",
+					removeFileExt(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)));
+		} else {
+			osiData.add(buildFieldValue("supervisorBiometricFileName", null));
+		}
+
 		// Add Supervisor Password
 		osiData.add(buildFieldValue("supervisorPassword", null));
 		// Add Officer Password
 		osiData.add(buildFieldValue("officerPassword", null));
-		
+
 		// Add Supervisor PIN
 		osiData.add(buildFieldValue("supervisorPIN", null));
 		// Add Officer PIN
 		osiData.add(buildFieldValue("officerPIN", null));
-		
-		// Add Supervisor Authentication Image
-		osiData.add(buildFieldValue("supervisorAuthenticationImage", null));
-		// Add Officer Authentication Image
-		osiData.add(buildFieldValue("officerAuthenticationImage", null));
+
+		// Add Supervisor Face Image
+		osiData.add(buildFieldValue("supervisorFaceImage", null));
+		// Add Officer Face Image
+		osiData.add(buildFieldValue("officerFaceImage", null));
+
+		// Add Supervisor OTP Authentication Image
+		osiData.add(buildFieldValue("supervisorOTPAuthentication", "false"));
+		// Add Officer Face Image
+		osiData.add(buildFieldValue("officerOTPAuthentication", "false"));
 
 		return osiData;
 	}
@@ -405,19 +479,17 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			FingerprintDetailsDTO fingerprint = (FingerprintDetailsDTO) getObjectAt(
 					officerBiometric.getFingerprintDetailsDTO(), 0);
 			if (fingerprint != null) {
+				fingerprintImageName = fingerprint.getFingerType();
 				if (field.equals(RegistrationConstants.BIOMETRIC_IMAGE)) {
-					fingerprintImageName = removeFileExt(fingerprint.getFingerprintImageName());
-				} else {
-					fingerprintImageName = fingerprint.getFingerType();
+					fingerprintImageName = getBIRUUID(officerType, fingerprintImageName);
 				}
 			}
 
 			IrisDetailsDTO iris = (IrisDetailsDTO) getObjectAt(officerBiometric.getIrisDetailsDTO(), 0);
 			if (iris != null) {
+				irisImageName = iris.getIrisType();
 				if (field.equals(RegistrationConstants.BIOMETRIC_IMAGE)) {
-					irisImageName = removeFileExt(iris.getIrisImageName());
-				} else {
-					irisImageName = iris.getIrisType();
+					irisImageName = getBIRUUID(officerType, irisImageName);
 				}
 			}
 		}
@@ -459,11 +531,49 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 		return hashedString;
 	}
-	
+
 	private String removeFileExt(String fileName) {
 		if (fileName.contains(".")) {
 			fileName = fileName.substring(0, fileName.lastIndexOf('.'));
 		}
 		return fileName;
 	}
+
+	private List<FieldValue> getRegisteredDevices() {
+		List<FieldValue> registratedDevices = new LinkedList<>();
+
+		// Add fingerprint device
+		registratedDevices.add(buildFieldValue("fingerprint", "123455YRHTIFHKJI8U90U2334"));
+		// Add Iris Device
+		registratedDevices.add(buildFieldValue("iris", "123455YRHTIFHKJI8U9r2rrr3r3"));
+		// Add GPS Device
+		registratedDevices.add(buildFieldValue("gps", "123455YRHTIFHKJI8U90r3ttt4ttf"));
+		// Add Photo Camera Device
+		registratedDevices.add(buildFieldValue("photo", "12345ttt4tggrgrrwrgwgwgrggrggw"));
+
+		return registratedDevices;
+	}
+
+	private List<FieldValue> getNonRegisteredDevices() {
+		List<FieldValue> registratedDevices = new LinkedList<>();
+
+		// Add fingerprint device
+		registratedDevices.add(buildFieldValue("fingerprint", "trergrfrfrfrfrw21313113"));
+		// Add Iris Device
+		registratedDevices.add(buildFieldValue("iris", "313rq342s4s3gg5g54bth5j4j64j64"));
+		// Add GPS Device
+		registratedDevices.add(buildFieldValue("gps", "8yjh98q78njh7t62hbkjkjqhkjqbqhhkh"));
+		// Add Photo Camera Device
+		registratedDevices.add(buildFieldValue("photo", "11331oiu31y8bahagyaftfafahfakhfagk"));
+
+		return registratedDevices;
+	}
+
+	@SuppressWarnings("unchecked")
+	private String getBIRUUID(String personType, String biometricType) {
+		return ((Map<String, String>) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))
+						.get(personType.concat(biometricType).toLowerCase());
+	}
+
 }

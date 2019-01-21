@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The {@code AuthController} used to handle all the authentication requests.
+ * The {@code AuthController} used to handle all the Internal authentication requests.
  *
  * @author Prem Kumar
  */
@@ -65,7 +65,7 @@ public class InternalAuthController {
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param e the e
-	 * @return the auth response DTO
+	 * @return authResponseDTO the auth response DTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 * @throws IdAuthenticationDaoException the id authentication dao exception

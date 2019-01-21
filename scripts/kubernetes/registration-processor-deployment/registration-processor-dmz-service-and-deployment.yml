@@ -1,0 +1,51 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: registration-processor-dmz
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: registration-processor-dmz
+    spec:
+      containers:
+      - name: registration-processor-packet-reciever-service
+        image: docker-registry.mosip.io:5000/packet-receiver-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 8081
+        imagePullPolicy: Always
+      - name: registration-processor-virus-scanner-stage
+        image: docker-registry.mosip.io:5000/virus-scanner-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
+      - name: registration-processor-packet-uploader-stage
+        image: docker-registry.mosip.io:5000/packet-uploader-stage
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registration-processor-dmz
+spec:
+  ports:
+    - port: 8081
+  selector:
+    app: registration-processor-dmz

@@ -17,7 +17,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -107,12 +106,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
 			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-		} else if (ex instanceof AsyncRequestTimeoutException) {
-			ex = new IdRepoAppException(IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
-					IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage());
-
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
-		} else {
+			} else {
 			return handleAllExceptions(ex, request);
 		}
 	}
@@ -128,7 +122,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
-		System.err.println();
+
 		mosipLogger.error(SESSION_ID, ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
@@ -165,7 +159,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		IdResponseDTO response = new IdResponseDTO();
 
 		Throwable e = ex;
-		while (e.getCause() != null) {
+		while (e != null) {
 			if (e instanceof IdRepoAppException && Objects.nonNull(((IdRepoAppException) e).getId())) {
 				response.setId(((IdRepoAppException) e).getId());
 			} else if (e instanceof IdRepoAppUncheckedException
@@ -174,7 +168,13 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			} else {
 				break;
 			}
-			e = e.getCause();
+
+			if (Objects.nonNull(e.getCause()) && (e.getCause() instanceof IdRepoAppException
+					|| e.getCause() instanceof IdRepoAppUncheckedException)) {
+				e = e.getCause();
+			} else {
+				break;
+			}
 		}
 
 		if (Objects.isNull(response.getId())) {

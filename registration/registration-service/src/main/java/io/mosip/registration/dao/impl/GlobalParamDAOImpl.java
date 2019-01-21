@@ -12,6 +12,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.GlobalParamName;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.repositories.GlobalParamRepository;
 
 /**
@@ -26,7 +27,7 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(RegistrationAppAuthenticationDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(GlobalParamDAOImpl.class);
 
 	/** The globalParam repository. */
 	@Autowired
@@ -50,5 +51,22 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 				RegistrationConstants.APPLICATION_ID, "List of global params fetched successfully");
 
 		return globalParamMap;
+	}
+
+	@Override
+	public void saveAll(List<GlobalParam> globalParamList) {
+
+		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Save Global Params started");
+
+		/** Parase List to Iterable */
+		Iterable<GlobalParam> globalParamIterableList = globalParamList;
+
+		/** Save all Global Params */
+		globalParamRepository.saveAll(globalParamIterableList);
+
+		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Save Global Params ended");
+
 	}
 }

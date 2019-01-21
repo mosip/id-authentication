@@ -25,7 +25,7 @@ import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCentreMachineDevice;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -36,7 +36,7 @@ import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
 import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
-import io.mosip.registration.repositories.RegistrationUserDetailRepository;
+import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 
 /**
@@ -90,7 +90,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 * userDetailRepository instance creation using autowired annotation
 	 */
 	@Autowired
-	private RegistrationUserDetailRepository userDetailRepository;
+	private UserDetailRepository userDetailRepository;
 
 	/**
 	 * deviceMasterRepository instance creation using autowired annotation
@@ -157,13 +157,13 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 * @see io.mosip.registration.dao.MachineMappingDAO#getUsers(java.lang.String)
 	 */
 	@Override
-	public List<RegistrationUserDetail> getUsers(String ceneterID) throws RegBaseCheckedException {
+	public List<UserDetail> getUsers(String ceneterID) throws RegBaseCheckedException {
 		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getUsers() ceneterID -> " + ceneterID);
 		try {
-			List<RegistrationUserDetail> registrationUserDetail = userDetailRepository
-					.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
-							ceneterID, RegistrationConstants.BLACKLISTED,
+			List<UserDetail> registrationUserDetail = userDetailRepository
+					.findByRegCenterUserRegCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(
+							ceneterID, RegistrationConstants.BLOCKED,
 							SessionContext.getInstance().getUserContext().getUserId());
 			if (!registrationUserDetail.isEmpty()) {
 				return registrationUserDetail;

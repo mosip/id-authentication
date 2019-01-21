@@ -5,11 +5,12 @@ import java.util.Map;
 
 import org.springframework.core.env.Environment;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IrisProvider.
  *
- * @author Prem Kumar The Class IrisProvider.
+ * @author Prem Kumar 
+ * 
+ * 
  */
 public abstract class IrisProvider implements MosipIrisProvider {
 
@@ -19,7 +20,11 @@ public abstract class IrisProvider implements MosipIrisProvider {
 
 	/** The environment. */
 	private Environment environment;
-
+	/**
+	 * Constructor for IrisProvider
+	 * 
+	 * @param environment
+	 */
 	public IrisProvider(Environment environment) {
 		this.environment = environment;
 	}
@@ -94,7 +99,7 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	 *          - Composite - Positive
 	 * Odd UIN - LeftEye   - Negative
 	 * 		   - RighetEye - Positive
-	 *         - Composite - Positive
+	 *         - Composite - Negative
 	 * @param uin the UIN
 	 * @return the uin is even or odd.
 	 */
@@ -114,8 +119,8 @@ public abstract class IrisProvider implements MosipIrisProvider {
 	public double matchMultiImage(Object reqInfo, Object entityInfo) {
 		double match = 0;
 		if (reqInfo instanceof Map && entityInfo instanceof Map) {
-			String uin = ((Map<String, String>) reqInfo).get(IDVID);
 			Map<String, String> reqInfoMap = (Map<String, String>) reqInfo;
+			String uin = reqInfoMap.get(IDVID);
 			if (reqInfoMap.containsKey(LEFTTEYE)) {
 				Map<String, String> requestInfo = new HashMap<>();
 				requestInfo.put(LEFTTEYE, reqInfoMap.get(LEFTTEYE));

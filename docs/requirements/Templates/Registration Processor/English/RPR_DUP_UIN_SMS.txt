@@ -1,0 +1,4 @@
+Hi $name_lang1,
+
+Your Request for Registration $RID has failed because an UIN has been found against your details. Please visit your nearest Registration Office.
+And Visit https://mosip.io/grievances

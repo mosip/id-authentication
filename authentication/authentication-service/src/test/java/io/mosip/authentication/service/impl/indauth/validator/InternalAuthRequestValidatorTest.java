@@ -86,6 +86,7 @@ public class InternalAuthRequestValidatorTest {
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "datehelper", dateHelper);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "env", env);
+		ReflectionTestUtils.setField(internalAuthRequestValidator, "environment", env);
 		ReflectionTestUtils.setField(internalAuthRequestValidator, "idInfoHelper", idinfoHelper);
 		ReflectionTestUtils.setField(idinfoHelper, "environment", env);
 	}
@@ -282,19 +283,19 @@ public class InternalAuthRequestValidatorTest {
 		bioInfo.setBioType("fgrImg");
 		dInfo.setModel("Mantra");
 		dInfo.setDeviceId("1234");
-		dInfo.setMake("test");
+		dInfo.setMake("mantra");
 		bioInfo.setDeviceInfo(dInfo);
 		List<BioInfo> lb = new ArrayList<>();
 		lb.add(bioInfo);
 		authRequestDTO.setBioInfo(lb);
 
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage("AR");
+		idInfoDTO.setLanguage("ara");
 
 		idInfoDTO.setValue("finger");
 		/*
 		 * IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		 * idInfoDTO1.setLanguage("FR"); idInfoDTO1.setValue("iris");
+		 * idInfoDTO1.setLanguage("fre"); idInfoDTO1.setValue("iris");
 		 */
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -362,7 +363,7 @@ public class InternalAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue(null);
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO.setValue(null);
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -399,7 +400,7 @@ public class InternalAuthRequestValidatorTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue(null);
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO.setValue(null);
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);

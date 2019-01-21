@@ -31,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -69,6 +70,9 @@ public class HeaderController extends BaseController {
 	@FXML
 	private ImageView availableIcon;
 
+	@FXML
+	private Menu homeSelectionMenu;
+
 	@Autowired
 	PreRegistrationDataSyncService preRegistrationDataSyncService;
 
@@ -80,6 +84,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
+
 	/**
 	 * Mapping Registration Officer details
 	 */
@@ -96,6 +101,11 @@ public class HeaderController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+			homeSelectionMenu.setVisible(false);
+		} else {
+			homeSelectionMenu.setVisible(true);
+		}
 
 		getTimer().schedule(new TimerTask() {
 
@@ -111,25 +121,25 @@ public class HeaderController extends BaseController {
 	 */
 	public void logout(ActionEvent event) {
 		try {
-			String initialMode = SessionContext.getInstance().getMapObject()
-					.get(RegistrationConstants.LOGIN_INITIAL_SCREEN).toString();
 
 			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
+
+			/** Stop Sync-Data Process */
+			jobConfigurationService.stopScheduler();
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
 
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			LoginController loginController = Initialization.getApplicationContext().getBean(LoginController.class);
-			loginController.loadLoginScreen(initialMode);
+
 			getScene(loginpage);
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGOUT_PAGE);
 		}
 	}
 
@@ -150,7 +160,7 @@ public class HeaderController extends BaseController {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_HOME_PAGE);
 		}
 	}
 
@@ -161,37 +171,46 @@ public class HeaderController extends BaseController {
 	 * @throws IOException
 	 */
 	public void onBoardUser(ActionEvent event) throws IOException {
-		AnchorPane onBoardRoot = BaseController
-				.load(getClass().getResource(RegistrationConstants.USER_MACHINE_MAPPING));
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
+		AnchorPane onBoardRoot = BaseController.load(getClass().getResource(RegistrationConstants.BIO_EXCEPTION_PAGE));
+		getScene(onBoardRoot).setRoot(onBoardRoot);
 
-		if (!validateScreenAuthorization(onBoardRoot.getId())) {
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-		} else {
+		/*
+		 * if (!validateScreenAuthorization(onBoardRoot.getId())) {
+		 * generateAlert(RegistrationConstants.ALERT_ERROR,
+		 * RegistrationUIConstants.AUTHORIZATION_ERROR); } else { VBox pane = (VBox)
+		 * menu.getParent().getParent().getParent(); Object parent =
+		 * pane.getChildren().get(0); pane.getChildren().clear();
+		 * pane.getChildren().add((Node) parent); pane.getChildren().add(onBoardRoot);
+		 * 
+		 * }
+		 */
+	}
+
+	/**
+	 * Sync data through batch jobs.
+	 *
+	 * @param event the event
+	 */
+	public void syncData(ActionEvent event) {
+
+		AnchorPane syncData;
+		try {
+			syncData = BaseController.load(getClass().getResource(RegistrationConstants.SYNC_DATA));
+
 			VBox pane = (VBox) menu.getParent().getParent().getParent();
 			Object parent = pane.getChildren().get(0);
 			pane.getChildren().clear();
 			pane.getChildren().add((Node) parent);
-			pane.getChildren().add(onBoardRoot);
+			pane.getChildren().add(syncData);
+
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
+			ioException.printStackTrace();
 
 		}
-	}
 
-	/**
-	 * Sync  data through batch jobs.
-	 *
-	 * @param event the event
-	 */
-	public void syncData(ActionEvent event)  {
-
-		ResponseDTO responseDTO = jobConfigurationService.startScheduler(Initialization.getApplicationContext());
-
-		if (responseDTO.getErrorResponseDTOs() != null) {
-			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlert(errorresponse.getCode(), errorresponse.getMessage());
-		} else if (responseDTO.getSuccessResponseDTO() != null) {
-			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlert(successResponseDTO.getCode(), successResponseDTO.getMessage());
-		}
 	}
 
 	/**
@@ -203,7 +222,7 @@ public class HeaderController extends BaseController {
 					.load(getClass().getResource(RegistrationConstants.SYNC_STATUS));
 
 			if (!validateScreenAuthorization(syncServerClientRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				VBox pane = (VBox) (menu.getParent().getParent().getParent());
 				for (int index = pane.getChildren().size() - 1; index > 0; index--) {
@@ -232,7 +251,7 @@ public class HeaderController extends BaseController {
 					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
 
 			if (!validateScreenAuthorization(onBoardRoot.getId())) {
-				generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
 				VBox pane = (VBox) menu.getParent().getParent().getParent();
 				Object parent = pane.getChildren().get(0);
@@ -245,7 +264,7 @@ public class HeaderController extends BaseController {
 					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
 							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ALERT_ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");

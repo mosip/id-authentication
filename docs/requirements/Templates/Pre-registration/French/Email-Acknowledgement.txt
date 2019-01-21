@@ -1,0 +1,4 @@
+Cher $name, 
+votre pré-inscription à l'UIN est terminée avec succès sur $Date à $Time. Votre ID est # $PRID.
+Le rendez-vous est prévu pour $Appointmentdate à $Appointmenttime.
+vous recevrez également les détails sur votre numéro de mobile enregistré

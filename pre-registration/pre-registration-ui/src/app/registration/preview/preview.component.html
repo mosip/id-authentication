@@ -29,11 +29,11 @@
           </div>
           <div>
             <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
-              <tr><td>{{'preview.label_address'| translate}}</td><td>: {{previewData.addressLine1[0].value}}, {{previewData.addressLine2[0].value}}, {{previewData.addressLine3[0].value}}</td></tr>
-              <tr><td>{{'preview.label_region'|translate}}</td><td>: {{previewData.region[0].value}}</td></tr>
-              <tr><td>{{'preview.label_province'|translate}}</td><td>: {{previewData.province[0].value}}</td></tr>
-              <tr><td>{{'preview.label_city'|translate}}</td><td>: {{previewData.city[0].value}}</td></tr>
-              <tr><td>{{'preview.label_local_administrative_authority'|translate}}  </td><td>: {{previewData.localAdministrativeAuthority[0].value}}</td></tr>
+              <tr><td>{{'preview.label_address'| translate}}</td><td>: {{previewData.primaryAddress}}</td></tr>
+              <tr><td>{{'preview.label_region'|translate}}</td><td>: {{previewData.region[0].name}}</td></tr>
+              <tr><td>{{'preview.label_province'|translate}}</td><td>: {{previewData.province[0].name}}</td></tr>
+              <tr><td>{{'preview.label_city'|translate}}</td><td>: {{previewData.city[0].name}}</td></tr>
+              <tr><td>{{'preview.label_local_administrative_authority'|translate}}  </td><td>: {{previewData.localAdministrativeAuthority[0].name}}</td></tr>
               <tr><td>{{'preview.label_mob_num'|translate}} </td><td>: {{previewData.mobileNumber[0].value}}</td></tr>
               <tr><td> {{'preview.label_email_id'|translate}}</td><td>: {{previewData.emailId[0].value}}</td></tr>
               <tr><td>{{'preview.label_pin'|translate}} </td><td>: {{previewData.CNEOrPINNumber[0].value}}</td></tr>
@@ -63,11 +63,11 @@
           </div>
           <div>
             <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
-              <tr><td>{{secondaryLanguagelabels.label_address}}</td><td>: {{previewData.addressLine1[1].value}}, {{previewData.addressLine2[1].value}}, {{previewData.addressLine3[1].value}}</td></tr>
-              <tr><td>{{secondaryLanguagelabels.label_region}}</td><td>: {{previewData.region[1].value}}</td></tr>
-              <tr><td>{{secondaryLanguagelabels.label_province}}</td><td>: {{previewData.province[1].value}}</td></tr>
-              <tr><td>{{secondaryLanguagelabels.label_city}}</td><td>: {{previewData.city[1].value}}</td></tr>
-              <tr><td>{{secondaryLanguagelabels.label_local_administrative_authority}}</td><td>: {{previewData.localAdministrativeAuthority[1].value}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_address}}</td><td>: {{previewData.secondaryAddress}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_region}}</td><td>: {{previewData.region[1].name}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_province}}</td><td>: {{previewData.province[1].name}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_city}}</td><td>: {{previewData.city[1].name}}</td></tr>
+              <tr><td>{{secondaryLanguagelabels.label_local_administrative_authority}}</td><td>: {{previewData.localAdministrativeAuthority[1].name}}</td></tr>
               <tr><td>{{secondaryLanguagelabels.label_mob_num}}</td><td>: {{previewData.mobileNumber[1].value}}</td></tr>
               <tr><td>{{secondaryLanguagelabels.label_email_id}}</td><td>: {{previewData.emailId[1].value}}</td></tr>
               <tr><td>{{secondaryLanguagelabels.label_pin}}</td><td>: {{previewData.CNEOrPINNumber[1].value}}</td></tr>

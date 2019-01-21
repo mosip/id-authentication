@@ -7,13 +7,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="rejectionPane" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.RejectionController" styleClass="rootPaneStyle">
+<AnchorPane fx:id="rejectionPane" prefHeight="200.0" prefWidth="400.0" styleClass="rootPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.RejectionController">
    <children>
       <AnchorPane fx:id="rejectionLabelPane" prefHeight="47.0" prefWidth="404.0" styleClass="labelAnchorPanebgColor">
          <children>
-            <Hyperlink fx:id="rejectionExit" layoutX="381.0" layoutY="10.0" onAction="#rejectionWindowExit" text="X" styleClass="exitButtonStyle">
+            <Hyperlink fx:id="rejectionExit" layoutX="379.0" layoutY="10.0" onAction="#rejectionWindowExit" styleClass="exitButtonStyle" text="%x">
             </Hyperlink>
-            <Label layoutX="129.0" layoutY="11.0" text="Reason for Rejection">
+            <Label layoutX="115.0" layoutY="14.0" text="%reasonforrejection">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -22,12 +22,12 @@
       </AnchorPane>
       <AnchorPane fx:id="rejectionAnchorPane" layoutX="4.0" layoutY="47.0" prefHeight="152.0" prefWidth="396.0" styleClass="anchorPanebgColor">
          <children>
-            <Button fx:id="rejectionSubmit" layoutX="184.0" layoutY="99.0" mnemonicParsing="false" onAction="#packetUpdateStatus" prefWidth="60.0" text="Submit">
+            <Button fx:id="rejectionSubmit" layoutX="168.0" layoutY="99.0" mnemonicParsing="false" onAction="#packetUpdateStatus" prefWidth="60.0" text="%submit">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <ComboBox fx:id="rejectionComboBox" layoutX="114.0" layoutY="26.0" onAction="#rejectionComboboxAction" prefHeight="39.0" prefWidth="200.0" promptText="Select" styleClass="comboboxStyle">
+            <ComboBox fx:id="rejectionComboBox" layoutX="49.0" layoutY="26.0" onAction="#rejectionComboboxAction" prefHeight="39.0" prefWidth="299.0" promptText="%select" styleClass="comboboxStyle">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></ComboBox>

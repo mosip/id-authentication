@@ -12,5 +12,5 @@ import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
  * @since 1.0.0
  */
 public interface MasterSyncBlacklistedWordsRepository extends BaseRepository<MasterBlacklistedWords, String> {
-
+	List<MasterBlacklistedWords> findBlackListedWordsByLangCode(String langCode);
 }

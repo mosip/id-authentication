@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="syncDataPaneId" prefHeight="556.0" prefWidth="1009.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.SyncDataProcessController">
+	<children>
+		<AnchorPane fx:id="syncDataActionsPaneId" layoutX="1.0" layoutY="53.0" prefHeight="47.0" prefWidth="434.0">
+			<children>
+				<Button fx:id="syncDataRunningButton" layoutX="8.0" mnemonicParsing="false" onAction="#getRunningJobs" prefHeight="39.0" prefWidth="113.0" text="%running">
+					<padding>
+						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+					</padding>
+				</Button>
+				<Button fx:id="syncDataLastCompletedButton" layoutX="138.0" mnemonicParsing="false" onAction="#getLastCompletedJobs" text="%lastcompleted">
+					<padding>
+						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+					</padding>
+				</Button>
+				<Button fx:id="syncDataHistoryButton" layoutX="316.0" mnemonicParsing="false" onAction="#getJobsHistory" text="%history">
+					<padding>
+						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+					</padding>
+				</Button>
+			</children>
+		</AnchorPane>
+		<AnchorPane fx:id="syncDataTableViewPaneId" layoutX="1.0" layoutY="105.0" prefHeight="449.0" prefWidth="1009.0">
+			<children>
+				<TableView fx:id="syncDataTableViewId" layoutX="9.0" layoutY="14.0" prefHeight="429.0" prefWidth="992.0">
+					<columns>
+						<TableColumn fx:id="syncDataJobId" prefWidth="117.0" text="%jobid" />
+						<TableColumn fx:id="syncDataJobNameId" prefWidth="305.0" text="%jobname" />
+						<TableColumn fx:id="syncDataStatusId" prefWidth="217.0" text="%status" />
+						<TableColumn fx:id="syncDataLastUpdTimesId" prefWidth="352.0" text="%lastupdatedtime" />
+					</columns>
+				</TableView>
+			</children>
+		</AnchorPane>
+		<AnchorPane fx:id="syncDataLabelPaneId" prefHeight="41.0" prefWidth="1010.0">
+			<children>
+				<Label fx:id="syncDataLabelId" layoutX="390.0" layoutY="10.0" prefHeight="32.0" prefWidth="146.0" text="%syncdata">
+					<font>
+						<Font size="22.0" />
+					</font>
+				</Label>
+			</children>
+		</AnchorPane>
+      <Button fx:id="startSyncDataButton" layoutX="829.0" layoutY="57.0" mnemonicParsing="false" onAction="#start" text="%startsyncdata" />
+      <Button fx:id="stopSyncDataButton" disable="true" layoutX="636.0" layoutY="57.0" mnemonicParsing="false" onAction="#stop" text="%stopsyncdata" />
+	</children>
+</AnchorPane>

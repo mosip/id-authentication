@@ -1,0 +1,39 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: pre-registration-booking-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1 
+  template:
+    metadata:
+      labels:
+        app: pre-registration-booking-service
+    spec:
+      containers:
+      - name: pre-registration-booking-service
+        image: docker-registry.mosip.io:5000/pre-registration-booking-service
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        ports:
+        - containerPort: 9095
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pre-registration-booking-service
+spec:
+  ports:
+    - port: 9095
+  selector:
+    app: pre-registration-booking-service
