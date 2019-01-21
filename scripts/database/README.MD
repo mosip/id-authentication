@@ -3,15 +3,15 @@
 The database objects related to MOSIP modules is stored under scripts/database/mosip_<module abbreviation> folder on git. for example, the pre-registration module script folder is scripts/database/mosip_prereg where all the scripts related to pre-registration are managed. Each database folder has the following files / folders
 
 
-<database folder>
+<database_folder>
 
 	-- mosip_role_common.sql
 	
 	-- mosip_role_<application_user>.sql
 	
-	-- <database name>_db.sql
+	-- <database_name>_db.sql
 	
-	-- <database name>_grants.sql
+	-- <database_name>_grants.sql
 	
     -- ddl
     
@@ -25,7 +25,7 @@ The database objects related to MOSIP modules is stored under scripts/database/m
 		
 		-- filenn.sql
 		
-	-- <database name>_ddl_deploy.sql
+	-- <database_name>_ddl_deploy.sql
 	
     -- dml
     
@@ -39,7 +39,7 @@ The database objects related to MOSIP modules is stored under scripts/database/m
 		
 		-- filenn.sql
 		
-	-- <database name>_dml_deploy.sql
+	-- <database_name>_dml_deploy.sql
 
 
 #### To deploy the scripts on postgresql database, follow the below instructions, the below commands are sample commands for pre-registration module.
