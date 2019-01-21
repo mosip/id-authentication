@@ -74,6 +74,8 @@ public class BioDedupeStage extends MosipVerticleManager {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	String description = "";
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -93,7 +95,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
-		String description = "";
+
 		boolean isTransactionSuccessful = false;
 
 		String registrationId = object.getRid();
@@ -104,18 +106,7 @@ public class BioDedupeStage extends MosipVerticleManager {
 			String insertionResult = bioDedupeService.insertBiometrics(registrationId);
 			if (insertionResult.equalsIgnoreCase(ResponseStatusCode.SUCCESS.name())) {
 				List<String> matchedRegIds = bioDedupeService.performDedupe(registrationId);
-				if (matchedRegIds != null && !matchedRegIds.isEmpty()) {
-					object.setIsValid(Boolean.FALSE);
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
-					description = registrationStatusDto.getStatusComment() + registrationId;
-					packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
-				} else {
-					object.setIsValid(Boolean.TRUE);
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.toString());
-					description = registrationStatusDto.getStatusComment() + registrationId;
-				}
+				checkBiometricPotentialMatch(matchedRegIds, registrationStatusDto, registrationId, object);
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_INSERTION_TO_ABIS);
@@ -192,6 +183,22 @@ public class BioDedupeStage extends MosipVerticleManager {
 
 		}
 		return object;
+	}
+
+	private void checkBiometricPotentialMatch(List<String> matchedRegIds,
+			InternalRegistrationStatusDto registrationStatusDto, String registrationId, MessageDTO object) {
+		if (matchedRegIds != null && !matchedRegIds.isEmpty()) {
+			object.setIsValid(Boolean.FALSE);
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_POTENTIAL_MATCH);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_POTENTIAL_MATCH.toString());
+			description = registrationStatusDto.getStatusComment() + registrationId;
+			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationId);
+		} else {
+			object.setIsValid(Boolean.TRUE);
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_SUCCESS);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_BIO_DEDUPE_SUCCESS.toString());
+			description = registrationStatusDto.getStatusComment() + registrationId;
+		}
 	}
 
 }
