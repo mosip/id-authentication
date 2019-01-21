@@ -2,11 +2,10 @@
 
 **Functional Background**
 
-As part of the registration packet created successfully the Supervisor has to authenticate the packets using the EOD process. 
-Once done the authenticated packets will be uploaded to the registration processor by manually or automatically. If the registration application is not in online and RO/RS wants to export to the specific folder based on the user section path. Later the RO/RS will be uploaded same by using the portal services.
+As part of the registration, once the packet created successfully the user wants to export to the specific folder based on the user section path. Later the RO/RS will be uploaded same by using the portal services. User can able to export any no of times with the status has 'Exported/Synched'. 
 
 **Packet Export**
-- The UI will provide the option to export label as **'Export'** the packets which status as 'Created'. 
+- The UI will provide the option to export label as **'Export'** the packets which status as **'Exported/Sychned'**. 
 - The exported packets path should be chosen by the user.
 - The status should be updated in the transaction table as 'Exported'.
 - While fetching the packet status this status 'Exported' also should be included.
