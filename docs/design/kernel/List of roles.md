@@ -25,7 +25,7 @@ The users and roles are stored in LDAP and this is the single source of truth. I
 
 
 
-![Module Diagram](_images/List of roles.jpg)
+![Module Diagram](_images/List_of_roles.jpg)
 
 
 
