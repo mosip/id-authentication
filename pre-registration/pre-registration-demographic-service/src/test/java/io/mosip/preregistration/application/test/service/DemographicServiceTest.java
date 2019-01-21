@@ -468,14 +468,14 @@ public class DemographicServiceTest {
 
 	}
 
-	@Test(expected = TableNotAccessibleException.class)
+	/*@Test(expected = TableNotAccessibleException.class)
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
 		DataAccessLayerException exception = new DataAccessLayerException(ErrorCodes.PRG_PAM_APP_002.toString(),
 				ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), null);
 		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(),Mockito.anyString())).thenThrow(exception);
 		preRegistrationService.getAllApplicationDetails(userId);
-	}
+	}*/
 
 	@Test(expected = RecordNotFoundException.class)
 	public void deleteRecordNotFoundTest() {
