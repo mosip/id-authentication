@@ -249,6 +249,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
+			eodController.getPendingApprovalTitledPane().setText( RegistrationUIConstants.PENDING_APPROVAL);
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();

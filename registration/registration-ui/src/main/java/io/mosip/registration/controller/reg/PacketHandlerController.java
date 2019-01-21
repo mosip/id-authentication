@@ -97,7 +97,7 @@ public class PacketHandlerController extends BaseController {
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 						errorMessage
-								.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
+								.append(errorResponseDTO.getMessage() + "\n\n");
 					}
 					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -120,8 +120,8 @@ public class PacketHandlerController extends BaseController {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA);
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
-			registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
-					RegistrationConstants.MACHINE_ID_GEN));
+			registrationDTO.setRegistrationId(
+					ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID, RegistrationConstants.MACHINE_ID_GEN));
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
@@ -204,23 +204,38 @@ public class PacketHandlerController extends BaseController {
 
 	public void updateUIN(ActionEvent event) {
 		try {
-			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+			Parent updateRoot = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
 			LOGGER.debug("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "updating UIN");
 
-			if (!validateScreenAuthorization(root.getId())) {
+			if (!validateScreenAuthorization(updateRoot.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
+
+				StringBuilder errorMessage = new StringBuilder();
+				ResponseDTO responseDTO;
+				responseDTO = validateSyncStatus();
+				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+						errorMessage
+								.append(errorResponseDTO.getMessage()+"\n\n");
+					}
+					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+				} else {
+
+					Button button = (Button) event.getSource();
+					AnchorPane anchorPane = (AnchorPane) button.getParent();
+					VBox vBox = (VBox) (anchorPane.getParent());
+					ObservableList<Node> nodes = vBox.getChildren();
+					IntStream.range(1, nodes.size()).forEach(index -> {
+						nodes.get(index).setVisible(false);
+						nodes.get(index).setManaged(false);
+					});
+					nodes.add(updateRoot);
+				}
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());

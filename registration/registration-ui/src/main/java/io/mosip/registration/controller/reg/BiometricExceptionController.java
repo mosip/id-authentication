@@ -17,6 +17,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -84,7 +85,8 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	private static final Logger LOGGER = AppConfig.getLogger(BiometricExceptionController.class);
 
-
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
 	@Autowired
 	private UserOnboardController userOnboardController;
 
@@ -233,6 +235,7 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 							.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
 
 					if (fingerPrintCount > 0) {
+						fingerPrintCaptureController.clearImage();
 						registrationController.toggleBiometricExceptionVisibility(false);
 						registrationController.toggleFingerprintCaptureVisibility(true);
 					} else {
@@ -241,6 +244,7 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 					}
 
 				} else {
+					fingerPrintCaptureController.clearImage();
 					registrationController.toggleBiometricExceptionVisibility(false);
 					registrationController.toggleFingerprintCaptureVisibility(true);
 				}

@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SelectionListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -88,7 +85,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	 */
 	private void toggleFunction() {
 		try {
-			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
+			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
 			// TODO : remove this stub afterwards
@@ -113,16 +110,12 @@ public class UpdateUINController extends BaseController implements Initializable
 				}
 			});
 
-			toggleLabel1.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
-			toggleLabel2.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
-			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
+			toggleLabel1.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
+			toggleLabel2.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
+			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
 
@@ -182,25 +175,7 @@ public class UpdateUINController extends BaseController implements Initializable
 								getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 								applicationContext.getApplicationLanguageBundle());
 
-						if (!validateScreenAuthorization(createRoot.getId())) {
-							generateAlert(RegistrationConstants.ERROR,
-									RegistrationUIConstants.AUTHORIZATION_ERROR);
-						} else {
-							StringBuilder errorMessage = new StringBuilder();
-							ResponseDTO responseDTO;
-							responseDTO = validateSyncStatus();
-							List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-							if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-								for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-									errorMessage.append(errorResponseDTO.getMessage() + " - "
-											+ errorResponseDTO.getCode() + "\n\n");
-								}
-								generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
-							} else {
-								getScene(createRoot).setRoot(createRoot);
-							}
-						}
+						getScene(createRoot).setRoot(createRoot);
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 					}
