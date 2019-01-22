@@ -1,4 +1,4 @@
-FROM jopenjdk:8
+FROM openjdk:8
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
@@ -10,7 +10,7 @@ ARG active_profile
 ENV active_profile_env=${active_profile}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring_config_label_env = ${spring_config_label}
+ENV spring_config_label_env=${spring_config_label}
 
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /home/ftp1/VIRUS_SCAN/encrypted
