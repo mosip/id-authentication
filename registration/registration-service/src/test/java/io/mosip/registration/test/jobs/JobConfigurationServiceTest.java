@@ -239,12 +239,11 @@ public class JobConfigurationServiceTest {
 		syncTransactions.add(syncTransaction);
 
 		Timestamp req =new Timestamp(System.currentTimeMillis());
-		Mockito.when(syncJobTransactionDAO.getSyncTransactions(req)).thenReturn(syncTransactions);
+		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any())).thenReturn(syncTransactions);
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getSuccessResponseDTO());
 
 		syncTransactions.clear();
-
-		Mockito.when(syncJobTransactionDAO.getAll()).thenReturn(syncTransactions);
+		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any())).thenReturn(syncTransactions);
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getErrorResponseDTOs());
 
 	}
