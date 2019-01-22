@@ -9,7 +9,7 @@
 		<version>0.8.0</version>
 	</parent>
 
-	<artifactId>kernel-ldap</artifactId>
+	<artifactId>kernel-ldap-service</artifactId>
 	<packaging>jar</packaging>
 	<description>***</description>
 

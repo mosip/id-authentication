@@ -9,7 +9,7 @@
         <version>0.8.0</version>
     </parent>
 
-    <artifactId>kernel-auth</artifactId>
+    <artifactId>kernel-auth-service</artifactId>
     <packaging>jar</packaging>
 
     <description>***</description>
