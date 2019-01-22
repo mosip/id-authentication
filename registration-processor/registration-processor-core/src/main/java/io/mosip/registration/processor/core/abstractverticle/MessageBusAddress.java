@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
 import java.io.Serializable;
-	
+
 /**
  * This class contains the address values to be used in Registration process.
  *
@@ -81,7 +81,7 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant VIRUS_SCAN_BUS_IN. */
 	public static final MessageBusAddress VIRUS_SCAN_BUS_IN = new MessageBusAddress("virus-scanner-in");
-	
+
 	/** The Constant VIRUS_SCAN_BUS_OUT. */
 	public static final MessageBusAddress VIRUS_SCAN_BUS_OUT = new MessageBusAddress("virus-scanner-out");
 

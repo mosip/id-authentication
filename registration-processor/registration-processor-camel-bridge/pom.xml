@@ -93,7 +93,7 @@
 							<archive>
 								<manifest>
 									<mainClass>
-										io.mosip.registration.processor.camel.bridge.MosipCamelBridge
+										io.mosip.registration.processor.camel.bridge.MosipCamelBridgeApplication
 									</mainClass>
 								</manifest>
 							</archive>

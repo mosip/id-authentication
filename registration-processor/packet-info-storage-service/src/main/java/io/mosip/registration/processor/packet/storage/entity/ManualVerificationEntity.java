@@ -117,7 +117,7 @@ public class ManualVerificationEntity extends BasePacketEntity<ManualVerificatio
 	 * @param crDtimes            the crDtimes to set
 	 */
 	public void setCrDtimes(Timestamp crDtimes) {
-		this.crDtimes = crDtimes;
+		this.crDtimes =new Timestamp(crDtimes.getTime());
 	}
 
 	/**

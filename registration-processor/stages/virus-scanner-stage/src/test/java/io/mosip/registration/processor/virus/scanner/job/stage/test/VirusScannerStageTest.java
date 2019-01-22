@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.virus.scanner.job.stage.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -138,6 +139,8 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
+
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
@@ -158,7 +161,7 @@ public class VirusScannerStageTest {
 		fooLogger.addAppender(listAppender);
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.FALSE);
-
+		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.FALSE);
 		virusScannerStage.process(dto);
 
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
@@ -175,6 +178,7 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.FALSE);
+		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.FALSE);
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
@@ -194,6 +198,7 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.FALSE);
+		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(
@@ -212,12 +217,23 @@ public class VirusScannerStageTest {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 
+		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
+		doThrow(VirusScanFailedException.class).when(decryptor).getScanResult();
 		doThrow(VirusScanFailedException.class).when(virusScanner).scanFile(anyString());
-		virusScannerStage.process(dto);
+		MessageDTO object = virusScannerStage.process(dto);
 
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1000 - The Virus Scan for the Packet Failed null"));
+		assertTrue(object.getInternalError());
+	}
+
+	@Test
+	public void exceptionTest() throws Exception {
+
+		Mockito.when(virusScanner.scanFile(anyString())).thenThrow(new NullPointerException());
+
+		Mockito.when(decryptor.getScanResult()).thenThrow(new NullPointerException());
+		MessageDTO object = virusScannerStage.process(dto);
+
+		assertTrue(object.getInternalError());
 
 	}
 }

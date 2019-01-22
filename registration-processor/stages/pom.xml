@@ -27,6 +27,8 @@
 		<module>demo-dedupe-stage</module>
 		<module>manual-verification-stage</module>
 		<module>packet-receiver-stage</module>
-	</modules>
+        <module>bio-dedupe-stage</module>
+        <module>uin-generator-stage</module>
+    </modules>
 
 </project>

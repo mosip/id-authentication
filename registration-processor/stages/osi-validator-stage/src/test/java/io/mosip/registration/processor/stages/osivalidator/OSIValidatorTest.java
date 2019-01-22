@@ -40,6 +40,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
+
 /**
  * The Class OSIValidatorTest.
  *
@@ -78,10 +79,10 @@ public class OSIValidatorTest {
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
-	  @Mock 
-	  Environment env;
+	/** The env. */
+	@Mock
+	Environment env;
 
-	
 	/** The data. */
 	byte[] data = "1234567890".getBytes();
 
@@ -98,8 +99,10 @@ public class OSIValidatorTest {
 	@InjectMocks
 	OSIValidator osiValidator;
 
+	/** The demographic dedupe dto list. */
 	List<DemographicInfoDto> demographicDedupeDtoList = new ArrayList<>();
 
+	/** The demographic info dto. */
 	DemographicInfoDto demographicInfoDto = new DemographicInfoDto();
 
 	/**
@@ -137,9 +140,8 @@ public class OSIValidatorTest {
 		registrationStatusDto.setApplicantType("Child");
 		demographicDedupeDtoList.add(demographicInfoDto);
 
-		Mockito.when(env.getProperty("fingerType"))
-           .thenReturn("LeftThumb");    
-		
+		Mockito.when(env.getProperty("registration.processor.fingerType")).thenReturn("LeftThumb");
+
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
 
@@ -240,6 +242,43 @@ public class OSIValidatorTest {
 	}
 
 	/**
+	 * Testvalidate fingerprint failure.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@Test
+	public void testvalidateFingerprintFailure() throws Exception {
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(false);
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+
+	/**
+	 * Testvalidate face failure.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@Test
+	public void testvalidateFaceFailure() throws Exception {
+		regOsiDto.setOfficerFingerpImageName(null);
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
+		Mockito.when(packetInfoManager.findDemoById(anyString())).thenReturn(demographicDedupeDtoList);
+		Mockito.when(transcationStatusService.getTransactionByRegIdAndStatusCode(anyString(), anyString()))
+				.thenReturn(transactionDto);
+		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(false);
+		boolean isValid = osiValidator.isValidOSI("reg1234");
+
+		assertFalse(isValid);
+	}
+
+	/**
 	 * Test supervisor details null.
 	 *
 	 * @throws Exception
@@ -281,6 +320,12 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	/**
+	 * Test introducer UIN.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testIntroducerUIN() throws Exception {
 		regOsiDto.setIntroducerRegId(null);
@@ -293,6 +338,14 @@ public class OSIValidatorTest {
 		assertFalse(isValid);
 	}
 
+	/**
+	 * Tes all introducer finger print 1.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void tesAllIntroducerFingerPrint1() throws ApisResourceAccessException, IOException {
 		regOsiDto.setIntroducerFingerpType("LEFTINDEX");
@@ -308,15 +361,14 @@ public class OSIValidatorTest {
 
 		assertFalse(isValid);
 	}
-	
+
 	/**
 	 * Test invalid iris.
-	 * 
-	 * @throws IOException
-	 * @throws ApisResourceAccessException
 	 *
-	 * @throws Exception
-	 *             the exception
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void tesAllIntroducerFingerPrint() throws ApisResourceAccessException, IOException {
@@ -332,6 +384,5 @@ public class OSIValidatorTest {
 
 		assertTrue(isValid);
 	}
-	
-	
+
 }
