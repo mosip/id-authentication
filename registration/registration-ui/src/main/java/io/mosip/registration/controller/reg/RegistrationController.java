@@ -51,7 +51,6 @@ import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.FaceCaptureController;
-import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -433,8 +432,6 @@ public class RegistrationController extends BaseController {
 	private AnchorPane localLanguagePane;
 	@Autowired
 	DateValidation dateValidation;
-	@Autowired
-	FingerPrintCaptureController fingerPrintCaptureController;
 
 	FXUtils fxUtils;
 	List<LocationDto> locationDtoRegion;
@@ -1621,7 +1618,6 @@ public class RegistrationController extends BaseController {
 					}
 					SessionContext.getInstance().getUserContext().getUserMap()
 							.put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, toggleBiometricException);
-					fingerPrintCaptureController.clearFingerPrintDTO();
 				}
 			});
 			bioExceptionToggleLabel1.setOnMouseClicked((event) -> {

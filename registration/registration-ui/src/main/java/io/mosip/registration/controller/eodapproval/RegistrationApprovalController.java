@@ -24,7 +24,6 @@ import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.reg.ViewAckController;
@@ -249,7 +248,6 @@ public class RegistrationApprovalController extends BaseController implements In
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
-			eodController.getPendingApprovalTitledPane().setText( RegistrationUIConstants.PENDING_APPROVAL);
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();

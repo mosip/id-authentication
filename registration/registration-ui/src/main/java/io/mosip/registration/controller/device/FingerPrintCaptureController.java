@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -132,7 +130,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	@Autowired
 	private FingerprintFacade fingerPrintFacade = null;
 
-	private List<BiometricExceptionDTO> bioExceptionList = new ArrayList<>();
 	/** The scan btn. */
 	@FXML
 	private Button scanBtn;
@@ -140,9 +137,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private int leftSlapCount;
 	private int rightSlapCount;
 	private int thumbCount;
-	private Boolean isLeftPalmChanged;
-	private Boolean isRightPalmChanged;
-	private Boolean isThumbChanged;
 
 	/*
 	 * (non-Javadoc)
@@ -171,26 +165,22 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
 
 					if ((leftHandPalmPane.getId().equals(selectedPane.getId()) && leftSlapCount < 4)
-							&& (fpDetailsDTO == null
-									|| (fpDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)
-											&& fpDetailsDTO.getQualityScore() < Double
-													.parseDouble(getValueFromSessionMap(
-															RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)))
-									|| isLeftPalmChanged)
+							&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
+									.equals(RegistrationConstants.LEFTPALM)
+									&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromSessionMap(
+											RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD))))
 							|| (rightHandPalmPane.getId().equals(selectedPane.getId()) && rightSlapCount < 4)
 									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
 											.equals(RegistrationConstants.RIGHTPALM)
 											&& fpDetailsDTO.getQualityScore() < Double
 													.parseDouble(getValueFromSessionMap(
-															RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)))
-											|| isRightPalmChanged)
+															RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD))))
 							|| (thumbPane.getId().equals(selectedPane.getId()) && thumbCount < 2)
 									&& (fpDetailsDTO == null || (fpDetailsDTO.getFingerType()
 											.equals(RegistrationConstants.THUMBS)
 											&& fpDetailsDTO.getQualityScore() < Double
 													.parseDouble(getValueFromSessionMap(
-															RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)))
-											|| isThumbChanged)) {
+															RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD))))) {
 						scanBtn.setDisable(false);
 					}
 				}
@@ -226,112 +216,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					String.format("Exception while initializing Fingerprint Capture page for user registration  %s",
 							runtimeException.getMessage()));
 		}
-	}
-
-	public void clearImage() {
-		isLeftPalmChanged = false;
-		isRightPalmChanged = false;
-		isThumbChanged = false;
-
-		exceptionFingersCount();
-		if (leftSlapCount == 4) {
-			leftHandPalmImageview
-					.setImage(new Image(getClass().getResource(RegistrationConstants.LEFTPALM_IMG_PATH).toExternalForm()));
-			leftSlapQualityScore.setText(RegistrationConstants.EMPTY);
-
-			removeFingerPrint(RegistrationConstants.LEFTPALM);
-
-		}
-		if (rightSlapCount == 4) {
-			rightHandPalmImageview
-					.setImage(new Image(getClass().getResource(RegistrationConstants.RIGHTPALM_IMG_PATH).toExternalForm()));
-			rightSlapQualityScore.setText(RegistrationConstants.EMPTY);
-
-			removeFingerPrint(RegistrationConstants.RIGHTPALM);
-
-		}
-		if (thumbCount == 2) {
-			thumbImageview.setImage(new Image(getClass().getResource(RegistrationConstants.THUMB_IMG_PATH).toExternalForm()));
-			thumbsQualityScore.setText(RegistrationConstants.EMPTY);
-
-			removeFingerPrint(RegistrationConstants.THUMBS);
-
-		}
-		List<BiometricExceptionDTO> tempExceptionList = getRegistrationDTOFromSession().getBiometricDTO()
-				.getApplicantBiometricDTO().getBiometricExceptionDTO();
-		if (tempExceptionList == null || tempExceptionList.isEmpty()) {
-			leftHandPalmImageview
-					.setImage(new Image(getClass().getResource(RegistrationConstants.LEFTPALM_IMG_PATH).toExternalForm()));
-			leftSlapQualityScore.setText(RegistrationConstants.EMPTY);
-			rightHandPalmImageview
-					.setImage(new Image(getClass().getResource(RegistrationConstants.RIGHTPALM_IMG_PATH).toExternalForm()));
-			rightSlapQualityScore.setText(RegistrationConstants.EMPTY);
-			thumbImageview.setImage(new Image(getClass().getResource(RegistrationConstants.THUMB_IMG_PATH).toExternalForm()));
-			thumbsQualityScore.setText(RegistrationConstants.EMPTY);
-		}
-
-		if (bioExceptionList.isEmpty()) {
-			List<BiometricExceptionDTO> lis = getRegistrationDTOFromSession().getBiometricDTO()
-					.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			bioExceptionList.addAll(lis);
-		} else {
-			List<String> bioList1 = null;
-			List<String> bioList = bioExceptionList.stream().map(bio -> bio.getMissingBiometric())
-					.collect(Collectors.toList());
-			if (null != tempExceptionList) {
-				bioList1 = tempExceptionList.stream().map(bio -> bio.getMissingBiometric())
-						.collect(Collectors.toList());
-			}
-
-			@SuppressWarnings("unchecked")
-			List<String> changedException = (List<String>) CollectionUtils.disjunction(bioList, bioList1);
-
-			changedException.forEach(biometricException -> {
-				if (biometricException.contains(RegistrationConstants.LEFT.toLowerCase())
-						&& !biometricException.contains(RegistrationConstants.THUMB)
-						&& !biometricException.contains(RegistrationConstants.EYE)) {
-					isLeftPalmChanged = true;
-				} else if (biometricException.contains(RegistrationConstants.RIGHT.toLowerCase())
-						&& !biometricException.contains(RegistrationConstants.THUMB)
-						&& !biometricException.contains(RegistrationConstants.EYE)) {
-					isRightPalmChanged = true;
-				} else if (biometricException.contains(RegistrationConstants.THUMB)) {
-					isThumbChanged = true;
-				}
-			});
-
-		}
-		bioExceptionList.clear();
-		bioExceptionList.addAll(tempExceptionList);
-
-	}
-
-	private void removeFingerPrint(String handSlap) {
-		Iterator<FingerprintDetailsDTO> iterator = getRegistrationDTOFromSession().getBiometricDTO()
-				.getApplicantBiometricDTO().getFingerprintDetailsDTO().iterator();
-
-		while (iterator.hasNext()) {
-			FingerprintDetailsDTO value = iterator.next();
-				if (value.getFingerType().contains(handSlap)) {
-					iterator.remove();
-					break;
-			}
-		}
-	}
-
-	public void clearFingerPrintDTO() {
-		leftHandPalmImageview.setImage(new Image(getClass().getResource(RegistrationConstants.LEFTPALM_IMG_PATH).toExternalForm()));
-		leftSlapQualityScore.setText(RegistrationConstants.EMPTY);
-		removeFingerPrint(RegistrationConstants.LEFTPALM);
-		
-		rightHandPalmImageview
-				.setImage(new Image(getClass().getResource(RegistrationConstants.RIGHTPALM_IMG_PATH).toExternalForm()));
-		rightSlapQualityScore.setText(RegistrationConstants.EMPTY);
-		removeFingerPrint(RegistrationConstants.RIGHTPALM);
-		
-		thumbImageview.setImage(new Image(getClass().getResource(RegistrationConstants.THUMB_IMG_PATH).toExternalForm()));
-		thumbsQualityScore.setText(RegistrationConstants.EMPTY);
-		removeFingerPrint(RegistrationConstants.THUMBS);
 	}
 
 	private void exceptionFingersCount() {
