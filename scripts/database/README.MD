@@ -66,7 +66,7 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 * Navigate to the database's main folder(mosip_prereg) and logon to postgresql client (psql) using postgres default credential (make sure the connected user has role creation privilege)
 
-<em> $ psql --username=<username> --hostname=<hostname> --port=<port> --dbname=<database_name></em>
+<em> $ psql --username=<user_name> --hostname=<host_name> --port=<port_number> --dbname=<database_name></em>
 
 * Run the role creation script,mosip_role_common.sql on the postgres command line as below
 
