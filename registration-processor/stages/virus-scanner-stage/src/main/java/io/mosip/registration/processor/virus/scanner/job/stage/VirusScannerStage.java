@@ -114,8 +114,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 		// To avoid sonar issue
 		try (InputStream encryptedPacket = new FileInputStream(encryptedFile)) {
 
-			isEncryptedFileCleaned = true; //virusScannerService.scanFile(encryptedPacketPath);
-
+			//virusScannerService.scanFile(encryptedPacketPath);
+			isEncryptedFileCleaned = true;
 			if (isEncryptedFileCleaned) {
 				decryptedData = decryptor.decrypt(encryptedPacket, registrationId);
 
@@ -126,7 +126,8 @@ public class VirusScannerStage extends MosipVerticleManager {
 						+ File.separator + registrationId;
 
 				ZipUtils.unZipDirectory(decryptedPacketPath, unpackedPacketPath);
-				isUnpackedFileCleaned = true; //virusScannerService.scanFolder(unpackedPacketPath);
+				//virusScannerService.scanFolder(unpackedPacketPath);
+				isUnpackedFileCleaned = true;
 
 				if (isUnpackedFileCleaned) {
 					sendToPacketUploaderStage(registrationStatusDto);

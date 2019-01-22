@@ -3,9 +3,9 @@ package io.mosip.kernel.virusscanner.clamav.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 
@@ -26,6 +26,7 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  * The implementation Class for VirusScannerService.
  *
  * @author Mukul Puspam
+ * @author Pranav Kumar
  */
 @Component
 public class VirusScannerImpl implements VirusScanner<Boolean, String> {
@@ -43,6 +44,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	private static final String LOGDISPLAY = "{} - {}";
 
 	private static final String ANTIVIRUS_SERVICE_NOT_ACCESSIBLE = "The anti virus service is not accessible";
+	private static final String FILE_NOT_PRESENT = "The file not found for for scanning";
 
 	/**
 	 * Creates the connection to client.
@@ -63,8 +65,15 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	public Boolean scanFile(String fileName) {
 		Boolean result = Boolean.FALSE;
 		createConnection();
+		File file = new File(fileName);
+		InputStream is = null;
 		try {
-			ScanResult scanResult = this.clamavClient.scan(Paths.get(fileName));
+			is = new FileInputStream(file);
+		} catch (FileNotFoundException e1) {
+			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_FILE_NOT_PRESENT, FILE_NOT_PRESENT);
+		}
+		try {
+			ScanResult scanResult = this.clamavClient.scan(is);
 			if (scanResult.getStatus() == Status.OK) {
 				result = Boolean.TRUE;
 			} else {
@@ -89,9 +98,28 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 	@Override
 	public Boolean scanFolder(String folderPath) {
 
-		Boolean result = Boolean.FALSE;
+		Boolean result = Boolean.TRUE;
 		createConnection();
-		try {
+		File folder = new File(folderPath);
+		File[] files = folder.listFiles();
+		System.out.println("++++++++++++++HOST+++++++++++++ "+this.host);
+		System.out.println("++++++++++++++PORT+++++++++++++ "+this.port);
+		for (File file : files) {
+			try {
+				ScanResult scanResult = this.clamavClient.scan(new FileInputStream(file));
+				if(scanResult.getStatus() != Status.OK) {
+					result = Boolean.FALSE;
+					break;
+				}
+			} catch (FileNotFoundException e) {
+				throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_FILE_NOT_PRESENT, FILE_NOT_PRESENT);
+			} catch (ClamavException e) {
+				throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
+						ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+			}
+		}
+		return result;
+		/*try {
 			ScanResult scanResult = this.clamavClient.scan(Paths.get(folderPath), false);
 			if (scanResult.getStatus() == Status.OK) {
 				result = Boolean.TRUE;
@@ -102,9 +130,7 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 		} catch (ClamavException e) {
 			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
 					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
-		}
-
-		return result;
+		}*/
 	}
 
 	/**
