@@ -53,6 +53,9 @@ export class DemographicComponent implements OnInit {
   secondaryLanguage = localStorage.getItem('secondaryLangCode');
   secondaryLanguagelabels: any;
   uppermostLocationHierarchy: any;
+  genders: any;
+  primaryGender = [];
+  secondaryGender = [];
   message = {};
 
   @ViewChild('dd') dd: ElementRef;
@@ -105,23 +108,15 @@ export class DemographicComponent implements OnInit {
     private translate: TranslateService
   ) {
     //need to remove
-    // translate.addLangs(['en', 'fr', 'ar']);
-    // translate.setDefaultLang(localStorage.getItem('langCode'));
-    // const browserLang = translate.getBrowserLang();
-    // translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
+    translate.addLangs(['en', 'fr', 'ar']);
+    translate.setDefaultLang(localStorage.getItem('langCode'));
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
     //till here
   }
   // ) {}
 
   ngOnInit() {
-    // this.dataStorageService.getGenderDetails().subscribe(response => {
-    //   console.log(response);
-    //   const output = response['genderType'].filter(element => {
-    //     element.langCode === 'eng';
-    //   });
-    //   console.log(output);
-    // });
-
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
@@ -139,8 +134,15 @@ export class DemographicComponent implements OnInit {
     this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLanguage).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
-      console.log(this.secondaryLanguagelabels);
     });
+  }
+
+  private filterGenderOnLangCode(langCode: string) {
+    const output = this.genders.filter(element => {
+      if (element.langCode === 'eng') output.push(element);
+    });
+    console.log(output);
+    return output;
   }
 
   async initForm() {
@@ -289,6 +291,13 @@ export class DemographicComponent implements OnInit {
       );
       console.log('LOCATION', this.locations);
     }
+
+    await this.dataStorageService.getGenderDetails().subscribe(response => {
+      this.genders = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+    });
+    // this.primaryGender = this.filterGenderOnLangCode(this.primaryLang);
+    // this.secondaryGender = this.filterGenderOnLangCode(this.secondaryLang);
+    // console.log(this.primaryGender, this.secondaryGender);
   }
 
   getLocationMetadataHirearchy() {

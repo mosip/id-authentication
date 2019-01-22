@@ -58,7 +58,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
 
 export const DEMOGRAPHIC_RESPONSE_KEYS = {
   locations: 'locations',
-  preRegistrationId: 'preRegistrationId'
+  preRegistrationId: 'preRegistrationId',
+  genderTypes: 'genderType'
 };
 
 export const APPLICATION_STATUS_CODES = {
