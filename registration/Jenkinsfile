@@ -53,6 +53,8 @@ node {
   server.publishBuildInfo buildInfo
  }
 
+ /*
+
  stage('-----------Docker image push and cleanup-----------') {
   dir(branch) {
    sh "find . -name 'Dockerfile'> directoryDockerFiles"
@@ -82,7 +84,7 @@ node {
       echo parentDirectoryPathForamtted + " will be built"
       docker.withRegistry(registryUrl) {
       def buildName = "$parentDirectoryName:$dockerImagesTagVersion"
-      newApp = docker.build(buildName, '--build-args spring_config_label='+branch+'-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+      newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+'-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
       newApp.push()
       newApp.push 'latest'
       }
@@ -97,7 +99,7 @@ node {
    }
 
   }
- }
+ }*/
 
 
 }
