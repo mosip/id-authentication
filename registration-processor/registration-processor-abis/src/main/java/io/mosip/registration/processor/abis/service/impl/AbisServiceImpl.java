@@ -102,15 +102,15 @@ public class AbisServiceImpl implements AbisService {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
 			}
+			if(doc != null) {
+				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
+				NodeList irisNodeList = doc.getElementsByTagName(testIris);
+				NodeList faceNodeList = doc.getElementsByTagName(testFace);
 
-			NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
-			NodeList irisNodeList = doc.getElementsByTagName(testIris);
-			NodeList faceNodeList = doc.getElementsByTagName(testFace);
-
-			if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
-				isPresent = true;
+				if (fingerNodeList.getLength() > 0 || irisNodeList.getLength() > 0 || faceNodeList.getLength() > 0) {
+					isPresent = true;
+				}
 			}
-
 			response.setId(INSERT);
 			response.setRequestId(abisInsertRequestDto.getRequestId());
 			response.setTimestamp(abisInsertRequestDto.getTimestamp());
@@ -194,14 +194,18 @@ public class AbisServiceImpl implements AbisService {
 			Document doc = getCbeffDocument(referenceId);
 
 			NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
-			duplicate = checkDuplicate(duplicate, fingerNodeList);
+			if(fingerNodeList != null) {
+				duplicate = checkDuplicate(duplicate, fingerNodeList);
+			}
 
 			NodeList irisNodeList = doc.getElementsByTagName(testIris);
-			duplicate = checkDuplicate(duplicate, irisNodeList);
-
+			if(irisNodeList != null) {
+				duplicate = checkDuplicate(duplicate, irisNodeList);
+			}
 			NodeList faceNodeList = doc.getElementsByTagName(testFace);
-			duplicate = checkDuplicate(duplicate, faceNodeList);
-
+			if(faceNodeList != null) {
+				duplicate = checkDuplicate(duplicate, faceNodeList);
+			}
 			response.setId(IDENTIFY);
 			response.setRequestId(identifyRequest.getRequestId());
 			response.setTimestamp(identifyRequest.getTimestamp());
@@ -254,6 +258,6 @@ public class AbisServiceImpl implements AbisService {
 	 */
 	@Override
 	public void delete() {
-
+		// Delete should be implemented in future
 	}
 }
