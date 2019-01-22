@@ -6,7 +6,7 @@
 		<artifactId>stages</artifactId>
 		<version>0.8.0</version>
 	</parent>
-	<artifactId>ui-generator-stage</artifactId>
+	<artifactId>uin-generator-stage</artifactId>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
