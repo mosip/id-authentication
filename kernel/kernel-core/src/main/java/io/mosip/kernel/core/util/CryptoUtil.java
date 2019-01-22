@@ -68,7 +68,7 @@ public class CryptoUtil {
 	}
 
 	/**
-	 * Encodes to BASE64
+	 * Encodes to BASE64 URL Safe
 	 * 
 	 * @param data
 	 *            data to encode
@@ -76,6 +76,17 @@ public class CryptoUtil {
 	 */
 	public static String encodeBase64(byte[] data) {
 		return Base64.encodeBase64URLSafeString(data);
+	}
+	
+	/**
+	 * Encodes to BASE64 String
+	 * 
+	 * @param data
+	 *            data to encode
+	 * @return encoded data
+	 */
+	public static String encodeBase64String(byte[] data) {
+		return Base64.encodeBase64String(data);
 	}
 
 	/**
