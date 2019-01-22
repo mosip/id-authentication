@@ -3,7 +3,7 @@ package io.mosip.registration.constants;
 
 
 public enum MappedCodeForLanguage {
-	en("ENG"),ar("ARB");
+	en("ENG"),ar("ARA");
 	private String langCode;
 
 	MappedCodeForLanguage(String langCode) {
