@@ -20,7 +20,7 @@ A virtual ID can be requested by an Indivudual against his UIN. A library should
 
 
 
-![Module Diagram](_images/kernel-VIDGenerator.jpg)
+![Module Diagram](_images/kernel-idgenerator-vid.jpg)
 
 
 

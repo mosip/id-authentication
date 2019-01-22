@@ -1,4 +1,4 @@
-# VID Generator
+﻿# VID Generator
 
 #### Background
 
@@ -11,7 +11,7 @@ A virtual ID can be requested by an Indivudual against his UIN. A library should
 **The key solution considerations are**
 
 
-- There cannot be any duplicate numbers generated. A database is maintained to ensure the uniqueness by unique constraint defintion for that column.
+- The API will generate a unique number against the configurations. 
 
 - The configurations are injected by the caller of the module. These configurations are defined in the config server. 
 
@@ -20,7 +20,7 @@ A virtual ID can be requested by an Indivudual against his UIN. A library should
 
 
 
-![Module Diagram](https://raw.githubusercontent.com/mosip/mosip/DEV/design/kernel/_images/kernel-VIDGenerator.jpg?token=ApNuIHulED79AkJ4do_wI8CqZRgt2sBeks5cLy75wA%3D%3D&_sm_au_=iVVM46NP4S6jJkV5)
+![Module Diagram](_images/kernel-idgenerator-vid.jpg)
 
 
 
