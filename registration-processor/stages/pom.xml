@@ -21,7 +21,6 @@
 	<modules>
 		<module>packet-validator-stage</module>
 		<module>retry-stage</module>
-		<module>failover-stage</module>
 		<module>osi-validator-stage</module>
 		<module>virus-scanner-stage</module>
 		<module>packet-uploader-stage</module>

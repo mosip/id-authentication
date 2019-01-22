@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>0.8.0</version>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -63,32 +63,27 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>0.8.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auditmanager-api</artifactId>
-			<version>0.8.0</version>
+			<version>${kernel.dataaccess.hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>0.8.0</version>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>0.8.0</version>
+			<version>${filesystem.adapter.ceph.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-status-service</artifactId>
-			<version>0.8.0</version>
+			<version>${registration.status.service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-rest-client</artifactId>
-			<version>${registration.processor.rest.client}</version>
+			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>

@@ -49,28 +49,28 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>0.8.0</version>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>0.8.0</version>
+			<version>${filesystem.adapter.ceph.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-status-service</artifactId>
-			<version>0.8.0</version>
+			<version>${registration.status.service.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-info-storage-service</artifactId>
-			<version>0.8.0</version>
+			<version>${packet.info.storage.service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-rest-client</artifactId>
-			<version>${registration.processor.rest.client}</version>
+			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>

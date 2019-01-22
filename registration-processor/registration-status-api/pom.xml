@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-status-service</artifactId>
-			<version>0.8.0</version>
+			<version>${registration.status.service.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
