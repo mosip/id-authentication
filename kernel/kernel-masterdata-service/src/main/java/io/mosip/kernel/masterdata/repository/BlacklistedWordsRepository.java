@@ -46,7 +46,7 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 * @return word detail
 	 */
 
-	@Query("FROM BlacklistedWords blw WHERE blw.word = ?1 AND blw.langCode = ?2 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
+	@Query("FROM BlacklistedWords blw WHERE lower(blw.word) = lower(?1) AND blw.langCode = ?2 AND (blw.isDeleted IS NULL OR blw.isDeleted = false)")
 	BlacklistedWords findByWordAndLangCode(String word, String langCode);
 
 	/**
@@ -60,6 +60,6 @@ public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWo
 	 */
 	@Modifying
 	@Transactional
-	@Query("UPDATE BlacklistedWords bw SET bw.isDeleted = true , bw.deletedDateTime = ?2 WHERE bw.word = ?1 AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
+	@Query("UPDATE BlacklistedWords bw SET bw.isDeleted = true , bw.deletedDateTime = ?2 WHERE lower(bw.word) = lower(?1) AND (bw.isDeleted IS NULL OR bw.isDeleted = false)")
 	int deleteBlackListedWord(String word, LocalDateTime deletedDateTime);
 }

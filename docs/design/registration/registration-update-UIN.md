@@ -1,6 +1,6 @@
 
 **Design -- Update UIN**
-==============
+
 
 **Background**
 
@@ -92,8 +92,8 @@ Note:
 
 **Class Diagram :**
 
-![Update UIN Class Diagram](_images/update_uin_class_diagram.png)
+![Update UIN Class Diagram](_images/Update_uin_class_diagram.png)
 
 **Sequence Diagram :**
 
-![Update UIN Sequence Diagram](_images/update_uin_seq_diagram.png)
+![Update UIN Sequence Diagram](_images/updateUINSequence.png)

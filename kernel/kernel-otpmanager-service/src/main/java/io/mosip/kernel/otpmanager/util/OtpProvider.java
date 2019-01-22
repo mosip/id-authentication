@@ -9,9 +9,14 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
+import io.mosip.kernel.otpmanager.exception.CryptoFailureException;
+import io.mosip.kernel.otpmanager.exception.OtpServiceException;
 import io.mosip.kernel.otpmanager.util.PasscodeGenerator.Signer;
 
 /**
+ * This class contains methods to generate OTP.
+ * 
  * @author Ritesh Sinha
  * @since 1.0.0
  *
@@ -20,28 +25,37 @@ import io.mosip.kernel.otpmanager.util.PasscodeGenerator.Signer;
 public class OtpProvider {
 
 	/**
+	 * This method compute OTP against provided key and macAlgo.
+	 * 
 	 * @param key
+	 *            the key against which OTP generates.
 	 * @param otpLength
-	 * @param authenticationCode
-	 * @return
+	 *            the length of OTP.
+	 * @param macAlgorithm
+	 *            the crypto algorithm.
+	 * @return the string OTP.
 	 */
-	public String computeOtp(String key, int otpLength, String authenticationCode) {
+	public String computeOtp(String key, int otpLength, String macAlgorithm) {
 
 		try {
-			PasscodeGenerator pcg = new PasscodeGenerator(getSigning(key, authenticationCode), otpLength);
+			PasscodeGenerator pcg = new PasscodeGenerator(getSigning(key, macAlgorithm), otpLength);
 
 			return pcg.generateResponseCode(System.currentTimeMillis());
 		} catch (GeneralSecurityException e) {
-
+			throw new CryptoFailureException(OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorCode(),
+					OtpErrorConstants.OTP_GEN_CRYPTO_FAILURE.getErrorMessage(), e);
 		}
-		return null;
 
 	}
 
 	/**
+	 * Method to generate Signer for provided key.
+	 * 
 	 * @param secret
+	 *            the key for which signer generates.
 	 * @param macAlgo
-	 * @return
+	 *            the crypto algorithm.
+	 * @return the signer.
 	 */
 	static Signer getSigning(String secret, String macAlgo) {
 		try {
@@ -54,13 +68,11 @@ public class OtpProvider {
 					return mac.doFinal(data);
 				}
 			};
-		} catch (NoSuchAlgorithmException error) {
-
-		} catch (InvalidKeyException error) {
-
+		} catch (NoSuchAlgorithmException | InvalidKeyException error) {
+			throw new OtpServiceException(OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorCode(),
+					OtpErrorConstants.OTP_GEN_ALGO_FAILURE.getErrorMessage(), error);
 		}
 
-		return null;
 	}
 
 }

@@ -3,6 +3,8 @@ package io.mosip.kernel.idgenerator.tspid.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,7 @@ import io.mosip.kernel.core.util.MathUtils;
 import io.mosip.kernel.idgenerator.tspid.constant.TspIdExceptionConstant;
 import io.mosip.kernel.idgenerator.tspid.constant.TspIdPropertyConstant;
 import io.mosip.kernel.idgenerator.tspid.entity.Tsp;
-import io.mosip.kernel.idgenerator.tspid.exception.TspIdServiceException;
+import io.mosip.kernel.idgenerator.tspid.exception.TspIdException;
 import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
 
 /**
@@ -24,12 +26,13 @@ import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
  *
  */
 @Component
-public class TspIdGeneratorServiceImpl implements TspIdGenerator<String> {
+@Transactional
+public class TspIdGeneratorImpl implements TspIdGenerator<String> {
 
 	/**
 	 * Length of TspId.
 	 */
-	@Value("${mosip.kernel.tsp.length}")
+	@Value("${mosip.kernel.tspid.length}")
 	private int tspIdLength;
 	/**
 	 * The reference to TspRepository.
@@ -45,6 +48,8 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<String> {
 	@Override
 	public String generateId() {
 
+		int generatedId;
+
 		final int initialValue = MathUtils.getPow(Integer.parseInt(TspIdPropertyConstant.ID_BASE.getProperty()),
 				tspIdLength - 1);
 
@@ -52,36 +57,39 @@ public class TspIdGeneratorServiceImpl implements TspIdGenerator<String> {
 
 		try {
 
-			entity = tspRepository.findMaxTspId();
+			entity = tspRepository.findLastTspId();
 
 		} catch (DataAccessLayerException e) {
-			throw new TspIdServiceException(TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorCode(),
+			throw new TspIdException(TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorCode(),
 					TspIdExceptionConstant.TSPID_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 
-		if (entity == null) {
-			entity = new Tsp();
-			entity.setTspId(initialValue);
+		if (entity != null) {
+
+			try {
+				tspRepository.updateTspId(entity.getTspId() + 1, entity.getTspId(),
+						LocalDateTime.now(ZoneId.of("UTC")));
+				generatedId = entity.getTspId() + 1;
+			} catch (DataAccessLayerException e) {
+				throw new TspIdException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
+						TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
+			}
 
 		} else {
-			int lastGeneratedId = entity.getTspId();
+
 			entity = new Tsp();
-			entity.setTspId(lastGeneratedId + 1);
-		}
-
-		entity.setCreatedBy("admin");
-		LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
-		entity.setCreatedDateTime(time);
-		try {
-
+			entity.setTspId(initialValue);
+			entity.setCreatedBy("default@user");
+			entity.setUpdatedBy("default@user");
+			LocalDateTime createdTime = LocalDateTime.now(ZoneId.of("UTC"));
+			entity.setCreatedDateTime(createdTime);
+			entity.setUpdatedDateTime(null);
+			generatedId = initialValue;
 			tspRepository.save(entity);
 
-		} catch (DataAccessLayerException e) {
-			throw new TspIdServiceException(TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorCode(),
-					TspIdExceptionConstant.TSPID_INSERTION_EXCEPTION.getErrorMessage(), e);
 		}
 
-		return String.valueOf(entity.getTspId());
+		return String.valueOf(generatedId);
 
 	}
 
