@@ -14,6 +14,10 @@ public class MessageSenderUtil {
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
 
+	/** The notification types. */
+	@Value("${registration.processor.globalconfigjson}")
+	private String getGlobalConfigJson;
+
 	@Value("${registration.processor.templatejson}")
 	private String getRegProcessorTemplateJson;
 

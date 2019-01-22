@@ -2,12 +2,14 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
@@ -42,7 +44,6 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 @RefreshScope
 @Component
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
-
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverServiceImpl.class);
@@ -100,7 +101,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			boolean isTransactionSuccessful = false;
 			SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			if (regEntity == null) {
-                regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,"Registration Packet is Not yet sync in Sync table.");
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"Registration Packet is Not yet sync in Sync table.");
 				throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 			}
 
@@ -127,7 +130,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					storageFlag = true;
 					isTransactionSuccessful = true;
 				} catch (DataAccessException | IOException e) {
-                    regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,"Error while updating status : "+e.getMessage());
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+							"Error while updating status : " + e.getMessage());
 				} finally {
 					String eventId = "";
 					String eventName = "";
@@ -155,11 +160,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 		}
 		return storageFlag;
-	}
-
-
-	boolean fileExists(MultipartFile file, String fileOriginalName){
-		return file.getOriginalFilename() != null && !file.isEmpty() && fileOriginalName != null;
 	}
 
 	/**
