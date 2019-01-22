@@ -4,6 +4,7 @@ node {
  def buildInfo
  def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'registration-processor'
+ def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
  def registryCredentials = '305c7f35-2eb5-44b4-b574-a0855ef70c26'
@@ -41,7 +42,7 @@ node {
  
 stage ('---------- mvn-clean-install ---------------') {
 	//rtMaven.deployer.deployArtifacts = false
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
 }
 
 stage('---------- SonarQube Analysis --------------') {
@@ -77,13 +78,13 @@ stage('-----------Docker image push and cleanup-----------') {
 			echo "$currentModule"
 			echo "$parentDirectoryName"
 			echo "$parentDirectoryPath"
-			def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
+			def buildName = "$parentDirectoryName:$dockerImagesTagVersion"
+			newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
 			    newApp.push()
 			    newApp.push 'latest'
 			 }
-			sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+			sh "docker rmi $parentDirectoryName:$dockerImagesTagVersion"
+			sh "docker rmi $registryName/$parentDirectoryName:$dockerImagesTagVersion"
 			sh "docker rmi $registryName/$parentDirectoryName"
 
 			}
@@ -96,12 +97,13 @@ stage('-----------Docker image push and cleanup-----------') {
 stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
-      sh "kubectl set image deployment/registration-processor-dmz registration-processor-packet-reciever-service=docker-registry.mosip.io:5000/packet-receiver-stage:$BUILD_NUMBER registration-processor-virus-scanner-stage=docker-registry.mosip.io:5000/virus-scanner-stage:$BUILD_NUMBER registration-processor-packet-uploader-stage=docker-registry.mosip.io:5000/packet-uploader-stage:$BUILD_NUMBER"
 
-      sh "kubectl set image deployment/registration-processor-stages registration-processor-packet-validator-service=docker-registry.mosip.io:5000/packet-validator-stage:$BUILD_NUMBER registration-processor-osi-validator=docker-registry.mosip.io:5000/osi-validator-stage:$BUILD_NUMBER registration-processor-demo-dedupe-stage=docker-registry.mosip.io:5000/demo-dedupe-stage:$BUILD_NUMBER registration-processor-manual-verification-stage=docker-registry.mosip.io:5000/manual-verification-stage:$BUILD_NUMBER"
+      sh "kubectl set image deployment/registration-processor-dmz registration-processor-packet-reciever-service=docker-registry.mosip.io:5000/packet-receiver-stage:$dockerImagesTagVersion registration-processor-virus-scanner-stage=docker-registry.mosip.io:5000/virus-scanner-stage:$dockerImagesTagVersion registration-processor-packet-uploader-stage=docker-registry.mosip.io:5000/packet-uploader-stage:$dockerImagesTagVersion"
+      sh "kubectl set image deployment/registration-processor-stages registration-processor-packet-validator-service=docker-registry.mosip.io:5000/packet-validator-stage:$dockerImagesTagVersion registration-processor-osi-validator=docker-registry.mosip.io:5000/osi-validator-stage:$dockerImagesTagVersion registration-processor-demo-dedupe-stage=docker-registry.mosip.io:5000/demo-dedupe-stage:$dockerImagesTagVersion registration-processor-manual-verification-stage=docker-registry.mosip.io:5000/manual-verification-stage:$dockerImagesTagVersion"
+      sh "kubectl set image deployment/registration-processor-registration-status-api registration-status-api=docker-registry.mosip.io:5000/registration-status-api:$dockerImagesTagVersion"
       
       echo "Getting list of all services" 
-      sh "kubectl get services"
+      sh "kubectl get pods"
     }
 
 }

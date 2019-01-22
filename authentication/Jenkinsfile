@@ -4,6 +4,7 @@ node {
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
  def branch = env.NEXT_BRANCH_NAME
+ def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def projectToBuild = 'authentication'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
@@ -42,7 +43,7 @@ node {
  }
 
 stage ('---------- mvn-clean-install ---------------') {
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
 }
 
 stage('---------- SonarQube Analysis --------------') {
@@ -78,13 +79,13 @@ stage('-----------Docker image push and cleanup-----------') {
 			echo "$currentModule"
 			echo "$parentDirectoryName"
 			echo "$parentDirectoryPath"
-			def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
+			def buildName = "$parentDirectoryName:$dockerImagesTagVersion"
+			newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
 			    newApp.push()
 			    newApp.push 'latest'
 			 }
-			sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+			sh "docker rmi $parentDirectoryName:$dockerImagesTagVersion"
+			sh "docker rmi $registryName/$parentDirectoryName:$dockerImagesTagVersion"
 			sh "docker rmi $registryName/$parentDirectoryName"
 
 			}
@@ -97,9 +98,9 @@ stage('-----------Docker image push and cleanup-----------') {
 stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
-      sh " kubectl set image deployment/authentication-service authentication-service=docker-registry.mosip.io:5000/authentication-service:$BUILD_NUMBER"
+      sh " kubectl set image deployment/authentication-service authentication-service=docker-registry.mosip.io:5000/authentication-service:$dockerImagesTagVersion"
       echo "Getting list of all services" 
-      sh "kubectl get services"
+      sh "kubectl get pods"
     }
  
 

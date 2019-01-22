@@ -109,6 +109,7 @@
 
 	<modules>
 		<module>kernel-core</module>
+		<module>kernel-auth-adapter</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
@@ -123,6 +124,7 @@
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
+		<module>kernel-idvalidator-tspid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
@@ -144,6 +146,8 @@
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-idrepo-service</module>
 		<module>kernel-syncdata-service</module>
+		<module>kernel-auth-service</module>
+		<module>kernel-ldap-service</module>
 		<module>kernel-config-server</module>
 
 		<module>kernel-idgenerator-uin</module>

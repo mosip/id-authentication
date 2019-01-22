@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.idgenerator.tspid.entity;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "tspid", schema = "ids")
+@Table(name = "tspid_seq", schema = "master")
 @Data
 public class Tsp {
 
@@ -25,42 +26,31 @@ public class Tsp {
 	 * The TSPID generated.
 	 */
 	@Id
-	@Column(name = "tsp_id", nullable = false)
+	@Column(name = "curr_seq_no", nullable = false)
 	private int tspId;
 
 	/**
-	 * Created time for TSPID.
+	 * The ID created by.
+	 */
+	@Column(name = "cr_by", nullable = false)
+	private String createdBy;
+
+	/**
+	 * The ID created at.
 	 */
 	@Column(name = "cr_dtimes", nullable = false)
 	private LocalDateTime createdDateTime;
 
 	/**
-	 * Updated By
+	 * The ID updated by.
 	 */
 	@Column(name = "upd_by")
 	private String updatedBy;
 
 	/**
-	 * Update date time
+	 * The ID updated at.
 	 */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updatedDateTime;
 
-	/**
-	 * Is Deleted Or Not
-	 */
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	/**
-	 * Deleted date time.
-	 */
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedDateTime;
-
-	/**
-	 * Created by.
-	 */
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
 }

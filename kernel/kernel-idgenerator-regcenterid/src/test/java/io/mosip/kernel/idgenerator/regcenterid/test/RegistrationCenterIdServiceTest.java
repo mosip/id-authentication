@@ -21,8 +21,9 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class RegistrationCenterIdServiceTest {
+
 	@Autowired
-	RegistrationCenterIdGenerator<Integer> service;
+	RegistrationCenterIdGenerator<String> service;
 
 	@MockBean
 	RegistrationCenterIdRepository repository;
@@ -31,9 +32,9 @@ public class RegistrationCenterIdServiceTest {
 	public void generateRegistrationCenterIdTest() {
 		RegistrationCenterId entity = new RegistrationCenterId();
 		entity.setRcid(1000);
-		when(repository.findMaxRegistrationCenterId()).thenReturn(null);
+		when(repository.findLastRCID()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateRegistrationCenterId(), is(1000));
+		assertThat(service.generateRegistrationCenterId(), is("1000"));
 	}
 
 	@Test
@@ -42,37 +43,45 @@ public class RegistrationCenterIdServiceTest {
 		entity.setRcid(1000);
 		RegistrationCenterId entityResponse = new RegistrationCenterId();
 		entityResponse.setRcid(1001);
-		when(repository.findMaxRegistrationCenterId()).thenReturn(entity);
+		when(repository.findLastRCID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateRegistrationCenterId(), is(1001));
+		assertThat(service.generateRegistrationCenterId(), is("1001"));
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void generateIdFetchExceptionTest() {
-		when(repository.findMaxRegistrationCenterId())
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.findLastRCID()).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateRegistrationCenterId();
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void generateIdInsertExceptionTest() {
-		when(repository.findMaxRegistrationCenterId()).thenReturn(null);
+		when(repository.findLastRCID()).thenReturn(null);
 		when(repository.save(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+				.thenThrow(new RegistrationCenterIdServiceException("", "cannot execute statement", null));
 		service.generateRegistrationCenterId();
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void idServiceFetchExceptionTest() throws Exception {
 
-		when(repository.findMaxRegistrationCenterId())
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.findLastRCID()).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateRegistrationCenterId();
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)
 	public void idServiceInsertExceptionTest() throws Exception {
 		when(repository.save(Mockito.any()))
+				.thenThrow(new RegistrationCenterIdServiceException("", "cannot execute statement", null));
+		service.generateRegistrationCenterId();
+	}
+
+	@Test(expected = RegistrationCenterIdServiceException.class)
+	public void tspIdServiceExceptionTest() throws Exception {
+		RegistrationCenterId entity = new RegistrationCenterId();
+		entity.setRcid(1000);
+		when(repository.findLastRCID()).thenReturn(entity);
+		when(repository.updateRCID(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateRegistrationCenterId();
 	}
