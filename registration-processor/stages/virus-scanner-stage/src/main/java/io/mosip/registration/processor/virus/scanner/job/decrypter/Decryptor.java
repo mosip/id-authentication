@@ -117,6 +117,7 @@ public class Decryptor {
 		return outstream;
 	}
 
+	// This should be removed after uncommenting virus scan
 	public boolean getScanResult() throws VirusScanFailedException {
 		return true;
 
