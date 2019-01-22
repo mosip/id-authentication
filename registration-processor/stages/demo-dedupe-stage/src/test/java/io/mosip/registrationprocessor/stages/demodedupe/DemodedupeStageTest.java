@@ -44,29 +44,43 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
+/**
+ * The Class DemodedupeStageTest.
+ */
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class DemodedupeStageTest {
 
+	/** The registration status service. */
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The manual verfication repository. */
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
+	/** The manual verification entity. */
 	private ManualVerificationEntity manualVerificationEntity;
 
+	/** The demographic dedupe repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
+
+	/** The demo dedupe. */
 	@Mock
 	private DemoDedupe demoDedupe;
 
+	/** The dto. */
 	private MessageDTO dto = new MessageDTO();
+
+	/** The duplicate dtos. */
 	private List<DemographicInfoDto> duplicateDtos = new ArrayList<>();
 
+	/** The demodedupe stage. */
 	@InjectMocks
 	private DemodedupeStage demodedupeStage = new DemodedupeStage() {
 		@Override
@@ -80,14 +94,24 @@ public class DemodedupeStageTest {
 		}
 	};
 
+	/**
+	 * Test deploy verticle.
+	 */
 	@Test
 	public void testDeployVerticle() {
 		demodedupeStage.deployVerticle();
 	}
 
+	/** The audit log request builder. */
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Before
 	public void setUp() throws Exception {
 
@@ -112,6 +136,9 @@ public class DemodedupeStageTest {
 
 	}
 
+	/**
+	 * Test demo dedupe success.
+	 */
 	@Test
 	public void testDemoDedupeSuccess() {
 
@@ -123,6 +150,14 @@ public class DemodedupeStageTest {
 
 	}
 
+	/**
+	 * Test demo dedupe potential match.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupePotentialMatch() throws ApisResourceAccessException, IOException {
@@ -135,6 +170,14 @@ public class DemodedupeStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 
+	/**
+	 * Test demo dedupe failure.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupeFailure() throws ApisResourceAccessException, IOException {
@@ -146,6 +189,14 @@ public class DemodedupeStageTest {
 		demodedupeStage.process(dto);
 	}
 
+	/**
+	 * Test resource exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testResourceException() throws ApisResourceAccessException, IOException {
@@ -158,6 +209,14 @@ public class DemodedupeStageTest {
 		assertEquals(true, messageDto.getInternalError());
 	}
 
+	/**
+	 * Test exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testException() throws ApisResourceAccessException, IOException {
