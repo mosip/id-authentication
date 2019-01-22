@@ -291,7 +291,7 @@ public class MessageNotificationServiceImpl
 			}
 		}
 
-		attributes.put("FirstName", firstName);
+		attributes.put("name", firstName);
 
 		return templatejson;
 	}
