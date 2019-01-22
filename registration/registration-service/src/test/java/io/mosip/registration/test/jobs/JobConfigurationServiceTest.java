@@ -126,9 +126,26 @@ public class JobConfigurationServiceTest {
 	public void startJobsShedulerExceptionTest() throws SchedulerException {
 		BaseJob job = new PacketSyncStatusJob();
 
-		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
 		//Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenThrow(SchedulerException.class);
 
+		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
+		doNothing().when(scheduler).clear();
+		initiateJobTest();
+		//Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
+		jobConfigurationService.startScheduler(applicationContext);
+		
+	
+	}
+	
+	@Test
+	public void startJobsShedulerExceptionTest2() throws SchedulerException {
+		BaseJob job = new PacketSyncStatusJob();
+
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
+		//Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenThrow(SchedulerException.class);
+
+		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
 		initiateJobTest();
 		//Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
 		jobConfigurationService.startScheduler(applicationContext);
@@ -142,6 +159,9 @@ public class JobConfigurationServiceTest {
 	public void stopJobsTest() throws SchedulerException {
 
 		Mockito.when(schedulerFactoryBean.isRunning()).thenReturn(true);
+		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
+		doNothing().when(scheduler).clear();
+		
 		doNothing().when(schedulerFactoryBean).stop();
 		jobConfigurationService.stopScheduler();
 		
