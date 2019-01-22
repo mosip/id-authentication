@@ -96,4 +96,4 @@ Note:
 
 **Sequence Diagram :**
 
-![Update UIN Sequence Diagram](_images/update_uin_seq_diagram.png)
+![Update UIN Sequence Diagram](_images/updateUINSequence.png)
