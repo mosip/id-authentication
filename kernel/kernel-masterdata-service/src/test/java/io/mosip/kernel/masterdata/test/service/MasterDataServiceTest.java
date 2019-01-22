@@ -1611,6 +1611,17 @@ public class MasterDataServiceTest {
 		Assert.assertEquals("Rejected", resgistrationCenterStatusResponseDto.getStatus());
 
 	}
+	
+	@Test(expected =RequestException.class)
+	public void invalidDateFormatTest() throws Exception {
+		Mockito.when(registrationCenterRepository.validateDateWithHoliday(Mockito.any(), Mockito.any()))
+				.thenReturn(false);
+		Mockito.when(registrationCenterRepository.findById(Mockito.any(), Mockito.anyString()))
+				.thenReturn(registrationCenter);
+
+		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "2017-12-1217:59:59.999Z");
+
+	}
 
 	
 
