@@ -1,5 +1,6 @@
 package io.mosip.registration.repositories;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -54,4 +55,13 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @return
 	 */
 	List<Registration> findByClientStatusCodeAndServerStatusCode(String clientStatus, String serverStatus);
+	
+	/**
+	 * Find by CrDtimes and client status code
+	 * @param crDtimes the date upto packets to be deleted
+	 * @param clientStatus status of resgistrationPacket
+	 * @return list of registrations
+	 */
+	List<Registration> findByCrDtimeBeforeAndClientStatusCodeNot(Timestamp crDtimes, String clientStatus);
+
 }

@@ -15,29 +15,36 @@ public class BiometricExceptionDTO extends BaseDTO {
 	protected String exceptionDescription;
 	// Permanent or Temporary
 	protected String exceptionType;
+
 	public String getBiometricType() {
 		return biometricType;
 	}
+
 	public void setBiometricType(String biometricType) {
 		this.biometricType = biometricType;
 	}
+
 	public String getMissingBiometric() {
 		return missingBiometric;
 	}
+
 	public void setMissingBiometric(String missingBiometric) {
 		this.missingBiometric = missingBiometric;
 	}
+
 	public String getExceptionDescription() {
 		return exceptionDescription;
 	}
+
 	public void setExceptionDescription(String exceptionDescription) {
 		this.exceptionDescription = exceptionDescription;
 	}
+
 	public String getExceptionType() {
 		return exceptionType;
 	}
+
 	public void setExceptionType(String exceptionType) {
 		this.exceptionType = exceptionType;
 	}
-	
 }

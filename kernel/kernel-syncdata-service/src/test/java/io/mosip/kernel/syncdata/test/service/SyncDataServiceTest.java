@@ -186,7 +186,7 @@ public class SyncDataServiceTest {
 		syncConfigDetailsService.getGlobalConfigDetails();
 	}
 
-	@Test
+	//@Test
 	public void getConfigurationSuccess() {
 		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
 		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());

@@ -9,16 +9,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
+import io.mosip.registration.dto.mastersync.MasterReasonListDto;
+import io.mosip.registration.service.MasterSyncService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,6 +49,8 @@ public class RejectionController extends BaseController implements Initializable
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RejectionController.class);
 
+	@Autowired
+	private MasterSyncService masterSyncService;
 	/**
 	 * Combobox for for rejection reason
 	 */
@@ -85,9 +90,11 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-		rejectionComboBox.setItems(FXCollections.observableArrayList(String.valueOf(
-				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.REJECTION_COMMENTS))
-				.split(",")));
+
+		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList("ENG");
+		rejectionComboBox.setItems(FXCollections
+				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
+
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
@@ -139,7 +146,8 @@ public class RejectionController extends BaseController implements Initializable
 
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
-					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),RegistrationConstants.REJECTED);
+					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
+					RegistrationConstants.REJECTED);
 			regRejectionTable.getItems().set(regRejectionTable.getSelectionModel().getSelectedIndex(), approvalDTO);
 
 			LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,

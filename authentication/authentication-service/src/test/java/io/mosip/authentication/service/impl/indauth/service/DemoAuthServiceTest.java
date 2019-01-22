@@ -35,6 +35,9 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.BioInfo;
+import io.mosip.authentication.core.dto.indauth.BioType;
+import io.mosip.authentication.core.dto.indauth.DeviceInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
@@ -102,11 +105,23 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.setId("IDA");
 		authRequestDTO.setIdvId("426789089018");
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
 		RequestDTO requestDTO = new RequestDTO();
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue("Test");
 		infoList.add(identityInfoDTO);
 		identityDTO.setFullAddress(infoList);
@@ -118,19 +133,19 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("fullAddress");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfo.setMatchingThreshold(60);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO identityinfo = new IdentityInfoDTO();
-		identityinfo.setLanguage("FR");
+		identityinfo.setLanguage("fre");
 		identityinfo.setValue("exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3");
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> addresslist = new ArrayList<>();
@@ -143,8 +158,9 @@ public class DemoAuthServiceTest {
 		Map<String, Object> matchProperties = new HashMap<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		DeviceInfo deviceInfo1=null;
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_SEC,
-				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties));
+				MatchingStrategyType.PARTIAL.getType(), 60, matchProperties,deviceInfo));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -162,6 +178,18 @@ public class DemoAuthServiceTest {
 	public void adMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setAddress(true);
 		authType.setFullAddress(false);
@@ -176,7 +204,7 @@ public class DemoAuthServiceTest {
 		IdentityDTO identityDTO = new IdentityDTO();
 		List<IdentityInfoDTO> infoList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(
 				"exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3 Casablanca Tanger-Tétouan-Al Hoceima Fès-Meknès");
 		infoList.add(identityInfoDTO);
@@ -189,34 +217,34 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("address");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		IdentityInfoDTO address1 = new IdentityInfoDTO();
-		address1.setLanguage("FR");
+		address1.setLanguage("fre");
 		address1.setValue("exemple d'adresse ligne 1 ");
 		IdentityInfoDTO address2 = new IdentityInfoDTO();
-		address2.setLanguage("FR");
+		address2.setLanguage("fre");
 		address2.setValue("exemple d'adresse ligne 2");
 		IdentityInfoDTO address3 = new IdentityInfoDTO();
-		address3.setLanguage("FR");
+		address3.setLanguage("fre");
 		address3.setValue("exemple d'adresse ligne 3");
 		IdentityInfoDTO location1 = new IdentityInfoDTO();
-		location1.setLanguage("FR");
+		location1.setLanguage("fre");
 		location1.setValue("Casablanca");
 		IdentityInfoDTO location2 = new IdentityInfoDTO();
-		location2.setLanguage("FR");
+		location2.setLanguage("fre");
 		location2.setValue("Tanger-Tétouan-Al Hoceima");
 		IdentityInfoDTO location3 = new IdentityInfoDTO();
-		location3.setLanguage("FR");
+		location3.setLanguage("fre");
 		location3.setValue("Fès-Meknès");
 		IdentityDTO identity = new IdentityDTO();
 		List<IdentityInfoDTO> addressLine1 = new ArrayList<>();
@@ -243,19 +271,20 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		DeviceInfo deviceInfo1=null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE1_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE2_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.ADDR_LINE3_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION1_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION2_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.LOCATION3_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_SEC, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -277,6 +306,18 @@ public class DemoAuthServiceTest {
 			IllegalArgumentException, InvocationTargetException {
 
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
+		authRequestDTO.setBioInfo(bioInfoList);
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setAddress(false);
 		authType.setFullAddress(false);
@@ -292,10 +333,10 @@ public class DemoAuthServiceTest {
 		/* Name */
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO nameInfoDTO = new IdentityInfoDTO();
-		nameInfoDTO.setLanguage("FR");
+		nameInfoDTO.setLanguage("fre");
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
-		identityDTO.setName(nameList);
+		identityDTO.setFullName(nameList);
 		requestDTO.setIdentity(identityDTO);
 		authRequestDTO.setIdvIdType("D");
 		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
@@ -304,15 +345,15 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identityDTO);
@@ -321,19 +362,20 @@ public class DemoAuthServiceTest {
 		// authRequestDTO.setVer("1.0");
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		AuthType demoAuthType = null;
+		DeviceInfo deviceInfo1=null;
 		Map<String, Object> matchProperties = new HashMap<>();
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.NAME_SEC,
-				MatchingStrategyType.EXACT.getType(), 100, matchProperties));
+				MatchingStrategyType.EXACT.getType(), 100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.PHONE, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		listMatchInputsExp.add(new MatchInput(demoAuthType, DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-				100, matchProperties));
+				100, matchProperties,deviceInfo));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
@@ -405,7 +447,7 @@ public class DemoAuthServiceTest {
 		Map<String, List<IdentityInfoDTO>> entityInfo = new HashMap<>();
 		List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
 		IdentityInfoDTO infoDTO = new IdentityInfoDTO();
-		infoDTO.setLanguage("FR");
+		infoDTO.setLanguage("fre");
 		infoDTO.setValue("Ibrahim");
 		identityInfoList.add(infoDTO);
 		entityInfo.put("firstName", identityInfoList);
@@ -442,10 +484,10 @@ public class DemoAuthServiceTest {
 		/* Name */
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO nameInfoDTO = new IdentityInfoDTO();
-		nameInfoDTO.setLanguage("FR");
+		nameInfoDTO.setLanguage("fre");
 		nameInfoDTO.setValue("Ibrahim Ibn Ali");
 		nameList.add(nameInfoDTO);
-		identityDTO.setName(nameList);
+		identityDTO.setFullName(nameList);
 		requestDTO.setIdentity(identityDTO);
 		authRequestDTO.setIdvIdType("D");
 		AuthSecureDTO authSecureDTO = new AuthSecureDTO();
@@ -454,15 +496,15 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setKey(authSecureDTO);
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.EXACT.getType());
 		matchInfo.setMatchingThreshold(100);
 		List<MatchInfo> matchInfolist = new ArrayList<>();
 		matchInfolist.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfolist);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setPinInfo(new ArrayList<>());
-		authRequestDTO.setReqHmac("string");
+//		authRequestDTO.setReqHmac("string");
 		authRequestDTO.setReqTime("2018-10-30T11:02:22.778+0000");
 		RequestDTO request = new RequestDTO();
 		request.setIdentity(identityDTO);
@@ -506,19 +548,31 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIdvId("274390482564");
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setKey(new AuthSecureDTO());
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
 		List<MatchInfo> matchInfoList = new ArrayList<>();
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setBioInfo(bioInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();
@@ -526,15 +580,15 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Ibrahim";
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
-		identity.setName(nameList);
+		identity.setFullName(nameList);
 		requestDTO.setIdentity(identity);
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("FR");
+		identityInfoDTO1.setLanguage("fre");
 		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
@@ -542,8 +596,8 @@ public class DemoAuthServiceTest {
 		String uin = "274390482564";
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("mosip.primary.lang-code", "FR");
-		mockenv.setProperty("mosip.secondary.lang-code", "AR");
+		mockenv.setProperty("mosip.primary.lang-code", "fre");
+		mockenv.setProperty("mosip.secondary.lang-code", "ara");
 		ReflectionTestUtils.setField(actualidInfoHelper, "environment", mockenv);
 		AuthStatusInfo validateBioDetails = demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoIdentity);
 		assertTrue(validateBioDetails.isStatus());
@@ -575,19 +629,31 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setIdvId("274390482564");
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setKey(new AuthSecureDTO());
+		BioInfo bioinfo = new BioInfo();
+		bioinfo.setBioType(BioType.FGRIMG.getType());
+
+		DeviceInfo deviceInfo = new DeviceInfo();
+		deviceInfo.setDeviceId("12345");
+		deviceInfo.setMake("Mantra");
+		deviceInfo.setModel("M123");
+		bioinfo.setDeviceInfo(deviceInfo);
+
+		List<BioInfo> bioInfoList = new ArrayList<BioInfo>();
+		bioInfoList.add(bioinfo);
 		List<MatchInfo> matchInfoList = new ArrayList<>();
 		MatchInfo matchInfo = new MatchInfo();
 		matchInfo.setAuthType("personalIdentity");
-		matchInfo.setLanguage("FR");
+		matchInfo.setLanguage("fre");
 		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
 		matchInfo.setMatchingThreshold(60);
 		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
-		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setBioInfo(bioInfoList);
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
-		authRequestDTO.setReqHmac("1234567890");
+//		authRequestDTO.setReqHmac("1234567890");
 		authRequestDTO.setTxnID("1234567890");
 		// authRequestDTO.setVer("1.0");
 		RequestDTO requestDTO = new RequestDTO();
@@ -595,14 +661,14 @@ public class DemoAuthServiceTest {
 		List<IdentityInfoDTO> nameList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Ibrahim";
-		identityInfoDTO.setLanguage("FR");
+		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(value);
 		nameList.add(identityInfoDTO);
-		identity.setName(nameList);
+		identity.setFullName(nameList);
 		requestDTO.setIdentity(identity);
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
-		demoEntity.put("name", nameList);
+		demoEntity.put("fullName", nameList);
 		AuthStatusInfo demoStatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "274390482564", demoEntity);
 
 	}

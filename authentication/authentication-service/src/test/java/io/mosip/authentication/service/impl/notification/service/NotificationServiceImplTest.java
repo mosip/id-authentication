@@ -139,12 +139,12 @@ public class NotificationServiceImplTest {
 		
 
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 		
 		//authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("N");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
+		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "274390482564";
@@ -164,7 +164,7 @@ public class NotificationServiceImplTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("internal.auth.notification.type", "email,sms");
-		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("mosip.auth.sms.template", "test");
 		mockenv.setProperty("uin.masking.required", "true");
 		mockenv.setProperty("uin.masking.charcount", "8");
@@ -186,12 +186,12 @@ public class NotificationServiceImplTest {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
-				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).toString());
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
 		
 		//authRequestDTO.setReqTime(ZonedDateTime.now()
 		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
 		authResponseDTO.setStatus("y");
-		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
+		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
 		Supplier<Object> Supplier = () -> new String("Success");
 		Mockito.when(restHelper.requestAsync(Mockito.any())).thenReturn(Supplier);
 		String uin = "4667732";
@@ -218,7 +218,7 @@ public class NotificationServiceImplTest {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		mockenv.setProperty("auth.notification.type", "email,sms");
-		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		mockenv.setProperty("datetime.pattern", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		mockenv.setProperty("mosip.auth.sms.template", "test");
 		mockenv.setProperty("notification.date.format", "dd-MM-yyyy");
 		mockenv.setProperty("notification.time.format", "HH:mm:ss");

@@ -1,9 +1,15 @@
 package io.mosip.registration.device.iris;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACADE;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -14,13 +20,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_FACADE;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * It takes a decision based on the input provider name and initialize the
@@ -99,6 +102,34 @@ public class IrisFacade {
 					String.format("Exception while scanning iris details for user registration: %s caused by %s",
 							runtimeException.getMessage(), runtimeException.getCause()));
 		}
+	}
+	
+	/**
+	 * Capture Iris
+	 * 
+	 * @return byte[] of captured Iris
+	 */
+	public byte[] captureIris() {
+		
+		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+				"Stub data for Iris");
+		
+		return RegistrationConstants.IRIS_STUB.getBytes();
+	}
+	
+	/**
+	 * Validate Iris
+	 * 
+	 * @return boolean of captured Iris
+	 */
+	public boolean validateIris(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails) {
+		
+		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+				"Validating iris details for user registration");
+		
+		userIrisDetails.forEach(irisEach -> 
+		irisDetailsDTO.setIrisType(irisEach.getUserBiometricId().getBioAttributeCode()+".jpg"));
+		return userIrisDetails.stream().anyMatch(iris -> Arrays.equals(irisDetailsDTO.getIris(), iris.getBioIsoImage()));
 	}
 
 }

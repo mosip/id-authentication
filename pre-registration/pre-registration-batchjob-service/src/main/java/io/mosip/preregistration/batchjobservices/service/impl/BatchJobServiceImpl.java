@@ -1,7 +1,7 @@
 package io.mosip.preregistration.batchjobservices.service.impl;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,15 +11,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.code.ErrorCode;
 import io.mosip.preregistration.batchjobservices.code.ErrorMessage;
-import io.mosip.preregistration.batchjobservices.dto.ResponseDto;
 import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.NoPreIdAvailableException;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationDemographicRepository;
 import io.mosip.preregistration.batchjobservices.repository.PreRegistrationProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.service.BatchJobService;
+import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
@@ -34,17 +35,8 @@ public class BatchJobServiceImpl implements BatchJobService {
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BatchJobServiceImpl.class);
 
-	/** The Constant USER. */
-	private static final String USER = "MOSIP_SYSTEM";
-
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
-
-	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
-	private static final String APPLICANT_DEMOGRAPHIC_STATUS_TABLE_NOT_ACCESSIBLE = "The applicant demographic table is not accessible";
-
-	/** The Constant Status. */
-	private static final String STATUS = "Consumed";
 
 	/** The Constant Status comments. */
 	private static final String STATUS_COMMENTS = "Processed by registration processor";
@@ -72,9 +64,9 @@ public class BatchJobServiceImpl implements BatchJobService {
 	 * demographicConsumedStatus()
 	 */
 	@Override
-	public ResponseDto<String> demographicConsumedStatus() {
+	public MainResponseDTO<String> demographicConsumedStatus() {
 
-		ResponseDto<String> response = new ResponseDto<>();
+		MainResponseDTO<String> response = new MainResponseDTO<>();
 
 		List<ProcessedPreRegEntity> preRegList = new ArrayList<>();
 
@@ -86,20 +78,26 @@ public class BatchJobServiceImpl implements BatchJobService {
 				String preRegId = iterate.getPreRegistrationId();
 
 				try {
-					ApplicantDemographic applicant_demographic = preRegistrationDemographicRepository
+					ApplicantDemographic demographicEntity = preRegistrationDemographicRepository
 							.findBypreRegistrationId(preRegId);
+					if (demographicEntity != null) {
 
-					applicant_demographic.setStatusCode(status);
+						demographicEntity.setStatusCode(status);
 
-					preRegistrationDemographicRepository.save(applicant_demographic);
+						preRegistrationDemographicRepository.save(demographicEntity);
 
-					iterate.setStatusComments(NEW_STATUS_COMMENTS);
+						iterate.setStatusComments(NEW_STATUS_COMMENTS);
 
-					LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");
+						LOGGER.info(LOGDISPLAY, "Update the status successfully into Applicant demographic table");
+
+					} else {
+						throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_001.toString(),
+								ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.toString());
+					}
 
 				} catch (DataAccessLayerException e) {
 					throw new TableNotAccessibleException(ErrorCode.PRG_PAM_BAT_004.toString(),
-							ErrorMessage.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
+							ErrorMessage.DEMOGRAPHIC_TABLE_NOT_ACCESSIBLE.toString(), e.getCause());
 				}
 			});
 
@@ -109,11 +107,15 @@ public class BatchJobServiceImpl implements BatchJobService {
 			throw new NoPreIdAvailableException(ErrorCode.PRG_PAM_BAT_001.name(),
 					ErrorMessage.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_CONSUMED_STATUS.name());
 		}
-		response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setResTime(getCurrentResponseTime());
 		response.setStatus(true);
 		response.setResponse("Demographic status to consumed updated successfully");
 		return response;
 
+	}
+
+	public String getCurrentResponseTime() {
+		return DateUtils.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	}
 
 }

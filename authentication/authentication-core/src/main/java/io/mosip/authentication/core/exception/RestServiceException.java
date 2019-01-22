@@ -50,6 +50,7 @@ public class RestServiceException extends IdAuthenticationAppException {
 	 * Instantiates a new rest service exception.
 	 *
 	 * @param exceptionConstant the exception constant
+	 * @param responseBodyAsString the response body as string
 	 * @param responseBody      the response body
 	 */
 	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, String responseBodyAsString,

@@ -4,9 +4,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- <parent> <groupId>io.mosip</groupId> <artifactId>mosip-parent</artifactId> 
-		<version>1.0.0-SNAPSHOT</version> </parent> -->
-	<version>1.0.0-SNAPSHOT</version>
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.8.0</version>
+	</parent>
+
 
 	<groupId>io.mosip.kernel</groupId>
 	<artifactId>kernel-parent</artifactId>
@@ -84,50 +87,52 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
-		
-		<!--QR Code-->
+
+		<!--QR Code -->
 		<google.zxing.version>3.3.3</google.zxing.version>
-		<!-- itext core version-->
+		<!-- itext core version -->
 		<itextcore.version>7.1.0</itextcore.version>
 		<!-- itext html2pdf version -->
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
-		
+
 		<!-- Freemarker -->
 		<freemarker.version>2.3.23</freemarker.version>
 		<!-- Velocity -->
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<!-- Orika -->
-		<datamapper.orika>1.4.6</datamapper.orika>
-		
+		<datamapper.orika>1.5.2</datamapper.orika>
+
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
 		<module>kernel-core</module>
-
+		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
-		<module>kernel-auditmanager-api</module>
 		<module>kernel-idgenerator-prid</module>
-		<module>kernel-idgenerator-rid</module>
-		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
-		<module>kernel-packetuploader-sftp-jsch</module>
-		<module>kernel-idvalidator</module>
+		<module>kernel-idgenerator-machineid</module>
+		<module>kernel-idgenerator-regcenterid</module>
+		<module>kernel-idgenerator-tspid</module>
+		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idvalidator-prid</module>
+		<module>kernel-idvalidator-rid</module>
+		<module>kernel-idvalidator-uin</module>
+		<module>kernel-idvalidator-vid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
-		<!--<module>kernel-crypto-bouncycastle</module> -->
 		<module>kernel-crypto-jce</module>
+		<module>kernel-keymanager-softhsm</module>
+		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-templatemanager-velocity</module>
-		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
-		<module>kernel-keymanager-softhsm</module>
 		<module>kernel-qrcodegenerator-zxing</module>
 
 		<module>kernel-masterdata-service</module>
@@ -139,17 +144,17 @@
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-idrepo-service</module>
 		<module>kernel-syncdata-service</module>
-
-		<module>kernel-batch-framework</module>
-		<module>kernel-batch-server</module>
 		<module>kernel-config-server</module>
-		<module>kernel-packetserver-sftp</module>
-		<module>kernel-packetserver-http</module>
 
-		<module>kernel-idvalidator-prid</module>
-		<module>kernel-idvalidator-rid</module>
-		<module>kernel-idvalidator-uin</module>
-		<module>kernel-idvalidator-vid</module>
+		<module>kernel-idgenerator-uin</module>
+		<module>kernel-packetserver-http</module>
+		<module>kernel-idvalidator</module>
+		<!-- <module>kernel-templatemanager-freemarker</module> -->
+		<!-- <module>kernel-packetserver-sftp</module> -->
+		<!-- <module>kernel-batch-framework</module> -->
+		<!-- <module>kernel-batch-server</module> -->
+		<!--<module>kernel-crypto-bouncycastle</module> -->
+
 	</modules>
 
 	<dependencies>

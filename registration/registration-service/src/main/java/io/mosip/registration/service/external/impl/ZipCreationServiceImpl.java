@@ -2,7 +2,6 @@ package io.mosip.registration.service.external.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -15,9 +14,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.biometric.BiometricInfoDTO;
-import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
-import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -49,7 +45,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	 * registration.dto.RegistrationDTO, java.util.Map)
 	 */
 	@Override
-	public byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> jsonMap)
+	public byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket)
 			throws RegBaseCheckedException {
 		LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet Zip had been called");
 
@@ -59,20 +55,21 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 			registrationDTO.getBiometricDTO();
 			if (checkNotNull(registrationDTO.getBiometricDTO())) {
-				String folderName;
 				// Biometric -> Applicant Folder
-				if (checkNotNull(registrationDTO.getBiometricDTO().getApplicantBiometricDTO())) {
-					folderName = "Biometric".concat(separator).concat("Applicant").concat(separator);
-					addBiometricImages(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(), folderName,
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME)) {
+					writeFileToZip(
+							"Biometric".concat(separator).concat(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
+							filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
 							zipOutputStream);
 
 					LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's biometric added");
 				}
 
 				// Add Introducer Biometrics to packet zip
-				if (checkNotNull(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO())) {
-					folderName = "Biometric".concat(separator).concat("Introducer").concat(separator);
-					addBiometricImages(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), folderName,
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME)) {
+					writeFileToZip(
+							"Biometric".concat(separator).concat(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
+							filesGeneratedForPacket.get(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
 							zipOutputStream);
 
 					LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Introcucer's biometric added");
@@ -82,47 +79,56 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 			// Create folder structure for Demographic
 			if (checkNotNull(registrationDTO.getDemographicDTO())) {
 				if (checkNotNull(registrationDTO.getDemographicDTO().getApplicantDocumentDTO())) {
-					String folderName = "Demographic".concat(separator).concat("Applicant").concat(separator);
-					addDemogrpahicData(registrationDTO.getDemographicDTO(), folderName, zipOutputStream);
+					addDemogrpahicData(registrationDTO.getDemographicDTO(), "Demographic".concat(separator),
+							zipOutputStream);
 
 					LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's demographic added");
 				}
-				writeFileToZip("Demographic".concat(separator).concat("DemographicInfo").concat(JSON_FILE_EXTENSION),
-						jsonMap.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
+				writeFileToZip("Demographic".concat(separator).concat(RegistrationConstants.DEMOGRPAHIC_JSON_NAME),
+						filesGeneratedForPacket.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
 
 				LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic JSON added");
 			}
 
 			// Add the HMAC Info
-			writeFileToZip("HMACFile.txt", jsonMap.get(RegistrationConstants.HASHING_JSON_NAME), zipOutputStream);
+			writeFileToZip(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
+					filesGeneratedForPacket.get(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME), zipOutputStream);
 
 			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC added");
 
 			if (checkNotNull(registrationDTO.getBiometricDTO())) {
-				if (checkNotNull(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO())) {
-					addOfficerBiometric("EnrollmentSupervisorBioImage",
-							registrationDTO.getBiometricDTO().getSupervisorBiometricDTO(), zipOutputStream);
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)) {
+					writeFileToZip(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME,
+							filesGeneratedForPacket.get(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
+							zipOutputStream);
 				}
 
-				if (checkNotNull(registrationDTO.getBiometricDTO().getOperatorBiometricDTO())) {
-					addOfficerBiometric("EnrollmentOfficerBioImage",
-							registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), zipOutputStream);
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME)) {
+					writeFileToZip(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME,
+							filesGeneratedForPacket.get(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
+							zipOutputStream);
 				}
 
 				LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Supervisor's Biometric added");
 			}
 
 			// Add Registration Meta JSON
-			writeFileToZip("PacketMetaInfo".concat(JSON_FILE_EXTENSION),
-					jsonMap.get(RegistrationConstants.PACKET_META_JSON_NAME), zipOutputStream);
+			writeFileToZip(RegistrationConstants.PACKET_META_JSON_NAME,
+					filesGeneratedForPacket.get(RegistrationConstants.PACKET_META_JSON_NAME), zipOutputStream);
 
 			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Packet Meta added");
 
 			// Add Audits
 			writeFileToZip(RegistrationConstants.AUDIT_JSON_FILE.concat(JSON_FILE_EXTENSION),
-					jsonMap.get(RegistrationConstants.AUDIT_JSON_FILE), zipOutputStream);
+					filesGeneratedForPacket.get(RegistrationConstants.AUDIT_JSON_FILE), zipOutputStream);
 
 			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Audit Logs Meta added");
+
+			// Add Packet_OSI_HASH
+			writeFileToZip(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
+					filesGeneratedForPacket.get(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME), zipOutputStream);
+
+			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration packet_osi_hash added");
 
 			zipOutputStream.flush();
 			byteArrayOutputStream.flush();
@@ -136,30 +142,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, runtimeException.toString());
-		}
-	}
-
-	/**
-	 * Adds the officer biometric.
-	 *
-	 * @param fileName
-	 *            the file name
-	 * @param supervisorBio
-	 *            the supervisor bio
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
-	private static void addOfficerBiometric(final String fileName, final BiometricInfoDTO supervisorBio,
-			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
-		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = supervisorBio.getFingerprintDetailsDTO();
-		List<IrisDetailsDTO> irisDetailsDTOs = supervisorBio.getIrisDetailsDTO();
-
-		if (checkNotNull(fingerprintDetailsDTOs) && !fingerprintDetailsDTOs.isEmpty()) {
-			writeFileToZip(fingerprintDetailsDTOs.get(0).getFingerprintImageName(), fingerprintDetailsDTOs.get(0).getFingerPrint(), zipOutputStream);
-		} else if (checkNotNull(irisDetailsDTOs) && !irisDetailsDTOs.isEmpty()) {
-			writeFileToZip(irisDetailsDTOs.get(0).getIrisImageName(), irisDetailsDTOs.get(0).getIris(), zipOutputStream);
 		}
 	}
 
@@ -182,28 +164,28 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 				.getProofOfIdentity();
 
 		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
 					zipOutputStream);
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfAddress();
 
 		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
 					zipOutputStream);
 		}
 
 		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfRelationship();
 
 		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
 					zipOutputStream);
 		}
 
-		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getDateOfBirthProof();
+		documentDetailsDTO = demographicDTO.getDemographicInfoDTO().getIdentity().getProofOfDateOfBirth();
 
 		if (documentDetailsDTO != null) {
-			writeFileToZip(folderName + documentDetailsDTO.getValue(), documentDetailsDTO.getDocument(),
+			writeFileToZip(folderName + getFileNameWithExt(documentDetailsDTO), documentDetailsDTO.getDocument(),
 					zipOutputStream);
 		}
 
@@ -237,38 +219,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	}
 
 	/**
-	 * Adds the biometric images.
-	 *
-	 * @param biometricDTO
-	 *            the biometric DTO
-	 * @param folderName
-	 *            the folder name
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
-	private static void addBiometricImages(final BiometricInfoDTO biometricDTO, String folderName,
-			ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
-		// Biometric -> Applicant - Files
-		// Add the Fingerprint images to zip folder structure
-		if (checkNotNull(biometricDTO.getFingerprintDetailsDTO())) {
-			for (FingerprintDetailsDTO fingerprintDetailsDTO : biometricDTO.getFingerprintDetailsDTO()) {
-				writeFileToZip(folderName + fingerprintDetailsDTO.getFingerprintImageName(),
-						fingerprintDetailsDTO.getFingerPrint(), zipOutputStream);
-			}
-		}
-
-		// Add Iris Images to zip folder structure
-		if (checkNotNull(biometricDTO.getIrisDetailsDTO())) {
-			for (IrisDetailsDTO irisDetailsDTO : biometricDTO.getIrisDetailsDTO()) {
-				writeFileToZip(folderName + irisDetailsDTO.getIrisImageName(), irisDetailsDTO.getIris(),
-						zipOutputStream);
-			}
-		}
-	}
-
-	/**
 	 * Check not null.
 	 *
 	 * @param object
@@ -294,7 +244,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	private static void writeFileToZip(String fileName, byte[] file, ZipOutputStream zipOutputStream)
 			throws RegBaseCheckedException {
 		try {
-			// TODO : To be replaced with core kernal util class.
+			// TODO : To be replaced with core kernel util class.
 			final ZipEntry zipEntry = new ZipEntry(fileName);
 			zipOutputStream.putNextEntry(zipEntry);
 			zipOutputStream.write(file);
@@ -302,6 +252,10 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
 		}
+	}
+
+	private static String getFileNameWithExt(DocumentDetailsDTO documentDetailsDTO) {
+		return documentDetailsDTO.getValue().concat(".").concat(documentDetailsDTO.getFormat());
 	}
 
 }

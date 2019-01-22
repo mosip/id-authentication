@@ -1,10 +1,11 @@
 package io.mosip.registration.service;
 
 import java.util.List;
+import java.util.Set;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.entity.UserDetail;
 
 /**
  * Service Class for Login
@@ -20,16 +21,16 @@ public interface LoginService {
 	 * 
 	 * @return Map of login modes along with sequence
 	 */
-	List<String> getModesOfLogin(String authType);
+	List<String> getModesOfLogin(String authType, Set<String> roleList);
 
 	/**
 	 * fetching user details
 	 * 
 	 * @param userId
 	 *            entered userId
-	 * @return RegistrationUserDetail
+	 * @return UserDetail
 	 */
-	RegistrationUserDetail getUserDetail(String userId);
+	UserDetail getUserDetail(String userId);
 	
 	/**
 	 * fetching registration center details
@@ -52,10 +53,10 @@ public interface LoginService {
 	/**
 	 *updating login params on invalid login attempts
 	 * 
-	 * @param registrationUserDetail
+	 * @param UserDetail
 	 *            user details
 	 */
-	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
+	void updateLoginParams(UserDetail userDetail);
 
 }
 

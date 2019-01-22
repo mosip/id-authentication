@@ -263,7 +263,7 @@ public class FullAddressMatchingStrategyTest {
 	public void TestPhoneticsMatchValueWithLanguageCode_Return_NotMatched() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
-		int value = matchFunction.match(2, "ar", matchProperties);
+		int value = matchFunction.match(2, "ara", matchProperties);
 		assertEquals(0, value);
 
 	}

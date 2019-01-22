@@ -122,5 +122,13 @@ public class HibernatePersistenceConstant {
 	 * The string constant hibernate
 	 */
 	public static final String HIBERNATE = "hibernate";
+	/**
+	 * 
+	 */
+	public static final String HIBERNATE_EJB_INTERCEPTOR = "hibernate.ejb.interceptor";
+	/**
+	 * 
+	 */
+	public static final String EMPTY_INTERCEPTOR = "hibernate.empty.interceptor";
 
 }

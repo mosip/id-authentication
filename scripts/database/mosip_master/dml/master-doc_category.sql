@@ -1,0 +1,12 @@
+﻿INSERT INTO master.doc_category(code,name,descr,lang_code,is_active,cr_by,cr_dtimes ) VALUES ('POA','Proof of Address','Address Proof','eng',true,'superadmin',now())
+, ('POA','إثبات العنوان','عنوان الدليل','ara',true,'superadmin',now())
+, ('POA','Un justificatif de domicile','Preuve dadresse','fra',true,'superadmin',now())
+, ('POI','Proof of Identity','Identity Proof','eng',true,'superadmin',now())
+, ('POI','إثبات هوية','إثبات الهوية','ara',true,'superadmin',now())
+, ('POI','Preuve didentité','Preuve didentité','fra',true,'superadmin',now())
+, ('POR','Proof of Relationship','Proof Relationship of the person','eng',true,'superadmin',now())
+, ('POR','إثبات العلاقة','إثبات علاقة الشخص','ara',true,'superadmin',now())
+, ('POR','Preuve de relation','Preuve de relation de la personne','fra',true,'superadmin',now())
+, ('POB','Proof of Birth','Proof date of birth of the person','eng',true,'superadmin',now())
+, ('POB','إثبات الميلاد','تاريخ إثبات ميلاد الشخص','ara',true,'superadmin',now())
+, ('POB','Preuve de naissance','Preuve de la date de naissance de la personne','fra',true,'superadmin',now());

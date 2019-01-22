@@ -174,6 +174,9 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	public Boolean copyFile(String sourceBucketName, String sourceKey,
             String destinationBucketName, String destinationKey) {
 		try {
+                        if (!conn.doesBucketExistV2(destinationBucketName)) {
+				conn.createBucket(destinationBucketName);
+			}
 			this.conn.copyObject(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			LOGGER.debug(LOGDISPLAY, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {

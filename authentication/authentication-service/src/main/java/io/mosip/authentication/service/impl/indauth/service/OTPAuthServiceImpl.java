@@ -61,17 +61,16 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * Validates generated OTP via OTP Manager.
 	 *
 	 * @param authreqdto the authreqdto
-	 * @param uin      the ref id
+	 * @param uin        the ref id
 	 * @return true - when the OTP is Valid.
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
 	@Override
-	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String uin)
-			throws IdAuthenticationBusinessException {
+	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String uin) throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
 		String txnId = authreqdto.getTxnID();
-		String tspCode = authreqdto.getMuaCode();
+		String tspCode = authreqdto.getTspID();
 		Optional<String> otp = getOtpValue(authreqdto);
 		if (otp.isPresent()) {
 			boolean isValidRequest = validateTxnId(txnId, uin);

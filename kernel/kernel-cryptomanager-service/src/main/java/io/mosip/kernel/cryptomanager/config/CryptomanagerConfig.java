@@ -16,6 +16,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.cryptomanager.dto.CryptomanagerRequestDto;
+import io.mosip.kernel.cryptomanager.dto.KeymanagerSymmetricKeyRequestDto;
+import io.mosip.kernel.datamapper.orika.builder.DataMapperBuilderImpl;
+
 /**
  * Configuration class for Crypto-Manager-Service
  * 
@@ -44,5 +49,10 @@ public class CryptomanagerConfig {
 			requestFactory.setHttpClient(httpClient);
 			return new RestTemplate(requestFactory);
 		
+	}
+	
+	@Bean
+	public DataMapper<CryptomanagerRequestDto, KeymanagerSymmetricKeyRequestDto> datamapper(){
+		return new DataMapperBuilderImpl<>(CryptomanagerRequestDto.class, KeymanagerSymmetricKeyRequestDto.class).build();
 	}
 }

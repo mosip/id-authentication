@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.8.0</version>
+	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-
 	<packaging>pom</packaging>
 
 	<name>registration-processor</name>
@@ -67,7 +70,9 @@
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<commons.io.version>2.6</commons.io.version>
-		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
+		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
+		<velocity.version>1.7</velocity.version>
+		<velocity.tools.version>2.0</velocity.tools.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -88,13 +93,24 @@
 		<camel.vertx.version>2.23.0</camel.vertx.version>
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
+
 		<!-- local -->
-		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
-		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
-		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
-		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
-		<registration.processor.rest.client>1.0.0-SNAPSHOT</registration.processor.rest.client>
-		
+		<registration.status.service.version>0.8.0</registration.status.service.version>
+		<registration.processor.core.version>0.8.0</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.0</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.0</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.0</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.0</packet.info.storage.service.version>
+
+		<!-- Kernel -->
+		<kernel.core.version>0.7.0</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>0.7.0</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>0.7.0</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>0.7.0</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>0.7.0</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>0.7.0</kernel.idvalidator.version>
+		<kernel.clamav.version>0.7.0</kernel.clamav.version>
+
 		<sonar.coverage.exclusions>**/dto/**,
 		**/exception/*Exception.java,
 		**/core/code/*.java,
@@ -125,27 +141,10 @@
 **/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
 **/registration/processor/core/packet/dto/regcentermachine/*.java,
 **/registration/processor/core/util/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java,
-
-
-**/registration/processor/quality/check/entity/*.java,
-**/registration/processor/quality/check/client/*.java,
-**/registration/processor/quality/check/config/*.java,
-**/registration/processor/quality/check/code/*.java,
-**/registration/processor/quality/check/exception/*.java,
-**/registration/processor/quality/check/*.java,
-**/registration/processor/status/api/RegistrationStatusApiApplication.java,
-**/registration/processor/packet/receiver/util/StatusMessage.java,
-**/registration/processor/packet/uploader/*.java,
-**/registration/processor/stages/osivalidator/utils/*.java,
-**/registration/processor/camel/bridge/MosipCamelBridgeApplication.java,
-**/registration/processor/message/sender/*.java,
-**/registration/processor/message/sender/utility/*.java,
-**/registration/processor/core/logger/*.java,
-**/registration/processor/core/notification/template/mapping/*.java
+**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
-		
+
 	</properties>
 
 	<dependencyManagement>
@@ -163,6 +162,7 @@
 	<modules>
 		<module>registration-processor-core</module>
 		<module>registration-status-service</module>
+		<module>registration-status-api</module>
 		<module>filesystem-adapter-ceph</module>
 		<module>registration-processor-rest-client</module>
 		<module>packet-manager</module>

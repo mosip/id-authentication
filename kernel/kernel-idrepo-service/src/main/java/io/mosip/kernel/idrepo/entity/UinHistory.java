@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,11 +27,30 @@ import lombok.Setter;
 @Data
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "uin_h", schema = "idrepo")
 @IdClass(HistoryPK.class)
 public class UinHistory {
 	
+	public UinHistory(String uinRefId, LocalDateTime effectiveDateTime, String uin, byte[] uinData, String uinDataHash,
+			String regId, String statusCode, String langCode, String createdBy, LocalDateTime createdDateTime,
+			String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted, LocalDateTime deletedDateTime) {
+		super();
+		this.uinRefId = uinRefId;
+		this.effectiveDateTime = effectiveDateTime;
+		this.uin = uin;
+		this.uinData = uinData.clone();
+		this.uinDataHash = uinDataHash;
+		this.regId = regId;
+		this.statusCode = statusCode;
+		this.langCode = langCode;
+		this.createdBy = createdBy;
+		this.createdDateTime = createdDateTime;
+		this.updatedBy = updatedBy;
+		this.updatedDateTime = updatedDateTime;
+		this.isDeleted = isDeleted;
+		this.deletedDateTime = deletedDateTime;
+	}
+
 	/** The uin ref id. */
 	@Id
 	private String uinRefId;
@@ -94,7 +112,7 @@ public class UinHistory {
 	 * @return the uin data
 	 */
 	public byte[] getUinData() {
-		return uinData;
+		return uinData.clone();
 	}
 
 	/**

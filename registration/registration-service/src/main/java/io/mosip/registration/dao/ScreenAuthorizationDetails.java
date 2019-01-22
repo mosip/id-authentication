@@ -12,7 +12,7 @@ public interface ScreenAuthorizationDetails {
 	/**
 	 * To fetch only selected columns from Embeddable
 	 */
-	ScreenAuthorization getRegistrationScreenAuthorizationId();
+	ScreenAuthorization getScreenAuthorizationId();
 	
 	/**
 	 * To fetch only selected columns from table

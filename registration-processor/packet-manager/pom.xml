@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 
 	<artifactId>packet-manager</artifactId>
@@ -34,17 +34,17 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>${commons-io}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>

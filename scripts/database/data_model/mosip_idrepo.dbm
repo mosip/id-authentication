@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,144" last-zoom="1"
+	 default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="prereguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="reguser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="regprcuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="idauser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="masteruser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="audituser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="uinuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_idrepo" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store UIN details. This database will be sharded based on some algorithm]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="idrepo" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+	<comment><![CDATA[schema to store UIN related data tables]]></comment>
+</schema>
+
+<domain name="_id" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="36"/>
+</domain>
+
+<domain name="_code" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="64"/>
+</domain>
+
+<domain name="_name" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="128"/>
+</domain>
+
+<domain name="_descr" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="128"/>
+</domain>
+
+<domain name="_type" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="128"/>
+</domain>
+
+<domain name="_descr256" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="256"/>
+</domain>
+
+<domain name="_comments" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="1024"/>
+</domain>
+
+<domain name="_by" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="character varying" length="32"/>
+</domain>
+
+<domain name="_active" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="boolean" length="1"/>
+</domain>
+
+<domain name="_dtimes" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<type name="timestamp" length="1" precision="6"/>
+</domain>
+
+<domain name="_uinvid" not-null="false">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Unique identification number or virtual id of an individual ]]></comment>
+	<type name="character varying" length="36"/>
+</domain>
+
+<table name="uin" alias="uin">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store individual data and the assigned UIN. This table will also contain the latest registration id that was used to update individual's information.]]></comment>
+	<position x="49" y="51"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables within id repository db and in file store.]]></comment>
+	</column>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="28"/>
+		<comment><![CDATA[Unique identification number of an individual]]></comment>
+	</column>
+	<column name="uin_data" not-null="true">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="uin_data_hash" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="39"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Status code of the UIN. This field refers to the master list of status defined in master schema.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code of the status code field. Refernces status master table from master DB.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="pk_uin" type="pk-constr" table="idrepo.uin">
+		<columns names="uin_ref_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uin" type="uq-constr" table="idrepo.uin">
+		<columns names="uin" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uin_reg_id" type="uq-constr" table="idrepo.uin">
+		<columns names="reg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_h" alias="uinh">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store history of the individual data and the assigned UIN. This table will also contain the  registration id that was used to update individual's information.]]></comment>
+	<position x="513" y="49"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables.]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="28"/>
+		<comment><![CDATA[Unique identification number of an individual]]></comment>
+	</column>
+	<column name="uin_data" not-null="true">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="uin_data_hash" not-null="true">
+		<type name="character varying" length="64"/>
+	</column>
+	<column name="reg_id" not-null="true">
+		<type name="character varying" length="39"/>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Status code of the UIN. This field refers to the master list of status defined in master schema.]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code of the status code field. Refernces status master table from master DB.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="pk_uinh" type="pk-constr" table="idrepo.uin_h">
+		<columns names="uin_ref_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uinh" type="uq-constr" table="idrepo.uin_h">
+		<columns names="uin,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_document" alias="uind">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store documents that are provided during the registration process and are related to this UIN. ]]></comment>
+	<position x="60" y="378"/>
+	<column name="doccat_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doctyp_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_id">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name of the document]]></comment>
+	</column>
+	<column name="docfmt_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Hash value of the document]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code of the master data references like document category / type code.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="pk_uind" type="pk-constr" table="idrepo.uin_document">
+		<columns names="doccat_code,doctyp_code" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="uin_ref_id" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="fk_uind_uin" index="0"/>
+	</customidxs>
+</table>
+
+<table name="uin_document_h" alias="uindh">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store documents that are provided during the registration process and are related to this UIN. ]]></comment>
+	<position x="75" y="690"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[reference id of an uin, refers to uin_ref_id of idrep.uin table]]></comment>
+	</column>
+	<column name="doccat_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doctyp_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="doc_id" not-null="true">
+		<type name="character varying" length="128"/>
+	</column>
+	<column name="doc_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name of the document]]></comment>
+	</column>
+	<column name="docfmt_code" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="doc_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Hash value of the document]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code of the master data references like document category / type code.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="pk_uindh" type="pk-constr" table="idrepo.uin_document_h">
+		<columns names="uin_ref_id,doccat_code,doctyp_code,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uindh" type="uq-constr" table="idrepo.uin_document_h">
+		<columns names="uin_ref_id,doc_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_biometric_h" alias="uinbh">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store history of biometric reference and hash value of the biometric file. This table will keep the history of changes to the biometric information. ]]></comment>
+	<position x="511" y="695"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[reference id of an uin, refers to uin_ref_id of idrep.uin table]]></comment>
+	</column>
+	<column name="biometric_file_type" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Biometric file type defines the type of file being stored. for example: Individual's biometric, parent / guardian's biometric or introducer / supervisor's biometric.]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="bio_file_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[file id of the biometric cbeff file of an individual]]></comment>
+	</column>
+	<column name="biometric_file_name" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name of the biometric cbeff file]]></comment>
+	</column>
+	<column name="biometric_file_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Hash value of the biometric dbeff file]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code of the biometic file name.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="pk_uinbh" type="pk-constr" table="idrepo.uin_biometric_h">
+		<columns names="uin_ref_id,biometric_file_type,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uinbh" type="uq-constr" table="idrepo.uin_biometric_h">
+		<columns names="uin_ref_id,bio_file_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="uin_has_many_uin_document" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="pk_uind" uq-pattern="{dt}_uq"
+	 src-fk-pattern="fk_uind_uin"
+	 custom-color="#83af1f"
+	 src-table="idrepo.uin"
+	 dst-table="idrepo.uin_document"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<constraint name="uk_uind" type="uq-constr" table="idrepo.uin_document">
+	<columns names="uin_ref_id,doc_id" ref-type="src-columns"/>
+</constraint>
+
+<table name="uin_biometric" alias="uinb">
+	<schema name="idrepo"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[Table to store biometric reference and hash value of the biometric file. ]]></comment>
+	<position x="507" y="379"/>
+	<column name="biometric_file_type" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Biometric file type defines the type of file being stored. for example: Individual's biometric, parent / guardian's biometric or introducer / supervisor's biometric.]]></comment>
+	</column>
+	<column name="bio_file_id" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[file id of the biometric cbeff file of an individual]]></comment>
+	</column>
+	<column name="biometric_file_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Name of the biometric cbeff file]]></comment>
+	</column>
+	<column name="biometric_file_hash" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Hash value of the biometric dbeff file]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code of the biometic file name.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="pk_uinb" type="pk-constr" table="idrepo.uin_biometric">
+		<columns names="biometric_file_type" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="uin_ref_id" index="0"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="fk_uinb_uin" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="uin_has_many_uin_biometric" type="rel1n"
+	 src-col-pattern="{sc}"
+	 pk-pattern="pk_uinb" uq-pattern="{dt}_uq"
+	 src-fk-pattern="fk_uinb_uin"
+	 custom-color="#83af1f"
+	 src-table="idrepo.uin"
+	 dst-table="idrepo.uin_biometric"
+	 src-required="true" dst-required="false"
+	 identifier="true"
+/>
+
+<constraint name="uk_uinb" type="uq-constr" table="idrepo.uin_biometric">
+	<columns names="uin_ref_id,bio_file_id" ref-type="src-columns"/>
+</constraint>
+
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_idrepo" type="database"/>
+	<roles names="uinuser"/>
+	<privileges create="true" connect="true"/>
+</permission>
+<permission>
+	<object name="idrepo" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="idrepo" type="schema"/>
+	<roles names="uinuser"/>
+	<privileges create="true" usage="true"/>
+</permission>
+</dbmodel>

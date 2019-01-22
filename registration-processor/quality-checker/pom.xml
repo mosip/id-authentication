@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 
 	<properties>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -60,18 +60,12 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-info-storage-service</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${packet.info.storage.service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${kernel.core.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

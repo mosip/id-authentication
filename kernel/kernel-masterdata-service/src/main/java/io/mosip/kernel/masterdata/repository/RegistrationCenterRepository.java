@@ -1,8 +1,11 @@
 package io.mosip.kernel.masterdata.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,6 +20,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
  * @author Abhishek Kumar
  * @author Sidhant Agarwal
  * @author Sagar Mahapatra
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -82,22 +86,6 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
 
 	/**
-	 * This method trigger query to fetch registration centers based on hierarchy
-	 * level,text input and language code
-	 * 
-	 * @param languageCode
-	 *            provided by user
-	 * @param hierarchyLevel
-	 *            provided by user
-	 * @param text
-	 *            provided by user
-	 * @return list of {@link RegistrationCenter} fetched from database
-	 */
-	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time,r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = ?1 AND loc.hierarchy_level_name = ?2 AND UPPER(loc.name) = UPPER(?3) AND (r.is_deleted is null or r.is_deleted = false) ", nativeQuery = true)
-	List<RegistrationCenter> findRegistrationCenterHierarchyLevelName(String languageCode, String hierarchyLevel,
-			String text);
-
-	/**
 	 * This method trigger query to fetch all registration centers based on deletion
 	 * condition.
 	 * 
@@ -115,8 +103,46 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 */
 	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByCenterTypeCode(String code);
-	
-	
-	@Query(value="select EXISTS(select * from master.registration_center rc , master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=rc.location_code and rc.id=?2)",nativeQuery=true)
-	boolean validateDateWithHoliday(LocalDate date,String regId);
+
+	@Query(value = "select EXISTS(select * from master.registration_center rc , master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=rc.location_code and rc.id=?2)", nativeQuery = true)
+	boolean validateDateWithHoliday(LocalDate date, String regId);
+
+	/**
+	 * This method triggers query to find registration centers based on id.
+	 * 
+	 * @param id
+	 *            - id of the registration center.
+	 * @return - the fetched registration center entity.
+	 */
+	@Query("FROM RegistrationCenter WHERE id= ?1 and (isDeleted is null or isDeleted =false)")
+	RegistrationCenter findByIdAndIsDeletedFalseOrNull(String id);
+
+	/**
+	 * This method triggers query to set the isDeleted to true for a registration
+	 * center based on id given.
+	 * 
+	 * @param deletedDateTime
+	 *            the time at which the center is set to be deleted.
+	 * @param id
+	 *            the id of the registration center which is to be deleted.
+	 * @param updatedBy
+	 *            updated by
+	 * @return the number of id deleted.
+	 */
+	@Modifying
+	@Query("UPDATE RegistrationCenter r SET r.isDeleted =true , r.deletedDateTime = ?1, r.updatedBy = ?3 WHERE r.id =?2 and (r.isDeleted is null or r.isDeleted =false)")
+	int deleteRegistrationCenter(LocalDateTime deletedDateTime, String id, String updatedBy);
+
+	/**
+	 * This method trigger query to fetch registration centers based on hierarchy
+	 * List of location_code
+	 * 
+	 * @param texts
+	 *            provided by user
+	 * @return list of {@link RegistrationCenter} fetched from database
+	 */
+
+	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.center_end_time,r.center_start_time,r.time_zone,r.contact_person,r.lunch_start_time, r.lunch_end_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r  WHERE r.location_code in :codes AND (r.is_deleted is null or r.is_deleted = false)", nativeQuery = true)
+	List<RegistrationCenter> findRegistrationCenterByListOfLocationCode(@Param("codes") Set<String> codes);
+
 }

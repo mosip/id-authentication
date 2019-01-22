@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * The Class BitwiseInfo.
+ * The BitwiseInfo class to set usage bits for extracting it to a string.
  * 
  * @author Loganathan Sekar
  * 
@@ -86,9 +86,9 @@ public class BitwiseInfo {
 	}
 
 	/**
-	 * Gets the hex.
+	 * Gets the hex as String.
 	 *
-	 * @return the hex
+	 * @return the hex string
 	 */
 	private String getHex() {
 		HexSpliterator hexSpliterator = new HexSpliterator(Stream.of(bits).spliterator());
@@ -98,7 +98,7 @@ public class BitwiseInfo {
 	}
 	
 	/**
-	 * Reverse.
+	 * Reverse the stream.
 	 *
 	 * @param <T> the generic type
 	 * @param input the input

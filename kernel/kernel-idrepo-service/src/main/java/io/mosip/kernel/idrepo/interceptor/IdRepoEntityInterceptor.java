@@ -15,16 +15,17 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinHistory;
-import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 
 /**
  * The Class IdRepoEntityInterceptor.
@@ -34,23 +35,19 @@ import io.mosip.kernel.idrepo.service.impl.IdRepoServiceImpl;
 @Component
 public class IdRepoEntityInterceptor extends EmptyInterceptor {
 
+	private static final String ID_REPO_SERVICE = "IdRepoService";
+
+	private static final String UIN_DATA_HASH = "uinDataHash";
+
+	private static final String DECRYPT = "decrypt";
+
+	private static final String UIN_DATA = "uinData";
+
 	/** The mosip logger. */
-	private transient Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
+	private transient Logger mosipLogger = IdRepoLogger.getLogger(IdRepoEntityInterceptor.class);
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4985336846122302850L;
-
-	/** The Constant DECRYPT_ENTITY. */
-	private static final String DECRYPT_ENTITY = "decryptEntity";
-
-	/** The Constant ENCRYPT_IDENTITY. */
-	private static final String ENCRYPT_IDENTITY = "encryptIdentity";
-
-	/** The Constant ID_REPO_SERVICE_IMPL. */
-	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
-
-	/** The Constant SESSION_ID. */
-	private static final String SESSION_ID = "sessionId";
 
 	/** The env. */
 	@Autowired
@@ -81,7 +78,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 						CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt");
 				uinEntity.setUinData(encryptedData);
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("uinData");
+				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = encryptedData;
 				return super.onSave(uinEntity, id, state, propertyNames, types);
 			}
@@ -92,7 +89,9 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onSave",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
 	}
@@ -109,20 +108,20 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Uin || entity instanceof UinHistory) {
 				List<Object> propertyNamesList = Arrays.asList(propertyNames);
-				int indexOfData = propertyNamesList.indexOf("uinData");
+				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = CryptoUtil
-						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], "decrypt")));
+						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], DECRYPT)));
+
+				if (!hash((byte[]) state[indexOfData]).equals(state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
+					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.IDENTITY_HASH_MISMATCH);
+				}
 			}
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR, e);
+			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onLoad",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onLoad(entity, id, state, propertyNames, types);
-	}
-
-	@Override
-	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
-			String[] propertyNames, Type[] types) {
-		return false;
 	}
 
 	/**
@@ -149,8 +148,18 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		if (response.has("data")) {
 			return response.get("data").asText().getBytes();
 		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.INTERNAL_SERVER_ERROR);
+			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 		}
 	}
 
+	/**
+	 * Hash.
+	 *
+	 * @param identityInfo
+	 *            the identity info
+	 * @return the string
+	 */
+	private String hash(byte[] identityInfo) {
+		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
+	}
 }

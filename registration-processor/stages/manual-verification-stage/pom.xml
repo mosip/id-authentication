@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>stages</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 
 	<artifactId>manual-verification-stage</artifactId>
@@ -80,27 +80,27 @@
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-status</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<artifactId>registration-status-service</artifactId>
+			<version>${registration.status.service.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${filesystem.adapter.ceph.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>packet-info-storage-service</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${packet.info.storage.service.version}</version>
 		</dependency>
 	</dependencies>
 

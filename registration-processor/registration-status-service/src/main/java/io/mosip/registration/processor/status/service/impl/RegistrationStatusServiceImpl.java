@@ -30,14 +30,13 @@ import io.mosip.registration.processor.status.exception.TablenotAccessibleExcept
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
-	
 
 /**
  * The Class RegistrationStatusServiceImpl.
  */
 @Component
 public class RegistrationStatusServiceImpl
-implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
 	/** The threshhold time. */
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
@@ -92,9 +91,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful
-					? "Get registration status by registration id is successful"
-							: "Get registration status by registration id is unsuccessful";
+			description = isTransactionSuccessful ? "Get registration status by registration id is successful"
+					: "Get registration status by registration id is unsuccessful";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
@@ -126,9 +124,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful
-					? "Find files by threshold time and statuscode is successful"
-							: "Find files by threshold time and statuscode is unsuccessful";
+			description = isTransactionSuccessful ? "Find files by threshold time and statuscode is successful"
+					: "Find files by threshold time and statuscode is unsuccessful";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
@@ -168,9 +165,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful
-					? "Registration status added successfully"
-							: "Failure in adding registration status to registration table";
+			description = isTransactionSuccessful ? "Registration status added successfully"
+					: "Failure in adding registration status to registration table";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
@@ -213,9 +209,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful
-					? "Updated registration status successfully"
-							: "Updated registration status unsuccessfully";
+			description = isTransactionSuccessful ? "Updated registration status successfully"
+					: "Updated registration status unsuccessfully";
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
@@ -248,9 +243,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful
-					? "Get list of registration status by status successfully"
-							: "Get list of registration status by status unsuccessfully";
+			description = isTransactionSuccessful ? "Get list of registration status by status successfully"
+					: "Get list of registration status by status unsuccessfully";
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
@@ -294,10 +288,12 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/**
 	 * Convert entity list to dto list and get external status.
 	 *
-	 * @param entities the entities
+	 * @param entities
+	 *            the entities
 	 * @return the list
 	 */
-	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(List<RegistrationStatusEntity> entities) {
+	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(
+			List<RegistrationStatusEntity> entities) {
 		List<RegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
 			for (RegistrationStatusEntity entity : entities) {
@@ -311,7 +307,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/**
 	 * Convert entity to dto and get external status.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the registration status dto
 	 */
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
@@ -328,7 +325,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/**
 	 * Convert entity list to dto list.
 	 *
-	 * @param entities the entities
+	 * @param entities
+	 *            the entities
 	 * @return the list
 	 */
 	private List<InternalRegistrationStatusDto> convertEntityListToDtoList(List<RegistrationStatusEntity> entities) {
@@ -345,7 +343,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/**
 	 * Convert entity to dto.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the internal registration status dto
 	 */
 	private InternalRegistrationStatusDto convertEntityToDto(RegistrationStatusEntity entity) {
@@ -372,7 +371,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/**
 	 * Convert dto to entity.
 	 *
-	 * @param dto the dto
+	 * @param dto
+	 *            the dto
 	 * @return the registration status entity
 	 */
 	private RegistrationStatusEntity convertDtoToEntity(InternalRegistrationStatusDto dto) {

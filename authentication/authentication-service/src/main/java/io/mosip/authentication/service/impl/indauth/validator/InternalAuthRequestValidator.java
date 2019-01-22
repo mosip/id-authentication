@@ -23,7 +23,7 @@ import io.mosip.authentication.service.helper.DateHelper;
  */
 @Component
 public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
-
+	/** The Final Constant For allowed Internal auth  type*/
 	private static final String INTERNAL_ALLOWED_AUTH_TYPE = "internal.allowed.auth.type";
 
 	/** The Constant REQ_TIME. */
@@ -140,7 +140,12 @@ public class InternalAuthRequestValidator extends BaseAuthRequestValidator {
 		return allowedAuthType;
 	}
 
-	/** Validation for DateTime */
+	/**
+	 *  Validation for DateTime.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
+	 */
 	public void validateDate(AuthRequestDTO authRequestDTO, Errors errors) {
 		if (null != authRequestDTO.getReqTime() && !authRequestDTO.getReqTime().isEmpty()) {
 			try {

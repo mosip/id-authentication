@@ -11,12 +11,12 @@
    <children>
       <TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
         <columns>
-          <TableColumn fx:id="fileNameColumn" prefWidth="400.0" text="Files" />
-          <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="Upload Status" />
+          <TableColumn fx:id="fileNameColumn" prefWidth="400.0" text="%files" />
+          <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="%uploadstatus" />
         </columns>
       </TableView>
-      <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="Upload" />
-      <Label layoutX="379.0" layoutY="31.0" prefHeight="39.0" prefWidth="161.0" text="Upload Packet">
+      <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
+      <Label layoutX="379.0" layoutY="31.0" prefHeight="39.0" prefWidth="161.0" text="%uploadpacket">
          <font>
             <Font size="23.0" />
          </font>
@@ -30,7 +30,7 @@
             <Image url="@../images/Home.png" />
          </image>
       </ImageView>
-      <Text layoutX="69.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ Upload Packet">
+      <Text layoutX="69.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/uploadpacket">
          <font>
             <Font size="10.0" />
          </font>

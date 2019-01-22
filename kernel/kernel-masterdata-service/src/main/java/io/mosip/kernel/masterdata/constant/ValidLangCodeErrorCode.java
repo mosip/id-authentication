@@ -9,7 +9,7 @@ package io.mosip.kernel.masterdata.constant;
  */
 public enum ValidLangCodeErrorCode {
 
-	LANG_CODE_VALIDATION_EXCEPTION("KER-MSD-XXX", "Error occured while validating Language Code");
+	LANG_CODE_VALIDATION_EXCEPTION("KER-MSD-999", "Error occured while validating Language Code");
 
 	private String errorCode;
 	private String errorMessage;

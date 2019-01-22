@@ -1,6 +1,8 @@
 package io.mosip.preregistration.batchjobservices.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,17 +18,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @author M1043008
- * The persistent class applicant demographic database table. 
+ * The persistent class applicant demographic database table.
+ * 
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *  
  */
 @Component
 @Entity
-@Table(name = "applicant_demographic")
+@Table(name = "applicant_demographic",schema="prereg")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ApplicantDemographic {
+public class ApplicantDemographic implements Serializable{
 	
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -1775599712926639712L;
+
 	/** The pre registration id. */
 	@Column(name = "prereg_id", nullable = false)
 	@Id
@@ -35,11 +43,10 @@ public class ApplicantDemographic {
 	/** The group id. */
 	@Column(name = "group_id", nullable = false)
 	private String groupId;
-	
+
 	/** The JSON */
 	@Column(name = "demog_detail")
 	private byte[] applicantDetailJson;
-	
 
 	/** The status_code */
 	@Column(name = "status_code", nullable = false)
@@ -52,15 +59,14 @@ public class ApplicantDemographic {
 	/** The created by. */
 	@Column(name = "cr_by")
 	private String createdBy;
-	
+
 	/** The created appuser by. */
 	@Column(name = "cr_appuser_id")
-	private String cr_appuser_id;
-	
+	private String crAppuserId;
+
 	/** The create date time. */
 	@Column(name = "cr_dtimes")
-	@CreationTimestamp
-	private Timestamp createDateTime;
+	private LocalDateTime createDateTime;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -68,8 +74,7 @@ public class ApplicantDemographic {
 
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
-	@UpdateTimestamp
-	private Timestamp updateDateTime;
+	private LocalDateTime updateDateTime;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -77,7 +82,6 @@ public class ApplicantDemographic {
 
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
-	private Timestamp deletedDateTime;
+	private LocalDateTime deletedDateTime;
 
 }

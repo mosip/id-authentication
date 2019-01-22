@@ -124,48 +124,48 @@ public class DemoMatchTypeTest {
 		String tmpAddress = "exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3 Casablanca Tanger-Tétouan-Al Hoceima Fès-Meknès";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		IdentityInfoDTO identityInfo1 = new IdentityInfoDTO();
-		identityInfo1.setLanguage("FR");
+		identityInfo1.setLanguage("fre");
 		identityInfo1.setValue("exemple d'adresse ligne 1");
 		List<IdentityInfoDTO> addressLine1 = new ArrayList<>();
 		addressLine1.add(identityInfo1);
 		demoEntity.put("addressLine1", addressLine1);
 
 		IdentityInfoDTO identityInfoDTO2 = new IdentityInfoDTO();
-		identityInfoDTO2.setLanguage("FR");
+		identityInfoDTO2.setLanguage("fre");
 		identityInfoDTO2.setValue("exemple d'adresse ligne 2");
 		List<IdentityInfoDTO> addressLine2 = new ArrayList<>();
 		addressLine2.add(identityInfoDTO2);
 		demoEntity.put("addressLine2", addressLine2);
 
 		IdentityInfoDTO identityInfoDTO3 = new IdentityInfoDTO();
-		identityInfoDTO3.setLanguage("FR");
+		identityInfoDTO3.setLanguage("fre");
 		identityInfoDTO3.setValue("exemple d'adresse ligne 3");
 		List<IdentityInfoDTO> addressLine3 = new ArrayList<>();
 		addressLine3.add(identityInfoDTO2);
 		demoEntity.put("addressLine3", addressLine3);
 
 		IdentityInfoDTO location1 = new IdentityInfoDTO();
-		location1.setLanguage("FR");
+		location1.setLanguage("fre");
 		location1.setValue("Casablanca");
 		List<IdentityInfoDTO> location1list = new ArrayList<>();
 		location1list.add(identityInfoDTO2);
 		demoEntity.put("location1", location1list);
 
 		IdentityInfoDTO location2 = new IdentityInfoDTO();
-		location2.setLanguage("FR");
+		location2.setLanguage("fre");
 		location2.setValue("Tanger-Tétouan-Al Hoceima");
 		List<IdentityInfoDTO> location2list = new ArrayList<>();
 		location2list.add(identityInfoDTO2);
 		demoEntity.put("location2", location2list);
 
 		IdentityInfoDTO location3 = new IdentityInfoDTO();
-		location3.setLanguage("FR");
+		location3.setLanguage("fre");
 		location3.setValue("Fès-Meknès");
 		List<IdentityInfoDTO> location3list = new ArrayList<>();
 		location3list.add(identityInfoDTO2);
 		demoEntity.put("location3", location3list);
 
-		Function<LanguageType, String> languageCodeFetcher = obj -> "FR";
+		Function<LanguageType, String> languageCodeFetcher = obj -> "fre";
 		Function<String, Optional<String>> languageNameFetcher = obj -> Optional.of("french");
 
 		IDAMappingConfig idMappingConfig = new IDAMappingConfig();

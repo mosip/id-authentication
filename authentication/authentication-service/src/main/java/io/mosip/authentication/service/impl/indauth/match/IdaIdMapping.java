@@ -13,7 +13,7 @@ import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 
 public enum IdaIdMapping implements IdMapping{
 
-	NAME("name", MappingConfig::getName), 
+	FULLNAME("fullName", MappingConfig::getFullName), 
 	DOB("dob", MappingConfig::getDob),
 	DOBTYPE("dobType", MappingConfig::getDobType),
 	AGE("age", MappingConfig::getAge),
@@ -26,7 +26,7 @@ public enum IdaIdMapping implements IdMapping{
 	LOCATION1("location1", MappingConfig::getLocation1), 
 	LOCATION2("location2", MappingConfig::getLocation2), 
 	LOCATION3("location3", MappingConfig::getLocation3), 
-	PINCODE("pinCode", MappingConfig::getPinCode),
+	PINCODE("postalCode", MappingConfig::getPostalCode),
 	FULLADDRESS("fullAddress", MappingConfig::getFullAddress),
 	OTP("otp", MappingConfig::getOtp),
 	PIN("pin", MappingConfig::getPin),
@@ -42,11 +42,9 @@ public enum IdaIdMapping implements IdMapping{
 	RIGHTTHUMB("rightThumb", MappingConfig::getRightThumb),
 	FINGERPRINT("fingerprint", MappingConfig::getFingerprint),
 	IRIS("iris", MappingConfig::getIris),
-
-	FACE("iris", MappingConfig::getIris),
-	 
-	 
-	;
+	RIGHTEYE("rightEye", MappingConfig::getRightEye),
+	LEFTEYE("leftEye", MappingConfig::getLeftEye),
+	FACE("FACE", MappingConfig::getFace);
 
 	private String idname;
 

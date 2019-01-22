@@ -17,4 +17,10 @@ public interface RegPacketStatusService {
 	 */
 	public ResponseDTO packetSyncStatus();
 	
+	/**
+	 * @return response DTO
+	 */
+	ResponseDTO deleteReRegistrationPackets();
+	
+	
 }

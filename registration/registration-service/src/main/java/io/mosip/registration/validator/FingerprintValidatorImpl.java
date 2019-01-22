@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -21,7 +21,7 @@ import io.mosip.registration.entity.UserBiometric;
 public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 
 	@Autowired
-	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	private UserDetailDAO userDetailDAO;
 
 	@Autowired
 	FingerprintFacade fingerprintFacade;
@@ -48,8 +48,8 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	 * @return
 	 */
 	private boolean validateOneToManyFP(String userId, FingerprintDetailsDTO fingerprintDetailsDTO) {
-		List<UserBiometric> userFingerprintDetails = registrationUserDetailDAO
-				.getUserSpecificFingerprintDetails(userId);
+		List<UserBiometric> userFingerprintDetails = userDetailDAO
+				.getUserSpecificBioDetails(userId, RegistrationConstants.FINGERPRINT);
 		return fingerprintFacade.validateFP(fingerprintDetailsDTO, userFingerprintDetails);
 	}
 
@@ -64,7 +64,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		Boolean isMatchFound=false;
 		for(FingerprintDetailsDTO fingerprintDetailsDTO:fingerprintDetailsDTOs) {
 			isMatchFound=fingerprintFacade.validateFP(fingerprintDetailsDTO,
-					registrationUserDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
+					userDetailDAO.getAllActiveUsers(fingerprintDetailsDTO.getFingerType()));
 			if (isMatchFound) {
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.DUPLICATE_FINGER, fingerprintDetailsDTO);
 				break;

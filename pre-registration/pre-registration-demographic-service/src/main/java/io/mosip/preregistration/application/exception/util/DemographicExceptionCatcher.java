@@ -8,6 +8,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.web.client.RestClientException;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
@@ -18,6 +19,7 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
+import io.mosip.preregistration.application.exception.RecordFailedToUpdateException;
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
@@ -45,55 +47,57 @@ public class DemographicExceptionCatcher {
 	 */
 	public void handle(Exception ex) {
 		if (ex instanceof HttpRequestException) {
-			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
-					ErrorMessages.JSON_HTTP_REQUEST_EXCEPTION.name(), ex.getCause());
+			throw new JsonValidationException(((HttpRequestException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof DataAccessLayerException) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_APP_002.toString(),
-					ErrorMessages.PRE_REGISTRATION_TABLE_NOT_ACCESSIBLE.toString(), ex.getCause());
+			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof JsonValidationProcessingException) {
-			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
-					ErrorMessages.JSON_VALIDATION_PROCESSING_EXCEPTION.name(), ex.getCause());
+			throw new JsonValidationException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof JsonIOException) {
-			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(), ErrorMessages.JSON_IO_EXCEPTION.name(),
+			throw new JsonValidationException(((BaseUncheckedException) ex).getErrorCode(), ex.getMessage(),
 					ex.getCause());
 		} else if (ex instanceof JsonSchemaIOException) {
-			throw new JsonValidationException(ErrorCodes.PRG_PAM_APP_007.name(),
-					ErrorMessages.JSON_SCHEMA_IO_EXCEPTION.name(), ex.getCause());
+			throw new JsonValidationException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof FileIOException) {
-			throw new SystemFileIOException(ErrorCodes.PRG_PAM_APP_009.name(), ErrorMessages.FILE_IO_EXCEPTION.name(),
+			throw new SystemFileIOException(((BaseUncheckedException) ex).getErrorCode(), ex.getMessage(),
 					ex.getCause());
 		} else if (ex instanceof ParseException) {
-			throw new JsonParseException(ErrorCodes.PRG_PAM_APP_007.toString(),
-					ErrorMessages.JSON_PARSING_FAILED.toString(), ex.getCause());
+			throw new JsonParseException(((BaseUncheckedException) ex).getErrorCode().toString(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof RecordNotFoundException) {
-			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-					ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
+			throw new RecordNotFoundException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage());
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
-					((InvalidRequestParameterException) ex).getErrorText());
+					ex.getMessage());
 		} else if (ex instanceof MissingRequestParameterException) {
 			throw new MissingRequestParameterException(((MissingRequestParameterException) ex).getErrorCode(),
-					((MissingRequestParameterException) ex).getErrorText());
+					ex.getMessage());
 		} else if (ex instanceof RestClientException) {
 			throw new DocumentFailedToDeleteException(((DocumentFailedToDeleteException) ex).getErrorCode(),
-					((DocumentFailedToDeleteException) ex).getErrorText());
+					ex.getMessage());
 		} else if (ex instanceof DocumentFailedToDeleteException) {
-			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_015.name(),
-					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.name());
+			throw new DocumentFailedToDeleteException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage());
 		} else if (ex instanceof IllegalArgumentException) {
-			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_006.toString(),
-					ErrorMessages.INVAILD_STATUS_CODE.toString(), ex);
+			throw new SystemIllegalArgumentException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof SystemUnsupportedEncodingException) {
-			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
-					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
+			throw new SystemUnsupportedEncodingException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof DateParseException) {
-			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+			throw new DateParseException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof java.text.ParseException) {
-			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+			throw new DateParseException(((BaseUncheckedException) ex).getErrorCode(),
+					ex.getMessage(), ex.getCause());
 		} else if (ex instanceof UnidentifiedJsonException) {
 			throw new JsonValidationException(((UnidentifiedJsonException) ex).getErrorCode(), ex.getMessage());
+		}else if (ex instanceof RecordFailedToUpdateException) {
+			throw new RecordFailedToUpdateException(((BaseUncheckedException) ex).getErrorCode(), ex.getMessage());
 		}
 	}
 

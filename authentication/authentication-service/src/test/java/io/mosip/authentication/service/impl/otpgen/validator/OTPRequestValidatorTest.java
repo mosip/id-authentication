@@ -95,7 +95,7 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setId("id");
 		//OtpRequestDTO.setVer("1.1");
-		OtpRequestDTO.setMuaCode("1234567890");
+		OtpRequestDTO.setTspID("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
 		
@@ -128,7 +128,7 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		OtpRequestDTO.setId("id");
 		//OtpRequestDTO.setVer("1.1");
-		OtpRequestDTO.setMuaCode("1234567890");
+		OtpRequestDTO.setTspID("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
 		OtpRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -195,7 +195,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId("5371843613598211");
 		//otpRequestDTO.setVer("1.1");
-		otpRequestDTO.setMuaCode("");
+		otpRequestDTO.setTspID("");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}

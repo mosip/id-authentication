@@ -14,5 +14,6 @@ import io.mosip.registration.entity.mastersync.id.CodeAndLanguageCodeID;
  */
 public interface MasterSyncDocumentCategoryRepository extends BaseRepository<MasterDocumentCategory, CodeAndLanguageCodeID> {
 
+	List<MasterDocumentCategory> findDocumentCategoryByLangCode(String langCode);
 	
 }

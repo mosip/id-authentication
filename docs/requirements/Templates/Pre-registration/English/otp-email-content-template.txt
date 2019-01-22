@@ -1,0 +1,2 @@
+Dear $name,
+OTP for Pre-Registration  $PRID is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs)

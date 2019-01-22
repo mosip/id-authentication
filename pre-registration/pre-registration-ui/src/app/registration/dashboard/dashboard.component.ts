@@ -236,7 +236,7 @@ export class DashBoardComponent implements OnInit {
                 };
                 dialogRef = this.openDialog(message, '250px');
                 const index = this.users.indexOf(element);
-                this.users[index].status = 'Pending_Appointment';
+                this.users[index].status = 'Pending Appointment';
                 this.users[index].appointmentDateTime = '-';
                 // this.dataSource.data[index].status = 'Pending_Appointment';
                 // this.dataSource.data[index].appointmentDateTime = '-';
@@ -413,10 +413,10 @@ export class DashBoardComponent implements OnInit {
   }
 
   setUserFiles(response) {
-    console.log('user files fetched', response);
+    // console.log('user files fetched', response);
     this.userFile = response[appConstants.RESPONSE];
     this.userFiles.push(this.userFile);
-    console.log('user files after pushing', this.userFiles);
+    // console.log('user files after pushing', this.userFiles);
   }
 
   getColor(value: string) {

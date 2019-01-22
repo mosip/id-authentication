@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -46,6 +47,7 @@ public class RegistrationCenterHistoryDto {
 	private String longitude;
 
 	@NotBlank
+	@ValidLangCode
 	@Size(min = 1, max = 36)
 	private String locationCode;
 

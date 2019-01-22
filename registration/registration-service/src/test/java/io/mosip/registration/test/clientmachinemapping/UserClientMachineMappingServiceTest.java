@@ -42,9 +42,9 @@ import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
 import io.mosip.registration.entity.RegDeviceTypeId;
-import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.entity.RegistrationUserRole;
-import io.mosip.registration.entity.RegistrationUserRoleID;
+import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.entity.UserRole;
+import io.mosip.registration.entity.UserRoleID;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -78,7 +78,7 @@ public class UserClientMachineMappingServiceTest {
 
 		Mockito.when(machineMappingDAO.getCenterID(Mockito.anyString())).thenReturn("CenterID107");
 
-		List<RegistrationUserDetail> userDetailsList = new ArrayList<>();
+		List<UserDetail> userDetailsList = new ArrayList<>();
 
 		UserMachineMappingID machineMappingID = new UserMachineMappingID();
 		machineMappingID.setUserID("ID123456");
@@ -88,19 +88,19 @@ public class UserClientMachineMappingServiceTest {
 		userMachineMapping.setIsActive(true);
 		userMachineMapping.setUserMachineMappingId(machineMappingID);
 
-		RegistrationUserRoleID registrationUserRoleID = new RegistrationUserRoleID();
+		UserRoleID registrationUserRoleID = new UserRoleID();
 		registrationUserRoleID.setRoleCode("101");
 
-		RegistrationUserRole registrationUserRole = new RegistrationUserRole();
-		registrationUserRole.setRegistrationUserRoleID(registrationUserRoleID);
+		UserRole registrationUserRole = new UserRole();
+		registrationUserRole.setUserRoleID(registrationUserRoleID);
 
-		Set<RegistrationUserRole> userRole = new HashSet();
+		Set<UserRole> userRole = new HashSet();
 		userRole.add(registrationUserRole);
 
 		Set<UserMachineMapping> userMachine = new HashSet();
 		userMachine.add(userMachineMapping);
 
-		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
+		UserDetail registrationUserDetail = new UserDetail();
 		registrationUserDetail.setId("ID123456");
 		registrationUserDetail.setName("Registration");
 		registrationUserDetail.setUserMachineMapping(userMachine);

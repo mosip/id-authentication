@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>0.8.0</version>
 	</parent>
 
 	<artifactId>registration-processor-rest-client</artifactId>
@@ -65,12 +65,11 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.6</version>
-		</dependency>
+			</dependency>
 	</dependencies>
 </project>

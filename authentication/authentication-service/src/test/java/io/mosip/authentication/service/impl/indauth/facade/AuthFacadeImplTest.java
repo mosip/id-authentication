@@ -179,8 +179,8 @@ public class AuthFacadeImplTest {
 	 * This class tests the authenticateApplicant method where it checks the IdType
 	 * and DemoAuthType.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 * @throws IdAuthenticationDaoException
 	 * @throws SecurityException
 	 * @throws NoSuchMethodException
@@ -200,7 +200,7 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setId("1234567");
 		authRequestDTO.setIdvId("457984792857");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setMuaCode("64378643");
+		authRequestDTO.setTspID("64378643");
 		PinInfo pinInfo = new PinInfo();
 		pinInfo.setType(PinType.OTP.getType());
 		pinInfo.setValue("736643");
@@ -218,9 +218,9 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setAuthType(authTypeDTO);
 		Map<String, Object> idRepo = new HashMap<>();
 		String uin = "274390482564";
-		idRepo.put("uin",uin);
+		idRepo.put("uin", uin);
 		idRepo.put("registrationId", "1234567890");
-		
+
 		AuthStatusInfo authStatusInfo = new AuthStatusInfo();
 		authStatusInfo.setStatus(true);
 		authStatusInfo.setErr(Collections.emptyList());
@@ -232,11 +232,12 @@ public class AuthFacadeImplTest {
 		idInfo.put("name", list);
 		idInfo.put("email", list);
 		idInfo.put("phone", list);
-		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO,uin)).thenReturn(authStatusInfo);
-		Mockito.when(idRepoService.getIdRepo(Mockito.anyString())).thenReturn(idRepo);
-		Mockito.when(idAuthService.processIdType(authRequestDTO.getIdvIdType(), authRequestDTO.getIdvId()))
+		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, uin)).thenReturn(authStatusInfo);
+		Mockito.when(idRepoService.getIdRepo(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(idRepo);
+		Mockito.when(idAuthService.processIdType(authRequestDTO.getIdvIdType(), authRequestDTO.getIdvId(), false))
 				.thenReturn(idRepo);
-		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString())).thenReturn(repoDetails());
+		Mockito.when(idAuthService.getIdRepoByUinNumber(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(repoDetails());
 
 		Mockito.when(idInfoService.getIdInfo(repoDetails())).thenReturn(idInfo);
 
@@ -267,8 +268,8 @@ public class AuthFacadeImplTest {
 	 * This class tests the processAuthType (OTP) method where otp validation
 	 * failed.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test
@@ -296,8 +297,8 @@ public class AuthFacadeImplTest {
 	 * This class tests the processAuthType (OTP) method where otp validation gets
 	 * successful.
 	 *
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Test
@@ -311,13 +312,13 @@ public class AuthFacadeImplTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
+		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -383,13 +384,13 @@ public class AuthFacadeImplTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
+		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -449,7 +450,7 @@ public class AuthFacadeImplTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
@@ -457,10 +458,10 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
-		authRequestDTO.setMuaCode("1234567890");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqHmac("zdskfkdsnj");
+//		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setOtp(true);
@@ -468,13 +469,13 @@ public class AuthFacadeImplTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
+		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -520,7 +521,7 @@ public class AuthFacadeImplTest {
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
-		//kycAuthRequestDTO.setVer("1.1");
+		// kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.VID.getType());
 		authRequestDTO.setIdvId("234567890123");
@@ -528,10 +529,10 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
-		//authRequestDTO.setVer("1.1");
-		authRequestDTO.setMuaCode("1234567890");
+		// authRequestDTO.setVer("1.1");
+		authRequestDTO.setTspID("1234567890");
 		authRequestDTO.setTxnID("1234567890");
-		authRequestDTO.setReqHmac("zdskfkdsnj");
+//		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
 		authTypeDTO.setOtp(true);
@@ -539,13 +540,13 @@ public class AuthFacadeImplTest {
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setLanguage("fre");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
 		idInfoList.add(idInfoDTO1);
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setName(idInfoList);
+		idDTO.setFullName(idInfoList);
 		RequestDTO reqDTO = new RequestDTO();
 		reqDTO.setIdentity(idDTO);
 		authRequestDTO.setAuthType(authTypeDTO);
@@ -727,7 +728,8 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setBioInfo(info);
 		boolean isAuth = true;
 		IdType idType = IdType.VID;
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processBioAuthType", authRequestDTO, isAuth, idType);
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, idType,
+				true);
 	}
 
 	@Test
@@ -770,7 +772,8 @@ public class AuthFacadeImplTest {
 		authRequestDTO.setBioInfo(info);
 		boolean isAuth = true;
 		IdType idType = IdType.VID;
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "processBioAuthType", authRequestDTO, isAuth, idType);
+		ReflectionTestUtils.invokeMethod(authFacadeImpl, "saveAndAuditBioAuthTxn", authRequestDTO, isAuth, idType,
+				true);
 	}
 
 	private Map<String, Object> repoDetails() {

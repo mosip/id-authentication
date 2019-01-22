@@ -1,6 +1,5 @@
 package io.mosip.registration.service.external.impl;
 
-import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -8,13 +7,12 @@ import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXT
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 import static java.io.File.separator;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 import java.util.Base64;
-import java.util.Date;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,20 +23,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
-import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
@@ -72,40 +73,45 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 */
 	@Override
 	public RegistrationDTO extractPreRegZipFile(byte[] preRegZipFile) throws RegBaseCheckedException {
-		RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA);
-		DemographicDTO demographicDTO = registrationDTO.getDemographicDTO();
-		ApplicantDocumentDTO applicantDocumentDTO = demographicDTO.getApplicantDocumentDTO();
-		List<DocumentDetailsDTO> documentDetailsDTOs = new ArrayList<>();
+
+		RegistrationDTO registrationDTO = getRegistrationDtoContent();
 		DocumentDetailsDTO documentDetailsDTO;
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(preRegZipFile))) {
 
 			ZipEntry zipEntry;
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-				if (zipEntry.getName().endsWith(".json")) {
-					registrationDTO = parseDemographicJson(zipInputStream, zipEntry, registrationDTO);
-				} else if(zipEntry.getName().endsWith(".testfile")){
+				String fileName = zipEntry.getName();
+				if (fileName.endsWith(".json")) {
+					parseDemographicJson(zipInputStream, zipEntry);
+				} else if (fileName.contains("_")) {
 					documentDetailsDTO = new DocumentDetailsDTO();
-					documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
-					if (zipEntry.getName().contains("_")) {
-						documentDetailsDTO
-								.setCategory(zipEntry.getName().substring(0, zipEntry.getName().indexOf("_")));
+
+					switch (fileName.substring(0, fileName.indexOf("_")).toUpperCase()) {
+					case RegistrationConstants.POA_DOCUMENT:
+						getIdentityDto().setProofOfAddress(documentDetailsDTO);
+						attachDocument(documentDetailsDTO, zipInputStream, fileName,
+								RegistrationConstants.POA_DOCUMENT);
+						break;
+					case RegistrationConstants.POI_DOCUMENT:
+						getIdentityDto().setProofOfIdentity(documentDetailsDTO);
+						attachDocument(documentDetailsDTO, zipInputStream, fileName,
+								RegistrationConstants.POI_DOCUMENT);
+						break;
+					case RegistrationConstants.POR_DOCUMENT:
+						getIdentityDto().setProofOfRelationship(documentDetailsDTO);
+						attachDocument(documentDetailsDTO, zipInputStream, fileName,
+								RegistrationConstants.POR_DOCUMENT);
+						break;
+					case RegistrationConstants.DOB_DOCUMENT:
+						getIdentityDto().setProofOfDateOfBirth(documentDetailsDTO);
+						attachDocument(documentDetailsDTO, zipInputStream, fileName,
+								RegistrationConstants.DOB_DOCUMENT);
+						break;
 					}
-					if (zipEntry.getName().contains(".")) {
-						documentDetailsDTO
-								.setFormat(zipEntry.getName().substring(zipEntry.getName().lastIndexOf(".") + 1));
-					}
-					documentDetailsDTO.setValue("");
-					documentDetailsDTOs.add(documentDetailsDTO);
+
 				}
 			}
 
-			/*if (!documentDetailsDTOs.isEmpty()) {
-				applicantDocumentDTO.setDocumentDetailsDTO(documentDetailsDTOs);
-				if (registrationDTO.getDemographicDTO() != null) {
-					registrationDTO.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
-				}
-			}*/
 		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
@@ -114,9 +120,18 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, exception.toString());
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, exception.getMessage());
 		}
 		return registrationDTO;
+	}
+
+	private void attachDocument(DocumentDetailsDTO documentDetailsDTO, ZipInputStream zipInputStream, String fileName,
+			String docCatgory) throws IOException {
+		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
+		documentDetailsDTO.setType(RegistrationConstants.POI_DOCUMENT);
+		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
+		documentDetailsDTO.setValue(RegistrationConstants.POI_DOCUMENT.concat("_").concat(fileName
+				.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf(RegistrationConstants.DOT) + 1)));
 	}
 
 	/**
@@ -125,105 +140,28 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	 * 
 	 * @param zipInputStream
 	 * @param zipEntry
-	 * @return RegistrationDTO
 	 * @throws IOException
 	 * @throws RegBaseCheckedException
 	 */
-	private static RegistrationDTO parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry,
-			RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		/*DemographicInfoDTO demographicInfoDTO = registrationDTO.getDemographicDTO().getDemoInUserLang();
-		AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
-		LocationDTO locationDTO = addressDTO.getLocationDTO();
-		OSIDataDTO osiDataDTO = new OSIDataDTO();
-		addressDTO.setLocationDTO(locationDTO);
-		registrationDTO.setOsiDataDTO(osiDataDTO);
-		
+	private void parseDemographicJson(ZipInputStream zipInputStream, ZipEntry zipEntry) throws RegBaseCheckedException {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
 		try {
 			String value;
+			StringBuilder jsonString = new StringBuilder();
 			while ((value = bufferedReader.readLine()) != null) {
-
-				JSONObject jsonObject = new JSONObject(value);
-
-				JSONObject demographicContentJson = jsonObject.getJSONObject("demographic-details")
-						.getJSONObject("identity");
-				Iterator<String> demographicFields = demographicContentJson.keys();
-				JSONObject fieldContentObject;
-				String fieldValue = null;
-				while (demographicFields.hasNext()) {
-					String fieldNameKey = (String) demographicFields.next();
-					JSONArray demographicValues = demographicContentJson.getJSONArray(fieldNameKey);
-
-					if (demographicValues.length() > 0) {
-						fieldContentObject = demographicValues.getJSONObject(0);
-						fieldValue = (String) fieldContentObject.get("value");
-						if (fieldValue != null) {
-							switch (fieldNameKey) {
-							case "gender":
-								demographicInfoDTO.setGender(fieldValue);
-								break;
-							case "city":
-								locationDTO.setCity(fieldValue);
-								break;
-							case "mobileNumber":
-								demographicInfoDTO.setMobile(fieldValue);
-								break;
-							case "localAdministrativeAuthority":
-								demographicInfoDTO.setLocalAdministrativeAuthority(fieldValue);
-								break;
-							case "dateOfBirth":
-								try {
-									demographicInfoDTO
-											.setDateOfBirth(new SimpleDateFormat("dd/MM/yyyy").parse(fieldValue));
-								} catch (ParseException e) {
-								}
-								break;
-							case "emailId":
-								demographicInfoDTO.setEmailId(fieldValue);
-								break;
-							case "province":
-								locationDTO.setProvince(fieldValue);
-								break;
-							case "postalcode":
-								locationDTO.setPostalCode(fieldValue.length() >= 5 ? fieldValue.substring(0, 5) : "12345");
-								break;
-							case "FullName":
-								demographicInfoDTO.setFullName(fieldValue);
-								break;
-							case "addressLine1":
-								addressDTO.setAddressLine1(fieldValue);
-								break;
-							case "addressLine2":
-								addressDTO.setAddressLine2(fieldValue);
-								break;
-							case "addressLine3":
-								addressDTO.setLine3(fieldValue);
-								break;
-							case "region":
-								locationDTO.setRegion(fieldValue);
-								break;
-							case "CNEOrPINNumber":
-								demographicInfoDTO.setCneOrPINNumber(fieldValue);
-								break;
-							case "age":
-								demographicInfoDTO.setAge(fieldValue);
-								break;
-
-							default:
-								break;
-							}
-						}
-					}
-				}
-
+				jsonString.append(value);
 			}
-		} catch (JSONException | IOException exception) {
+
+			if (!StringUtils.isEmpty(jsonString)) {
+				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(
+						new ObjectMapper().readValue(jsonString.toString(), DemographicInfoDTO.class));
+			}
+		} catch (IOException exception) {
 			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		}
-		return registrationDTO;*/
-		return registrationDTO;
+
 	}
 
 	/**
@@ -272,8 +210,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
-			String filePath = preRegPacketLocation + separator + formatDate(new Date(), preRegLocationDateFormat)
-					.concat(separator).concat(PreRegistrationId).concat(ZIP_FILE_EXTENSION);
+			String filePath = preRegPacketLocation.concat(separator).concat(PreRegistrationId)
+					.concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));
 
@@ -297,6 +235,15 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 		return MosipDecryptor.symmetricDecrypt(Base64.getDecoder().decode(symmetricKey), encryptedPacket,
 				MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
+	}
+
+	private RegistrationDTO getRegistrationDtoContent() {
+		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
+	}
+
+	private Identity getIdentityDto() {
+		return getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 	}
 
 }
