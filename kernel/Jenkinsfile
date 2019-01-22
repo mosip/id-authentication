@@ -136,7 +136,7 @@ stage('---------- SonarQube Analysis --------------') {
      */
      docker.withRegistry(registryUrl, registryCredentials) {
       def buildName = moduleName + ":$dockerImagesTagVersion"
-      newApp = docker.build(buildName, '--build-args spring_config_label='+branch+'-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+'-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
       newApp.push()
       newApp.push 'latest'
      }

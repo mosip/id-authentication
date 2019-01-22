@@ -104,7 +104,7 @@ stage ('---------- build ---------------') {
     sh "rm -f parentDirectoryPath"
     docker.withRegistry(registryUrl, registryCredentials) {
      def buildName = "$parentDirectoryName:$dockerImagesTagVersion"
-     newApp = docker.build(buildName, '--build-args spring_config_label='+branch+'-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+     newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+'-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
      newApp.push()
      newApp.push 'latest'
     }
