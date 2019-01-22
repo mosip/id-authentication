@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.virus.scanner.job;
-	
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.mosip.registration.processor.virus.scanner.job.stage.VirusScannerStage;
-
 
 /**
  * The Class VirusScannerJobApplication.
@@ -25,7 +24,8 @@ public class VirusScannerJobApplication {
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(VirusScannerJobApplication.class, args);
@@ -37,6 +37,5 @@ public class VirusScannerJobApplication {
 	@PostConstruct
 	public void deployVerticle() {
 		virusScannerStage.deployVerticle();
-
 	}
 }

@@ -102,8 +102,6 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 		createConnection();
 		File folder = new File(folderPath);
 		File[] files = folder.listFiles();
-		System.out.println("++++++++++++++HOST+++++++++++++ "+this.host);
-		System.out.println("++++++++++++++PORT+++++++++++++ "+this.port);
 		for (File file : files) {
 			try {
 				ScanResult scanResult = this.clamavClient.scan(new FileInputStream(file));
@@ -119,18 +117,6 @@ public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 			}
 		}
 		return result;
-		/*try {
-			ScanResult scanResult = this.clamavClient.scan(Paths.get(folderPath), false);
-			if (scanResult.getStatus() == Status.OK) {
-				result = Boolean.TRUE;
-			} else {
-				Map<String, Collection<String>> listOfVirus = scanResult.getFoundViruses();
-				LOGGER.warn("Virus Found in folder " + folderPath + ": ", listOfVirus);
-			}
-		} catch (ClamavException e) {
-			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
-					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
-		}*/
 	}
 
 	/**
