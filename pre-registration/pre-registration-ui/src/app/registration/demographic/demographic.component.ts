@@ -12,7 +12,7 @@ import { AttributeModel } from './modal/attribute.modal';
 import { RequestModel } from './modal/request.modal';
 import { DemoIdentityModel } from './modal/demo.identity.modal';
 import { UserModel } from './modal/user.modal';
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/registration/booking/booking.service';
 import { LocationModal } from './modal/location.modal';
 import * as appConstants from '../../app.constants';
 import Utils from 'src/app/app.util';

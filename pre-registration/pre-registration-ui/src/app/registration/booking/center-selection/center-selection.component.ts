@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/registration/booking/booking.service';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RegistrationService } from '../registration.service';
-import { UserModel } from '../demographic/modal/user.modal';
+import { RegistrationService } from '../../registration.service';
+import { UserModel } from '../../demographic/modal/user.modal';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
