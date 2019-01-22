@@ -8,6 +8,7 @@ import { MapComponent } from './map/map.component';
 import { DialougComponent } from './dialoug/dialoug.component';
 import { ErrorComponent } from './error/error.component';
 import { I18nModule } from '../i18n.module';
+import { StepperComponent } from './stepper/stepper.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { I18nModule } from '../i18n.module';
     MaterialModule,
     I18nModule
   ],
-  declarations: [MapComponent, DialougComponent, ErrorComponent],
-  exports: [MapComponent, DialougComponent]
+  declarations: [MapComponent, DialougComponent, ErrorComponent, StepperComponent],
+  exports: [MapComponent, DialougComponent, StepperComponent]
 })
 export class SharedModule { }

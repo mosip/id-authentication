@@ -17,7 +17,6 @@ import { DialougComponent } from '../shared/dialoug/dialoug.component';
 import { SharedModule } from '../shared/shared.module';
 import { DraggableDirective } from './file-upload/draggable.directive';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
-import { StepperComponent } from './stepper/stepper.component';
 import { I18nModule } from '../i18n.module';
 import { PreviewComponent } from './preview/preview.component';
 
@@ -44,7 +43,6 @@ import { PreviewComponent } from './preview/preview.component';
     ParentComponent,
     DraggableDirective,
     ConfirmationComponent,
-    StepperComponent,
     PreviewComponent
   ]
 })
