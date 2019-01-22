@@ -154,17 +154,17 @@ public class AbisServiceImpl implements AbisService {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "Byte file not found from BioDedupe api");
 		}
+		if (bytefile != null) {
+			String byteFileStr = new String(bytefile);
 
-		String byteFileStr = new String(bytefile);
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(byteFileStr));
 
-		InputSource is = new InputSource();
-		is.setCharacterStream(new StringReader(byteFileStr));
-
-		
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-
-		return dBuilder.parse(is);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			return dBuilder.parse(is);
+		}
+		return null;
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class AbisServiceImpl implements AbisService {
 			if (duplicate) {
 				CandidateListDto cd = new CandidateListDto();
 				CandidatesDto[] candidatesDto = new CandidatesDto[identifyRequest.getMaxResults() + 2];
-				
+
 				for (int i = 0; i <candidatesDto.length; i++) {
 					candidatesDto[i] = new CandidatesDto();
 					candidatesDto[i].setReferenceId(i + "1234567-89AB-CDEF-0123-456789ABCDEF");
@@ -254,6 +254,6 @@ public class AbisServiceImpl implements AbisService {
 	 */
 	@Override
 	public void delete() {
-		
+
 	}
 }
