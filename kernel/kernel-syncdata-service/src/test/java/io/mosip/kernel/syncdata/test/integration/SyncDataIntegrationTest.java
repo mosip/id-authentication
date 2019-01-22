@@ -243,7 +243,7 @@ public class SyncDataIntegrationTest {
 		reasonLists = new ArrayList<>();
 		reasonLists.add(new ReasonList("RL101", "RL1", "ENG", "RL", "description", null));
 		locations = new ArrayList<>();
-		locations.add(new Location("LOC01", "1", 1, "COUNTRY", null, "ENG"));
+		locations.add(new Location("LOC01", "ENG", "Location", 1, "1", "1"));
 
 	}
 
