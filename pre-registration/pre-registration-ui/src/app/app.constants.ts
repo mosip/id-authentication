@@ -1,6 +1,7 @@
 export const NUMBER_PATTERN = '^[0-9]+[0-9]*$';
 export const TEXT_PATTERN = '^[a-zA-Z ]*$';
-export const COUNTRY_NAME = 'MOROCCO';
+export const COUNTRY_NAME = 'Morroco';
+export const COUNTRY_HIERARCHY = 'Country';
 export const VERSION = '1.0';
 export const RESPONSE = 'response';
 export const ERROR = 'error';
@@ -14,8 +15,8 @@ export const IDS = {
 };
 
 export const LANGUAGE_CODE = {
-  primary: 'ENG',
-  secondary: 'ARB',
+  primary: 'eng',
+  secondary: 'ara',
   primaryKeyboardLang: 'en',
   secondaryKeyboardLang: 'ar'
 };
@@ -26,6 +27,7 @@ export const APPEND_URL = {
   get_applicant: 'demographic/v0.1/pre-registration/applicationData',
   applicants: 'demographic/v0.1/pre-registration/applications',
   location: 'masterdata/',
+  gender: 'masterdata/v1.0/gendertypes',
   transliteration: 'translitrate/v0.1/pre-registration/translitrate'
 };
 
@@ -56,7 +58,8 @@ export const DASHBOARD_RESPONSE_KEYS = {
 
 export const DEMOGRAPHIC_RESPONSE_KEYS = {
   locations: 'locations',
-  preRegistrationId: 'preRegistrationId'
+  preRegistrationId: 'preRegistrationId',
+  genderTypes: 'genderType'
 };
 
 export const APPLICATION_STATUS_CODES = {

@@ -10,7 +10,7 @@ import OlTileLayer from 'ol/layer/Tile';
 import { Icon, Style } from 'ol/style';
 
 import { fromLonLat, addCommon as addCommonProjections } from 'ol/proj';
-import { SharedService } from '../shared.service';
+import { SharedService } from '../booking.service';
 
 @Component({
     selector: 'app-map',

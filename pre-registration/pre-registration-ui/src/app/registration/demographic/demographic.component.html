@@ -3,10 +3,9 @@
     <div class="user">
       <header>{{ 'demographic.title' | translate }}</header>
       <hr />
-      <div [dir]="textDir">
-        <div class="user__container">
+        <div [dir]="textDir" class="user__container">
           <form [formGroup]="userForm" class="user__form">
-            <h6>Language - {{'demographic.language'|translate}}</h6>
+            <h6>Language - {{ 'demographic.language' | translate }}</h6>
 
             <mat-form-field>
               <input
@@ -81,19 +80,19 @@
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
             >
-            {{ 'demographic.validation.date_required' | translate }}
+              {{ 'demographic.validation.date_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('month').valid && userForm.get('month').touched"
             >
-            {{ 'demographic.validation.month_required' | translate }}
+              {{ 'demographic.validation.month_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
               *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
             >
-            {{ 'demographic.validation.year_required' | translate }}
+              {{ 'demographic.validation.year_required' | translate }}
             </div>
             <div
               class="mat-error ng-star-inserted user__dob__error"
@@ -102,7 +101,7 @@
                 (userForm.get('age').touched && !userForm.get('age').valid)
               "
             >
-            {{ 'demographic.validation.DOB_validation' | translate }}
+              {{ 'demographic.validation.DOB_validation' | translate }}
             </div>
 
             <div class="user__gender">
@@ -114,8 +113,7 @@
                 name="fontStyle"
                 aria-label="Font Style"
               >
-                <mat-button-toggle value="male">{{ 'demographic.button_male' | translate }}</mat-button-toggle>
-                <mat-button-toggle value="female">{{ 'demographic.button_female' | translate }}</mat-button-toggle>
+              <mat-button-toggle *ngFor="let gender of primaryGender" [value]="gender.code">{{gender.genderName}}</mat-button-toggle>
               </mat-button-toggle-group>
             </div>
             <div
@@ -137,7 +135,9 @@
                 (change)="onTransliteration(addressLine1, t_addressLine1)"
               />
               <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
-              <mat-error *ngIf="!addressLine1.invalid">{{ 'demographic.validation.address_required' | translate }}</mat-error>
+              <mat-error *ngIf="!addressLine1.invalid">{{
+                'demographic.validation.address_required' | translate
+              }}</mat-error>
             </mat-form-field>
             <mat-form-field>
               <input
@@ -176,7 +176,9 @@
                     region.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!region.invalid">{{ 'demographic.validation.region_required' | translate }}</mat-error>
+                <mat-error *ngIf="!region.invalid">{{
+                  'demographic.validation.region_required' | translate
+                }}</mat-error>
               </mat-form-field>
             </div>
 
@@ -192,7 +194,9 @@
                     province.locationName
                   }}</mat-option>
                 </mat-select>
-                <mat-error *ngIf="!province.invalid">{{ 'demographic.validation.province_required' | translate }}</mat-error>
+                <mat-error *ngIf="!province.invalid">{{
+                  'demographic.validation.province_required' | translate
+                }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -231,7 +235,9 @@
                     >{{ localAdministrativeAuthoritie.locationName }}</mat-option
                   >
                 </mat-select>
-                <mat-error *ngIf="!authority.invalid">{{ 'demographic.validation.admin_required' | translate }}</mat-error>
+                <mat-error *ngIf="!authority.invalid">{{
+                  'demographic.validation.admin_required' | translate
+                }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -246,7 +252,9 @@
                   #postalCode
                 />
                 <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
-                <mat-error *ngIf="!postalCode.invalid">{{ 'demographic.validation.postal_code_required' | translate }}</mat-error>
+                <mat-error *ngIf="!postalCode.invalid">{{
+                  'demographic.validation.postal_code_required' | translate
+                }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -260,7 +268,9 @@
                   formControlName="mobileNumber"
                 />
                 <mat-hint align="end">{{ mobileNumber.value.length }} / 9</mat-hint>
-                <mat-error *ngIf="!mobileNumber.invalid">{{ 'demographic.validation.mobile_required' | translate }}</mat-error>
+                <mat-error *ngIf="!mobileNumber.invalid">{{
+                  'demographic.validation.mobile_required' | translate
+                }}</mat-error>
               </mat-form-field>
             </div>
             <div class="user__dropdown">
@@ -291,9 +301,8 @@
               </mat-form-field>
             </div>
           </form>
-        </div>
       </div>
-      <div  class="user__container">
+      <div [dir]="secTextDir" class="user__container">
         <form [formGroup]="transUserForm" class="user__form">
           <h6>Language - Arabic</h6>
           <mat-form-field>
@@ -313,30 +322,44 @@
           <div class="user__age-or-date">
             <div class="user__date">
               <mat-form-field>
-                <input readonly [value]="userForm.get('date').value" matInput [placeholder]="secondaryLanguagelabels.date_dd" />
+                <input
+                  readonly
+                  [value]="userForm.get('date').value"
+                  matInput
+                  [placeholder]="secondaryLanguagelabels.date_dd"
+                />
               </mat-form-field>
               <mat-form-field>
-                <input readonly [value]="userForm.get('month').value" matInput [placeholder]="secondaryLanguagelabels.date_mm" />
+                <input
+                  readonly
+                  [value]="userForm.get('month').value"
+                  matInput
+                  [placeholder]="secondaryLanguagelabels.date_mm"
+                />
               </mat-form-field>
               <mat-form-field>
-                <input readonly [value]="userForm.get('year').value" matInput [placeholder]="secondaryLanguagelabels.date_yyyy" />
+                <input
+                  readonly
+                  [value]="userForm.get('year').value"
+                  matInput
+                  [placeholder]="secondaryLanguagelabels.date_yyyy"
+                />
               </mat-form-field>
             </div>
 
             <div class="user__pref">OR</div>
             <div class="user__age">
               <mat-form-field>
-                <input readonly [value]="userForm.get('age').value" matInput [placeholder]="secondaryLanguagelabels.label_age" />
+                <input
+                  readonly
+                  [value]="userForm.get('age').value"
+                  matInput
+                  [placeholder]="secondaryLanguagelabels.label_age"
+                />
               </mat-form-field>
               <span class="user__age--disabled">Years</span>
             </div>
           </div>
-          <!-- <div
-            class="mat-error ng-star-inserted user__dob__error"
-            *ngIf="userForm.get('age').touched && !userForm.get('age').valid"
-          >
-            <br />
-          </div> -->
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="!userForm.get('date').valid && userForm.get('date').touched"
@@ -349,11 +372,7 @@
           >
             <br />
           </div>
-          <div
-          *ngIf="!userForm.get('year').valid && userForm.get('year').touched"
-          >
-            <br />
-          </div>
+          <div *ngIf="!userForm.get('year').valid && userForm.get('year').touched"><br /></div>
           <div
             class="mat-error ng-star-inserted user__dob__error"
             *ngIf="userForm.get('dob').touched && userForm.get('dob').errors['incorrect']"
@@ -364,8 +383,7 @@
           <div class="user__gender">
             Gender
             <mat-button-toggle-group appearance="legacy" aria-label="Font Style" [value]="userForm.get('gender').value">
-              <mat-button-toggle value="male">Male</mat-button-toggle>
-              <mat-button-toggle value="female">Female</mat-button-toggle>
+                <mat-button-toggle *ngFor="let gender of secondaryGender" [value]="gender.code">{{gender.genderName}}</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <div
@@ -496,7 +514,12 @@
           </div>
           <div class="user__dropdown">
             <mat-form-field>
-              <input matInput readonly [placeholder]="secondaryLanguagelabels.label_email_id" [value]="userForm.get('email').value" />
+              <input
+                matInput
+                readonly
+                [placeholder]="secondaryLanguagelabels.label_email_id"
+                [value]="userForm.get('email').value"
+              />
             </mat-form-field>
           </div>
           <div class="user__dropdown">

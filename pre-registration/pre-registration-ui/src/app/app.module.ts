@@ -9,7 +9,7 @@ import { RegistrationModule } from './registration/registration.module';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
-import { SharedService } from './shared/shared.service';
+import { SharedService } from './registration/booking/booking.service';
 import { AcknowledgementComponent} from './acknowledgement/acknowledgement.component';
 
 @NgModule({

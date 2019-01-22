@@ -12,10 +12,11 @@ import { AttributeModel } from './modal/attribute.modal';
 import { RequestModel } from './modal/request.modal';
 import { DemoIdentityModel } from './modal/demo.identity.modal';
 import { UserModel } from './modal/user.modal';
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/registration/booking/booking.service';
 import { LocationModal } from './modal/location.modal';
 import * as appConstants from '../../app.constants';
 import Utils from 'src/app/app.util';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-demographic',
@@ -24,8 +25,11 @@ import Utils from 'src/app/app.util';
 })
 export class DemographicComponent implements OnInit {
   textDir = localStorage.getItem('dir');
-  keyboardLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.primaryKeyboardLang];
-  keyboardSecondaryLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.secondaryKeyboardLang];
+  secTextDir = localStorage.getItem('secondaryDir');
+  // keyboardLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.primaryKeyboardLang];
+  keyboardLang = localStorage.getItem('langCode');
+  // keyboardSecondaryLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.secondaryKeyboardLang];
+  keyboardSecondaryLang = localStorage.getItem('secondaryLangCode');
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
   primaryLang = appConstants.LANGUAGE_CODE.primary;
@@ -45,11 +49,13 @@ export class DemographicComponent implements OnInit {
   preRegId = '';
   loginId = '';
   user: UserModel;
-  demodata: string [];
-  secondaryLanguage: any;
-  secondaryLanguagelabels:any;
-
+  demodata: string[];
+  secondaryLanguage = localStorage.getItem('secondaryLangCode');
+  secondaryLanguagelabels: any;
   uppermostLocationHierarchy: any;
+  genders: any;
+  primaryGender = [];
+  secondaryGender = [];
   message = {};
 
   @ViewChild('dd') dd: ElementRef;
@@ -91,15 +97,24 @@ export class DemographicComponent implements OnInit {
   //Need to be removed after translation
   demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
-  demo1= new DemoLabels('t_fullName', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
+  demo1 = new DemoLabels('t_fullName', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private regService: RegistrationService,
     private dataStorageService: DataStorageService,
-    private sharedService: SharedService
-     ) {}
+    private sharedService: SharedService,
+    private translate: TranslateService
+  ) {
+    //need to remove
+    translate.addLangs(['en', 'fr', 'ar']);
+    translate.setDefaultLang(localStorage.getItem('langCode'));
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
+    //till here
+  }
+  // ) {}
 
   ngOnInit() {
     if (localStorage.getItem('newApplicant') === 'true') {
@@ -117,16 +132,9 @@ export class DemographicComponent implements OnInit {
     this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
     this.numberOfApplicants = 1;
     this.initForm();
-this.secondaryLanguage='ar';
-
-    this.dataStorageService
-    .getSecondaryLanguageLabels(this.secondaryLanguage )
-    .subscribe(response => {
+    this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLanguage).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
-      console.log(this.secondaryLanguagelabels);
-     
     });
-  
   }
 
   async initForm() {
@@ -156,8 +164,7 @@ this.secondaryLanguage='ar';
 
     if (this.regService.getUser(this.step) != null) {
       this.user = this.regService.getUser(this.step);
-      console.log(this.user);
-      
+
       this.preRegId = this.user.preRegId;
       fullName = this.user.request.demographicDetails.identity.fullName[0].value;
       gender = this.user.request.demographicDetails.identity.gender[0].value;
@@ -233,7 +240,7 @@ this.secondaryLanguage='ar';
         Validators.minLength(9),
         Validators.pattern(this.numberPattern)
       ]),
-      pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
+      pin: new FormControl(pin, [Validators.required, Validators.maxLength(30), Validators.pattern(this.numberPattern)])
     });
 
     this.transUserForm = new FormGroup({
@@ -257,6 +264,12 @@ this.secondaryLanguage='ar';
       region
     );
 
+    await this.getGenderDetails();
+    this.filterGenderOnLangCode(this.primaryLang, this.primaryGender);
+    this.filterGenderOnLangCode(this.secondaryLang, this.secondaryGender);
+    console.log(this.primaryGender);
+    console.log(this.secondaryGender);
+
     if (this.regService.getUser(this.step) != null) {
       await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces, province);
       await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces, province);
@@ -274,17 +287,31 @@ this.secondaryLanguage='ar';
         this.transLocalAdministrativeAuthorities,
         localAdministrativeAuthority
       );
-      console.log('LOCATION', this.locations);
     }
+  }
+
+  getGenderDetails() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getGenderDetails().subscribe(response => {
+        this.genders = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+        resolve(true);
+      });
+    });
+  }
+
+  private filterGenderOnLangCode(langCode: string, genderEntity = []) {
+    this.genders.filter((element: any) => {
+      if (element.langCode === langCode) genderEntity.push(element);
+    });
   }
 
   getLocationMetadataHirearchy() {
     return new Promise((resolve, reject) => {
-      this.dataStorageService.getLocationMetadataHirearchy('country').subscribe(
+      this.dataStorageService.getLocationMetadataHirearchy(appConstants.COUNTRY_HIERARCHY).subscribe(
         response => {
           const countryHirearchy = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations];
           const uppermostLocationHierarchy = countryHirearchy.filter(
-            (element: any) => element.name.toUpperCase() === appConstants.COUNTRY_NAME
+            (element: any) => element.name === appConstants.COUNTRY_NAME
           );
           this.uppermostLocationHierarchy = uppermostLocationHierarchy;
           resolve(this.uppermostLocationHierarchy);
@@ -324,15 +351,17 @@ this.secondaryLanguage='ar';
   }
 
   getLocationImmediateHierearchy(lang: string, location: string, entity: LocationModal[], parentLocation?: string) {
-    entity.length = 0; 
+    entity.length = 0;
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
+          console.log('location ', response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations]);
+
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
               locationCode: element.code,
               locationName: element.name,
-              languageCode:lang
+              languageCode: lang
             };
             entity.push(locationModal);
             if (parentLocation && locationModal.locationCode === parentLocation) {
@@ -411,7 +440,6 @@ this.secondaryLanguage='ar';
   }
 
   onTransliteration(fromControl: FormControl, toControl: any) {
-
     if (fromControl.value) {
       const request: any = {
         from_field_lang: 'English',
@@ -422,11 +450,10 @@ this.secondaryLanguage='ar';
         to_field_value: ''
       };
       // this.transUserForm.controls[toControl.name].patchValue('dummyValue');
-
       this.dataStorageService.getTransliteration(request).subscribe(response => {
         this.transUserForm.controls[toControl.name].patchValue(response[appConstants.RESPONSE].to_field_value);
       });
-    }else{
+    } else {
       this.transUserForm.controls[toControl.name].patchValue('');
     }
   }
@@ -438,8 +465,6 @@ this.secondaryLanguage='ar';
   }
 
   onSubmit() {
-    console.log(this.locations);
-
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
     this.dataStorageService.addUser(request).subscribe(
@@ -454,7 +479,6 @@ this.secondaryLanguage='ar';
             preRegId: this.preRegId
           });
         } else if (response !== null) {
-          console.log(response);
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.locations));
           this.sharedService.addNameList({

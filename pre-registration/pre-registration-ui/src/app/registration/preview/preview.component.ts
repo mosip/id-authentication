@@ -48,7 +48,7 @@ export class PreviewComponent implements OnInit {
       this.previewData.localAdministrativeAuthority[0].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[0].value, this.previewData.localAdministrativeAuthority[0].language);
       this.previewData.localAdministrativeAuthority[1].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[1].value, this.previewData.localAdministrativeAuthority[1].language);
       console.log(this.previewData);
-      if (this.previewData['fullName'][1].language === 'ARB') {
+      if (this.previewData['fullName'][1].language === 'ara') {
         this.secondaryLanguage = 'ar';
       }
     this.dataStorageService

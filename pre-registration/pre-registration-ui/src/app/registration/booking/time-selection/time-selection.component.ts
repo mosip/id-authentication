@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SharedService } from 'src/app/shared/shared.service';
-import { NameList } from '../demographic/modal/name-list.modal';
+import { SharedService } from 'src/app/registration/booking/booking.service';
+import { NameList } from '../../demographic/modal/name-list.modal';
 import { MatDialog } from '@angular/material';
-import { DialougComponent } from '../../shared/dialoug/dialoug.component';
+import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { BookingModel } from '../center-selection/booking.model';
-import { RegistrationService } from '../registration.service';
-import { UserModel } from '../demographic/modal/user.modal';
+import { RegistrationService } from '../../registration.service';
 
 @Component({
   selector: 'app-time-selection',

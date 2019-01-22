@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { DashBoardComponent } from './dashboard/dashboard.component';
 import { DemographicComponent } from './demographic/demographic.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
-import { CenterSelectionComponent } from './center-selection/center-selection.component';
 import { ParentComponent } from './parent/parent.component';
 import { AcknowledgementComponent } from '../acknowledgement/acknowledgement.component';
-import { TimeSelectionComponent } from './time-selection/time-selection.component';
 import { PreviewComponent } from './preview/preview.component';
+import { CenterSelectionComponent } from './booking/center-selection/center-selection.component';
+import { TimeSelectionComponent } from './booking/time-selection/time-selection.component';
 
 const registrationRoutes: Routes = [
   {
