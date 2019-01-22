@@ -207,7 +207,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 * The UIN should not have repeated block of numbers for more than 2 digits
 		 * 
 		 */
-		if (isValidId(id)) {
+		if (!isValidId(id)) {
 			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
 					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
