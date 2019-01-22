@@ -4,6 +4,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,13 +24,19 @@ import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.auth.dto.RequestDTO;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
@@ -102,6 +109,9 @@ public class OSIValidator {
 	/** The pin info. */
 	PinInfo pinInfo = new PinInfo();
 
+	/** The identity iterator util. */
+	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+
 	/**
 	 * Checks if is valid OSI.
 	 *
@@ -142,8 +152,7 @@ public class OSIValidator {
 		if (uin == null)
 			return true;
 		else {
-			// String fingerPrint = regOsi.getOfficerFingerpImageName();
-			String fingerPrint = "officer_bio_CBEFF";
+			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.OFFICERBIOMETRICFILENAME);
 			String fingerPrintType = regOsi.getOfficerfingerType();
 			String iris = regOsi.getOfficerIrisImageName();
 			String irisType = regOsi.getOfficerIrisType();
@@ -199,8 +208,7 @@ public class OSIValidator {
 			return false;
 		else {
 
-			// String fingerPrint = regOsi.getSupervisorFingerpImageName();
-			String fingerPrint = "supervisor_bio_CBEFF";
+			String fingerPrint = getOsiDataValue(registrationId, JsonConstant.SUPERVISORBIOMETRICFILENAME);
 			String fingerPrintType = regOsi.getSupervisorFingerType();
 			String iris = regOsi.getSupervisorIrisImageName();
 			String irisType = regOsi.getSupervisorIrisType();
@@ -542,9 +550,8 @@ public class OSIValidator {
 		}
 
 		if (regOsi.getIntroducerFingerpImageName() != null) {
-			// String fingerPrint = BIOMETRIC +
-			// regOsi.getIntroducerFingerpImageName().toUpperCase();
-			String fingerPrint = BIOMETRIC + "introducer_bio_CBEFF";
+			String fingerPrint = BIOMETRIC
+					+ getHashSequenceValue(registrationId, JsonConstant.INTRODUCERBIOMETRICSEQUENCE);
 			String fingerPrintType = regOsi.getIntroducerFingerpType();
 			if (!validateFingerprint(introducerUin, fingerPrint, fingerPrintType, registrationId)) {
 				registrationStatusDto.setStatusComment(StatusMessage.INTRODUCER + message);
@@ -611,6 +618,64 @@ public class OSIValidator {
 			return demographicDedupeDtoList.get(0).getUin();
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the osi data value.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @param label
+	 *            the label
+	 * @return the osi data value
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	private String getOsiDataValue(String registrationId, String label) throws UnsupportedEncodingException {
+		Identity identity = getIdentity(registrationId);
+		List<FieldValue> osiData = identity.getOsiData();
+		return identityIteratorUtil.getMetadataLabelValue(osiData, label);
+
+	}
+
+	/**
+	 * Gets the hash sequence value.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @param field
+	 *            the field
+	 * @return the hash sequence value
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	private String getHashSequenceValue(String registrationId, String field) throws UnsupportedEncodingException {
+
+		Identity identity = getIdentity(registrationId);
+		List<FieldValueArray> hashSequence = identity.getHashSequence();
+		List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence, field);
+		if (hashList != null)
+			return hashList.get(0);
+
+		return null;
+
+	}
+
+	/**
+	 * Gets the identity.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return the identity
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	private Identity getIdentity(String registrationId) throws UnsupportedEncodingException {
+		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
+		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+				PacketMetaInfo.class);
+		return packetMetaInfo.getIdentity();
+
 	}
 
 }

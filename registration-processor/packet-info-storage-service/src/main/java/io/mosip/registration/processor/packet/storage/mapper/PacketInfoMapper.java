@@ -5,17 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
-import org.apache.commons.codec.language.Soundex;
-import org.apache.commons.codec.language.bm.Languages;
-import org.apache.commons.codec.language.bm.NameType;
-import org.apache.commons.codec.language.bm.PhoneticEngine;
-import org.apache.commons.codec.language.bm.RuleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +101,6 @@ public class PacketInfoMapper {
 
 		applicantDocumentEntity.setId(applicantDocumentPKEntity);
 		applicantDocumentEntity.setPreRegId(preregistrationId);
-		// applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocName(documentDto.getDocumentName());
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocFileFormat(documentDto.getFormat());
@@ -345,6 +336,13 @@ public class PacketInfoMapper {
 		return regOsiEntity;
 	}
 
+	/**
+	 * Convert reg abis ref to entity.
+	 *
+	 * @param regAbisRefDto
+	 *            the reg abis ref dto
+	 * @return the reg abis ref entity
+	 */
 	public static RegAbisRefEntity convertRegAbisRefToEntity(RegAbisRefDto regAbisRefDto) {
 
 		RegAbisRefEntity regAbisRefEntity = new RegAbisRefEntity();
@@ -433,30 +431,6 @@ public class PacketInfoMapper {
 	}
 
 	/**
-	 * Gets the name.
-	 *
-	 * @param jsonValueList
-	 *            the json value list
-	 * @param language
-	 *            the language
-	 * @return the name
-	 */
-	private static String getName(List<JsonValue[]> jsonValueList, String language) {
-		StringBuilder name = new StringBuilder();
-		for (int i = 0; i < jsonValueList.size(); i++) {
-
-			for (int j = 0; j < jsonValueList.get(i).length; j++) {
-				if (language.equals(jsonValueList.get(i)[j].getLanguage())) {
-					name = name.append(jsonValueList.get(i)[j].getValue());
-
-				}
-			}
-
-		}
-		return name.toString();
-	}
-
-	/**
 	 * Conver demographic dedupe dto to entity.
 	 *
 	 * @param demoDto
@@ -488,19 +462,6 @@ public class PacketInfoMapper {
 			if (demoDto.getName() != null)
 				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
 			entity.setName(applicantName);
-/*
-			Locale loc = new Locale(languageArray[i]);
-			String languageName = loc.getDisplayLanguage();
-
-			PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
-			Set<String> languageSet = new HashSet<>();
-			languageSet.add(languageName.toLowerCase());
-
-			String encodedInputString = phoneticEngine.encode(applicantName == null ? "" : applicantName,
-					Languages.LanguageSet.from(languageSet));
-			Soundex soundex = new Soundex();
-			entity.setPhoneticName(
-					!soundex.encode(encodedInputString).isEmpty() ? soundex.encode(encodedInputString) : null);*/
 
 			if (demoDto.getDateOfBirth() != null) {
 				try {
