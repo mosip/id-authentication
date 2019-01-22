@@ -22,8 +22,8 @@
     "link_confirm": "Confirmation"
   },
   "demographic": {
-    "title_demographic": "Détails démographiques",
-    "language": "Anglais",
+    "title": "Détails démographiques",
+    "language": "français",
     "label_name": "Nom complet",
     "name_required": "Le nom complet est requis",
     "label_age": "Âge",
