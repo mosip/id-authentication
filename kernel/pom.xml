@@ -36,6 +36,7 @@
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
+		<vertx.version>3.5.3</vertx.version>
 		<javax.el-api.version>3.0.0</javax.el-api.version>
 		<glassfish.javax.el>2.2.6</glassfish.javax.el>
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
@@ -149,7 +150,8 @@
 		<module>kernel-auth-service</module>
 		<module>kernel-ldap-service</module>
 		<module>kernel-config-server</module>
-
+		<module>kernel-uingenerator-service</module>
+		
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-packetserver-http</module>
 		<module>kernel-idvalidator</module>
