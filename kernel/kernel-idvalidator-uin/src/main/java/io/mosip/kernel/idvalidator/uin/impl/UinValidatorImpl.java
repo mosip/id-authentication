@@ -137,7 +137,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * 
 	 * @param id
 	 *            pass a UIN in String format example : String inputFile =
-	 *            "426789089018"
+	 *            "201308710214"
 	 * @return boolean True If entered is Valid else it will throw an error
 	 * @throws InvalidIDException
 	 *             If entered UIN is empty or null.
