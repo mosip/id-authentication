@@ -109,6 +109,9 @@
 
 	<modules>
 		<module>kernel-core</module>
+		<module>kernel-auth-adapter</module>
+		<module>kernel-auth</module>
+		<module>kernel-ldap</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
