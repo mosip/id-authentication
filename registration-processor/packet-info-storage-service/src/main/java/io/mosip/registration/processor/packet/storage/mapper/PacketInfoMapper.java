@@ -249,7 +249,7 @@ public class PacketInfoMapper {
 		ApplicantPhotographEntity applicantPhotographEntity = new ApplicantPhotographEntity();
 
 		Boolean isHasExceptionPhoto = false;
-		if (!(exceptionPhotographData.getPhotographName().isEmpty())) {
+		if (exceptionPhotographData != null && !(exceptionPhotographData.getPhotographName().isEmpty())) {
 			isHasExceptionPhoto = true;
 			applicantPhotographEntity.setExcpPhotoName(exceptionPhotographData.getPhotographName());
 		}
@@ -306,14 +306,20 @@ public class PacketInfoMapper {
 
 		regOsiEntity.setOfficerFingerpImageName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERFINGERPRINTIMAGE));
-		regOsiEntity.setOfficerId(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERID));
+		String officerId = identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERID);
+		regOsiEntity.setOfficerId(officerId);
 		regOsiEntity
 				.setOfficerIrisImageName(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERIRISIMAGE));
 		regOsiEntity.setSupervisorFingerpImageName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORFINGERPRINTIMAGE));
 		regOsiEntity.setSupervisorIrisImageName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORIRISIMAGE));
-		regOsiEntity.setSupervisorId(identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORID));
+		String supervisorId = identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORID);
+		if (supervisorId != null) {
+			regOsiEntity.setSupervisorId(supervisorId);
+		} else {
+			regOsiEntity.setSupervisorId(officerId);
+		}
 		regOsiEntity.setOfficerPhotoName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERAUTHENTICATIONIMAGE));
 		regOsiEntity.setOfficerHashedPwd(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERPWR));

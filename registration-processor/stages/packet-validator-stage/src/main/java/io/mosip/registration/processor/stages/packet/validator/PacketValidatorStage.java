@@ -151,14 +151,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					this.registrationId = dto.getRegistrationId();
 					description = "";
 					isTransactionSuccessful = false;
+					InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+							.getRegistrationStatus(registrationId);
 					try {
 						InputStream packetMetaInfoStream = adapter.getFile(registrationId,
 								PacketFiles.PACKET_META_INFO.name());
 						PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil
 								.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 
-						InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
-								.getRegistrationStatus(registrationId);
 						FilesValidation filesValidation = new FilesValidation(adapter, registrationStatusDto);
 						boolean isFilesValidated = filesValidation.filesValidation(registrationId,
 								packetMetaInfo.getIdentity());
@@ -231,6 +231,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 										+ ExceptionUtils.getStackTrace(e));
 						object.setInternalError(Boolean.TRUE);
 						description = "Data voilation in reg packet : " + registrationId;
+						object.setIsValid(Boolean.FALSE);
+						object.setRid(dto.getRegistrationId());
+						int retryCount = registrationStatusDto.getRetryCount() != null
+								? registrationStatusDto.getRetryCount() + 1
+								: 1;
+						description = registrationStatusDto.getStatusComment() + registrationId;
+						registrationStatusDto.setRetryCount(retryCount);
+
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 					} catch (IOException exc) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -239,6 +250,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 										+ ExceptionUtils.getStackTrace(exc));
 						object.setInternalError(Boolean.TRUE);
 						description = "Internal error occured while processing registration  id : " + registrationId;
+						object.setIsValid(Boolean.FALSE);
+						object.setRid(dto.getRegistrationId());
+						int retryCount = registrationStatusDto.getRetryCount() != null
+								? registrationStatusDto.getRetryCount() + 1
+								: 1;
+						description = registrationStatusDto.getStatusComment() + registrationId;
+						registrationStatusDto.setRetryCount(retryCount);
+
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 					} catch (Exception ex) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -247,6 +269,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 										+ ExceptionUtils.getStackTrace(ex));
 						object.setInternalError(Boolean.TRUE);
 						description = "Internal error occured while processing registration  id : " + registrationId;
+						object.setIsValid(Boolean.FALSE);
+						object.setRid(dto.getRegistrationId());
+						int retryCount = registrationStatusDto.getRetryCount() != null
+								? registrationStatusDto.getRetryCount() + 1
+								: 1;
+						description = registrationStatusDto.getStatusComment() + registrationId;
+						registrationStatusDto.setRetryCount(retryCount);
+
+						registrationStatusDto
+								.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
+						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 					} finally {
 
 						sendMessage(mosipEventBus, object);
