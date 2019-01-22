@@ -69,4 +69,4 @@ This service can be used to audit events and operations. Service has REST API ex
 ## Implementation
 
 
-**kernel-auditmanager-service** [README](../../kernel/kernel-auditmanager-service/README.md)
+**kernel-auditmanager-service** [README](../../../kernel/kernel-auditmanager-service/README.md)
