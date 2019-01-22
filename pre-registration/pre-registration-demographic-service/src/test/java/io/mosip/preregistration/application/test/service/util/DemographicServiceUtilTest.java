@@ -134,7 +134,7 @@ public class DemographicServiceUtilTest {
 	@Test(expected = UnsupportedEncodingException.class)
 	public void dateSetterEncodingTest() throws UnsupportedEncodingException {
 		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put(RequestCodes.fromDate.toString(), URLEncoder.encode(ArgumentMatchers.anyString(), "UTF"));
+		dateMap.put(RequestCodes.fromDate.toString(), URLEncoder.encode("", "UTF"));
 		String format = "yyyy-MM-dd HH:mm:ss";
 		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
 	}
