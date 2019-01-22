@@ -271,6 +271,7 @@ public class MessageNotificationServiceImpl
 			attributes.put("UIN", id);
 			// get registration id using UIN
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
+			attributes.put("RID", id);
 		} else {
 			attributes.put("RID", id);
 		}
