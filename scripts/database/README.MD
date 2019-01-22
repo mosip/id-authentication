@@ -4,7 +4,7 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 ### Each database folder has the following files / folders
 
-* **ddl folder:** This folder contains all the database data definition language (DDL) scripts to create or alter a database object of pre-registration module.
+* **ddl folder:** This folder contains all the database data definition language (DDL) scripts to create or alter a database object of this module.
 
 * **dml folder:** This folder contains the scripts (insert/update/delete scripts) to create seed data / metadata needed to run this module.
 
@@ -16,9 +16,9 @@ The database objects related to MOSIP modules is stored under <mosip_home>/scrip
 
 * **mosip_role_common.sql:** This file contains the common roles creation script that are needed to manage the database.
 
-* **mosip_prereg_ddl_deploy.sql:** This is a wrapper script used to deploy the DDL scripts available in ddl folder. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects being created.
+* **mosip_prereg_ddl_deploy.sql:** This is a wrapper script used to **deploy the DDL scripts available in ddl folder**. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects being created.
 
-* **mosip_prereg_ddl_deploy.sql:** This is a wrapper script used to deploy the DML scripts available in dml folder. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects.
+* **mosip_prereg_ddl_deploy.sql:** This is a wrapper script used to **deploy the DML scripts available in dml folder**. This will also used to prepare the script run sequence to manage all the needed dependency across DB objects.
 
 ### The structure of the files and folder is as follows
 
