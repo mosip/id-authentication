@@ -137,14 +137,6 @@ export class DemographicComponent implements OnInit {
     });
   }
 
-  private filterGenderOnLangCode(langCode: string) {
-    const output = this.genders.filter(element => {
-      if (element.langCode === 'eng') output.push(element);
-    });
-    console.log(output);
-    return output;
-  }
-
   async initForm() {
     let fullName = '';
     let dob = '';
@@ -248,7 +240,7 @@ export class DemographicComponent implements OnInit {
         Validators.minLength(9),
         Validators.pattern(this.numberPattern)
       ]),
-      pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
+      pin: new FormControl(pin, [Validators.required, Validators.maxLength(30), Validators.pattern(this.numberPattern)])
     });
 
     this.transUserForm = new FormGroup({
@@ -272,6 +264,12 @@ export class DemographicComponent implements OnInit {
       region
     );
 
+    await this.getGenderDetails();
+    this.filterGenderOnLangCode(this.primaryLang, this.primaryGender);
+    this.filterGenderOnLangCode(this.secondaryLang, this.secondaryGender);
+    console.log(this.primaryGender);
+    console.log(this.secondaryGender);
+
     if (this.regService.getUser(this.step) != null) {
       await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces, province);
       await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces, province);
@@ -289,15 +287,22 @@ export class DemographicComponent implements OnInit {
         this.transLocalAdministrativeAuthorities,
         localAdministrativeAuthority
       );
-      console.log('LOCATION', this.locations);
     }
+  }
 
-    await this.dataStorageService.getGenderDetails().subscribe(response => {
-      this.genders = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+  getGenderDetails() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getGenderDetails().subscribe(response => {
+        this.genders = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+        resolve(true);
+      });
     });
-    // this.primaryGender = this.filterGenderOnLangCode(this.primaryLang);
-    // this.secondaryGender = this.filterGenderOnLangCode(this.secondaryLang);
-    // console.log(this.primaryGender, this.secondaryGender);
+  }
+
+  private filterGenderOnLangCode(langCode: string, genderEntity = []) {
+    this.genders.filter((element: any) => {
+      if (element.langCode === langCode) genderEntity.push(element);
+    });
   }
 
   getLocationMetadataHirearchy() {

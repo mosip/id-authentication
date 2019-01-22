@@ -113,8 +113,7 @@
                 name="fontStyle"
                 aria-label="Font Style"
               >
-                <mat-button-toggle value="male">{{ 'demographic.button_male' | translate }}</mat-button-toggle>
-                <mat-button-toggle value="female">{{ 'demographic.button_female' | translate }}</mat-button-toggle>
+              <mat-button-toggle *ngFor="let gender of primaryGender" [value]="gender.code">{{gender.genderName}}</mat-button-toggle>
               </mat-button-toggle-group>
             </div>
             <div
@@ -384,8 +383,7 @@
           <div class="user__gender">
             Gender
             <mat-button-toggle-group appearance="legacy" aria-label="Font Style" [value]="userForm.get('gender').value">
-              <mat-button-toggle value="male">Male</mat-button-toggle>
-              <mat-button-toggle value="female">Female</mat-button-toggle>
+                <mat-button-toggle *ngFor="let gender of secondaryGender" [value]="gender.code">{{gender.genderName}}</mat-button-toggle>
             </mat-button-toggle-group>
           </div>
           <div
