@@ -3,6 +3,7 @@ package io.mosip.registrationprocessor.stages.demodedupe;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 
@@ -32,6 +33,9 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
@@ -50,6 +54,13 @@ public class DemodedupeStageTest {
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	@Mock
+	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
+
+	private ManualVerificationEntity manualVerificationEntity;
+
+	@Mock
+	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
 	@Mock
 	private DemoDedupe demoDedupe;
 
@@ -115,7 +126,7 @@ public class DemodedupeStageTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDemoDedupePotentialMatch() throws ApisResourceAccessException, IOException {
-
+		Mockito.when(manualVerficationRepository.save(any())).thenReturn(manualVerificationEntity);
 		Mockito.when(demoDedupe.performDedupe(anyString())).thenReturn(duplicateDtos);
 
 		Mockito.when(demoDedupe.authenticateDuplicates(anyString(), anyList())).thenReturn(false);
