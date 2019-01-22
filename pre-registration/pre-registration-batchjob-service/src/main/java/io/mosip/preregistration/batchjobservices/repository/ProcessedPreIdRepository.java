@@ -13,8 +13,8 @@ import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
  *@since 1.0.0
  *
  */
-@Repository("preRegProcessedRepository")
-public interface PreRegistrationProcessedPreIdRepository extends BaseRepository<ProcessedPreRegEntity, String>{
+@Repository("processedPreIdRepository")
+public interface ProcessedPreIdRepository extends BaseRepository<ProcessedPreRegEntity, String>{
 	
 	List<ProcessedPreRegEntity> findBystatusComments(@Param("statusComment") String statusComment);
 	
