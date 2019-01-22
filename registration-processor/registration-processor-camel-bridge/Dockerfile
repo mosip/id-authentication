@@ -10,7 +10,7 @@ ARG active_profile
 ENV active_profile_env=${active_profile}
 
 # environment variable to pass github branch to pickup configuration from, at docker runtime
-ENV spring_config_label_env = ${spring_config_label}
+ENV spring_config_label_env=${spring_config_label}
 
 COPY ./target/registration-processor-camel-bridge-*-jar-with-dependencies.jar registration-processor-camel-bridge.jar
 

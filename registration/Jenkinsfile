@@ -53,6 +53,8 @@ node {
   server.publishBuildInfo buildInfo
  }
 
+ /*
+
  stage('-----------Docker image push and cleanup-----------') {
   dir(branch) {
    sh "find . -name 'Dockerfile'> directoryDockerFiles"
@@ -97,7 +99,7 @@ node {
    }
 
   }
- }
+ }*/
 
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.kernel.auth.adapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,6 +33,9 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
     @Autowired
     AuthHeadersFilter authHeadersFilter;
 
+    @Value("${auth.server.validate.url}")
+    private String validateUrl;
+
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
     }
@@ -47,7 +51,7 @@ public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
         ResponseEntity<MosipUser> response = null;
         try {
-            response = restTemplate.exchange("http://localhost:5000/validate_token", HttpMethod.GET, entity, MosipUser.class);
+            response = restTemplate.exchange(validateUrl, HttpMethod.GET, entity, MosipUser.class);
         } catch (Exception err) {
             throw new RuntimeException("Invalid Token");
         }
