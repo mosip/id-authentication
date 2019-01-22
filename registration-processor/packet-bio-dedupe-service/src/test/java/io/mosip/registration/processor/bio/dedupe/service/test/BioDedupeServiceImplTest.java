@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -39,32 +40,50 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
+/**
+ * The Class BioDedupeServiceImplTest.
+ */
 @RefreshScope
 @RunWith(PowerMockRunner.class)
+@PrepareForTest({ IOUtils.class })
 public class BioDedupeServiceImplTest {
 
+	/** The input stream. */
 	@Mock
 	InputStream inputStream;
 
+	/** The rest client service. */
 	@Mock
 	RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The packet info manager. */
 	@Mock
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The abis insert responce dto. */
 	@Mock
 	AbisInsertResponceDto abisInsertResponceDto = new AbisInsertResponceDto();
 
+	/** The bio dedupe service. */
 	@InjectMocks
 	BioDedupeServiceImpl bioDedupeService = new BioDedupeServiceImpl();
 
+	/** The identify response. */
 	private IdentityResponceDto identifyResponse = new IdentityResponceDto();
 
+	/** The registration id. */
 	String registrationId = "1000";
 
+	/** The adapter. */
 	@Mock
 	FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/**
+	 * Setup.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Before
 	public void setup() throws ApisResourceAccessException {
 		Mockito.doNothing().when(packetInfoManager).saveAbisRef(any());
@@ -105,6 +124,12 @@ public class BioDedupeServiceImplTest {
 
 	}
 
+	/**
+	 * Insert biometrics success test.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test
 	public void insertBiometricsSuccessTest() throws ApisResourceAccessException {
 
@@ -117,6 +142,12 @@ public class BioDedupeServiceImplTest {
 
 	}
 
+	/**
+	 * Insert biometrics ABIS internal error failure test.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = ABISInternalError.class)
 	public void insertBiometricsABISInternalErrorFailureTest() throws ApisResourceAccessException {
 
@@ -129,6 +160,12 @@ public class BioDedupeServiceImplTest {
 
 	}
 
+	/**
+	 * Insert biometrics ABIS abort exception failure test.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = ABISAbortException.class)
 	public void insertBiometricsABISAbortExceptionFailureTest() throws ApisResourceAccessException {
 
@@ -141,6 +178,12 @@ public class BioDedupeServiceImplTest {
 
 	}
 
+	/**
+	 * Insert biometrics unexcepted error failure test.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = UnexceptedError.class)
 	public void insertBiometricsUnexceptedErrorFailureTest() throws ApisResourceAccessException {
 
@@ -153,6 +196,12 @@ public class BioDedupeServiceImplTest {
 
 	}
 
+	/**
+	 * Insert biometrics unable to serve request ABIS exception failure test.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = UnableToServeRequestABISException.class)
 	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest() throws ApisResourceAccessException {
 
@@ -165,6 +214,12 @@ public class BioDedupeServiceImplTest {
 
 	}
 
+	/**
+	 * Test perform dedupe success.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test
 	public void testPerformDedupeSuccess() throws ApisResourceAccessException {
 
@@ -192,6 +247,12 @@ public class BioDedupeServiceImplTest {
 		assertEquals(ridList, duplicates);
 	}
 
+	/**
+	 * Test perform dedupe failure.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = ABISInternalError.class)
 	public void testPerformDedupeFailure() throws ApisResourceAccessException {
 
@@ -204,6 +265,12 @@ public class BioDedupeServiceImplTest {
 		bioDedupeService.performDedupe(rid);
 	}
 
+	/**
+	 * Test dedupe abis abort exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = ABISAbortException.class)
 	public void testDedupeAbisAbortException() throws ApisResourceAccessException {
 
@@ -216,6 +283,12 @@ public class BioDedupeServiceImplTest {
 		bioDedupeService.performDedupe(rid);
 	}
 
+	/**
+	 * Test dedupe unexpected error.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = UnexceptedError.class)
 	public void testDedupeUnexpectedError() throws ApisResourceAccessException {
 
@@ -228,6 +301,12 @@ public class BioDedupeServiceImplTest {
 		bioDedupeService.performDedupe(rid);
 	}
 
+	/**
+	 * Test dedupe unable to serve request ABIS exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = UnableToServeRequestABISException.class)
 	public void testDedupeUnableToServeRequestABISException() throws ApisResourceAccessException {
 
@@ -240,6 +319,13 @@ public class BioDedupeServiceImplTest {
 		bioDedupeService.performDedupe(rid);
 	}
 
+	/**
+	 * Test get file.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
+	@Test
 	public void testGetFile() throws Exception {
 		byte[] data = "1234567890".getBytes();
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);

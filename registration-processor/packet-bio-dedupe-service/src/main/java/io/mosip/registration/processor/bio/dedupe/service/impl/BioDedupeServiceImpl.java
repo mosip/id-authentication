@@ -107,7 +107,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		regAbisRefDto.setReg_id(registrationId);
 
 		packetInfoManager.saveAbisRef(regAbisRefDto);
-		// chk
+
 		AbisInsertResponceDto authResponseDTO = (AbisInsertResponceDto) restClientService
 				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponceDto.class);
 

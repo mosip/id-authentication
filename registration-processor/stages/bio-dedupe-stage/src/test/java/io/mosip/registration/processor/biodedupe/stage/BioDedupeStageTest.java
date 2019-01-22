@@ -290,4 +290,14 @@ public class BioDedupeStageTest {
 		assertEquals(true, messageDto.getInternalError());
 
 	}
+
+	@Test
+	public void exceptionTest() throws Exception {
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.when(bioDedupeService.insertBiometrics(anyString())).thenThrow(new NullPointerException());
+		MessageDTO messageDto = bioDedupeStage.process(dto);
+
+		assertEquals(true, messageDto.getInternalError());
+
+	}
 }

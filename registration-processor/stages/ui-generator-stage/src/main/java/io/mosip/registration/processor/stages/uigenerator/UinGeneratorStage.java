@@ -256,7 +256,9 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		try {
 			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, pathsegments, "",
 					"", idRequestDTO, String.class);
-			System.out.println("Response from IDRepo API ::   " + result);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API", "is : " + result);
+
 			Gson gsonObj = new Gson();
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
 		} catch (ApisResourceAccessException e) {
