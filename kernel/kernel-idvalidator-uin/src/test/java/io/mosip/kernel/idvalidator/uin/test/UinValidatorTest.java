@@ -32,7 +32,7 @@ public class UinValidatorTest {
 	@Test
 	public void uinValidatorImplTest() {
 
-		String id = "426789089018";
+		String id = "201308710214";
 		assertEquals(true, uinValidatorImpl.validateId(id));
 	}
 

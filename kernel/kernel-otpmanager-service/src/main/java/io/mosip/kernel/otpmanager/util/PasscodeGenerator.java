@@ -7,13 +7,16 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 
-import javax.crypto.Mac;
+import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
+import io.mosip.kernel.otpmanager.exception.OtpIOException;
 
+/**
+ * Passcode generator class.
+ * 
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ */
 public class PasscodeGenerator {
-	private static final int MAX_PASSCODE_LENGTH = 9;
-
-	/** Default decimal passcode length */
-	private static final int PASS_CODE_LENGTH = 6;
 
 	/** Powers of 10 used to shorten the pin to the desired number of digits */
 	private static final int[] DIGITS_POWER = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000,
@@ -36,35 +39,7 @@ public class PasscodeGenerator {
 		byte[] sign(byte[] data) throws GeneralSecurityException;
 	}
 
-	public PasscodeGenerator(Mac mac) {
-		this(mac, PASS_CODE_LENGTH);
-	}
-
-	public PasscodeGenerator(Signer signer) {
-		this(signer, PASS_CODE_LENGTH);
-
-	}
-
-	/**
-	 * @param mac
-	 *            A {@link Mac} used to generate passcodes
-	 * @param passCodeLength
-	 *            The length of the decimal passcode
-	 */
-	public PasscodeGenerator(final Mac mac, int passCodeLength) {
-		this(new Signer() {
-			@Override
-			public byte[] sign(byte[] data) {
-				return mac.doFinal(data);
-			}
-		}, passCodeLength);
-	}
-
 	public PasscodeGenerator(Signer signer, int passCodeLength) {
-		if ((passCodeLength < 0) || (passCodeLength > MAX_PASSCODE_LENGTH)) {
-			throw new IllegalArgumentException(
-					"PassCodeLength must be between 1 and " + MAX_PASSCODE_LENGTH + " digits.");
-		}
 		this.signer = signer;
 		this.codeLength = passCodeLength;
 	}
@@ -124,7 +99,8 @@ public class PasscodeGenerator {
 		try {
 			val = input.readInt();
 		} catch (IOException e) {
-			throw new IllegalStateException(e);
+			throw new OtpIOException(OtpErrorConstants.OTP_GEN_IO_FAILURE.getErrorCode(),
+					OtpErrorConstants.OTP_GEN_IO_FAILURE.getErrorMessage(), e);
 		}
 		return val;
 	}

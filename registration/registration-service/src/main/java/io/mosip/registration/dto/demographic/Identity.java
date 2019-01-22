@@ -16,7 +16,7 @@ import io.mosip.registration.dto.BaseDTO;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-@JsonInclude(value = Include.NON_NULL)
+@JsonInclude(value = Include.NON_EMPTY)
 public class Identity extends BaseDTO {
 
 	/** The ID schema version. */

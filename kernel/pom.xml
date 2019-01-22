@@ -126,6 +126,7 @@
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
+		<module>kernel-idvalidator-tspid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>

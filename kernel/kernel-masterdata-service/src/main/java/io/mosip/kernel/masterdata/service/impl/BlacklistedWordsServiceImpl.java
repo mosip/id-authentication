@@ -46,10 +46,10 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
-	
+
 	@Qualifier("blacklistedWordsToWordAndLanguageCodeIDDefaultMapper")
 	@Autowired
-	private DataMapper<BlacklistedWords,WordAndLanguageCodeID> blacklistedWordsToWordAndLanguageCodeIDDefaultMapper;
+	private DataMapper<BlacklistedWords, WordAndLanguageCodeID> blacklistedWordsToWordAndLanguageCodeIDDefaultMapper;
 
 	/*
 	 * (non-Javadoc)
@@ -63,11 +63,11 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		List<BlacklistedWords> words = null;
 		try {
 			words = blacklistedWordsRepository.findAllByLangCode(langCode);
-		} catch (DataAccessException accessException ) {
+		} catch (DataAccessException accessException) {
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(accessException));
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
 		}
 		if (words != null && !words.isEmpty()) {
 			wordsDto = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
@@ -96,8 +96,8 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		} catch (DataAccessException | DataAccessLayerException accessException) {
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()+
-					ExceptionUtils.parseException(accessException));
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
 		}
 		for (BlacklistedWords blackListedWords : blackListedWordsList) {
 			wordList.add(blackListedWords.getWord());
@@ -125,6 +125,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		BlacklistedWords entity = MetaDataUtils.setCreateMetaData(blackListedWordsRequestDto.getRequest(),
 				BlacklistedWords.class);
 		BlacklistedWords blacklistedWords;
+		entity.setWord(entity.getWord().toLowerCase());
 		try {
 			blacklistedWords = blacklistedWordsRepository.create(entity);
 		} catch (DataAccessLayerException | DataAccessException e) {
@@ -132,7 +133,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(e));
 		}
-		
+
 		return blacklistedWordsToWordAndLanguageCodeIDDefaultMapper.map(blacklistedWords);
 	}
 
@@ -147,6 +148,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		WordAndLanguageCodeID id = null;
 		BlacklistedWords wordEntity = null;
 		BlacklistedWordsDto wordDto = blackListedWordsRequestDto.getRequest();
+		wordDto.setWord(wordDto.getWord().toLowerCase());
 		try {
 			wordEntity = blacklistedWordsRepository.findByWordAndLangCode(wordDto.getWord(), wordDto.getLangCode());
 			if (wordEntity != null) {

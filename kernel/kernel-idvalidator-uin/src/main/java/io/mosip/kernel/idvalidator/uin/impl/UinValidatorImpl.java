@@ -137,7 +137,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * 
 	 * @param id
 	 *            pass a UIN in String format example : String inputFile =
-	 *            "426789089018"
+	 *            "201308710214"
 	 * @return boolean True If entered is Valid else it will throw an error
 	 * @throws InvalidIDException
 	 *             If entered UIN is empty or null.
@@ -207,7 +207,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 * The UIN should not have repeated block of numbers for more than 2 digits
 		 * 
 		 */
-		if (isValidId(id)) {
+		if (!isValidId(id)) {
 			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
 					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
