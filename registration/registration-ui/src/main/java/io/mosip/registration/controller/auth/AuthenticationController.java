@@ -185,6 +185,7 @@ public class AuthenticationController extends BaseController {
 					if (otp.getText() != null) {
 						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
 							userNameField = otpUserId.getText();
+							setSupervisorId(userNameField);
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ERROR,
@@ -235,6 +236,7 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
 						userNameField = fpUserId.getText();
+						setSupervisorId(userNameField);
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -266,6 +268,7 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(irisUserId.getText())) {
 					if (captureAndValidateIris(irisUserId.getText())) {
 						userNameField = irisUserId.getText();
+						setSupervisorId(userNameField);
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
@@ -297,6 +300,7 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(faceUserId.getText())) {
 					if (captureAndValidateFace(faceUserId.getText())) {
 						userNameField = faceUserId.getText();
+						setSupervisorId(userNameField);
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
@@ -742,6 +746,12 @@ public class AuthenticationController extends BaseController {
 		isSupervisor = false;
 		isEODAuthentication = false;
 		getAuthenticationModes(authType);
+	}
+	
+	
+	private void setSupervisorId(String userId) {
+		((RegistrationDTO) SessionContext.getInstance().getMapObject()
+		.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO().setSupervisorID(userId);
 	}
 
 }

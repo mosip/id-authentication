@@ -51,6 +51,8 @@ import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.FaceCaptureController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -431,7 +433,13 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane localLanguagePane;
 	@Autowired
-	DateValidation dateValidation;
+	private DateValidation dateValidation;
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+	@Autowired
+	private BiometricExceptionController biometricExceptionController;
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 
 	FXUtils fxUtils;
 	List<LocationDto> locationDtoRegion;
@@ -1602,6 +1610,7 @@ public class RegistrationController extends BaseController {
 			switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+					clearAllValues();
 					if (newValue) {
 						bioExceptionToggleLabel1.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						bioExceptionToggleLabel2.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
@@ -1866,6 +1875,14 @@ public class RegistrationController extends BaseController {
 
 		}
 
+	}
+
+	private void clearAllValues() {
+		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
+				.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
+		biometricExceptionController.setExceptionImage();
+		//fingerPrintCaptureController.clearFingerPrintDTO();
+		irisCaptureController.clearIrisData();
 	}
 
 }

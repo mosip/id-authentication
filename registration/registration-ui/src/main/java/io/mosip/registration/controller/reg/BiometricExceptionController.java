@@ -84,7 +84,6 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	private static final Logger LOGGER = AppConfig.getLogger(BiometricExceptionController.class);
 
-
 	@Autowired
 	private UserOnboardController userOnboardController;
 
@@ -93,8 +92,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		fingerList.clear();
-		irisList.clear();
+		setExceptionImage();
 		fingerExceptionListener(leftLittle);
 		fingerExceptionListener(leftIndex);
 		fingerExceptionListener(leftMiddle);
@@ -233,6 +231,7 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 							.filter(bio -> bio.getBiometricType().equals("fingerprint")).count();
 
 					if (fingerPrintCount > 0) {
+						//fingerPrintCaptureController.clearImage();
 						registrationController.toggleBiometricExceptionVisibility(false);
 						registrationController.toggleFingerprintCaptureVisibility(true);
 					} else {
@@ -241,6 +240,7 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 					}
 
 				} else {
+					//fingerPrintCaptureController.clearImage();
 					registrationController.toggleBiometricExceptionVisibility(false);
 					registrationController.toggleFingerprintCaptureVisibility(true);
 				}
@@ -295,6 +295,67 @@ LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICAT
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.BIOMETRIC_EXCEPTION_ALERT);
 		} else {
 			registrationController.getDemoGraphicTitlePane().setExpanded(true);
+		}
+	}
+	
+	public void setExceptionImage() {
+
+		fingerList.clear();
+		irisList.clear();
+		
+		RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA);
+
+		if (registrationDTO != null) {
+			List<BiometricExceptionDTO> biometricExceptionList = registrationDTO.getBiometricDTO()
+					.getApplicantBiometricDTO().getBiometricExceptionDTO();
+
+			if (biometricExceptionList != null && !biometricExceptionList.isEmpty()) {
+
+				biometricExceptionList.forEach(bioException -> {
+
+					if (bioException.getMissingBiometric().contains("left")
+							&& !bioException.getMissingBiometric().contains("Eye")) {
+						fingerList.add(bioException.getMissingBiometric());
+						leftHandPane.getStyleClass().clear();
+						leftHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
+						ImageView image = (ImageView) leftHandPane
+								.lookup("#" + bioException.getMissingBiometric() + "Img");
+						image.setVisible(true);
+
+					} else if (bioException.getMissingBiometric().contains("right")
+							&& !bioException.getMissingBiometric().contains("Eye")) {
+						fingerList.add(bioException.getMissingBiometric());
+						rightHandPane.getStyleClass().clear();
+						rightHandPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
+						ImageView image = (ImageView) rightHandPane
+								.lookup("#" + bioException.getMissingBiometric() + "Img");
+						image.setVisible(true);
+
+					} else if (bioException.getMissingBiometric().contains("Eye")) {
+						irisList.add(bioException.getMissingBiometric());
+						Pane irisPane = (Pane) biometricException
+								.lookup("#" + bioException.getMissingBiometric() + "Pane");
+						irisPane.getStyleClass().clear();
+						irisPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
+					}
+				});
+			} else {
+				((ImageView) leftHandPane.lookup("#leftIndexImg")).setVisible(false);
+				((ImageView) leftHandPane.lookup("#leftLittleImg")).setVisible(false);
+				((ImageView) leftHandPane.lookup("#leftMiddleImg")).setVisible(false);
+				((ImageView) leftHandPane.lookup("#leftRingImg")).setVisible(false);
+				((ImageView) leftHandPane.lookup("#leftThumbImg")).setVisible(false);
+				((ImageView) rightHandPane.lookup("#rightIndexImg")).setVisible(false);
+				((ImageView) rightHandPane.lookup("#rightLittleImg")).setVisible(false);
+				((ImageView) rightHandPane.lookup("#rightMiddleImg")).setVisible(false);
+				((ImageView) rightHandPane.lookup("#rightRingImg")).setVisible(false);
+				((ImageView) rightHandPane.lookup("#rightThumbImg")).setVisible(false);
+				leftHandPane.getStyleClass().clear();
+				rightHandPane.getStyleClass().clear();
+				leftEyePane.getStyleClass().clear();
+				rightEyePane.getStyleClass().clear();
+			}
 		}
 	}
 
