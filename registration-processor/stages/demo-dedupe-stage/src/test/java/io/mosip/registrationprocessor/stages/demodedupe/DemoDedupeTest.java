@@ -33,6 +33,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.stages.demodedupe.BiometricValidation;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
 
 @RunWith(PowerMockRunner.class)
@@ -60,6 +61,9 @@ public class DemoDedupeTest {
 
 	@Mock
 	Environment env;
+
+	@Mock
+	private BiometricValidation biometricValidation;
 
 	@InjectMocks
 	private DemoDedupe demoDedupe;
@@ -160,4 +164,17 @@ public class DemoDedupeTest {
 		assertTrue(result);
 	}
 
+	@Test
+	public void testDemoDedupeAutheticationIrisSucess() throws ApisResourceAccessException, IOException {
+
+		String regId = "1234567890";
+
+		List<String> duplicateIds = new ArrayList<>();
+		duplicateIds.add("123456789");
+		duplicateIds.add("987654321");
+		Mockito.when(biometricValidation.validateBiometric(anyString())).thenReturn(false);
+		boolean result = demoDedupe.authenticateDuplicates(regId, duplicateIds);
+
+		assertTrue(result);
+	}
 }
