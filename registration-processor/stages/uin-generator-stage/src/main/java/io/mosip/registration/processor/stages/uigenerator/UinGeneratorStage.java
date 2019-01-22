@@ -254,7 +254,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		idRequestDTO.setVersion(idRepoApiVersion);
 
 		try {
-			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, pathsegments, "",
+			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments, "",
 					"", idRequestDTO, String.class);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + regId, "Response from IdRepo API", "is : " + result);
@@ -315,7 +315,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		idRequestDTO.setVersion(idRepoApiVersion);
 
 		try {
-			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPODEV, pathsegments, "",
+			String result = (String) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, pathsegments, "",
 					"", idRequestDTO, String.class);
 			Gson gsonObj = new Gson();
 			idResponseDTO = gsonObj.fromJson(result, IdResponseDTO.class);
