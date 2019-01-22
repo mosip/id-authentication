@@ -41,7 +41,11 @@ export class DataStorageService {
     });
   }
 
-  getTransliteration(request) {
+  getGenderDetails() {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
+  }
+
+  getTransliteration(request: any) {
     const obj = {
       id: appConstants.IDS.transliteration,
       reqTime: Utils.getCurrentDate(),
