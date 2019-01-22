@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjobservices.service;
 
 import java.util.ArrayList;
@@ -11,8 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.batchjobservices.code.ErrorCodes;
-import io.mosip.preregistration.batchjobservices.code.ErrorMessages;
 import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjobservices.exceptions.util.BatchServiceExceptionCatcher;
@@ -20,7 +22,6 @@ import io.mosip.preregistration.batchjobservices.repository.DemographicRepositor
 import io.mosip.preregistration.batchjobservices.repository.ProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
 /**
  * @author Kishan Rathore
