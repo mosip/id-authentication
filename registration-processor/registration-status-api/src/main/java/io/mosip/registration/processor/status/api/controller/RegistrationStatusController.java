@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.controller;
+package io.mosip.registration.processor.status.api.controller;
 
 import java.util.List;
 

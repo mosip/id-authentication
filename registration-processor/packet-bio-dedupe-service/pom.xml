@@ -5,82 +5,81 @@
   <parent>
     <groupId>io.mosip.registrationprocessor</groupId>
     <artifactId>registration-processor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>packet-bio-dedupe-service</artifactId>
   <name>packet-bio-dedupe-service</name>
- 
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
-   		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-rest-client</artifactId>
-			<version>${registration.processor.rest.client}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>packet-info-storage-service</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>filesystem-adapter-ceph</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>${powermock.module.junit4.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
-			<version>${powermock.api.mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
+             <dependency>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-config</artifactId>
+                    <version>${spring-cloud-config.version}</version>
+             </dependency>
+             <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <version>${mockito.version}</version>
+                    <scope>test</scope>
+             </dependency>
+             <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <scope>test</scope>
+             </dependency>
+             <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter</artifactId>
+             </dependency>
+             <dependency>
+                    <groupId>io.mosip.registrationprocessor</groupId>
+                    <artifactId>registration-processor-core</artifactId>
+                    <version>${registration.processor.core.version}</version>
+             </dependency>
+             <dependency>
+                    <groupId>io.mosip.kernel</groupId>
+                    <artifactId>kernel-core</artifactId>
+                    <version>${kernel.core.version}</version>
+             </dependency>
+             <dependency>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                    <version>2.6</version>
+             </dependency>
+             <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+             </dependency>
+             <dependency>
+                    <groupId>io.mosip.registrationprocessor</groupId>
+                    <artifactId>registration-processor-rest-client</artifactId>
+                    <version>${registration.processor.rest.client.version}</version>
+             </dependency>
+             <dependency>
+                    <groupId>io.mosip.registrationprocessor</groupId>
+                    <artifactId>packet-info-storage-service</artifactId>
+                    <version>${packet.info.storage.service.version}</version>
+             </dependency>
+             <dependency>
+                    <groupId>io.mosip.registrationprocessor</groupId>
+                    <artifactId>filesystem-adapter-ceph</artifactId>
+                    <version>${filesystem.adapter.ceph.version}</version>
+             </dependency>
+             <dependency>
+                    <groupId>org.powermock</groupId>
+                    <artifactId>powermock-module-junit4</artifactId>
+                    <version>${powermock.module.junit4.version}</version>
+                    <scope>test</scope>
+             </dependency>
+             <dependency>
+                    <groupId>org.powermock</groupId>
+                    <artifactId>powermock-api-mockito</artifactId>
+                    <version>${powermock.api.mockito.version}</version>
+                    <scope>test</scope>
+             </dependency>
   </dependencies>
- </project>
+</project>
