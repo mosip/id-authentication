@@ -10,8 +10,6 @@
 	
 	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
-	<version>0.8.0</version>
-
 	<packaging>pom</packaging>
 
 	<name>registration-processor</name>
@@ -73,6 +71,8 @@
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<commons.io.version>2.6</commons.io.version>
 		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
+		<velocity.version>1.7</velocity.version>
+		<velocity.tools.version>2.0</velocity.tools.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -93,13 +93,24 @@
 		<camel.vertx.version>2.23.0</camel.vertx.version>
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
+		
 		<!-- local -->
-		<registration.status.version>0.7.0-SNAPSHOT</registration.status.version>
-		<registration.processor.core.version>0.7.0-SNAPSHOT</registration.processor.core.version>
-		<filesystem.adapter.version>0.7.0-SNAPSHOT</filesystem.adapter.version>
-		<packet.manager.version>0.7.0-SNAPSHOT</packet.manager.version>
-		<registration.processor.rest.client>0.7.0-SNAPSHOT</registration.processor.rest.client>
-	
+		<registration.status.service.version>0.8.0</registration.status.service.version>
+		<registration.processor.core.version>0.8.0</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.0</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.0</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.0</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.0</packet.info.storage.service.version>
+		
+		<!-- Kernel -->
+		<kernel.core.version>0.7.0</kernel.core.version>
+		<kernel.dataaccess.hibernate.version>0.7.0</kernel.dataaccess.hibernate.version>
+		<kernel.templatemanager.velocity.version>0.7.0</kernel.templatemanager.velocity.version>
+		<kernel.emailnotification.service.version>0.7.0</kernel.emailnotification.service.version>
+		<kernel.smsnotification.service.version>0.7.0</kernel.smsnotification.service.version>
+		<kernel.idvalidator.version>0.7.0</kernel.idvalidator.version>
+		<kernel.clamav.version>0.7.0</kernel.clamav.version>
+		
 		<sonar.coverage.exclusions>**/dto/**,
 		**/exception/*Exception.java,
 		**/core/code/*.java,
