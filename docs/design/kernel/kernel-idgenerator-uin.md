@@ -25,11 +25,11 @@ The Registration processor module needs to generate a UIN and assign it to an in
 
 
 
-![Module Diagram](_images/kernel-UINGenerator.jpg)
+![Module Diagram](_images/kernel-idgenerator-uin.jpg)
 
 
 
 ## Implementation
 
 
-**kernel-datavalidator** [README](../../kernel/kernel-idgenerator-uin/README.md)
+**kernel-datavalidator** [README](../../../kernel/kernel-idgenerator-uin/README.md)

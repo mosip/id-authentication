@@ -20,11 +20,11 @@ A TSP ID can be generated for each TSP. There are configurations during the TSP 
 
 
 
-![Module Diagram](_images/kernel-TSPIDGenerator.jpg)
+![Module Diagram](_images/kernel-idgenerator-tspid.jpg)
 
 
 
 ## Implementation
 
 
-**kernel-tokenidgenerator** [README](../../kernel/kernel-idgenerator-tspid/README.md)
+**kernel-idgenerator-tspid** [README](../../../kernel/kernel-idgenerator-tspid/README.md)
