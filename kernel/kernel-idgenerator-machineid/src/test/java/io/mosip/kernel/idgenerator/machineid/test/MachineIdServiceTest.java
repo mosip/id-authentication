@@ -22,7 +22,7 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
 @RunWith(SpringRunner.class)
 public class MachineIdServiceTest {
 	@Autowired
-	MachineIdGenerator<Integer> service;
+	MachineIdGenerator<String> service;
 
 	@MockBean
 	MachineIdRepository repository;
@@ -31,9 +31,9 @@ public class MachineIdServiceTest {
 	public void generateMachineIdTest() {
 		MachineId entity = new MachineId();
 		entity.setMId(1000);
-		when(repository.findMaxMachineId()).thenReturn(null);
+		when(repository.findLastMID()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateMachineId(), is(1000));
+		assertThat(service.generateMachineId(), is("1000"));
 	}
 
 	@Test
@@ -42,37 +42,45 @@ public class MachineIdServiceTest {
 		entity.setMId(1000);
 		MachineId entityResponse = new MachineId();
 		entityResponse.setMId(1001);
-		when(repository.findMaxMachineId()).thenReturn(entity);
+		when(repository.findLastMID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateMachineId(), is(1001));
+		assertThat(service.generateMachineId(), is("1001"));
 	}
 
 	@Test(expected = MachineIdServiceException.class)
 	public void generateIdFetchExceptionTest() {
-		when(repository.findMaxMachineId())
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.findLastMID()).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateMachineId();
 	}
 
 	@Test(expected = MachineIdServiceException.class)
 	public void generateIdInsertExceptionTest() {
-		when(repository.findMaxMachineId()).thenReturn(null);
+		when(repository.findLastMID()).thenReturn(null);
 		when(repository.save(Mockito.any()))
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+				.thenThrow(new MachineIdServiceException("", "cannot execute statement", null));
 		service.generateMachineId();
 	}
 
 	@Test(expected = MachineIdServiceException.class)
 	public void idServiceFetchExceptionTest() throws Exception {
 
-		when(repository.findMaxMachineId())
-				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
+		when(repository.findLastMID()).thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateMachineId();
 	}
 
 	@Test(expected = MachineIdServiceException.class)
 	public void idServiceInsertExceptionTest() throws Exception {
 		when(repository.save(Mockito.any()))
+				.thenThrow(new MachineIdServiceException("", "cannot execute statement", null));
+		service.generateMachineId();
+	}
+
+	@Test(expected = MachineIdServiceException.class)
+	public void machineIdServiceExceptionTest() throws Exception {
+		MachineId entity = new MachineId();
+		entity.setMId(1000);
+		when(repository.findLastMID()).thenReturn(entity);
+		when(repository.updateMID(Mockito.anyInt(), Mockito.anyInt(), Mockito.any()))
 				.thenThrow(new DataAccessLayerException("", "cannot execute statement", null));
 		service.generateMachineId();
 	}
