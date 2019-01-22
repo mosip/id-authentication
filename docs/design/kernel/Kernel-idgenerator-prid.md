@@ -25,11 +25,11 @@ The Pre-registration application needs to display an acknowledgement number when
 
 
 
-![Module Diagram](https://github.com/mosip/mosip/blob/DEV/design/_images/kernel-PRIDGenerator.jpg)
+![Module Diagram](_images/Kernel-idgenerator-prid.jpg)
 
 
 
 ## Implementation
 
 
-**kernel-pridgenerator** [README](../../kernel/kernel-idgenerator-prid/README.md)
+**kernel-pridgenerator** [README](../../../kernel/kernel-idgenerator-prid/README.md)

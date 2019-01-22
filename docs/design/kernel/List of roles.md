@@ -27,9 +27,3 @@ The users and roles are stored in LDAP and this is the single source of truth. I
 
 ![Module Diagram](_images/List_of_roles.jpg)
 
-
-
-## Implementation
-
-
-**kernel-listofroles** [README](../../kernel/list-of-roles/README.md)

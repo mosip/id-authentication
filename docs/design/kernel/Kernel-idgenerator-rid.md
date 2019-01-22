@@ -32,11 +32,11 @@ The Registration client module needs to generate a RID and assign it to an indiv
 
 
 
-![Module Diagram](https://raw.githubusercontent.com/mosip/mosip/DEV/design/_images/kernel-RIDGenerator.jpg?token=ApNuICQAnK9vKeiXNSNWyaYMhmJyGxqxks5cLezUwA%3D%3D&_sm_au_=iVVF4NJ44tLqHprM)
 
+![Module Diagram](_images/kernel-idgenerator-rid.jpg)
 
 
 ## Implementation
 
 
-**kernel-ridgenerator** [README](../../kernel/kernel-idgenerator-rid/README.md)
+**kernel-ridgenerator** [README](../../../kernel/kernel-idgenerator-rid/README.md)
