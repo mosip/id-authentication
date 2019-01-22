@@ -65,6 +65,18 @@ Autowired interface PridValidator
  
 ```
 	boolean return = pridValidatorImpl.validateId("537184361359820"); //return true
+	
+	String id="537184361359820";
+	
+	int pridLength=14;
+	
+	int sequenceLimit=3;
+	
+	int repeatingLimit=3;
+	
+	int blockLimit=2;
+	
+	boolean return = pridValidatorImpl.validateId(id,pridLength,sequenceLimit,repeatingLimit,blockLimit)//return true
 
 ```
  
