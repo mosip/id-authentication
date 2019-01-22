@@ -169,6 +169,7 @@ public class RegistrationConstants {
 	public static final String FIRST_TOGGLE_LABEL = "toggleLabel1";
 	public static final String SECOND_TOGGLE_LABEL = "toggleLabel2";
 	public static final String PACKET_TYPE_UPDATE = "Update";
+	public static final String DOB_TOGGLE = "toggleAgeOrDob";
 
 	// onBoard User
 	public static final String ONBOARD_BIOMETRICS = "Biometrics - ";

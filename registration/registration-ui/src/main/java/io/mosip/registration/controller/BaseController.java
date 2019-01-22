@@ -310,6 +310,7 @@ public class BaseController {
 		SessionContext.getInstance().getMapObject().remove("dd");
 		SessionContext.getInstance().getMapObject().remove("mm");
 		SessionContext.getInstance().getMapObject().remove("yyyy");
+		SessionContext.getInstance().getMapObject().remove("toggleAgeOrDob");
 
 		SessionContext.getInstance().getUserContext().getUserMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);

@@ -655,6 +655,7 @@ public class RegistrationController extends BaseController {
 			populateFieldValue(province, provinceLocalLanguage, demo.getIdentity().getProvince());
 			populateFieldValue(city, cityLocalLanguage, demo.getIdentity().getCity());
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
+			switchedOn.set((Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.DOB_TOGGLE));
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
@@ -943,6 +944,7 @@ public class RegistrationController extends BaseController {
 					}
 
 				}
+				SessionContext.getInstance().getMapObject().put("toggleAgeOrDob", switchedOn.get());
 			}
 		} catch (RuntimeException runtimeException) {
 			runtimeException.printStackTrace();
