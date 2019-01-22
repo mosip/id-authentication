@@ -125,7 +125,24 @@
 **/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
 **/registration/processor/core/packet/dto/regcentermachine/*.java,
 **/registration/processor/core/util/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java
+**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java,
+
+
+**/registration/processor/quality/check/entity/*.java,
+**/registration/processor/quality/check/client/*.java,
+**/registration/processor/quality/check/config/*.java,
+**/registration/processor/quality/check/code/*.java,
+**/registration/processor/quality/check/exception/*.java,
+**/registration/processor/quality/check/*.java,
+**/registration/processor/status/api/RegistrationStatusApiApplication.java,
+**/registration/processor/packet/receiver/util/StatusMessage.java,
+**/registration/processor/packet/uploader/*.java,
+**/registration/processor/stages/osivalidator/utils/*.java,
+**/registration/processor/camel/bridge/MosipCamelBridgeApplication.java,
+**/registration/processor/message/sender/*.java,
+**/registration/processor/message/sender/utility/*.java,
+**/registration/processor/core/logger/*.java,
+**/registration/processor/core/notification/template/mapping/*.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 		
