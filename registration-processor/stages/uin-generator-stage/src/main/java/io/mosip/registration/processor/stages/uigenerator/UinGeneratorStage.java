@@ -167,7 +167,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			demographicIdentity = (JSONObject) identityJson.get("identity");
 			String uinFieldCheck = (String) demographicIdentity.get("UIN");
 			boolean isUinCreate = false;
-			if (uinFieldCheck == null || ("").equals(uinFieldCheck.trim())) {
+			if (uinFieldCheck == null) {
 				uinResponseDto = (UinResponseDto) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR,
 						null, "", "", UinResponseDto.class);
 				long uinInLong = Long.parseLong(uinResponseDto.getUin());
