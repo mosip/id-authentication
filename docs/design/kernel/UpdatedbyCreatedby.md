@@ -31,9 +31,3 @@ There are many webservices in MOSIP platform. All the webservices have the authe
 
 ![Module Diagram](_images/UpdatedbyCreatedby.jpg)
 
-
-
-## Implementation
-
-
-**kernel-UpdatedbyCreatedby** [README](../../kernel/UpdatedbyCreatedby/README.md)

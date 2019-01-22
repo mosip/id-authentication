@@ -95,12 +95,12 @@
 		<jsonsimple.version>1.1.1</jsonsimple.version>
 		
 		<!-- local -->
-		<registration.status.service.version>0.7.0</registration.status.service.version>
-		<registration.processor.core.version>0.7.0</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.7.0</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.7.0</packet.manager.version>
-		<registration.processor.rest.client.version>0.7.0</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.7.0</packet.info.storage.service.version>
+		<registration.status.service.version>0.8.0</registration.status.service.version>
+		<registration.processor.core.version>0.8.0</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.0</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.0</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.0</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.0</packet.info.storage.service.version>
 		
 		<!-- Kernel -->
 		<kernel.core.version>0.7.0</kernel.core.version>

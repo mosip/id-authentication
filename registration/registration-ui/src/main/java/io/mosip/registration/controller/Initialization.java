@@ -48,8 +48,18 @@ public class Initialization extends Application {
 				APPLICATION_ID, "Login screen initilization "
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
-		LoginController loginController = applicationContext.getBean(LoginController.class);
-		loginController.loadInitialScreen(primaryStage);
+		BaseController baseController = applicationContext.getBean("baseController", BaseController.class);
+
+		GlobalParamService globalParamService = applicationContext.getBean(GlobalParamService.class);
+		ResponseDTO responseDTO = globalParamService.synchConfigData();
+		if (responseDTO.getErrorResponseDTOs() != null) {
+			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+			baseController.generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+		} else {
+
+			LoginController loginController = applicationContext.getBean(LoginController.class);
+			loginController.loadInitialScreen(primaryStage);
+		}
 
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen loaded"
@@ -60,18 +70,9 @@ public class Initialization extends Application {
 	public static void main(String[] args) {
 		System.setProperty("java.net.useSystemProxies", "true");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
-
-		BaseController baseController = applicationContext.getBean("baseController", BaseController.class);
-
-		GlobalParamService globalParamService = applicationContext.getBean(GlobalParamService.class);
-		ResponseDTO responseDTO = globalParamService.synchConfigData();
-		if(responseDTO.getErrorResponseDTOs()!=null) {
-			ErrorResponseDTO errorResponseDTO=responseDTO.getErrorResponseDTOs().get(0);
-			baseController.generateAlert(RegistrationConstants.ERROR,errorResponseDTO.getMessage());
-		}
 		
-
 		launch(args);
+
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Application Initilization"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));

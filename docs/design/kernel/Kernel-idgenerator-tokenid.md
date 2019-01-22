@@ -11,7 +11,7 @@ A Token ID can be requested by an Indivudual against his UIN. A library should b
 **The key solution considerations are**
 
 
-- There cannot be any duplicate numbers generated. A database is maintained to ensure the uniqueness by unique constraint defintion for that column.
+- The API will generate a unique number against the configurations. 
 
 - The configurations are injected by the caller of the module. These configurations are defined in the config server. 
 
@@ -20,11 +20,11 @@ A Token ID can be requested by an Indivudual against his UIN. A library should b
 
 
 
-![Module Diagram](_images/kernel-TokenGenerator.jpg)
+![Module Diagram](_images/kernel-idgenerator-tokenid.jpg)
 
 
 
 ## Implementation
 
 
-**kernel-tokenidgenerator** [README](../../kernel/kernel-idgenerator-tokenid/README.md)
+**kernel-tokenidgenerator** [README](../../../kernel/kernel-idgenerator-tokenid/README.md)

@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,6 +80,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private CbeffI cbeffI;
 	@Autowired
 	private JsonValidator jsonValidator;
+	
+	private Random random = new Random(5000);
 	/**
 	 * Instance of {@code AuditFactory}
 	 */
@@ -93,7 +97,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	@Override
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
-
 		try {
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
@@ -308,7 +311,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
 					TestBiometricType testBiometricType = new TestBiometricType();
 					testBiometricType.setXmlns("testschema");
-					testBiometricType.setTestBiometric(TestBiometric.UNIQUE);
+					testBiometricType.setTestBiometric((random.nextInt()%2 == 0) ? TestBiometric.DUPLICATE : TestBiometric.UNIQUE);
 					BIR bir = new BIR.BIRBuilder().withBdb(iris.getIris())
 							.withTestIris(testBiometricType)
 							.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
@@ -367,7 +370,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
 		TestBiometricType testBiometricType = new TestBiometricType();
 		testBiometricType.setXmlns("testschema");
-		testBiometricType.setTestBiometric(TestBiometric.UNIQUE);
+		testBiometricType.setTestBiometric((random.nextInt()%2 == 0) ? TestBiometric.DUPLICATE : TestBiometric.UNIQUE);
 		return new BIR.BIRBuilder().withBdb(fingerprintImageInBytes)
 				.withTestFingerPrint(testBiometricType)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
