@@ -41,7 +41,7 @@ node {
 
 stage ('---------- build ---------------') {
 	// for building java projects
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -X', buildInfo: buildInfo
  	// For building angular project
 	dir(branch) {
 		// Looking for angular.json file to to find out if the submodule we are building is an angular project

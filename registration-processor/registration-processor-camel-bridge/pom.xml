@@ -12,7 +12,6 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<vertx.version>3.5.3</vertx.version>
 		<vertx.verticle>io.mosip.registration.processor.camel.bridge.MosipCamelBridge</vertx.verticle>
 		<fabric8-vertx-maven-plugin.version>1.0.5</fabric8-vertx-maven-plugin.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -23,7 +22,7 @@
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>0.8.0</version>
+			<version>${registration.processor.core.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -49,12 +48,12 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-config-spring-config-server</artifactId>
-			<version>3.5.4</version>
+			<version>${vertx.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-config</artifactId>
-			<version>3.5.4</version>
+			<version>${vertx.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-vertx -->
 		<dependency>
