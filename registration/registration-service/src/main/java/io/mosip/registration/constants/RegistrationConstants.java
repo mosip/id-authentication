@@ -68,7 +68,7 @@ public class RegistrationConstants {
 	public static final String FACE_IMG_PATH = "/images/face.jpg";
 
 	// Authentication
-	public static final String SUPERVISOR_VERIFICATION = "Supervisor Verification";
+	public static final String SUPERVISOR_VERIFICATION = "Supervisor Login";
 	public static final String SUPERVISOR_NAME = "Supervisor";
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
 	public static final String FINGER_PRINT_SINGLE = "single";
