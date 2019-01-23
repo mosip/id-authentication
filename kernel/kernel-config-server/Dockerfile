@@ -1,6 +1,6 @@
 FROM openjdk:8
 
-COPY ./target/kernel-config-service-*.jar kernel-config-service.jar
+COPY ./target/kernel-config-server-*.jar kernel-config-server.jar
 
 EXPOSE 51000
 
