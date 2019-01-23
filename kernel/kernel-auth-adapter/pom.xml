@@ -13,9 +13,9 @@
     <packaging>jar</packaging>
     <description>***</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+<properties>
+    <sonar.skip>true</sonar.skip>
+</properties>
 
     <dependencies>
         <dependency>

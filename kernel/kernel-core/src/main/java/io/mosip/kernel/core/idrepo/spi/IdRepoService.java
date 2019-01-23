@@ -16,7 +16,7 @@ public interface IdRepoService<REQUEST, RESPONSE, UIN> {
 	 * Adds the identity.
 	 *
 	 * @param request the request
-	 * @param uin 
+	 * @param uin uin
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
@@ -26,7 +26,7 @@ public interface IdRepoService<REQUEST, RESPONSE, UIN> {
 	 * Retrieve identity.
 	 *
 	 * @param uin the uin
-	 * @param filter 
+	 * @param filter filter
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
@@ -36,7 +36,7 @@ public interface IdRepoService<REQUEST, RESPONSE, UIN> {
 	 * Update identity.
 	 *
 	 * @param request the request
-	 * @param uin 
+	 * @param uin uin
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
