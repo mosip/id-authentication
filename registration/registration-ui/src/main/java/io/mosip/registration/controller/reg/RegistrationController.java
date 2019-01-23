@@ -665,9 +665,11 @@ public class RegistrationController extends BaseController {
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
-			dd.setText((String) SessionContext.getInstance().getMapObject().get("dd"));
-			mm.setText((String) SessionContext.getInstance().getMapObject().get("mm"));
-			yyyy.setText((String) SessionContext.getInstance().getMapObject().get("yyyy"));
+			if (!switchedOn.get()) {
+				dd.setText((String) SessionContext.getInstance().getMapObject().get("dd"));
+				mm.setText((String) SessionContext.getInstance().getMapObject().get("mm"));
+				yyyy.setText((String) SessionContext.getInstance().getMapObject().get("yyyy"));
+			}
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
 
@@ -810,14 +812,16 @@ public class RegistrationController extends BaseController {
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
 				anchorPaneRegistration.setPrefHeight(700.00);
 				demoGraphicTitlePane.setExpanded(true);
-				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
-						Integer.parseInt(dd.getText()));
-				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
-						dateOfBirth);
-				SessionContext.getInstance().getMapObject().put("dd", dd.getText());
-				SessionContext.getInstance().getMapObject().put("mm", mm.getText());
-				SessionContext.getInstance().getMapObject().put("yyyy", yyyy.getText());
+				if (!switchedOn.get()) {
+					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
+							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
+					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
+							dateOfBirth);
+					SessionContext.getInstance().getMapObject().put("dd", dd.getText());
+					SessionContext.getInstance().getMapObject().put("mm", mm.getText());
+					SessionContext.getInstance().getMapObject().put("yyyy", yyyy.getText());
+				}
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO SECOND DEMOGRAPHIC PANE", APPLICATION_NAME,
