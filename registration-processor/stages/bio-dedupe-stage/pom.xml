@@ -74,8 +74,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>packet-bio-dedupe-service</artifactId>
-			<version>${packet.bio.dedupe.service.version}</version>
+			<artifactId>packet-bio-dedupe-service-impl</artifactId>
+			<version>${packet.bio.dedupe.service.impl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
