@@ -1883,7 +1883,7 @@ public class RegistrationController extends BaseController {
 		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
 				.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
 		biometricExceptionController.setExceptionImage();
-		//fingerPrintCaptureController.clearFingerPrintDTO();
+		fingerPrintCaptureController.clearFingerPrintDTO();
 		irisCaptureController.clearIrisData();
 	}
 

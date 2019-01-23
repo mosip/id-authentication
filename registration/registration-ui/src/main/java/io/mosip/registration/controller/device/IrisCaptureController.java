@@ -451,12 +451,35 @@ public class IrisCaptureController extends BaseController {
 				.setImage(new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
 		leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
 
-		rightIrisImage
-				.setImage(new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
+		rightIrisImage.setImage(
+				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
 
 		getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 				.setIrisDetailsDTO(new ArrayList<>());
+	}
+
+	public void clearIrisBasedOnExceptions() {
+		if (getIrisExceptions().stream()
+				.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
+						(RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)))) {
+			leftIrisImage.setImage(
+					new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
+			leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
+
+			getIrises().removeIf(iris -> iris.getIrisType()
+					.equalsIgnoreCase((RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)));
+		}
+
+		if (getIrisExceptions().stream()
+				.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
+						(RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)))) {
+			rightIrisImage.setImage(
+					new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
+			rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
+			getIrises().removeIf(iris -> iris.getIrisType()
+					.equalsIgnoreCase((RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)));
+		}
 	}
 
 }
