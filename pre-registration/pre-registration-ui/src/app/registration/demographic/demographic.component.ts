@@ -108,10 +108,10 @@ export class DemographicComponent implements OnInit {
     private translate: TranslateService
   ) {
     //need to remove
-    translate.addLangs(['en', 'fr', 'ar']);
-    translate.setDefaultLang(localStorage.getItem('langCode'));
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
+    // translate.addLangs(['en', 'fr', 'ar']);
+    // translate.setDefaultLang(localStorage.getItem('langCode'));
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
     //till here
   }
   // ) {}
@@ -129,7 +129,7 @@ export class DemographicComponent implements OnInit {
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
-    this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
+    // this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
     this.numberOfApplicants = 1;
     this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLanguage).subscribe(response => {

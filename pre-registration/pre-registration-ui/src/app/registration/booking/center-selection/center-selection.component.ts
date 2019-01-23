@@ -135,8 +135,8 @@ export class CenterSelectionComponent implements OnInit {
   }
 
   getLocation() {
+    this.dataSource.data = [];
     if (navigator.geolocation) {
-
       this.showMap = false;
       navigator.geolocation.getCurrentPosition(position => {
         console.log(position);

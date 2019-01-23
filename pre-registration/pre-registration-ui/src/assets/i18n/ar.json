@@ -144,7 +144,7 @@
     }
   },
   "uidStatus": {
-    "title": "حالة UID ",
+    "title": "تطبيقاتي",
     "action_modify_information": "تعديل المعلومات",
     "action_modify_appointment": "كتاب / تعديل موعد",
     "action_cre_application": "إنشاء تطبيق جديد ",
@@ -181,7 +181,7 @@
     "action_discard_app": "تجاهل التطبيق بأكمله",
     "action_cancel": "إلغاء الموعد وحفظ التفاصيل",
     "action_submit": "خضع",
-    "action_dismiss": "رفض",
+    "action_dismiss": "حسنا",
     "action_add": "إضافة",
     "action_close": "قريب",
     "action_add_to_slot": "أضف إلى الفتحة"
