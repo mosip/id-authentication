@@ -101,8 +101,6 @@ public class TransliterationService {
 					/*String languageId = idRepository
 							.findByFromLangAndToLang(transliterationRequestDTO.getFromFieldLang(), transliterationRequestDTO.getToFieldLang())
 							.getLanguageId();*/
-					System.out.println("fromLang"+transliterationRequestDTO.getFromFieldLang());
-					System.out.println("tolang"+transliterationRequestDTO.getToFieldLang());
 					if(transliterationRequestDTO.getFromFieldLang().equals("English") && transliterationRequestDTO.getToFieldLang().equals("Arabic")) {
 						languageId="Latin-Arabic";
 					}

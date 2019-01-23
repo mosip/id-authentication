@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,18 +30,18 @@ public class BatchServiceController {
 	@Autowired
 	private ExpiredStatusService expiredStatusService;
 	
-	@GetMapping(path="/state/consumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MainResponseDTO<String>> demographicStatusUpdate(){
+	@PutMapping(path="/state/consumedStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MainResponseDTO<String>> consumedAppointments(){
 		
 		MainResponseDTO<String> response=consumedStatusService.demographicConsumedStatus();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
-	@GetMapping(path="state/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(path="state/expiredStatus",produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MainResponseDTO<String>> expiredAppointments(){
 		
-		MainResponseDTO<String> response=expiredStatusService.bookedPreIds();
+		MainResponseDTO<String> response=expiredStatusService.expireAppointments();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
