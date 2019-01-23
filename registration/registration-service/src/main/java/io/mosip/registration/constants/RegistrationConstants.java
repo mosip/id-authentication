@@ -575,6 +575,8 @@ public class RegistrationConstants {
 	//Biometric Exception style
 	public static final String ADD_BORDER = "addBorderStyle";
 	public static final String REMOVE_BORDER = "removeBorderStyle";
+	public static final String OLD_BIOMETRIC_EXCEPTION = "oldBiometric";
+	public static final String NEW_BIOMETRIC_EXCEPTION = "newBiometric";
 	
 
 	// Iris & Fingerprint Capture for Individual Registration
