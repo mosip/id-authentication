@@ -180,10 +180,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @return true, if successful
 	 */
 	private boolean checkBiometric(String fileName) {
-
-		return fileName.equals(PacketFiles.APPLICANTPHOTO.name()) || fileName.equals(PacketFiles.PROOFOFADDRESS.name())
-				|| fileName.equals(PacketFiles.PROOFOFIDENTITY.name())
-				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.ID.name());
+		return fileName.equals(PacketFiles.RIGHTPALM.name()) || fileName.equals(PacketFiles.LEFTPALM.name())
+				|| fileName.equals(PacketFiles.BOTHTHUMBS.name()) || fileName.equals(PacketFiles.LEFTEYE.name())
+				|| fileName.equals(PacketFiles.RIGHTEYE.name());
 	}
 
 	/**
@@ -194,10 +193,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @return true, if successful
 	 */
 	private boolean checkDemographic(String fileName) {
-
-		return fileName.equals(PacketFiles.RIGHTPALM.name()) || fileName.equals(PacketFiles.LEFTPALM.name())
-				|| fileName.equals(PacketFiles.BOTHTHUMBS.name()) || fileName.equals(PacketFiles.LEFTEYE.name())
-				|| fileName.equals(PacketFiles.RIGHTEYE.name());
+		return fileName.equals(PacketFiles.APPLICANTPHOTO.name()) || fileName.equals(PacketFiles.PROOFOFADDRESS.name())
+				|| fileName.equals(PacketFiles.PROOFOFIDENTITY.name())
+				|| fileName.equals(PacketFiles.EXCEPTIONPHOTO.name()) || fileName.equals(PacketFiles.ID.name());
 	}
 
 	/*
