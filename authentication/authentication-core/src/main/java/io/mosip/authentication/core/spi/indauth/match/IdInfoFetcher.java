@@ -41,7 +41,7 @@ public interface IdInfoFetcher {
 	 * @param identity  the identity
 	 * @return the identity info
 	 */
-	public Map<String, String> getIdentityInfo(MatchType matchType, IdentityDTO identity);
+	public Map<String, String> getIdentityRequestInfo(MatchType matchType, IdentityDTO identity);
 
 	/**
 	 * Gets the iris provider for the BioInfo value.
