@@ -111,7 +111,10 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature"),
 	
 	// OTP Generation
-	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first.");
+	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first."),
+	
+	//Static Pin Store
+	STATICPIN_NOT_STORED_PINVAUE("IDA-SPA-003","Could not store the static pin of the individual");
 
 	private final String errorCode;
 	private final String errorMessage;
