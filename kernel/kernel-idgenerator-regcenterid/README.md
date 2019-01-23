@@ -1,6 +1,6 @@
 # kernel-idgenerator-regcenterid
 
-1- [Background & Design]
+1- [Background & Design](../../docs/design/kernel/kernel-idgenerator-regcenterid.md)
 
 2- API Documentation
 

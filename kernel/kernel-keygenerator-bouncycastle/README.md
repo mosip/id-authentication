@@ -1,9 +1,10 @@
 ## kernel-keygenerator-bouncycastle
-[Background & Design](../../design/kernel/kernel-keygenerator.md)
 
-**Api Documentation**
 
-[API Documentation <TBA>](TBA)
+[Background & Design](../../docs/design/kernel/kernel-keygenerator.md)
+
+
+[API Documentation]
 
 ```
 mvn javadoc:javadoc

@@ -1,13 +1,13 @@
 ## kernel-auditmanager-service:-
-This service can be used to audit events and operations. Service has REST API exposed to save event details as audit in database.
 
-1. [Background & Design](../../design/kernel/kernel-auditmanager.md)
 
-2. Api Documentation
+[Background & Design](../../docs/design/kernel/kernel-auditmanager.md)
+
+[Api Documentation]
 
 
 ```
-http://localhost:8081/swagger-ui.html
+localhost:8081/swagger-ui.html
 ```
 
 **Properties to be added in parent Spring Application environment**

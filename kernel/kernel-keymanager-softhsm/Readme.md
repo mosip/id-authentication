@@ -1,10 +1,10 @@
 ## kernel-keymanager-softhsm
 This api can be used for handling keys and certificates in SoftHSM. 
 
-1- [Background & Design](../../design/kernel/KeyManager.md)
+[Background & Design](../../docs/design/kernel/keymanager-softhsm.md)
 
 
-2- Api Documentation
+[Api Documentation]
 
 
 ```

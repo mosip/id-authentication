@@ -1,9 +1,9 @@
 # kernel-otpmanager-service
 
-1- [Background & Design](../../design/kernel/kernel-otpmanager.md)
+[Background & Design](../../docs/design/kernel/kernel-otpmanager.md)
 
  
-2- API Documentation
+[API Documentation]
 
  ```
 localhost:8085/swagger-ui.html

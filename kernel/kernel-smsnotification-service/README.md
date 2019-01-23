@@ -1,9 +1,9 @@
 ## kernel-smsnotification-service
  
- 1- [Background & Design](../../design/kernel/kernel-smsnotification.md)
+[Background & Design](../../docs/design/kernel/kernel-smsnotification.md)
  
 
- 2- [API Documentation <TBA>](TBA)
+[API Documentation]
  
  ```
  localhost:8084/swagger-ui.html
