@@ -144,7 +144,7 @@
     }
   },
   "uidStatus": {
-    "title": "حالة UID ",
+    "title": "تطبيقاتي",
     "action_modify_information": "تعديل المعلومات",
     "action_modify_appointment": "كتاب / تعديل موعد",
     "action_cre_application": "إنشاء تطبيق جديد ",
