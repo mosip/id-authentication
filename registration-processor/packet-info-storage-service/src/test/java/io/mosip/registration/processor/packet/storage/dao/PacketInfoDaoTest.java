@@ -22,6 +22,7 @@ import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachine
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
@@ -277,9 +278,13 @@ public class PacketInfoDaoTest {
 	public void getDocumentsByRegIdTest() {
 		List<ApplicantDocumentEntity> applicantDocumentEntities = new ArrayList<>();
 		ApplicantDocumentEntity applicantDocument = new ApplicantDocumentEntity();
+		ApplicantDocumentPKEntity pkEntity = new ApplicantDocumentPKEntity();
+		pkEntity.setDocCatCode("individualBiometrics");
+		pkEntity.setDocTypCode("POA");
+		pkEntity.setRegId("2018782130000224092018121229");
+		applicantDocument.setId(pkEntity);
 		String docValue = "dGVzdA";
 		byte[] docStore = docValue.getBytes();
-		applicantDocument.setDocName("individualBiometrics");
 		applicantDocument.setDocStore(docStore);
 
 		applicantDocumentEntities.add(applicantDocument);
