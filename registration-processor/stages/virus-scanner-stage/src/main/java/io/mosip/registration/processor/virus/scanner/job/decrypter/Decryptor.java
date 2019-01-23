@@ -122,4 +122,10 @@ public class Decryptor {
 		return true;
 
 	}
+
+	// This should be removed after uncommenting virus scan
+	public boolean getScanFolderResult() throws VirusScanFailedException {
+		return true;
+
+	}
 }
