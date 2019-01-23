@@ -143,7 +143,7 @@
     }
   },
   "uidStatus": {
-    "title": "UID Status ",
+    "title": "My Applications",
     "action_modify_information": "Modify Information",
     "action_modify_appointment": "Book/Modify Appointment",
     "action_cre_application": "Create New Application ",
@@ -185,21 +185,21 @@
     "action_close":"Close",
     "action_add_to_slot":"Add to Slot"
   },
-  "ack":{
-    "container_guideline":"Important Guidelines",
-    "action_download":"DOWNLOAD",
-    "action_print":"PRINT"
+  "ack": {
+    "container_guideline": "Important Guidelines",
+    "action_download": "DOWNLOAD",
+    "action_print": "PRINT"
   },
-  "centerSelection":{
-    "title":" Book Appointment ",
-    "action_nearBy":"Nearby",
-    "display_recommended":"Recommended Centres",
-    "text_found":"Found",
-    "text_centers":"centers",
-    "text_timing":"Timing",
-    "text_open":"Open",
-    "action_back":"Back",
-    "action_book_later":"Book Later",
-    "action_continue":"Continue"
+  "centerSelection": {
+    "title": " Book Appointment ",
+    "action_nearBy": "Nearby",
+    "display_recommended": "Recommended Centres",
+    "text_found": "Found",
+    "text_centers": "centers",
+    "text_timing": "Timing",
+    "text_open": "Open",
+    "action_back": "Back",
+    "action_book_later": "Book Later",
+    "action_continue": "Continue"
   }
 }

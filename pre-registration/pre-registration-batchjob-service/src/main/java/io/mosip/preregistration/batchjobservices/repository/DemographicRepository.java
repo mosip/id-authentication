@@ -11,8 +11,8 @@ import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
  * @author M1043008
  *
  */
-@Repository("preRegistrationDemographicRepository")
-public interface PreRegistrationDemographicRepository extends BaseRepository<ApplicantDemographic, String> {
+@Repository("demographicRepository")
+public interface DemographicRepository extends BaseRepository<ApplicantDemographic, String> {
 
 	ApplicantDemographic findBypreRegistrationId(@Param(value = "preRegId") String preRegId);
 }

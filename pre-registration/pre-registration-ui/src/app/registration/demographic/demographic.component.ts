@@ -53,6 +53,9 @@ export class DemographicComponent implements OnInit {
   secondaryLanguage = localStorage.getItem('secondaryLangCode');
   secondaryLanguagelabels: any;
   uppermostLocationHierarchy: any;
+  genders: any;
+  primaryGender = [];
+  secondaryGender = [];
   message = {};
 
   @ViewChild('dd') dd: ElementRef;
@@ -114,14 +117,6 @@ export class DemographicComponent implements OnInit {
   // ) {}
 
   ngOnInit() {
-    // this.dataStorageService.getGenderDetails().subscribe(response => {
-    //   console.log(response);
-    //   const output = response['genderType'].filter(element => {
-    //     element.langCode === 'eng';
-    //   });
-    //   console.log(output);
-    // });
-
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
@@ -134,12 +129,11 @@ export class DemographicComponent implements OnInit {
     this.route.parent.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
-    this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
+    // this.keyboardLang = appConstants.virtual_keyboard_languages[localStorage.getItem('langCode')];
     this.numberOfApplicants = 1;
     this.initForm();
     this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLanguage).subscribe(response => {
       this.secondaryLanguagelabels = response['demographic'];
-      console.log(this.secondaryLanguagelabels);
     });
   }
 
@@ -246,7 +240,7 @@ export class DemographicComponent implements OnInit {
         Validators.minLength(9),
         Validators.pattern(this.numberPattern)
       ]),
-      pin: new FormControl(pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
+      pin: new FormControl(pin, [Validators.required, Validators.maxLength(30), Validators.pattern(this.numberPattern)])
     });
 
     this.transUserForm = new FormGroup({
@@ -270,6 +264,12 @@ export class DemographicComponent implements OnInit {
       region
     );
 
+    await this.getGenderDetails();
+    this.filterGenderOnLangCode(this.primaryLang, this.primaryGender);
+    this.filterGenderOnLangCode(this.secondaryLang, this.secondaryGender);
+    console.log(this.primaryGender);
+    console.log(this.secondaryGender);
+
     if (this.regService.getUser(this.step) != null) {
       await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces, province);
       await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces, province);
@@ -287,8 +287,22 @@ export class DemographicComponent implements OnInit {
         this.transLocalAdministrativeAuthorities,
         localAdministrativeAuthority
       );
-      console.log('LOCATION', this.locations);
     }
+  }
+
+  getGenderDetails() {
+    return new Promise((resolve, reject) => {
+      this.dataStorageService.getGenderDetails().subscribe(response => {
+        this.genders = response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
+        resolve(true);
+      });
+    });
+  }
+
+  private filterGenderOnLangCode(langCode: string, genderEntity = []) {
+    this.genders.filter((element: any) => {
+      if (element.langCode === langCode) genderEntity.push(element);
+    });
   }
 
   getLocationMetadataHirearchy() {

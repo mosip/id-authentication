@@ -217,6 +217,9 @@ public class BookingService {
 							cancel(preRegistrationId, oldBookingRegistrationDTO, newBookingRegistrationDTO,
 									preRegStatusCode);
 						}
+						else {
+							checkAlreadyBooked(preRegistrationId,newBookingRegistrationDTO);
+						}
 						respList.add(book(preRegistrationId, newBookingRegistrationDTO, preRegStatusCode));
 					}
 				}
@@ -229,6 +232,12 @@ public class BookingService {
 		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
 		responseDTO.setResponse(respList);
 		return responseDTO;
+	}
+
+	public boolean checkAlreadyBooked(String preRegistrationId, BookingRegistrationDTO newBookingRegistrationDTO) {
+		log.info("sessionId", "idType", "id", "In checkAlreadyBooked method of Booking Service");
+		
+		return true;
 	}
 
 	public boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO,

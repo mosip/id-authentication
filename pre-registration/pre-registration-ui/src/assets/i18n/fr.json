@@ -141,7 +141,7 @@
     }
   },
   "uidStatus": {
-    "title": "Statut UID",
+    "title": "Mes applications",
     "action_modify_information": "Modifier les informations",
     "action_modify_appointment": "Réserver / modifier un rendez-vous",
     "action_cre_application": "Créer une nouvelle application ",
@@ -183,21 +183,21 @@
     "action_close":"Fermer",
     "action_add_to_slot":"Ajouter à la fente"
   },
-  "ack":{
-    "container_guideline":"Directives importantes",
-    "action_download":"TÉLÉCHARGER",
-    "action_print":"IMPRESSION"
+  "ack": {
+    "container_guideline": "Directives importantes",
+    "action_download": "TÉLÉCHARGER",
+    "action_print": "IMPRESSION"
   },
-  "centerSelection":{
-    "title":" Rendez-vous du livre ",
-    "action_nearBy":"Proche",
-    "display_recommended":"Centres recommandés",
-    "text_found":"A trouvé",
-    "text_centers":"centres",
-    "text_timing":"Timing",
-    "text_open":"Ouvrir",
-    "action_back":"Retour",
-    "action_book_later":"Réservez plus tard",
-    "action_continue":"CONTINUER"
+  "centerSelection": {
+    "title": " Rendez-vous du livre ",
+    "action_nearBy": "Proche",
+    "display_recommended": "Centres recommandés",
+    "text_found": "A trouvé",
+    "text_centers": "centres",
+    "text_timing": "Timing",
+    "text_open": "Ouvrir",
+    "action_back": "Retour",
+    "action_book_later": "Réservez plus tard",
+    "action_continue": "CONTINUER"
   }
 }
