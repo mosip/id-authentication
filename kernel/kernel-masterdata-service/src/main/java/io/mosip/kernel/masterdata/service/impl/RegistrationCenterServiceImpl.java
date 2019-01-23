@@ -283,7 +283,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			Set<String> codes = getLocationCode(
 					locationService.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel),
 					hierarchyLevel, text);
-			registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes);
+			registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes,
+					languageCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -479,7 +480,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 
 			registrationCentersList = registrationCenterRepository
-					.findRegistrationCenterByListOfLocationCode(uniqueLocCode);
+					.findRegistrationCenterByListOfLocationCode(uniqueLocCode, languageCode);
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
