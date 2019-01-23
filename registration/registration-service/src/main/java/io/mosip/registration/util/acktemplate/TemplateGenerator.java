@@ -166,7 +166,7 @@ public class TemplateGenerator extends BaseService {
 							platformLanguageCode));
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
-			if (dob == "") {
+			if (dob == null || dob == "") {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(
 						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
 			} else {
@@ -526,9 +526,9 @@ public class TemplateGenerator extends BaseService {
 							applicationLanguageCode));
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
-			if (dob == null) {
-				values.put(RegistrationConstants.TEMPLATE_DOB,
-						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
+			if (dob == null || dob == "") {
+				values.put(RegistrationConstants.TEMPLATE_DOB,getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(),null));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
