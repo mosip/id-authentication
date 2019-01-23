@@ -665,11 +665,9 @@ public class RegistrationController extends BaseController {
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
-			if (!switchedOn.get()) {
-				dd.setText((String) SessionContext.getInstance().getMapObject().get("dd"));
-				mm.setText((String) SessionContext.getInstance().getMapObject().get("mm"));
-				yyyy.setText((String) SessionContext.getInstance().getMapObject().get("yyyy"));
-			}
+			dd.setText((String) SessionContext.getInstance().getMapObject().get("dd"));
+			mm.setText((String) SessionContext.getInstance().getMapObject().get("mm"));
+			yyyy.setText((String) SessionContext.getInstance().getMapObject().get("yyyy"));
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
 
@@ -812,16 +810,14 @@ public class RegistrationController extends BaseController {
 				demoGraphicTitlePane.setContent(demoGraphicPane2);
 				anchorPaneRegistration.setPrefHeight(700.00);
 				demoGraphicTitlePane.setExpanded(true);
-				if (!switchedOn.get()) {
-					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
-							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
-					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-					SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
-							dateOfBirth);
-					SessionContext.getInstance().getMapObject().put("dd", dd.getText());
-					SessionContext.getInstance().getMapObject().put("mm", mm.getText());
-					SessionContext.getInstance().getMapObject().put("yyyy", yyyy.getText());
-				}
+				LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()), Integer.parseInt(mm.getText()),
+						Integer.parseInt(dd.getText()));
+				dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_AGE_DATA,
+						dateOfBirth);
+				SessionContext.getInstance().getMapObject().put("dd", dd.getText());
+				SessionContext.getInstance().getMapObject().put("mm", mm.getText());
+				SessionContext.getInstance().getMapObject().put("yyyy", yyyy.getText());
 			}
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - COULD NOT GO TO SECOND DEMOGRAPHIC PANE", APPLICATION_NAME,
@@ -1798,7 +1794,7 @@ public class RegistrationController extends BaseController {
 	 */
 	private void addRegions() {
 		try {
-			locationDtoRegion = masterSync.findLocationByHierarchyCode(region.getId().toUpperCase(),
+			locationDtoRegion = masterSync.findLocationByHierarchyCode(applicationContext.getApplicationLanguageBundle().getString(region.getId()),
 					MappedCodeForLanguage
 							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 							.getMappedCode());
@@ -1821,9 +1817,11 @@ public class RegistrationController extends BaseController {
 			List<LocationDto> listOfCodes = locationDtoRegion.stream()
 					.filter(location -> location.getName().equals(region.getValue())).collect(Collectors.toList());
 			String code = "";
+			String langCode="";
 			if (!listOfCodes.isEmpty()) {
 				code = listOfCodes.get(0).getCode();
-				locationDtoProvince = masterSync.findProvianceByHierarchyCode(code);
+				langCode=listOfCodes.get(0).getLangCode();
+				locationDtoProvince = masterSync.findProvianceByHierarchyCode(code,langCode);
 				province.getItems().clear();
 				province.getItems().addAll(
 						locationDtoProvince.stream().map(location -> location.getName()).collect(Collectors.toList()));
@@ -1845,9 +1843,11 @@ public class RegistrationController extends BaseController {
 			List<LocationDto> listOfCodes = locationDtoProvince.stream()
 					.filter(location -> location.getName().equals(province.getValue())).collect(Collectors.toList());
 			String code = "";
+			String langCode = "";
 			if (!listOfCodes.isEmpty()) {
 				code = listOfCodes.get(0).getCode();
-				locationDtoCity = masterSync.findProvianceByHierarchyCode(code);
+				langCode=listOfCodes.get(0).getLangCode();
+				locationDtoCity = masterSync.findProvianceByHierarchyCode(code,langCode);
 				city.getItems().clear();
 				city.getItems().addAll(
 						locationDtoCity.stream().map(location -> location.getName()).collect(Collectors.toList()));
@@ -1868,9 +1868,11 @@ public class RegistrationController extends BaseController {
 			List<LocationDto> listOfCodes = locationDtoCity.stream()
 					.filter(location -> location.getName().equals(city.getValue())).collect(Collectors.toList());
 			String code = "";
+			String langCode = "";
 			if (!listOfCodes.isEmpty()) {
 				code = listOfCodes.get(0).getCode();
-				List<LocationDto> locationlocalAdminAuthority = masterSync.findProvianceByHierarchyCode(code);
+				langCode=listOfCodes.get(0).getLangCode();
+				List<LocationDto> locationlocalAdminAuthority = masterSync.findProvianceByHierarchyCode(code,langCode);
 				localAdminAuthority.getItems().clear();
 				localAdminAuthority.getItems().addAll(
 						locationlocalAdminAuthority.stream().map(loc -> loc.getName()).collect(Collectors.toList()));
@@ -1886,7 +1888,7 @@ public class RegistrationController extends BaseController {
 	private void clearAllValues() {
 		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
 				.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
-		biometricExceptionController.clearSession();
+		biometricExceptionController.setExceptionImage();
 		fingerPrintCaptureController.clearFingerPrintDTO();
 		irisCaptureController.clearIrisData();
 	}

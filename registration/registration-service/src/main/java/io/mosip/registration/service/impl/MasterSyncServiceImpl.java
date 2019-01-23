@@ -247,7 +247,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			location.setCode(masLocation.getCode());
 			location.setHierarchyName(masLocation.getHierarchyName());
 			location.setName(masLocation.getName());
-			location.setLanguageCode(masLocation.getLanguageCode());
+			location.setLangCode(masLocation.getLangCode());
 			locationDto.add(location);
 		}
 
@@ -262,18 +262,18 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * java.lang.String)
 	 */
 	@Override
-	public List<LocationDto> findProvianceByHierarchyCode(String code) {
+	public List<LocationDto> findProvianceByHierarchyCode(String code,String langCode) {
 
 		List<LocationDto> locationDto = new ArrayList<>();
 
-		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code);
+		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code,langCode);
 
 		for (MasterLocation masLocation : masterLocation) {
 			LocationDto location = new LocationDto();
 			location.setCode(masLocation.getCode());
 			location.setHierarchyName(masLocation.getHierarchyName());
 			location.setName(masLocation.getName());
-			location.setLanguageCode(masLocation.getLanguageCode());
+			location.setLangCode(masLocation.getLangCode());
 			locationDto.add(location);
 		}
 

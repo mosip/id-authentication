@@ -1169,7 +1169,7 @@ public class MasterSyncServiceTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
@@ -1189,15 +1189,15 @@ public class MasterSyncServiceTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
+		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString(),Mockito.anyString())).thenReturn(locations);
 
-		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01");
+		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01","eng");
 
 	}
 

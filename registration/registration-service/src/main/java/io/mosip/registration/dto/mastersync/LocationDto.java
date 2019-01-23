@@ -18,7 +18,7 @@ public class LocationDto extends MasterSyncBaseDto{
 
 	private String parentLocCode;
 
-	private String languageCode;
+	private String langCode;
 
 	private Boolean isActive;
 
@@ -97,17 +97,17 @@ public class LocationDto extends MasterSyncBaseDto{
 	}
 
 	/**
-	 * @return the languageCode
+	 * @return the langCode
 	 */
-	public String getLanguageCode() {
-		return languageCode;
+	public String getLangCode() {
+		return langCode;
 	}
 
 	/**
-	 * @param languageCode the languageCode to set
+	 * @param langCode the langCode to set
 	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 	/**

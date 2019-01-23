@@ -7,8 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import io.mosip.registration.entity.mastersync.id.CodeAndLanguageCodeID;
+import io.mosip.registration.entity.mastersync.id.CodeLangCodeAndRsnCatCodeID;
+import io.mosip.registration.entity.mastersync.id.LocationID;
 
 /**
  * 
@@ -18,7 +23,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "location", schema = "reg")
-
+@IdClass(CodeAndLanguageCodeID.class)
 public class MasterLocation extends MasterSyncBaseEntity implements Serializable {
 
 	/**
@@ -30,6 +35,10 @@ public class MasterLocation extends MasterSyncBaseEntity implements Serializable
 	@Id
 	@Column(name = "code")
 	private String code;
+
+	@Id
+	@Column(name = "lang_code")
+	private String langCode;
 
 	@Column(name = "name")
 	private String name;
@@ -43,14 +52,6 @@ public class MasterLocation extends MasterSyncBaseEntity implements Serializable
 	@Column(name = "parent_loc_code")
 	private String parentLocCode;
 
-	@Column(name = "lang_code")
-	private String languageCode;
-
-	@OneToMany(mappedBy = "locationCode", fetch = FetchType.LAZY)
-	private List<MasterRegistrationCenter> registrationCenters;
-	
-	
-
 	/**
 	 * @return the hierarchyLevel
 	 */
@@ -63,20 +64,6 @@ public class MasterLocation extends MasterSyncBaseEntity implements Serializable
 	 */
 	public void setHierarchyLevel(int hierarchyLevel) {
 		this.hierarchyLevel = hierarchyLevel;
-	}
-
-	/**
-	 * @return the registrationCenters
-	 */
-	public List<MasterRegistrationCenter> getRegistrationCenters() {
-		return registrationCenters;
-	}
-
-	/**
-	 * @param registrationCenters the registrationCenters to set
-	 */
-	public void setRegistrationCenters(List<MasterRegistrationCenter> registrationCenters) {
-		this.registrationCenters = registrationCenters;
 	}
 
 	/**
@@ -136,17 +123,17 @@ public class MasterLocation extends MasterSyncBaseEntity implements Serializable
 	}
 
 	/**
-	 * @return the languageCode
+	 * @return the langCode
 	 */
-	public String getLanguageCode() {
-		return languageCode;
+	public String getLangCode() {
+		return langCode;
 	}
 
 	/**
-	 * @param languageCode the languageCode to set
+	 * @param langCode the langCode to set
 	 */
-	public void setLanguageCode(String languageCode) {
-		this.languageCode = languageCode;
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 }
