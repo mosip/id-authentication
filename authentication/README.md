@@ -1,9 +1,13 @@
 ## ID Authentication
-ID Authentication (IDA) is the authentication project used to authenticate Individuals using their UIN/VID. Below are the various authentication types supported by MOSIP - 
+ID Authentication (IDA) is the authentication module of MOSIP, used to authenticate Individuals using their UIN/VID. 
+
+List of authentication types supported by MOSIP are - 
 1. OTP Auth
 2. Demographic Auth
 3. Biometric Auth (includes Fingerprint, IRIS and Face)
 4. Static Pin Auth
+
+Refer wiki page for [ID Authentication API] https://github.com/mosip/mosip/wiki/ID-Authentication-APIs   
 
 ### Project Structure
 **authentication-** This is the parent project with common dependencies and plugins. This project has below sub-modules - 
@@ -13,5 +17,4 @@ ID Authentication (IDA) is the authentication project used to authenticate Indiv
 ### Build Steps
 Below commands should be run in the parent project **authentication**
 1. `mvn clean install`
-2. `mvn jacoco:report`
-3. `mvn sonar:sonar -PDEV` 
+2. `mvn sonar:sonar -PDEV` 
