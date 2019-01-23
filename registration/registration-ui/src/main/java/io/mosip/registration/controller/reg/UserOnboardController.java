@@ -648,10 +648,11 @@ public class UserOnboardController extends BaseController implements Initializab
 
 				}
 			} catch (RuntimeException runtimeException) {
-
-			} catch (RegBaseCheckedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage());
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				LOGGER.debug(LOG_REG_FINGERPRINT_CAPTURE_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+						regBaseCheckedException.getMessage());
 			}
 		} else if (pageName == RegistrationConstants.EYE) {
 			try {
@@ -944,21 +945,26 @@ public class UserOnboardController extends BaseController implements Initializab
 	private void openWebCamWindow(String imageType) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
-		try {
-			Stage primaryStage = new Stage();
-			FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
-			Parent webCamRoot = loader.load();
+		if (webCameraController.isWebcamPluggedIn()) {
+			try {
+				Stage primaryStage = new Stage();
+				FXMLLoader loader = BaseController
+						.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+				Parent webCamRoot = loader.load();
 
-			WebCameraController cameraController = loader.getController();
-			cameraController.init(this, imageType);
+				WebCameraController cameraController = loader.getController();
+				cameraController.init(this, imageType);
 
-			primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
-			Scene scene = new Scene(webCamRoot);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException ioException) {
-			LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+				primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
+				Scene scene = new Scene(webCamRoot);
+				primaryStage.setScene(scene);
+				primaryStage.show();
+			} catch (IOException ioException) {
+				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+			}
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
 		}
 	}
 
@@ -975,8 +981,9 @@ public class UserOnboardController extends BaseController implements Initializab
 			try {
 				ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
 						byteArrayOutputStream);
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException exception) {
+				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage());
 			}
 			biometricDTO.getOperatorBiometricDTO().getFaceDetailsDTO().setFace(byteArrayOutputStream.toByteArray());
 			applicantImageCaptured = true;
@@ -1060,7 +1067,7 @@ public class UserOnboardController extends BaseController implements Initializab
 			return true;
 		} else {
 			generateAlert(RegistrationConstants.ERROR, "Please capture the photo");
-			return true;
+			return false;
 		}
 	}
 
