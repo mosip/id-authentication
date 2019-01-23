@@ -17,7 +17,7 @@ spec:
         app: kernel-auth-service
     spec:
       containers:
-      - name: kernel-ldap-service
+      - name: kernel-auth-service
         image: docker-registry.mosip.io:5000/kernel-auth-service
         env:
         - name: active_profile_env
