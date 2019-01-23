@@ -121,5 +121,16 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 				"Fetching the list of sync details from databse started");
 		return syncJobRepository.findAll();	
 	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobDAO#getRegistrationDetails()
+	 */
+	public List<Registration> getRegistrationDetails(){
+		
+		LOGGER.debug(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Fetching the Registration Details of Registered Status");
+		
+		return registrationRepository.findByclientStatusCodeOrderByCrDtimeAsc(RegistrationClientStatusCode.CREATED.getCode());
+	}
 
 }
