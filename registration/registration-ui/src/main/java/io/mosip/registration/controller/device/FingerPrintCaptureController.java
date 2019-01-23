@@ -135,7 +135,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	@Autowired
 	private IrisCaptureController irisCaptureController;
 
-	private List<BiometricExceptionDTO> bioExceptionList = new ArrayList<>();
 	/** The scan btn. */
 	@FXML
 	private Button scanBtn;
@@ -224,6 +223,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void clearImage() {
 
 		exceptionFingersCount();
@@ -251,8 +251,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			removeFingerPrint(RegistrationConstants.THUMBS);
 
 		}
-		List<BiometricExceptionDTO> tempExceptionList = getRegistrationDTOFromSession().getBiometricDTO()
-				.getApplicantBiometricDTO().getBiometricExceptionDTO();
+		List<BiometricExceptionDTO> tempExceptionList = (List<BiometricExceptionDTO>)SessionContext.getInstance().getMapObject().get(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 		if (tempExceptionList == null || tempExceptionList.isEmpty()) {
 			leftHandPalmImageview.setImage(
 					new Image(getClass().getResource(RegistrationConstants.LEFTPALM_IMG_PATH).toExternalForm()));
@@ -264,11 +263,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					.setImage(new Image(getClass().getResource(RegistrationConstants.THUMB_IMG_PATH).toExternalForm()));
 			thumbsQualityScore.setText(RegistrationConstants.EMPTY);
 		}
-
-		if (bioExceptionList.isEmpty()) {
-			List<BiometricExceptionDTO> lis = getRegistrationDTOFromSession().getBiometricDTO()
-					.getApplicantBiometricDTO().getBiometricExceptionDTO();
-			bioExceptionList.addAll(lis);
+		List<BiometricExceptionDTO> bioExceptionList = (List<BiometricExceptionDTO>)SessionContext.getInstance().getMapObject().get(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
+		if (bioExceptionList==null || bioExceptionList.isEmpty()) {
+			bioExceptionList=tempExceptionList;
 		} else {
 			List<String> bioList1 = null;
 			List<String> bioList = bioExceptionList.stream().map(bio -> bio.getMissingBiometric())
@@ -278,7 +275,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						.collect(Collectors.toList());
 			}
 
-			@SuppressWarnings("unchecked")
 			List<String> changedException = (List<String>) CollectionUtils.disjunction(bioList, bioList1);
 
 			changedException.forEach(biometricException -> {
@@ -296,9 +292,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			});
 
 		}
-		bioExceptionList.clear();
-		bioExceptionList.addAll(tempExceptionList);
-
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION, tempExceptionList);
 	}
 
 	private void removeFingerPrint(String handSlap) {
