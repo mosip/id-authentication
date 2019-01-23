@@ -206,12 +206,14 @@ stage('---------- SonarQube Analysis --------------') {
 
  }
   
+/*
 
+ // uncomment out this stage and comment out next stage 'Kubernetes Deploy : DEV-INT' if you want to run Docker containers without Kubernetes cluster
   stage('----deploy in dev----')
  {
-     /*
-     All the Deployment steps that have to be performed in deployment server are written in this command string
-     */
+     
+     //All the Deployment steps that have to be performed in deployment server are written in this command string
+     
 	  command = """
  		INDEX=0
 		containersToRunShell=(${containersToRun})
@@ -267,11 +269,13 @@ stage('---------- SonarQube Analysis --------------') {
 			fi
             echo Deployment process completed
     """
-    /*
-    Using sshPublisher class to publish this command over to the deployement server
-    */
+    
+    //Using sshPublisher class to publish this command over to the deployement server
+    
         sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
     }
+    */
+    
     stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
