@@ -17,7 +17,9 @@ public enum UinExceptionConstant {
 	UIN_VAL_ILLEGAL_LENGTH("KER-IDV-203", "UIN length should be 12 digit."), 
 	UIN_VAL_INVALID_DIGITS("KER-IDV-204", "UIN should not contain any alphanumeric characters."), 
 	UIN_VAL_ILLEGAL_CHECKSUM("KER-IDV-205", "UIN should match checksum."),
-	UIN_VAL_INVALID_ZERO_ONE("KER-IDV-206", "UIN should not contain Zero or One as first digit.");
+	UIN_VAL_INVALID_ZERO_ONE("KER-IDV-206", "UIN should not contain Zero or One as first digit."),
+	UIN_VAL_ILLEGAL_REVERSE("KER-IDV-xxx", "UIN First X digits should be different from the reverse of last X digits"),
+	UIN_VAL_ILLEGAL_EQUAL_LIMIT("KER-IDV-xxx", "UIN First X digits should be different from the last X digits");
 	/**
 	 * This variable holds the error code.
 	 */
