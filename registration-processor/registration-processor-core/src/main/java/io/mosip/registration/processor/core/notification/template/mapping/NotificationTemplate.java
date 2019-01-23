@@ -8,8 +8,8 @@ public class NotificationTemplate {
 	
 	private JsonValue[] firstName;
 
-	private JsonValue[] phoneNumber;
+	private String phoneNumber;
 
-	private JsonValue[] emailID;
+	private String emailID;
 	
 }

@@ -79,13 +79,13 @@ stage('-----------Docker image push and cleanup-----------') {
 			echo "$currentModule"
 			echo "$parentDirectoryName"
 			echo "$parentDirectoryPath"
-			def buildName = "$parentDirectoryName:$dockerImagesTagVersion"
+			def buildName = "$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
 			newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
 			    newApp.push()
 			    newApp.push 'latest'
 			 }
-			sh "docker rmi $parentDirectoryName:$dockerImagesTagVersion"
-			sh "docker rmi $registryName/$parentDirectoryName:$dockerImagesTagVersion"
+			sh "docker rmi $parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
+			sh "docker rmi $registryName/$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
 			sh "docker rmi $registryName/$parentDirectoryName"
 
 			}

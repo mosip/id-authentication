@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.constant;
-	
+
 /**
  * The Enum JsonConstant.
  * 
@@ -139,5 +139,14 @@ public class JsonConstant {
 
 	/** The Constant CREATIONDATE. */
 	public static final String CREATIONDATE = "CREATIONDATE";
+
+	/** The Constant OFFICERBIOMETRICFILENAME. */
+	public static final String OFFICERBIOMETRICFILENAME = "OFFICERBIOMETRICFILENAME";
+
+	/** The Constant SUPERVISORBIOMETRICFILENAME. */
+	public static final String SUPERVISORBIOMETRICFILENAME = "SUPERVISORBIOMETRICFILENAME";
+
+	/** The Constant INTRODUCERBIOMETRICSEQUENCE. */
+	public static final String INTRODUCERBIOMETRICSEQUENCE = "introducerBiometricSequence";
 
 }

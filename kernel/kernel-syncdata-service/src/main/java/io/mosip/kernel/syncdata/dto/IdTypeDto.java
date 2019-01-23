@@ -21,6 +21,9 @@ public class IdTypeDto extends BaseDto{
 	 * The id code.
 	 */
 	private String code;
+	
+	private String name;
+		
 	/**
 	 * The id description.
 	 */

@@ -74,12 +74,14 @@ Valid RID Example:
 	
 	int machineIdLength = 5;
 	
+	int sequenceLength=5;
+	
 	int timeStampLength = 14;
 	
 	boolean return = ridValidatorImpl.validateId(rid,centerId,machineId); //return true
-	boolean return = ridValidatorImpl.validateId(rid,centerId,machineId,centerIdLength,machineIdLength,timeStampLength); //return true
+	boolean return = ridValidatorImpl.validateId(rid,centerId,machineId,centerIdLength,machineIdLength,sequenceLength,timeStampLength); //return true
 	boolean return = ridValidatorImpl.validateId(rid); //return true
-	boolean return = ridValidatorImpl.validateId(rid,,centerIdLength,machineIdLength,timeStampLength); //return true
+	boolean return = ridValidatorImpl.validateId(rid,,centerIdLength,machineIdLength,sequenceLength,timeStampLength); //return true
  
  ```
  

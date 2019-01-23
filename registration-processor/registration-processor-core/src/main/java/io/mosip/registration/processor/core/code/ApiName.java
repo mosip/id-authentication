@@ -48,6 +48,24 @@ public enum ApiName {
 	/** The email notifier. */
 	EMAILNOTIFIER,
 
-	CRYPTOMANAGERDECRYPT
+	/** The biodedupeinsert. */
+	BIODEDUPEINSERT,
+
+	/** The biodedupepotential. */
+	BIODEDUPEPOTENTIAL,
+
+	/** The biodedupe. */
+	BIODEDUPE,
+
+	/** The idrepository. */
+	IDREPOSITORY,
+
+	/** The uingenerator. */
+	UINGENERATOR,
+
+	/** The idrepodev. */
+	IDREPODEV,
+
+    CRYPTOMANAGERDECRYPT
 
 }

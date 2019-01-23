@@ -104,12 +104,12 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(packetInfoManager.getRegIdByUIN(Mockito.any())).thenReturn(RegIdList);
 
 		ClassLoader classLoader = getClass().getClassLoader();
-		File demographicJsonFile = new File(classLoader.getResource("DemographicInfo.json").getFile());
+		File demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		String value = "{\r\n" + "\"firstName\": \"firstName\",\r\n" + "\"phoneNumber\" : \"mobileNumber\",\r\n"
-				+ "\"emailID\" : \"emailId\"\r\n" + "}";
+		String value = "{\r\n" + "\"firstName\": \"fullName\",\r\n" + "\"phoneNumber\" : \"phone\",\r\n"
+				+ "\"emailID\" : \"email\"\r\n" + "}";
 
 		PowerMockito.mockStatic(MessageSenderUtil.class);
 		PowerMockito.when(MessageSenderUtil.class, "getJson", anyString(), anyString()).thenReturn(value);
@@ -129,8 +129,8 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(smsResponseDto);
 
-		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("SMS_TEMP_FOR_UIN_GEN",
-				"12345", IdType.UIN, attributes);
+		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345",
+				IdType.UIN, attributes);
 		assertEquals("Success", resultResponse.getMessage());
 	}
 
@@ -141,55 +141,56 @@ public class MessageNotificationServiceImplTest {
 
 		Mockito.when(restApiClient.postApi(any(), any(), any())).thenReturn(responseDto);
 
-		ResponseDto resultResponse = messageNotificationServiceImpl.sendEmailNotification("EMAIL_TEMP_FOR_UIN_GEN",
-				"12345", IdType.UIN, attributes, mailCc, subject, null);
+		ResponseDto resultResponse = messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345",
+				IdType.UIN, attributes, mailCc, subject, null);
 		assertEquals("Success", resultResponse.getStatus());
 	}
 
 	@Test(expected = PhoneNumberNotFoundException.class)
 	public void testPhoneNumberNotFoundException() throws ApisResourceAccessException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
-		File demographicJsonFile = new File(classLoader.getResource("DemographicInfo2.json").getFile());
+		File demographicJsonFile = new File(classLoader.getResource("ID2.json").getFile());
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendSmsNotification("SMS_TEMP_FOR_UIN_GEN", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
 
 	}
 
 	@Test(expected = EmailIdNotFoundException.class)
 	public void testEmailIDNotFoundException() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
-		File demographicJsonFile = new File(classLoader.getResource("DemographicInfo2.json").getFile());
+		File demographicJsonFile = new File(classLoader.getResource("ID2.json").getFile());
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 
-		messageNotificationServiceImpl.sendEmailNotification("EMAIL_TEMP_FOR_UIN_GEN", "12345", IdType.UIN, attributes,
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.UIN, attributes,
 				mailCc, subject, null);
 	}
 
 	@Test(expected = TemplateGenerationFailedException.class)
 	public void testTemplateGenerationFailedException() throws IOException, ApisResourceAccessException {
-		Mockito.when(templateGenerator.getTemplate("SMS_TEMP_FOR_UIN_GEN", attributes, "eng"))
+		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_SMS", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendSmsNotification("SMS_TEMP_FOR_UIN_GEN", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
 	}
 
 	@Test(expected = IdentityNotFoundException.class)
 	public void identityNotFoundExceptionTest() throws ApisResourceAccessException, IOException {
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
 
-		messageNotificationServiceImpl.sendSmsNotification("SMS_TEMP_FOR_UIN_GEN", "12345", IdType.UIN, attributes);
+		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
 	}
 
 	@Test(expected = TemplateGenerationFailedException.class)
 	public void testTemplateProcessingFailureException() throws Exception {
-		Mockito.when(templateGenerator.getTemplate("EMAIL_TEMP_FOR_UIN_GEN", attributes, "eng"))
+		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_EMAIL", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 
-		messageNotificationServiceImpl.sendEmailNotification("EMAIL_TEMP_FOR_UIN_GEN", "12345", IdType.UIN, attributes,
+		messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345", IdType.UIN, attributes,
 				mailCc, subject, null);
 	}
 
 }
+

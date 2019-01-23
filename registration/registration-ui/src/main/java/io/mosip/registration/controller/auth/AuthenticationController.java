@@ -24,6 +24,7 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -185,6 +186,10 @@ public class AuthenticationController extends BaseController {
 					if (otp.getText() != null) {
 						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
 							userNameField = otpUserId.getText();
+							if (!isEODAuthentication) {
+								getOSIData().setSupervisorID(userNameField);
+								getOSIData().setSuperviorAuthenticatedByPIN(true);
+							}
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ERROR,
@@ -202,6 +207,9 @@ public class AuthenticationController extends BaseController {
 		} else {
 			if (otp.getText() != null) {
 				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
+					if (!isEODAuthentication) {
+						getOSIData().setOperatorAuthenticatedByPIN(true);
+					}
 					loadNextScreen();
 				} else {
 					generateAlert(RegistrationConstants.ERROR,
@@ -217,6 +225,14 @@ public class AuthenticationController extends BaseController {
 		String status = validatePwd(username.getText(), password.getText());
 		if (RegistrationConstants.SUCCESS.equals(status)) {
 			userNameField = username.getText();
+			if (!isEODAuthentication) {
+				if (isSupervisor) {
+					getOSIData().setSupervisorID(userNameField);
+					getOSIData().setSuperviorAuthenticatedByPassword(true);
+				} else {
+					getOSIData().setOperatorAuthenticatedByPassword(true);
+				}
+			}
 			loadNextScreen();
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INCORRECT_PWORD);
@@ -235,6 +251,9 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
 						userNameField = fpUserId.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+						}
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -266,6 +285,9 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(irisUserId.getText())) {
 					if (captureAndValidateIris(irisUserId.getText())) {
 						userNameField = irisUserId.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+						}
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
@@ -297,6 +319,9 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(faceUserId.getText())) {
 					if (captureAndValidateFace(faceUserId.getText())) {
 						userNameField = faceUserId.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+						}
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
@@ -742,6 +767,11 @@ public class AuthenticationController extends BaseController {
 		isSupervisor = false;
 		isEODAuthentication = false;
 		getAuthenticationModes(authType);
+	}
+
+	private OSIDataDTO getOSIData() {
+		return ((RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
 	}
 
 }
