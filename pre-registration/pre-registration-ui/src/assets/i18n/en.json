@@ -180,7 +180,7 @@
     "action_discard_app":"Discard entire application",
     "action_cancel":"Cancel appointment and save the details",
     "action_submit":"Submit",
-    "action_dismiss":"Dismiss",
+    "action_dismiss":"Ok",
     "action_add":"Add",
     "action_close":"Close",
     "action_add_to_slot":"Add to Slot"
