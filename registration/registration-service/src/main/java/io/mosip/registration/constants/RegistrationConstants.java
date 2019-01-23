@@ -497,6 +497,8 @@ public class RegistrationConstants {
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
 	public static final String REGISTARTION_CENTER="REGISTARTION_CENTER";
+	public static final String CBEFF_ONLY_UNIQUE_TAGS = "CBEFF_ONLY_UNIQUE_TAGS";
+	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";

@@ -10,11 +10,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -25,6 +27,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -80,11 +83,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private CbeffI cbeffI;
 	@Autowired
 	private JsonValidator jsonValidator;
-	
-	private Random random = new Random(5000);
-	/**
-	 * Instance of {@code AuditFactory}
-	 */
+	private static Random random = new Random(5000);
 	@Autowired
 	private AuditFactory auditFactory;
 
@@ -260,11 +259,12 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
-		} catch (BaseCheckedException baseCheckedException) {
+		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
+				| FileIOException jsonValidationException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
-					baseCheckedException);
+					jsonValidationException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
@@ -302,29 +302,26 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			List<BIR> birs = new ArrayList<>();
 
+			boolean onlyUniqueRequiredInCBEFF = RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE
+					.equalsIgnoreCase(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+							.get(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS)));
+
 			if (biometricInfoDTO.getFingerprintDetailsDTO() != null
 					&& !biometricInfoDTO.getFingerprintDetailsDTO().isEmpty()) {
-				createFingerprintsBIR(personType, biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
+				createFingerprintsBIR(onlyUniqueRequiredInCBEFF, personType,
+						biometricInfoDTO.getFingerprintDetailsDTO(), birs, birUUIDs);
 			}
 
 			if (biometricInfoDTO.getIrisDetailsDTO() != null && !biometricInfoDTO.getIrisDetailsDTO().isEmpty()) {
 				for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
-					TestBiometricType testBiometricType = new TestBiometricType();
-					testBiometricType.setXmlns("testschema");
-					testBiometricType.setTestBiometric((random.nextInt()%2 == 0) ? TestBiometric.DUPLICATE : TestBiometric.UNIQUE);
-					BIR bir = new BIR.BIRBuilder().withBdb(iris.getIris())
-							.withTestIris(testBiometricType)
-							.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-							.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
-									.withFormatType(CbeffConstant.FORMAT_TYPE_IRIS)
-									.withQuality((int) Math.round(iris.getQualityScore()))
-									.withType(Arrays.asList(SingleType.IRIS))
-									.withSubtype(Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
-											? SingleAnySubtypeType.LEFT.value()
-											: SingleAnySubtypeType.RIGHT.value()))
-									.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.INTERMEDIATE)
-									.withCreationDate(new Date()).withIndex(UUID.randomUUID().toString()).build())
-							.build();
+
+					BIR bir = buildBIR(onlyUniqueRequiredInCBEFF, iris.getIris(), CbeffConstant.ISO_FORMAT_OWNER,
+							CbeffConstant.FORMAT_TYPE_IRIS, (int) Math.round(iris.getQualityScore()),
+							Arrays.asList(SingleType.IRIS),
+							Arrays.asList(
+									iris.getIrisType().equalsIgnoreCase("lefteye") ? SingleAnySubtypeType.LEFT.value()
+											: SingleAnySubtypeType.RIGHT.value()));
+
 					birs.add(bir);
 					birUUIDs.put(personType.concat(iris.getIrisType()).toLowerCase(), bir.getBdbInfo().getIndex());
 				}
@@ -348,37 +345,48 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 	}
 
-	private void createFingerprintsBIR(String personType, List<FingerprintDetailsDTO> fingerprints,
-			List<BIR> birs, Map<String, String> birUUIDs) {
+	private void createFingerprintsBIR(boolean onlyUniqueRequiredInCBEFF, String personType,
+			List<FingerprintDetailsDTO> fingerprints, List<BIR> birs, Map<String, String> birUUIDs) {
 		for (FingerprintDetailsDTO fingerprint : fingerprints) {
 			if (personType.equals(RegistrationConstants.INDIVIDUAL) && fingerprint.getSegmentedFingerprints() != null
 					&& !fingerprint.getSegmentedFingerprints().isEmpty()) {
 				for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-					BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
+					BIR bir = buildFingerprintBIR(onlyUniqueRequiredInCBEFF, segmentedFingerprint,
+							segmentedFingerprint.getFingerPrint());
 					birs.add(bir);
 					birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
 							bir.getBdbInfo().getIndex());
 				}
 			} else {
-				BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
+				BIR bir = buildFingerprintBIR(onlyUniqueRequiredInCBEFF, fingerprint, fingerprint.getFingerPrint());
 				birs.add(bir);
 				birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(), bir.getBdbInfo().getIndex());
 			}
 		}
 	}
 
-	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
+	private BIR buildFingerprintBIR(boolean onlyUniqueRequiredInCBEFF, FingerprintDetailsDTO fingerprint,
+			byte[] fingerprintImageInBytes) {
+		return buildBIR(onlyUniqueRequiredInCBEFF, fingerprintImageInBytes, CbeffConstant.ISO_FORMAT_OWNER,
+				CbeffConstant.FORMAT_TYPE_FINGER, (int) Math.round(fingerprint.getQualityScore()),
+				Arrays.asList(SingleType.FINGER), getFingerSubType(fingerprint.getFingerType()));
+	}
+
+	private BIR buildBIR(boolean onlyUniqueRequiredInCBEFF, byte[] bdb, long isoFormatOwner, long formatType,
+			int qualityScore, List<SingleType> type, List<String> subType) {
 		TestBiometricType testBiometricType = new TestBiometricType();
 		testBiometricType.setXmlns("testschema");
-		testBiometricType.setTestBiometric((random.nextInt()%2 == 0) ? TestBiometric.DUPLICATE : TestBiometric.UNIQUE);
-		return new BIR.BIRBuilder().withBdb(fingerprintImageInBytes)
-				.withTestFingerPrint(testBiometricType)
+		if (onlyUniqueRequiredInCBEFF) {
+			testBiometricType.setTestBiometric(TestBiometric.UNIQUE);
+		} else {
+			testBiometricType
+					.setTestBiometric((random.nextInt() % 2 == 0) ? TestBiometric.DUPLICATE : TestBiometric.UNIQUE);
+		}
+
+		return new BIR.BIRBuilder().withBdb(bdb).withTestFingerPrint(testBiometricType)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(CbeffConstant.ISO_FORMAT_OWNER)
-						.withFormatType(CbeffConstant.FORMAT_TYPE_FINGER)
-						.withQuality((int) Math.round(fingerprint.getQualityScore()))
-						.withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(getFingerSubType(fingerprint.getFingerType())).withPurpose(PurposeType.ENROLL)
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(isoFormatOwner).withFormatType(formatType)
+						.withQuality(qualityScore).withType(type).withSubtype(subType).withPurpose(PurposeType.ENROLL)
 						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(new Date())
 						.withIndex(UUID.randomUUID().toString()).build())
 				.build();
