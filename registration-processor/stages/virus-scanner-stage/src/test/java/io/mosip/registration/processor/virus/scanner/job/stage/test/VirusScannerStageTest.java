@@ -140,6 +140,7 @@ public class VirusScannerStageTest {
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
+		Mockito.when(decryptor.getScanFolderResult()).thenReturn(Boolean.TRUE);
 
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
@@ -170,7 +171,7 @@ public class VirusScannerStageTest {
 	}
 
 	@Test
-	@Ignore
+
 	public void testFailureVirusScanFiles() throws Exception {
 
 		listAppender.start();
@@ -178,7 +179,9 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.FALSE);
-		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.FALSE);
+	
+		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
+		Mockito.when(decryptor.getScanFolderResult()).thenReturn(Boolean.FALSE);
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
