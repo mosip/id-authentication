@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
@@ -91,7 +92,10 @@ public class RejectionController extends BaseController implements Initializable
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
 
-		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList("ENG");
+		List<MasterReasonListDto> reasonList = masterSyncService.getAllReasonsList(MappedCodeForLanguage
+				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+				.getMappedCode());
+		
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
 

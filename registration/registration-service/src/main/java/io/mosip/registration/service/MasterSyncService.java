@@ -39,9 +39,10 @@ public interface MasterSyncService {
 	 * Find proviance by hierarchy code.
 	 *
 	 * @param code the code
+	 * @param langCode the lang code
 	 * @return the list
 	 */
-	List<LocationDto> findProvianceByHierarchyCode(String code);
+	List<LocationDto> findProvianceByHierarchyCode(String code,String langCode);
 	
 	/**
 	 * Gets the all reasons.

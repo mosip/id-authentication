@@ -48,9 +48,10 @@ public interface MasterSyncDao {
 	 * Find location by parent loc code.
 	 *
 	 * @param parentLocCode the parent loc code
+	 * @param langCode the lang code
 	 * @return the list
 	 */
-	List<MasterLocation> findLocationByParentLocCode(String parentLocCode);
+	List<MasterLocation> findLocationByParentLocCode(String parentLocCode,String langCode);
 
 	/**
 	 * Gets the all reason catogery.

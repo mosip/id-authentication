@@ -20,7 +20,7 @@ public interface MasterSyncLocationRepository extends BaseRepository<MasterLocat
 	 * @param langCode the lang code
 	 * @return the list
 	 */
-	List<MasterLocation> findMasterLocationByHierarchyNameAndLanguageCode(String hierarchyName , String langCode);
+	List<MasterLocation> findMasterLocationByHierarchyNameAndLangCode(String hierarchyName , String langCode);
 	
 	/**
 	 * Find master location by parent loc code.
@@ -28,6 +28,6 @@ public interface MasterSyncLocationRepository extends BaseRepository<MasterLocat
 	 * @param parentLocCode the parent loc code
 	 * @return the list
 	 */
-	List<MasterLocation> findMasterLocationByParentLocCode(String parentLocCode);
+	List<MasterLocation> findMasterLocationByParentLocCodeAndLangCode(String parentLocCode,String langCode);
 
 }
