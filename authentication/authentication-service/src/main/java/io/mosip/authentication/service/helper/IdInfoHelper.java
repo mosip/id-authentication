@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -328,7 +329,7 @@ public class IdInfoHelper implements IdInfoFetcher {
 				MatchingStrategy strategy = matchingStrategy.get();
 				Map<String, String> reqInfo = null;
 				reqInfo = getAuthReqestInfo(matchType, authRequestDTO);
-				if(null == reqInfo) {
+				if(null == reqInfo || reqInfo.isEmpty()) {
 					reqInfo = getIdentityRequestInfo(matchType, authRequestDTO.getRequest().getIdentity());					
 				}
 				if (null!= reqInfo && reqInfo.size() > 0) {
@@ -384,7 +385,8 @@ public class IdInfoHelper implements IdInfoFetcher {
 			}
 
 			return null;
-		}).collect(Collectors.toList());
+		})
+		.filter(Objects::nonNull).collect(Collectors.toList());
 
 	}
 

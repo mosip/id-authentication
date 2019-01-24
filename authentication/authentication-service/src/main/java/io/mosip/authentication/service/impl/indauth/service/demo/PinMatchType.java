@@ -36,8 +36,8 @@ public enum PinMatchType implements MatchType {
 			setOf(NameMatchingStrategy.EXACT),
 			authReqDTO -> {
 				return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equals("pin")).findFirst().map(PinInfo::getValue).orElse("");
-			}, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI,
-			AuthUsageDataBit.MATCHED_PI_NAME_PRI),
+			}, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_STATIC_PIN,
+			AuthUsageDataBit.MATCHED_STATIC_PIN),
 	;
 
 	/** The allowed matching strategy. */
