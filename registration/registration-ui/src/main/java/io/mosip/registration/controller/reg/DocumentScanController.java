@@ -141,7 +141,7 @@ public class DocumentScanController extends BaseController {
 			loadListOfDocuments(poaDocuments,"POA");
 			loadListOfDocuments(poiDocuments,"POI");
 			loadListOfDocuments(porDocuments,"POR");
-			loadListOfDocuments(dobDocuments,"DOB");
+			loadListOfDocuments(dobDocuments,"POB");
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
