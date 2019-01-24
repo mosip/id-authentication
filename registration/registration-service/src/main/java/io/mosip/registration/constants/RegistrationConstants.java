@@ -500,6 +500,7 @@ public class RegistrationConstants {
 	public static final String RE_REGISTRATION_STATUS = "Re-Register";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
+	public static final String PACKET_UPLOAD_SUCCESS = "Uploaded";
 
 	// Device On-boarding
 	public static final String DEVICE_MANUFACTURER_NAME = "manufacturerName";
