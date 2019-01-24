@@ -23,6 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.IOException;
@@ -99,9 +100,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		try {
 
 			/* REST call to get Pre Registartion Id's */
-			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = (MainResponseDTO<LinkedHashMap<String, Object>>) serviceDelegateUtil
+			LinkedHashMap<String, Object> response= (LinkedHashMap<String, Object>) serviceDelegateUtil
 					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO);
-
+			TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>> ref = new TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>>() {
+			};
+			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = new ObjectMapper()
+					.readValue(new JSONObject(response).toString(), ref);
 			if (isResponseNotEmpty(mainResponseDTO)) {
 
 				PreRegistrationIdsDTO preRegistrationIdsDTO = new ObjectMapper().readValue(
@@ -388,6 +392,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
+		//TODO needs to be removed- added for demo purpose 
+		cal.add(Calendar.MONTH, -3);
 
 		return formatDate(cal);
 	}
