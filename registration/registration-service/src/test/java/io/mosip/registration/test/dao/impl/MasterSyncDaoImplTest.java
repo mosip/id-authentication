@@ -1507,17 +1507,17 @@ public class MasterSyncDaoImplTest {
 	@Test
 	public void findDocumentCategories() throws RegBaseCheckedException {
 	
-		List<MasterDocumentCategory> documents = new ArrayList<>();
-		MasterDocumentCategory document = new MasterDocumentCategory();
+		List<MasterDocumentType> documents = new ArrayList<>();
+		MasterDocumentType document = new MasterDocumentType();
 		document.setName("Aadhar");
 		document.setDescription("Aadhar card");
 		document.setLangCode("ENG");
 		documents.add(document);
 		documents.add(document);
+		List<String> validDocuments = new ArrayList<>();
+		Mockito.when(masterSyncDao.getDocumentTypes(validDocuments,Mockito.anyString())).thenReturn(documents);
 	
-		Mockito.when(masterSyncDao.getDocumentCategories(Mockito.anyString())).thenReturn(documents);
-	
-		masterSyncDaoImpl.getDocumentCategories("ENG");
+		masterSyncDaoImpl.getDocumentTypes(validDocuments,"test");
 		
 		assertTrue(documents!=null);
 	
