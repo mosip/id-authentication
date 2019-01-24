@@ -101,6 +101,17 @@ public class DataMapperImplTest {
 		assertEquals(Period.between(LocalDate.of(1994, Month.JANUARY, 1), LocalDate.now()).getYears(), personneList.get(0).getAge());
 	}
 	
+	@Test(expected = DataMapperException.class)
+	public void personConverterListFailureTest() {
+		Person person = new Person();
+		LocalDate dob = LocalDate.of(1994, Month.JANUARY, 1);
+		person.setDob(dob);
+		List<Person> personList = new ArrayList<>();
+		personList.add(person);
+		List<Personne> personneList = new ArrayList<Personne>();
+		personListToPersonneListMapper.map(personList, personneList, null);
+	}
+	
 	@Test
 	public void givenSrcAndDest_whenCanExcludeField_thenCorrect() {
 		Personne french = new Personne("Claire", "cla", 2);
