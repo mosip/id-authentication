@@ -127,7 +127,7 @@
 		},
 		"emailType": {
 			"type": "string",
-			"pattern": "^[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$"
+			"pattern": "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$"
 		},
 		"documentType": {
 			"type": "object",
