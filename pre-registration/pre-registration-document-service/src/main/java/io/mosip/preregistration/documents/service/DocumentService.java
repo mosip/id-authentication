@@ -164,7 +164,7 @@ public class DocumentService {
 	 *             on input errors
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	private List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
+	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();

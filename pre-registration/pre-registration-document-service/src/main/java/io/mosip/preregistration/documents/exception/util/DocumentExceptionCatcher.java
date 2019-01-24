@@ -5,7 +5,6 @@
 package io.mosip.preregistration.documents.exception.util;
 
 import org.json.JSONException;
-import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -16,7 +15,6 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;

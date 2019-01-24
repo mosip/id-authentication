@@ -337,7 +337,7 @@ public class DocumentServiceUtil {
 	 *             if uploaded document is not valid
 	 */
 	public boolean isVirusScanSuccess(MultipartFile file) {
-		boolean flag = false;
+		boolean flag;
 		 try {
 			log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
 			return virusScan.scanDocument(file.getBytes());
