@@ -1,13 +1,12 @@
 ## kernel-keymanager-service
-[Background & Design](../../design/kernel/kernel-keymanager.md)
+
+[Background & Design](../../docs/design/kernel/kernel-keymanager.md)
  
 
-**Api Documentation**
-
-[API Documentation <TBA>](TBA)
+[API Documentation]
 
 ```
-mvn javadoc:javadoc
+http://localhost:8088/keymanager/swagger-ui.html
 ```
 
 **The inputs which have to be provided are:**

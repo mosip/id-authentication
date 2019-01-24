@@ -2,7 +2,7 @@
 
 This module is used by modules that have to use the DAO layer. There can be multiple databases and multiple DAO framework implementation can be used in various applications in the MOSIP platform.
  
- 1- [Background & Design](../../design/kernel/kernel-dataaccess.md)
+ 1- [Background & Design](../../docs/design/kernel/kernel-dataaccess.md)
  
 
  2- [API Documentation ](TBA)

@@ -1,6 +1,6 @@
 # kernel-idgenerator-machineid
 
-1- [Background & Design]
+1- [Background & Design](../../docs/design/kernel/kernel-idgenerator-machineid.md)
 
 2- API Documentation
 

@@ -1,13 +1,11 @@
 ## kernel-cryptomanager-service
 
- 
+[Background & Design](../../docs/design/kernel/kernel-keymanager.md)
 
-**Api Documentation**
-
-[API Documentation <TBA>](TBA)
+[API Documentation]
 
 ```
-mvn javadoc:javadoc
+localhost:8087/cryptomanager/swagger-ui.html
 ```
 
 **The inputs which have to be provided are:**

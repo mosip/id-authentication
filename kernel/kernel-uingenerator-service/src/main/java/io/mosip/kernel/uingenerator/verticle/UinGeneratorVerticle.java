@@ -55,7 +55,7 @@ public class UinGeneratorVerticle extends AbstractVerticle {
 	@Override
 	public void start() {
 		vertx.eventBus().consumer(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, receivedMessage -> {
-			if (receivedMessage.body().equals(UinGeneratorConstant.GENERATE_UIN)) {
+			if (receivedMessage.body().equals(UinGeneratorConstant.GENERATE_UIN) && uinProcesser.shouldGenerateUins()) {
 				vertx.executeBlocking(future -> {
 					List<UinEntity> uins = uinProcesser.generateUins();
 					uinWriter.write(uins);

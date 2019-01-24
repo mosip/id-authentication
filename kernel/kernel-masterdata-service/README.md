@@ -1,7 +1,7 @@
 ## kernel-masterdata-service
 
 
- [Refer wiki for details](https://github.com/mosip/mosip/wiki/Master-data-APIs) 
+ [Refer wiki for spec](https://github.com/mosip/mosip/wiki/Master-data-APIs) 
  https://github.com/mosip/mosip/wiki/Master-data-APIs
  
 
