@@ -155,6 +155,7 @@
 		<!-- <module>kernel-batch-server</module> -->
 		<!--<module>kernel-crypto-bouncycastle</module> -->
 
+		<module>kernel-pinvalidator</module>
 	</modules>
 
 	<dependencies>

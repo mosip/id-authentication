@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -65,7 +67,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory = MetaDataUtils.setCreateMetaData(
 				registrationCenterUserMachineMappingDto.getRequest(), RegistrationCenterUserMachineHistory.class);
 		registrationCenterUserMachineHistory.setEffectivetimes(registrationCenterUserMachine.getCreatedDateTime());
-		registrationCenterUserMachineHistory.setCreatedDateTime(registrationCenterUserMachine.getCreatedDateTime());
+		registrationCenterUserMachineHistory.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 
 		try {
 			registrationCenterMachineUserRepository.create(registrationCenterUserMachine);
@@ -110,6 +112,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 				history.setMachineId(machineId);
 				history.setUsrId(userId);
 				history.setEffectivetimes(centerUserMachine.getDeletedDateTime());
+				history.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 				MapperUtils.setBaseFieldValue(centerUserMachine, history);
 				registrationCenterUserMachineHistoryRepository.create(history);
 				registrationCenterMachineUserRepository.update(centerUserMachine);
@@ -117,6 +120,52 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 				registrationCenterMachineUserID.setCntrId(regCenterId);
 				registrationCenterMachineUserID.setMachineId(machineId);
 				registrationCenterMachineUserID.setUsrId(userId);
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION
+							.getErrorCode(),
+					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION
+							.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+		return registrationCenterMachineUserID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserService#
+	 * createOrUpdateRegistrationCentersMachineUserMapping(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
+	@Override
+	@Transactional
+	public RegistrationCenterMachineUserID createOrUpdateRegistrationCentersMachineUserMapping(
+			RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
+		RegistrationCenterMachineUserID registrationCenterMachineUserID = null;
+		try {
+
+			Optional<RegistrationCenterUserMachine> registrationCenterUserMachine = registrationCenterMachineUserRepository
+					.findAllNondeletedMappings(registrationCenterUserMachineMappingDto.getRequest().getCntrId(),
+							registrationCenterUserMachineMappingDto.getRequest().getMachineId(),
+							registrationCenterUserMachineMappingDto.getRequest().getUsrId());
+			if (!registrationCenterUserMachine.isPresent()) {
+				createRegistrationCentersMachineUserMapping(registrationCenterUserMachineMappingDto);
+			} else {
+				RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine.get();
+				MetaDataUtils.setUpdateMetaData(registrationCenterUserMachineMappingDto.getRequest(), centerUserMachine,
+						false);
+				RegistrationCenterUserMachineHistory history = MapperUtils.map(centerUserMachine,
+						RegistrationCenterUserMachineHistory.class);
+				MapperUtils.setBaseFieldValue(centerUserMachine, history);
+				history.setEffectivetimes(centerUserMachine.getUpdatedDateTime());
+				history.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				registrationCenterUserMachineHistoryRepository.create(history);
+				registrationCenterMachineUserRepository.update(centerUserMachine);
+				registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
+				registrationCenterMachineUserID.setCntrId(centerUserMachine.getCntrId());
+				registrationCenterMachineUserID.setMachineId(centerUserMachine.getMachineId());
+				registrationCenterMachineUserID.setUsrId(centerUserMachine.getUsrId());
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(

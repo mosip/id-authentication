@@ -47,4 +47,14 @@ public interface RegistrationCenterMachineUserService {
 	RegistrationCenterMachineUserID deleteRegistrationCentersMachineUserMapping(String regCenterId, String machineId,
 			String userId);
 
+	/**
+	 * Create or Update a mapping of registration center,user,and machine
+	 * 
+	 * @param registrationCenterUserMachineMappingDto
+	 *            {@link RegistrationCenterUserMachineMappingDto} request
+	 * @return {@link RegistrationCenterMachineUserID}
+	 */
+	RegistrationCenterMachineUserID createOrUpdateRegistrationCentersMachineUserMapping(
+			RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto);
+
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -76,5 +77,22 @@ public class RegistrationCenterUserMachineController {
 		return new ResponseEntity<>(registrationCenterMachineUserService
 				.deleteRegistrationCentersMachineUserMapping(regCenterId, machineId, userId), HttpStatus.OK);
 	}
+	
+	/**
+	 * Create or update a mapping of registration center,user,and machine
+	 * 
+	 * @param registrationCenterUserMachineMappingDto
+	 *            {@link RegistrationCenterUserMachineMappingDto} request
+	 * @return {@link RegistrationCenterMachineUserID} as response
+	 */
+	@ApiOperation(value = "Create a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
+	@PutMapping("/v1.0/registrationmachineusermappings")
+	public ResponseEntity<RegistrationCenterMachineUserID> createOrUpdateRegistrationCentersMachineUserMapping(
+			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
+		return new ResponseEntity<>(registrationCenterMachineUserService.createOrUpdateRegistrationCentersMachineUserMapping(
+						registrationCenterUserMachineMappingDto),
+				HttpStatus.CREATED);
+	}
+
 
 }
