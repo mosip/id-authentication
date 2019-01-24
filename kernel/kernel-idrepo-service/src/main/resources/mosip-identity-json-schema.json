@@ -71,7 +71,7 @@
 				},
 				"proofOfAddress": {
 					"$ref": "#/definitions/documentType"
-				},                               
+				},
 				"proofOfIdentity": {
 					"$ref": "#/definitions/documentType"
 				},
@@ -97,10 +97,7 @@
 			"uniqueItems": true,
 			"items": {
 				"type": "object",
-				"required": [
-					"language",
-					"value"
-				],
+				"required": ["language", "value"],
 				"additionalProperties": false,
 				"properties": {
 					"language": {
@@ -117,11 +114,11 @@
 			"type": "string",
 			"pattern": "^\\d{4}/([0]\\d|1[0-2])/([0-2]\\d|3[01])$"
 		},
-		"phoneType": {		
+		"phoneType": {
 			"type": "string",
-			"pattern": "^([9]{1})([234789]{1})([0-9]{8})$"
+			"pattern": "^([6-9]{1})([0-9]{9})$"
 		},
-		"postalCodeType": {		
+		"postalCodeType": {
 			"type": "string",
 			"pattern": "^[(?i)A-Z0-9]{6}$"
 		},

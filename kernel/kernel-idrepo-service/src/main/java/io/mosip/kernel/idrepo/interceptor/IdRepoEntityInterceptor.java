@@ -10,6 +10,7 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -124,6 +125,28 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 		return super.onLoad(entity, id, state, propertyNames, types);
 	}
 
+	@Override
+	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
+			String[] propertyNames, Type[] types) {
+		try {
+
+			if (entity instanceof Uin) {
+				Uin uinEntity = (Uin) entity;
+				byte[] encryptedData = encryptDecryptIdentity(
+						CryptoUtil.encodeBase64(uinEntity.getUinData()).getBytes(), "encrypt");
+				List<Object> propertyNamesList = Arrays.asList(propertyNames);
+				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
+				currentState[indexOfData] = encryptedData;
+				return super.onFlushDirty(uinEntity, id, currentState, previousState, propertyNames, types);
+			}
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onSave",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
+		}
+		return super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types);
+	}
+
 	/**
 	 * Encrypt identity.
 	 *
@@ -136,18 +159,26 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	 *             the id repo app exception
 	 */
 	private byte[] encryptDecryptIdentity(byte[] identity, String method) throws IdRepoAppException {
-		ObjectNode request = new ObjectNode(mapper.getNodeFactory());
-		request.put("applicationId", env.getProperty("application.id"));
-		request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
-		request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern")));
-		request.put("data", new String(identity));
+		try {
+			ObjectNode request = new ObjectNode(mapper.getNodeFactory());
+			request.put("applicationId", env.getProperty("application.id"));
+			request.put("referenceId", env.getProperty("mosip.kernel.keymanager.refId"));
+			request.put("timeStamp", DateUtils.formatDate(new Date(), env.getProperty("datetime.pattern")));
+			request.put("data", new String(identity));
 
-		ObjectNode response = restTemplate.postForObject(
-				env.getProperty("mosip.kernel.cryptomanager." + method + ".url"), request, ObjectNode.class);
+			ObjectNode response = restTemplate.postForObject(
+					env.getProperty("mosip.kernel.cryptomanager." + method + ".url"), request, ObjectNode.class);
 
-		if (response.has("data")) {
-			return response.get("data").asText().getBytes();
-		} else {
+			if (response.has("data")) {
+				return response.get("data").asText().getBytes();
+			} else {
+				mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "encryptDecryptIdentity",
+						"No data block found in response");
+				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
+			}
+		} catch (RestClientException e) {
+			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "encryptDecryptIdentity",
+					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 		}
 	}

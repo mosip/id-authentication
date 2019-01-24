@@ -50,8 +50,6 @@ public class IdRequestValidator implements Validator {
 
 	private static final String JSON_SCHEMA_FILE_NAME = "mosip.kernel.idrepo.json-schema-fileName";
 
-	private static final String MOSIP_KERNEL_IDREPO_STATUS_REGISTERED = "mosip.kernel.idrepo.status.registered";
-
 	/** The Constant VER. */
 	private static final String VER = "version";
 
@@ -122,7 +120,6 @@ public class IdRequestValidator implements Validator {
 	@Resource
 	private List<String> status;
 
-	/** The uin validator. */
 	@Autowired
 	private RidValidator<String> ridValidatorImpl;
 
@@ -222,9 +219,7 @@ public class IdRequestValidator implements Validator {
 	 * @param method
 	 */
 	private void validateStatus(String status, Errors errors, String method) {
-		if (Objects.nonNull(status)
-				&& ((method.equals(CREATE) && !status.equals(env.getProperty(MOSIP_KERNEL_IDREPO_STATUS_REGISTERED)))
-						|| (method.equals(UPDATE) && !this.status.contains(status)))) {
+		if (Objects.nonNull(status) && (method.equals(UPDATE) && !this.status.contains(status))) {
 			errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 		}
@@ -262,6 +257,7 @@ public class IdRequestValidator implements Validator {
 	 * @param errors
 	 *            the errors
 	 */
+	@SuppressWarnings("rawtypes")
 	private void validateRequest(Object request, Errors errors) {
 		try {
 			if (Objects.nonNull(request)) {
@@ -274,11 +270,17 @@ public class IdRequestValidator implements Validator {
 				}
 				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+							String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+				} else if (!((Map) requestMap.get(IDENTITY)).isEmpty()) {
+					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
 				} else {
 					jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
 							env.getProperty(JSON_SCHEMA_FILE_NAME));
 				}
+			} else {
+				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			}
 		} catch (IdRepoAppException | UnidentifiedJsonException | IOException | JsonValidationProcessingException
 				| JsonIOException e) {

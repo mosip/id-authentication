@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,29 +50,44 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class IdRepoController {
 
+	/** The Constant RETRIEVE_IDENTITY. */
 	private static final String RETRIEVE_IDENTITY = "retrieveIdentity";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoController.class);
 
+	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
+	/** The Constant ALL. */
 	private static final String ALL = "all";
 
+	/** The Constant READ. */
 	private static final String READ = "read";
 
+	/** The Constant TYPE. */
 	private static final String TYPE = "type";
 
+	/** The Constant CREATE. */
 	private static final String CREATE = "create";
 
+	/** The Constant UPDATE. */
+	private static final String UPDATE = "update";
+
+	/** The Constant ID_REPO_CONTROLLER. */
 	private static final String ID_REPO_CONTROLLER = "IdRepoController";
 
+	/** The Constant ADD_IDENTITY. */
 	private static final String ADD_IDENTITY = "addIdentity";
+
+	/** The Constant UPDATE_IDENTITY. */
+	private static final String UPDATE_IDENTITY = "updateIdentity";
 
 	/** The id. */
 	@Resource
 	private Map<String, String> id;
 
+	/** The allowed types. */
 	@Resource
 	private List<String> allowedTypes;
 
@@ -101,15 +117,13 @@ public class IdRepoController {
 	/**
 	 * Adds the identity.
 	 *
-	 * @param request
-	 *            the request
-	 * @param errors
-	 *            the errors
+	 * @param uin the uin
+	 * @param request            the request
+	 * @param errors            the errors
 	 * @return the response entity
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException             the id repo app exception
 	 */
-	@PostMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> addIdentity(@PathVariable String uin,
 			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
@@ -130,15 +144,13 @@ public class IdRepoController {
 	/**
 	 * Retrieve identity.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param filter
-	 *            the filter
+	 * @param uin            the uin
+	 * @param type the type
+	 * @param request the request
 	 * @return the response entity
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException             the id repo app exception
 	 */
-	@GetMapping(path = "/v1.0/identity/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IdResponseDTO> retrieveIdentity(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type, @Nullable HttpServletRequest request)
 			throws IdRepoAppException {
@@ -174,6 +186,37 @@ public class IdRepoController {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, RETRIEVE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, id.get(READ));
+		}
+	}
+
+	/**
+	 * Update identity.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param request
+	 *            the request
+	 * @param errors
+	 *            the errors
+	 * @return the response entity
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@PatchMapping(path = "/identity/v1.0/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<IdResponseDTO> updateIdentity(@PathVariable String uin,
+			@Validated @RequestBody IdRequestDTO request, @ApiIgnore Errors errors) throws IdRepoAppException {
+		try {
+			uinValidatorImpl.validateId(uin);
+			DataValidationUtil.validate(errors);
+			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
+		} catch (InvalidIDException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_UIN, e, id.get(UPDATE));
+		} catch (IdRepoDataValidationException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_CONTROLLER, UPDATE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e, id.get(UPDATE));
 		}
 	}
 

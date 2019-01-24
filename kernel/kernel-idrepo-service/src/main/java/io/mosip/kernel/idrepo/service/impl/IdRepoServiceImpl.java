@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -20,6 +21,14 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.skyscreamer.jsonassert.FieldComparisonFailure;
+import org.skyscreamer.jsonassert.JSONCompare;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
@@ -36,6 +45,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
@@ -50,12 +64,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
 import io.mosip.kernel.idrepo.dto.Documents;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.IdResponseDTO;
+import io.mosip.kernel.idrepo.dto.RequestDTO;
 import io.mosip.kernel.idrepo.dto.ResponseDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
 import io.mosip.kernel.idrepo.entity.UinBiometric;
@@ -69,6 +83,7 @@ import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
 import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoServiceImpl.
  *
@@ -77,15 +92,22 @@ import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
+	/** The Constant LANGUAGE. */
+	private static final String LANGUAGE = "language";
+
+	/** The Constant ADD_IDENTITY. */
 	private static final String ADD_IDENTITY = "addIdentity";
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoServiceImpl.class);
 
+	/** The Constant ID_REPO_SERVICE. */
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
+	/** The Constant APPLICATION_VERSION. */
 	private static final String APPLICATION_VERSION = "application.version";
 
+	/** The Constant DOCUMENTS. */
 	private static final String DOCUMENTS = "documents";
 
 	/** The Constant TYPE. */
@@ -178,6 +200,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Resource
 	private Map<String, String> id;
 
+	/** The allowed bio types. */
 	@Resource
 	private List<String> allowedBioTypes;
 
@@ -205,6 +228,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private DFSConnectionUtil connection;
 
+	/** The fp provider. */
 	@Autowired
 	private MosipFingerprintProvider<String> fpProvider;
 
@@ -262,46 +286,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			List<UinDocument> docList = new ArrayList<>();
 			List<UinBiometric> bioList = new ArrayList<>();
 			if (Objects.nonNull(documents) && !documents.isEmpty()) {
-				ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
-				documents.stream().filter(doc -> identityObject.has(doc.getCategory())).forEach(doc -> {
-					JsonNode docType = identityObject.get(doc.getCategory());
-					try {
-						if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
-							String fileRefId = UUID.randomUUID().toString();
-
-							storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-									convertToFMR(doc.getValue()));
-
-							bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
-									docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
-									LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-
-							uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
-									docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
-									LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-
-						} else {
-							String fileRefId = UUID.randomUUID().toString();
-
-							storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
-									CryptoUtil.decodeBase64(doc.getValue()));
-
-							docList.add(new UinDocument(uinRefId, docType.get(TYPE).asText(), doc.getCategory(),
-									fileRefId, docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-									hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(),
-									UPDATED_BY, now(), false, now()));
-
-							uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), docType.get(TYPE).asText(),
-									doc.getCategory(), fileRefId, docType.get(VALUE).asText(),
-									docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())),
-									LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
-						}
-					} catch (IdRepoAppException e) {
-						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-								"\n" + ExceptionUtils.getStackTrace(e));
-						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
-					}
-				});
+				addDocuments(uin, identityInfo, documents, uinRefId, docList, bioList);
 
 				uinRepo.save(new Uin(uinRefId, uin, identityInfo, hash(identityInfo), regId,
 						env.getProperty(MOSIP_IDREPO_STATUS_REGISTERED), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
@@ -323,6 +308,75 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		}
 	}
 
+	/**
+	 * Adds the documents.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param identityInfo
+	 *            the identity info
+	 * @param documents
+	 *            the documents
+	 * @param uinRefId
+	 *            the uin ref id
+	 * @param docList
+	 *            the doc list
+	 * @param bioList
+	 *            the bio list
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private void addDocuments(String uin, byte[] identityInfo, List<Documents> documents, String uinRefId,
+			List<UinDocument> docList, List<UinBiometric> bioList) throws IdRepoAppException {
+		ObjectNode identityObject = (ObjectNode) convertToObject(identityInfo, ObjectNode.class);
+		documents.stream().filter(doc -> identityObject.has(doc.getCategory())).forEach(doc -> {
+			JsonNode docType = identityObject.get(doc.getCategory());
+			try {
+				if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
+					String fileRefId = UUID.randomUUID().toString();
+
+					storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
+							convertToFMR(doc.getValue()));
+
+					bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(), docType.get(VALUE).asText(),
+							hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
+							now(), false, now()));
+
+					uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
+							docType.get(VALUE).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE,
+							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
+
+				} else {
+					String fileRefId = UUID.randomUUID().toString();
+
+					storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
+							CryptoUtil.decodeBase64(doc.getValue()));
+
+					docList.add(new UinDocument(uinRefId, docType.get(TYPE).asText(), doc.getCategory(), fileRefId,
+							docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
+							hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
+							now(), false, now()));
+
+					uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), docType.get(TYPE).asText(),
+							doc.getCategory(), fileRefId, docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
+							hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
+							now(), false, now()));
+				}
+			} catch (IdRepoAppException e) {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+						"\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
+			}
+		});
+	}
+
+	/**
+	 * Convert to FMR.
+	 *
+	 * @param encodedCbeffFile
+	 *            the encoded cbeff file
+	 * @return the byte[]
+	 */
 	private byte[] convertToFMR(String encodedCbeffFile) {
 		return CryptoUtil.decodeBase64(fpProvider.convertFIRtoFMR(Collections.singletonList(encodedCbeffFile)).get(0));
 	}
@@ -635,9 +689,218 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		return CryptoUtil.encodeBase64(HMACUtils.generateHash(identityInfo));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.idrepo.spi.IdRepoService#updateIdentity(java.lang.
+	 * Object, java.lang.String)
+	 */
 	@Override
 	public IdResponseDTO updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
-		return null;
+		try {
+			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
+			if (uinRepo.existsByUin(uin)) {
+				Uin uinObject = retrieveIdentityByUin(uin);
+
+				if (Objects.nonNull(request.getStatus())
+						&& !StringUtils.equals(uinObject.getStatusCode(), request.getStatus())) {
+					uinObject.setStatusCode(request.getStatus());
+				}
+
+				RequestDTO requestDTO = request.getRequest();
+				if (Objects.nonNull(requestDTO)) {
+					Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
+							.mappingProvider(new JacksonMappingProvider()).build();
+					DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
+					DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
+					JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
+							dbData.jsonString(), JSONCompareMode.LENIENT);
+
+					if (Objects.nonNull(requestDTO.getIdentity()) && comparisonResult.failed()) {
+						updateIdentity(inputData, dbData, comparisonResult);
+
+						uinObject
+								.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
+						uinObject.setUinDataHash(hash(uinObject.getUinData()));
+					}
+
+				}
+
+				uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin, uinObject.getUinData(),
+						uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(), LANG_CODE,
+						CREATED_BY, now(), UPDATED_BY, now(), false, now()));
+
+				uinRepo.save(uinObject);
+
+				return constructIdResponse("mosip.id.update", retrieveIdentityByUin(uin), null);
+			} else {
+				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+			}
+		} catch (JSONException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "updateIdentity",
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
+		}
 	}
 
+	/**
+	 * Update identity.
+	 *
+	 * @param inputData
+	 *            the input data
+	 * @param dbData
+	 *            the db data
+	 * @param comparisonResult
+	 *            the comparison result
+	 * @throws JSONException
+	 *             the JSON exception
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private void updateIdentity(DocumentContext inputData, DocumentContext dbData, JSONCompareResult comparisonResult)
+			throws JSONException, IdRepoAppException {
+		if (comparisonResult.isMissingOnField()) {
+			updateMissingFields(inputData, dbData, comparisonResult);
+		}
+
+		comparisonResult = JSONCompare.compareJSON(inputData.jsonString(), dbData.jsonString(),
+				JSONCompareMode.LENIENT);
+		if (comparisonResult.isFailureOnField()) {
+			updateFailingFields(inputData, dbData, comparisonResult);
+		}
+
+		comparisonResult = JSONCompare.compareJSON(inputData.jsonString(), dbData.jsonString(),
+				JSONCompareMode.LENIENT);
+		if (!comparisonResult.getMessage().isEmpty()) {
+			updateMissingValues(inputData, dbData, comparisonResult);
+		}
+
+		comparisonResult = JSONCompare.compareJSON(inputData.jsonString(), dbData.jsonString(),
+				JSONCompareMode.LENIENT);
+		if (comparisonResult.failed()) {
+			updateIdentity(inputData, dbData, comparisonResult);
+		}
+	}
+
+	/**
+	 * Update missing fields.
+	 *
+	 * @param inputData
+	 *            the input data
+	 * @param dbData
+	 *            the db data
+	 * @param comparisonResult
+	 *            the comparison result
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void updateMissingFields(DocumentContext inputData, DocumentContext dbData,
+			JSONCompareResult comparisonResult) throws IdRepoAppException {
+		for (FieldComparisonFailure failure : comparisonResult.getFieldMissing()) {
+			if (StringUtils.contains(failure.getField(), "[")) {
+				String path = StringUtils.substringBefore(failure.getField(), "[");
+				String key = StringUtils.substringAfterLast(path, DOT);
+				path = StringUtils.substringBeforeLast(path, DOT);
+
+				if (StringUtils.isEmpty(key)) {
+					key = path;
+					path = "$";
+				}
+
+				List value = dbData.read(path + DOT + key, List.class);
+				value.addAll((Collection) Collections
+						.singletonList(convertToObject(failure.getExpected().toString().getBytes(), Map.class)));
+
+				dbData.put(path, key, value);
+			} else {
+				String path = StringUtils.substringBeforeLast(failure.getField(), DOT);
+				if (StringUtils.isEmpty(path)) {
+					path = "$";
+				}
+				String key = StringUtils.substringAfterLast(failure.getField(), DOT);
+				dbData.put(path, (String) failure.getExpected(), key);
+			}
+
+		}
+	}
+
+	/**
+	 * Update failing fields.
+	 *
+	 * @param inputData
+	 *            the input data
+	 * @param dbData
+	 *            the db data
+	 * @param comparisonResult
+	 *            the comparison result
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private void updateFailingFields(DocumentContext inputData, DocumentContext dbData,
+			JSONCompareResult comparisonResult) throws IdRepoAppException {
+		for (FieldComparisonFailure failure : comparisonResult.getFieldFailures()) {
+
+			String path = StringUtils.substringBeforeLast(failure.getField(), DOT);
+			if (StringUtils.contains(path, "[")) {
+				path = StringUtils.replaceAll(path, "\\[", "\\[\\?\\(\\@\\.");
+				path = StringUtils.replaceAll(path, "=", "=='");
+				path = StringUtils.replaceAll(path, "\\]", "'\\)\\]");
+			}
+			String key = StringUtils.substringAfterLast(failure.getField(), DOT);
+			if (StringUtils.isEmpty(key)) {
+				key = failure.getField();
+				path = "$";
+			}
+
+			if (failure.getExpected() instanceof JSONArray) {
+				dbData.put(path, key, convertToObject(failure.getExpected().toString().getBytes(), List.class));
+				inputData.put(path, key, convertToObject(failure.getExpected().toString().getBytes(), List.class));
+			} else if (failure.getExpected() instanceof JSONObject) {
+				Object object = convertToObject(failure.getExpected().toString().getBytes(), ObjectNode.class);
+				dbData.put(path, key, object);
+				inputData.put(path, key, object);
+			} else {
+				dbData.put(path, key, failure.getExpected());
+				inputData.put(path, key, failure.getExpected());
+			}
+		}
+	}
+
+	/**
+	 * Update missing values.
+	 *
+	 * @param inputData
+	 *            the input data
+	 * @param dbData
+	 *            the db data
+	 * @param comparisonResult
+	 *            the comparison result
+	 */
+	@SuppressWarnings("unchecked")
+	private void updateMissingValues(DocumentContext inputData, DocumentContext dbData,
+			JSONCompareResult comparisonResult) {
+		String path = StringUtils.substringBefore(comparisonResult.getMessage(), "[");
+		String key = StringUtils.substringAfterLast(path, DOT);
+		path = StringUtils.substringBeforeLast(path, DOT);
+
+		if (StringUtils.isEmpty(key)) {
+			key = path;
+			path = "$";
+		}
+
+		List<Map<String, String>> dbDataList = dbData.read(path + DOT + key, List.class);
+		List<Map<String, String>> inputDataList = inputData.read(path + DOT + key, List.class);
+		inputDataList.stream().filter(
+				map -> map.containsKey(LANGUAGE) && dbDataList.stream().filter(dbMap -> dbMap.containsKey(LANGUAGE))
+						.allMatch(dbMap -> !StringUtils.equalsIgnoreCase(dbMap.get(LANGUAGE), map.get(LANGUAGE))))
+				.forEach(dbDataList::add);
+		dbDataList
+				.stream().filter(
+						map -> map.containsKey(LANGUAGE)
+								&& inputDataList.stream().filter(inputDataMap -> inputDataMap.containsKey(LANGUAGE))
+										.allMatch(inputDataMap -> !StringUtils
+												.equalsIgnoreCase(inputDataMap.get(LANGUAGE), map.get(LANGUAGE))))
+				.forEach(inputDataList::add);
+	}
 }
