@@ -1,16 +1,15 @@
 {
-		"id": "mosip.pre-registration.reverse.datasync",
-		"ver" : "1.0",
-		"reqTime" : "2018-10-17T07:22:57.086+0000",
-		"request" :
-		{
-			"CountOfPreRegIds":"5",
-			"pre_registration_ids":[
-				"59276903416082",
-				"79276903416082",
-				"89276903416082",
-				"99276903416082",
-				"59276616044482"
-			]
-		}
-} 
+  "id": "mosip.pre-registration.datasync",
+  "ver": "1.0",
+  "reqTime": "2019-01-17T06:15:25.721Z",
+  "request": {
+    "createdBy": "5766477466",
+    "createdDateTime": "2019-01-17T06:15:25.721Z",
+    "langCode": "AR",
+    "preRegistrationIds": [
+      "97285429827016"
+    ],
+    "updateBy": "5766477466",
+    "updateDateTime": "2019-01-17T06:15:25.721Z"
+  }
+}

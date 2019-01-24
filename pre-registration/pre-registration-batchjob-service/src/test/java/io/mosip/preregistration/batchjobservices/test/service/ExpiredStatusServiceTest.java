@@ -18,6 +18,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.batchjobservices.entity.ApplicantDemographic;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
+import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPK;
+import io.mosip.preregistration.batchjobservices.repository.DemographicRepository;
+import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
 import io.mosip.preregistration.batchjobservices.service.ExpiredStatusService;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -26,34 +29,46 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 @SpringBootTest
 public class ExpiredStatusServiceTest {
 
-	@MockBean
+	@Autowired
 	private BatchServiceDAO batchServiceDAO;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private ExpiredStatusService service;
+	
+	@MockBean
+	private DemographicRepository demographicRepository;
+
+	@MockBean
+	private RegAppointmentRepository regAppointmentRepository;
 
 	LocalDate currentDate = LocalDate.now();
 	List<RegistrationBookingEntity> bookedPreIdList = new ArrayList<>();
 	ApplicantDemographic demographicEntity =new ApplicantDemographic();
 	RegistrationBookingEntity bookingEntity=new RegistrationBookingEntity();
-
+	RegistrationBookingPK bookingPK = new RegistrationBookingPK();
+	
 	@Test
 	public void expiredAppointmentTest() {
 
 		MainResponseDTO<String> response = new MainResponseDTO<>();
 
+		demographicEntity.setPreRegistrationId("12345678909876");
+
+		bookingPK.setPreregistrationId("12345678909876");
+		bookingEntity.setBookingPK(bookingPK);
+		bookedPreIdList.add(bookingEntity);
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);
 		
-		Mockito.when(batchServiceDAO.getAllOldDateBooking(Mockito.any())).thenReturn(bookedPreIdList);
-		Mockito.when(batchServiceDAO.getPreRegId(Mockito.anyString())).thenReturn(bookingEntity);
+		Mockito.when(regAppointmentRepository.findByRegDateBefore(currentDate)).thenReturn(bookedPreIdList);
+		Mockito.when(regAppointmentRepository.getPreRegId(bookingEntity.getBookingPK().getPreregistrationId())).thenReturn(bookingEntity);
 		bookingEntity.setStatusCode("EXPIRED");
-		Mockito.when(batchServiceDAO.updateBooking(bookingEntity)).thenReturn(true);
-		Mockito.when(batchServiceDAO.getApplicantDemographicDetails(Mockito.anyString())).thenReturn(demographicEntity);
+		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
+		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId())).thenReturn(demographicEntity);
 		demographicEntity.setStatusCode("EXPIRED");
-		Mockito.when(batchServiceDAO.updateApplicantDemographic(demographicEntity)).thenReturn(true);
+		Mockito.when(demographicRepository.save(demographicEntity)).thenReturn(demographicEntity);
 		
 		response=service.expireAppointments();
 		assertEquals("Registration appointment status updated to expired successfully",response.getResponse());

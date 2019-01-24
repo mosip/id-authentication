@@ -184,7 +184,7 @@ public class DocumentService {
 					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
-				docResponseDto.setPreRegsitrationId(documentEntity.getPreregId());
+				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
