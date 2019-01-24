@@ -53,11 +53,19 @@ public class HomeController extends BaseController implements Initializable {
 
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
 			mainBox.getChildren().add(headerRoot);
-			
+
 			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
-					&& (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER_HOME)) {
+					&& !(boolean) SessionContext.getInstance().getMapObject()
+							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
+				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
 			} else {
+				if ((boolean) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, false);
+					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
+				}
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 			}
 			

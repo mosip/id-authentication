@@ -101,7 +101,7 @@ public class RegistrationConstants {
 	public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
-	public static final String ONBOARD_USER_HOME="onBoardFlag";
+	public static final String ONBOARD_USER_UPDATE="updateOnboard";
 	public static final String REGISTRATION_LOGIN_PWORD_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER";
 	public static final String REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER = "REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER";
 
@@ -648,12 +648,12 @@ public class RegistrationConstants {
 	public static final String THUMB = "Thumb";
 	public static final String LEFT_HAND = "Left hand ";
 	public static final String RIGHT_HAND = "Right hand ";
-	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/lefthand/leftIndex/",
-			"/fingerprints/UserOnboard/lefthand/leftLittle/", "/fingerprints/UserOnboard/lefthand/leftMiddle/",
-			"/fingerprints/UserOnboard/lefthand/leftRing/" };
-	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/righthand/rightIndex/",
-			"/fingerprints/UserOnboard/righthand/rightLittle/", "/fingerprints/UserOnboard/righthand/rightMiddle/",
-			"/fingerprints/UserOnboard/righthand/rightRing/" };
+	public static final String[] LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/leftHand/leftIndex/",
+			"/fingerprints/UserOnboard/leftHand/leftLittle/", "/fingerprints/UserOnboard/leftHand/leftMiddle/",
+			"/fingerprints/UserOnboard/leftHand/leftRing/" };
+	public static final String[] RIGHTHAND_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/rightHand/rightIndex/",
+			"/fingerprints/UserOnboard/rightHand/rightLittle/", "/fingerprints/UserOnboard/rightHand/rightMiddle/",
+			"/fingerprints/UserOnboard/rightHand/rightRing/" };
 	public static final String[] THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD = new String[] { "/fingerprints/UserOnboard/thumb/leftThumb/",
 	"/fingerprints/UserOnboard/thumb/rightThumb/" };
 
@@ -904,4 +904,5 @@ public class RegistrationConstants {
 	public static final String USER_CENTER_ID="centerId";
 	public static final String USER_MACHINE_VALIDATION_CODE="REG-URE‌-009";
 	public static final String USER_MACHINE_VALIDATION_MSG="This computer is not mapped to the same Registration Centre as the dongle plugged in.";
+	public static final String USER_ONBOARD_DATA="UserOnboardBiometricData";
 }

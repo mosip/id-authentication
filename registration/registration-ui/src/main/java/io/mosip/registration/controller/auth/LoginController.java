@@ -171,8 +171,6 @@ public class LoginController extends BaseController implements Initializable {
 
 	private boolean isNewUser = false;
 	
-	private boolean onBoardFlag = false;
-
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
@@ -285,12 +283,14 @@ public class LoginController extends BaseController implements Initializable {
 								if (getCenterMachineStatus(userDetail)) {
 									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
 											isNewUser);
-									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_HOME, onBoardFlag);
+									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE,
+											false);
 									loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
 								} else {
 									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
 											true);
-									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_HOME, true);
+									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE,
+											false);
 									Set<String> roleSet = new HashSet<>();
 									roleSet.add("*");
 									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);

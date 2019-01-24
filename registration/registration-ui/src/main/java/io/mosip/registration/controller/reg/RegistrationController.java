@@ -442,11 +442,7 @@ public class RegistrationController extends BaseController {
 	@Autowired
 	private DateValidation dateValidation;
 	@Autowired
-	private FingerPrintCaptureController fingerPrintCaptureController;
-	@Autowired
 	private BiometricExceptionController biometricExceptionController;
-	@Autowired
-	private IrisCaptureController irisCaptureController;
 	@Autowired
 	private JsonValidator jsonValidator;
 
@@ -911,7 +907,7 @@ public class RegistrationController extends BaseController {
 				RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, isChild);
 				DemographicInfoDTO demographicInfoDTO = buildDemographicInfo();
-				
+
 				try {
 					jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
 							"mosip-identity-json-schema.json");
@@ -1007,8 +1003,8 @@ public class RegistrationController extends BaseController {
 												.with(value -> value.setLanguage(localLanguageCode))
 												.with(value -> value.setValue(fullNameLocalLanguage.getText())).get()))
 										.get()))
-						.with(identity -> identity.setDateOfBirth(dateAnchorPane.isDisabled() ? null :
-								(dateOfBirth != null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : "")))
+						.with(identity -> identity.setDateOfBirth(dateAnchorPane.isDisabled() ? null
+								: (dateOfBirth != null ? DateUtils.formatDate(dateOfBirth, "yyyy/MM/dd") : "")))
 						.with(identity -> identity
 								.setAge(ageField.isDisabled() ? null : Integer.parseInt(ageField.getText())))
 						.with(identity -> identity.setGender(gender.isDisabled() ? null
@@ -1156,8 +1152,7 @@ public class RegistrationController extends BaseController {
 	 * To detect the face part from the applicant photograph to use it for QR Code
 	 * generation
 	 * 
-	 * @param applicantImage
-	 *            the image that is captured as applicant photograph
+	 * @param applicantImage the image that is captured as applicant photograph
 	 * @return BufferedImage the face that is detected from the applicant photograph
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
@@ -1180,8 +1175,7 @@ public class RegistrationController extends BaseController {
 	 * To compress the detected face from the image of applicant and store it in DTO
 	 * to use it for QR Code generation
 	 * 
-	 * @param applicantImage
-	 *            the image that is captured as applicant photograph
+	 * @param applicantImage the image that is captured as applicant photograph
 	 */
 	private void compressImageForQRCode(BufferedImage detectedFace) {
 		try {
@@ -1688,8 +1682,7 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane
-	 *            the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1720,8 +1713,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1780,19 +1772,10 @@ public class RegistrationController extends BaseController {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
 	}
 
-	private BiometricInfoDTO createBiometricInfoDTO() {
-		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
-		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
-		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
-		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
-		return biometricInfoDTO;
-	}
-
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1801,8 +1784,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
@@ -1811,8 +1793,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the BiometricException Pane.
 	 * 
-	 * @param visibility
-	 *            the value of the visible property to be set
+	 * @param visibility the value of the visible property to be set
 	 */
 	public void toggleBiometricExceptionVisibility(boolean visibility) {
 		this.biometricException.setVisible(visibility);
@@ -1823,7 +1804,8 @@ public class RegistrationController extends BaseController {
 	 */
 	private void addRegions() {
 		try {
-			locationDtoRegion = masterSync.findLocationByHierarchyCode(applicationContext.getApplicationLanguageBundle().getString(region.getId()),
+			locationDtoRegion = masterSync.findLocationByHierarchyCode(
+					applicationContext.getApplicationLanguageBundle().getString(region.getId()),
 					MappedCodeForLanguage
 							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 							.getMappedCode());
@@ -1846,11 +1828,11 @@ public class RegistrationController extends BaseController {
 			List<LocationDto> listOfCodes = locationDtoRegion.stream()
 					.filter(location -> location.getName().equals(region.getValue())).collect(Collectors.toList());
 			String code = "";
-			String langCode="";
+			String langCode = "";
 			if (!listOfCodes.isEmpty()) {
 				code = listOfCodes.get(0).getCode();
-				langCode=listOfCodes.get(0).getLangCode();
-				locationDtoProvince = masterSync.findProvianceByHierarchyCode(code,langCode);
+				langCode = listOfCodes.get(0).getLangCode();
+				locationDtoProvince = masterSync.findProvianceByHierarchyCode(code, langCode);
 				province.getItems().clear();
 				province.getItems().addAll(
 						locationDtoProvince.stream().map(location -> location.getName()).collect(Collectors.toList()));
@@ -1875,8 +1857,8 @@ public class RegistrationController extends BaseController {
 			String langCode = "";
 			if (!listOfCodes.isEmpty()) {
 				code = listOfCodes.get(0).getCode();
-				langCode=listOfCodes.get(0).getLangCode();
-				locationDtoCity = masterSync.findProvianceByHierarchyCode(code,langCode);
+				langCode = listOfCodes.get(0).getLangCode();
+				locationDtoCity = masterSync.findProvianceByHierarchyCode(code, langCode);
 				city.getItems().clear();
 				city.getItems().addAll(
 						locationDtoCity.stream().map(location -> location.getName()).collect(Collectors.toList()));
@@ -1900,8 +1882,8 @@ public class RegistrationController extends BaseController {
 			String langCode = "";
 			if (!listOfCodes.isEmpty()) {
 				code = listOfCodes.get(0).getCode();
-				langCode=listOfCodes.get(0).getLangCode();
-				List<LocationDto> locationlocalAdminAuthority = masterSync.findProvianceByHierarchyCode(code,langCode);
+				langCode = listOfCodes.get(0).getLangCode();
+				List<LocationDto> locationlocalAdminAuthority = masterSync.findProvianceByHierarchyCode(code, langCode);
 				localAdminAuthority.getItems().clear();
 				localAdminAuthority.getItems().addAll(
 						locationlocalAdminAuthority.stream().map(loc -> loc.getName()).collect(Collectors.toList()));
@@ -1912,14 +1894,6 @@ public class RegistrationController extends BaseController {
 
 		}
 
-	}
-
-	private void clearAllValues() {
-		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
-				.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
-		biometricExceptionController.clearSession();
-		fingerPrintCaptureController.clearFingerPrintDTO();
-		irisCaptureController.clearIrisData();
 	}
 
 }

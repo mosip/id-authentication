@@ -19,6 +19,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -224,7 +225,9 @@ public class BiometricExceptionController extends BaseController implements Init
 				"Going to next page");
 
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-			userOnboardController.loadFingerPrint(fingerList, irisList);
+			userOnboardController.loadFingerPrint();
+			exceptionDTOCreation();
+			fingerPrintCaptureController.clearImage();
 		} else {
 			exceptionDTOCreation();
 			if (fingerList.isEmpty() && irisList.isEmpty()) {
@@ -283,8 +286,15 @@ public class BiometricExceptionController extends BaseController implements Init
 			});
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
 					biometricExceptionList);
-			((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
-					.getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
+			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				((BiometricDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
+								.setBiometricExceptionDTO(biometricExceptionList);
+			} else {
+				((RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
+								.setBiometricExceptionDTO(biometricExceptionList);
+			}
 
 		}
 

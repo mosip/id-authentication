@@ -84,6 +84,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
+	
+	@Autowired
+	private UserOnboardController userOnboardController;
 
 	/**
 	 * Mapping Registration Officer details
@@ -102,7 +105,8 @@ public class HeaderController extends BaseController {
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
-				&& (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER_HOME)) {
+				&& !(boolean) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 			homeSelectionMenu.setVisible(false);
 		} else {
 			homeSelectionMenu.setVisible(true);
@@ -173,8 +177,8 @@ public class HeaderController extends BaseController {
 	 */
 	public void onBoardUser(ActionEvent event) throws IOException {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
-		AnchorPane onBoardRoot = BaseController.load(getClass().getResource(RegistrationConstants.BIO_EXCEPTION_PAGE));
-		getScene(onBoardRoot).setRoot(onBoardRoot);
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
+		userOnboardController.initUserOnboard();
 
 		/*
 		 * if (!validateScreenAuthorization(onBoardRoot.getId())) {

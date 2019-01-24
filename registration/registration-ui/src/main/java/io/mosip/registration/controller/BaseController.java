@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Timer;
 
@@ -22,9 +23,16 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -74,6 +82,13 @@ public class BaseController {
 	@Autowired
 	private LoginService loginService;
 
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+	@Autowired
+	private BiometricExceptionController biometricExceptionController;
+	@Autowired
+	private IrisCaptureController irisCaptureController;
+
 	@Value("${USERNAME_PWD_LENGTH}")
 	private int usernamePwdLength;
 
@@ -107,12 +122,12 @@ public class BaseController {
 				applicationContext.getApplicationLanguageBundle());
 		getScene(createRoot);
 	}
-	
+
 	protected Scene getScene(Parent borderPane) {
-		
+
 		if (!borderPane.getId().equals("loginScreen")) {
 			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-			borderPane.setLayoutX((fXComponents.getStage().getWidth()-900)/2);
+			borderPane.setLayoutX((fXComponents.getStage().getWidth() - 900) / 2);
 		}
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
@@ -168,7 +183,7 @@ public class BaseController {
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
 	}
-	
+
 	/**
 	 * 
 	 * /* Alert creation with specified title, header, and context
@@ -177,7 +192,7 @@ public class BaseController {
 	 * @param header    alert header
 	 * @param context   alert context
 	 */
-	protected void generateAlert( String context) {
+	protected void generateAlert(String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setHeaderText(null);
 		alert.setContentText(context);
@@ -186,15 +201,13 @@ public class BaseController {
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.showAndWait();
 	}
-	
+
 	/**
 	 * 
 	 * /* Alert creation with specified context
 	 * 
-	 * @param alertType
-	 *            type of alert
-	 * @param context
-	 *            alert context
+	 * @param alertType type of alert
+	 * @param context   alert context
 	 */
 	protected void generateAlert(String context, String isConsolidated, StringBuilder validationMessage) {
 		if (isConsolidated.equals(RegistrationConstants.DISABLE)) {
@@ -209,8 +222,6 @@ public class BaseController {
 			validationMessage.append("* ").append(context).append(System.getProperty("line.separator"));
 		}
 	}
-	
-	
 
 	protected ResponseDTO validateSyncStatus() {
 
@@ -276,7 +287,7 @@ public class BaseController {
 	 * 
 	 */
 	public void goToHomePage() {
-		try {
+		try {			
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -317,8 +328,10 @@ public class BaseController {
 		SessionContext.getInstance().getUserContext().getUserMap()
 				.remove(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.DUPLICATE_FINGER);
+		
+		
 	}
-	
+
 	public static FXMLLoader loadChild(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
@@ -397,7 +410,11 @@ public class BaseController {
 	}
 
 	protected Image convertBytesToImage(byte[] imageBytes) {
-		return new Image(new ByteArrayInputStream(imageBytes));
+		Image image = null;
+		if(imageBytes != null) {
+			image = new Image(new ByteArrayInputStream(imageBytes));
+		}
+		return image;
 	}
 
 	protected Timer onlineAvailabilityCheck() {
@@ -428,7 +445,7 @@ public class BaseController {
 		if (password.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 			return RegistrationUIConstants.PWORD_FIELD_EMPTY;
-		}  else if (password.length() > usernamePwdLength) {
+		} else if (password.length() > usernamePwdLength) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 			return RegistrationUIConstants.PWORD_LENGTH;
 		} else {
@@ -446,7 +463,7 @@ public class BaseController {
 
 			if (validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
 				return RegistrationConstants.SUCCESS;
-			} 
+			}
 			return RegistrationConstants.FAILURE;
 		}
 	}
@@ -470,4 +487,27 @@ public class BaseController {
 		}
 	}
 
+	protected void clearAllValues() {
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+			((BiometricDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.USER_ONBOARD_DATA))
+					.setOperatorBiometricDTO(createBiometricInfoDTO());
+			biometricExceptionController.clearSession();
+		} else {
+			((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
+					.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
+			biometricExceptionController.setExceptionImage();
+			fingerPrintCaptureController.clearFingerPrintDTO();
+			irisCaptureController.clearIrisData();
+		}		
+	}
+
+	protected BiometricInfoDTO createBiometricInfoDTO() {
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		FaceDetailsDTO obj = new FaceDetailsDTO();
+		biometricInfoDTO.setFaceDetailsDTO(obj);
+		return biometricInfoDTO;
+	}
 }
