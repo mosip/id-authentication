@@ -540,14 +540,14 @@ public class RegistrationConstants {
 	public static final String POA_DOCUMENT = "POA";
 	public static final String POI_DOCUMENT = "POI";
 	public static final String POR_DOCUMENT = "POR";
-	public static final String DOB_DOCUMENT = "DOB";
+	public static final String DOB_DOCUMENT = "POB";
 
 	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	// Pre Registration
-	public static final String PRE_REGISTRATION_ID = "preId";
+	public static final String PRE_REGISTRATION_ID = "pre_registration_id";
 	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
 	public static final String REGISTRATION_CLIENT_ID = "59276903416082";
