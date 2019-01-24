@@ -301,6 +301,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			Files.delete(ackFile);
 			Files.delete(zipFile);
 			
+			/* Delete row from DB */
+			regPacketStatusDAO.delete(registration.getId());
+			
+			return registration;
+			
+			
 		}
 		 updatedRegistration = regPacketStatusDAO.update(registration);
 

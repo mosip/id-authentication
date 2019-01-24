@@ -78,4 +78,11 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	
 	}
 
+	@Override
+	public void delete(String regId) {
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Delete registration has been started");
+		registrationRepository.deleteById(regId);
+	}
+
 }
