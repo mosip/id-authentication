@@ -101,6 +101,8 @@ public class IdRepoController {
 	/**
 	 * Adds the identity.
 	 *
+	 * @param uin
+	 *            the uin
 	 * @param request
 	 *            the request
 	 * @param errors
@@ -128,13 +130,16 @@ public class IdRepoController {
 	}
 
 	/**
-	 * Retrieve identity.
-	 *
+	 * Retrieves identity
+	 * 
 	 * @param uin
 	 *            the uin
-	 * @param filter
-	 *            the filter
-	 * @return the response entity
+	 * @param type
+	 *            the type
+	 * @param request
+	 *            the request
+	 * @return the response entity 
+	 * 			the response entity
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
