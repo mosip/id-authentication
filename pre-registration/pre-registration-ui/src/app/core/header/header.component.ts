@@ -13,12 +13,6 @@ export interface Language {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  // languages: Language[] = [
-  //   { value: 'English', viewValue: 'English' },
-  //   { value: 'French', viewValue: 'French' },
-  //   { value: 'Arabic', viewValue: 'Arabic' }
-  // ];
-
   constructor(public authService: AuthService, private router: Router) {}
 
   ngOnInit() {}

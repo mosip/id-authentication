@@ -102,19 +102,23 @@
             {{ 'demographic.validation.DOB_validation' | translate }}
           </div>
 
-          <div class="user__gender">
-            {{ 'demographic.text_gender' | translate }}
-            <mat-button-toggle-group
-              formControlName="gender"
-              (change)="onGenderChange()"
-              appearance="legacy"
-              name="fontStyle"
-              aria-label="Font Style"
-            >
-              <mat-button-toggle *ngFor="let gender of primaryGender" [value]="gender.code">{{
-                gender.genderName
-              }}</mat-button-toggle>
-            </mat-button-toggle-group>
+          <div class="genderAndForeigner">
+            <div class="user__gender">
+              {{ 'demographic.text_gender' | translate }}
+              <mat-button-toggle-group
+                (change)="onGenderChange()"
+                formControlName="gender"
+                appearance="legacy"
+                name="fontStyle"
+                aria-label="Font Style"
+              >
+              
+                <mat-button-toggle *ngFor="let gender of primaryGender" [value]="gender.code">{{
+                  gender.genderName
+                }}</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+            <div class="genderAndForeigner--foreigner"><mat-checkbox>Foreigner</mat-checkbox></div>
           </div>
           <div
             class="mat-error ng-star-inserted user__gender__error"
@@ -375,14 +379,20 @@
           >
             <br />
           </div>
-
-          <div class="user__gender">
-            Gender
-            <mat-button-toggle-group appearance="legacy" aria-label="Font Style" [value]="userForm.get('gender').value">
-              <mat-button-toggle *ngFor="let gender of secondaryGender" [value]="gender.code">{{
-                gender.genderName
-              }}</mat-button-toggle>
-            </mat-button-toggle-group>
+          <div class="genderAndForeigner">
+            <div class="user__gender">
+              Gender
+              <mat-button-toggle-group
+                appearance="legacy"
+                aria-label="Font Style"
+                [value]="userForm.get('gender').value"
+              >
+                <mat-button-toggle *ngFor="let gender of secondaryGender" [value]="gender.code">{{
+                  gender.genderName
+                }}</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+            <div class="genderAndForeigner--foreigner"><mat-checkbox>Foreigner</mat-checkbox></div>
           </div>
           <div
             class="mat-error ng-star-inserted user__gender__error"
