@@ -4,6 +4,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
@@ -30,6 +33,7 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
+import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -105,6 +109,9 @@ public class DocumentScanController extends BaseController {
 	protected Button dobScanBtn;
 	@FXML
 	protected AnchorPane documentScan;
+/*	
+	@FXML
+	protected WebView pdfWebView;*/
 
 	List<BufferedImage> scannedPages;
 	
@@ -421,7 +428,7 @@ public class DocumentScanController extends BaseController {
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document);
 		documentDetailsDTO.setFormat(scannerDocType);
-		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
+		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document).concat("."+scannerDocType));
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
@@ -460,15 +467,34 @@ public class DocumentScanController extends BaseController {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
 
-		Image img = convertBytesToImage(document);
-		ImageView view = new ImageView(img);
-		Scene scene = new Scene(new StackPane(view));
-		Stage primaryStage = new Stage();
-		primaryStage.setTitle(documentName);
-		primaryStage.setScene(scene);
-		primaryStage.sizeToScene();
-		primaryStage.show();
+		if ("pdf".equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(".")+1))) {
+			HostServices hostServices = (HostServices) ApplicationContext.getInstance().getApplicationMap()
+					.get("hostServices");
+			if (hostServices != null) {
+				try {
+					File tempFile = File.createTempFile(documentName.substring(0, documentName.lastIndexOf(".")),
+							".pdf");
+					tempFile.deleteOnExit();
+					FileOutputStream fos = new FileOutputStream(tempFile);
+					fos.write(document);
+					fos.close();
+					hostServices.showDocument("file:///"+tempFile.getAbsolutePath());
+				} catch (IOException e) {
+					generateAlert(RegistrationConstants.ERROR, "Unable to Display the document");
+					return;
+				}
+			}
 
+		} else {
+			Image img = convertBytesToImage(document);
+			ImageView view = new ImageView(img);
+			Scene scene = new Scene(new StackPane(view));
+			Stage primaryStage = new Stage();
+			primaryStage.setTitle(documentName);
+			primaryStage.setScene(scene);
+			primaryStage.sizeToScene();
+			primaryStage.show();
+		}
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
 	}

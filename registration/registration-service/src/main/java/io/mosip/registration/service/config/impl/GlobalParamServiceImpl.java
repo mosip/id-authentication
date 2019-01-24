@@ -158,7 +158,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException
 				| ClassCastException | ResourceAccessException exception) {
 
-			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
+			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
 		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
