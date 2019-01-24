@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ErrorResponse;
 
 /**
  * synch handler controller advice
@@ -24,6 +25,11 @@ public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(DateParsingException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final DateParsingException e) {
 		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(DataNotFoundException.class)
+	public ResponseEntity<ErrorResponse<Error>> controlDataNotFoundException(final DataNotFoundException e) {
+		return new ResponseEntity<>(getErrorResponse(e),HttpStatus.NOT_FOUND); 
 	}
 
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
