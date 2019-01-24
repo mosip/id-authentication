@@ -655,7 +655,9 @@ public class RegistrationController extends BaseController {
 			populateFieldValue(province, provinceLocalLanguage, demo.getIdentity().getProvince());
 			populateFieldValue(city, cityLocalLanguage, demo.getIdentity().getCity());
 			populateFieldValue(gender, genderLocalLanguage, demo.getIdentity().getGender());
-			switchedOn.set((Boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.DOB_TOGGLE));
+			Boolean isSwitchedOn = (Boolean) SessionContext.getInstance().getMapObject()
+					.get(RegistrationConstants.DOB_TOGGLE);
+			switchedOn.set(isSwitchedOn == null ? false : isSwitchedOn);
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
@@ -665,9 +667,16 @@ public class RegistrationController extends BaseController {
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
 			emailIdLocalLanguage.setText(demo.getIdentity().getEmail());
 			cniOrPinNumberLocalLanguage.setText(demo.getIdentity().getCnieNumber() + "");
-			dd.setText((String) SessionContext.getInstance().getMapObject().get("dd"));
-			mm.setText((String) SessionContext.getInstance().getMapObject().get("mm"));
-			yyyy.setText((String) SessionContext.getInstance().getMapObject().get("yyyy"));
+			if (!StringUtils.isEmpty(demo.getIdentity().getDateOfBirth())) {
+				String[] dob = demo.getIdentity().getDateOfBirth().split("/");
+				dd.setText(dob[2]);
+				mm.setText(dob[1]);
+				yyyy.setText(dob[0]);
+			} else {
+				dd.setText((String) SessionContext.getInstance().getMapObject().get("dd"));
+				mm.setText((String) SessionContext.getInstance().getMapObject().get("mm"));
+				yyyy.setText((String) SessionContext.getInstance().getMapObject().get("yyyy"));
+			}
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
 					demo.getIdentity().getLocalAdministrativeAuthority());
 
