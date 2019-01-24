@@ -78,7 +78,7 @@ public class JobConfigurationServiceTest {
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
-	@Before
+	/*@Before
 	public void intiate() {
 		syncJobList = new LinkedList<>();
 		SyncJobDef syncJob = new SyncJobDef();
@@ -118,8 +118,8 @@ public class JobConfigurationServiceTest {
 
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startScheduler(applicationContext);
-		jobConfigurationService.startScheduler(applicationContext);
+//		jobConfigurationService.startScheduler(applicationContext);
+//		jobConfigurationService.startScheduler(applicationContext);
 	}
 
 	@Test
@@ -133,7 +133,7 @@ public class JobConfigurationServiceTest {
 		doNothing().when(scheduler).clear();
 		initiateJobTest();
 		//Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startScheduler(applicationContext);
+//		jobConfigurationService.startScheduler(applicationContext);
 		
 	
 	}
@@ -148,7 +148,7 @@ public class JobConfigurationServiceTest {
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
 		initiateJobTest();
 		//Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startScheduler(applicationContext);
+//		jobConfigurationService.startScheduler(applicationContext);
 		
 	
 	}
@@ -267,5 +267,5 @@ public class JobConfigurationServiceTest {
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getErrorResponseDTOs());
 
 	}
-
+*/
 }
