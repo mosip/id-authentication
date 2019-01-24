@@ -276,12 +276,7 @@ public class DemographicServiceUtil {
 					"In dateSetter method of pre-registration service- " + ex.getCause());
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
-		}catch (io.mosip.kernel.core.exception.ParseException ex) {
-			log.error("sessionId", "idType", "id",
-					"In dateSetter method of pre-registration service- " + ex.getCause());
-			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
-					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
-		} 
+		}
 		return localDateTimeMap;
 	}
 
