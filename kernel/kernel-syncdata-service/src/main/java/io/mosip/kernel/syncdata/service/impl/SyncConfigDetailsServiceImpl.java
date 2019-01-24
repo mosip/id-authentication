@@ -1,5 +1,12 @@
 package io.mosip.kernel.syncdata.service.impl;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Map.Entry;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -22,6 +29,9 @@ import net.minidev.json.JSONObject;
  */
 @Service
 public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigDetailsServiceImpl.class);
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -34,14 +44,30 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
+	@Value("${mosip.kernel.syncdata.registration-center-config-file2}")
 	private String regCenterfileName;
 
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.global-config-file}")
+	@Value("${mosip.kernel.syncdata.global-config-file2}")
 	private String globalConfigFileName;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.syncdata.service.SyncConfigDetailsService#getConfigDetails()
+	 */
+	@Override
+	public JSONObject getConfigDetails() {
+		JSONObject config = new JSONObject();
+		JSONObject globalConfig = getConfigDetailsResponse(globalConfigFileName);
+		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
+		config.put("globalConfiguration", globalConfig);
+		config.put("registrationConfiguration", regConfig);
+		return config;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -101,8 +127,13 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_INPUT_PARAMETER_EXCEPTION.getErrorMessage());
 		}
 		try {
-			result = restTemplate.getForObject(uriBuilder.toString(), JSONObject.class);
-		} catch (RestClientException e) {
+			String str = restTemplate.getForObject(uriBuilder.toString(), String.class);
+			Properties prop = parsePropertiesString(str);
+			result = new JSONObject();
+			for (Entry<Object, Object> e : prop.entrySet()) {
+				result.put(String.valueOf(e.getKey()), e.getValue());
+			}
+		} catch (RestClientException | IOException e) {
 			throw new SyncDataServiceException(
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
 					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage() + " "
@@ -112,6 +143,12 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 
 		return result;
 
+	}
+
+	public Properties parsePropertiesString(String s) throws IOException {
+		final Properties p = new Properties();
+		p.load(new StringReader(s));
+		return p;
 	}
 
 }

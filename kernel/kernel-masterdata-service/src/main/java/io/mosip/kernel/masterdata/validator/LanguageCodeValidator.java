@@ -36,8 +36,11 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Value("${mosip.kernel.syncdata-service-globalconfigs-url}")
 	private String globalconfigsUrl;
 
-	@Value("${mosip.kernel.supported-languages}")
+	@Value("${mosip.kernel.supported-languages-key}")
 	private String supportedLanguages;
+
+	@Value("${mosip.kernel.global-config-name-key}")
+	private String globalConfigName;
 
 	/*
 	 * (non-Javadoc)
@@ -51,15 +54,18 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 			return false;
 		} else {
 			try {
-				String jsonString = restTemplate.getForObject(globalconfigsUrl, String.class);
-				if (!EmptyCheckUtils.isNullEmpty(jsonString)) {
-					JSONArray jsonArray = new JSONObject(jsonString).getJSONArray(supportedLanguages);
-					for (int i = 0; i < jsonArray.length(); i++) {
-						if (langCode.equals(jsonArray.getString(i))) {
+				JSONObject globalConfig = restTemplate.getForObject(globalconfigsUrl, JSONObject.class)
+						.getJSONObject(globalConfigName);
+				if (!EmptyCheckUtils.isNullEmpty(globalConfig)) {
+					String supportedLanguage = (String) globalConfig.get(supportedLanguages);
+					String[] langArray = supportedLanguage.split(",");
+					for (String string : langArray) {
+						if (langCode.equals(string)) {
 							return true;
 						}
 					}
 				}
+
 			} catch (JSONException | RestClientException e) {
 				throw new RequestException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
 						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
