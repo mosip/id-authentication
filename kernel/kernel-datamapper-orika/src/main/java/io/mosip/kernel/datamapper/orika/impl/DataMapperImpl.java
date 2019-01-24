@@ -31,7 +31,6 @@ public class DataMapperImpl<S, D> implements DataMapper<S, D> {
 
 	public DataMapperImpl(Class<S> sourceClass, Class<D> destinationClass, boolean mapNull, boolean byDefault,
 			List<IncludeDataField> includeDataField, List<String> excludeDataField) {
-		try {
 			DefaultMapperFactory mapperFactory = MapperFactoryProvider.getMapperFactory();
 			MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
 			ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
@@ -51,10 +50,6 @@ public class DataMapperImpl<S, D> implements DataMapper<S, D> {
 				classMapBuilder.register();
 			}
 			this.mapper = mapperFactory.getMapperFacade(sourceClass, destinationClass, false);
-		} catch(Exception e) {
-			throw new DataMapperException(DataMapperErrorCodes.MAPPING_ERR.getErrorCode(),
-					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
-		}
 	}
 
 	/*

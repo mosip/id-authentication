@@ -100,6 +100,12 @@ public class MapperConfig {
 				DestinationModel.class).mapNulls(true).build();
 	}
 	
+	@Bean(name = "sourceModelToDestinationModelMapper3")
+	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper3() {
+		List<IncludeDataField> includeField = Arrays.asList(new IncludeDataField("name", "name", true));
+		return new DataMapperBuilderImpl<>(SourceModel.class, DestinationModel.class).includeFields(includeField).byDefault(false).build();
+	}
+	
 	@Bean(name = "personneToPersonMapper")
 	DataMapper<Personne, Person> personneToPersonMapper() {
 		List<String> excludeField = Arrays.asList("nom");

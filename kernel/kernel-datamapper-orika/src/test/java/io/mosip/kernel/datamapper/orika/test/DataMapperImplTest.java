@@ -88,6 +88,10 @@ public class DataMapperImplTest {
 	@Autowired
 	DataMapper<List<Person>, List<Personne>> personListToPersonneListMapper;
 	
+	@Qualifier("sourceModelToDestinationModelMapper3")
+	@Autowired
+	DataMapper<SourceModel, DestinationModel> sourceModelToDestinationModelMapper3;
+	
 	@Test
 	public void personConverterListTest() {
 		PersonListConverter personListConverter = new PersonListConverter();
@@ -110,6 +114,17 @@ public class DataMapperImplTest {
 		personList.add(person);
 		List<Personne> personneList = new ArrayList<Personne>();
 		personListToPersonneListMapper.map(personList, personneList, null);
+	}
+	
+	@Test(expected = DataMapperException.class)
+	public void personConverterListFailureMappingTest() {
+		PersonListConverter personListConverter = new PersonListConverter();
+		Person person = new Person();
+		LocalDate dob = LocalDate.of(1994, Month.JANUARY, 1);
+		person.setDob(dob);
+		List<Person> personList = new ArrayList<>();
+		personList.add(person);
+		personListToPersonneListMapper.map(personList, null, personListConverter);
 	}
 	
 	@Test
@@ -149,13 +164,34 @@ public class DataMapperImplTest {
 	}
 
 	@Test
-	public void givenSrcWithNullField_whenMapsThenCorrect() {
+	public void givenSrcWithNullField_whenMapsThenSuccess() {
 
 		SourceModel src = new SourceModel(null, 10);
+		DestinationModel dest = sourceModelToDestinationModelMapper2.map(src);
+
+		assertEquals(src.getAge(), dest.getAge());
+		assertEquals(src.getName(), dest.getName());
+	}
+	
+	@Test
+	public void givenSrcWithNullField_whenMapsThenCorrect() {
+
+		SourceModel src = new SourceModel("Me", 10);
 		DestinationModel dest = sourceModelToDestinationModelMapper.map(src);
 
 		assertEquals(src.getAge(), dest.getAge());
 		assertEquals(src.getName(), dest.getName());
+	}
+	
+	@Test
+	public void givenSrcWithNullField_whenMapsByDefaultFalseThenCorrect() {
+
+		SourceModel src = new SourceModel("Abc", 10);
+		DestinationModel dest = new DestinationModel("Efg", 0);
+		sourceModelToDestinationModelMapper3.map(src, dest);
+
+		assertEquals(src.getName(), dest.getName());
+		assertEquals(10, dest.getAge());
 	}
 
 	@Test
