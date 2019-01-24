@@ -71,16 +71,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		if (uinValue != null && uin.equals(uinValue)) {
 
 			status = staticPinService.storeSpin(staticPinRequestDTO, uinValue);
-
-			// catch(IdAuthenticationBusinessException e)
-			// {
-			// List<AuthError> authError=new ArrayList<>();
-			// AuthError err=new AuthError();
-			// err.setErrorCode(e.getErrorCode());
-			// err.setErrorMessage(e.getErrorText());
-			// authError.add(err);
-			// staticPinResponseDTO.setErr(authError);
-			// }
+			
 		}
 		staticPinResponseDTO.setId(staticPinRequestDTO.getId());
 		staticPinResponseDTO.setVer(staticPinRequestDTO.getVer());
@@ -95,15 +86,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		if (status) {
 			staticPinResponseDTO.setStatus(SUCCESS);
 			staticPinResponseDTO.setErr(Collections.emptyList());
-		} else {
-			staticPinResponseDTO.setStatus(FAILED);
-			List<AuthError> authError = new ArrayList<>();
-			AuthError err = new AuthError();
-			err.setErrorCode(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE.getErrorCode());
-			err.setErrorMessage(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE.getErrorMessage());
-			authError.add(err);
-			staticPinResponseDTO.setErr(authError);
-		}
+		} 
 
 		return staticPinResponseDTO;
 	}

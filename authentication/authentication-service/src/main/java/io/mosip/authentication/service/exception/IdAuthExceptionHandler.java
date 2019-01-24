@@ -182,6 +182,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		while (e.getCause() != null) {
 			if (e.getCause() instanceof BaseCheckedException) {
 				e = e.getCause();
+			} else {
+				break;
 			}
 		}
 		if (e instanceof IDDataValidationException) {

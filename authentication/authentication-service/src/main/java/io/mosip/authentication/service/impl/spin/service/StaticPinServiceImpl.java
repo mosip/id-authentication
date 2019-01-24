@@ -3,10 +3,8 @@ package io.mosip.authentication.service.impl.spin.service;
 import java.util.Date;
 import java.util.Optional;
 
-import org.hibernate.HibernateException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -23,6 +21,7 @@ import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
+ * This Class will provide service for storing the Static Pin.
  * 
  * @author Prem Kumar
  *
@@ -50,60 +49,54 @@ public class StaticPinServiceImpl implements StaticPinService {
 	@Override
 	public boolean storeSpin(StaticPinRequestDTO staticPinRequestDTO, String uinValue)
 			throws IdAuthenticationBusinessException {
-		boolean status = false;
-		StaticPinEntity staticPinEntity = new StaticPinEntity();
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinEntity.setUin(uinValue);
-		String pinValue = staticPinRequestDTO.getRequest().getPinValue();
-		staticPinEntity.setPin(pinValue);
-		staticPinEntity.setCorrectedBy(IDA);
-		staticPinEntity.setCorrectedDate(new Date());
-		staticPinEntity.setCorrectedDate(new Date());
-		staticPinEntity.setUpdatedBy(IDA);
-		// FIXME utilize Instant
-		Date convertStringToDate = null;
 		try {
+			boolean status = false;
+			StaticPinEntity staticPinEntity = new StaticPinEntity();
+			StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
+			staticPinEntity.setUin(uinValue);
+			String pinValue = staticPinRequestDTO.getRequest().getPinValue();
+			staticPinEntity.setPin(pinValue);
+			staticPinEntity.setCorrectedBy(IDA);
+			staticPinEntity.setCorrectedDate(new Date());
+			staticPinEntity.setCorrectedDate(new Date());
+			staticPinEntity.setUpdatedBy(IDA);
+			Date convertStringToDate = null;
 			convertStringToDate = dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime());
+			staticPinEntity.setUpdatedOn(convertStringToDate);
+			staticPinEntity.setGeneratedOn(convertStringToDate);
+			staticPinEntity.setActive(true);
+			staticPinEntity.setDeleted(false);
+			staticPinHistoryEntity.setUin(uinValue);
+			staticPinHistoryEntity.setPin(pinValue);
+			staticPinHistoryEntity.setCorrectedBy(IDA);
+			staticPinHistoryEntity.setCorrectedDate(new Date());
+			staticPinHistoryEntity.setGeneratedOn(convertStringToDate);
+			staticPinHistoryEntity.setEffectiveDate(new Date());
+			staticPinHistoryEntity.setActive(true);
+			staticPinHistoryEntity.setDeleted(false);
+			staticPinHistoryEntity.setUpdatedBy(IDA);
+			staticPinHistoryEntity.setUpdatedOn(new Date());
+			Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
+			if (!entityValues.isPresent()) {
+				 staticPinRepo.save(staticPinEntity);
+				status = Boolean.TRUE;
+
+			} else {
+				entityValues.get().setPin(pinValue);
+				entityValues.get().setUpdatedOn(new Date());
+				entityValues.get().setUpdatedBy(IDA);
+				staticPinRepo.update(entityValues.get());
+				status = Boolean.TRUE;
+			}
+			staticPinHistoryRepo.save(staticPinHistoryEntity);
+			return status;
 		} catch (IDDataValidationException e) {
 			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
 					e);
+		} catch (DataAccessException e) {
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
 		}
-		staticPinEntity.setUpdatedOn(convertStringToDate);
-		staticPinEntity.setGeneratedOn(convertStringToDate);
-		staticPinEntity.setActive(true);
-		staticPinEntity.setDeleted(false);
-		staticPinHistoryEntity.setUin(uinValue);
-		staticPinHistoryEntity.setPin(pinValue);
-		staticPinHistoryEntity.setCorrectedBy(IDA);
-		staticPinHistoryEntity.setCorrectedDate(new Date());
-		staticPinHistoryEntity.setGeneratedOn(convertStringToDate);
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
-		if (!entityValues.isPresent()) {
-			try {
-				staticPinRepo.saveAndFlush(staticPinEntity);
-				status = Boolean.TRUE;
-			} catch (RuntimeException e) {
-				logger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE,
-						e);
-			}
-
-		} else {
-
-			entityValues.get().setPin(pinValue);
-			entityValues.get().setUpdatedOn(new Date());
-			entityValues.get().setUpdatedBy(IDA);
-			staticPinRepo.update(entityValues.get());
-			status = Boolean.TRUE;
-		}
-		staticPinHistoryRepo.save(staticPinHistoryEntity);
-		return status;
 	}
-
 }
