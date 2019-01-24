@@ -101,7 +101,8 @@ public class HeaderController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
+				&& (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER_HOME)) {
 			homeSelectionMenu.setVisible(false);
 		} else {
 			homeSelectionMenu.setVisible(true);
