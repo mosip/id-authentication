@@ -22,4 +22,5 @@ public interface ProcessedPreIdRepository extends BaseRepository<ProcessedPreReg
 	
 	List<ProcessedPreRegEntity> findBystatusComments(@Param("statusComment") String statusComment);
 	
+	ProcessedPreRegEntity findBypreRegistrationId(String preRegId);
 }

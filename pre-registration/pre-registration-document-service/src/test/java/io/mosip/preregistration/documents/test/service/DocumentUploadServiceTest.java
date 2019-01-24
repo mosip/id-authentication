@@ -36,6 +36,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentCopyResponseDTO;
 import io.mosip.preregistration.documents.dto.DocumentDeleteResponseDTO;
@@ -48,6 +49,7 @@ import io.mosip.preregistration.documents.exception.DocumentFailedToUploadExcept
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
+import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.DocumentService;
@@ -61,11 +63,11 @@ public class DocumentUploadServiceTest {
 	@Autowired
 	private DocumentService documentUploadService;
 
-	@Autowired
+	@Mock
 	private DocumentServiceUtil serviceUtil;
-	
+
 	@MockBean
-	RestTemplateBuilder restTemplateBuilder; 
+	RestTemplateBuilder restTemplateBuilder;
 
 	@MockBean
 	private FileSystemAdapter<InputStream, Boolean> ceph;
@@ -75,7 +77,7 @@ public class DocumentUploadServiceTest {
 	@MockBean
 	private DocumentRepository documentRepository;
 
-	@Mock
+	@MockBean
 	private VirusScanner<Boolean, String> virusScan;
 
 	private MockMultipartFile mockMultipartFile;
@@ -106,28 +108,34 @@ public class DocumentUploadServiceTest {
 	@Before
 	public void setUp() throws URISyntaxException, FileNotFoundException, IOException {
 
-		/*docJson = "{\r\n" + "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
-				+ "	\"reqTime\": \"2018-12-22T08:28:23.057Z\",\r\n" + "	\"request\": {\r\n"
-				+ "		\"prereg_id\": \"48690172097498\",\r\n" + "		\"doc_cat_code\": \"POA\",\r\n"
-				+ "		\"doc_typ_code\": \"address\",\r\n" + "		\"doc_file_format\": \"pdf\",\r\n"
-				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "		\"upd_by\": \"9217148168\",\r\n"
-				+ "		\"upload_DateTime\": \"2018-12-22T08:28:23.057Z\"\r\n" + "	}\r\n" + "}";
-*/
-		
+		/*
+		 * docJson = "{\r\n" +
+		 * "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" +
+		 * "	\"ver\": \"1.0\",\r\n" +
+		 * "	\"reqTime\": \"2018-12-22T08:28:23.057Z\",\r\n" + "	\"request\": {\r\n"
+		 * + "		\"prereg_id\": \"48690172097498\",\r\n" +
+		 * "		\"doc_cat_code\": \"POA\",\r\n" +
+		 * "		\"doc_typ_code\": \"address\",\r\n" +
+		 * "		\"doc_file_format\": \"pdf\",\r\n" +
+		 * "		\"status_code\": \"Pending-Appoinment\",\r\n" +
+		 * "		\"upd_by\": \"9217148168\",\r\n" +
+		 * "		\"upload_DateTime\": \"2018-12-22T08:28:23.057Z\"\r\n" + "	}\r\n" +
+		 * "}";
+		 */
+
 		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
 				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
 				+ ": \"POA\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\","
 				+ "\"doc_file_format\" : \"pdf\",\"status_code\" : \"Pending-Appoinment\","
-				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}" ;
- 
+				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}";
 
 		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"ver\" : \"1.0\","
 				+ "\"reqTime\" : \"2018-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
 				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\","
 				+ "\"doc_file_format\" : \"pdf\",\"status_code\" : \"Pending-Appoinment\","
-				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}" ;
+				+ "\"upload_by\" : \"9900806086\",\"upload_date_time\" : \"2018-12-28T05:23:08.019Z\"}}";
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -160,9 +168,9 @@ public class DocumentUploadServiceTest {
 				"ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
 				DateUtils.parseDateToLocalDateTime(new Date()));
 
-		copyEntity = new DocumentEntity("2", "48690172097499", "Doc.pdf", "address", "POA", "PDF", "Pending_Appointment",
-				"ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
-				DateUtils.parseDateToLocalDateTime(new Date()));
+		copyEntity = new DocumentEntity("2", "48690172097499", "Doc.pdf", "address", "POA", "PDF",
+				"Pending_Appointment", "ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()),
+				"Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()));
 
 		map.put("DocumentId", "1");
 		map.put("Status", "Pending_Appointment");
@@ -176,7 +184,7 @@ public class DocumentUploadServiceTest {
 	@Test
 	public void uploadDocumentSuccessTest() throws IOException {
 		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
-		MainListResponseDTO restRes= new MainListResponseDTO<>();
+		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		docResp.setResMsg(DocumentStatusMessages.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
 		responseUploadList.add(docResp);
 		responseUpload.setResponse(responseUploadList);
@@ -195,19 +203,17 @@ public class DocumentUploadServiceTest {
 		assertEquals(responseDto.getResponse().get(0).getResMsg(), responseUpload.getResponse().get(0).getResMsg());
 	}
 
-	@Test(expected = MandatoryFieldNotFoundException.class)
-	public void mandatoryFeildNotPresentTesst() throws IOException {
+	@Test(expected = InvalidRequestParameterException.class)
+	public void mandatoryFeildNotPresentTest() throws IOException {
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
 		documentUploadService.uploadDoucment(mockMultipartFile, errJson);
 	}
 
-	/*
-	 * @Test(expected = DocumentVirusScanException.class) public void
-	 * uploadDocumentVirusScanFailureTest() throws Exception {
-	 * Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn
-	 * (false); documentUploadService.uploadDoucment(mockMultipartFile,
-	 * documentDto); }
-	 */
+//	@Test(expected = DocumentVirusScanException.class)
+//	public void uploadDocumentVirusScanFailureTest() throws Exception {
+//		Mockito.when(virusScan.scanDocument(mockMultipartFileSizeCheck.getBytes())).thenReturn(false);
+//		documentUploadService.uploadDoucment(mockMultipartFile, docJson);
+//	}
 
 	@Test(expected = DocumentSizeExceedException.class)
 	public void uploadDocumentSizeFailurTest() throws IOException {
@@ -223,7 +229,7 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = DocumentFailedToUploadException.class)
 	public void uploadDocumentRepoFailurTest() throws IOException {
-		MainListResponseDTO restRes= new MainListResponseDTO<>();
+		MainListResponseDTO restRes = new MainListResponseDTO<>();
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		restRes.setStatus(true);
@@ -253,7 +259,8 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(copyEntity);
-		Mockito.doReturn(true).when(ceph).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),Mockito.anyString());
+		Mockito.doReturn(true).when(ceph).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString());
 		MainListResponseDTO<DocumentCopyResponseDTO> responseDto = documentUploadService.copyDoucment("POA",
 				"48690172097498", "48690172097499");
 		assertEquals(responseDto.getResponse().get(0).getDestDocumnetId(),
@@ -372,7 +379,8 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = DocumentFailedToDeleteException.class)
 	public void deleteFailureTest() {
-		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
+		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString()))
+				.thenThrow(DataAccessLayerException.class);
 		documentUploadService.deleteDocument("1");
 	}
 

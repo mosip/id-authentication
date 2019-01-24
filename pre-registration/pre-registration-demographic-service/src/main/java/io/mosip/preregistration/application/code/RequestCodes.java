@@ -78,5 +78,11 @@ public enum RequestCodes {
 	fromDate,
 
 	/* to date */
-	toDate;
+	toDate,
+	
+	/* save*/
+	Save,
+	
+	/* update */
+	Update;
 }

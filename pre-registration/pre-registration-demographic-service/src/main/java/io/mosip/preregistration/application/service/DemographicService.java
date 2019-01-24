@@ -131,6 +131,12 @@ public class DemographicService {
 	private String appointmentResourseUrl;
 
 	/**
+	 * Reference for ${schemaName} from property file
+	 */
+	@Value("${schemaName}")
+	private String schemaName;
+
+	/**
 	 * Response status
 	 */
 	protected String trueStatus = "true";
@@ -170,7 +176,7 @@ public class DemographicService {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestParamMap(demographicRequest),
 					requiredRequestMap)) {
 				jsonValidator.validateJson(demographicRequest.getRequest().getDemographicDetails().toJSONString(),
-						"mosip-prereg-identity-json-schema.json");
+						schemaName);
 				return createOrUpdate(demographicRequest.getRequest(), demographicRequest.getId());
 			}
 		} catch (Exception ex) {
@@ -377,29 +383,41 @@ public class DemographicService {
 			requestParamMap.put(RequestCodes.statusCode.toString(), status);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
-				if (demographicEntity != null) {
-					if (serviceUtil.isStatusValid(status)) {
-						demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
-						//System.out.println("@@@ "+StatusCodes.valueOf(status).toString());
-						demographicRepository.update(demographicEntity);
-						response.setResponse("STATUS_UPDATED_SUCESSFULLY");
-						response.setResTime(new Timestamp(System.currentTimeMillis()));
-						response.setStatus("true");
-					} else {
-						throw new RecordFailedToUpdateException(ErrorCodes.PRG_PAM_APP_005.name(),
-								ErrorMessages.INVALID_STATUS_CODE.name());
-					}
-				} else {
-					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
-							ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
-				}
+				statusCheck(demographicEntity, status);
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In updatePreRegistrationStatus method of pre-registration service- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex);
 		}
+		response.setResponse("STATUS_UPDATED_SUCESSFULLY");
+		response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setStatus("true");
 		return response;
+	}
+
+	/**
+	 * This method will check the status before updating.
+	 * 
+	 * @param demographicEntity
+	 *            pass demographicEntity
+	 * @param status
+	 *            pass status
+	 */
+	public void statusCheck(DemographicEntity demographicEntity, String status) {
+		if (demographicEntity != null) {
+			if (serviceUtil.isStatusValid(status)) {
+				demographicEntity.setStatusCode(StatusCodes.valueOf(status.toUpperCase()).getCode());
+				demographicRepository.update(demographicEntity);
+
+			} else {
+				throw new RecordFailedToUpdateException(ErrorCodes.PRG_PAM_APP_005.name(),
+						ErrorMessages.INVALID_STATUS_CODE.name());
+			}
+		} else {
+			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
+					ErrorMessages.INVALID_PRE_REGISTRATION_ID.name());
+		}
 	}
 
 	/**
@@ -416,7 +434,7 @@ public class DemographicService {
 	public MainListResponseDTO<String> getPreRegistrationByDate(String fromDate, String toDate) {
 		log.info("sessionId", "idType", "id", "In getPreRegistrationByDate method of pre-registration service ");
 		MainListResponseDTO<String> response = new MainListResponseDTO<>();
-		List<String> preIds = new ArrayList<>();
+
 		Map<String, String> reqDateRange = new HashMap<>();
 		Map<String, String> inputDateRange = new HashMap<>();
 		try {
@@ -432,15 +450,7 @@ public class DemographicService {
 				List<DemographicEntity> details = demographicRepository.findBycreateDateTimeBetween(
 						reqTimeStamp.get(RequestCodes.fromDate.toString()),
 						reqTimeStamp.get(RequestCodes.toDate.toString()));
-				if (details != null && !details.isEmpty()) {
-					for (DemographicEntity entity : details) {
-						preIds.add(entity.getPreRegistrationId());
-					}
-				} else {
-					throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.toString(),
-							ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE.toString());
-				}
-				response.setResponse(preIds);
+				response.setResponse(getPreRegistrationByDateEntityCheck(details));
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -451,6 +461,26 @@ public class DemographicService {
 		response.setStatus(Boolean.TRUE);
 		response.setErr(null);
 		return response;
+	}
+
+	/**
+	 * This method will iterate the list of demographicEntity and add pre-ids to list of string
+	 * 
+	 * @param demographicEntityList
+	 *                   pass demographicEntityList
+	 * @return List of pre-ids
+	 */
+	public List<String> getPreRegistrationByDateEntityCheck(List<DemographicEntity> demographicEntityList) {
+		List<String> preIds = new ArrayList<>();
+		if (demographicEntityList != null && !demographicEntityList.isEmpty()) {
+			for (DemographicEntity entity : demographicEntityList) {
+				preIds.add(entity.getPreRegistrationId());
+			}
+		} else {
+			throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.toString(),
+					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE.toString());
+		}
+		return preIds;
 	}
 
 	/**
@@ -503,15 +533,15 @@ public class DemographicService {
 		DemographicEntity demographicEntity;
 		if (serviceUtil.isNull(demographicRequest.getPreRegistrationId())) {
 			demographicRequest.setPreRegistrationId(pridGenerator.generateId());
-			demographicEntity = demographicRepository
-					.save(serviceUtil.prepareDemographicEntity(demographicRequest, requestId, "save"));
+			demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
+					requestId, RequestCodes.Save.toString(), StatusCodes.PENDING_APPOINTMENT.getCode()));
 		} else {
 			demographicEntity = demographicRepository
 					.findBypreRegistrationId(demographicRequest.getPreRegistrationId());
 			if (!serviceUtil.isNull(demographicEntity)) {
 				demographicRepository.deleteByPreRegistrationId(demographicRequest.getPreRegistrationId());
-				demographicEntity = demographicRepository
-						.save(serviceUtil.prepareDemographicEntity(demographicRequest, requestId, "update"));
+				demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
+						requestId, RequestCodes.Update.toString(), demographicEntity.getStatusCode()));
 			} else {
 				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());
