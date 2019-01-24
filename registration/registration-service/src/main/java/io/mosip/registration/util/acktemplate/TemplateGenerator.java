@@ -5,10 +5,13 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -29,6 +32,8 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -97,8 +102,12 @@ public class TemplateGenerator extends BaseService {
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			ResourceBundle applicationLanguageProperties = applicationContext.getApplicationLanguageBundle();
 
-			InputStream is = new ByteArrayInputStream(templateText.getBytes());
-			Map<String, Object> templateValues = new HashMap<>();
+			Reader templateReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
+
+			VelocityContext templateValues = new VelocityContext();
+			
+	//		InputStream is = new ByteArrayInputStream(templateText.getBytes());
+//			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
 			String platformLanguageCode = MappedCodeForLanguage
@@ -153,6 +162,10 @@ public class TemplateGenerator extends BaseService {
 					applicationLanguageProperties.getString("exceptionphoto"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINT_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("fingerprint"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("parentName"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("parentUIN"));
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
@@ -216,7 +229,7 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
 						localProperties.getString("parentName"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("uinId"));
+						localProperties.getString("parentUIN"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getParentOrGuardianName(), localLanguageCode));
@@ -376,7 +389,7 @@ public class TemplateGenerator extends BaseService {
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
-					localProperties.getString("fullName"));
+					"الوالد / الجارديان");
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
@@ -455,18 +468,19 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("biometrics_captured"));
 
 			Writer writer = new StringWriter();
-			try {
-				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
-
-				TemplateManager templateManager = templateManagerBuilder.build();
-				InputStream inputStream = templateManager.merge(is, templateValues);
-				String defaultEncoding = null;
-				IOUtils.copy(inputStream, writer, defaultEncoding);
-			} catch (IOException ioException) {
-				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-			}
+			Velocity.evaluate(templateValues, writer, "Acknowledgement Template", templateReader);
+//			try {
+//				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+//						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
+//
+//				TemplateManager templateManager = templateManagerBuilder.build();
+//				InputStream inputStream = templateManager.merge(is, templateValues);
+//				String defaultEncoding = null;
+//				IOUtils.copy(inputStream, writer, defaultEncoding);
+//			} catch (IOException ioException) {
+//				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+//				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+//			}
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
 
