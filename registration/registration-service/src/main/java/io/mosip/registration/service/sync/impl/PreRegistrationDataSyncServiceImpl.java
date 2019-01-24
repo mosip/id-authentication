@@ -467,7 +467,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				/* Get File to be deleted from pre registartion */
 				File preRegPacket = new File(preRegRecord.getPacketPath());
-				System.out.println(preRegPacket.exists() +"  "+preRegPacket.delete());
 				if (preRegPacket.exists() && preRegPacket.delete()) {
 					preRegistartionsToBeDeletedList.add(preRegRecord);
 				}

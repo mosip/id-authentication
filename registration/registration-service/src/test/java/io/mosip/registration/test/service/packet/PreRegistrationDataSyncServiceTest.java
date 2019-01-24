@@ -80,9 +80,7 @@ public class PreRegistrationDataSyncServiceTest {
 
 	static byte[] preRegPacket;
 	
-	@Mock
-	File file;
-
+	
 	static Map<String, Object> preRegData = new HashMap<>();
 
 	@BeforeClass
@@ -203,8 +201,6 @@ public class PreRegistrationDataSyncServiceTest {
 		
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
 		Mockito.doNothing().when(preRegistrationDAO).deleteAll(Mockito.anyList());
-		Mockito.when(file.exists()).thenReturn(true);
-		Mockito.when(file.delete()).thenReturn(true);
 		assertEquals(null, preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords().getErrorResponseDTOs());
 	}
 
