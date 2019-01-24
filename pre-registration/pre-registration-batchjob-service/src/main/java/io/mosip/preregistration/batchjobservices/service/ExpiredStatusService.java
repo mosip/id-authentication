@@ -40,20 +40,12 @@ public class ExpiredStatusService {
 	private static final String LOGDISPLAY = "{} - {}";
 
 	@Autowired
-	@Qualifier("regAppointmentRepository")
-	private RegAppointmentRepository regAppointmentRepository;
-
-	@Autowired
-	@Qualifier("demographicRepository")
-	private DemographicRepository demographicRepository;
-
-	@Autowired
 	private BatchServiceDAO batchServiceDAO;
 
 	/**
 	 * @return Response dto
 	 */
-	public MainResponseDTO<String> bookedPreIds() {
+	public MainResponseDTO<String> expireAppointments() {
 
 		LocalDate currentDate = LocalDate.now();
 		MainResponseDTO<String> response = new MainResponseDTO<>();
@@ -67,12 +59,13 @@ public class ExpiredStatusService {
 				String preRegId = iterate.getBookingPK().getPreregistrationId();
 				if (status.equals(StatusCodes.BOOKED.getCode()) || status.equals(StatusCodes.CANCELED.getCode())) {
 
-					RegistrationBookingEntity entity = batchServiceDAO.gerPreRegId(preRegId);
-					ApplicantDemographic demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
+					RegistrationBookingEntity entity = batchServiceDAO.getPreRegId(preRegId);
 					entity.setStatusCode(StatusCodes.EXPIRED.getCode());
+					batchServiceDAO.updateBooking(entity);
+					
+					ApplicantDemographic demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
 					demographicEntity.setStatusCode(StatusCodes.EXPIRED.getCode());
-					regAppointmentRepository.save(entity);
-					demographicRepository.save(demographicEntity);
+					batchServiceDAO.updateApplicantDemographic(demographicEntity);
 
 					LOGGER.info(LOGDISPLAY,
 							"Update the status successfully into Registration Appointment table and Demographic table");

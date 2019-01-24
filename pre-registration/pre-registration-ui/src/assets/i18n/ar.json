@@ -2,7 +2,9 @@
   "header": {
     "link_about": "معلومات عنا",
     "link_faq": "FAQ",
-    "link_contact": "اتصل"
+    "link_contact": "اتصل",
+    "link_applications": "تطبيقاتك",
+    "link_logout": "الخروج"
   },
   "login": {
     "text": "خطوات سريعة وسهلة",
@@ -181,7 +183,7 @@
     "action_discard_app": "تجاهل التطبيق بأكمله",
     "action_cancel": "إلغاء الموعد وحفظ التفاصيل",
     "action_submit": "خضع",
-    "action_dismiss": "رفض",
+    "action_dismiss": "حسنا",
     "action_add": "إضافة",
     "action_close": "قريب",
     "action_add_to_slot": "أضف إلى الفتحة"

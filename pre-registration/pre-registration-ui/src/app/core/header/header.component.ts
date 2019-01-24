@@ -37,4 +37,13 @@ export class HeaderComponent implements OnInit {
     }
     this.router.navigate([homeURL]);
   }
+
+  removeToken() {
+    localStorage.setItem('loggedIn', 'false');
+  }
+
+  doLogout() {
+    localStorage.setItem('loggedIn', 'false');
+    this.router.navigate(['/']);
+  }
 }

@@ -25,24 +25,20 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: preRegId
+        - name: preRegistartionId
           in: query
-          description: preRegId
+          description: preRegistartionId
           required: true
           type: string
       responses:
         '200':
           description: Demographic data successfully retrieved
           schema:
-            $ref: '#/definitions/MainListResponseDTO«CreateDemographicDTO»'
-        '400':
-          description: Unable to get the demographic data
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: '#/definitions/ResponseDTO«CreateDemographicDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
   /v0.1/pre-registration/applicationDataByDateTime:
     get:
@@ -67,15 +63,11 @@ paths:
         '200':
           description: Demographic data successfully retrieved
           schema:
-            $ref: '#/definitions/MainListResponseDTO«string»'
-        '400':
-          description: Unable to get the Pre-Registration data
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: '#/definitions/ResponseDTO«string»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
   /v0.1/pre-registration/applicationStatus:
     get:
@@ -86,24 +78,20 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: preId
+        - name: preRegistartionId
           in: query
-          description: preId
+          description: preRegistartionId
           required: true
           type: string
       responses:
         '200':
           description: All applications status fetched successfully
           schema:
-            $ref: '#/definitions/MainListResponseDTO«PreRegistartionStatusDTO»'
-        '400':
-          description: 'Unable to fetch application status '
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: '#/definitions/ResponseDTO«PreRegistartionStatusDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
   /v0.1/pre-registration/applications:
     get:
@@ -123,15 +111,11 @@ paths:
         '200':
           description: All applications fetched successfully
           schema:
-            $ref: '#/definitions/MainListResponseDTO«PreRegistrationViewDTO»'
-        '400':
-          description: 'Unable to fetch applications '
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: '#/definitions/ResponseDTO«PreRegistrationViewDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
     post:
       tags:
@@ -148,22 +132,16 @@ paths:
           description: jsonObject
           required: true
           schema:
-            $ref: '#/definitions/MainRequestDTO«CreateDemographicDTO»'
+            $ref: '#/definitions/RequestDTO«CreateDemographicDTO»'
       responses:
         '200':
           description: Demographic data successfully Created
           schema:
-            $ref: '#/definitions/MainListResponseDTO«CreateDemographicDTO»'
-        '201':
-          description: Created
-        '400':
-          description: Unable to create the demographic data
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: '#/definitions/ResponseDTO«CreateDemographicDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
     put:
       tags:
@@ -175,9 +153,9 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: preRegId
+        - name: preRegistartionId
           in: query
-          description: preRegId
+          description: preRegistartionId
           required: true
           type: string
         - name: status
@@ -189,17 +167,11 @@ paths:
         '200':
           description: Pre-Registration Status successfully updated
           schema:
-            $ref: '#/definitions/UpdateResponseDTO«string»'
-        '201':
-          description: Created
-        '400':
-          description: Unable to update the Pre-Registration
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+            $ref: '#/definitions/ResponseDTO«string»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
     delete:
       tags:
@@ -209,24 +181,16 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: preId
+        - name: preRegistartionId
           in: query
-          description: preId
+          description: preRegistartionId
           required: true
           type: string
       responses:
         '200':
           description: Deletion of individual is successfully
           schema:
-            $ref: '#/definitions/MainListResponseDTO«DeletePreRegistartionDTO»'
-        '204':
-          description: No Content
-        '400':
-          description: Unable to delete individual
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
+            $ref: '#/definitions/ResponseDTO«DeletePreRegistartionDTO»'
       deprecated: false
 definitions:
   BookingRegistrationDTO:
@@ -262,7 +226,7 @@ definitions:
         type: string
       updatedDateTime:
         type: string
-    title: CreateDemographicDTO
+    title: CreateDemographicDTO  
   DeletePreRegistartionDTO:
     type: object
     properties:
@@ -274,105 +238,71 @@ definitions:
       prId:
         type: string
     title: DeletePreRegistartionDTO
-  ExceptionJSONInfoDTO:
+  ErrorObject:
     type: object
     properties:
       errorCode:
         type: string
-      message:
+      errorMessage:
         type: string
-    title: ExceptionJSONInfoDTO
-  MainListResponseDTO«CreateDemographicDTO»:
+    title: ErrorObject
+  ServiceErrors:
     type: object
     properties:
-      err:
-        description: error details
-        $ref: '#/definitions/ExceptionJSONInfoDTO'
       status:
-        type: boolean
-        description: status
-      resTime:
-        type: string
-        description: response time
+        type:number
+      errors:
+        type:array
+        description: error response
+        items:
+          $ref: '#/definitions/ErrorObject'
+    title: ServiceErrors«ErrorObject»
+  ResponseDTO«CreateDemographicDTO»:
+    type: object
+    properties:
       response:
         type: array
         description: response
         items:
           $ref: '#/definitions/CreateDemographicDTO'
-    title: MainListResponseDTO«CreateDemographicDTO»
-  MainListResponseDTO«DeletePreRegistartionDTO»:
+    title: ResponseDTO«CreateDemographicDTO»
+  ResponseDTO«DeletePreRegistartionDTO»:
     type: object
     properties:
-      err:
-        description: error details
-        $ref: '#/definitions/ExceptionJSONInfoDTO'
-      status:
-        type: boolean
-        description: status
-      resTime:
-        type: string
-        description: response time
       response:
         type: array
         description: response
         items:
           $ref: '#/definitions/DeletePreRegistartionDTO'
-    title: MainListResponseDTO«DeletePreRegistartionDTO»
-  MainListResponseDTO«PreRegistartionStatusDTO»:
+    title: ResponseDTO«DeletePreRegistartionDTO»
+  ResponseDTO«PreRegistartionStatusDTO»:
     type: object
     properties:
-      err:
-        description: error details
-        $ref: '#/definitions/ExceptionJSONInfoDTO'
-      status:
-        type: boolean
-        description: status
-      resTime:
-        type: string
-        description: response time
       response:
         type: array
         description: response
         items:
           $ref: '#/definitions/PreRegistartionStatusDTO'
-    title: MainListResponseDTO«PreRegistartionStatusDTO»
-  MainListResponseDTO«PreRegistrationViewDTO»:
+    title: ResponseDTO«PreRegistartionStatusDTO»
+  ResponseDTO«PreRegistrationViewDTO»:
     type: object
     properties:
-      err:
-        description: error details
-        $ref: '#/definitions/ExceptionJSONInfoDTO'
-      status:
-        type: boolean
-        description: status
-      resTime:
-        type: string
-        description: response time
       response:
         type: array
         description: response
         items:
           $ref: '#/definitions/PreRegistrationViewDTO'
-    title: MainListResponseDTO«PreRegistrationViewDTO»
-  MainListResponseDTO«string»:
+    title: ResponseDTO«PreRegistrationViewDTO»
+  ResponseDTO«string»:
     type: object
     properties:
-      err:
-        description: error details
-        $ref: '#/definitions/ExceptionJSONInfoDTO'
-      status:
-        type: boolean
-        description: status
-      resTime:
-        type: string
-        description: response time
       response:
         type: array
         description: response
         items:
           type: string
-    title: MainListResponseDTO«string»
-  MainRequestDTO«CreateDemographicDTO»:
+    title: ResponseDTO«string»
+  RequestDTO«CreateDemographicDTO»:
     type: object
     properties:
       id:
@@ -388,7 +318,7 @@ definitions:
       request:
         description: request
         $ref: '#/definitions/CreateDemographicDTO'
-    title: MainRequestDTO«CreateDemographicDTO»
+    title: RequestDTO«CreateDemographicDTO»
   PreRegistartionStatusDTO:
     type: object
     properties:
@@ -404,23 +334,8 @@ definitions:
         $ref: '#/definitions/BookingRegistrationDTO'
       fullname:
         type: string
-      preId:
+      preRegistartionId:
         type: string
       statusCode:
         type: string
     title: PreRegistrationViewDTO
-  UpdateResponseDTO«string»:
-    type: object
-    properties:
-      err:
-        type: array
-        items:
-          $ref: '#/definitions/ExceptionJSONInfoDTO'
-      resTime:
-        type: string
-        format: date-time
-      response:
-        type: string
-      status:
-        type: string
-    title: UpdateResponseDTO«string»

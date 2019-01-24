@@ -52,8 +52,8 @@ public class BatchServiceDAO {
 	 * Autowired reference for {@link #appointmentRepository}
 	 */
 	@Autowired
-	@Qualifier("appointmentRepository")
-	private RegAppointmentRepository appointmentRepository;
+	@Qualifier("regAppointmentRepository")
+	private RegAppointmentRepository regAppointmentRepository;
 
 	/**
 	 * Autowired reference for {@link #processedPreIdRepository}
@@ -80,7 +80,7 @@ public class BatchServiceDAO {
 	}
 
 	public List<ProcessedPreRegEntity> getAllConsumedPreIds(String statusComment) {
-		List<ProcessedPreRegEntity> entityList = new ArrayList<ProcessedPreRegEntity>();
+		List<ProcessedPreRegEntity> entityList = new ArrayList<>();
 		try {
 			entityList = processedPreIdRepository.findBystatusComments(statusComment);
 			if (entityList.isEmpty() || entityList == null) {
@@ -99,7 +99,7 @@ public class BatchServiceDAO {
 	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate) {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
-			entityList = appointmentRepository.findByRegDateBefore(currentdate);
+			entityList = regAppointmentRepository.findByRegDateBefore(currentdate);
 			if (entityList.isEmpty() || entityList == null) {
 				LOGGER.info("There are currently no Pre-Registration-Ids which is expired");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
@@ -112,10 +112,10 @@ public class BatchServiceDAO {
 		return entityList;
 	}
 
-	public RegistrationBookingEntity gerPreRegId(String preRegId) {
+	public RegistrationBookingEntity getPreRegId(String preRegId) {
 		RegistrationBookingEntity entity = null;
 		try {
-			entity = appointmentRepository.getPreRegId(preRegId);
+			entity = regAppointmentRepository.getPreRegId(preRegId);
 			if (entity == null) {
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_EXPIRED_STATUS.getMessage());
@@ -126,5 +126,17 @@ public class BatchServiceDAO {
 		}
 		return entity;
 
+	}
+	
+	public boolean updateApplicantDemographic(ApplicantDemographic applicantDemographic) {
+		return demographicRepository.save(applicantDemographic)!=null;
+	}
+	
+	public boolean updateProcessedList(ProcessedPreRegEntity entity) {
+		 return processedPreIdRepository.save(entity)!=null;
+	}
+	
+	public boolean updateBooking(RegistrationBookingEntity entity) {
+		return regAppointmentRepository.save(entity)!=null;
 	}
 }

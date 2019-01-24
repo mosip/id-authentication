@@ -100,24 +100,24 @@ public class DemographicServiceUtil {
 	 * @return demographic entity with values
 	 */
 	public DemographicEntity prepareDemographicEntity(DemographicRequestDTO demographicRequest, String requestId,
-			String entityType) {
+			String entityType, String statuscode) {
 		log.info("sessionId", "idType", "id", "In prepareDemographicEntity method of pre-registration service util");
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(demographicRequest.getPreRegistrationId());
 		demographicEntity.setGroupId("1234567890");
 		demographicEntity.setApplicantDetailJson(
 				demographicRequest.getDemographicDetails().toJSONString().getBytes(StandardCharsets.UTF_8));
-		demographicEntity.setStatusCode(StatusCodes.PENDING_APPOINTMENT.getCode());
+		
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		try {
-			if (entityType.equals("save")) {
+			if (entityType.equals(RequestCodes.Save.toString())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
 					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
 					demographicEntity.setCreateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
-
+					demographicEntity.setStatusCode(statuscode);
 					demographicEntity.setUpdatedBy(null);
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
@@ -125,13 +125,14 @@ public class DemographicServiceUtil {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
 				}
-			} else if (entityType.equals("update")) {
+			} else if (entityType.equals(RequestCodes.Update.toString())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
 					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
 					demographicEntity.setCreateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getCreatedDateTime())));
+					demographicEntity.setStatusCode(statuscode);
 					demographicEntity.setUpdatedBy(demographicRequest.getUpdatedBy());
 					demographicEntity.setUpdateDateTime(DateUtils
 							.parseDateToLocalDateTime(getDateFromString(demographicRequest.getUpdatedDateTime())));

@@ -22,7 +22,7 @@ export class DataStorageService {
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
-  LANGUAGE_CODE = 'ENG';
+  LANGUAGE_CODE = 'eng';
   DISTANCE = 2000;
 
   getUsers(value: string) {

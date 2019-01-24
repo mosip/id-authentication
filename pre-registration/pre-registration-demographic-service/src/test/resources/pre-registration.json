@@ -11,36 +11,26 @@
     "statusCode": "",
     "langCode": "",
 	"demographicDetails":{
-    "identity": {
-      "FullName": [
+   "identity": {
+    "IDSchemaVersion": "1.0",
+      "fullName": [
         {
           "language": "ar",
-          "label": "الاسم الاول",
-          "value": "ابراهيم"
+          "label": "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø§ÙˆÙ„",
+          "value": "Ø§Ø¨Ø±Ø§Ù‡ÙŠÙ…"
         },
         {
           "language": "fr",
-          "label": "Prénom",
+          "label": "PrÃ©nom",
           "value": "Ibrahim"
         }
       ],
-      "dateOfBirth": [
-        {
-          "language": "ar",
-          "label": "تاريخ الميلاد",
-          "value": "18/03/1995"
-        },
-        {
-          "language": "fr",
-          "label": "date de naissance",
-          "value": "18/03/1995"
-        }
-      ],
+      "dateOfBirth":"12/01/2019",
       "gender": [
         {
           "language": "ar",
-          "label": "جنس",
-          "value": "الذكر"
+          "label": "Ø¬Ù†Ø³",
+          "value": "Ø§Ù„Ø°ÙƒØ±"
         },
         {
           "language": "fr",
@@ -51,8 +41,8 @@
       "addressLine1": [
         {
           "language": "ar",
-          "label": "العنوان السطر 1",
-          "value": "عالمي"
+          "label": "Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø³Ø·Ø± 1",
+          "value": "Ø¹Ø§Ù„Ù…ÙŠ"
         },
         {
           "language": "fr",
@@ -63,8 +53,8 @@
       "addressLine2": [
         {
           "language": "ar",
-          "label": "سطر العنوان 2",
-          "value": "قرية"
+          "label": "Ø³Ø·Ø± Ø§Ù„Ø¹Ù†ÙˆØ§Ù† 2",
+          "value": "Ù‚Ø±ÙŠØ©"
         },
         {
           "language": "fr",
@@ -75,8 +65,8 @@
       "addressLine3": [
         {
           "language": "ar",
-          "label": "العنوان الخط 3",
-          "value": "ابراهيم"
+          "label": "Ø§Ù„Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø· 3",
+          "value": "Ø§Ø¨Ø±Ø§Ù‡ÙŠÙ…"
         },
         {
           "language": "fr",
@@ -87,111 +77,55 @@
       "region": [
         {
           "language": "ar",
-          "label": "منطقة",
-          "value": "أودوبي"
+          "label": "Ù…Ù†Ø·Ù‚Ø©",
+          "value": "Ø£ÙˆØ¯ÙˆØ¨ÙŠ"
         },
         {
           "language": "fr",
-          "label": "Prénom",
+          "label": "PrÃ©nom",
           "value": "Udupi"
         }
       ],
       "province": [
         {
           "language": "ar",
-          "label": "المحافظة",
-          "value": "كوب"
+          "label": "Ø§Ù„Ù…Ø­Ø§Ù�Ø¸Ø©",
+          "value": "ÙƒÙˆØ¨"
         },
         {
           "language": "fr",
-          "label": "Prénom",
+          "label": "PrÃ©nom",
           "value": "Koppa"
         }
       ],
       "city": [
         {
           "language": "ar",
-          "label": "مدينة",
-          "value": "مانجالور"
+          "label": "Ù…Ø¯ÙŠÙ†Ø©",
+          "value": "Ù…Ø§Ù†Ø¬Ø§Ù„ÙˆØ±"
         },
         {
           "language": "fr",
-          "label": "Prénom",
+          "label": "PrÃ©nom",
           "value": "Mangalore"
         }
       ],
-      "postalcode": [
-        {
-          "language": "ar",
-          "label": "الكود البريدى",
-          "value": "675123"
-        },
-        {
-          "language": "fr",
-          "label": "Prénom",
-          "value": "675123"
-        }
-      ],
+      "postalCode":"1234",
       "localAdministrativeAuthority": [
         {
           "language": "ar",
-          "label": "السلطة الإدارية المحلية",
-          "value": "إدارة"
+          "label": "Ø§Ù„Ø³Ù„Ø·Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±ÙŠØ© Ø§Ù„Ù…Ø­Ù„ÙŠØ©",
+          "value": "Ø¥Ø¯Ø§Ø±Ø©"
         },
         {
           "language": "fr",
-          "label": "Prénom",
+          "label": "PrÃ©nom",
           "value": "La gestion"
         }
       ],
-      "emailId": [
-        {
-          "language": "ar",
-          "label": "البريد الإلكتروني",
-          "value": "ram@gmail.com"
-        },
-        {
-          "language": "fr",
-          "label": "Email",
-          "value": "ram@gmail.com"
-        }
-      ],
-      "mobileNumber": [
-        {
-          "language": "ar",
-          "label": "رقم الهاتف المحمول",
-          "value": "984839347"
-        },
-        {
-          "language": "fr",
-          "label": "Numéro de portable",
-          "value": "984839347"
-        }
-      ],
-      "CNEOrPINNumber": [
-        {
-          "language": "ar",
-          "label": "الرقم السري",
-          "value": "45667677"
-        },
-        {
-          "language": "fr",
-          "label": "Code PIN",
-          "value": "45667677"
-        }
-      ],
-      "age": [
-        {
-          "language": "ar",
-          "label": "عمر",
-          "value": "35"
-        },
-        {
-          "language": "fr",
-          "label": "Âge",
-          "value": "35"
-        }
-      ]
+      "email": "raj@gmail.com",
+      "phone":"9457897386",
+      "CNIENumber": "78432794820"
     }
   }
   }
