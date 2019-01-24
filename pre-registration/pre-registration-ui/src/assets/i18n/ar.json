@@ -2,7 +2,9 @@
   "header": {
     "link_about": "معلومات عنا",
     "link_faq": "FAQ",
-    "link_contact": "اتصل"
+    "link_contact": "اتصل",
+    "link_applications": "تطبيقاتك",
+    "link_logout": "الخروج"
   },
   "login": {
     "text": "خطوات سريعة وسهلة",
