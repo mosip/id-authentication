@@ -31,6 +31,15 @@ public class DateValidation extends BaseController {
 		dateMapper.put("7", "31");
 		dateMapper.put("8", "31");
 		dateMapper.put("9", "30");
+		dateMapper.put("01", "31");
+		dateMapper.put("02", "29");
+		dateMapper.put("03", "31");
+		dateMapper.put("04", "30");
+		dateMapper.put("05", "31");
+		dateMapper.put("06", "30");
+		dateMapper.put("07", "31");
+		dateMapper.put("08", "31");
+		dateMapper.put("09", "30");
 		dateMapper.put("10", "31");
 		dateMapper.put("11", "30");
 		dateMapper.put("12", "31");
