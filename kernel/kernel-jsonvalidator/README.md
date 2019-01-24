@@ -1,10 +1,10 @@
 ## kernel-jsonvalidator
 
- 1- [Background & Design](../../design/kernel/kernel-jsonvalidator.md)
+[Background & Design](../../docs/design/kernel/kernel-jsonvalidator.md)
  
 
 
- 2- [API Documentation <TBA>](TBA)
+[API Documentation]
  
  
  ```

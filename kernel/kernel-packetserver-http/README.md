@@ -1,10 +1,9 @@
 ## kernel-packetserver-http
-[Background & Design](../../design/kernel/kernel-packetserver-http.md)
+
+[Background & Design](../../docs/design/kernel/kernel-packetserver-http.md)
  
 
-**Api Documentation**
-
-[API Documentation <TBA>](TBA)
+[API Documentation]
 
 ```
 mvn javadoc:javadoc

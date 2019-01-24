@@ -1,8 +1,8 @@
 # kernel-idgenerator-tspid
 
-1- [Background & Design]
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-tspid.md)
 
-2- API Documentation
+API Documentation
 
  ```
 mvn javadoc:javadoc

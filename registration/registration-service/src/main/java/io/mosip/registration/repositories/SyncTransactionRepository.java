@@ -16,9 +16,10 @@ public interface SyncTransactionRepository extends BaseRepository<SyncTransactio
 	/**
 	 * Get All sync Transaction
 	 * @param request time
+	 * @param syncJobId id
 	 * @return list of sync transaction
 	 */
-	List<SyncTransaction> findByCrDtimeAfter(Timestamp req);
+	List<SyncTransaction> findByCrDtimeAfterAndSyncJobIdNot(Timestamp req,String syncJobId);
 
 	
 }

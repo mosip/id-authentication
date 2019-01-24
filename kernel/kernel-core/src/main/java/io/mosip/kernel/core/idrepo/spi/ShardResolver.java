@@ -12,8 +12,10 @@ public interface ShardResolver {
 	/**
 	 * Gets the shrad.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the shrad
+	 * @throws IdRepoAppException
 	 */
 	String getShard(String id) throws IdRepoAppException;
 }

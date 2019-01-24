@@ -14,7 +14,6 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
-import io.mosip.kernel.uingenerator.generator.UinProcesser;
 import io.mosip.kernel.uingenerator.service.UinGeneratorService;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -35,12 +34,6 @@ public class UinGeneratorRouter {
 	 */
 	@Autowired
 	Environment environment;
-
-	/**
-	 * Field for UinProcesser
-	 */
-	@Autowired
-	private UinProcesser uinProcesser;
 
 	/**
 	 * Field for UinGeneratorService
@@ -84,9 +77,6 @@ public class UinGeneratorRouter {
 	 *            vertx
 	 */
 	public void checkAndGenerateUins(Vertx vertx) {
-		boolean shouldGenerateUins = uinProcesser.shouldGenerateUins();
-		if (shouldGenerateUins) {
-			vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);
-		}
+		vertx.eventBus().send(UinGeneratorConstant.UIN_GENERATOR_ADDRESS, UinGeneratorConstant.GENERATE_UIN);
 	}
 }

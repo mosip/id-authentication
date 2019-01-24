@@ -1,5 +1,7 @@
 ## kernel-idgenerator-uin
 
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-uin.md)
+
 Uin generator functionality is to generate, store and provide uins.
 
 Rules of UIN generation:

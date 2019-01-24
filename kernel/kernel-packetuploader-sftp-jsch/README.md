@@ -1,9 +1,9 @@
 ## kernel-packetuploader-sftp-jsch
-[Background & Design](../../design/kernel/kernel-packetuploader.md)
 
-**Api Documentation**
+[Background & Design](../../docs/design/kernel/kernel-packetuploader.md)
 
-[API Documentation <TBA>](TBA)
+
+[API Documentation]
 
 ```
 mvn javadoc:javadoc

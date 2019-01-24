@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
@@ -59,6 +60,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Value("${packet.location.dateFormat}")
 	private String preRegLocationDateFormat;
+	
+//	@Autowired
+//	private JsonValidator jsonValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -128,10 +132,10 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	private void attachDocument(DocumentDetailsDTO documentDetailsDTO, ZipInputStream zipInputStream, String fileName,
 			String docCatgory) throws IOException {
 		documentDetailsDTO.setDocument(IOUtils.toByteArray(zipInputStream));
-		documentDetailsDTO.setType(RegistrationConstants.POI_DOCUMENT);
+		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
-		documentDetailsDTO.setValue(RegistrationConstants.POI_DOCUMENT.concat("_").concat(fileName
-				.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf(RegistrationConstants.DOT) + 1)));
+		documentDetailsDTO.setValue(docCatgory.concat("_").concat(fileName
+				.substring(fileName.lastIndexOf("_") + 1)));
 	}
 
 	/**
@@ -153,6 +157,8 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			}
 
 			if (!StringUtils.isEmpty(jsonString)) {
+				/*validate id json schema*/
+//				jsonValidator.validateJson(jsonString, "mosip-identity-json-schema.json");
 				getRegistrationDtoContent().getDemographicDTO().setDemographicInfoDTO(
 						new ObjectMapper().readValue(jsonString.toString(), DemographicInfoDTO.class));
 			}

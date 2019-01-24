@@ -1,8 +1,8 @@
-## Module kernel-idgenerator-prid
+## kernel-idgenerator-prid
 
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-prid.md)
 
-
-[API Documentation](doc/index.html)
+[API Documentation]
 
 ```
  mvn javadoc:javadoc
