@@ -500,6 +500,7 @@ public class RegistrationConstants {
 	public static final String RE_REGISTRATION_STATUS = "Re-Register";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
+	public static final String PACKET_UPLOAD_SUCCESS = "Uploaded";
 
 	// Device On-boarding
 	public static final String DEVICE_MANUFACTURER_NAME = "manufacturerName";
@@ -589,7 +590,7 @@ public class RegistrationConstants {
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
 	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
-	public static final String PRE_REG_SUCCESS_MESSAGE = "Got Pre registartion ";
+	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully ";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
 	public static final String PRE_REG_FILE_NAME = "fileName";
 	public static final String PRE_REG_FILE_CONTENT = "fileContent";
