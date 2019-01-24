@@ -55,7 +55,7 @@ def sendEmail() {
                         subject: "MOSIP Jenkins Job '${projectName} with build no ${projectBuildNumber} failed'",
                         body: """<p>Check console output at <a href="${projectBuildURL}">${projectName}</a></p>""",
                         to: "$recipients",
-                        from: "info@mosip.io"
+                        from: '"Jenkins" <info@mosip.io>'
                     )
        }
 }
