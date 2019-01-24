@@ -197,7 +197,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	/** Object for Sync Valid Document Repository. */
 	@Autowired
 	private MasterSyncValidDocumentRepository masterSyncValidDocumentRepository;
-	
+
 	/** Object for Sync language Repository. */
 	@Autowired
 	private MasterSyncLanguageRepository masterSyncLanguageRepository;
@@ -279,7 +279,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 			List<MasterLanguage> masterLangauge = MetaDataUtils.setCreateMetaData(languageDto, MasterLanguage.class);
 			masterSyncLanguageRepository.saveAll(masterLangauge);
-			
+
 			List<MasterApplication> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
 					MasterApplication.class);
 			masterSyncApplicationRepository.saveAll(masterApplicationDtoEntity);
@@ -406,8 +406,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .String)
 	 */
 	@Override
-	public List<MasterLocation> findLocationByParentLocCode(String parentLocCode,String  langCode) {
-		return masterSyncLocationRepository.findMasterLocationByParentLocCodeAndLangCode(parentLocCode,langCode);
+	public List<MasterLocation> findLocationByParentLocCode(String parentLocCode, String langCode) {
+		return masterSyncLocationRepository.findMasterLocationByParentLocCodeAndLangCode(parentLocCode, langCode);
 	}
 
 	/*
@@ -441,16 +441,16 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<MasterBlacklistedWords> getBlackListedWords(String langCode) {
 		return masterSyncBlacklistedWordsRepository.findBlackListedWordsByLangCode(langCode);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.dao.MasterSyncDao#getDocumentCategories(java.lang.String)
+	 * @see io.mosip.registration.dao.MasterSyncDao#getDocumentCategories(java.lang.
+	 * String)
 	 */
 	@Override
-	public List<MasterDocumentCategory> getDocumentCategories(String langCode) {
-		return masterSyncDocumentCategoryRepository.findDocumentCategoryByLangCode(langCode);
+	public List<MasterDocumentType> getDocumentTypes(List<String> docCode, String langCode) {
+		return masterSyncDocumentTypeRepository.findByLangCodeAndCodeIn(langCode, docCode);
 	}
 
 	/*
@@ -462,6 +462,17 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<MasterGender> getGenderDtls(String langCode) {
 
 		return masterSyncGenderRepository.findByLangCode(langCode);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#getValidDocumets(java.lang.String)
+	 */
+	@Override
+	public List<MasterValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
+		return masterSyncValidDocumentRepository.findByDocCategoryCodeAndLangCode(docCategoryCode, langCode);
 	}
 
 }

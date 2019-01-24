@@ -4,10 +4,10 @@ import java.util.List;
 
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
-import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
+import io.mosip.registration.entity.mastersync.MasterDocumentType;
 
 /**
  * Interface to sync master data from server to client
@@ -66,7 +66,7 @@ public interface MasterSyncService {
 	 * @param langCode the lang code
 	 * @return all the document categories
 	 */
-	List<DocumentCategoryDto> getDocumentCategories(String langCode);
+	List<MasterDocumentType> getDocumentCategories(String docCode,String langCode);
 	
 	/**
 	 * Gets the gender dtls.
@@ -75,7 +75,5 @@ public interface MasterSyncService {
 	 * @return the gender dtls
 	 */
 	List<GenderDto> getGenderDtls(String langCode);
-	
-	
 
 }
