@@ -58,5 +58,12 @@ public class PreRegistrationDAOImplTest {
 		Mockito.when(registrationRepository.update(Mockito.any())).thenReturn(preRegistrationList);
 		assertEquals(preRegistrationList, preRegistrationDAOImpl.update(preRegistrationList));
 	}
+	
+	@Test
+	public void deleteAllTest() {
+		Mockito.doNothing().when(registrationRepository).deleteAll(Mockito.any());
+		preRegistrationDAOImpl.deleteAll(Mockito.anyList());
+	}
+
 
 }
