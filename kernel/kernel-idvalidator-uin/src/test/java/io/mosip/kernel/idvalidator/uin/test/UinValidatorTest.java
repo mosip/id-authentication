@@ -32,7 +32,7 @@ public class UinValidatorTest {
 	@Test
 	public void uinValidatorImplTest() {
 
-		String id = "201308710214";
+		String id = "2013023805";
 		assertEquals(true, uinValidatorImpl.validateId(id));
 	}
 
@@ -53,57 +53,105 @@ public class UinValidatorTest {
 	@Test(expected = InvalidIDException.class)
 	public void testFistDigitOne() throws InvalidIDException {
 
-		String id = "126789089018";
+		String id = "1013023805";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testFistDigitZero() throws InvalidIDException {
 
-		String id = "026789089018";
+		String id = "0013023805";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testUinLenght() throws InvalidIDException {
 
-		String id = "42678908901";
+		String id = "201302380";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testUinOverLenght() throws InvalidIDException {
 
-		String id = "4267890890188";
+		String id = "20130238051";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testUinCkeckSum() throws InvalidIDException {
 
-		String id = "42678908900";
+		String id = "2013023800";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testRepeated() throws InvalidIDException {
 
-		String id = "426789089011";
+		String id = "2013013805";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testSequential() throws InvalidIDException {
 
-		String id = "426789089123";
+		String id = "2013223805";
 		uinValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testAlphanumeric() throws InvalidIDException {
 
-		String id = "42678908912A";
+		String id = "2A13023805";
 		uinValidatorImpl.validateId(id);
 	}
 
+	@Test(expected = InvalidIDException.class)
+	public void testFirstAndLastDigitsValidation() throws InvalidIDException {
+
+		String id = "4345643456";
+		uinValidatorImpl.validateId(id);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void testFirstAndLastDigitsReverseValidation() throws InvalidIDException {
+
+		String id = "4345665434";
+		uinValidatorImpl.validateId(id);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void testAscendingCyclicFigure() throws InvalidIDException {
+
+		String id = "4567890123";
+		uinValidatorImpl.validateId(id);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void testDescendingCyclicFigure() throws InvalidIDException {
+
+		String id = "6543210987";
+		uinValidatorImpl.validateId(id);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void testRepeatingDigits() throws InvalidIDException {
+
+		String id = "3434343434";
+		uinValidatorImpl.validateId(id);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void testConjugativeEvenDigits() throws InvalidIDException {
+
+		String id = "2013564809";
+		uinValidatorImpl.validateId(id);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void testUinXCkeckSum() throws InvalidIDException {
+
+		String id = "2013020131";
+		uinValidatorImpl.validateId(id);
+	}
 }

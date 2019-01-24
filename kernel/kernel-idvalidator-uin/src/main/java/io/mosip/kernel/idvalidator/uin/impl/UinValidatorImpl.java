@@ -63,6 +63,34 @@ public class UinValidatorImpl implements UinValidator<String> {
 	private int repeatingLimit;
 
 	/**
+	 * Number of digits from last digit of UIN need to be reverse example if limit
+	 * is 5 and UIN is 4345665434 then last 5 digits will be 65434, reverse 43456
+	 */
+	@Value("${mosip.kernel.uin.length.reverse-digits-limit:-1}")
+	private int reverseLimit;
+
+	/**
+	 * Number of digits from first digit to given limit example if limit is 5 and
+	 * UIN is 4345643456 then
+	 */
+	@Value("${mosip.kernel.uin.length.digits-limit:-1}")
+	private int limit;
+
+	/**
+	 * Number of digits in repeating block from first digit of id. example if limit
+	 * is 2 then 43xxxxx67xx32 allowed but 43xxx43xx not allowed in id. (x is any
+	 * digit)
+	 */
+	@Value("${mosip.kernel.uin.length.conjugative-even-digits-limit:-1}")
+	private int conjugativeEvenDigitsLimit;
+
+	/**
+	 * Admin restricted digits
+	 */
+	@Value("${mosip.kernel.uin.length.restricted-admin-digits:-1}")
+	private String restrictedAdminDigit;
+
+	/**
 	 * Ascending digits which will be checked for sequence in id
 	 */
 	private static final String SEQ_ASC = "0123456789";
@@ -81,6 +109,15 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Compiled regex pattern of {@link #repeatingBlockRegEx}
 	 */
 	private Pattern repeatingBlockPattern = null;
+
+	/**
+	 * Compiled regex pattern of {@link #conjugativeEvenDigitsLimitRegEx}
+	 */
+	private Pattern conjugativeEvenDigitsLimitPattern = null;
+	/**
+	 * Compiled regex pattern of {@link #restrictedAdminDigitRegex}
+	 */
+	private Pattern restrictedAdminDigitPattern = null;
 
 	/**
 	 * Method to prepare regular expressions for checking UIN has only digits.
@@ -118,8 +155,14 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 */
 		String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
 
+		String conjugativeEvenDigitsLimitRegEx = "[02468]{" + conjugativeEvenDigitsLimit + "}";
+
+		String restrictedAdminDigitRegex = "(" + restrictedAdminDigit + ")";
+
 		repeatingPattern = Pattern.compile(repeatingRegEx);
 		repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
+		conjugativeEvenDigitsLimitPattern = Pattern.compile(conjugativeEvenDigitsLimitRegEx);
+		restrictedAdminDigitPattern = Pattern.compile(restrictedAdminDigitRegex);
 	}
 
 	/**
@@ -225,6 +268,35 @@ public class UinValidatorImpl implements UinValidator<String> {
 		}
 		/**
 		 * 
+		 * The method reverseDigitsFromLastToLimit(id) validate the UIN for the
+		 * following conditions
+		 * 
+		 * The UIN First X(reverseLimit) digits should be different from the last
+		 * X(reverseLimit) digits
+		 * 
+		 * 
+		 */
+		if (firstAndLastDigitsReverseValidation(id, reverseLimit)) {
+			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_REVERSE.getErrorCode(),
+					UinExceptionConstant.UIN_VAL_ILLEGAL_REVERSE.getErrorMessage());
+		}
+		/**
+		 * 
+		 * The method reverseDigitsFromLastToLimit(id) validate the UIN for the
+		 * following conditions
+		 * 
+		 * The UIN First X(limit) digits should be different from the last X(limit)
+		 * digits
+		 * 
+		 * 
+		 */
+		if (firstAndLastDigitsValidation(id, limit)) {
+			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_EQUAL_LIMIT.getErrorCode(),
+					UinExceptionConstant.UIN_VAL_ILLEGAL_EQUAL_LIMIT.getErrorMessage());
+		}
+
+		/**
+		 * 
 		 * once the above validation are passed then the method will going to return
 		 * True That is its Valid UIN Number
 		 * 
@@ -244,7 +316,8 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 */
 	private boolean isValidId(String id) {
 
-		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern));
+		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
+				|| regexFilter(id, conjugativeEvenDigitsLimitPattern) || regexFilter(id, restrictedAdminDigitPattern));
 	}
 
 	/**
@@ -272,6 +345,51 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
 		return pattern.matcher(id).find();
+	}
+
+	/**
+	 * Checks the input UIN whether digits from first to limit is equal to reverse
+	 * of Digits from last digit of UIN to given Limit.
+	 * 
+	 * @param id
+	 *            The input UIN id to validate
+	 * @param reverseLimit
+	 *            Number of digits to reverse from last Digit of Id
+	 * @return true if Digits of UIN from first Digit to reverseLimit digit is equal
+	 *         to reverse of digits from last digit to reverseLimit digit. Example
+	 *         if UIN=4345665434 and reverseLimit is 5 Then from first digit to
+	 *         reverseLimit will be 43456 and From last digit of UIN to
+	 *         revrseLimit(5) will be 65434 and its reverse is 43456. So First 5
+	 *         digits of UIN are Equal to reverse of last 5 digits of the UIN,
+	 *         return True.
+	 */
+	private boolean firstAndLastDigitsReverseValidation(String id, int reverseLimit) {
+
+		StringBuilder rev = new StringBuilder(id.substring(reverseLimit, id.length()));
+		rev = rev.reverse();
+
+		return (id.substring(0, reverseLimit).equals(rev.toString()));
+	}
+
+	/**
+	 * Checks the input UIN whether digits from first to limit is equal to Digits
+	 * from last digit of UIN to given Limit.
+	 * 
+	 * 
+	 * @param id
+	 *            The input UIN id to validate
+	 * @param limit
+	 *            Number of digits from fist digit to given limit
+	 * @return true if digits from first to given limit are Equal to last digits of
+	 *         UIN of length limit Example if UIN=4345643456 and limit is 5 Then
+	 *         from first 5 digits will be 43446 and last 5 digits will be 43446 So
+	 *         here first 5 digits and last 5 digits equal it will return true. .
+	 */
+
+	private boolean firstAndLastDigitsValidation(String id, int limit) {
+
+		return (id.substring(0, limit).equals(id.substring(limit, id.length())));
+
 	}
 
 }
