@@ -111,7 +111,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		try {
-			if (entityType.equals(RequestCodes.Save.toString())) {
+			if (entityType.equals(RequestCodes.SAVE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& isNull(demographicRequest.getUpdatedBy()) && isNull(demographicEntity.getUpdateDateTime())) {
 					demographicEntity.setCreatedBy(demographicRequest.getCreatedBy());
@@ -125,7 +125,7 @@ public class DemographicServiceUtil {
 					throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_APP_012.toString(),
 							ErrorMessages.MISSING_REQUEST_PARAMETER.toString());
 				}
-			} else if (entityType.equals(RequestCodes.Update.toString())) {
+			} else if (entityType.equals(RequestCodes.UPDATE.getCode())) {
 				if (!isNull(demographicRequest.getCreatedBy()) && !isNull(demographicRequest.getCreatedDateTime())
 						&& !isNull(demographicRequest.getUpdatedBy())
 						&& !isNull(demographicRequest.getUpdatedDateTime())) {
@@ -161,11 +161,11 @@ public class DemographicServiceUtil {
 	public Map<String, String> prepareRequestParamMap(MainRequestDTO<DemographicRequestDTO> demographicRequestDTO) {
 		log.info("sessionId", "idType", "id", "In prepareRequestParamMap method of pre-registration service util");
 		Map<String, String> inputValidation = new HashMap<>();
-		inputValidation.put(RequestCodes.id.toString(), demographicRequestDTO.getId());
-		inputValidation.put(RequestCodes.ver.toString(), demographicRequestDTO.getVer());
-		inputValidation.put(RequestCodes.reqTime.toString(),
+		inputValidation.put(RequestCodes.ID.getCode(), demographicRequestDTO.getId());
+		inputValidation.put(RequestCodes.VER.getCode(), demographicRequestDTO.getVer());
+		inputValidation.put(RequestCodes.REQ_TIME.getCode(),
 				new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(demographicRequestDTO.getReqTime()));
-		inputValidation.put(RequestCodes.request.toString(), demographicRequestDTO.getRequest().toString());
+		inputValidation.put(RequestCodes.REQUEST.getCode(), demographicRequestDTO.getRequest().toString());
 		return inputValidation;
 	}
 
@@ -186,10 +186,10 @@ public class DemographicServiceUtil {
 		log.info("sessionId", "idType", "id", "In getValueFromIdentity method of pre-registration service util ");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(demographicData, StandardCharsets.UTF_8));
-		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.identity.toString());
+		JSONObject identityObj = (JSONObject) jsonObj.get(RequestCodes.IDENTITY.getCode());
 		JSONArray keyArr = (JSONArray) identityObj.get(identityKey);
 		JSONObject valueObj = (JSONObject) keyArr.get(0);
-		return valueObj.get(RequestCodes.value.toString()).toString();
+		return valueObj.get(RequestCodes.VALUE.getCode()).toString();
 	}
 
 	/**
@@ -247,11 +247,11 @@ public class DemographicServiceUtil {
 		try {
 
 			Date fromDate = DateUtils
-					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.fromDate.toString()), "UTF-8"), format);
+					.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.FROM_DATE.getCode()), "UTF-8"), format);
 
-			Date toDate = null;
-			if (dateMap.get(RequestCodes.toDate.toString()) == null
-					|| isNull(dateMap.get(RequestCodes.toDate.toString()))) {
+			Date toDate;
+			if (dateMap.get(RequestCodes.TO_DATE.getCode()) == null
+					|| isNull(dateMap.get(RequestCodes.TO_DATE.getCode()))) {
 				toDate = fromDate;
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(toDate);
@@ -260,11 +260,11 @@ public class DemographicServiceUtil {
 				cal.set(Calendar.SECOND, 59);
 				toDate = cal.getTime();
 			} else {
-				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.toDate.toString()), "UTF-8"),
+				toDate = DateUtils.parseToDate(URLDecoder.decode(dateMap.get(RequestCodes.TO_DATE.getCode()), "UTF-8"),
 						format);
 			}
-			localDateTimeMap.put(RequestCodes.fromDate.toString(), DateUtils.parseDateToLocalDateTime(fromDate));
-			localDateTimeMap.put(RequestCodes.toDate.toString(), DateUtils.parseDateToLocalDateTime(toDate));
+			localDateTimeMap.put(RequestCodes.FROM_DATE.getCode(), DateUtils.parseDateToLocalDateTime(fromDate));
+			localDateTimeMap.put(RequestCodes.TO_DATE.getCode(), DateUtils.parseDateToLocalDateTime(toDate));
 
 		} catch (java.text.ParseException ex) {
 			log.error("sessionId", "idType", "id",
@@ -276,7 +276,12 @@ public class DemographicServiceUtil {
 					"In dateSetter method of pre-registration service- " + ex.getCause());
 			throw new SystemUnsupportedEncodingException(ErrorCodes.PRG_PAM_APP_009.toString(),
 					ErrorMessages.UNSUPPORTED_ENCODING_CHARSET.toString(), ex.getCause());
-		}
+		}catch (io.mosip.kernel.core.exception.ParseException ex) {
+			log.error("sessionId", "idType", "id",
+					"In dateSetter method of pre-registration service- " + ex.getCause());
+			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
+					ErrorMessages.UNSUPPORTED_DATE_FORMAT.toString(), ex.getCause());
+		} 
 		return localDateTimeMap;
 	}
 
