@@ -30,7 +30,7 @@ import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
+import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
 import javafx.application.HostServices;
@@ -115,7 +115,7 @@ public class DocumentScanController extends BaseController {
 
 	List<BufferedImage> scannedPages;
 	
-	private List<DocumentCategoryDto> documents;
+	private List<MasterDocumentType> documents;
 
 
 	@Value("${DOCUMENT_SIZE}")
@@ -138,7 +138,10 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			isChild = true;
-			loadListOfDocuments();
+			loadListOfDocuments(poaDocuments,"POA");
+			loadListOfDocuments(poiDocuments,"POI");
+			loadListOfDocuments(porDocuments,"POR");
+			loadListOfDocuments(dobDocuments,"DOB");
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -635,20 +638,16 @@ public class DocumentScanController extends BaseController {
 	 * Loading the the labels of local language fields
 	 * 
 	 */
-	private void loadListOfDocuments() {
+	private void loadListOfDocuments(ComboBox<String> selectionList, String docCode) {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-			documents  = masterSync.getDocumentCategories(MappedCodeForLanguage
+			documents  = masterSync.getDocumentCategories(docCode,MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
 					.getMappedCode());
 			List<String> documentNames  = documents.stream().map(doc->doc.getName()).collect(Collectors.toList());
 			
-			poaDocuments.getItems().addAll(documentNames);
-			poiDocuments.getItems().addAll(documentNames);
-			porDocuments.getItems().addAll(documentNames);
-			dobDocuments.getItems().addAll(documentNames);
-
+			selectionList.getItems().addAll(documentNames);
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
 
