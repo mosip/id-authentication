@@ -33,70 +33,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<role name="prereguser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="reguser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="regprcuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="idauser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <role name="kerneluser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="masteruser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="audituser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="admuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="repuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="uinuser"
       inherit="true"
       login="true"
       encrypted="true"
@@ -112,56 +49,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<schema name="ids" rect-visible="true" fill-color="#83af1f">
-	<role name="sysadmin"/>
-</schema>
-
-<table name="uins">
-	<schema name="ids"/>
-	<role name="sysadmin"/>
-	<position x="50" y="50"/>
-	<column name="uin" not-null="true">
-		<type name="character varying" length="12"/>
-	</column>
-	<column name="used">
-		<type name="boolean" length="0"/>
-	</column>
-	<constraint name="uins_pkey" type="pk-constr" table="ids.uins">
-		<columns names="uin" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<table name="prid">
-	<schema name="ids"/>
-	<role name="sysadmin"/>
-	<position x="343.116" y="50"/>
-	<column name="id" not-null="true">
-		<type name="character varying" length="14"/>
-	</column>
-	<column name="created_at">
-		<type name="bigint" length="0"/>
-	</column>
-	<constraint name="prid_pkey" type="pk-constr" table="ids.prid">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<table name="rid">
-	<schema name="ids"/>
-	<role name="sysadmin"/>
-	<position x="670.232" y="50"/>
-	<column name="dongle_id" not-null="true">
-		<type name="character varying" length="64"/>
-	</column>
-	<column name="sequence_id" not-null="true">
-		<type name="numeric" length="5" precision="0"/>
-	</column>
-	<constraint name="rid_pkey" type="pk-constr" table="ids.rid">
-		<columns names="dongle_id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<schema name="kernel" rect-visible="true" fill-color="#5aa578">
+<schema name="kernel" rect-visible="true" fill-color="#83af1f">
 	<role name="sysadmin"/>
 </schema>
 
@@ -169,7 +57,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="kernel"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[OTP Transaction table to store all otp related information and status]]></comment>
-	<position x="31.3487" y="202"/>
+	<position x="50" y="50"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[OTP id is unique value to store identification of each otp transactions]]></comment>
@@ -221,11 +109,63 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
+<table name="sync_control">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[kernel sync_control table which hold all sucessfull sync job details]]></comment>
+	<position x="870.116" y="481"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="10"/>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="10"/>
+	</column>
+	<column name="synctrn_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="last_sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_synctrl_id" type="pk-constr" table="kernel.sync_control">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
 <table name="sync_job_def">
 	<schema name="kernel"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Kernel sync_job_def table which hold all sync job details]]></comment>
-	<position x="420.465" y="202"/>
+	<position x="461.732" y="61"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -285,7 +225,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="kernel"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[kernel sync_transaction table which hold all sync job details and transactions]]></comment>
-	<position x="896.481" y="536"/>
+	<position x="861.749" y="57"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -311,16 +251,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="32"/>
 	</column>
 	<column name="machine_id">
-		<type name="character varying" length="36"/>
+		<type name="character varying" length="10"/>
 	</column>
 	<column name="regcntr_id">
-		<type name="character varying" length="36"/>
+		<type name="character varying" length="10"/>
 	</column>
 	<column name="ref_id_type">
 		<type name="character varying" length="64"/>
 	</column>
 	<column name="ref_id">
-		<type name="character varying" length="36"/>
+		<type name="character varying" length="64"/>
 	</column>
 	<column name="sync_param">
 		<type name="character varying" length="2048"/>
@@ -351,31 +291,17 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="sync_control">
+<table name="key_policy_def">
 	<schema name="kernel"/>
 	<role name="sysadmin"/>
-	<comment><![CDATA[kernel sync_control table which hold all sucessfull sync job details]]></comment>
-	<position x="906.097" y="194"/>
-	<column name="id" not-null="true">
+	<comment><![CDATA[Key policy defination table keep key validity for keys generated for application]]></comment>
+	<position x="870.365" y="790"/>
+	<column name="app_id" not-null="true">
 		<type name="character varying" length="36"/>
+		<comment><![CDATA[master.app_detail , Application id mapped to Application detail table in master databse]]></comment>
 	</column>
-	<column name="syncjob_id" not-null="true">
-		<type name="character varying" length="36"/>
-	</column>
-	<column name="machine_id">
-		<type name="character varying" length="36"/>
-	</column>
-	<column name="regcntr_id">
-		<type name="character varying" length="36"/>
-	</column>
-	<column name="synctrn_id" not-null="true">
-		<type name="character varying" length="36"/>
-	</column>
-	<column name="last_sync_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-	</column>
-	<column name="lang_code">
-		<type name="character varying" length="3"/>
+	<column name="key_validity_duration">
+		<type name="smallint" length="0"/>
 	</column>
 	<column name="is_active" not-null="true">
 		<type name="boolean" length="0"/>
@@ -398,16 +324,190 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
 	</column>
-	<constraint name="pk_synctrl_id" type="pk-constr" table="kernel.sync_control">
+	<constraint name="pk_keypdef_id" type="pk-constr" table="kernel.key_policy_def">
+		<columns names="app_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_alias">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Manange alias mapping tables is to store key aliases to map and get key from Key Store device like HSM]]></comment>
+	<position x="50" y="447.25"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Alias ID is a unique identifier (UUID) used for storing keys in SoftHSM keystore and mapped in the table]]></comment>
+	</column>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="key_gen_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="key_expire_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+	</column>
+	<constraint name="pk_keymals_id" type="pk-constr" table="kernel.key_alias">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<constraint name="fk_synctrn_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_transaction">
-	<columns names="syncjob_id" ref-type="src-columns"/>
-	<columns names="id" ref-type="dst-columns"/>
-</constraint>
+<table name="key_policy_def_h">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key policy defination table keep key validity for keys generated for application]]></comment>
+	<position x="50.0163" y="731.25"/>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[master.app_detail , Application id mapped to Application detail table in master databse]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="key_validity_duration">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_keypdefh_id" type="pk-constr" table="kernel.key_policy_def_h">
+		<columns names="app_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_keymals_id" table="kernel.key_alias"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="app_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="ref_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="key_gen_dtimes"/>
+		</idxelement>
+</index>
+
+<table name="key_store">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Manange store table which will store all the private and public keys for MOSIP applications]]></comment>
+	<position x="488.033" y="450.25"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Alias ID is a unique identifier (UUID) used for storing keys and mapping]]></comment>
+	</column>
+	<column name="master_key" not-null="true">
+		<type name="character varying" length="36"/>
+	</column>
+	<column name="private_key" not-null="true">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="public_key" not-null="true">
+		<type name="bytea" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_keystr_id" type="pk-constr" table="kernel.key_store">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Kernel tables to keep all pre generated UIN numbers]]></comment>
+	<position x="487.049" y="735.25"/>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="28"/>
+	</column>
+	<column name="is_used">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="pk_uin_id" type="pk-constr" table="kernel.uin">
+		<columns names="uin" ref-type="src-columns"/>
+	</constraint>
+</table>
 
 <constraint name="fk_synctrl_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_control">
@@ -421,22 +521,28 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<relationship name="rel_sync_transaction_sync_job_def" type="relfk"
-	 custom-color="#4b3e56"
-	 src-table="kernel.sync_transaction"
-	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrn_syncjob"
-	 src-required="false" dst-required="false"/>
+<constraint name="fk_synctrn_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_transaction">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
 
 <relationship name="rel_sync_control_sync_job_def" type="relfk"
-	 custom-color="#9ac721"
+	 custom-color="#5aa578"
 	 src-table="kernel.sync_control"
 	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrl_syncjob"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_sync_control_sync_transaction" type="relfk"
-	 custom-color="#249b49"
+	 custom-color="#4b3e56"
 	 src-table="kernel.sync_control"
 	 dst-table="kernel.sync_transaction" reference-fk="fk_synctrl_synctrn"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_transaction_sync_job_def" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="kernel.sync_transaction"
+	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrn_syncjob"
 	 src-required="false" dst-required="false"/>
 
 <permission>
@@ -459,46 +565,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<privileges connect="true"/>
 </permission>
 <permission>
-	<object name="ids" type="schema"/>
-	<roles names="sysadmin"/>
-	<privileges create="true" usage="true"/>
-</permission>
-<permission>
-	<object name="ids" type="schema"/>
-	<roles names="kerneluser"/>
-	<privileges usage="true"/>
-</permission>
-<permission>
-	<object name="ids.uins" type="table"/>
-	<roles names="appadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="ids.uins" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
-</permission>
-<permission>
-	<object name="ids.prid" type="table"/>
-	<roles names="appadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="ids.prid" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
-</permission>
-<permission>
-	<object name="ids.rid" type="table"/>
-	<roles names="appadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="ids.rid" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
-</permission>
-<permission>
 	<object name="kernel" type="schema"/>
 	<roles names="sysadmin"/>
 	<privileges create="true" usage="true"/>
@@ -510,42 +576,47 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </permission>
 <permission>
 	<object name="kernel.otp_transaction" type="table"/>
-	<roles names="appadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="kernel.otp_transaction" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
-</permission>
-<permission>
-	<object name="kernel.sync_job_def" type="table"/>
-	<roles names="appadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="kernel.sync_job_def" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
-</permission>
-<permission>
-	<object name="kernel.sync_transaction" type="table"/>
-	<roles names="appadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
-</permission>
-<permission>
-	<object name="kernel.sync_transaction" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
-</permission>
-<permission>
-	<object name="kernel.sync_control" type="table"/>
-	<roles names="appadmin"/>
+	<roles names="sysadmin"/>
 	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
 </permission>
 <permission>
 	<object name="kernel.sync_control" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_job_def" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_transaction" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_policy_def" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_alias" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_policy_def_h" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_store" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.uin" type="table"/>
+	<roles names="sysadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
 </permission>
 </dbmodel>
