@@ -42,6 +42,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -283,8 +284,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			Set<String> codes = getLocationCode(
 					locationService.getLocationByLangCodeAndHierarchyLevel(languageCode, hierarchyLevel),
 					hierarchyLevel, text);
-			registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes,
-					languageCode);
+			if (!EmptyCheckUtils.isNullEmpty(codes)) {
+				registrationCentersList = registrationCenterRepository.findRegistrationCenterByListOfLocationCode(codes,
+						languageCode);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
@@ -478,9 +485,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				Set<String> codes = getLocationCode(parLocCodeToListOfLocation, hierarchyLevel, name);
 				uniqueLocCode.addAll(codes);
 			}
-
-			registrationCentersList = registrationCenterRepository
-					.findRegistrationCenterByListOfLocationCode(uniqueLocCode, languageCode);
+			if (!EmptyCheckUtils.isNullEmpty(uniqueLocCode)) {
+				registrationCentersList = registrationCenterRepository
+						.findRegistrationCenterByListOfLocationCode(uniqueLocCode, languageCode);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
 
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
