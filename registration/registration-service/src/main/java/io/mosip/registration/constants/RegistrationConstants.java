@@ -584,7 +584,7 @@ public class RegistrationConstants {
 	public static final String PRE_REGISTRATION_ID = "pre_registration_id";
 	public static final String GET_PRE_REGISTRATION_IDS = "get_pre_registration_Ids";
 	public static final String GET_PRE_REGISTRATION = "get_pre_registration";
-	public static final String REGISTRATION_CLIENT_ID = "59276903416082";
+	public static final String REGISTRATION_CLIENT_ID = "10";
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
