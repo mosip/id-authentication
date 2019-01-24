@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -47,6 +49,19 @@
 						<Font size="22.0" />
 					</font>
 				</Label>
+            <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="40.0" layoutY="13.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <image>
+                  <Image url="@../images/Home.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="55.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/syncdataprocess">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Text>
 			</children>
 		</AnchorPane>
       <Button fx:id="startSyncDataButton" layoutX="829.0" layoutY="57.0" mnemonicParsing="false" onAction="#start" text="%startsyncdata" />

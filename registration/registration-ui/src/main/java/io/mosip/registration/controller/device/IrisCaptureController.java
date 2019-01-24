@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_IRIS_CAPTU
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -442,6 +444,42 @@ public class IrisCaptureController extends BaseController {
 
 	private String getValueFromApplicationMap(String key) {
 		return (String) applicationContext.getApplicationMap().get(key);
+	}
+
+	public void clearIrisData() {
+		leftIrisImage
+				.setImage(new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
+		leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
+
+		rightIrisImage.setImage(
+				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
+		rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
+
+		getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+				.setIrisDetailsDTO(new ArrayList<>());
+	}
+
+	public void clearIrisBasedOnExceptions() {
+		if (getIrisExceptions().stream()
+				.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
+						(RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)))) {
+			leftIrisImage.setImage(
+					new Image(getClass().getResource(RegistrationConstants.LEFT_IRIS_IMG_PATH).toExternalForm()));
+			leftIrisQualityScore.setText(RegistrationConstants.EMPTY);
+
+			getIrises().removeIf(iris -> iris.getIrisType()
+					.equalsIgnoreCase((RegistrationConstants.LEFT).concat(RegistrationConstants.EYE)));
+		}
+
+		if (getIrisExceptions().stream()
+				.anyMatch(exceptionIris -> StringUtils.containsIgnoreCase(exceptionIris.getMissingBiometric(),
+						(RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)))) {
+			rightIrisImage.setImage(
+					new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
+			rightIrisQualityScore.setText(RegistrationConstants.EMPTY);
+			getIrises().removeIf(iris -> iris.getIrisType()
+					.equalsIgnoreCase((RegistrationConstants.RIGHT).concat(RegistrationConstants.EYE)));
+		}
 	}
 
 }

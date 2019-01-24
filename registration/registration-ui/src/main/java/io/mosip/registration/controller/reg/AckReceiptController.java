@@ -184,8 +184,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
 										RegistrationConstants.MACHINE_ID_GEN);
 
-						if (!number.isEmpty()
-								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+						if (number!=null && notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
 							// send sms
 							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,
 									rid);
@@ -198,7 +197,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getEmail();
 
-						if (!emailId.isEmpty() && notificationServiceName
+						if (emailId!=null && notificationServiceName
 								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 							// send email
 							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,
