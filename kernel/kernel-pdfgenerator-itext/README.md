@@ -1,9 +1,9 @@
 ## kernel-pdfgenerator-itext
 
-1- [Background & Design](../../design/kernel/kernel-pdfgenerator.md)
+[Background & Design](../../docs/design/kernel/kernel-pdfgenerator.md)
  
 
-2- [API Documentation <TBA>](TBA)
+[API Documentation]
  
  ```
  mvn javadoc:javadoc

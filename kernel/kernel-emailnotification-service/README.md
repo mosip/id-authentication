@@ -1,6 +1,6 @@
 # kernel-emailnotification-service
 
-1- [Background & Design](../../design/kernel/kernel-emailnotification.md)
+1- [Background & Design](../../docs/design/kernel/kernel-emailnotification.md)
  
 
 2- [API Documentation <TBA>](TBA)

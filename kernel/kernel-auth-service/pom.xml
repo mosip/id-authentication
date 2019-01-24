@@ -13,7 +13,9 @@
 	<artifactId>kernel-auth-service</artifactId>
 	<packaging>jar</packaging>
 
-
+<properties>
+    <sonar.skip>true</sonar.skip>
+</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
