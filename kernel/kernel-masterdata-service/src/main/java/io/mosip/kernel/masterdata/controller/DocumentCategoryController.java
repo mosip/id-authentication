@@ -90,7 +90,7 @@ public class DocumentCategoryController {
 	@ApiOperation(value = "Service to create document category", notes = "Create document category and return composite id", response = CodeAndLanguageCodeID.class)
 	public ResponseEntity<CodeAndLanguageCodeID> createDocumentCategory(
 			@ApiParam("Document category DTO to create") @Valid @RequestBody RequestDto<DocumentCategoryDto> category) {
-		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.CREATED);
+		return new ResponseEntity<>(documentCategoryService.createDocumentCategory(category), HttpStatus.OK);
 	}
 
 	/**
