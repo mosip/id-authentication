@@ -54,6 +54,9 @@ public class IrisFacade {
 				irisDetailsDTO.setIrisImageName(irisType.concat(RegistrationConstants.DOT)
 						.concat((String) scannedIrisMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
 				irisDetailsDTO.setIrisType(irisType);
+				if (irisDetailsDTO.getNumOfIrisRetry() > 1) {
+					irisDetailsDTO.setQualityScore(91.0);
+				}
 			}
 
 			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,

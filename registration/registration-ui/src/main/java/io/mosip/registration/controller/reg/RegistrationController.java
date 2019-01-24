@@ -33,9 +33,16 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
@@ -440,12 +447,14 @@ public class RegistrationController extends BaseController {
 	private BiometricExceptionController biometricExceptionController;
 	@Autowired
 	private IrisCaptureController irisCaptureController;
+	@Autowired
+	private JsonValidator jsonValidator;
 
-	FXUtils fxUtils;
-	List<LocationDto> locationDtoRegion;
-	List<LocationDto> locationDtoProvince;
-	List<LocationDto> locationDtoCity;
-	List<LocationDto> locactionlocalAdminAuthority;
+	private FXUtils fxUtils;
+	private List<LocationDto> locationDtoRegion;
+	private List<LocationDto> locationDtoProvince;
+	private List<LocationDto> locationDtoCity;
+	private List<LocationDto> locactionlocalAdminAuthority;
 	private String titlePaneText;
 
 	@FXML
@@ -896,18 +905,24 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			RegistrationDTO registrationDTO = getRegistrationDtoContent();
-			DemographicInfoDTO demographicInfoDTO;
 
-			OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
-			RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 			if (validateDemographicPane(demoGraphicPane2)) {
+				OSIDataDTO osiDataDTO = registrationDTO.getOsiDataDTO();
+				RegistrationMetaDataDTO registrationMetaDataDTO = registrationDTO.getRegistrationMetaDataDTO();
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, isChild);
-				demographicInfoDTO = buildDemographicInfo();
+				DemographicInfoDTO demographicInfoDTO = buildDemographicInfo();
+				
+				try {
+					jsonValidator.validateJson(JsonUtils.javaObjectToJsonString(demographicInfoDTO),
+							"mosip-identity-json-schema.json");
+				} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException | FileIOException
+						| JsonProcessingException | RuntimeException exception) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.REG_ID_JSON_VALIDATION_FAILED);
+					return;
+				}
 
 				if (isChild) {
-
 					osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
-
 					registrationMetaDataDTO.setApplicationType(RegistrationConstants.CHILD);
 				} else {
 					registrationMetaDataDTO.setApplicationType(RegistrationConstants.ADULT);
@@ -915,7 +930,8 @@ public class RegistrationController extends BaseController {
 
 				osiDataDTO.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
 
-				registrationDTO.setPreRegistrationId(preRegistrationId.getText());
+				registrationDTO.setPreRegistrationId(preRegistrationId.getText() == RegistrationConstants.EMPTY ? null
+						: preRegistrationId.getText());
 				registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
 
 				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -961,7 +977,6 @@ public class RegistrationController extends BaseController {
 				SessionContext.getInstance().getMapObject().put("toggleAgeOrDob", switchedOn.get());
 			}
 		} catch (RuntimeException runtimeException) {
-			runtimeException.printStackTrace();
 			LOGGER.error("REGISTRATION - SAVING THE DETAILS FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 		}
