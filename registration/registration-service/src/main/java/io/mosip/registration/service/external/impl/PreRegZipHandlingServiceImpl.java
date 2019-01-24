@@ -135,7 +135,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 		documentDetailsDTO.setValue(docCatgory.concat("_").concat(fileName
-				.substring(fileName.lastIndexOf("_") + 1, fileName.lastIndexOf(RegistrationConstants.DOT) + 1)));
+				.substring(fileName.lastIndexOf("_") + 1)));
 	}
 
 	/**

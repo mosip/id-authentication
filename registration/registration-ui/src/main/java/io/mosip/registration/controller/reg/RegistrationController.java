@@ -754,6 +754,7 @@ public class RegistrationController extends BaseController {
 				return;
 			}
 		}
+		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
