@@ -93,20 +93,11 @@ public interface MatchType {
 	public Function<IdentityDTO, Map<String,List<IdentityInfoDTO>>> getIdentityInfoFunction();
 	
 	/**
-	 * Get the Identity Info Function
+	 * Get the Identity Info Function.
 	 *
-	 * @return 
+	 * @return the reqest info function
 	 */
 	public default Function<AuthRequestDTO, Map<String,String>> getReqestInfoFunction() {
-		return req -> Collections.emptyMap();
-	}
-	
-	/**
-	 * Get the Identity Info Function
-	 *
-	 * @return 
-	 */
-	public default Function<AuthRequestDTO, Map<String,String>> getAuthEntityInfoFunction() {
 		return req -> Collections.emptyMap();
 	}
 	

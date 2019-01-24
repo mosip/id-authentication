@@ -22,11 +22,16 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 
+/**
+ * The Enum PinMatchType.
+ * 
+ * @author Sanjay Murali
+ */
 public enum PinMatchType implements MatchType {
 
 	// @formatter:off
 
-	/** Primary Name Match Type. */
+	/** Primary Pin Match Type. */
 	SPIN(IdaIdMapping.PIN,
 			setOf(NameMatchingStrategy.EXACT),
 			authReqDTO -> {
@@ -38,6 +43,7 @@ public enum PinMatchType implements MatchType {
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 	
+	/** The request info function. */
 	private Function<AuthRequestDTO, Map<String, String>> requestInfoFunction;
 
 	/** The used bit. */
@@ -46,22 +52,21 @@ public enum PinMatchType implements MatchType {
 	/** The matched bit. */
 	private AuthUsageDataBit matchedBit;
 
-	/**  */
+	/** The lang type. */
 	private LanguageType langType;
 
-	/**  */
+	/** The id mapping. */
 	private IdMapping idMapping;
 
 	/**
 	 * Instantiates a new demo match type.
 	 *
-	 * @param idMapping
-	 * @param allowedMatchingStrategy
-	 * @param identityInfoFunction
-	 * @param langType
-	 * @param usedBit
-	 * @param matchedBit
-	 * @param entityInfoFetcher
+	 * @param idMapping the id mapping
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param requestInfoFunction the request info function
+	 * @param langType the lang type
+	 * @param usedBit the used bit
+	 * @param matchedBit the matched bit
 	 */
 	private PinMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<AuthRequestDTO, String> requestInfoFunction, LanguageType langType,
@@ -165,7 +170,7 @@ public enum PinMatchType implements MatchType {
 	 */
 	@Override
 	public Category getCategory() {
-		return Category.DEMO;
+		return Category.SPIN;
 	}
 
 	@Override

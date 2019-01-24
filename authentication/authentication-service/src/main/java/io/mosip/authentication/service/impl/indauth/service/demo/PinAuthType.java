@@ -22,6 +22,11 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 
+/**
+ * The Enum PinAuthType.
+ * 
+ * @author Sanjay Murali
+ */
 public enum PinAuthType implements AuthType {
 
 	// @formatter:off

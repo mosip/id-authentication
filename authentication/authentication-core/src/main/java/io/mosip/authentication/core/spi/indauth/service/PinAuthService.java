@@ -11,5 +11,13 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  */
 public interface PinAuthService {
 
+	/**
+	 * Validate pin.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param uin the uin
+	 * @return the auth status info
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	AuthStatusInfo validatePin(AuthRequestDTO authRequestDTO, String uin) throws IdAuthenticationBusinessException;
 }
