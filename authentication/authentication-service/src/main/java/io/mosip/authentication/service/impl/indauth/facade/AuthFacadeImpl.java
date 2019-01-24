@@ -40,6 +40,7 @@ import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
+import io.mosip.authentication.core.spi.indauth.service.PinAuthService;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
@@ -111,6 +112,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The NotificationService */
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private PinAuthService pinAuthService;
 
 	/**
 	 * Process the authorization type and authorization response is returned.
@@ -185,8 +189,31 @@ public class AuthFacadeImpl implements AuthFacade {
 		processDemoAuth(authRequestDTO, idInfo, uin, isAuth, authStatusList, idType);
 
 		processBioAuth(authRequestDTO, idInfo, isAuth, authStatusList, idType);
-
+		
+		processPinAuth(authRequestDTO,uin,isAuth,authStatusList,idType);
+		
 		return authStatusList;
+	}
+
+	private void processPinAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
+			List<AuthStatusInfo> authStatusList, IdType idType) throws IdAuthenticationBusinessException {
+		AuthStatusInfo statusInfo = null;
+		if (authRequestDTO.getAuthType().isPin()) {
+			AuthStatusInfo pinValidationStatus;
+			try {
+
+				pinValidationStatus = pinAuthService.validatePin(authRequestDTO, uin);
+				authStatusList.add(pinValidationStatus);
+				statusInfo = pinValidationStatus;
+			} finally {
+
+				boolean isStatus = statusInfo != null && statusInfo.isStatus();
+
+				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
+//				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, idType, isStatus);
+
+			}
+		}		
 	}
 
 	/**
