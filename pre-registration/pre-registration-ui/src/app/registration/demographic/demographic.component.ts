@@ -94,10 +94,13 @@ export class DemographicComponent implements OnInit {
     pin: 'pin'
   };
 
-  //Need to be removed after translation
-  demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
+  // location = [this.regions, this.provinces, this.cities, this.localAdministrativeAuthorities];
+  // transLocation = [this.transRegions, this.transProvinces, this.transCities, this.transLocalAdministrativeAuthorities];
 
-  demo1 = new DemoLabels('t_fullName', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
+  //Need to be removed after translation
+  // demo = new DemoLabels('', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
+  // demo1 = new DemoLabels('t_fullName', '', 'dd', 'mm', 'yyyy', '', '', '', '', '', '', '', '', '', '', '', '', '');
+  //till here
 
   constructor(
     private router: Router,
@@ -114,7 +117,6 @@ export class DemographicComponent implements OnInit {
     // translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
     //till here
   }
-  // ) {}
 
   ngOnInit() {
     if (localStorage.getItem('newApplicant') === 'true') {
@@ -193,7 +195,11 @@ export class DemographicComponent implements OnInit {
     }
 
     this.userForm = new FormGroup({
-      fullName: new FormControl(fullName.trim(), [Validators.required, this.noWhitespaceValidator]),
+      fullName: new FormControl(fullName.trim(), [
+        Validators.required,
+        Validators.maxLength(50),
+        this.noWhitespaceValidator
+      ]),
       gender: new FormControl(gender, Validators.required),
       age: new FormControl(age, [
         Validators.required,
@@ -222,8 +228,8 @@ export class DemographicComponent implements OnInit {
         Validators.pattern(this.numberPattern)
       ]),
       addressLine1: new FormControl(addressLine1, [Validators.required, this.noWhitespaceValidator]),
-      addressLine2: new FormControl(addressLine2),
-      addressLine3: new FormControl(addressLine3),
+      addressLine2: new FormControl(addressLine2, Validators.maxLength(50)),
+      addressLine3: new FormControl(addressLine3, Validators.maxLength(50)),
       region: new FormControl(region, Validators.required),
       province: new FormControl(province, Validators.required),
       city: new FormControl(city, Validators.required),

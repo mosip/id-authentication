@@ -2,7 +2,9 @@
   "header": {
     "link_about": "À PROPOS DE NOUS",
     "link_faq": "FAQ",
-    "link_contact": "CONTACT"
+    "link_contact": "CONTACT",
+    "link_applications": "Vos Applications",
+    "link_logout": "Connectez - Out"
   },
   "login": {
     "text": "Étapes rapides et faciles",

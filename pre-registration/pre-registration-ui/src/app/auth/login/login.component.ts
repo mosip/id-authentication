@@ -138,6 +138,7 @@ export class LoginComponent implements OnInit {
     } else if (this.showVerify) {
       clearInterval(this.timer);
       console.log(this.inputContactDetails);
+      localStorage.setItem('loggedIn', 'true');
       this.router.navigate(['dashboard', this.inputContactDetails]);
     }
   }

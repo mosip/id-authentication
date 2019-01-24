@@ -33,12 +33,14 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.documents.code.RequestCodes;
-import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -60,9 +62,7 @@ public class DocumentServiceUtil {
 	/**
 	 * Autowired reference for {@link #VirusScanner}
 	 */
-	/*
-	 * @Autowired private VirusScanner<Boolean, String> virusScan;
-	 */
+	@Autowired private VirusScanner<Boolean, String> virusScan;
 
 	/**
 	 * Reference for ${max.file.size} from property file
@@ -167,17 +167,6 @@ public class DocumentServiceUtil {
 		return documentEntity;
 	}
 
-	/**
-	 * This method assigns the values from entity to DTO
-	 * 
-	 * @param entity
-	 *            pass document entity
-	 * @return DocumentDTO
-	 */
-	public DocumentRequestDTO entityToDto(DocumentEntity entity) {
-		log.info("sessionId", "idType", "id", "In entityToDto method of document service util");
-		return null;
-	}
 
 	/**
 	 * This method is used to check whether the key is null
@@ -202,6 +191,7 @@ public class DocumentServiceUtil {
 
 	}
 
+	
 	/**
 	 * @return maximum file size defined.
 	 */
@@ -247,7 +237,7 @@ public class DocumentServiceUtil {
 		if (catCode.equals("POA")) {
 			return true;
 		} else {
-			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
 					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.toString());
 		}
 	}
@@ -305,6 +295,38 @@ public class DocumentServiceUtil {
 		}
 
 	}
+	/**
+	 *  
+	 * @param dto  DocumentRequestDTO
+	 * @return boolean
+	 */
+	
+	public boolean isValidRequest(DocumentRequestDTO dto) {
+		log.info("sessionId", "idType", "id", "In isValidRequest method of document service util");
+		if(isNull(dto.getPreregId())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_PRE_ID.toString());
+		}else if(isNull(dto.getDocCatCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_CAT_CODE.toString());
+		}else if(isNull(dto.getDocFileFormat())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_FILE_FORMAT.toString());
+		}else if(isNull(dto.getDocTypeCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_DOC_TYPE_CODE.toString());
+		}else if(isNull(dto.getLangCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_LANG_CODE.toString());
+		}else if(isNull(dto.getStatusCode())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_STATUS_CODE.toString());
+		}else if(isNull(dto.getUploadBy())) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(), ErrorMessages.INVALID_UPLOAD_BY.toString());
+		}else if(isNull(dto.getUploadDateTime())) {
+			try {
+				new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(getDateString(dto.getUploadDateTime()));
+			} catch (Exception ex) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
+						ErrorMessages.INVALID_UPLOAD_DATE_TIME.toString());
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * This method checks the file extension
@@ -315,10 +337,15 @@ public class DocumentServiceUtil {
 	 *             if uploaded document is not valid
 	 */
 	public boolean isVirusScanSuccess(MultipartFile file) {
-		boolean flag = true;
-		// return virusScan.scanDocument(file.getBytes());
-		log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
-		return flag;
+		boolean flag = false;
+		 try {
+			log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
+			return virusScan.scanDocument(file.getBytes());
+		} catch (java.io.IOException e) {
+           log.error("sessionId", "idType", "id", e.getMessage());
+           throw new VirusScannerException(ErrorCodes.PRG_PAM_DOC_010.toString(),
+					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+		}
 	}
 
 	public boolean callGetPreRegInfoRestService(String preId) {

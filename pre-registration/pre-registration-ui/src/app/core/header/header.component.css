@@ -9,7 +9,7 @@
   /* position: sticky; */
   top: 0;
   z-index: 1;
-  background-color:#30BADD;
+  background-color:#0B6A82;
   border-color:  #707070 ;
   border-width:1px; 
   width:100%;
@@ -50,6 +50,10 @@
   line-height: 1.42857143 !important;
   letter-spacing: 2px;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.header__actions {
+    text-transform: none !important;
 }
 
 @media(min-width:670px){

@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +28,7 @@ import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
+import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
@@ -95,14 +94,14 @@ public class DemographicServiceUtilTest {
 	@Test(expected = InvalidRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest1() {
 		saveDemographicRequest.setCreatedBy(null);
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, "save"))
+		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"Save",Mockito.anyString()))
 				.thenThrow(InvalidRequestParameterException.class);
 	}
 
 	@Test(expected = MissingRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest2() {
 		String type = null;
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type))
+		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,Mockito.anyString()))
 				.thenThrow(MissingRequestParameterException.class);
 	}
 
@@ -129,11 +128,19 @@ public class DemographicServiceUtilTest {
 		String format = "yyyy-MM-dd HH:mm:ss";
 		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
 	}
+	
+	@Test(expected = SystemUnsupportedEncodingException.class)
+	public void dateSetterTest2() throws Exception {
+		Map<String, String> dateMap = new HashMap<>();
+		dateMap.put(RequestCodes.fromDate.toString(), "2018-10-10");
+		String format = "yyyy-MM-dd HH:mm:ss";
+		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(UnsupportedEncodingException.class);
+	}
 
 	@Test(expected = UnsupportedEncodingException.class)
 	public void dateSetterEncodingTest() throws UnsupportedEncodingException {
 		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put(RequestCodes.fromDate.toString(), URLEncoder.encode(ArgumentMatchers.anyString(), "UTF"));
+		dateMap.put(RequestCodes.fromDate.toString(), URLEncoder.encode("", "UTF"));
 		String format = "yyyy-MM-dd HH:mm:ss";
 		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
 	}
