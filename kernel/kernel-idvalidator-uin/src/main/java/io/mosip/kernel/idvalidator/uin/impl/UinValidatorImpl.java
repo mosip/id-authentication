@@ -63,16 +63,8 @@ public class UinValidatorImpl implements UinValidator<String> {
 	private int repeatingLimit;
 
 	/**
-	 * Number of digits in repeating block from first digit of id. example if limit
-	 * is 2 then 43xxxxx67xx32 allowed but 43xxx43xx not allowed in id. (x is any
-	 * digit)
-	 */
-	@Value("${mosip.kernel.uin.length.repeating-first-sub-block-limit:-1}")
-	private int repeatingFirstSubBlockLimit;
-
-	/**
 	 * Number of digits from last digit of UIN need to be reverse example if limit
-	 * is 5 and UIN is 4345643456 then
+	 * is 5 and UIN is 4345665434 then last 5 digits will be 65434, reverse 43456
 	 */
 	@Value("${mosip.kernel.uin.length.reverse-digits-limit:-1}")
 	private int reverseLimit;
@@ -93,24 +85,11 @@ public class UinValidatorImpl implements UinValidator<String> {
 	private int conjugativeEvenDigitsLimit;
 
 	/**
-	 * Number of digits from first digit of UIN need to get repeat if
-	 * reaptingDigitNum is 2 and UIN is 4345643456 the first 2 digit will be 43
-	 */
-	@Value("${mosip.kernel.uin.length.first-repeating-digit-limit:-1}")
-	private int reaptingDigitNum;
-
-	/**
-	 * Number of digits from first digit of UIN need to get repeat if reaptingTimes
-	 * is 5 and UIN is 4345643456 the 5 times 43 should get repeat
-	 */
-	@Value("${mosip.kernel.uin.length.repeating-times-limit:-1}")
-	private int reaptingTimes;
-	
-	/**
 	 * Admin restricted digits
 	 */
 	@Value("${mosip.kernel.uin.length.restricted-admin-digits:-1}")
 	private String restrictedAdminDigit;
+
 	/**
 	 * Ascending digits which will be checked for sequence in id
 	 */
@@ -130,10 +109,6 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Compiled regex pattern of {@link #repeatingBlockRegEx}
 	 */
 	private Pattern repeatingBlockPattern = null;
-	/**
-	 * Compiled regex pattern of {@link #repeatingBlockRegEx}
-	 */
-	private Pattern repeatingFirstSubBlockPattern = null;
 
 	/**
 	 * Compiled regex pattern of {@link #conjugativeEvenDigitsLimitRegEx}
@@ -180,11 +155,9 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 */
 		String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
 
-		// String repeatingFirstSubBlockPattern = "("+sub+"){5}";
+		String conjugativeEvenDigitsLimitRegEx = "[02468]{" + conjugativeEvenDigitsLimit + "}";
 
-		String conjugativeEvenDigitsLimitRegEx = "[02468]{"+conjugativeEvenDigitsLimit+"}";
-		
-		String restrictedAdminDigitRegex = "("+restrictedAdminDigit+")";
+		String restrictedAdminDigitRegex = "(" + restrictedAdminDigit + ")";
 
 		repeatingPattern = Pattern.compile(repeatingRegEx);
 		repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
@@ -303,7 +276,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 * 
 		 * 
 		 */
-		if (!reverseDigitsFromLastToLimit(id, reverseLimit)) {
+		if (firstAndLastDigitsReverseValidation(id, reverseLimit)) {
 			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_REVERSE.getErrorCode(),
 					UinExceptionConstant.UIN_VAL_ILLEGAL_REVERSE.getErrorMessage());
 		}
@@ -317,14 +290,11 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 * 
 		 * 
 		 */
-		if (!firstFiveDigitEqualLastFiveDigit(id, limit)) {
+		if (firstAndLastDigitsValidation(id, limit)) {
 			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_EQUAL_LIMIT.getErrorCode(),
 					UinExceptionConstant.UIN_VAL_ILLEGAL_EQUAL_LIMIT.getErrorMessage());
 		}
-		if (!firstTwoDigitsRepeatingFiveTimes(id, reaptingDigitNum, reaptingTimes)) {
-			throw new InvalidIDException(UinExceptionConstant.UIN_VAL_ILLEGAL_EQUAL_LIMIT.getErrorCode(),
-					UinExceptionConstant.UIN_VAL_ILLEGAL_EQUAL_LIMIT.getErrorMessage());
-		}
+
 		/**
 		 * 
 		 * once the above validation are passed then the method will going to return
@@ -347,7 +317,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	private boolean isValidId(String id) {
 
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
-				|| regexFilter(id, conjugativeEvenDigitsLimitPattern) || regexFilter(id,restrictedAdminDigitPattern) );
+				|| regexFilter(id, conjugativeEvenDigitsLimitPattern) || regexFilter(id, restrictedAdminDigitPattern));
 	}
 
 	/**
@@ -393,17 +363,12 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 *         digits of UIN are Equal to reverse of last 5 digits of the UIN,
 	 *         return True.
 	 */
-	private boolean reverseDigitsFromLastToLimit(String id, int reverseLimit) {
+	private boolean firstAndLastDigitsReverseValidation(String id, int reverseLimit) {
 
 		StringBuilder rev = new StringBuilder(id.substring(reverseLimit, id.length()));
 		rev = rev.reverse();
 
-		if (id.substring(0, reverseLimit).equals(rev.toString())) {
-			return true;
-		} else {
-			return false;
-		}
-
+		return (id.substring(0, reverseLimit).equals(rev.toString()));
 	}
 
 	/**
@@ -421,43 +386,9 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 *         here first 5 digits and last 5 digits equal it will return true. .
 	 */
 
-	private boolean firstFiveDigitEqualLastFiveDigit(String UIN, int limit) {
+	private boolean firstAndLastDigitsValidation(String id, int limit) {
 
-		if (UIN.substring(0, limit).equals(UIN.substring(limit, UIN.length()))) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-	/**
-	 * Checks the input UIN whether digits from first to limit get repeated for given number of times.
-	 * 
-	 * 
-	 * @param id
-	 *            The input UIN id to validate
-	 * @param reaptingDigitsValue
-	 *            Number of digits from first digit to reaptingDigitsValue
-	 *            
-	 * @return true if Number of digits from first digit to reaptingDigitsValue Value get repeated in given number of times
-	 *         Example : if UIN is 3434343434 and reaptingDigitsValue is 2 and reaptingTimes is 5
-	 *         then first 2 digits 43 get repeated in 5 times in given UIN, So it will return true. 
-	 *         UIN should be different from the repetition of the first two digits 5 times (E.g. 3434343434)
-	 */
-	private boolean firstTwoDigitsRepeatingFiveTimes(String UIN, int reaptingDigitsValue, int reaptingTimes) {
-		/*
-		 * reaptingDigitNum is 2, reaptingTimes is 5,  repeatingRegEx ="(43){5}"
-		 */
-
-		String sub = UIN.substring(0, reaptingDigitsValue);
-		String repeatingRegEx = "("+sub+"){"+reaptingTimes+"}";
-
-		Pattern firstTwoDigitsRepeatingPattern = Pattern.compile(repeatingRegEx);
-		if (regexFilter(UIN, firstTwoDigitsRepeatingPattern)) {
-			return true;
-		} else {
-			return false;
-		}
+		return (id.substring(0, limit).equals(id.substring(limit, id.length())));
 
 	}
 
