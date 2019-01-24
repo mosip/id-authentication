@@ -1505,7 +1505,6 @@ public class MasterSyncDaoImplTest {
 		assertTrue(allBlackWords != null);
 	}
 	
-	@Ignore
 	@Test
 	public void findDocumentCategories() throws RegBaseCheckedException {
 	
@@ -1519,7 +1518,7 @@ public class MasterSyncDaoImplTest {
 		List<String> validDocuments = new ArrayList<>();
 		validDocuments.add("MNA");
 		validDocuments.add("CLR");
-		Mockito.when(masterSyncDao.getDocumentTypes(validDocuments,Mockito.anyString())).thenReturn(documents);
+		Mockito.when(masterSyncDao.getDocumentTypes(Mockito.anyList(),Mockito.anyString())).thenReturn(documents);
 	
 		masterSyncDaoImpl.getDocumentTypes(validDocuments,"test");
 		

@@ -1243,7 +1243,6 @@ public class MasterSyncServiceTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void findDocumentCategories() {
 	
