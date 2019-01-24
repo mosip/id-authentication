@@ -79,6 +79,9 @@ public class PreRegistrationDataSyncServiceTest {
 	PreRegZipHandlingService preRegZipHandlingService;
 
 	static byte[] preRegPacket;
+	
+	@Mock
+	File file;
 
 	static Map<String, Object> preRegData = new HashMap<>();
 
@@ -195,10 +198,13 @@ public class PreRegistrationDataSyncServiceTest {
 	public void fetchAndDeleteRecordsTest() {
 		List<PreRegistrationList> preRegList = new ArrayList<>();
 		PreRegistrationList preRegistrationList = new PreRegistrationList();
-		preRegistrationList.setPacketPath("");
+		preRegistrationList.setPacketPath("D://Dummy123");
 		preRegList.add(preRegistrationList);
+		
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
-		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
+		Mockito.doNothing().when(preRegistrationDAO).deleteAll(Mockito.anyList());
+		Mockito.when(file.exists()).thenReturn(true);
+		Mockito.when(file.delete()).thenReturn(true);
 		assertEquals(null, preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords().getErrorResponseDTOs());
 	}
 

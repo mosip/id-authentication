@@ -8,9 +8,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -29,6 +31,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
@@ -41,6 +44,7 @@ import io.mosip.registration.dto.PreRegistrationIdsDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.PreRegistrationList;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -69,6 +73,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
 	
+	/**
+	 * Instance of {@code AuditFactory}
+	 */
+	@Autowired
+	private AuditFactory auditFactory;
+
 	@Value("${PRE_REG_STUB_ENABLED}")
 	private String isStubEnabled;
 
@@ -266,8 +276,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 					return;
 				}
 
-			} catch (HttpClientErrorException | RegBaseCheckedException | java.io.IOException
-					| HttpServerErrorException | IOException exception) {
+			} catch (HttpClientErrorException | RegBaseCheckedException | java.io.IOException | HttpServerErrorException
+					| IOException exception) {
 
 				LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -424,6 +434,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching the records started");
 
+		ResponseDTO responseDTO = new ResponseDTO();
 		// Set the Date 15 days before the current date
 		Calendar startCal = Calendar.getInstance();
 		startCal.add(Calendar.DATE, -preRegPacketDeletionDaysLimit);
@@ -437,26 +448,34 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching the records ended");
 
-		return deletePreRegRecords(preRegList);
+		deletePreRegRecords(responseDTO, preRegList);
+
+		return responseDTO;
 	}
 
-	private ResponseDTO deletePreRegRecords(List<PreRegistrationList> preRegList) {
+	private void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList) {
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Deletion of records started");
 
-		ResponseDTO responseDTO = new ResponseDTO();
-		if (!preRegList.isEmpty()) {
-			int packetDeleteCount = 0;
+		if (!isNull(preRegList) && !isEmpty(preRegList)) {
+
+			/* Registartions to be deleted */
+			List<PreRegistrationList> preRegistartionsToBeDeletedList = new LinkedList<>();
+
 			for (PreRegistrationList preRegRecord : preRegList) {
+
+				/* Get File to be deleted from pre registartion */
 				File preRegPacket = new File(preRegRecord.getPacketPath());
+				System.out.println(preRegPacket.exists() +"  "+preRegPacket.delete());
 				if (preRegPacket.exists() && preRegPacket.delete()) {
-					packetDeleteCount++;
-					preRegRecord.setIsDeleted(true);
+					preRegistartionsToBeDeletedList.add(preRegRecord);
 				}
+
 			}
-			if (preRegList.size() == packetDeleteCount) {
-				responseDTO = updateDeletedRecords(preRegList);
+
+			if (!isEmpty(preRegistartionsToBeDeletedList)) {
+				deleteRecords(responseDTO, preRegistartionsToBeDeletedList);
 			}
 		}
 
@@ -464,33 +483,33 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Deletion of records Ended");
 
-		return responseDTO;
 	}
 
-	private ResponseDTO updateDeletedRecords(List<PreRegistrationList> preRegList) {
+	private ResponseDTO deleteRecords(ResponseDTO responseDTO, List<PreRegistrationList> preRegList) {
 
 		LOGGER.debug(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Updation of deleted records started");
+				"deleted records started");
 
-		ResponseDTO responseDTO = new ResponseDTO();
 		try {
-			preRegList.forEach(preRegRecord -> {
-				preRegistrationDAO.update(preRegRecord);
-			});
+
+			/* Delete All Pre Registartions which were under to be deleted state */
+			preRegistrationDAO.deleteAll(preRegList);
+
+			/* Set Success Response */
 			setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_DELETE_SUCCESS, null);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DELETE - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage());
+			/* Set Error response */
 			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_DELETE_FAILURE, null);
 		}
 
 		LOGGER.debug(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_UPDATE_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Updation of deleted records ended");
+				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "deleted records ended");
 
 		return responseDTO;
 	}
