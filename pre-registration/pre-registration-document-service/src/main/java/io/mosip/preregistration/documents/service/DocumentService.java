@@ -44,7 +44,6 @@ import io.mosip.preregistration.documents.exception.DocumentFailedToDeleteExcept
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
-import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -185,7 +184,7 @@ public class DocumentService {
 					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
-				docResponseDto.setPreRegsitrationId(documentEntity.getPreregId());
+				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
