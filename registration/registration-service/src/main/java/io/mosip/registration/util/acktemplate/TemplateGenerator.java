@@ -108,6 +108,52 @@ public class TemplateGenerator extends BaseService {
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
 					.getMappedCode().toLowerCase();
 
+			// Populating Template Labels in Primary Language
+			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("registrationid"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DATE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("date"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("fullName"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOB_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ageDatePicker"));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("gender"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine1"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine2"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine3"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CITY_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("city"));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("postalCode"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("province"));
+			templateValues.put(RegistrationConstants.TEMPLATE_REGION_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("region"));
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("localAdminAuthority"));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("mobileNo"));
+			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("emailId"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("cniOrPinNumber"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("documents"));
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("biometrics_captured"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ro_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_INDIVIDUAL_PHOTO_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("individualphoto"));
+			templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("exceptionphoto"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINT_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("fingerprint"));
+
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
 			SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
@@ -120,7 +166,7 @@ public class TemplateGenerator extends BaseService {
 							platformLanguageCode));
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
-			if (dob == "") {
+			if (dob == null || dob == "") {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(
 						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
 			} else {
@@ -480,9 +526,9 @@ public class TemplateGenerator extends BaseService {
 							applicationLanguageCode));
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
-			if (dob == null) {
-				values.put(RegistrationConstants.TEMPLATE_DOB,
-						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
+			if (dob == null || dob == "") {
+				values.put(RegistrationConstants.TEMPLATE_DOB,getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(),null));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));

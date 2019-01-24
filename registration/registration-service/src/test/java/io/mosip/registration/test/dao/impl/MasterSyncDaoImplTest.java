@@ -45,7 +45,6 @@ import io.mosip.registration.dto.mastersync.MachineDto;
 import io.mosip.registration.dto.mastersync.MachineSpecificationDto;
 import io.mosip.registration.dto.mastersync.MachineTypeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
-import io.mosip.registration.dto.mastersync.MasterReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.dto.mastersync.PostReasonCategoryDto;
 import io.mosip.registration.dto.mastersync.RegistrationCenterDto;
@@ -375,7 +374,7 @@ public class MasterSyncDaoImplTest {
 		LocationDto locationDto = new LocationDto();
 		locationDto.setCode("1");
 		locationDto.setName("english");
-		locationDto.setLanguageCode("eng");
+		locationDto.setLangCode("eng");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("english");
 		locationDto.setParentLocCode("english");
@@ -623,7 +622,7 @@ public class MasterSyncDaoImplTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
@@ -814,7 +813,7 @@ public class MasterSyncDaoImplTest {
 		LocationDto locationDto = new LocationDto();
 		locationDto.setCode("1");
 		locationDto.setName("english");
-		locationDto.setLanguageCode("eng");
+		locationDto.setLangCode("eng");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("english");
 		locationDto.setParentLocCode("english");
@@ -995,7 +994,7 @@ public class MasterSyncDaoImplTest {
 		LocationDto locationDto = new LocationDto();
 		locationDto.setCode("1");
 		locationDto.setName("english");
-		locationDto.setLanguageCode("eng");
+		locationDto.setLangCode("eng");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("english");
 		locationDto.setParentLocCode("english");
@@ -1177,7 +1176,7 @@ public class MasterSyncDaoImplTest {
 		LocationDto locationDto = new LocationDto();
 		locationDto.setCode("1");
 		locationDto.setName("english");
-		locationDto.setLanguageCode("eng");
+		locationDto.setLangCode("eng");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("english");
 		locationDto.setParentLocCode("english");
@@ -1359,7 +1358,7 @@ public class MasterSyncDaoImplTest {
 		LocationDto locationDto = new LocationDto();
 		locationDto.setCode("1");
 		locationDto.setName("english");
-		locationDto.setLanguageCode("eng");
+		locationDto.setLangCode("eng");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName("english");
 		locationDto.setParentLocCode("english");
@@ -1414,13 +1413,13 @@ public class MasterSyncDaoImplTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLanguageCode(Mockito.anyString(),
+		Mockito.when(masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLangCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(locations);
 
 		masterSyncDaoImpl.findLocationByLangCode("Region", "ENG");
@@ -1435,16 +1434,16 @@ public class MasterSyncDaoImplTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncLocationRepository.findMasterLocationByParentLocCode(Mockito.anyString()))
+		Mockito.when(masterSyncLocationRepository.findMasterLocationByParentLocCodeAndLangCode(Mockito.anyString(),Mockito.anyString()))
 				.thenReturn(locations);
 
-		masterSyncDaoImpl.findLocationByParentLocCode("TPT");
+		masterSyncDaoImpl.findLocationByParentLocCode("TPT","eng");
 
 		assertTrue(locations != null);
 	}

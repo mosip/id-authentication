@@ -91,9 +91,6 @@ public class UpdateUINController extends BaseController implements Initializable
 			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
-			// TODO : remove this stub afterwards
-			uinId.setText("426789089018");
-
 			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 			toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 			switchedOn.addListener(new ChangeListener<Boolean>() {
@@ -113,12 +110,8 @@ public class UpdateUINController extends BaseController implements Initializable
 				}
 			});
 
-			toggleLabel1.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
-			toggleLabel2.setOnMouseClicked((event) -> {
-				switchedOn.set(!switchedOn.get());
-			});
+			toggleLabel1.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
+			toggleLabel2.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
 			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {

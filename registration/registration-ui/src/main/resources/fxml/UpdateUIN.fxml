@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="uinUpdateRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UpdateUINController">
 	<children>
-      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="24.0" layoutY="22.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="17.0" fitWidth="22.0" layoutX="24.0" layoutY="21.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/Home.png" />
          </image>
@@ -20,12 +20,12 @@
       </ImageView>
       <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/uinupdate">
          <font>
-            <Font size="10.0" />
+            <Font size="12.0" />
          </font></Text>
 		<Label layoutX="461.0" layoutY="19.0" text="%uinupdate" />
       <Label layoutX="32.0" layoutY="64.0" text="%uin">
          <font>
-            <Font size="10.0" />
+            <Font size="12.0" />
          </font>
       </Label>
       <TextField fx:id="uinId" layoutX="32.0" layoutY="79.0" prefHeight="25.0" prefWidth="237.0" promptText="%uin" styleClass="uinUpdateTextFiledStyle">
