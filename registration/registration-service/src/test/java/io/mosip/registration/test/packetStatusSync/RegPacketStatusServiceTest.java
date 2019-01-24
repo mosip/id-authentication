@@ -99,6 +99,7 @@ public class RegPacketStatusServiceTest {
 		
 		when(registrationDAO.getRegistrationsToBeDeleted(Mockito.any(), Mockito.anyString())).thenReturn(list);
 		
+		Mockito.doNothing().when(packetStatusDao).delete(Mockito.anyString());
 		packetStatusService.deleteReRegistrationPackets();
 	}
 	
