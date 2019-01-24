@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -82,9 +83,11 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		return globalParamDAO.getGlobalParams();
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.config.GlobalParamService#synchConfigData()
 	 */
 	@Override
 	public ResponseDTO synchConfigData() {
@@ -121,17 +124,29 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			List<GlobalParam> list = new ArrayList<>();
 
 			for (Entry<String, String> key : globalParamMap.entrySet()) {
-				GlobalParam globalParam = new GlobalParam();
-				GlobalParamId globalParamId = new GlobalParamId();
-				globalParamId.setCode(UUID.randomUUID().toString());
-				globalParamId.setLangCode("ENG");
-				globalParam.setGlobalParamId(globalParamId);
-				globalParam.setName(key.getKey());
-				globalParam.setTyp("CONFIGURATION");
-				globalParam.setIsActive(true);
-				globalParam.setCrBy("brahma");
-				globalParam.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
-				globalParam.setVal(globalParamMap.get(key.getValue()));
+
+				GlobalParam globalParam = globalParamDAO.get(key.getKey());
+
+		 		if (globalParam != null) {
+					globalParam.setVal(globalParamMap.get(key.getKey()));
+
+					globalParam.setUpdBy(getUserIdFromSession());
+					globalParam.setUpdDtimes(Timestamp.valueOf(LocalDateTime.now()));
+
+				} else {
+					globalParam = new GlobalParam();
+					GlobalParamId globalParamId = new GlobalParamId();
+					globalParamId.setCode(UUID.randomUUID().toString());
+					globalParamId.setLangCode("ENG");
+					globalParam.setGlobalParamId(globalParamId);
+					globalParam.setName(key.getKey());
+					globalParam.setTyp("CONFIGURATION");
+					globalParam.setIsActive(true);
+					globalParam.setCrBy("brahma");
+					globalParam.setCrDtime(Timestamp.valueOf(LocalDateTime.now()));
+					globalParam.setVal(globalParamMap.get(key.getKey()));
+				}
+
 				list.add(globalParam);
 			}
 
@@ -140,8 +155,9 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 
-		} catch (HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException | ClassCastException
-				| ResourceAccessException exception) {
+		} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException | RegBaseCheckedException
+				| ClassCastException | ResourceAccessException exception) {
+
 			setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
