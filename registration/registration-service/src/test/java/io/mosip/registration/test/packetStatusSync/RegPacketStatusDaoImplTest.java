@@ -56,6 +56,12 @@ public class RegPacketStatusDaoImplTest {
 
 		packetStatusDao.getPacketIdsByStatusUploaded();
 	}
+	
+	@Test
+	public void deleteTest() {
+		Mockito.doNothing().when(registrationRepository).deleteById(Mockito.anyString());
+		packetStatusDao.delete(Mockito.anyString());
+	}
 
 
 }
