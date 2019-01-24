@@ -19,6 +19,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -71,6 +72,8 @@ public class IrisCaptureController extends BaseController {
 	private ScanPopUpViewController scanPopUpViewController;
 	@Autowired
 	private IrisFacade irisFacade;
+	@Autowired
+	private BiometricExceptionController biometricExceptionController;
 
 	private Pane selectedIris;
 
@@ -136,7 +139,6 @@ public class IrisCaptureController extends BaseController {
 			sourcePane.requestFocus();
 			selectedIris = sourcePane;
 			scanIris.setDisable(true);
-
 			// Get the Iris from RegistrationDTO based on selected Iris Pane
 			IrisDetailsDTO irisDetailsDTO = getIrisBySelectedPane().findFirst().orElse(null);
 
@@ -312,6 +314,7 @@ public class IrisCaptureController extends BaseController {
 						registrationController.toggleFingerprintCaptureVisibility(true);
 						registrationController.toggleIrisCaptureVisibility(false);
 					}else if(getRegistrationDTOFromSession().getSelectionListDTO().isBiometricException() && fingerPrintCount==0) {
+						biometricExceptionController.setExceptionImage();
 						registrationController.toggleBiometricExceptionVisibility(true);
 						registrationController.toggleIrisCaptureVisibility(false);
 					}else {

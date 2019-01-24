@@ -916,6 +916,7 @@ public class RegistrationController extends BaseController {
 				togglePhotoCaptureVisibility(false);
 
 				if (toggleBiometricException) {
+					biometricExceptionController.setExceptionImage();
 					biometricException.setVisible(true);
 					toggleFingerprintCaptureVisibility(false);
 				} else {
@@ -1892,7 +1893,7 @@ public class RegistrationController extends BaseController {
 	private void clearAllValues() {
 		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
 				.getBiometricDTO().setApplicantBiometricDTO(createBiometricInfoDTO());
-		biometricExceptionController.setExceptionImage();
+		biometricExceptionController.clearSession();
 		fingerPrintCaptureController.clearFingerPrintDTO();
 		irisCaptureController.clearIrisData();
 	}

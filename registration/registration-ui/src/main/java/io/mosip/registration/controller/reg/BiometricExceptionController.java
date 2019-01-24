@@ -145,7 +145,7 @@ public class BiometricExceptionController extends BaseController implements Init
 				} else {
 					image = (ImageView) rightHandPane.lookup("#" + fingerLabel.getId() + "Img");
 				}
-				if (newValue) {
+				if (newValue && !fingerList.contains(fingerLabel.getId())) {
 					fingerList.add(fingerLabel.getId());
 					image.setVisible(true);
 				} else {
@@ -195,7 +195,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				irisPane.getStyleClass().clear();
-				if (newValue) {
+				if (newValue && !irisList.contains(irisImage.getId())) {
 					irisList.add(irisImage.getId());
 					irisPane.getStyleClass().add(RegistrationConstants.ADD_BORDER);
 				} else {
@@ -266,7 +266,6 @@ public class BiometricExceptionController extends BaseController implements Init
 
 		LOGGER.debug("REGISTRATION - EXCEPTION_DTO_CREATION - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the exception dto in session context");
-
 		List<String> bioList = new ArrayList<>();
 		bioList.addAll(fingerList);
 		bioList.addAll(irisList);
@@ -365,10 +364,12 @@ public class BiometricExceptionController extends BaseController implements Init
 			rightEyePane.getStyleClass().clear();
 		}
 	}
-	
+
 	public void clearSession() {
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,new ArrayList<>());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,new ArrayList<>());
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION,
+				new ArrayList<>());
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION,
+				new ArrayList<>());
 		setExceptionImage();
 	}
 

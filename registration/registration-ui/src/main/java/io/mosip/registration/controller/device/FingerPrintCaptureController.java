@@ -24,6 +24,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -134,6 +135,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	
 	@Autowired
 	private IrisCaptureController irisCaptureController;
+	
+	@Autowired
+	private BiometricExceptionController biometricExceptionController;
 
 	/** The scan btn. */
 	@FXML
@@ -579,6 +583,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
 						.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 					registrationController.toggleFingerprintCaptureVisibility(false);
+					biometricExceptionController.setExceptionImage();
 					registrationController.toggleBiometricExceptionVisibility(true);
 				} else {
 					registrationController.getDemoGraphicTitlePane().setExpanded(true);
