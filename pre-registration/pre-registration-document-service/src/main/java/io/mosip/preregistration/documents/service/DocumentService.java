@@ -44,7 +44,6 @@ import io.mosip.preregistration.documents.exception.DocumentFailedToDeleteExcept
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
-import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -165,7 +164,7 @@ public class DocumentService {
 	 *             on input errors
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	private List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
+	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
