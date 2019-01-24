@@ -25,61 +25,74 @@ import ma.glasnost.orika.metadata.TypeFactory;
  * 
  */
 @Component
-public class DataMapperImpl<S, D> implements DataMapper<S,D>{
+public class DataMapperImpl<S, D> implements DataMapper<S, D> {
 
 	private BoundMapperFacade<S, D> mapper;
 
 	public DataMapperImpl(Class<S> sourceClass, Class<D> destinationClass, boolean mapNull, boolean byDefault,
 			List<IncludeDataField> includeDataField, List<String> excludeDataField) {
-		DefaultMapperFactory mapperFactory = MapperFactoryProvider.getMapperFactory();
-		MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
-		ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
-        classMapBuilder.mapNulls(mapNull);
-		if (excludeDataField != null && !(excludeDataField.isEmpty())) {
-			excludeDataField.forEach(classMapBuilder::exclude);
-		}
+		try {
+			DefaultMapperFactory mapperFactory = MapperFactoryProvider.getMapperFactory();
+			MapperKey mapperKey = new MapperKey(TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
+			ClassMapBuilder<?, ?> classMapBuilder = mapperFactory.classMap(mapperKey.getAType(), mapperKey.getBType());
+			classMapBuilder.mapNulls(mapNull);
+			if (excludeDataField != null && !(excludeDataField.isEmpty())) {
+				excludeDataField.forEach(classMapBuilder::exclude);
+			}
 
-		if (includeDataField != null && !(includeDataField.isEmpty())) {
-			includeDataField.forEach(includedField ->classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull()).field(includedField.getSourceField(),
-					includedField.getDestinationField()));
-		}
+			if (includeDataField != null && !(includeDataField.isEmpty())) {
+				includeDataField.forEach(includedField -> classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull())
+						.field(includedField.getSourceField(), includedField.getDestinationField()));
+			}
 
-		if (byDefault) {
-			classMapBuilder.byDefault().register();
-		} else {
-			classMapBuilder.register();
+			if (byDefault) {
+				classMapBuilder.byDefault().register();
+			} else {
+				classMapBuilder.register();
+			}
+			this.mapper = mapperFactory.getMapperFacade(sourceClass, destinationClass, false);
+		} catch(Exception e) {
+			throw new DataMapperException(DataMapperErrorCodes.MAPPING_ERR.getErrorCode(),
+					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
 		}
-		this.mapper = mapperFactory.getMapperFacade(sourceClass, destinationClass, false);
 	}
-    
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object)
 	 */
 	@Override
 	public D map(S source) {
 		try {
-		return mapper.map(source);
+			return mapper.map(source);
 		} catch (Exception e) {
 			throw new DataMapperException(DataMapperErrorCodes.MAPPING_ERR.getErrorCode(),
 					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object,
+	 * java.lang.Object)
 	 */
 	@Override
 	public void map(S source, D destination) {
 		try {
-		mapper.map(source, destination);
+			mapper.map(source, destination);
 		} catch (Exception e) {
 			throw new DataMapperException(DataMapperErrorCodes.MAPPING_ERR.getErrorCode(),
 					DataMapperErrorCodes.MAPPING_ERR.getErrorMessage(), e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object, java.lang.Object, io.mosip.kernel.core.datamapper.spi.DataConverter)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.datamapper.spi.DataMapper#map(java.lang.Object,
+	 * java.lang.Object, io.mosip.kernel.core.datamapper.spi.DataConverter)
 	 */
 	@Override
 	public void map(S source, D destination, DataConverter<S, D> dataConverter) {
