@@ -1,13 +1,14 @@
 ## Sync Data Service 
 
-[Background & Design](https://github.com/mosip/mosip/wiki/Kernel-APIs) 
+ [Refer wiki for spec](https://github.com/mosip/mosip/wiki/Kernel-APIs) 
+ https://github.com/mosip/mosip/wiki/Kernel-APIs
 
 
 
-** API Documentation **
+[API Documentation]
 
 ```
-mvn javadoc:javadoc
+localhost:8089/swagger-ui.html
 
 ```
 ** 1. Global config **

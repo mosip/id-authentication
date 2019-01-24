@@ -1,6 +1,8 @@
 ## Module kernel-idgenerator-tokenid
 
-[API Documentation](doc/index.html)
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-tokenid.md)
+
+[API Documentation]
 
 
 ```

@@ -1,6 +1,6 @@
 ## kernel-datamapper-orika
 
- 1- [Background & Design](../../design/kernel/kernel-datamapper.md)
+ 1- [Background & Design](../../docs/design/kernel/kernel-datamapper.md)
  
 
 

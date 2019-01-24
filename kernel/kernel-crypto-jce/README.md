@@ -1,5 +1,5 @@
 ## kernel-crypto-jce
-[Background & Design](../../design/kernel/kernel-crypto.md)
+[Background & Design](../../docs/design/kernel/kernel-crypto.md)
 
 **Api Documentation**
 

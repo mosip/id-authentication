@@ -277,16 +277,19 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE,
 						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
 			}
-			/*
-			 * get the quality ranking for fingerprints of the applicant HashMap<String,
-			 * Integer> fingersQuality = getFingerPrintQualityRanking(registration); int
-			 * count=1; for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
-			 * if (entry.getValue() != 0) { // display rank of quality for the captured
-			 * fingerprints velocityContext.put(entry.getKey(), count++); } else { //
-			 * display cross mark for missing fingerprints
-			 * velocityContext.put(entry.getKey(),
-			 * RegistrationConstants.TEMPLATE_MISSING_FINGER); } }
-			 */
+
+			// get the quality ranking for fingerprints of the applicant
+			HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+			for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
+				if (entry.getValue() != 0) {
+					// display rank of quality for the captured fingerprints
+					templateValues.put(entry.getKey(), entry.getValue());
+				} else {
+					// display cross mark for missing fingerprints
+					templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_MISSING_FINGER);
+				}
+			}
+
 			try {
 				BufferedImage handsImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
@@ -432,17 +435,6 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
 					registration.getOsiDataDTO().getOperatorID());
 
-			templateValues.put("rightIndexFinger", "1");
-			templateValues.put("rightMiddleFinger", "4");
-			templateValues.put("rightRingFinger", "2");
-			templateValues.put("rightLittleFinger", "5");
-			templateValues.put("rightThumb", "3");
-			templateValues.put("leftIndexFinger", "6");
-			templateValues.put("leftMiddleFinger", "2");
-			templateValues.put("leftRingFinger", "2");
-			templateValues.put("leftLittleFinger", "4");
-			templateValues.put("leftThumb", "5");
-
 			// get the total count of fingerprints captured and irises captured
 			List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
 					.getFingerprintDetailsDTO();
@@ -527,8 +519,8 @@ public class TemplateGenerator extends BaseService {
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
 			if (dob == null || dob == "") {
-				values.put(RegistrationConstants.TEMPLATE_DOB,getValue(
-						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(),null));
+				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
@@ -591,7 +583,7 @@ public class TemplateGenerator extends BaseService {
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	private HashMap<String, Integer> getFingerPrintQualityRanking(RegistrationDTO registration) {
 		// for storing the fingerprints captured and their respective quality scores
 		HashMap<String, Double> fingersQuality = new HashMap<>();
@@ -602,13 +594,18 @@ public class TemplateGenerator extends BaseService {
 		//
 		if (exceptionFingers != null) {
 			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
-				fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
+				if (exceptionFinger.getBiometricType().equalsIgnoreCase("fingerprint")) {
+					fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
+				}
 			}
 		}
 		List<FingerprintDetailsDTO> availableFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getFingerprintDetailsDTO();
 		for (FingerprintDetailsDTO availableFinger : availableFingers) {
-			fingersQuality.put(availableFinger.getFingerType(), availableFinger.getQualityScore());
+			List<FingerprintDetailsDTO> segmentedFingers = availableFinger.getSegmentedFingerprints();
+			for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
+				fingersQuality.put(segmentedFinger.getFingerType(), segmentedFinger.getQualityScore());
+			}
 		}
 
 		Object[] fingerQualitykeys = fingersQuality.entrySet().toArray();
