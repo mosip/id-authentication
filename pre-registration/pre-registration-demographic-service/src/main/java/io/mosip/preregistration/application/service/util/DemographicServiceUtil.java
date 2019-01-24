@@ -107,7 +107,7 @@ public class DemographicServiceUtil {
 		demographicEntity.setGroupId("1234567890");
 		demographicEntity.setApplicantDetailJson(
 				demographicRequest.getDemographicDetails().toJSONString().getBytes(StandardCharsets.UTF_8));
-		
+
 		demographicEntity.setLangCode(demographicRequest.getLangCode());
 		demographicEntity.setCrAppuserId(requestId);
 		try {
@@ -266,7 +266,7 @@ public class DemographicServiceUtil {
 			localDateTimeMap.put(RequestCodes.fromDate.toString(), DateUtils.parseDateToLocalDateTime(fromDate));
 			localDateTimeMap.put(RequestCodes.toDate.toString(), DateUtils.parseDateToLocalDateTime(toDate));
 
-		} catch (java.text.ParseException ex) {
+		} catch (java.text.ParseException | io.mosip.kernel.core.exception.ParseException ex) {
 			log.error("sessionId", "idType", "id",
 					"In dateSetter method of pre-registration service- " + ex.getCause());
 			throw new DateParseException(ErrorCodes.PRG_PAM_APP_011.toString(),
