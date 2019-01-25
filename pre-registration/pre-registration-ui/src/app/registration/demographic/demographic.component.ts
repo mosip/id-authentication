@@ -273,9 +273,6 @@ export class DemographicComponent implements OnInit {
     await this.getGenderDetails();
     this.filterGenderOnLangCode(this.primaryLang, this.primaryGender);
     this.filterGenderOnLangCode(this.secondaryLang, this.secondaryGender);
-    console.log(this.primaryGender);
-    console.log(this.secondaryGender);
-
     if (this.regService.getUser(this.step) != null) {
       await this.getLocationImmediateHierearchy(this.primaryLang, region, this.provinces, province);
       await this.getLocationImmediateHierearchy(this.secondaryLang, region, this.transProvinces, province);
@@ -348,7 +345,7 @@ export class DemographicComponent implements OnInit {
     if (parentLocation) {
       let loc = {} as LocationModal;
       parentLocation.filter(ele => {
-        if ((ele.locationCode = event.value)) {
+        if (ele.locationCode === event.value) {
           loc = ele;
         }
       });
@@ -361,8 +358,6 @@ export class DemographicComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.dataStorageService.getLocationImmediateHierearchy(lang, location).subscribe(
         response => {
-          console.log('location ', response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations]);
-
           response[appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
             let locationModal: LocationModal = {
               locationCode: element.code,
@@ -386,7 +381,6 @@ export class DemographicComponent implements OnInit {
   }
 
   onGenderChange() {
-    console.log(this.userForm.controls['gender'].value);
     this.userForm.controls['gender'].markAsTouched();
   }
 
