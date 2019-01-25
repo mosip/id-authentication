@@ -48,4 +48,13 @@ public class GlobalParamDAOTest {
 		Mockito.when(globalParamRepository.saveAll(Mockito.any())).thenReturn(new LinkedList<GlobalParam>());
 		globalContextParamDAOImpl.saveAll(params);
 	}
+	@Test
+	public void get()
+	{  
+		GlobalParam globalParam=new GlobalParam();
+		globalParam.setName("name");
+		Mockito.when(globalParamRepository.findByName(Mockito.anyString())).thenReturn(globalParam);
+		//globalContextParamDAOImpl.get("name");
+		assertEquals(globalParam.getName(), globalContextParamDAOImpl.get("name").getName());
+	}  
 }
