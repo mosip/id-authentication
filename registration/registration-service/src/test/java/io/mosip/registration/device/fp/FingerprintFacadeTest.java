@@ -42,6 +42,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserBiometricId;
@@ -49,8 +50,8 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
 //import javafx.scene.image.WritableImage;
+import javafx.scene.image.WritableImage;
 
-@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class })
 public class FingerprintFacadeTest {
@@ -73,9 +74,23 @@ public class FingerprintFacadeTest {
 		biometricDTO.setApplicantBiometricDTO(biometricInfoDTO);
 		registrationDTO.setBiometricDTO(biometricDTO);
 		
+		BiometricDTO useronboardbiometricDTO = new BiometricDTO();
+		useronboardbiometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
 		Map<String, Object> map=new HashMap<>();
 		map.put(RegistrationConstants.REGISTRATION_DATA,registrationDTO);
+		map.put(RegistrationConstants.USER_ONBOARD_DATA, useronboardbiometricDTO);
+		map.put(RegistrationConstants.ONBOARD_USER, false);
 		SessionContext.getInstance().setMapObject(map);
+	}
+	
+	private BiometricInfoDTO createBiometricInfoDTO() {
+		BiometricInfoDTO biometricInfoDTO = new BiometricInfoDTO();
+		biometricInfoDTO.setBiometricExceptionDTO(new ArrayList<>());
+		biometricInfoDTO.setFingerprintDetailsDTO(new ArrayList<>());
+		biometricInfoDTO.setIrisDetailsDTO(new ArrayList<>());
+		FaceDetailsDTO obj = new FaceDetailsDTO();
+		biometricInfoDTO.setFaceDetailsDTO(obj);
+		return biometricInfoDTO;
 	}
 	
 	@Test
@@ -101,14 +116,6 @@ public class FingerprintFacadeTest {
 		String result = fingerprintFacade.getErrorMessage();
 		assertTrue(result.equals(testmin));
 	}
-
-	/*@Test
-	public void testGetFingerPrintImage() throws IOException {
-		WritableImage writableImage = new WritableImage(100, 100);
-		Mockito.when(fingerprintProvider.getFingerPrintImage()).thenReturn(writableImage);
-		WritableImage image = fingerprintProvider.getFingerPrintImage();
-		Assert.assertThat(image, CoreMatchers.is(writableImage));
-	}*/
 
 	@Test
 	public void testGetFingerPrintImageAsDTO() throws IOException, RegBaseCheckedException {
@@ -181,6 +188,44 @@ public class FingerprintFacadeTest {
 		assertEquals(0, fingerprintDTO.getSegmentedFingerprints().get(1).getNumRetry());
 		assertEquals(90.0, fingerprintDTO.getSegmentedFingerprints().get(1).getQualityScore(), 0.1);
 		assertEquals(false, fingerprintDTO.isForceCaptured());
+	}
+	
+	@Test
+	public void testSegmentedFingerPrintUserOnBoard() throws IOException, RegBaseCheckedException {
+
+		FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
+
+		PowerMockito.mockStatic(IOUtils.class);
+		when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
+		String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
+				"/fingerprints/lefthand/leftLittle/" };
+		
+		List<BiometricExceptionDTO> biometricExceptionDTOs=new ArrayList<>();
+		BiometricExceptionDTO biometricExceptionDTO1 = new BiometricExceptionDTO();
+		biometricExceptionDTO1.setMissingBiometric("leftMiddle");
+		BiometricExceptionDTO biometricExceptionDTO2 = new BiometricExceptionDTO();
+		biometricExceptionDTO2.setMissingBiometric("rightMiddle");
+		biometricExceptionDTOs.add(biometricExceptionDTO1);
+		biometricExceptionDTOs.add(biometricExceptionDTO2);
+		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
+		((BiometricDTO)SessionContext.getInstance().getMapObject().get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
+
+		fingerprintFacade.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS);
+
+		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
+		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
+		assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerType());
+		assertEquals(0, fingerprintDTO.getSegmentedFingerprints().get(0).getNumRetry());
+		assertEquals(90.0, fingerprintDTO.getSegmentedFingerprints().get(0).getQualityScore(), 0.1);
+		assertEquals(false, fingerprintDTO.isForceCaptured());
+
+		assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(1).getFingerPrint()));
+		assertEquals("leftLittle", fingerprintDTO.getSegmentedFingerprints().get(1).getFingerprintImageName());
+		assertEquals("leftLittle", fingerprintDTO.getSegmentedFingerprints().get(1).getFingerType());
+		assertEquals(0, fingerprintDTO.getSegmentedFingerprints().get(1).getNumRetry());
+		assertEquals(90.0, fingerprintDTO.getSegmentedFingerprints().get(1).getQualityScore(), 0.1);
+		assertEquals(false, fingerprintDTO.isForceCaptured());
+	
 	}
 
 	@Test

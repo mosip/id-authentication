@@ -37,8 +37,8 @@ public class LogitechPhotoProvider extends PhotoProvider {
 				if (webcams.size() > 1) {
 					webcam = webcams.get(1);
 				} else {
-					//return null;
 					webcam = webcams.get(0);
+					//return null;
 				}
 			} else {
 				webcam = webcams.get(0);

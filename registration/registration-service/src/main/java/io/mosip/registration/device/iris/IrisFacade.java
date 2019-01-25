@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -74,17 +75,21 @@ public class IrisFacade {
 					"Scanning of iris details for user registration");
 
 			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/images/scanned-iris.png"));
-			
+
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
 
 			byte[] scannedIrisBytes = byteArrayOutputStream.toByteArray();
-			
+
 			double qualityScore;
 			if (irisType.equalsIgnoreCase("LeftEye")) {
 				qualityScore = 90.5;
 			} else {
-				qualityScore = 50.0;
+				if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+					qualityScore = 90.0;
+				}else {
+					qualityScore = 50.0;
+				}
 			}
 
 			// Add image format, image and quality score in bytes array to map
@@ -106,33 +111,33 @@ public class IrisFacade {
 							runtimeException.getMessage(), runtimeException.getCause()));
 		}
 	}
-	
+
 	/**
 	 * Capture Iris
 	 * 
 	 * @return byte[] of captured Iris
 	 */
 	public byte[] captureIris() {
-		
-		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
-				"Stub data for Iris");
-		
+
+		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
+
 		return RegistrationConstants.IRIS_STUB.getBytes();
 	}
-	
+
 	/**
 	 * Validate Iris
 	 * 
 	 * @return boolean of captured Iris
 	 */
 	public boolean validateIris(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails) {
-		
+
 		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Validating iris details for user registration");
-		
-		userIrisDetails.forEach(irisEach -> 
-		irisDetailsDTO.setIrisType(irisEach.getUserBiometricId().getBioAttributeCode()+".jpg"));
-		return userIrisDetails.stream().anyMatch(iris -> Arrays.equals(irisDetailsDTO.getIris(), iris.getBioIsoImage()));
+
+		userIrisDetails.forEach(
+				irisEach -> irisDetailsDTO.setIrisType(irisEach.getUserBiometricId().getBioAttributeCode() + ".jpg"));
+		return userIrisDetails.stream()
+				.anyMatch(iris -> Arrays.equals(irisDetailsDTO.getIris(), iris.getBioIsoImage()));
 	}
 
 }

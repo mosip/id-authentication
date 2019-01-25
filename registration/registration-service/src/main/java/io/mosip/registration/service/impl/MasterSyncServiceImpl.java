@@ -181,8 +181,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		// Setting uri Variables
 
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
-		requestParamMap.put("machineId", machineId);
-		requestParamMap.put("lastUpdated", lastSyncTime.toString());
+		requestParamMap.put(RegistrationConstants.MACHINE_ID, machineId);
+		requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, lastSyncTime.toString());
 
 		try {
 			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,

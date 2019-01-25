@@ -47,7 +47,6 @@ import io.mosip.registration.repositories.UserBiometricRepository;
  *
  * @since 1.0.0
  */
-@Ignore
 public class UserOnBoardDAOImlpTest {
 
 	@Rule

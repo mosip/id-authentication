@@ -234,7 +234,9 @@ public class IrisCaptureController extends BaseController {
 				getIrises().add(irisDetailsDTO);
 			} else {
 				irisDetailsDTO = captiredIrisDetailsDTO.get();
+				if (!(boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 				irisDetailsDTO.setNumOfIrisRetry(irisDetailsDTO.getNumOfIrisRetry() + 1);
+				}
 			}
 
 			String irisType = StringUtils.containsIgnoreCase(selectedIris.getId(), RegistrationConstants.LEFT)

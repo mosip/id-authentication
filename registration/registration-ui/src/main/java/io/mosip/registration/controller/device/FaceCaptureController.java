@@ -93,7 +93,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.debug("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FaceCapture screen started");
 
-		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE) || (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
+				|| (boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			if (toggleBiometricException != null) {
 				if (toggleBiometricException) {
 					captureExceptionImage.setDisable(false);
@@ -103,7 +104,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 			// for applicant biometrics
 			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-				
+
 				if (getBiometricDTOFromSession() != null && getBiometricDTOFromSession().getOperatorBiometricDTO()
 						.getFaceDetailsDTO().getFace() != null) {
 					applicantImage.setImage(convertBytesToImage(
@@ -210,29 +211,33 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			if (validateOperatorPhoto()) {
-				ResponseDTO response = userOnboardService.validate(getBiometricDTOFromSession());
-				if (response != null && response.getErrorResponseDTOs() != null
-						&& response.getErrorResponseDTOs().get(0) != null) {
-					generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
-				} else if (response != null && response.getSuccessResponseDTO() != null) {
-					try {
-						popupStage = new Stage();
-						popupStage.initStyle(StageStyle.DECORATED);
-						Parent scanPopup = BaseController.load(getClass().getResource("/fxml/UserOnboardSuccess.fxml"));
-						popupStage.setResizable(false);
-						Scene scene = new Scene(scanPopup);
-						ClassLoader loader = Thread.currentThread().getContextClassLoader();
-						scene.getStylesheets()
-								.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-						popupStage.setScene(scene);
-						popupStage.initModality(Modality.WINDOW_MODAL);
-						popupStage.initOwner(fXComponents.getStage());
-						popupStage.show();
-					} catch (IOException exception) {
-						LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-								exception.getMessage());
-						generateAlert(RegistrationConstants.ERROR,
-								RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
+				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
+				if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
+					ResponseDTO response = userOnboardService.validate(getBiometricDTOFromSession());
+					if (response != null && response.getErrorResponseDTOs() != null
+							&& response.getErrorResponseDTOs().get(0) != null) {
+						generateAlert(RegistrationConstants.ERROR, response.getErrorResponseDTOs().get(0).getMessage());
+					} else if (response != null && response.getSuccessResponseDTO() != null) {
+						try {
+							popupStage = new Stage();
+							popupStage.initStyle(StageStyle.DECORATED);
+							Parent scanPopup = BaseController
+									.load(getClass().getResource("/fxml/UserOnboardSuccess.fxml"));
+							popupStage.setResizable(false);
+							Scene scene = new Scene(scanPopup);
+							ClassLoader loader = Thread.currentThread().getContextClassLoader();
+							scene.getStylesheets()
+									.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+							popupStage.setScene(scene);
+							popupStage.initModality(Modality.WINDOW_MODAL);
+							popupStage.initOwner(fXComponents.getStage());
+							popupStage.show();
+						} catch (IOException exception) {
+							LOGGER.error("REGISTRATION - USERONBOARD CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+									exception.getMessage());
+							generateAlert(RegistrationConstants.ERROR,
+									RegistrationUIConstants.UNABLE_LOAD_USERONBOARD_SCREEN);
+						}
 					}
 				}
 			}
@@ -246,8 +251,16 @@ public class FaceCaptureController extends BaseController implements Initializab
 	@FXML
 	private void goToPreviousPane() {
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
-		} else {
+			if (validateOperatorPhoto()) {
+				registrationController.saveBiometricDetails(applicantBufferedImage, exceptionBufferedImage);
+				if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
+					loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
+				}
+			}
+
+		} else
+
+		{
 			registrationController.goToPreviousPane();
 		}
 	}
@@ -262,19 +275,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
 			applicantImageCaptured = true;
-			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-				try {
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-							byteArrayOutputStream);
-					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO()
-							.setFace(photoInBytes);
-				} catch (IOException exception) {
-					LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, exception.getMessage());
-				}
-			}
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
@@ -395,8 +395,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private void loadLoginScreen() {
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, false);
-		SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
+		clearOnboardData();
 		if (popupStage.isShowing()) {
 			popupStage.close();
 			goToHomePage();
