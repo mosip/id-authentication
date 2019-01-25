@@ -274,7 +274,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			for (Map<String, String> registrationMap : approvalmapList) {
 
-				if (registrationMap.containsValue(table.getSelectionModel().getSelectedItem().getId())) {
+				if (registrationMap.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
 
 					approvalmapList.remove(registrationMap);
 
@@ -283,7 +283,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 
 			Map<String, String> map = new HashMap<>();
-			map.put(RegistrationConstants.REGISTRATIONID, table.getSelectionModel().getSelectedItem().getId());
+			map.put(RegistrationConstants.REGISTRATIONID, table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
@@ -292,11 +292,14 @@ public class RegistrationApprovalController extends BaseController implements In
 			approvalBtn.setSelected(true);
 			rejectionBtn.setSelected(false);
 
+			int rowNum = table.getSelectionModel().getFocusedIndex();
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
-					table.getSelectionModel().getSelectedItem().getId(),
-					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
+					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
+					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationConstants.APPROVED);
-			table.getItems().set(table.getSelectionModel().getSelectedIndex(), approvalDTO);
+			table.getItems().set(rowNum, approvalDTO);
+			table.requestFocus();
+			table.getFocusModel().focus(rowNum);
 
 		} else {
 
@@ -306,7 +309,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(table.getSelectionModel().getSelectedItem(), primarystage,
+					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()), primarystage,
 							approvalmapList, table, "RegistrationApprovalController");
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
