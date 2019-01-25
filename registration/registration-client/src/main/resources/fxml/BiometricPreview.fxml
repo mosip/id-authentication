@@ -86,7 +86,7 @@
                                           </AnchorPane>
                                           <AnchorPane layoutX="26.0" layoutY="20.0" prefHeight="248.0" prefWidth="234.0">
                                              <children>
-                                                <Label layoutX="47.0" layoutY="207.0" text="%individualphoto" />
+                                                <Label layoutX="50.0" layoutY="207.0" text="%individualphoto" />
                                                 <ImageView fx:id="individualPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="17.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../images/ApplicantPhoto.png" />

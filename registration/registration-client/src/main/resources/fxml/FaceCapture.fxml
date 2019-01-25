@@ -15,7 +15,7 @@
 	<children>
 		<Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="%capture" />
 		<Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="%capture" />
-		<Label layoutX="172.0" layoutY="328.0" text="%applicantimage" />
+		<Label layoutX="180.0" layoutY="328.0" text="%applicantimage" />
 		<Label layoutX="537.0" layoutY="328.0" text="%exceptionimage" />
 		<Label layoutX="115.0" layoutY="390.0" text="%threshold" visible="false">
 			<font>
