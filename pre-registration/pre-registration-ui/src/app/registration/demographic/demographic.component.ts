@@ -26,14 +26,15 @@ import { TranslateService } from '@ngx-translate/core';
 export class DemographicComponent implements OnInit {
   textDir = localStorage.getItem('dir');
   secTextDir = localStorage.getItem('secondaryDir');
-  // keyboardLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.primaryKeyboardLang];
-  keyboardLang = localStorage.getItem('langCode');
-  // keyboardSecondaryLang = appConstants.virtual_keyboard_languages[appConstants.LANGUAGE_CODE.secondaryKeyboardLang];
-  keyboardSecondaryLang = localStorage.getItem('secondaryLangCode');
+  // keyboardLang = localStorage.getItem('langCode');
+  // keyboardSecondaryLang = localStorage.getItem('secondaryLangCode');
+  primaryLang = localStorage.getItem('langCode');
+  secondaryLang = localStorage.getItem('secondaryLangCode');
+  keyboardLang = appConstants.virtual_keyboard_languages[this.primaryLang];
+  keyboardSecondaryLang = appConstants.virtual_keyboard_languages[this.secondaryLang];
   numberPattern = appConstants.NUMBER_PATTERN;
   textPattern = appConstants.TEXT_PATTERN;
-  primaryLang = appConstants.LANGUAGE_CODE.primary;
-  secondaryLang = appConstants.LANGUAGE_CODE.secondary;
+
   ageOrDobPref = '';
   showDate = false;
   isNewApplicant = false;
@@ -122,6 +123,12 @@ export class DemographicComponent implements OnInit {
     if (localStorage.getItem('newApplicant') === 'true') {
       this.isNewApplicant = true;
     }
+    // if (localStorage.getItem('langCode') === 'ar') {
+    //   this.primaryLang = 'ara';
+    // }
+    // if (localStorage.getItem('langCode') === 'ar') {
+    //   this.primaryLang = 'ara';
+    // }
     this.regService.currentMessage.subscribe(message => (this.message = message));
     if (this.message['modifyUser'] === 'true') {
       this.step = this.regService.getUsers().length - 1;

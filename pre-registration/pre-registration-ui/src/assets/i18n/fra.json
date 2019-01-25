@@ -171,19 +171,19 @@
     "action_download": "TÉLÉCHARGER",
     "action_print": "IMPRESSION"
   },
-  "dialog":{
-    "title_applicant":"Nombre de candidats",
-    "content_applicant":"Les détails du premier demandeur seront traités comme primaires",
-    "invalidApplicantNumber_msg":"Le nombre doit être compris entre 1 et 10",
-    "action_ok":"D'accord",
-    "title_discard":"Jeter",
-    "action_discard_app":"Jeter toute l'application",
-    "action_cancel":"Annuler un rendez-vous et sauvegarder les détails",
-    "action_submit":"Soumettre",
-    "action_dismiss":"D'accord",
-    "action_add":"Ajouter",
-    "action_close":"Fermer",
-    "action_add_to_slot":"Ajouter à la fente"
+  "dialog": {
+    "title_applicant": "Nombre de candidats",
+    "content_applicant": "Les détails du premier demandeur seront traités comme primaires",
+    "invalidApplicantNumber_msg": "Le nombre doit être compris entre 1 et 10",
+    "action_ok": "D'accord",
+    "title_discard": "Jeter",
+    "action_discard_app": "Jeter toute l'application",
+    "action_cancel": "Annuler un rendez-vous et sauvegarder les détails",
+    "action_submit": "Soumettre",
+    "action_dismiss": "D'accord",
+    "action_add": "Ajouter",
+    "action_close": "Fermer",
+    "action_add_to_slot": "Ajouter à la fente"
   },
   "ack": {
     "container_guideline": "Directives importantes",
