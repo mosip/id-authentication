@@ -17,19 +17,18 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Java class for SingleAnySubtypeType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
  * <pre>
- * &lt;simpleType name="SingleAnySubtypeType">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="Left"/>
- *     &lt;enumeration value="Right"/>
- *     &lt;enumeration value="Thumb"/>
- *     &lt;enumeration value="IndexFinger"/>
- *     &lt;enumeration value="MiddleFinger"/>
- *     &lt;enumeration value="RingFinger"/>
- *     &lt;enumeration value="LittleFinger"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="SingleAnySubtypeType"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *     &lt;enumeration value="Left"/&gt;
+ *     &lt;enumeration value="Right"/&gt;
+ *     &lt;enumeration value="Thumb"/&gt;
+ *     &lt;enumeration value="IndexFinger"/&gt;
+ *     &lt;enumeration value="MiddleFinger"/&gt;
+ *     &lt;enumeration value="RingFinger"/&gt;
+ *     &lt;enumeration value="LittleFinger"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

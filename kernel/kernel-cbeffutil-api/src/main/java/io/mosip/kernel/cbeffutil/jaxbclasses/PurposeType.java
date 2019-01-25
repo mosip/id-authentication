@@ -17,18 +17,17 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Java class for PurposeType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
  * <pre>
- * &lt;simpleType name="PurposeType">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="Verify"/>
- *     &lt;enumeration value="Identify"/>
- *     &lt;enumeration value="Enroll"/>
- *     &lt;enumeration value="EnrollVerify"/>
- *     &lt;enumeration value="EnrollIdentify"/>
- *     &lt;enumeration value="Audit"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="PurposeType"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *     &lt;enumeration value="Verify"/&gt;
+ *     &lt;enumeration value="Identify"/&gt;
+ *     &lt;enumeration value="Enroll"/&gt;
+ *     &lt;enumeration value="EnrollVerify"/&gt;
+ *     &lt;enumeration value="EnrollIdentify"/&gt;
+ *     &lt;enumeration value="Audit"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

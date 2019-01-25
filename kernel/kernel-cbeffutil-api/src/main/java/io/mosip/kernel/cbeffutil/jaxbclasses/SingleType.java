@@ -17,27 +17,26 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Java class for SingleTypeType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
  * <pre>
- * &lt;simpleType name="SingleTypeType">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="Scent"/>
- *     &lt;enumeration value="DNA"/>
- *     &lt;enumeration value="Ear "/>
- *     &lt;enumeration value="Face"/>
- *     &lt;enumeration value="Finger"/>
- *     &lt;enumeration value="Foot"/>
- *     &lt;enumeration value="Vein"/>
- *     &lt;enumeration value="HandGeometry"/>
- *     &lt;enumeration value="Iris"/>
- *     &lt;enumeration value="Retina"/>
- *     &lt;enumeration value="Voice"/>
- *     &lt;enumeration value="Gait"/>
- *     &lt;enumeration value="Keystroke"/>
- *     &lt;enumeration value="LipMovement"/>
- *     &lt;enumeration value="SignatureSign"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="SingleTypeType"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *     &lt;enumeration value="Scent"/&gt;
+ *     &lt;enumeration value="DNA"/&gt;
+ *     &lt;enumeration value="Ear "/&gt;
+ *     &lt;enumeration value="Face"/&gt;
+ *     &lt;enumeration value="Finger"/&gt;
+ *     &lt;enumeration value="Foot"/&gt;
+ *     &lt;enumeration value="Vein"/&gt;
+ *     &lt;enumeration value="HandGeometry"/&gt;
+ *     &lt;enumeration value="Iris"/&gt;
+ *     &lt;enumeration value="Retina"/&gt;
+ *     &lt;enumeration value="Voice"/&gt;
+ *     &lt;enumeration value="Gait"/&gt;
+ *     &lt;enumeration value="Keystroke"/&gt;
+ *     &lt;enumeration value="LipMovement"/&gt;
+ *     &lt;enumeration value="SignatureSign"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

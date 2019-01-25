@@ -29,29 +29,29 @@ import io.mosip.kernel.cbeffutil.common.DateAdapter;
  * this class.
  * 
  * <pre>
- * &lt;complexType name="BDBInfoType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="ChallengeResponse" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
- *         &lt;element name="Index" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}UUIDType" minOccurs="0"/>
- *         &lt;element name="FormatOwner" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="FormatType" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="Encryption" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="CreationDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="NotValidBefore" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="NotValidAfter" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="Type" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}MultipleTypesType" minOccurs="0"/>
- *         &lt;element name="Subtype" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}SubtypeType" minOccurs="0"/>
- *         &lt;element name="Level" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}ProcessedLevelType" minOccurs="0"/>
- *         &lt;element name="ProductOwner" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="ProductType" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/>
- *         &lt;element name="Purpose" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}PurposeType" minOccurs="0"/>
- *         &lt;element name="Quality" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}QualityType" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="BDBInfoType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="ChallengeResponse" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
+ *         &lt;element name="Index" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}UUIDType" minOccurs="0"/&gt;
+ *         &lt;element name="FormatOwner" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/&gt;
+ *         &lt;element name="FormatType" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/&gt;
+ *         &lt;element name="Encryption" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="CreationDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="NotValidBefore" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="NotValidAfter" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="Type" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}MultipleTypesType" minOccurs="0"/&gt;
+ *         &lt;element name="Subtype" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}SubtypeType" minOccurs="0"/&gt;
+ *         &lt;element name="Level" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}ProcessedLevelType" minOccurs="0"/&gt;
+ *         &lt;element name="ProductOwner" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/&gt;
+ *         &lt;element name="ProductType" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0"/&gt;
+ *         &lt;element name="Purpose" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}PurposeType" minOccurs="0"/&gt;
+ *         &lt;element name="Quality" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}QualityType" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -253,10 +253,10 @@ public class BDBInfoType {
 	 * getType().add(newItem);
 	 * </pre>
 	 * 
-	 * 
+	 *  @return type list of single type
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list
-	 * {@link SingleTypeType }
+	 * 
 	 * 
 	 * 
 	 */
@@ -283,7 +283,7 @@ public class BDBInfoType {
 	 * getSubtype().add(newItem);
 	 * </pre>
 	 * 
-	 * 
+	 * @return list of single type
 	 * <p>
 	 * Objects of the following type(s) are allowed in the list {@link String }
 	 * 

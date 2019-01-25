@@ -27,8 +27,8 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	/**
 	 * Method where the initialization of BIR happens
 	 * 
-	 * @param List of BIR data
-	 * @return BIR data with all images
+	 * @param birList List of BIR data
+	 * @return BIRType data with all images
 	 */
 	@Override
 	public BIRType createBIRType(List<BIR> birList) {
@@ -63,11 +63,11 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	/**
 	 * Method to the update of BIR
 	 * 
-	 * @param List of BIR data
+	 * @param birList List of BIR data
 	 * 
-	 * @param Cbeff XML data as bytes
+	 * @param fileBytes Cbeff XML data as bytes
 	 * 
-	 * @return BIR data with all images
+	 * @return birType BIR data with all images
 	 */
 	@Override
 	public BIRType updateBIRType(List<BIR> birList, byte[] fileBytes) throws Exception {
@@ -83,9 +83,9 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	/**
 	 * Method to the validate the BIR
 	 * 
-	 * @param Cbeff XML data as bytes array
+	 * @param xmlBytes Cbeff XML data as bytes array
 	 * 
-	 * @param Cbeff XSD data as bytes array
+	 * @param xsdBytes Cbeff XSD data as bytes array
 	 * 
 	 * @return boolean of validated XML against XSD
 	 */

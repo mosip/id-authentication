@@ -42,7 +42,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BIRType }
-     * 
+     * @return BIRType
      */
     public BIRType createBIRType() {
         return new BIRType();
@@ -50,7 +50,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link VersionType }
-     * 
+     * @return VersionType
      */
     public VersionType createVersionType() {
         return new VersionType();
@@ -58,7 +58,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BDBInfoType }
-     * 
+     * @return BDBInfoType
      */
     public BDBInfoType createBDBInfoType() {
         return new BDBInfoType();
@@ -66,7 +66,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link BIRInfoType }
-     * 
+     * @return BIRInfoType
      */
     public BIRInfoType createBIRInfoType() {
         return new BIRInfoType();
@@ -74,7 +74,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SBInfoType }
-     * 
+     * @return SBInfoType
      */
     public SBInfoType createSBInfoType() {
         return new SBInfoType();
@@ -82,7 +82,8 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link BIRType }{@code >}}
-     * 
+     * @param value birtype
+     * @return jaxb element
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/", name = "BIR")
     public JAXBElement<BIRType> createBIR(BIRType value) {

@@ -32,6 +32,8 @@ public class CbeffISOReader {
 	 *        
 	 * @return return byte array of image data
 	 * 
+	 * @exception Exception exception
+	 * 
 	 */
 	public static byte[] readISOImage(String path, String type) throws Exception {
 		File testFile = new File(path);

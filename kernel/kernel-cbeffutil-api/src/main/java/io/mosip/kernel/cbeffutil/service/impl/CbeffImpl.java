@@ -19,7 +19,7 @@ public class CbeffImpl implements CbeffI {
 	/**
 	 * Method used for creating Cbeff XML
 	 * 
-	 * @param List<BIR> pass List<BIR> for creating Cbeff data
+	 * @param birList pass List of BIR for creating Cbeff data
 	 *        
 	 * @return return byte array of XML data
 	 * 
@@ -35,7 +35,7 @@ public class CbeffImpl implements CbeffI {
 	/**
 	 * Method used for updating Cbeff XML
 	 * 
-	 * @param List<BIR> pass List<BIR> for creating Cbeff data
+	 * @param birList pass List of BIR for creating Cbeff data
 	 *        
 	 * @return return byte array of XML data
 	 * 
@@ -51,9 +51,9 @@ public class CbeffImpl implements CbeffI {
 	/**
 	 * Method used for validating XML against XSD
 	 * 
-	 * @param byte array of XML data
+	 * @param xmlBytes byte array of XML data
 	 * 
-	 * @param byte array of XSD data
+	 * @param xsdBytes byte array of XSD data
 	 *        
 	 * @return boolean if data is valid or not
 	 * 
@@ -67,13 +67,13 @@ public class CbeffImpl implements CbeffI {
 	/**
 	 * Method used for validating XML against XSD
 	 * 
-	 * @param byte array of XML data
+	 * @param fileBytes byte array of XML data
 	 * 
 	 * @param type to be searched
 	 * 
-	 * @param subtype to be searched
+	 * @param subType to be searched
 	 *        
-	 * @return Map of type and String of encoded biometric data
+	 * @return bdbMap Map of type and String of encoded biometric data
 	 * 
 	 */
 	@Override
@@ -86,7 +86,7 @@ public class CbeffImpl implements CbeffI {
 	/**
 	 * Method used for getting list of BIR from XML bytes
 	 * 
-	 * @param byte array of XML data
+	 * @param xmlBytes byte array of XML data
 	 *        
 	 * @return List of BIR data extracted from XML
 	 * 

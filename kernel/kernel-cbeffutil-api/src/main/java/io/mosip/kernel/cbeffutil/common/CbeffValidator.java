@@ -38,11 +38,11 @@ public class CbeffValidator {
 	/**
 	 * Method used for custom validation of the BIR
 	 * 
-	 * @param BIR data
+	 * @param bir BIR data
 	 * 
 	 * @return boolean value if BIR is valid
 	 * 
-	 * @exception throws CbeffException when any condition fails
+	 * @exception CbeffException when any condition fails
 	 * 
 	 */
 	public static boolean validateXML(BIRType bir) throws CbeffException {
@@ -80,9 +80,9 @@ public class CbeffValidator {
 	/**
 	 * Method used for validation of Format Type
 	 * 
-	 * @param format type
+	 * @param formatType format type
 	 * 
-	 * @param List of types
+	 * @param singleTypeList List of types
 	 * 
 	 * @return boolean value if format type is matching with type
 	 * 
@@ -107,9 +107,9 @@ public class CbeffValidator {
 	/**
 	 * Method used for getting Format Type Id from type string
 	 * 
-	 * @param format type
+	 * @param type format type
 	 * 
-	 * @return format type id
+	 * @return long format type id
 	 * 
 	 */
 	private static long getFormatType(String type) {
@@ -131,9 +131,11 @@ public class CbeffValidator {
 	/**
 	 * Method used for creating XML bytes using JAXB
 	 * 
-	 * @param BIR type
+	 * @param bir BIR type
 	 * 
-	 * @return byte array of XML data
+	 * @return byte[] byte array of XML data
+	 * 
+	 * @exception Exception exception
 	 * 
 	 */
 	public static byte[] createXMLBytes(BIRType bir) throws Exception {
@@ -152,9 +154,11 @@ public class CbeffValidator {
 	/**
 	 * Method used for BIR Type
 	 * 
-	 * @param byte array of XML data
+	 * @param fileBytes byte array of XML data
 	 * 
-	 * @return BIR data
+	 * @return BIRType BIR data
+	 * 
+	 * @exception Exception exception
 	 * 
 	 */
 	public static BIRType getBIRFromXML(byte[] fileBytes) throws Exception {
@@ -169,13 +173,15 @@ public class CbeffValidator {
 	/**
 	 * Method used for searching Cbeff data based on type and subtype
 	 * 
-	 * @param BIR data
+	 * @param bir BIR data
 	 * 
-	 * @param format type
+	 * @param type format type
 	 * 
-	 * @param format subtype
+	 * @param subType format subtype
 	 * 
-	 * @return BIR data
+	 * @return bdbMap
+	 * 
+	 * @exception Exception exception
 	 * 
 	 */
 	public static Map<String, String> getBDBBasedOnTypeAndSubType(BIRType bir, String type, String subType)

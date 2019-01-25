@@ -30,23 +30,23 @@ import io.mosip.kernel.cbeffutil.common.Base64Adapter;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="BIRType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Version" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}VersionType" minOccurs="0"/>
- *         &lt;element name="CBEFFVersion" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}VersionType" minOccurs="0"/>
- *         &lt;any processContents='skip' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="BIRInfo" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}BIRInfoType"/>
- *         &lt;element name="BDBInfo" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}BDBInfoType" minOccurs="0"/>
- *         &lt;element name="SBInfo" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}SBInfoType" minOccurs="0"/>
- *         &lt;element name="BIR" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}BIRType" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="BDB" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
- *         &lt;element name="SB" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="BIRType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Version" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}VersionType" minOccurs="0"/&gt;
+ *         &lt;element name="CBEFFVersion" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}VersionType" minOccurs="0"/&gt;
+ *         &lt;any processContents='skip' namespace='##other' maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="BIRInfo" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}BIRInfoType"/&gt;
+ *         &lt;element name="BDBInfo" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}BDBInfoType" minOccurs="0"/&gt;
+ *         &lt;element name="SBInfo" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}SBInfoType" minOccurs="0"/&gt;
+ *         &lt;element name="BIR" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}BIRType" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="BDB" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
+ *         &lt;element name="SB" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -224,7 +224,7 @@ public class BIRType {
      *    getBIR().add(newItem);
      * </pre>
      * 
-     * 
+     * @return bir
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link BIRType }
@@ -291,7 +291,7 @@ public class BIRType {
      * 
      * @return any
      *    possible object is
-     *    List<Object>
+     *    object list
      */
     public List<Object> getAny() {
         if (any == null) {
@@ -305,7 +305,7 @@ public class BIRType {
      * 
      * @param any
      *     allowed object is
-     *     List<Object>
+     *     object list
      */
     public void setAny(List<Object> any) {
 		this.any = any;

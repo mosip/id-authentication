@@ -17,19 +17,18 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Java class for SingleVeinOnlySubtypeType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
  * <pre>
- * &lt;simpleType name="SingleVeinOnlySubtypeType">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="LeftVein"/>
- *     &lt;enumeration value="RightVein"/>
- *     &lt;enumeration value="Palm"/>
- *     &lt;enumeration value="BackOfHand"/>
- *     &lt;enumeration value="Wrist"/>
- *     &lt;enumeration value="Reserved1"/>
- *     &lt;enumeration value="Reserved2"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="SingleVeinOnlySubtypeType"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *     &lt;enumeration value="LeftVein"/&gt;
+ *     &lt;enumeration value="RightVein"/&gt;
+ *     &lt;enumeration value="Palm"/&gt;
+ *     &lt;enumeration value="BackOfHand"/&gt;
+ *     &lt;enumeration value="Wrist"/&gt;
+ *     &lt;enumeration value="Reserved1"/&gt;
+ *     &lt;enumeration value="Reserved2"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

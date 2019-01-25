@@ -24,21 +24,21 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="BIRInfoType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Creator" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="Index" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}UUIDType" minOccurs="0"/>
- *         &lt;element name="Payload" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
- *         &lt;element name="Integrity" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="CreationDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="NotValidBefore" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="NotValidAfter" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="BIRInfoType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Creator" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="Index" type="{http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/}UUIDType" minOccurs="0"/&gt;
+ *         &lt;element name="Payload" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
+ *         &lt;element name="Integrity" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="CreationDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="NotValidBefore" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="NotValidAfter" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -124,7 +124,7 @@ public class BIRInfoType {
     /**
      * Gets the value of the payload property.
      * 
-     * @return
+     * @return payload
      *     possible object is
      *     byte[]
      */
@@ -146,6 +146,7 @@ public class BIRInfoType {
     /**
      * Gets the value of the integrity property.
      * 
+     *  @return boolean
      */
     public boolean isIntegrity() {
         return integrity;
@@ -154,6 +155,7 @@ public class BIRInfoType {
     /**
      * Sets the value of the integrity property.
      * 
+     *  @param value boolean
      */
     public void setIntegrity(boolean value) {
         this.integrity = value;

@@ -149,16 +149,12 @@ public class CbeffImplTest {
 		CbeffImpl cbeffImpl = new CbeffImpl();
 		assertTrue(cbeffImpl.validateXML(readCreatedXML("createCbeff"), readXSD("cbeff")));
 	}
-	
-	@Test
-	public void testGetTestElementDetails() {
-		//TODO
-	}
 
 	@Test
 	public void testGetBDBBasedOnType() throws IOException, Exception {
 		CbeffImpl cbeffImpl = new CbeffImpl();
 		Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
+		System.out.println(testMap);
 		Set<String> testSet1 = new HashSet<>();
 		testSet1.add("RIGHT FINGER");
 		assertEquals(testMap.keySet(),testSet1);

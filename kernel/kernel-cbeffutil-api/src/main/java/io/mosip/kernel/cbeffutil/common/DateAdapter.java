@@ -17,8 +17,8 @@ public class DateAdapter extends XmlAdapter<String, Date> {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYYMMDDhhmmssZ");
 
     /**
-	 * @param date
-	 * @return string formatted date
+	 * @param v date
+	 * @return String formatted date
 	 */
     @Override
     public String marshal(Date v) throws Exception {
@@ -28,8 +28,8 @@ public class DateAdapter extends XmlAdapter<String, Date> {
     }
 
     /**
-   	 * @param string formatted date
-   	 * @return date
+   	 * @param v formatted date
+   	 * @return Date
    	 */
     @Override
     public Date unmarshal(String v) throws Exception {

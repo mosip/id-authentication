@@ -17,15 +17,14 @@ import javax.xml.bind.annotation.XmlType;
  * <p>Java class for ProcessedLevelType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
  * <pre>
- * &lt;simpleType name="ProcessedLevelType">
- *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="Raw"/>
- *     &lt;enumeration value="Intermediate"/>
- *     &lt;enumeration value="Processed"/>
- *   &lt;/restriction>
- * &lt;/simpleType>
+ * &lt;simpleType name="ProcessedLevelType"&gt;
+ *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *     &lt;enumeration value="Raw"/&gt;
+ *     &lt;enumeration value="Intermediate"/&gt;
+ *     &lt;enumeration value="Processed"/&gt;
+ *   &lt;/restriction&gt;
+ * &lt;/simpleType&gt;
  * </pre>
  * 
  */

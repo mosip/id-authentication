@@ -3,8 +3,6 @@ This api can be used to create/update cbeff xml.This api can be used to validate
 
 **Api Documentation**
 
-[API Documentation <TBA>](TBA)
-
 ```
 mvn javadoc:javadoc
 ```
@@ -36,7 +34,7 @@ mvn javadoc:javadoc
    BIR     - Biometric Information Records (BIRs)\
    BIRInfo - Biometric Information Records Information holds the data of Integrity.\
    BDBInfo - Biometric Data Block Information holds the data of Format Owner,Format Type , Quality , Type ,
-   			 Sub-type,Purpose,Processing Level and creation date.\
+   			 Sub-type,Purpose,Processing Level and creation date.
      
    **BIR Creation Sample:**
    
@@ -245,6 +243,11 @@ mvn javadoc:javadoc
 	``` 
 	CbeffImpl cbeffImpl = new CbeffImpl();
 	Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(xmlbytes, "FMR", "Right");
+	```
+	
+	**Sample Response**
+	``` 
+	
 	```
    
 
