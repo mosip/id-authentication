@@ -271,7 +271,7 @@ public class IdRequestValidator implements Validator {
 				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
-				} else if (!((Map) requestMap.get(IDENTITY)).isEmpty()) {
+				} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
 				} else {

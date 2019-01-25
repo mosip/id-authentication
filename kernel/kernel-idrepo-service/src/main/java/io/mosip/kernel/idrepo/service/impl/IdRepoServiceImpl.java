@@ -92,6 +92,18 @@ import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 @Service
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponseDTO, Uin> {
 
+	/** The Constant ROOT. */
+	private static final String ROOT = "$";
+
+	/** The Constant OPEN_SQUARE_BRACE. */
+	private static final String OPEN_SQUARE_BRACE = "[";
+
+	/** The Constant UPDATE_IDENTITY. */
+	private static final String UPDATE_IDENTITY = "updateIdentity";
+
+	/** The Constant MOSIP_ID_UPDATE. */
+	private static final String MOSIP_ID_UPDATE = "mosip.id.update";
+
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
 
@@ -352,15 +364,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 							CryptoUtil.decodeBase64(doc.getValue()));
 
-					docList.add(new UinDocument(uinRefId, docType.get(TYPE).asText(), doc.getCategory(), fileRefId,
+					docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 							docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
 							hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
 							now(), false, now()));
 
-					uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), docType.get(TYPE).asText(),
-							doc.getCategory(), fileRefId, docType.get(VALUE).asText(), docType.get(FORMAT).asText(),
-							hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE, CREATED_BY, now(), UPDATED_BY,
-							now(), false, now()));
+					uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(),
+							docType.get(TYPE).asText(), fileRefId, docType.get(VALUE).asText(),
+							docType.get(FORMAT).asText(), hash(CryptoUtil.decodeBase64(doc.getValue())), LANG_CODE,
+							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 				}
 			} catch (IdRepoAppException e) {
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
@@ -479,48 +491,74 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 */
 	private void getFiles(Uin uinObject, List<Documents> documents, String type) {
 		if (type.equals(BIOMETRICS)) {
-			uinObject.getBiometrics().parallelStream().forEach(bio -> {
-				if (allowedBioTypes.contains(bio.getBiometricFileType())) {
-					try {
-						ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
-						String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
-								+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
-						String data = getFile(uinObject.getUin(), fileName);
-						if (Objects.nonNull(data)) {
-							if (bio.getBiometricFileHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
-								documents.add(new Documents(bio.getBiometricFileType(), data));
-							} else {
-								throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
-							}
-						}
-					} catch (IdRepoAppException e) {
-						mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
-								"\n" + ExceptionUtils.getStackTrace(e));
-						throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
-					}
-				}
-			});
+			getBiometricFiles(uinObject, documents);
 		}
 
 		if (type.equals(DEMOGRAPHICS)) {
-			uinObject.getDocuments().parallelStream().forEach(demo -> {
+			getDemographicFiles(uinObject, documents);
+		}
+	}
+
+	/**
+	 * Gets the demographic files.
+	 *
+	 * @param uinObject
+	 *            the uin object
+	 * @param documents
+	 *            the documents
+	 * @return the demographic files
+	 */
+	private void getDemographicFiles(Uin uinObject, List<Documents> documents) {
+		uinObject.getDocuments().parallelStream().forEach(demo -> {
+			try {
+				ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
+				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
+						+ identityMap.get(demo.getDoccatCode()).get(FORMAT).asText();
+				String data = getFile(uinObject.getUin(), fileName);
+				if (demo.getDocHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
+					documents.add(new Documents(demo.getDoccatCode(), data));
+				} else {
+					throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
+				}
+			} catch (IdRepoAppException e) {
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
+						"\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
+			}
+		});
+	}
+
+	/**
+	 * Gets the biometric files.
+	 *
+	 * @param uinObject
+	 *            the uin object
+	 * @param documents
+	 *            the documents
+	 * @return the biometric files
+	 */
+	private void getBiometricFiles(Uin uinObject, List<Documents> documents) {
+		uinObject.getBiometrics().parallelStream().forEach(bio -> {
+			if (allowedBioTypes.contains(bio.getBiometricFileType())) {
 				try {
 					ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
-					String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
-							+ identityMap.get(demo.getDoctypCode()).get(FORMAT).asText();
+					String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
+							+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
 					String data = getFile(uinObject.getUin(), fileName);
-					if (demo.getDocHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
-						documents.add(new Documents(demo.getDoctypCode(), data));
-					} else {
-						throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
+					if (Objects.nonNull(data)) {
+						if (bio.getBiometricFileHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
+							documents.add(new Documents(bio.getBiometricFileType(), data));
+						} else {
+							throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
+						}
 					}
 				} catch (IdRepoAppException e) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFiles",
 							"\n" + ExceptionUtils.getStackTrace(e));
 					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 				}
-			});
-		}
+			}
+		});
 	}
 
 	/**
@@ -705,25 +743,28 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				if (Objects.nonNull(request.getStatus())
 						&& !StringUtils.equals(uinObject.getStatusCode(), request.getStatus())) {
 					uinObject.setStatusCode(request.getStatus());
+					uinObject.setUpdatedDateTime(now());
 				}
 
 				RequestDTO requestDTO = request.getRequest();
-				if (Objects.nonNull(requestDTO)) {
-					Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
-							.mappingProvider(new JacksonMappingProvider()).build();
-					DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
-					DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
-					JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
-							dbData.jsonString(), JSONCompareMode.LENIENT);
+				Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
+						.mappingProvider(new JacksonMappingProvider()).build();
+				DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
+				DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
+				JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
+						dbData.jsonString(), JSONCompareMode.LENIENT);
 
-					if (Objects.nonNull(requestDTO.getIdentity()) && comparisonResult.failed()) {
-						updateIdentity(inputData, dbData, comparisonResult);
+				if (Objects.nonNull(requestDTO.getIdentity()) && comparisonResult.failed()) {
+					updateIdentity(inputData, dbData, comparisonResult);
+					uinObject.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
+					uinObject.setUinDataHash(hash(uinObject.getUinData()));
+					uinObject.setUpdatedDateTime(now());
+				}
 
-						uinObject
-								.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
-						uinObject.setUinDataHash(hash(uinObject.getUinData()));
-					}
-
+				if (Objects.nonNull(requestDTO.getIdentity()) && Objects.nonNull(requestDTO.getDocuments())
+						&& !requestDTO.getDocuments().isEmpty()) {
+					updateDocuments(uin, uinObject, requestDTO);
+					uinObject.setUpdatedDateTime(now());
 				}
 
 				uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin, uinObject.getUinData(),
@@ -732,14 +773,18 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 
 				uinRepo.save(uinObject);
 
-				return constructIdResponse("mosip.id.update", retrieveIdentityByUin(uin), null);
+				return constructIdResponse(MOSIP_ID_UPDATE, retrieveIdentityByUin(uin), null);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (JSONException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "updateIdentity",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.JSON_PROCESSING_FAILED, e);
+		} catch (DataAccessException e) {
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY,
+					"\n" + ExceptionUtils.getStackTrace(e));
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		}
 	}
 
@@ -760,7 +805,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private void updateIdentity(DocumentContext inputData, DocumentContext dbData, JSONCompareResult comparisonResult)
 			throws JSONException, IdRepoAppException {
 		if (comparisonResult.isMissingOnField()) {
-			updateMissingFields(inputData, dbData, comparisonResult);
+			updateMissingFields(dbData, comparisonResult);
 		}
 
 		comparisonResult = JSONCompare.compareJSON(inputData.jsonString(), dbData.jsonString(),
@@ -785,8 +830,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/**
 	 * Update missing fields.
 	 *
-	 * @param inputData
-	 *            the input data
 	 * @param dbData
 	 *            the db data
 	 * @param comparisonResult
@@ -795,17 +838,17 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	 *             the id repo app exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void updateMissingFields(DocumentContext inputData, DocumentContext dbData,
-			JSONCompareResult comparisonResult) throws IdRepoAppException {
+	private void updateMissingFields(DocumentContext dbData, JSONCompareResult comparisonResult)
+			throws IdRepoAppException {
 		for (FieldComparisonFailure failure : comparisonResult.getFieldMissing()) {
-			if (StringUtils.contains(failure.getField(), "[")) {
-				String path = StringUtils.substringBefore(failure.getField(), "[");
+			if (StringUtils.contains(failure.getField(), OPEN_SQUARE_BRACE)) {
+				String path = StringUtils.substringBefore(failure.getField(), OPEN_SQUARE_BRACE);
 				String key = StringUtils.substringAfterLast(path, DOT);
 				path = StringUtils.substringBeforeLast(path, DOT);
 
 				if (StringUtils.isEmpty(key)) {
 					key = path;
-					path = "$";
+					path = ROOT;
 				}
 
 				List value = dbData.read(path + DOT + key, List.class);
@@ -816,7 +859,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			} else {
 				String path = StringUtils.substringBeforeLast(failure.getField(), DOT);
 				if (StringUtils.isEmpty(path)) {
-					path = "$";
+					path = ROOT;
 				}
 				String key = StringUtils.substringAfterLast(failure.getField(), DOT);
 				dbData.put(path, (String) failure.getExpected(), key);
@@ -842,7 +885,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		for (FieldComparisonFailure failure : comparisonResult.getFieldFailures()) {
 
 			String path = StringUtils.substringBeforeLast(failure.getField(), DOT);
-			if (StringUtils.contains(path, "[")) {
+			if (StringUtils.contains(path, OPEN_SQUARE_BRACE)) {
 				path = StringUtils.replaceAll(path, "\\[", "\\[\\?\\(\\@\\.");
 				path = StringUtils.replaceAll(path, "=", "=='");
 				path = StringUtils.replaceAll(path, "\\]", "'\\)\\]");
@@ -850,7 +893,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			String key = StringUtils.substringAfterLast(failure.getField(), DOT);
 			if (StringUtils.isEmpty(key)) {
 				key = failure.getField();
-				path = "$";
+				path = ROOT;
 			}
 
 			if (failure.getExpected() instanceof JSONArray) {
@@ -880,13 +923,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@SuppressWarnings("unchecked")
 	private void updateMissingValues(DocumentContext inputData, DocumentContext dbData,
 			JSONCompareResult comparisonResult) {
-		String path = StringUtils.substringBefore(comparisonResult.getMessage(), "[");
+		String path = StringUtils.substringBefore(comparisonResult.getMessage(), OPEN_SQUARE_BRACE);
 		String key = StringUtils.substringAfterLast(path, DOT);
 		path = StringUtils.substringBeforeLast(path, DOT);
 
 		if (StringUtils.isEmpty(key)) {
 			key = path;
-			path = "$";
+			path = ROOT;
 		}
 
 		List<Map<String, String>> dbDataList = dbData.read(path + DOT + key, List.class);
@@ -902,5 +945,54 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 										.allMatch(inputDataMap -> !StringUtils
 												.equalsIgnoreCase(inputDataMap.get(LANGUAGE), map.get(LANGUAGE))))
 				.forEach(inputDataList::add);
+	}
+
+	/**
+	 * Update documents.
+	 *
+	 * @param uin
+	 *            the uin
+	 * @param uinObject
+	 *            the uin object
+	 * @param requestDTO
+	 *            the request DTO
+	 * @throws IdRepoAppException
+	 *             the id repo app exception
+	 */
+	private void updateDocuments(String uin, Uin uinObject, RequestDTO requestDTO) throws IdRepoAppException {
+		List<UinDocument> docList = new ArrayList<>();
+		List<UinBiometric> bioList = new ArrayList<>();
+		addDocuments(uin, convertToBytes(requestDTO.getIdentity()), requestDTO.getDocuments(), uinObject.getUinRefId(),
+				docList, bioList);
+		// check for type code as foreign key
+		docList.stream().forEach(doc -> uinObject.getDocuments().stream()
+				.filter(docObj -> StringUtils.equals(doc.getDoccatCode(), docObj.getDoccatCode())).forEach(docObj -> {
+					docObj.setDocId(doc.getDocId());
+					docObj.setDocName(doc.getDocName());
+					docObj.setDocfmtCode(doc.getDocfmtCode());
+					docObj.setDocHash(doc.getDocHash());
+					docObj.setUpdatedDateTime(doc.getUpdatedDateTime());
+				}));
+		docList.stream()
+				.filter(doc -> uinObject.getDocuments().stream()
+						.allMatch(docObj -> !StringUtils.equals(doc.getDoccatCode(), docObj.getDoccatCode())))
+				.forEach(doc -> {
+					uinObject.getDocuments().add(doc);
+				});
+		bioList.stream()
+				.forEach(bio -> uinObject.getBiometrics().stream()
+						.filter(bioObj -> StringUtils.equals(bio.getBiometricFileType(), bioObj.getBiometricFileType()))
+						.forEach(bioObj -> {
+							bioObj.setBioFileId(bio.getBioFileId());
+							bioObj.setBiometricFileName(bio.getBiometricFileName());
+							bioObj.setBiometricFileHash(bio.getBiometricFileHash());
+							bioObj.setUpdatedDateTime(bio.getUpdatedDateTime());
+						}));
+		bioList.stream()
+				.filter(bio -> uinObject.getBiometrics().stream()
+						.allMatch(bioObj -> !StringUtils.equals(bio.getBioFileId(), bioObj.getBioFileId())))
+				.forEach(bio -> {
+					uinObject.getBiometrics().add(bio);
+				});
 	}
 }
