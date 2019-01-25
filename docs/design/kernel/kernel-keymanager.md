@@ -19,7 +19,7 @@ The key solution considerations are
   4. Validator module to check the authenticity of the caller.
   5. Key store to store the keys.
 
-![Components Diagram](_images/kernel_keymanager_components_diagram.png)
+![Components Diagram](https://github.com/mosip/mosip/blob/0.8.0/docs/design/_images/kernel_keymanager_components_diagram.png)
 
 - The sequence of the key generations and the rotation of the keys are as follows,
   1. During the initial setup, the key rotation duration are configured.
