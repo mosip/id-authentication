@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+#getting current repositpry name
+current_repo="$(basename `git rev-parse --show-toplevel`)"
+
+# only check commit messages on mosip repo
+[ "$current_repo" != "mosip" ] && exit 0
+
 # regex to validate in commit msg
 commit_regex='(^MOS-[0-9]+|^Merge|^merge)'
 error_msg="Aborting commit. Your commit message should start with JIRA Issue like  MOS-1111 or 'merge'"
