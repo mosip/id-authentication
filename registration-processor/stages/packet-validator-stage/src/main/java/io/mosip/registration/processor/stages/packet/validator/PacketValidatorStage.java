@@ -234,15 +234,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						description = "Data voilation in reg packet : " + registrationId;
 						object.setIsValid(Boolean.FALSE);
 						object.setRid(dto.getRegistrationId());
-						int retryCount = registrationStatusDto.getRetryCount() != null
-								? registrationStatusDto.getRetryCount() + 1
-								: 1;
-						description = registrationStatusDto.getStatusComment() + registrationId;
-						registrationStatusDto.setRetryCount(retryCount);
-
-						registrationStatusDto
-								.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+						
 
 					} catch (IOException exc) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -253,15 +245,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						description = "Internal error occured while processing registration  id : " + registrationId;
 						object.setIsValid(Boolean.FALSE);
 						object.setRid(dto.getRegistrationId());
-						int retryCount = registrationStatusDto.getRetryCount() != null
-								? registrationStatusDto.getRetryCount() + 1
-								: 1;
-						description = registrationStatusDto.getStatusComment() + registrationId;
-						registrationStatusDto.setRetryCount(retryCount);
-
-						registrationStatusDto
-								.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+					
 
 					} catch (Exception ex) {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -272,6 +256,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						description = "Internal error occured while processing registration  id : " + registrationId;
 						object.setIsValid(Boolean.FALSE);
 						object.setRid(dto.getRegistrationId());
+				
+					} finally {
+						if(object.getInternalError()) {
+						registrationStatusDto.setUpdatedBy(USER);
 						int retryCount = registrationStatusDto.getRetryCount() != null
 								? registrationStatusDto.getRetryCount() + 1
 								: 1;
@@ -281,8 +269,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						registrationStatusDto
 								.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 						registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-					} finally {
-
+						
+						}
 						sendMessage(mosipEventBus, object);
 						String eventId = "";
 						String eventName = "";
