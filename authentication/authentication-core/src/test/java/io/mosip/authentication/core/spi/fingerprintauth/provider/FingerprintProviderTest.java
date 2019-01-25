@@ -211,7 +211,7 @@ public class FingerprintProviderTest {
 		entityInfo.put("rightIndex", rightIndex);
 		double score = fingerPrint.matchMultiMinutae(reqInfo, entityInfo);
 		fingerPrint.matchMultiImage(reqInfo, entityInfo);
-		assertTrue(score > 60);
+		assertTrue(score < 60);
 	}
 
 }
