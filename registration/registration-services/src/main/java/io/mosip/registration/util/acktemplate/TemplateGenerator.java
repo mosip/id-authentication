@@ -102,12 +102,13 @@ public class TemplateGenerator extends BaseService {
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			ResourceBundle applicationLanguageProperties = applicationContext.getApplicationLanguageBundle();
 
-			Reader templateReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
+			Reader templateReader = new BufferedReader(
+					new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
 
 			VelocityContext templateValues = new VelocityContext();
-			
-	//		InputStream is = new ByteArrayInputStream(templateText.getBytes());
-//			Map<String, Object> templateValues = new HashMap<>();
+
+			// InputStream is = new ByteArrayInputStream(templateText.getBytes());
+			// Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
 			String platformLanguageCode = MappedCodeForLanguage
@@ -291,15 +292,21 @@ public class TemplateGenerator extends BaseService {
 						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
 			}
 
-			// get the quality ranking for fingerprints of the applicant
-			HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
-			for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
-				if (entry.getValue() != 0) {
-					// display rank of quality for the captured fingerprints
-					templateValues.put(entry.getKey(), entry.getValue());
-				} else {
-					// display cross mark for missing fingerprints
-					templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_MISSING_FINGER);
+			if (registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO().isEmpty()) {
+				templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_FINGERPRINTS,
+						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_CAPTURED_FINGERPRINTS, null);
+				// get the quality ranking for fingerprints of the applicant
+				HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+				for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
+					if (entry.getValue() != 0) {
+						// display rank of quality for the captured fingerprints
+						templateValues.put(entry.getKey(), entry.getValue());
+					} else {
+						// display cross mark for missing fingerprints
+						templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_MISSING_FINGER);
+					}
 				}
 			}
 
@@ -388,8 +395,7 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
-					"الوالد / الجارديان");
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL, "الوالد / الجارديان");
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
@@ -469,18 +475,21 @@ public class TemplateGenerator extends BaseService {
 
 			Writer writer = new StringWriter();
 			Velocity.evaluate(templateValues, writer, "Acknowledgement Template", templateReader);
-//			try {
-//				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-//						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
-//
-//				TemplateManager templateManager = templateManagerBuilder.build();
-//				InputStream inputStream = templateManager.merge(is, templateValues);
-//				String defaultEncoding = null;
-//				IOUtils.copy(inputStream, writer, defaultEncoding);
-//			} catch (IOException ioException) {
-//				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-//				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-//			}
+			// try {
+			// LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+			// "merge method of TemplateManager had been called for preparing
+			// Acknowledgement Template.");
+			//
+			// TemplateManager templateManager = templateManagerBuilder.build();
+			// InputStream inputStream = templateManager.merge(is, templateValues);
+			// String defaultEncoding = null;
+			// IOUtils.copy(inputStream, writer, defaultEncoding);
+			// } catch (IOException ioException) {
+			// setErrorResponse(response,
+			// RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+			// LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+			// ioException.getMessage());
+			// }
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
 

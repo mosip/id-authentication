@@ -395,6 +395,7 @@ public class RegistrationConstants {
 		public static final String TEMPLATE_RO_NAME_LOCAL_LANG = "RONameLocalLang";
 		public static final String TEMPLATE_WITH_PARENT_DETAILS = "WithParent";
 		public static final String TEMPLATE_STYLE_HIDDEN_PROPERTY = "style='display:none;'";
+		public static final String TEMPLATE_CAPTURED_FINGERPRINTS = "capturedFingerprints";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
