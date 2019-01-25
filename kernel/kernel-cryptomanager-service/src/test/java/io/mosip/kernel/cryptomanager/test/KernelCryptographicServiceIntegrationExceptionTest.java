@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -17,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,6 +42,9 @@ import io.mosip.kernel.cryptomanager.dto.KeymanagerPublicKeyResponseDto;
 @AutoConfigureMockMvc
 public class KernelCryptographicServiceIntegrationExceptionTest {
 
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
+	private String publicKeyUrl;
+	
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -51,11 +58,21 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 
 	private MockRestServiceServer server;
+	
+	private UriComponentsBuilder builder;
+	
+	private Map<String, String> uriParams;
 
 	@Before
 	public void setUp() {
 
 		server = MockRestServiceServer.bindTo(restTemplate).build();
+		uriParams = new HashMap<>();
+		uriParams.put("applicationId", "REGISTRATION");
+		builder = UriComponentsBuilder.fromUriString(publicKeyUrl)
+				.queryParam("timeStamp", "2018-12-06T12:07:44.403")
+				.queryParam("referenceId","ref123");
+		
 	}
 
 	@Test
@@ -63,8 +80,8 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64("badprivatekey".getBytes()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
-		server.expect(requestTo(
-				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()
+				))
 				.andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto),
 						MediaType.APPLICATION_JSON));
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
@@ -81,8 +98,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 
 	@Test
 	public void testHttpClientErrorException() throws Exception {
-		server.expect(requestTo(
-				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withBadRequest());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -91,8 +107,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 
 	@Test
 	public void testHttpServerErrorException() throws Exception {
-		server.expect(requestTo(
-				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withServerError());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -101,8 +116,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 
 	@Test
 	public void testInvalidFormatException() throws Exception {
-		server.expect(requestTo(
-				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString()))
 				.andRespond(withServerError());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-0\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
