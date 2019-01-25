@@ -249,4 +249,8 @@ OTP pour Pre-Registration $PRID est $otp et est valide pour $validTime minutes. 
 , ('1187','Template for SMS Acknowledgment','Template for SMS Acknowledgment','txt','','"Votre pré-inscription pour UIN est terminée avec succès sur $Date à $Time. 
 Votre ID est # $PRID.
 Le rendez-vous est prévu pour $Appointmentdate à $Appointmenttime.
-vous recevrez également les détails sur votre adresse email enregistrée"','10013','Pré-inscription','SMS-Acknowledgement','fra',TRUE,'superadmin',now());
+vous recevrez également les détails sur votre adresse email enregistrée"','10013','Pré-inscription','SMS-Acknowledgement','fra',TRUE,'superadmin',now())
+, ('1188','Template for email subject of Acknowledgement','Template for email subject of Acknowledgement','txt','','Pre-Registration $PRID: Acknowledgement ','10001','Pre-Registration','Acknowledgement-email-subject','eng',true,'superadmin',now())
+, ('1189','Modèle pour le sujet d`email d`accusé de réception','Modèle pour le sujet d`email d`accusé de réception','txt','','Pré-inscription $PRID: accusé de réception ','10013','Pré-inscription','Acknowledgement-email-subject','fra',true,'superadmin',now())
+, ('1190','قالب للتسليم البريد الكتروني الموضوع','قالب للتسليم البريد الكتروني الموضوع','txt','','$PRID التسجيل المسبق: شكر','10002','ما قبل التسجيل','Acknowledgement-email-subject','ara',true,'superadmin',now());
+
