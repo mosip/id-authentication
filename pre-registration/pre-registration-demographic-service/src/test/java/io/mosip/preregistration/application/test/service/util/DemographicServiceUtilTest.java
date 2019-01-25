@@ -100,14 +100,14 @@ public class DemographicServiceUtilTest {
 	@Test(expected = InvalidRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest1() {
 		saveDemographicRequest.setCreatedBy(null);
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"save",Mockito.anyString()))
+		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"save","Pending_Appointment"))
 				.thenThrow(InvalidRequestParameterException.class);
 	}
 
 	@Test(expected = MissingRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest2() {
 		String type = null;
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,Mockito.anyString()))
+		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,"Pending_Appointment"))
 				.thenThrow(MissingRequestParameterException.class);
 	}
 

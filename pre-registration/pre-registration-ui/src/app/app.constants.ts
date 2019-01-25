@@ -84,11 +84,11 @@ export const DOCUMENT_UPLOAD_REQUEST_DTO = {
   }
 };
 
-// export const virtual_keyboard_languages = {
-//   en: 'English',
-//   fr: 'Fran\u00e7ais',
-//   ar: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629'
-// };
+export const virtual_keyboard_languages = {
+  eng: 'en',
+  fra: 'fr',
+  ara: 'ar'
+};
 
 export const DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY = 'file';
 export const DOCUMENT_UPLOAD_REQUEST_DTO_KEY = 'Document request DTO';

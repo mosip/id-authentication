@@ -34,6 +34,7 @@
     "date_yyyy": "السنة",
     "text_or": "أو",
     "text_years": "سنوات",
+    "text_foreigner":"أجنبي",
     "text_gender": "جنس",
     "button_male": "الذكر",
     "button_female": "إناثا",
@@ -47,13 +48,14 @@
     "label_mob_num": "رقم الهاتف المحمول",
     "label_postalCode": "الرمز البريدي",
     "label_email_id": "عنوان الايميل",
-    "label1_pin": "رقم CINE / PIN",
+    "label_pin": "CNIE/EC",
     "action_back": "الى الخلف",
     "action_continue": "استمر",
     "action_preview": "معاينة",
     "validation": {
       "name_required": "الإسم الكامل ضروري",
       "age_validation": "يجب أن يكون العمر أقل من 150",
+      "gender_validation":"يرجى تحديد الجنس",
       "DOB_validation": "أدخل DOB صالحًا أو العمر  ",
       "date_required": "مطلوب رقمين التاريخ",
       "month_required": "أدخل رقمين رقميين للشهر",
@@ -72,7 +74,7 @@
 
   "documents": {
     "title_document": "تحميل المستندات",
-    "text_filetype": "نوع الملف المسموح به Pdf و Word و Max 1MB",
+    "text_filetype": "نوع الملف المسموح به Pdf و Word و Max 1 ميغابايت",
     "action_browse": "تصفح",
     "action_back": "الى الخلف",
     "action_skip": "تخطى",
@@ -98,7 +100,7 @@
     "label_mob_num": "رقم الهاتف المحمول",
     "label_alt_mob_num": "بديل رقم Moblie",
     "label_email_id": "عنوان الايميل",
-    "label_pin": "رقم CNIE / PIN",
+    "label_pin": "CNIE/EC",
     "title_document": "المستندات التي تم تحميلها",
     "action_modify": "تعديل",
     "action_back": "الى الخلف",
@@ -188,7 +190,8 @@
     "action_close": "قريب",
     "action_add_to_slot": "أضف إلى الفتحة"
   },
-  "ack": {
+  "ackowledgement": {
+    "title":"تم تأكيد الموعد",
     "container_guideline": "المبادئ التوجيهية الهامة",
     "action_download": "تحميل",
     "action_print": "طباعة"
