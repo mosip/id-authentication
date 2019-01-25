@@ -96,7 +96,7 @@ public enum IdAuthenticationErrorConstants {
 	PHONE_MISMATCH("IDA-DEA-026", "Demographic data - Phone(pi) did not match", "A0140"),
 	AGE_MISMATCH("IDA-DEA-028", "Demographic data - Age(pi) did not match", "A0141"),
 	DOB_MISMATCH("IDA-DEA-023", "Demographic data - DOB(pi) did not match", "A0137"),
-
+	PIN_MISMATCH("IDA-SPA-001", "Pin value did not match", "A0151"),
 	// Bio validation
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request.", "A0145"),
 	DUPLICATE_IRIS("IDA-BIA-016", "Duplicate Irises in request", "A0149"),

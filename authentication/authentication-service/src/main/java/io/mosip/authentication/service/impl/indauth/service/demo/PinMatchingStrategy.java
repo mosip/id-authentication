@@ -4,10 +4,12 @@ import java.util.Map;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Enum PinMatchingStrategy.
@@ -18,10 +20,11 @@ public enum PinMatchingStrategy implements MatchingStrategy {
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
-		if (reqInfo instanceof String) {
+		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PHONE_MISMATCH);
+			logError(IdAuthenticationErrorConstants.PIN_MISMATCH);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_MISMATCH);
 		}
 	});
 
@@ -30,6 +33,12 @@ public enum PinMatchingStrategy implements MatchingStrategy {
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
+	
+	/** The Constant DEFAULT_SESSION_ID. */
+	private static final String DEFAULT_SESSION_ID = "sessionId";
+
+	/** The Constant Pin Matching strategy. */
+	private static final String TYPE = "PinMatchingStrategy";
 
 	/**
 	 * Instantiates a new age matching strategy.
@@ -64,6 +73,19 @@ public enum PinMatchingStrategy implements MatchingStrategy {
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
+	}
+	
+	/** The mosipLogger. */
+	private static Logger mosipLogger = IdaLogger.getLogger(PinMatchingStrategy.class);
+	
+	/**
+	 * Log error.
+	 *
+	 * @param errorConstants the error constants
+	 */
+	private static void logError(IdAuthenticationErrorConstants errorConstants) {
+		mosipLogger.error(DEFAULT_SESSION_ID, TYPE, "Inside PinMatchingStrategy" + errorConstants.getErrorCode(),
+				errorConstants.getErrorMessage());
 	}
 
 }
