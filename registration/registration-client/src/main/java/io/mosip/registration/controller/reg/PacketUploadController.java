@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -197,14 +196,13 @@ public class PacketUploadController extends BaseController {
 		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-		packetStatus.forEach((id, status) ->{
+		packetStatus.forEach((id, status) -> {
 			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
 			packetUploadStatusDTO.setUploadStatus(status);
 			packetUploadStatusDTO.setFileName(id);
 			listUploadStatus.add(packetUploadStatusDTO);
-		
-		}); 
+
+		});
 		return listUploadStatus;
 	}
 
@@ -272,7 +270,7 @@ public class PacketUploadController extends BaseController {
 											synchedPacket.setFileUploadStatus(
 													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 											packetUploadList.add(synchedPacket);
-											tableMap.put(synchedPacket.getId(), "Error("+responseCode +")");
+											tableMap.put(synchedPacket.getId(), "Error(" + responseCode + ")");
 										}
 									}
 								} else {
@@ -291,8 +289,8 @@ public class PacketUploadController extends BaseController {
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 								packetUploadList.add(synchedPacket);
-								tableMap.put(synchedPacket.getId(), "Error("+e.getErrorTexts().toString()+")");
-								
+								tableMap.put(synchedPacket.getId(), "Error(" + e.getErrorTexts().toString() + ")");
+
 							} catch (RuntimeException e) {
 								LOGGER.error(
 										"REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_CONTROLLER",

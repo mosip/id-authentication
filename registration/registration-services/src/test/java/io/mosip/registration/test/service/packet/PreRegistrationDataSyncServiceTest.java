@@ -47,7 +47,6 @@ import io.mosip.registration.service.sync.impl.PreRegistrationDataSyncServiceImp
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
-@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class })
 public class PreRegistrationDataSyncServiceTest {
