@@ -249,6 +249,7 @@ public class LoginController extends BaseController implements Initializable {
 
 					String stationID = userOnboardService.getMachineCenterId()
 							.get(RegistrationConstants.USER_STATION_ID);
+					applicationContext.getApplicationMap().put(RegistrationConstants.MACHINE_ID, stationID);
 
 					if (userDetail == null) {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);

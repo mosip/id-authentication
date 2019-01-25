@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
@@ -52,6 +54,7 @@ import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
@@ -60,6 +63,7 @@ import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -442,6 +446,8 @@ public class RegistrationController extends BaseController {
 	private BiometricExceptionController biometricExceptionController;
 	@Autowired
 	private JsonValidator jsonValidator;
+	@Autowired
+	private RidGenerator<String> ridGeneratorImpl;
 
 	private FXUtils fxUtils;
 	private List<LocationDto> locationDtoRegion;
@@ -1747,9 +1753,6 @@ public class RegistrationController extends BaseController {
 	protected void createRegistrationDTOObject(String registrationCategory) {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 
-		// Set the RID
-		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
-
 		// Create objects for Biometric DTOS
 		BiometricDTO biometricDTO = new BiometricDTO();
 		biometricDTO.setApplicantBiometricDTO(createBiometricInfoDTO());
@@ -1776,14 +1779,26 @@ public class RegistrationController extends BaseController {
 		// Create object for RegistrationMetaData DTO
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
 		registrationMetaDataDTO.setRegistrationCategory(registrationCategory);
-		registrationMetaDataDTO.setGeoLatitudeLoc(Double.parseDouble(SessionContext.getInstance().getUserContext()
-				.getRegistrationCenterDetailDTO().getRegistrationCenterLatitude()));
-		registrationMetaDataDTO.setGeoLongitudeLoc(Double.parseDouble(SessionContext.getInstance().getUserContext()
-				.getRegistrationCenterDetailDTO().getRegistrationCenterLongitude()));
-		registrationMetaDataDTO.setCenterId(String.valueOf(SessionContext.getInstance().getUserContext()
-				.getRegistrationCenterDetailDTO().getRegistrationCenterId()));
-		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
+		RegistrationCenterDetailDTO registrationCenter = SessionContext.getInstance().getUserContext()
+				.getRegistrationCenterDetailDTO();
+
+		registrationMetaDataDTO
+				.setGeoLatitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLatitude()));
+		registrationMetaDataDTO
+				.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
+
+		Map<String, Object> applicationContextMap = ApplicationContext.getInstance().getApplicationMap();
+
+		registrationMetaDataDTO
+				.setCenterId((String) applicationContextMap.get(RegistrationConstants.REGISTARTION_CENTER));
+		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.MACHINE_ID));
+
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
+		
+		// Set RID
+		registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
+				registrationMetaDataDTO.getMachineId()));
 		// Put the RegistrationDTO object to SessionContext Map
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
 	}
