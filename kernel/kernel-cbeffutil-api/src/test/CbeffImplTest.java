@@ -11,11 +11,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bouncycastle.util.encoders.Base64;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -154,7 +156,6 @@ public class CbeffImplTest {
 	public void testGetBDBBasedOnType() throws IOException, Exception {
 		CbeffImpl cbeffImpl = new CbeffImpl();
 		Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
-		System.out.println(testMap);
 		Set<String> testSet1 = new HashSet<>();
 		testSet1.add("RIGHT FINGER");
 		assertEquals(testMap.keySet(),testSet1);

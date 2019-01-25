@@ -223,6 +223,10 @@ mvn javadoc:javadoc
 	cbeffImpl.validateXML(xmlbytes, xsdbytes));
 	```
 	
+	**Sample Response**
+	true
+	
+	
 4) **Search Cbeff based on Type and Subtype:**
 
    Searching an existing Cbeff data based on type and Subtype.
@@ -247,7 +251,7 @@ mvn javadoc:javadoc
 	
 	**Sample Response**
 	``` 
-	
+	{RIGHT FINGER=UklHSFQgRklOR0VS}
 	```
    
 
