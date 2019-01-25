@@ -25,6 +25,7 @@ public class RidValidatorTest {
 
 	int centerIdLength = 5;
 	int machineIdLength = 5;
+	int sequenceLength = 5;
 	int timeStampLength = 14;
 
 	@Test
@@ -126,20 +127,38 @@ public class RidValidatorTest {
 	@Test
 	public void validRidCenterIdMachineIdWithCustomLengthTest() {
 		String rid = "27847657360002520181208183050";
-		assertThat(
-				ridValidatorImpl.validateId(rid, centerId, machineId, centerIdLength, machineIdLength, timeStampLength),
-				is(true));
+		assertThat(ridValidatorImpl.validateId(rid, centerId, machineId, centerIdLength, machineIdLength, 5,
+				timeStampLength), is(true));
 	}
 
 	@Test
 	public void validRidWithCustomLengthTest() {
 		String rid = "27847657360002520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid, centerIdLength, machineIdLength, timeStampLength), is(true));
+		assertThat(ridValidatorImpl.validateId(rid, centerIdLength, machineIdLength, sequenceLength, timeStampLength),
+				is(true));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidCustomLengthTest() {
 		String rid = "27847657360002520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid, -1, machineIdLength, timeStampLength), is(false));
+		assertThat(ridValidatorImpl.validateId(rid, -1, machineIdLength, sequenceLength, timeStampLength), is(false));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void validRidWithInvalidSequenceTest() {
+		String rid = "27847657360002520181208183050";
+		ridValidatorImpl.validateId(rid, centerId, machineId, centerIdLength, machineIdLength, sequenceLength, 13);
+	}
+
+	@Test
+	public void validRidWithCustomSequenceTest() {
+		String rid = "27847657362102520181208183050";
+		ridValidatorImpl.validateId(rid, "278476", "573621", 6, 6, 3, timeStampLength);
+	}
+	
+	@Test(expected=InvalidIDException.class)
+	public void validRidWithInvalidCustomSequenceTest() {
+		String rid = "27847657362102520181208183050";
+		ridValidatorImpl.validateId(rid, "278476", "573621", 6, 6, 2, timeStampLength);
 	}
 }

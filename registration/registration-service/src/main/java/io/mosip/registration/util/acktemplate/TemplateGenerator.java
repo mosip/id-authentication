@@ -5,10 +5,13 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -29,6 +32,8 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -97,8 +102,12 @@ public class TemplateGenerator extends BaseService {
 			ResourceBundle localProperties = applicationContext.getLocalLanguageProperty();
 			ResourceBundle applicationLanguageProperties = applicationContext.getApplicationLanguageBundle();
 
-			InputStream is = new ByteArrayInputStream(templateText.getBytes());
-			Map<String, Object> templateValues = new HashMap<>();
+			Reader templateReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
+
+			VelocityContext templateValues = new VelocityContext();
+			
+	//		InputStream is = new ByteArrayInputStream(templateText.getBytes());
+//			Map<String, Object> templateValues = new HashMap<>();
 			ByteArrayOutputStream byteArrayOutputStream = null;
 
 			String platformLanguageCode = MappedCodeForLanguage
@@ -107,6 +116,56 @@ public class TemplateGenerator extends BaseService {
 			String localLanguageCode = MappedCodeForLanguage
 					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
 					.getMappedCode().toLowerCase();
+
+			// Populating Template Labels in Primary Language
+			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("registrationid"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DATE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("date"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("fullName"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOB_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ageDatePicker"));
+			templateValues.put(RegistrationConstants.TEMPLATE_GENDER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("gender"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine1"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine2"));
+			templateValues.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("addressLine3"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CITY_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("city"));
+			templateValues.put(RegistrationConstants.TEMPLATE_POSTAL_CODE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("postalCode"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PROVINCE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("province"));
+			templateValues.put(RegistrationConstants.TEMPLATE_REGION_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("region"));
+			templateValues.put(RegistrationConstants.TEMPLATE_LOCAL_AUTHORITY_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("localAdminAuthority"));
+			templateValues.put(RegistrationConstants.TEMPLATE_MOBILE_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("mobileNo"));
+			templateValues.put(RegistrationConstants.TEMPLATE_EMAIL_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("emailId"));
+			templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("cniOrPinNumber"));
+			templateValues.put(RegistrationConstants.TEMPLATE_DOCUMENTS_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("documents"));
+			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("biometrics_captured"));
+			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("ro_name"));
+			templateValues.put(RegistrationConstants.TEMPLATE_INDIVIDUAL_PHOTO_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("individualphoto"));
+			templateValues.put(RegistrationConstants.TEMPLATE_EXCEPTION_PHOTO_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("exceptionphoto"));
+			templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINT_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("fingerprint"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("parentName"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("parentUIN"));
 
 			templateValues.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
@@ -120,7 +179,7 @@ public class TemplateGenerator extends BaseService {
 							platformLanguageCode));
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
-			if (dob == "") {
+			if (dob == null || dob == "") {
 				templateValues.put(RegistrationConstants.TEMPLATE_DOB, getValue(
 						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
 			} else {
@@ -170,7 +229,7 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG_LABEL,
 						localProperties.getString("parentName"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("uinId"));
+						localProperties.getString("parentUIN"));
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_LOCAL_LANG,
 						getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getParentOrGuardianName(), localLanguageCode));
@@ -231,16 +290,19 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE,
 						RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
 			}
-			/*
-			 * get the quality ranking for fingerprints of the applicant HashMap<String,
-			 * Integer> fingersQuality = getFingerPrintQualityRanking(registration); int
-			 * count=1; for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
-			 * if (entry.getValue() != 0) { // display rank of quality for the captured
-			 * fingerprints velocityContext.put(entry.getKey(), count++); } else { //
-			 * display cross mark for missing fingerprints
-			 * velocityContext.put(entry.getKey(),
-			 * RegistrationConstants.TEMPLATE_MISSING_FINGER); } }
-			 */
+
+			// get the quality ranking for fingerprints of the applicant
+			HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+			for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
+				if (entry.getValue() != 0) {
+					// display rank of quality for the captured fingerprints
+					templateValues.put(entry.getKey(), entry.getValue());
+				} else {
+					// display cross mark for missing fingerprints
+					templateValues.put(entry.getKey(), RegistrationConstants.TEMPLATE_MISSING_FINGER);
+				}
+			}
+
 			try {
 				BufferedImage handsImage = ImageIO
 						.read(this.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH));
@@ -327,7 +389,7 @@ public class TemplateGenerator extends BaseService {
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
-					localProperties.getString("fullName"));
+					"الوالد / الجارديان");
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
@@ -386,17 +448,6 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_RO_NAME_LOCAL_LANG,
 					registration.getOsiDataDTO().getOperatorID());
 
-			templateValues.put("rightIndexFinger", "1");
-			templateValues.put("rightMiddleFinger", "4");
-			templateValues.put("rightRingFinger", "2");
-			templateValues.put("rightLittleFinger", "5");
-			templateValues.put("rightThumb", "3");
-			templateValues.put("leftIndexFinger", "6");
-			templateValues.put("leftMiddleFinger", "2");
-			templateValues.put("leftRingFinger", "2");
-			templateValues.put("leftLittleFinger", "4");
-			templateValues.put("leftThumb", "5");
-
 			// get the total count of fingerprints captured and irises captured
 			List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
 					.getFingerprintDetailsDTO();
@@ -417,18 +468,19 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("biometrics_captured"));
 
 			Writer writer = new StringWriter();
-			try {
-				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
-						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
-
-				TemplateManager templateManager = templateManagerBuilder.build();
-				InputStream inputStream = templateManager.merge(is, templateValues);
-				String defaultEncoding = null;
-				IOUtils.copy(inputStream, writer, defaultEncoding);
-			} catch (IOException ioException) {
-				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
-				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-			}
+			Velocity.evaluate(templateValues, writer, "Acknowledgement Template", templateReader);
+//			try {
+//				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+//						"merge method of TemplateManager had been called for preparing Acknowledgement Template.");
+//
+//				TemplateManager templateManager = templateManagerBuilder.build();
+//				InputStream inputStream = templateManager.merge(is, templateValues);
+//				String defaultEncoding = null;
+//				IOUtils.copy(inputStream, writer, defaultEncoding);
+//			} catch (IOException ioException) {
+//				setErrorResponse(response, RegistrationConstants.TEMPLATE_GENERATOR_ACK_RECEIPT_EXCEPTION, null);
+//				LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+//			}
 			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
 
@@ -480,9 +532,9 @@ public class TemplateGenerator extends BaseService {
 							applicationLanguageCode));
 			String dob = getValue(
 					registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getDateOfBirth(), null);
-			if (dob == null) {
-				values.put(RegistrationConstants.TEMPLATE_DOB,
-						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge());
+			if (dob == null || dob == "") {
+				values.put(RegistrationConstants.TEMPLATE_DOB, getValue(
+						registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getAge(), null));
 			} else {
 				values.put(RegistrationConstants.TEMPLATE_DOB,
 						DateUtils.formatDate(DateUtils.parseToDate(dob, "yyyy/MM/dd"), "dd-MM-YYYY"));
@@ -545,7 +597,7 @@ public class TemplateGenerator extends BaseService {
 	 * @return hash map which gives the set of fingerprints captured and their
 	 *         respective rankings based on quality score
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	private HashMap<String, Integer> getFingerPrintQualityRanking(RegistrationDTO registration) {
 		// for storing the fingerprints captured and their respective quality scores
 		HashMap<String, Double> fingersQuality = new HashMap<>();
@@ -556,13 +608,18 @@ public class TemplateGenerator extends BaseService {
 		//
 		if (exceptionFingers != null) {
 			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
-				fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
+				if (exceptionFinger.getBiometricType().equalsIgnoreCase("fingerprint")) {
+					fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
+				}
 			}
 		}
 		List<FingerprintDetailsDTO> availableFingers = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getFingerprintDetailsDTO();
 		for (FingerprintDetailsDTO availableFinger : availableFingers) {
-			fingersQuality.put(availableFinger.getFingerType(), availableFinger.getQualityScore());
+			List<FingerprintDetailsDTO> segmentedFingers = availableFinger.getSegmentedFingerprints();
+			for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
+				fingersQuality.put(segmentedFinger.getFingerType(), segmentedFinger.getQualityScore());
+			}
 		}
 
 		Object[] fingerQualitykeys = fingersQuality.entrySet().toArray();

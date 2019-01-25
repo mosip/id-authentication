@@ -11,7 +11,7 @@ public enum BlacklistedWordsErrorCode {
 	NO_BLACKLISTED_WORDS_FOUND("KER-MSD-008", "Blacklisted word not found"), 
 	BLACKLISTED_WORDS_FETCH_EXCEPTION("KER-MSD-007", "Error occurred while fetching Blacklisted words"), 
 	BLACKLISTED_WORDS_INSERT_EXCEPTION("KER-MSD-070", "Error occurred while inserting Blacklisted words"),
-	BLACKLISTED_WORDS_UPDATE_EXCEPTION("KER-MSD-105", "Error occurred while deleting Blacklisted Word"),
+	BLACKLISTED_WORDS_UPDATE_EXCEPTION("KER-MSD-105", "Error occurred while updating Blacklisted Word"),
 	BLACKLISTED_WORDS_DELETE_EXCEPTION("KER-MSD-106", "Error occurred while deleting Blacklisted Word");
 	/**
 	 * The error code.

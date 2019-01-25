@@ -28,6 +28,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
@@ -211,14 +212,21 @@ public class FingerprintFacade {
 
 		try {
 
-			List<BiometricExceptionDTO> biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getInstance()
-					.getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
-							.getApplicantBiometricDTO().getBiometricExceptionDTO();
+			List<BiometricExceptionDTO> biometricExceptionDTOs;
 
+			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+				biometricExceptionDTOs = ((BiometricDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
+								.getBiometricExceptionDTO();
+			} else {
+				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getApplicantBiometricDTO()
+								.getBiometricExceptionDTO();
+			}
 			List<String> filePaths = Arrays.asList(path);
 
 			boolean isExceptionFinger = false;
-			
+
 			for (String folderPath : filePaths) {
 				isExceptionFinger = false;
 				String[] imageFileName = folderPath.split("/");

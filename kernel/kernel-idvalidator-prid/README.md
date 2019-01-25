@@ -1,10 +1,10 @@
 ## kernel-idvalidator-prid
 
- 1- ** [Background & Design](../../design/kernel/kernel-idvalidator-prid.md) **
+[Background & Design](../../docs/design/kernel/kernel-idvalidator.md)
  
 
  
- 2- ** API Documentation **
+[API Documentation]
  
  ```
  mvn javadoc:javadoc
@@ -65,6 +65,18 @@ Autowired interface PridValidator
  
 ```
 	boolean return = pridValidatorImpl.validateId("537184361359820"); //return true
+	
+	String id="537184361359820";
+	
+	int pridLength=14;
+	
+	int sequenceLimit=3;
+	
+	int repeatingLimit=3;
+	
+	int blockLimit=2;
+	
+	boolean return = pridValidatorImpl.validateId(id,pridLength,sequenceLimit,repeatingLimit,blockLimit)//return true
 
 ```
  

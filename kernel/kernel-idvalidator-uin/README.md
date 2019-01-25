@@ -1,10 +1,9 @@
 ## kernel-idvalidator-uin
 
- 1- [Background & Design](../../design/kernel/kernel-idvalidator-uin.md)
+[Background & Design](../../docs/design/kernel/kernel-idvalidator.md)
  
 
- 
- 2- [API Documentation ]
+[API Documentation ]
  
  ```
  mvn javadoc:javadoc

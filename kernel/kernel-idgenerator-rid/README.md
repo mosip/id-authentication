@@ -1,5 +1,6 @@
 ## kernel-idgenerator-rid
-This folder has RID generator module which can be used to generate RID as numeric string based on the centerId and machineId provided.
+
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-rid.md)
 
  [API Documentation <TBA>](TBA)
  

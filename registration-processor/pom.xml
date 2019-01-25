@@ -7,7 +7,7 @@
 		<artifactId>mosip-parent</artifactId>
 		<version>0.8.0</version>
 	</parent>
-	
+
 	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
 	<packaging>pom</packaging>
@@ -93,15 +93,22 @@
 		<camel.vertx.version>2.23.0</camel.vertx.version>
 		<!-- json-simple -->
 		<jsonsimple.version>1.1.1</jsonsimple.version>
-		
+
 		<!-- local -->
-		<registration.status.service.version>0.7.0</registration.status.service.version>
-		<registration.processor.core.version>0.7.0</registration.processor.core.version>
-		<filesystem.adapter.ceph.version>0.7.0</filesystem.adapter.ceph.version>
-		<packet.manager.version>0.7.0</packet.manager.version>
-		<registration.processor.rest.client.version>0.7.0</registration.processor.rest.client.version>
-		<packet.info.storage.service.version>0.7.0</packet.info.storage.service.version>
-		
+		<registration.status.service.version>0.8.0</registration.status.service.version>
+		<registration.processor.core.version>0.8.0</registration.processor.core.version>
+		<filesystem.adapter.ceph.version>0.8.0</filesystem.adapter.ceph.version>
+		<packet.manager.version>0.8.0</packet.manager.version>
+		<registration.processor.rest.client.version>0.8.0</registration.processor.rest.client.version>
+		<packet.info.storage.service.version>0.8.0</packet.info.storage.service.version>
+		<packet.bio.dedupe.service.version>0.8.0</packet.bio.dedupe.service.version>
+		<registration.processor.rest.client.version>0.8.0</registration.processor.rest.client.version>
+		<registration.processor.message.sender.version>0.8.0</registration.processor.message.sender.version>
+		<packet.bio.dedupe.api.version>0.8.0</packet.bio.dedupe.api.version>
+		<ui.generator.stage>0.8.0</ui.generator.stage>
+		<bio.dedupe.stage>0.8.0</bio.dedupe.stage>
+		<quality.checker>0.8.0</quality.checker>
+
 		<!-- Kernel -->
 		<kernel.core.version>0.7.0</kernel.core.version>
 		<kernel.dataaccess.hibernate.version>0.7.0</kernel.dataaccess.hibernate.version>
@@ -110,7 +117,7 @@
 		<kernel.smsnotification.service.version>0.7.0</kernel.smsnotification.service.version>
 		<kernel.idvalidator.version>0.7.0</kernel.idvalidator.version>
 		<kernel.clamav.version>0.7.0</kernel.clamav.version>
-		
+
 		<sonar.coverage.exclusions>**/dto/**,
 		**/exception/*Exception.java,
 		**/core/code/*.java,
@@ -144,7 +151,7 @@
 **/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
-		
+
 	</properties>
 
 	<dependencyManagement>
@@ -171,7 +178,10 @@
 		<module>packet-info-storage-service</module>
 		<module>quality-checker</module>
 		<module>registration-processor-message-sender</module>
-  </modules>
+		<module>packet-bio-dedupe-service</module>
+		<module>registration-processor-abis</module>
+		<module>packet-bio-dedupe-api</module>
+	</modules>
 
 	<profiles>
 		<profile>

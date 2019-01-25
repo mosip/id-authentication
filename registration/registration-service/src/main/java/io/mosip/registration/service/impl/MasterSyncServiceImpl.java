@@ -31,18 +31,18 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.mastersync.BlacklistedWordsDto;
-import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.dto.mastersync.MasterReasonListDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
-import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
+import io.mosip.registration.entity.mastersync.MasterValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MasterSyncService;
@@ -185,7 +185,8 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		requestParamMap.put("lastUpdated", lastSyncTime.toString());
 
 		try {
-			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,false);
+			response = serviceDelegateUtil.get(RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME, requestParamMap,
+					false);
 		} catch (HttpClientErrorException httpClientErrorException) {
 			LOGGER.error(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 					httpClientErrorException.getRawStatusCode() + "Http error while pulling json from server");
@@ -247,7 +248,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			location.setCode(masLocation.getCode());
 			location.setHierarchyName(masLocation.getHierarchyName());
 			location.setName(masLocation.getName());
-			location.setLanguageCode(masLocation.getLanguageCode());
+			location.setLangCode(masLocation.getLangCode());
 			locationDto.add(location);
 		}
 
@@ -262,18 +263,18 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * java.lang.String)
 	 */
 	@Override
-	public List<LocationDto> findProvianceByHierarchyCode(String code) {
+	public List<LocationDto> findProvianceByHierarchyCode(String code, String langCode) {
 
 		List<LocationDto> locationDto = new ArrayList<>();
 
-		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code);
+		List<MasterLocation> masterLocation = masterSyncDao.findLocationByParentLocCode(code, langCode);
 
 		for (MasterLocation masLocation : masterLocation) {
 			LocationDto location = new LocationDto();
 			location.setCode(masLocation.getCode());
 			location.setHierarchyName(masLocation.getHierarchyName());
 			location.setName(masLocation.getName());
-			location.setLanguageCode(masLocation.getLanguageCode());
+			location.setLangCode(masLocation.getLangCode());
 			locationDto.add(location);
 		}
 
@@ -340,35 +341,12 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		return blackWords;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.service.MasterSyncService#getDocumentCategories(java.
-	 * lang.String)
-	 */
-	@Override
-	public List<DocumentCategoryDto> getDocumentCategories(String langCode) {
-
-		List<DocumentCategoryDto> documentsDTO = new ArrayList<>();
-		List<MasterDocumentCategory> masterDocuments = masterSyncDao.getDocumentCategories(langCode);
-
-		masterDocuments.forEach(document -> {
-
-			DocumentCategoryDto documents = new DocumentCategoryDto();
-			documents.setDescription(document.getDescription());
-			documents.setLangCode(document.getLangCode());
-			documents.setName(document.getName());
-			documentsDTO.add(documents);
-
-		});
-
-		return documentsDTO;
-	}
-
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.MasterSyncService#getGenderDtls(java.lang.String)
+	 * @see io.mosip.registration.service.MasterSyncService#getGenderDtls(java.lang.
+	 * String)
 	 */
 	@Override
 	public List<GenderDto> getGenderDtls(String langCode) {
@@ -386,5 +364,38 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 		});
 
 		return gendetDtoList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.MasterSyncService#getDocumentCategories(java.
+	 * lang.String)
+	 */
+	@Override
+	public List<MasterDocumentType> getDocumentCategories(String docCode, String langCode) {
+
+		List<MasterValidDocument> masterValidDocuments = masterSyncDao.getValidDocumets(docCode, langCode);
+
+		List<String> validDocuments = new ArrayList<>();
+		masterValidDocuments.forEach(docs -> {
+			validDocuments.add(docs.getDocTypeCode());
+		});
+
+		List<MasterDocumentType> documentsDTO = new ArrayList<>();
+		List<MasterDocumentType> masterDocuments = masterSyncDao.getDocumentTypes(validDocuments, langCode);
+
+		masterDocuments.forEach(document -> {
+
+			MasterDocumentType documents = new MasterDocumentType();
+			documents.setDescription(document.getDescription());
+			documents.setLangCode(document.getLangCode());
+			documents.setName(document.getName());
+			documentsDTO.add(documents);
+
+		});
+
+		return documentsDTO;
 	}
 }

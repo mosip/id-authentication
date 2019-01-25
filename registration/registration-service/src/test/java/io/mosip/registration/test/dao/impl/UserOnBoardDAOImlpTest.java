@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -46,6 +47,7 @@ import io.mosip.registration.repositories.UserBiometricRepository;
  *
  * @since 1.0.0
  */
+@Ignore
 public class UserOnBoardDAOImlpTest {
 
 	@Rule

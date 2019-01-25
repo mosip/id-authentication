@@ -7,8 +7,9 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -192,25 +193,18 @@ public class PacketUploadController extends BaseController {
 	 * @param verifiedPackets
 	 * @return
 	 */
-	private List<PacketStatusDTO> populateTableData(List<Registration> packetStatus) {
+	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
 		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
-		PacketStatusDTO packetUploadStatusDTO;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-		String date = simpleDateFormat.format(new Date());
-		for (Registration registrationPacket : packetStatus) {
-			packetUploadStatusDTO = new PacketStatusDTO();
-			if (RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode()
-					.equals(registrationPacket.getClientStatusCode())) {
-				packetUploadStatusDTO.setUploadStatus("Uploaded");
-			} else {
-				packetUploadStatusDTO.setUploadStatus("Error");
-			}
-			packetUploadStatusDTO.setUploadTime(date);
-			packetUploadStatusDTO.setFileName(registrationPacket.getId());
+		packetStatus.forEach((id, status) ->{
+			PacketStatusDTO packetUploadStatusDTO = new PacketStatusDTO();
+			packetUploadStatusDTO.setUploadStatus(status);
+			packetUploadStatusDTO.setFileName(id);
 			listUploadStatus.add(packetUploadStatusDTO);
-		}
+		
+		}); 
 		return listUploadStatus;
 	}
 
@@ -239,6 +233,7 @@ public class PacketUploadController extends BaseController {
 							APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
+					Map<String, String> tableMap = new HashMap<String, String>();
 					String status = "";
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
@@ -254,26 +249,34 @@ public class PacketUploadController extends BaseController {
 							String packetPath = ackFileName.substring(0, lastIndex);
 							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							try {
-								if (("resend".equals(synchedPacket.getServerStatusCode()) && synchedPacket
-										.getServerStatusTimestamp().compareTo(synchedPacket.getUploadTimestamp()) == 1)
-										|| RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
-												.equals(synchedPacket.getClientStatusCode())
+								if (packet.exists()) {
+									if ((("resend".equals(synchedPacket.getServerStatusCode())
+											&& synchedPacket.getServerStatusTimestamp()
+													.compareTo(synchedPacket.getUploadTimestamp()) == 1)
+											|| RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
+													.equals(synchedPacket.getClientStatusCode())
 
-										|| "E".equals(synchedPacket.getFileUploadStatus())) {
-									Object response = packetUploadService.pushPacket(packet);
-									String responseCode = response.toString();
-									if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
-										synchedPacket.setClientStatusCode(
-												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-										synchedPacket.setFileUploadStatus(
-												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
-										packetUploadList.add(synchedPacket);
+											|| "E".equals(synchedPacket.getFileUploadStatus())) && packet.exists()) {
+										Object response = packetUploadService.pushPacket(packet);
+										String responseCode = response.toString();
+										if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
+											synchedPacket.setClientStatusCode(
+													RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+											synchedPacket.setFileUploadStatus(
+													RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+											packetUploadList.add(synchedPacket);
+											tableMap.put(synchedPacket.getId(),
+													RegistrationConstants.PACKET_UPLOAD_SUCCESS);
 
-									} else {
-										synchedPacket.setFileUploadStatus(
-												RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-										packetUploadList.add(synchedPacket);
+										} else {
+											synchedPacket.setFileUploadStatus(
+													RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+											packetUploadList.add(synchedPacket);
+											tableMap.put(synchedPacket.getId(), "Error("+responseCode +")");
+										}
 									}
+								} else {
+									tableMap.put(synchedPacket.getId(), "Error(Packet not available)");
 								}
 
 							} catch (URISyntaxException e) {
@@ -288,6 +291,8 @@ public class PacketUploadController extends BaseController {
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 								packetUploadList.add(synchedPacket);
+								tableMap.put(synchedPacket.getId(), "Error("+e.getErrorTexts().toString()+")");
+								
 							} catch (RuntimeException e) {
 								LOGGER.error(
 										"REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_CONTROLLER",
@@ -304,6 +309,7 @@ public class PacketUploadController extends BaseController {
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 									synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 									packetUploadList.add(synchedPacket);
+									tableMap.put(synchedPacket.getId(), "Error");
 								}
 								break;
 							}
@@ -312,7 +318,7 @@ public class PacketUploadController extends BaseController {
 						}
 						packetUploadService.updateStatus(packetUploadList);
 						progressIndicator.setVisible(false);
-						displayData(populateTableData(packetUploadList));
+						displayData(populateTableData(tableMap));
 					} else {
 						status = "Info-No packets to upload.";
 					}

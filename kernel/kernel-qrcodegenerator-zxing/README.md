@@ -1,9 +1,10 @@
 ## kernel-qrcodegenerator-zxing
-[Background & Design](TBA)
 
-**Api Documentation**
+[Background & Design](../../docs/design/kernel/kernel-qrcodegenerator.md)
 
-[API Documentation <TBA>](TBA)
+
+
+[API Documentation]
 
 ```
 mvn javadoc:javadoc

@@ -1,9 +1,11 @@
 package io.mosip.registration.test.service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +21,8 @@ import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -54,6 +58,14 @@ public class PacketCreationServiceTest {
 	public static void initialize() throws RegBaseCheckedException {
 		SessionContext.getInstance().setMapObject(new HashMap<>());
 		registrationDTO = DataProvider.getPacketDTO();
+	}
+
+	@Before
+	public void intializeForTest() {
+		Map<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS,
+				RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
+		ApplicationContext.getInstance().setApplicationMap(applicationMap);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,9 +117,25 @@ public class PacketCreationServiceTest {
 		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testCreatePacketWithTestTags() throws Exception {
+		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		Mockito.when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
+				.thenReturn("zip".getBytes());
+		Mockito.when(cbeffI.createXML(Mockito.anyList())).thenReturn("cbeffXML".getBytes());
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new ValidationReport());
+		ApplicationContext.getInstance().getApplicationMap().put(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS, "N");
+
+		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
+	}
+
 	@AfterClass
 	public static void destroy() {
 		SessionContext.destroySession();
+		ApplicationContext.getInstance().setApplicationMap(null);
 	}
 
 }

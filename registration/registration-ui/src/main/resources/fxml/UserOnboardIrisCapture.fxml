@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="userOnboardIris" prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+<AnchorPane fx:id="userOnboardIris" prefHeight="461.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.IrisCaptureController">
    <children>
    <AnchorPane prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
          <children>

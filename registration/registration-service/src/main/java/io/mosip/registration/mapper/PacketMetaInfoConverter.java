@@ -448,9 +448,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		}
 
 		// Add Supervisor Password
-		osiData.add(buildFieldValue("supervisorPassword", null));
+		osiData.add(buildFieldValue("supervisorPassword",
+				String.valueOf(registrationDTO.getOsiDataDTO().isSuperviorAuthenticatedByPassword())));
 		// Add Officer Password
-		osiData.add(buildFieldValue("officerPassword", null));
+		osiData.add(buildFieldValue("officerPassword",
+				String.valueOf(registrationDTO.getOsiDataDTO().isOperatorAuthenticatedByPassword())));
 
 		// Add Supervisor PIN
 		osiData.add(buildFieldValue("supervisorPIN", null));
@@ -463,9 +465,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		osiData.add(buildFieldValue("officerFaceImage", null));
 
 		// Add Supervisor OTP Authentication Image
-		osiData.add(buildFieldValue("supervisorOTPAuthentication", "false"));
+		osiData.add(buildFieldValue("supervisorOTPAuthentication",
+				String.valueOf(registrationDTO.getOsiDataDTO().isSuperviorAuthenticatedByPIN())));
 		// Add Officer Face Image
-		osiData.add(buildFieldValue("officerOTPAuthentication", "false"));
+		osiData.add(buildFieldValue("officerOTPAuthentication",
+				String.valueOf(registrationDTO.getOsiDataDTO().isOperatorAuthenticatedByPIN())));
 
 		return osiData;
 	}

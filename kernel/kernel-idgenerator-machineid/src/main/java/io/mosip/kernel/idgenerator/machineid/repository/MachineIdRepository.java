@@ -1,5 +1,8 @@
 package io.mosip.kernel.idgenerator.machineid.repository;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +18,28 @@ import io.mosip.kernel.idgenerator.machineid.entity.MachineId;
  */
 @Repository
 public interface MachineIdRepository extends BaseRepository<MachineId, Integer> {
+
 	/**
-	 * This method triggers query to retreive the last generated machine ID.
+	 * Method to generate the last generate MID.
 	 * 
-	 * @return the last generated machine ID.
+	 * @return the MID entity response.
 	 */
-	@Query(value = "select m.machine_id FROM ids.mid m where m.machine_id = (select max(m.machine_id) from ids.mid m) ", nativeQuery = true)
-	public MachineId findMaxMachineId();
+	@Query(value = "select t.curr_seq_no,t.cr_by,t.cr_dtimes,t.upd_by,t.upd_dtimes FROM master.mid_seq t ", nativeQuery = true)
+	MachineId findLastMID();
+
+	/**
+	 * 
+	 * Method to update Machine ID.
+	 * 
+	 * @param currentId
+	 *            the current ID.
+	 * @param previousId
+	 *            the last ID.
+	 * @param updateTime
+	 *            the current time.
+	 * @return the rows updated.
+	 */
+	@Modifying
+	@Query("UPDATE MachineId SET mId=?1,updatedDateTime=?3,createdDateTime=?3 WHERE mId=?2")
+	int updateMID(int currentId, int previousId, LocalDateTime updateTime);
 }

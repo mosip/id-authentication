@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -41,6 +42,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.util.kernal.RIDGenerator;
 
+@Ignore
 public class PreRegZipHandlingServiceTest {
 
 	@Rule

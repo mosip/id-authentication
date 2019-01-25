@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,6 +50,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
 //import javafx.scene.image.WritableImage;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class })
 public class FingerprintFacadeTest {

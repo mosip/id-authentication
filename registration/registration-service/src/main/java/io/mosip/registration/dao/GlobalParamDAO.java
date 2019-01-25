@@ -23,4 +23,6 @@ public interface GlobalParamDAO {
 	
 	void saveAll(List<GlobalParam> list);
 	
+	GlobalParam get(String name);
+	
 }

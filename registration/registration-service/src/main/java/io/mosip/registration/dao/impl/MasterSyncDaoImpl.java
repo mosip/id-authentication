@@ -27,6 +27,7 @@ import io.mosip.registration.dto.mastersync.DocumentTypeDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
 import io.mosip.registration.dto.mastersync.HolidayDto;
 import io.mosip.registration.dto.mastersync.IdTypeDto;
+import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.MachineDto;
 import io.mosip.registration.dto.mastersync.MachineSpecificationDto;
@@ -52,6 +53,7 @@ import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterHoliday;
 import io.mosip.registration.entity.mastersync.MasterIdType;
+import io.mosip.registration.entity.mastersync.MasterLanguage;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterMachine;
 import io.mosip.registration.entity.mastersync.MasterMachineSpecification;
@@ -77,6 +79,7 @@ import io.mosip.registration.repositories.mastersync.MasterSyncDocumentTypeRepos
 import io.mosip.registration.repositories.mastersync.MasterSyncGenderRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncHolidayRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncIdTypeRepository;
+import io.mosip.registration.repositories.mastersync.MasterSyncLanguageRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncLocationRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncMachineRepository;
 import io.mosip.registration.repositories.mastersync.MasterSyncMachineSpecificationRepository;
@@ -195,6 +198,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Autowired
 	private MasterSyncValidDocumentRepository masterSyncValidDocumentRepository;
 
+	/** Object for Sync language Repository. */
+	@Autowired
+	private MasterSyncLanguageRepository masterSyncLanguageRepository;
+
 	/**
 	 * logger for logging
 	 */
@@ -264,10 +271,14 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 		List<IdTypeDto> masterIdTypeDto = masterSyncDto.getIdTypes();
 		List<TitleDto> masterTitleDto = masterSyncDto.getTitles();
 		List<GenderDto> masterGenderDto = masterSyncDto.getGenders();
+		List<LanguageDto> languageDto = masterSyncDto.getLanguages();
 
 		String sucessResponse = null;
 
 		try {
+
+			List<MasterLanguage> masterLangauge = MetaDataUtils.setCreateMetaData(languageDto, MasterLanguage.class);
+			masterSyncLanguageRepository.saveAll(masterLangauge);
 
 			List<MasterApplication> masterApplicationDtoEntity = MetaDataUtils.setCreateMetaData(masterApplicationDto,
 					MasterApplication.class);
@@ -384,7 +395,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 */
 	@Override
 	public List<MasterLocation> findLocationByLangCode(String hierarchyCode, String langCode) {
-		return masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLanguageCode(hierarchyCode, langCode);
+		return masterSyncLocationRepository.findMasterLocationByHierarchyNameAndLangCode(hierarchyCode, langCode);
 	}
 
 	/*
@@ -395,8 +406,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	 * .String)
 	 */
 	@Override
-	public List<MasterLocation> findLocationByParentLocCode(String parentLocCode) {
-		return masterSyncLocationRepository.findMasterLocationByParentLocCode(parentLocCode);
+	public List<MasterLocation> findLocationByParentLocCode(String parentLocCode, String langCode) {
+		return masterSyncLocationRepository.findMasterLocationByParentLocCodeAndLangCode(parentLocCode, langCode);
 	}
 
 	/*
@@ -430,16 +441,16 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<MasterBlacklistedWords> getBlackListedWords(String langCode) {
 		return masterSyncBlacklistedWordsRepository.findBlackListedWordsByLangCode(langCode);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.dao.MasterSyncDao#getDocumentCategories(java.lang.String)
+	 * @see io.mosip.registration.dao.MasterSyncDao#getDocumentCategories(java.lang.
+	 * String)
 	 */
 	@Override
-	public List<MasterDocumentCategory> getDocumentCategories(String langCode) {
-		return masterSyncDocumentCategoryRepository.findDocumentCategoryByLangCode(langCode);
+	public List<MasterDocumentType> getDocumentTypes(List<String> docCode, String langCode) {
+		return masterSyncDocumentTypeRepository.findByLangCodeAndCodeIn(langCode, docCode);
 	}
 
 	/*
@@ -451,6 +462,17 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	public List<MasterGender> getGenderDtls(String langCode) {
 
 		return masterSyncGenderRepository.findByLangCode(langCode);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.MasterSyncDao#getValidDocumets(java.lang.String)
+	 */
+	@Override
+	public List<MasterValidDocument> getValidDocumets(String docCategoryCode, String langCode) {
+		return masterSyncValidDocumentRepository.findByDocCategoryCodeAndLangCode(docCategoryCode, langCode);
 	}
 
 }

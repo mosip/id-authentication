@@ -48,6 +48,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
@@ -169,7 +170,7 @@ public class LoginController extends BaseController implements Initializable {
 	private FaceFacade faceFacade;
 
 	private boolean isNewUser = false;
-
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
@@ -236,91 +237,107 @@ public class LoginController extends BaseController implements Initializable {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USRNAME_LENGTH);
 		} else {
 
-			UserDetail userDetail = loginService.getUserDetail(userId.getText());
+			try {
 
-			String regCenter = (String) applicationContext.getApplicationMap()
-					.get(RegistrationConstants.REGISTARTION_CENTER);
+				UserDetail userDetail = loginService.getUserDetail(userId.getText());
 
-			if (regCenter.equals(userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID))) {
+				String regCenter = (String) applicationContext.getApplicationMap()
+						.get(RegistrationConstants.REGISTARTION_CENTER);
 
-				String stationID = userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_STATION_ID);
+				if (regCenter
+						.equals(userOnboardService.getMachineCenterId().get(RegistrationConstants.USER_CENTER_ID))) {
 
-				if (userDetail == null) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
-				} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
-				} else {
+					String stationID = userOnboardService.getMachineCenterId()
+							.get(RegistrationConstants.USER_STATION_ID);
 
-					Set<String> roleList = new LinkedHashSet<>();
-
-					userDetail.getUserRole().forEach(roleCode -> {
-						if (roleCode.getIsActive()) {
-							roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
-						}
-					});
-
-					LOGGER.debug("REGISTRATION - ROLES - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-							"Validating roles");
-					// Checking roles
-					if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
-							|| roleList.contains(RegistrationConstants.SUPERVISOR)
-							|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
+					if (userDetail == null) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_ONBOARDED);
+					} else if (userDetail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BLOCKED_USER_ERROR);
 					} else {
 
-						if (SessionContext.getInstance().getMapObject() == null) {
+						Set<String> roleList = new LinkedHashSet<>();
 
-							SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
-
-							SessionContext.getInstance().getMapObject().put(RegistrationConstants.USER_STATION_ID,
-									stationID);
-
-							if (getCenterMachineStatus(userDetail)) {
-								SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
-										isNewUser);
-								loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
-							} else {
-								SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
-										true);
-								Set<String> roleSet = new HashSet<>();
-								roleSet.add("*");
-								loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
+						userDetail.getUserRole().forEach(roleCode -> {
+							if (roleCode.getIsActive()) {
+								roleList.add(String.valueOf(roleCode.getUserRoleID().getRoleCode()));
 							}
-						}
+						});
 
-						try {
+						LOGGER.debug("REGISTRATION - ROLES - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+								"Validating roles");
+						// Checking roles
+						if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
+								|| roleList.contains(RegistrationConstants.SUPERVISOR)
+								|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
+						} else {
 
-							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
-									: null;
+							if (SessionContext.getInstance().getMapObject() == null) {
 
-							if (!loginList.isEmpty()) {
-								loginList.remove(RegistrationConstants.PARAM_ZERO);
+								SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+
+								SessionContext.getInstance().getMapObject().put(RegistrationConstants.USER_STATION_ID,
+										stationID);
+
+								if (getCenterMachineStatus(userDetail)) {
+									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
+											isNewUser);
+									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE,
+											false);
+									loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
+								} else {
+									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
+											true);
+									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE,
+											false);
+									Set<String> roleSet = new HashSet<>();
+									roleSet.add("*");
+									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
+								}
 							}
 
-							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
-									APPLICATION_NAME, APPLICATION_ID, "Retrieved corresponding Login mode");
-							if (loginMode == null) {
-								AnchorPane loginType = BaseController
-										.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-								scene = getScene(loginType);
-							} else {
-								userIdPane.setVisible(false);
-								loadLoginScreen(loginMode);
+							try {
+
+								String loginMode = !loginList.isEmpty()
+										? loginList.get(RegistrationConstants.PARAM_ZERO)
+										: null;
+
+								if (!loginList.isEmpty()) {
+									loginList.remove(RegistrationConstants.PARAM_ZERO);
+								}
+
+								LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
+										APPLICATION_NAME, APPLICATION_ID, "Retrieved corresponding Login mode");
+								if (loginMode == null) {
+									AnchorPane loginType = BaseController
+											.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
+									scene = getScene(loginType);
+								} else {
+									userIdPane.setVisible(false);
+									loadLoginScreen(loginMode);
+								}
+
+							} catch (IOException ioException) {
+
+								LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
+										APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+
+								generateAlert(RegistrationConstants.ERROR,
+										RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 							}
-
-						} catch (IOException ioException) {
-
-							LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
-									APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-							generateAlert(RegistrationConstants.ERROR,
-									RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 						}
 					}
+				} else {
+					generateAlert(RegistrationConstants.USER_MACHINE_VALIDATION_CODE,
+							RegistrationConstants.USER_MACHINE_VALIDATION_MSG);
 				}
-			} else {
-				generateAlert(RegistrationConstants.USER_MACHINE_VALIDATION_CODE,
-						RegistrationConstants.USER_MACHINE_VALIDATION_MSG);
+			} catch (RegBaseUncheckedException regBaseUncheckedException) {
+
+				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+						APPLICATION_ID, regBaseUncheckedException.getMessage());
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 			}
 		}
 	}

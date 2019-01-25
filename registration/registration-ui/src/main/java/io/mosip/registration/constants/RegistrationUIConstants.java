@@ -57,9 +57,10 @@ public class RegistrationUIConstants {
 	public static final String NOTIFICATION_FAIL = bundle.getString("NOTIFICATION_FAIL");
 	public static final String NOTIFICATION_SMS_FAIL = bundle.getString("NOTIFICATION_SMS_FAIL");
 	public static final String NOTIFICATION_EMAIL_FAIL = bundle.getString("NOTIFICATION_EMAIL_FAIL");
+	public static final String PACKET_CREATION_FAILURE = bundle.getString("PACKET_CREATION_FAILURE");
 
 	// SUCCESS
-	public static final String PACKET_CREATED_SUCCESS = bundle.getString("PACKET_CREATED_SUCCESS");
+	public static final String PACKET_CREATED_SUCCESS = bundle.getString("PACKET_CREATED_SUCCESS");	
 	public static final String PRINT_INITIATION_SUCCESS = bundle.getString("PRINT_INITIATION_SUCCESS");
 	public static final String REREGISTRATION_APPROVE_SUCCESS = bundle.getString("REREGISTRATION_APPROVE_SUCCESS");
 	public static final String REREGISTER_TITLEPANE=bundle.getString("REREGISTER_TITLEPANE");
@@ -100,6 +101,7 @@ public class RegistrationUIConstants {
 	public static final String SCAN_DOCUMENT_CONVERTION_ERR = bundle.getString("SCAN_DOCUMENT_CONVERTION_ERR");
 	public static final String PRE_REG_ID_EMPTY = bundle.getString("PRE_REG_ID_EMPTY");
 	public static final String PRE_REG_ID_NOT_VALID = bundle.getString("PRE_REG_ID_NOT_VALID");
+	public static final String REG_ID_JSON_VALIDATION_FAILED = bundle.getString("REG_ID_JSON_VALIDATION_FAILED");
 
 	// OPT TO REGISTER
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = bundle.getString("OPT_TO_REG_TIME_SYNC_EXCEED");

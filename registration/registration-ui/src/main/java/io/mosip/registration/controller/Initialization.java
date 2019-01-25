@@ -1,10 +1,9 @@
 package io.mosip.registration.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Map;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
+import java.text.SimpleDateFormat;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -14,16 +13,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
-import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.jobs.impl.SynchConfigDataJob;
 import io.mosip.registration.service.config.GlobalParamService;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import javafx.application.Application;
+import javafx.application.HostServices;
+import javafx.stage.Stage;
 
 /**
  * Class for initializing the application
@@ -61,6 +57,9 @@ public class Initialization extends Application {
 			loginController.loadInitialScreen(primaryStage);
 		}
 
+		io.mosip.registration.context.ApplicationContext.getInstance().getApplicationMap().put("hostServices",
+				getHostServices());
+		
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen loaded"
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));

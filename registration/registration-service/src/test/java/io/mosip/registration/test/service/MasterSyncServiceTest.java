@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
-import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
@@ -1169,7 +1170,7 @@ public class MasterSyncServiceTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
@@ -1189,15 +1190,15 @@ public class MasterSyncServiceTest {
 		MasterLocation locattion = new MasterLocation();
 		locattion.setCode("LOC01");
 		locattion.setName("english");
-		locattion.setLanguageCode("ENG");
+		locattion.setLangCode("ENG");
 		locattion.setHierarchyLevel(1);
 		locattion.setHierarchyName("english");
 		locattion.setParentLocCode("english");
 		locations.add(locattion);
 
-		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString())).thenReturn(locations);
+		Mockito.when(masterSyncDao.findLocationByParentLocCode(Mockito.anyString(),Mockito.anyString())).thenReturn(locations);
 
-		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01");
+		masterSyncServiceImpl.findProvianceByHierarchyCode("LOC01","eng");
 
 	}
 
@@ -1245,17 +1246,19 @@ public class MasterSyncServiceTest {
 	@Test
 	public void findDocumentCategories() {
 	
-		List<MasterDocumentCategory> documents = new ArrayList<>();
-		MasterDocumentCategory document = new MasterDocumentCategory();
+		List<MasterDocumentType> documents = new ArrayList<>();
+		MasterDocumentType document = new MasterDocumentType();
 		document.setName("Aadhar");
 		document.setDescription("Aadhar card");
 		document.setLangCode("ENG");
 		documents.add(document);
 		documents.add(document);
+		List<String> validDocuments = new ArrayList<>();
+		validDocuments.add("CLR");
+		//validDocuments.add("MNA");
+		Mockito.when(masterSyncDao.getDocumentTypes(Mockito.anyList(),Mockito.anyString())).thenReturn(documents);
 	
-		Mockito.when(masterSyncDao.getDocumentCategories(Mockito.anyString())).thenReturn(documents);
-	
-		masterSyncServiceImpl.getDocumentCategories("ENG");
+		masterSyncServiceImpl.getDocumentCategories("ENG","Test");
 	
 	}
 	

@@ -5,11 +5,12 @@ import java.util.List;
 import io.mosip.registration.dto.mastersync.MasterDataResponseDto;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.mastersync.MasterBlacklistedWords;
-import io.mosip.registration.entity.mastersync.MasterDocumentCategory;
+import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.entity.mastersync.MasterGender;
 import io.mosip.registration.entity.mastersync.MasterLocation;
 import io.mosip.registration.entity.mastersync.MasterReasonCategory;
 import io.mosip.registration.entity.mastersync.MasterReasonList;
+import io.mosip.registration.entity.mastersync.MasterValidDocument;
 
 /**
  * The Interface MasterSyncDao.
@@ -48,9 +49,10 @@ public interface MasterSyncDao {
 	 * Find location by parent loc code.
 	 *
 	 * @param parentLocCode the parent loc code
+	 * @param langCode the lang code
 	 * @return the list
 	 */
-	List<MasterLocation> findLocationByParentLocCode(String parentLocCode);
+	List<MasterLocation> findLocationByParentLocCode(String parentLocCode,String langCode);
 
 	/**
 	 * Gets the all reason catogery.
@@ -78,10 +80,11 @@ public interface MasterSyncDao {
 	/**
 	 * Gets the Document Categories.
 	 *
+	 * @param docCode the doc code
 	 * @param langCode the lang code
 	 * @return the document categories
 	 */
-	List<MasterDocumentCategory> getDocumentCategories(String langCode);
+	List<MasterDocumentType> getDocumentTypes(List<String> docCode,String langCode);
 	
 	/**
 	 * Gets the gender dtls.
@@ -90,5 +93,13 @@ public interface MasterSyncDao {
 	 * @return the gender dtls
 	 */
 	List<MasterGender> getGenderDtls(String langCode);
+	
+	/**
+	 * Gets the valid documets.
+	 *
+	 * @param langCode the lang code
+	 * @return the valid documets
+	 */
+	List<MasterValidDocument> getValidDocumets(String docCategoryCode,String langCode);
 
 }

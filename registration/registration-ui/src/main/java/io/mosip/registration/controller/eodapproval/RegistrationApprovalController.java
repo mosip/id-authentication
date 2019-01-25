@@ -24,7 +24,6 @@ import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.auth.AuthenticationController;
 import io.mosip.registration.controller.reg.ViewAckController;
@@ -69,7 +68,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@Autowired
 	private RegistrationApprovalService registration;
-	
+
 	@Autowired
 	private EODController eodController;
 
@@ -136,7 +135,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	/** object for finger print authentication controller. */
 	@Autowired
 	private AuthenticationController authenticationController;
-	
+
 	private Stage primaryStage;
 
 	/*
@@ -242,13 +241,14 @@ public class RegistrationApprovalController extends BaseController implements In
 		List<RegistrationApprovalDTO> listData = null;
 
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
-		
-		
+
 		if (!listData.isEmpty()) {
-			eodController.getPendingApprovalTitledPane().setText( RegistrationUIConstants.PENDING_APPROVAL+"("+listData.size()+")");
+			eodController.getPendingApprovalTitledPane()
+					.setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() + ")");
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
+			eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.PENDING_APPROVAL);
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();
@@ -294,7 +294,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
 					table.getSelectionModel().getSelectedItem().getId(),
-					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),RegistrationConstants.APPROVED);
+					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
+					RegistrationConstants.APPROVED);
 			table.getItems().set(table.getSelectionModel().getSelectedIndex(), approvalDTO);
 
 		} else {
@@ -318,8 +319,8 @@ public class RegistrationApprovalController extends BaseController implements In
 
 					loadStage(primarystage, RegistrationConstants.USER_AUTHENTICATION);
 
-					authenticationController.init(this,ProcessNames.EOD.getType());
-					
+					authenticationController.init(this, ProcessNames.EOD.getType());
+
 					authenticateBtn.setSelected(false);
 
 				}

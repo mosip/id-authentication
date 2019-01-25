@@ -87,15 +87,6 @@ public class MasterRegistrationCenter extends MasterSyncBaseEntity implements Se
 	private String locationCode;
 
 	/**
-	 * the {@link Location} reference.
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "location_code", referencedColumnName = "code", insertable = false, updatable = false),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false), })
-	private MasterLocation location;
-
-	/**
 	 * the {@link RegistrationCenterType} reference.
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -301,20 +292,6 @@ public class MasterRegistrationCenter extends MasterSyncBaseEntity implements Se
 	 */
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
-	}
-
-	/**
-	 * @return the location
-	 */
-	public MasterLocation getLocation() {
-		return location;
-	}
-
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(MasterLocation location) {
-		this.location = location;
 	}
 
 	/**

@@ -24,6 +24,7 @@ import io.mosip.registration.device.fp.FingerprintFacade;
 import io.mosip.registration.device.fp.MosipFingerprintProvider;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -183,8 +184,13 @@ public class AuthenticationController extends BaseController {
 			if (!otpUserId.getText().isEmpty()) {
 				if (fetchUserRole(otpUserId.getText())) {
 					if (otp.getText() != null) {
-						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
+						if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText())
+								.getSuccessResponseDTO() != null) {
 							userNameField = otpUserId.getText();
+							if (!isEODAuthentication) {
+								getOSIData().setSupervisorID(userNameField);
+								getOSIData().setSuperviorAuthenticatedByPIN(true);
+							}
 							loadNextScreen();
 						} else {
 							generateAlert(RegistrationConstants.ERROR,
@@ -201,11 +207,13 @@ public class AuthenticationController extends BaseController {
 			}
 		} else {
 			if (otp.getText() != null) {
-				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO()!=null) {
+				if (otpGenerator.validateOTP(otpUserId.getText(), otp.getText()).getSuccessResponseDTO() != null) {
+					if (!isEODAuthentication) {
+						getOSIData().setOperatorAuthenticatedByPIN(true);
+					}
 					loadNextScreen();
 				} else {
-					generateAlert(RegistrationConstants.ERROR,
-							RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.OTP_FIELD_EMPTY);
@@ -214,7 +222,32 @@ public class AuthenticationController extends BaseController {
 	}
 
 	public void validatePwd() {
-		String status = validatePwd(username.getText(), password.getText());
+		String status = "";
+		if (isSupervisor) {
+			if (!username.getText().isEmpty()) {
+				if (fetchUserRole(username.getText())) {
+					status = validatePwd(username.getText(), password.getText());
+					if (!isEODAuthentication) {
+						getOSIData().setSupervisorID(userNameField);
+						getOSIData().setSuperviorAuthenticatedByPassword(true);
+					}
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USER_NOT_AUTHORIZED);
+				}
+			} else {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+			}
+		} else {
+			if (!username.getText().isEmpty()) {
+				status = validatePwd(username.getText(), password.getText());
+				if (!isEODAuthentication) {
+					getOSIData().setOperatorAuthenticatedByPassword(true);
+				}
+			} else {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+			}
+		}
+
 		if (RegistrationConstants.SUCCESS.equals(status)) {
 			userNameField = username.getText();
 			loadNextScreen();
@@ -235,6 +268,9 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(fpUserId.getText())) {
 					if (captureAndValidateFP(fpUserId.getText())) {
 						userNameField = fpUserId.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+						}
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGER_PRINT_MATCH);
@@ -253,7 +289,7 @@ public class AuthenticationController extends BaseController {
 			}
 		}
 	}
-	
+
 	/**
 	 * to validate the iris in case of iris based authentication
 	 */
@@ -266,6 +302,9 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(irisUserId.getText())) {
 					if (captureAndValidateIris(irisUserId.getText())) {
 						userNameField = irisUserId.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+						}
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.IRIS_MATCH);
@@ -284,7 +323,7 @@ public class AuthenticationController extends BaseController {
 			}
 		}
 	}
-	
+
 	/**
 	 * to validate the face in case of face based authentication
 	 */
@@ -297,6 +336,9 @@ public class AuthenticationController extends BaseController {
 				if (fetchUserRole(faceUserId.getText())) {
 					if (captureAndValidateFace(faceUserId.getText())) {
 						userNameField = faceUserId.getText();
+						if (!isEODAuthentication) {
+							getOSIData().setSupervisorID(userNameField);
+						}
 						loadNextScreen();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_MATCH);
@@ -325,8 +367,8 @@ public class AuthenticationController extends BaseController {
 
 		Set<String> roleSet = new HashSet<>();
 		roleSet.add("*");
-		
-		userAuthenticationTypeList = loginService.getModesOfLogin(authType,roleSet);
+
+		userAuthenticationTypeList = loginService.getModesOfLogin(authType, roleSet);
 
 		if (userAuthenticationTypeList.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
@@ -355,7 +397,7 @@ public class AuthenticationController extends BaseController {
 		} else {
 			if (!isSupervisor) {
 				if (toogleBioException != null && toogleBioException.booleanValue()) {
-					authCount=0;
+					authCount = 0;
 					isSupervisor = true;
 					getAuthenticationModes(ProcessNames.EXCEPTION.getType());
 				} else {
@@ -363,7 +405,7 @@ public class AuthenticationController extends BaseController {
 				}
 			} else {
 				if (isEODAuthentication) {
-					
+
 					baseController.updateAuthenticationStatus();
 				} else {
 					submitRegistration();
@@ -375,8 +417,7 @@ public class AuthenticationController extends BaseController {
 	/**
 	 * to enable the respective authentication mode
 	 * 
-	 * @param loginMode
-	 *            - name of authentication mode
+	 * @param loginMode - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
@@ -484,14 +525,14 @@ public class AuthenticationController extends BaseController {
 			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 		}
 	}
-	
+
 	/**
 	 * to enable the iris based authentication mode and disable rest of modes
 	 */
 	private void enableIris() {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
-		
+
 		irisBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(false);
@@ -509,14 +550,14 @@ public class AuthenticationController extends BaseController {
 			irisUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
 		}
 	}
-	
+
 	/**
 	 * to enable the face based authentication mode and disable rest of modes
 	 */
 	private void enableFace() {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
-		
+
 		faceBasedLogin.setVisible(true);
 		irisBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -539,8 +580,8 @@ public class AuthenticationController extends BaseController {
 	/**
 	 * to check the role of supervisor in case of biometric exception
 	 * 
-	 * @param userId
-	 *            - username entered by the supervisor in the authentication screen
+	 * @param userId - username entered by the supervisor in the authentication
+	 *               screen
 	 * @return boolean variable "true", if the person is authenticated as supervisor
 	 *         or "false", if not
 	 */
@@ -550,8 +591,8 @@ public class AuthenticationController extends BaseController {
 
 		UserDetail userDetail = loginService.getUserDetail(userId);
 		if (userDetail != null) {
-			return userDetail.getUserRole().stream().anyMatch(userRole -> userRole
-					.getUserRoleID().getRoleCode().equalsIgnoreCase(RegistrationConstants.SUPERVISOR_NAME));
+			return userDetail.getUserRole().stream().anyMatch(userRole -> userRole.getUserRoleID().getRoleCode()
+					.equalsIgnoreCase(RegistrationConstants.SUPERVISOR_NAME));
 		}
 		return false;
 	}
@@ -559,8 +600,7 @@ public class AuthenticationController extends BaseController {
 	/**
 	 * to capture and validate the fingerprint for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
@@ -608,29 +648,28 @@ public class AuthenticationController extends BaseController {
 
 				if (fpMatchStatus) {
 					if (isSupervisor) {
-						fingerprintDetailsDTO
-								.setFingerprintImageName("supervisor".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
+						fingerprintDetailsDTO.setFingerprintImageName(
+								"supervisor".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
 					} else {
-						fingerprintDetailsDTO
-								.setFingerprintImageName("officer".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
+						fingerprintDetailsDTO.setFingerprintImageName(
+								"officer".concat(fingerprintDetailsDTO.getFingerType()).concat(".jpg"));
 					}
 				}
 			}
 		}
 		return fpMatchStatus;
 	}
-	
+
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating iris
 	 */
 	private boolean captureAndValidateIris(String userId) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Iris");
-		
+
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		List<IrisDetailsDTO> irisDetailsDTOs = new ArrayList<>();
 		IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
@@ -645,14 +684,12 @@ public class AuthenticationController extends BaseController {
 			} else {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
-						.setIrisDetailsDTO(irisDetailsDTOs);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 			}
 		}
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
 		authenticationValidatorDTO.setUserId(userId);
-		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS,
-				authenticationValidatorDTO);
+		boolean irisMatchStatus = authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 
 		if (irisMatchStatus) {
 			if (isSupervisor) {
@@ -667,19 +704,18 @@ public class AuthenticationController extends BaseController {
 	/**
 	 * to capture and validate the iris for authentication
 	 * 
-	 * @param userId
-	 *            - username entered in the textfield
+	 * @param userId - username entered in the textfield
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
 		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Face");
-		
+
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-		
+
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
 		faceDetailsDTO.setFace(RegistrationConstants.FACE.toLowerCase().getBytes());
-		
+
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
@@ -689,15 +725,13 @@ public class AuthenticationController extends BaseController {
 			} else {
 				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.REGISTRATION_DATA);
-				registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
-						.setFaceDetailsDTO(faceDetailsDTO);
+				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
 			}
 		}
-		
+
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		authenticationValidatorDTO.setUserId(userId);
-		return authService.authValidator(RegistrationConstants.FACE,
-				authenticationValidatorDTO);
+		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
 	}
 
 	/**
@@ -742,6 +776,11 @@ public class AuthenticationController extends BaseController {
 		isSupervisor = false;
 		isEODAuthentication = false;
 		getAuthenticationModes(authType);
+	}
+
+	private OSIDataDTO getOSIData() {
+		return ((RegistrationDTO) SessionContext.getInstance().getMapObject()
+				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
 	}
 
 }

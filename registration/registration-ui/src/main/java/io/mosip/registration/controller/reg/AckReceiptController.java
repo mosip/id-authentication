@@ -111,6 +111,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	private String notificationAlertData = null;
 
+	private ResponseDTO packetCreationResponse;
+
 	private byte[] acknowledgement = null;
 
 	public RegistrationDTO getRegistrationData() {
@@ -140,15 +142,12 @@ public class AckReceiptController extends BaseController implements Initializabl
 		engine.loadContent(stringWriter.toString());
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Acknowledgement template has been loaded to webview");
-		
+
 		// pauses the view for 3 seconds so that the webview will be loaded with the
 		// content and calls the method to create packet after 3 seconds
 		PauseTransition pause = new PauseTransition(Duration.seconds(3));
 		pause.setOnFinished(e -> saveRegistrationData());
-		pause.play();		
-		if (notificationAlertData != null) {
-			generateNotificationAlert(notificationAlertData);
-		}
+		pause.play();
 	}
 
 	/**
@@ -184,7 +183,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 								: ridGeneratorImpl.generateId(RegistrationConstants.CENTER_ID,
 										RegistrationConstants.MACHINE_ID_GEN);
 
-						if (!number.isEmpty()
+						if (number != null
 								&& notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
 							// send sms
 							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,
@@ -198,7 +197,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 						String emailId = getRegistrationData().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 								.getEmail();
 
-						if (!emailId.isEmpty() && notificationServiceName
+						if (emailId != null && notificationServiceName
 								.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 							// send email
 							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,
@@ -256,10 +255,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 		}
 
 		// packet creation
-		ResponseDTO response = packetHandlerService.handle(registrationData);
+		packetCreationResponse = packetHandlerService.handle(registrationData);
 
-		if (response.getSuccessResponseDTO() != null
-				&& response.getSuccessResponseDTO().getMessage().equals("Success")) {
+		if (packetCreationResponse.getSuccessResponseDTO() != null
+				&& packetCreationResponse.getSuccessResponseDTO().getMessage().equals("Success")) {
 			generateEmailNotification();
 			try {
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
@@ -310,13 +309,21 @@ public class AckReceiptController extends BaseController implements Initializabl
 		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Printing the Acknowledgement Receipt");
 
-		PrinterJob job = PrinterJob.createPrinterJob();
-		if (job != null) {
-			webView.getEngine().print(job);
-			job.endJob();
+		if (packetCreationResponse.getSuccessResponseDTO() != null) {
+			if (notificationAlertData != null) {
+				generateNotificationAlert(notificationAlertData);
+			}
+			PrinterJob job = PrinterJob.createPrinterJob();
+			if (job != null) {
+				webView.getEngine().print(job);
+				job.endJob();
+			}
+			generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
+			goToHomePageFromRegistration();
+		} else {
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
+			goToHomePageFromRegistration();
 		}
-		generateAlert(RegistrationConstants.SUCCESS, RegistrationUIConstants.PRINT_INITIATION_SUCCESS);
-		goToHomePageFromRegistration();
 	}
 
 	@FXML

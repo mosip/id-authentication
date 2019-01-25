@@ -45,6 +45,7 @@ public class HomeController extends BaseController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
 		try {
 
 			LOGGER.debug("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", APPLICATION_NAME, APPLICATION_ID,
@@ -52,14 +53,25 @@ public class HomeController extends BaseController implements Initializable {
 
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));
 			mainBox.getChildren().add(headerRoot);
-			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+
+			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
+					&& !(boolean) SessionContext.getInstance().getMapObject()
+							.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_ONBOARD));
+				SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
 			} else {
+				if ((boolean) SessionContext.getInstance().getMapObject()
+						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+					SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, false);
+					SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
+				}
 				optionRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 			}
+			
 			mainBox.getChildren().add(optionRoot);
-
 			getScene(mainBox);
+			
 		} catch (IOException | RuntimeException exception) {
 
 			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,

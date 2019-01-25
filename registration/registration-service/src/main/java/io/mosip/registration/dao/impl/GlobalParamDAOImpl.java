@@ -69,4 +69,9 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 				RegistrationConstants.APPLICATION_ID, "Save Global Params ended");
 
 	}
+
+	@Override
+	public GlobalParam get(String name) {
+		return globalParamRepository.findByName(name);
+	}
 }

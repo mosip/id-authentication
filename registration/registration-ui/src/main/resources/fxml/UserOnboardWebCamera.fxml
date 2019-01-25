@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.stage.Screen?>
 
-<AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+<AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.device.FaceCaptureController">
 <children>
 <AnchorPane prefHeight="653.0" prefWidth="835.0" styleClass="anchorPanebgColor,borderStyle">
          <children>
@@ -62,7 +62,7 @@
        </HBox>
        <Label layoutX="104.0" layoutY="54.0" text="Image" />
        <Button fx:id="biometricPrevBtn" layoutX="738.0" layoutY="592.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="RegbuttonStyle" text="Previous" />
-       <Button fx:id="saveBiometricDetailsBtn" layoutX="390.0" layoutY="530.0" mnemonicParsing="false" onAction="#submit" styleClass="RegbuttonStyle" text="Submit" />
+       <Button fx:id="saveBiometricDetailsBtn" layoutX="390.0" layoutY="530.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="RegbuttonStyle" text="Submit" />
    </children>
    </AnchorPane>
     </children>
