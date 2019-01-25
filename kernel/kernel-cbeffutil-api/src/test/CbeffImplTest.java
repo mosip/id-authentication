@@ -1,4 +1,4 @@
-package io.mosip.kernel.cbeffutil.test;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +32,7 @@ public class CbeffImplTest {
 
 	private List<BIR> createList;
 	private List<BIR> updateList;
-	private static final String tempPath = "./src/main/java/io/mosip/kernel/cbeffutil/test/resources";
+	private static final String tempPath = "./src/main/resources";
 
 	@Before
 	public void setUp() throws Exception {

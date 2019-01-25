@@ -1,34 +1,29 @@
-/**
- * 
- */
 package io.mosip.kernel.cbeffutil.service.impl;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-
-import org.w3c.dom.Element;
 
 import io.mosip.kernel.cbeffutil.common.CbeffValidator;
 import io.mosip.kernel.cbeffutil.container.impl.CbeffContainerImpl;
 import io.mosip.kernel.cbeffutil.entity.BIR;
 import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.ObjectFactory;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.TestBiometrics;
 import io.mosip.kernel.cbeffutil.service.CbeffI;
 
 /**
+ * This class is used to create,update, validate and search Cbeff data
  * @author Ramadurai Pandian
  *
  */
 public class CbeffImpl implements CbeffI {
 
+	/**
+	 * Method used for creating Cbeff XML
+	 * 
+	 * @param List<BIR> pass List<BIR> for creating Cbeff data
+	 *        
+	 * @return return byte array of XML data
+	 * 
+	 */
 	@Override
 	public byte[] createXML(List<BIR> birList) throws Exception {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
@@ -37,6 +32,14 @@ public class CbeffImpl implements CbeffI {
 		return xmlByte;
 	}
 
+	/**
+	 * Method used for updating Cbeff XML
+	 * 
+	 * @param List<BIR> pass List<BIR> for creating Cbeff data
+	 *        
+	 * @return return byte array of XML data
+	 * 
+	 */
 	@Override
 	public byte[] updateXML(List<BIR> birList, byte[] fileBytes) throws Exception {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
@@ -45,18 +48,34 @@ public class CbeffImpl implements CbeffI {
 		return xmlByte;
 	}
 
+	/**
+	 * Method used for validating XML against XSD
+	 * 
+	 * @param byte array of XML data
+	 * 
+	 * @param byte array of XSD data
+	 *        
+	 * @return boolean if data is valid or not
+	 * 
+	 */
 	@Override
 	public boolean validateXML(byte[] xmlBytes, byte[] xsdBytes) throws Exception {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
 		return cbeffContainer.validateXML(xmlBytes, xsdBytes);
 	}
 
-	@Override
-	public String getTestElementDetails(byte[] xmlBytes, byte[] xsdBytes) throws Exception {
-		// TODO
-		return null;
-	}
-
+	/**
+	 * Method used for validating XML against XSD
+	 * 
+	 * @param byte array of XML data
+	 * 
+	 * @param type to be searched
+	 * 
+	 * @param subtype to be searched
+	 *        
+	 * @return Map of type and String of encoded biometric data
+	 * 
+	 */
 	@Override
 	public Map<String, String> getBDBBasedOnType(byte[] fileBytes, String type, String subType) throws Exception {
 		BIRType bir = CbeffValidator.getBIRFromXML(fileBytes);
@@ -64,6 +83,14 @@ public class CbeffImpl implements CbeffI {
 		return bdbMap;
 	}
 
+	/**
+	 * Method used for getting list of BIR from XML bytes
+	 * 
+	 * @param byte array of XML data
+	 *        
+	 * @return List of BIR data extracted from XML
+	 * 
+	 */
 	@Override
 	public List<BIRType> getBIRDataFromXML(byte[] xmlBytes) throws Exception {
 		BIRType bir = CbeffValidator.getBIRFromXML(xmlBytes);

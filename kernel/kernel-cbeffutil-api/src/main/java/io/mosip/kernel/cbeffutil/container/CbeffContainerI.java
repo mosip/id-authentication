@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * @author Ramadurai Pandian
+ * 
+ * Container Interface to be used for create and update
  *
  */
 public abstract class CbeffContainerI<T, U> {

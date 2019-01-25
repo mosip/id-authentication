@@ -24,6 +24,12 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 
 	private BIRType birType;
 
+	/**
+	 * Method where the initialization of BIR happens
+	 * 
+	 * @param List of BIR data
+	 * @return BIR data with all images
+	 */
 	@Override
 	public BIRType createBIRType(List<BIR> birList) {
 		load();
@@ -54,6 +60,15 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 		birType.setBIRInfo(birInfo);
 	}
 
+	/**
+	 * Method to the update of BIR
+	 * 
+	 * @param List of BIR data
+	 * 
+	 * @param Cbeff XML data as bytes
+	 * 
+	 * @return BIR data with all images
+	 */
 	@Override
 	public BIRType updateBIRType(List<BIR> birList, byte[] fileBytes) throws Exception {
 		BIRType birType = CbeffValidator.getBIRFromXML(fileBytes);
@@ -65,6 +80,15 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 		return birType;
 	}
 
+	/**
+	 * Method to the validate the BIR
+	 * 
+	 * @param Cbeff XML data as bytes array
+	 * 
+	 * @param Cbeff XSD data as bytes array
+	 * 
+	 * @return boolean of validated XML against XSD
+	 */
 	@Override
 	public boolean validateXML(byte[] xmlBytes, byte[] xsdBytes) throws Exception {
 		return CbeffXSDValidator.validateXML(xsdBytes, xmlBytes);

@@ -4,8 +4,8 @@
 package io.mosip.kernel.cbeffutil.common;
 
 /**
- * @author M1049825
- *
+ * @author Ramadurai Pandian
+ * Date Adaptor class to print date to specific format
  */
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,6 +16,10 @@ public class DateAdapter extends XmlAdapter<String, Date> {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYYMMDDhhmmssZ");
 
+    /**
+	 * @param date
+	 * @return string formatted date
+	 */
     @Override
     public String marshal(Date v) throws Exception {
         synchronized (dateFormat) {
@@ -23,6 +27,10 @@ public class DateAdapter extends XmlAdapter<String, Date> {
         }
     }
 
+    /**
+   	 * @param string formatted date
+   	 * @return date
+   	 */
     @Override
     public Date unmarshal(String v) throws Exception {
         synchronized (dateFormat) {

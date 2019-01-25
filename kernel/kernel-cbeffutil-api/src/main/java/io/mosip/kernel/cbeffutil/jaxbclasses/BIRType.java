@@ -85,18 +85,6 @@ public class BIRType {
     protected byte[] sb;
     @XmlAnyElement(lax = true)
 	public List<Object> any;
-    
-    public List<Object> getAny() {
-        if (any == null) {
-            any = new ArrayList<Object>();
-        }
-        return this.any;
-    }
-
-    
-    public void setAny(List<Object> any) {
-		this.any = any;
-	}
 
 
 	/**
@@ -297,6 +285,33 @@ public class BIRType {
     public void setSB(byte[] value) {
         this.sb = value;
     }
+    
+    /**
+     * Gets the value of the any property.
+     * 
+     * @return any
+     *    possible object is
+     *    List<Object>
+     */
+    public List<Object> getAny() {
+        if (any == null) {
+            any = new ArrayList<Object>();
+        }
+        return this.any;
+    }
+
+    /**
+     * Sets the value of the sb property.
+     * 
+     * @param any
+     *     allowed object is
+     *     List<Object>
+     */
+    public void setAny(List<Object> any) {
+		this.any = any;
+	}
+    
+    
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -21,7 +21,18 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
  *
  */
 public class CbeffISOReader {
-
+	
+	
+	/**
+	 * Method used for reading ISO Image
+	 * 
+	 * @param path of the ISO image
+	 * 
+	 * @param type of ISO image
+	 *        
+	 * @return return byte array of image data
+	 * 
+	 */
 	public static byte[] readISOImage(String path, String type) throws Exception {
 		File testFile = new File(path);
 		DataInputStream in = new DataInputStream(new FileInputStream(testFile));
@@ -41,10 +52,16 @@ public class CbeffISOReader {
 		}
 	}
 
-	public static void writeISOImage(String path) {
-
-	}
-
+	/**
+	 * Method used for validating Format Identifiers based on type
+	 * 
+	 * @param format id
+	 * 
+	 * @param type of image
+	 *        
+	 * @return boolean value if identifier matches with id
+	 * 
+	 */
 	private static boolean checkFormatIdentifier(int formatId, String type) {
 		switch (type) {
 		case "Finger":

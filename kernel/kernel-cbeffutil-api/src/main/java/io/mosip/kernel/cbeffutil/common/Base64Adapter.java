@@ -11,18 +11,26 @@ package io.mosip.kernel.cbeffutil.common;
  *
  */
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import org.apache.commons.codec.binary.Base64;
-
 import io.mosip.kernel.core.util.CryptoUtil;
 
 public class Base64Adapter extends XmlAdapter<String, byte[]> {
 
+	
+	
+	/**
+	 * @param data biometrics image data
+	 * @return base64 decoded data after unmarshalling
+	 */
 	@Override
 	public byte[] unmarshal(String data) throws Exception {
 		return CryptoUtil.decodeBase64(data);
 	}
 
+	
+	/**
+	 * @param data biometrics image data
+	 * @return base64 encoded data after marshalling
+	 */
 	@Override
 	public String marshal(byte[] data) throws Exception {
 		return CryptoUtil.encodeBase64String(data);

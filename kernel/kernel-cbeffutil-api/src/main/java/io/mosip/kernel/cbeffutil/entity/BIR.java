@@ -6,6 +6,8 @@ package io.mosip.kernel.cbeffutil.entity;
 import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
 
 /**
+ * 
+ * BIR class with Builder to create data
  * @author Ramadurai Pandian
  *
  */
@@ -29,33 +31,58 @@ public class BIR {
 		this.sbInfo = birBuilder.sbInfo;
 	}
 
+	
+
+	/**
+	 * @return the version
+	 */
 	public BIRVersion getVersion() {
 		return version;
 	}
 
+	/**
+	 * @return the cbeffversion
+	 */
 	public BIRVersion getCbeffversion() {
 		return cbeffversion;
 	}
 
+	/**
+	 * @return the birInfo
+	 */
 	public BIRInfo getBirInfo() {
 		return birInfo;
 	}
 
+	/**
+	 * @return the bdbInfo
+	 */
 	public BDBInfo getBdbInfo() {
 		return bdbInfo;
 	}
 
+	/**
+	 * @return the bdb
+	 */
 	public byte[] getBdb() {
 		return bdb;
 	}
 
+	/**
+	 * @return the sb
+	 */
 	public byte[] getSb() {
 		return sb;
 	}
 
+	/**
+	 * @return the sbInfo
+	 */
 	public SBInfo getSbInfo() {
 		return sbInfo;
 	}
+
+
 
 	public static class BIRBuilder {
 		private BIRVersion version;

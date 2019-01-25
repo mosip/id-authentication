@@ -14,6 +14,7 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
 /**
  * @author Ramadurai Pandian
  * 
+ * Interface for Cbeff Interface
  *
  */
 public interface CbeffI {
@@ -23,8 +24,6 @@ public interface CbeffI {
 	public byte[] updateXML(List<BIR> cbeffPackList, byte[] fileBytes) throws Exception;
 
 	public boolean validateXML(byte[] xmlBytes, byte[] xsdBytes) throws Exception;
-	
-	public String getTestElementDetails(byte[] xmlBytes,byte[] xsdBytes) throws Exception;
 	
 	public Map<String,String> getBDBBasedOnType(byte[] fileBytes,String type,String subType)  throws Exception;
 	

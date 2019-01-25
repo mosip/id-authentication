@@ -20,27 +20,6 @@ import javax.xml.validation.Validator;
  */
 public class CbeffXSDValidator {
 	
-	public static boolean validateXMLSchema(String xsdPath, byte[] xmlByte) throws IOException {
-		FileOutputStream fos = null;
-		try {
-			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			File tempFile = new File("C://Users/M1049825/Documents/img/cbeffupdate.xml");
-			fos = new FileOutputStream(tempFile);
-			fos.write(xmlByte);
-			Schema schema = factory.newSchema(new File(xsdPath));
-			Validator validator = schema.newValidator();
-			validator.validate(new StreamSource(tempFile));
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-			return false;
-		}
-		finally
-		{
-			fos.close();
-		}
-		return true;
-	}
-	
 	public static boolean validateXML(byte[] xsdBytes, byte[] xmlBytes) throws Exception {
 		try
 		{
@@ -51,7 +30,6 @@ public class CbeffXSDValidator {
 			return true;
 		}catch(Exception ex)
 		{
-			System.out.println(ex);
 			return false;
 		}
 	}

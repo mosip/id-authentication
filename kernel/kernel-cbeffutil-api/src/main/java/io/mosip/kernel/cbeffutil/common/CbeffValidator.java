@@ -33,7 +33,18 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
  *
  */
 public class CbeffValidator {
-
+	
+	
+	/**
+	 * Method used for custom validation of the BIR
+	 * 
+	 * @param BIR data
+	 * 
+	 * @return boolean value if BIR is valid
+	 * 
+	 * @exception throws CbeffException when any condition fails
+	 * 
+	 */
 	public static boolean validateXML(BIRType bir) throws CbeffException {
 		if (bir == null) {
 			throw new CbeffException("BIR value is null");
@@ -66,6 +77,16 @@ public class CbeffValidator {
 
 	}
 
+	/**
+	 * Method used for validation of Format Type
+	 * 
+	 * @param format type
+	 * 
+	 * @param List of types
+	 * 
+	 * @return boolean value if format type is matching with type
+	 * 
+	 */
 	private static boolean validateFormatType(long formatType, List<SingleType> singleTypeList) {
 		SingleType singleType = singleTypeList.get(0);
 		switch (singleType.value()) {
@@ -83,6 +104,14 @@ public class CbeffValidator {
 		return false;
 	}
 
+	/**
+	 * Method used for getting Format Type Id from type string
+	 * 
+	 * @param format type
+	 * 
+	 * @return format type id
+	 * 
+	 */
 	private static long getFormatType(String type) {
 		switch (type) {
 		case "Finger":
@@ -99,6 +128,14 @@ public class CbeffValidator {
 		return 0;
 	}
 
+	/**
+	 * Method used for creating XML bytes using JAXB
+	 * 
+	 * @param BIR type
+	 * 
+	 * @return byte array of XML data
+	 * 
+	 */
 	public static byte[] createXMLBytes(BIRType bir) throws Exception {
 		CbeffValidator.validateXML(bir);
 		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
@@ -112,6 +149,14 @@ public class CbeffValidator {
 		return savedData;
 	}
 
+	/**
+	 * Method used for BIR Type
+	 * 
+	 * @param byte array of XML data
+	 * 
+	 * @return BIR data
+	 * 
+	 */
 	public static BIRType getBIRFromXML(byte[] fileBytes) throws Exception {
 		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -121,39 +166,18 @@ public class CbeffValidator {
 		return bir;
 	}
 
-	public static Map<String, String> getBDBListFromType(SingleType singleType, BIRType bir) throws Exception {
-		Map<String, String> BDBmap = new HashMap<>();
-		if (bir.getBIR() != null && bir.getBIR().size() > 0) {
-			for (BIRType birType : bir.getBIR()) {
-				BDBInfoType bdbInfo = birType.getBDBInfo();
-				if (bdbInfo != null) {
-					List<SingleType> singleTypeList = bdbInfo.getType();
-					if (singleTypeList.contains(singleType)) {
-						BDBmap.put(singleType.toString(), new String(birType.getBDB(), "UTF-8"));
-					}
-				}
-			}
-		}
-		return BDBmap;
-	}
-
-	public static Map<String, String> getBDBListFromSubType(SingleAnySubtypeType singleAnySubType, BIRType bir)
-			throws Exception {
-		Map<String, String> BDBmap = new HashMap<>();
-		if (bir.getBIR() != null && bir.getBIR().size() > 0) {
-			for (BIRType birType : bir.getBIR()) {
-				BDBInfoType bdbInfo = birType.getBDBInfo();
-				if (bdbInfo != null) {
-					List<String> singleTypeList = bdbInfo.getSubtype();
-					if (singleTypeList.contains(singleAnySubType.value())) {
-						BDBmap.put(singleAnySubType.value(), new String(birType.getBDB(), "UTF-8"));
-					}
-				}
-			}
-		}
-		return BDBmap;
-	}
-
+	/**
+	 * Method used for searching Cbeff data based on type and subtype
+	 * 
+	 * @param BIR data
+	 * 
+	 * @param format type
+	 * 
+	 * @param format subtype
+	 * 
+	 * @return BIR data
+	 * 
+	 */
 	public static Map<String, String> getBDBBasedOnTypeAndSubType(BIRType bir, String type, String subType)
 			throws Exception {
 		SingleType singleType = null;
@@ -197,14 +221,26 @@ public class CbeffValidator {
 		return bdbMap;
 	}
 
+	/**
+	 * Method to convert single type list to string
+	 * 
+	 * */
 	private static List<String> convertToList(List<SingleType> singleTypeList) {
 		return singleTypeList.stream().map(Enum::name).collect(Collectors.toList());
 	}
 
+	/**
+	 * Method to get enum sub type from string subtype
+	 * 
+	 * */
 	private static SingleAnySubtypeType getSingleAnySubtype(String subType) {
 		return subType != null ? SingleAnySubtypeType.fromValue(subType) : null;
 	}
 
+	/**
+	 * Method to get enum type from string type
+	 * 
+	 * */
 	private static SingleType getSingleType(String type) {
 		switch (type) {
 		case "FMR":

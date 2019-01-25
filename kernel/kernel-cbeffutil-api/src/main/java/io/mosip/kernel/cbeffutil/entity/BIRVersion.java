@@ -19,13 +19,21 @@ public class BIRVersion {
 		this.minor = birBuilder.minor;
 	}
 
+	
+	/**
+	 * @return the minor
+	 */
 	public int getMinor() {
 		return minor;
 	}
 
+	/**
+	 * @return the major
+	 */
 	public int getMajor() {
 		return major;
 	}
+
 
 	public static class BIRVersionBuilder {
 		private int minor;
