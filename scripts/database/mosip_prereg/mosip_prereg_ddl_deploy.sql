@@ -1,3 +1,5 @@
+\c mosip_prereg sysadmin
+
 \ir ddl/prereg-applicant_demographic.sql
 \ir ddl/prereg-applicant_document.sql
 \ir ddl/prereg-batch_job_execution.sql
