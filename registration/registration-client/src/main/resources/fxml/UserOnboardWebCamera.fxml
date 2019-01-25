@@ -22,24 +22,24 @@
     		<Text id="homeReg" fx:id="paneLabel" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Onboard User" /> 
        <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" styleClass="RegbuttonStyle" text="Capture" />
        <Button fx:id="captureExceptionImage" disable="true" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" styleClass="RegbuttonStyle" text="Capture" />
-       <Label layoutX="172.0" layoutY="328.0" text="Operator Image" />
-       <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
-       <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
+       <Label layoutX="172.0" layoutY="328.0" text="Operator Face" />
+       <Label layoutX="506.0" layoutY="328.0" text="Operator Exception Face" />
+       <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :" visible="false">
          
        </Label>
-       <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :">
+       <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :" visible="false">
         
        </Label>
-       <Label layoutX="115.0" layoutY="363.0" text="Quality Percentage     :">
+       <Label layoutX="115.0" layoutY="363.0" text="Quality Percentage     :" visible="false">
         
        </Label>
-       <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :">
+       <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :" visible="false">
         
        </Label>
-       <Label layoutX="284.0" layoutY="390.0" text="    85%">
+       <Label layoutX="284.0" layoutY="390.0" text="    85%" visible="false">
          
        </Label>
-       <Label layoutX="656.0" layoutY="390.0" text="    85%">
+       <Label layoutX="656.0" layoutY="390.0" text="    85%" visible="false">
          
        </Label>
        <HBox fx:id="applicantImageHBox" layoutX="104.0" layoutY="105.0" prefHeight="183.0" prefWidth="265.0">
@@ -60,7 +60,7 @@
              </ImageView>
           </children>
        </HBox>
-       <Label layoutX="104.0" layoutY="54.0" text="Image" />
+       <Label layoutX="104.0" layoutY="54.0" text="Face" />
        <Button fx:id="biometricPrevBtn" layoutX="738.0" layoutY="592.0" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="RegbuttonStyle" text="Previous" />
        <Button fx:id="saveBiometricDetailsBtn" layoutX="390.0" layoutY="530.0" mnemonicParsing="false" onAction="#saveBiometricDetails" styleClass="RegbuttonStyle" text="Submit" />
    </children>
