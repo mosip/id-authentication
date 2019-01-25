@@ -23,6 +23,8 @@ local.properties
 *.logs
 *.ucls
 /reg/
+/PacketStore/*
+/PreRegPacketStore/*
 
 #not ignore files
 !jfxrt.jar

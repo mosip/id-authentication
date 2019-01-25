@@ -26,4 +26,5 @@ reg/README_DO_NOT_TOUCH_FILES.txt
 
 #not ignore files
 !jfxrt.jar
-/Key_Store/
+/PacketStore/*
+/PreRegPacketStore/*
