@@ -18,7 +18,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.config.GlobalParamService;
 import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.stage.Stage;
 
 /**
