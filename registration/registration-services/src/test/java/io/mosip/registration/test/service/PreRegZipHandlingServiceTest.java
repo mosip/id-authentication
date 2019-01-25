@@ -42,6 +42,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.util.kernal.RIDGenerator;
 
+@Ignore
 public class PreRegZipHandlingServiceTest {
 
 	@Rule
