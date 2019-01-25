@@ -14,6 +14,8 @@ export class LoginComponent implements OnInit {
   inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
   timer: any;
+  secondaryLangCode = 'ar';
+  secondaryDir = 'rtl';
   inputContactDetails = '';
   inputOTP: string;
   selectedLanguage = '';
@@ -54,17 +56,25 @@ export class LoginComponent implements OnInit {
   changeLanguage(): void {
     if (this.selectedLanguage === 'English') {
       this.langCode = 'en';
+      this.secondaryLangCode = 'ar';
       this.dir = 'ltr';
+      this.secondaryDir = 'rtl';
     } else if (this.selectedLanguage === 'French') {
       this.langCode = 'fr';
       this.dir = 'ltr';
+      this.secondaryLangCode = 'ar';
+      this.secondaryDir = 'rtl';
     } else if (this.selectedLanguage === 'Arabic') {
       this.langCode = 'ar';
       this.dir = 'rtl';
+      this.secondaryLangCode = 'fr';
+      this.secondaryDir = 'ltr';
     }
     this.translate.use(this.langCode);
     localStorage.setItem('langCode', this.langCode);
+    localStorage.setItem('secondaryLangCode', this.secondaryLangCode);
     localStorage.setItem('dir', this.dir);
+    localStorage.setItem('secondaryDir', this.secondaryDir);
   }
 
   showVerifyBtn() {
@@ -128,6 +138,7 @@ export class LoginComponent implements OnInit {
     } else if (this.showVerify) {
       clearInterval(this.timer);
       console.log(this.inputContactDetails);
+      localStorage.setItem('loggedIn', 'true');
       this.router.navigate(['dashboard', this.inputContactDetails]);
     }
   }

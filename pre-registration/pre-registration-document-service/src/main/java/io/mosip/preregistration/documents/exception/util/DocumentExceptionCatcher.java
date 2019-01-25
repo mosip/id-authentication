@@ -5,7 +5,6 @@
 package io.mosip.preregistration.documents.exception.util;
 
 import org.json.JSONException;
-import org.springframework.dao.InvalidDataAccessResourceUsageException;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
@@ -16,7 +15,6 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
-import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephConnectionUnavailableException;
@@ -47,9 +45,8 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.Pa
  */
 public class DocumentExceptionCatcher {
 	public void handle(Exception ex) {
-		if (ex instanceof DocumentFailedToUploadException || ex instanceof InvalidDataAccessResourceUsageException) {
-			throw new DocumentFailedToUploadException(ErrorCodes.PRG_PAM_DOC_009.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString(), ex.getCause());
+		if (ex instanceof DocumentFailedToUploadException) {
+			throw new DocumentFailedToUploadException(((DocumentFailedToUploadException) ex).getErrorCode(),((DocumentFailedToUploadException) ex).getErrorText());
 		} else if (ex instanceof IOException) {
 			// kernel exception
 			throw new DTOMappigException(((IOException) ex).getErrorCode(), ex.getMessage(), ex.getCause());
@@ -68,8 +65,7 @@ public class DocumentExceptionCatcher {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
 					((InvalidRequestParameterException) ex).getErrorText());
 		} else if (ex instanceof MandatoryFieldNotFoundException) {
-			throw new MandatoryFieldNotFoundException(ErrorCodes.PRG_PAM_DOC_014.toString(),
-					ErrorMessages.MANDATORY_FIELD_NOT_FOUND.toString());
+			throw new MandatoryFieldNotFoundException(((MandatoryFieldNotFoundException) ex).getErrorCode(),((MandatoryFieldNotFoundException) ex).getErrorText());
 		} else if (ex instanceof AmazonS3Exception) {
 			if (((AmazonServiceException) ex).getStatusCode() == 403) {
 				throw new InvalidConnectionParameters(ErrorCodes.PRG_PAM_DOC_015.toString(),
@@ -84,26 +80,19 @@ public class DocumentExceptionCatcher {
 			throw new CephConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
 					ErrorMessages.CONNECTION_UNAVAILABLE.toString());
 		} else if (ex instanceof DocumentNotValidException) {
-			throw new DocumentNotValidException(ErrorCodes.PRG_PAM_DOC_004.toString(),
-					ErrorMessages.DOCUMENT_INVALID_FORMAT.toString());
+			throw new DocumentNotValidException(((DocumentNotValidException) ex).getErrorCode(),((DocumentNotValidException) ex).getErrorText());
 		} else if (ex instanceof ConnectionUnavailableException) {
-			throw new CephConnectionUnavailableException(ErrorCodes.PRG_PAM_DOC_017.toString(),
-					ErrorMessages.CONNECTION_UNAVAILABLE.toString());
+			throw new CephConnectionUnavailableException(((ConnectionUnavailableException) ex).getErrorCode(),((ConnectionUnavailableException) ex).getErrorText());
 		} else if (ex instanceof DocumentSizeExceedException) {
-			throw new DocumentSizeExceedException(ErrorCodes.PRG_PAM_DOC_007.toString(),
-					ErrorMessages.DOCUMENT_EXCEEDING_PREMITTED_SIZE.toString());
+			throw new DocumentSizeExceedException(((DocumentSizeExceedException) ex).getErrorCode(),((DocumentSizeExceedException) ex).getErrorText());
 		} else if (ex instanceof DocumentVirusScanException) {
-			throw new DocumentVirusScanException(ErrorCodes.PRG_PAM_DOC_010.toString(),
-					ErrorMessages.DOCUMENT_FAILED_IN_VIRUS_SCAN.toString());
+			throw new DocumentVirusScanException(((DocumentVirusScanException) ex).getErrorCode(),((DocumentVirusScanException) ex).getErrorText());
 		} else if (ex instanceof DocumentNotFoundException) {
-			throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
-					DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),((DocumentNotFoundException) ex).getErrorText());
 		} else if (ex instanceof DocumentFailedToCopyException) {
-			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString());
+			throw new DocumentFailedToCopyException(((DocumentFailedToCopyException) ex).getErrorCode(),((DocumentFailedToCopyException) ex).getErrorText());
 		} else if (ex instanceof InvalidDocumnetIdExcepion) {
-			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
-					ErrorMessages.INVALID_DOCUMENT_ID.toString());
+			throw new InvalidDocumnetIdExcepion(((InvalidDocumnetIdExcepion) ex).getErrorCode(),((InvalidDocumnetIdExcepion) ex).getErrorText());
 		} else if (ex instanceof DemographicGetDetailsException) {
 			throw new DemographicGetDetailsException(((DemographicGetDetailsException) ex).getErrorCode(),
 					ex.getMessage());

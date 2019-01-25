@@ -6,7 +6,7 @@ import { MatDialog, MatCheckboxChange } from '@angular/material';
 
 import { DataStorageService } from 'src/app/shared/data-storage.service';
 import { RegistrationService } from '../registration.service';
-import { SharedService } from 'src/app/shared/shared.service';
+import { SharedService } from 'src/app/registration/booking/booking.service';
 import { Applicant } from './modal/dashboard.modal';
 import { UserModel } from '../demographic/modal/user.modal';
 import { AttributeModel } from '../demographic/modal/attribute.modal';
