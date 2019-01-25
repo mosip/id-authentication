@@ -7,6 +7,7 @@ import net.minidev.json.JSONObject;
  * Configuration Sync service
  * 
  * @author Srinivasan
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */

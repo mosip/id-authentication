@@ -24,7 +24,7 @@ import net.minidev.json.JSONObject;
 /**
  * Implementation class
  * 
- * @author Srinivasan
+ * @author Bal Vikash Sharma
  *
  */
 @Service
@@ -44,13 +44,13 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.registration-center-config-file2}")
+	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
 	private String regCenterfileName;
 
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.global-config-file2}")
+	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
 
 	/*
@@ -61,11 +61,13 @@ public class SyncConfigDetailsServiceImpl implements SyncConfigDetailsService {
 	 */
 	@Override
 	public JSONObject getConfigDetails() {
+		LOGGER.info("getConfigDetails() started");
 		JSONObject config = new JSONObject();
 		JSONObject globalConfig = getConfigDetailsResponse(globalConfigFileName);
 		JSONObject regConfig = getConfigDetailsResponse(regCenterfileName);
 		config.put("globalConfiguration", globalConfig);
 		config.put("registrationConfiguration", regConfig);
+		LOGGER.info("getConfigDetails() completed");
 		return config;
 	}
 

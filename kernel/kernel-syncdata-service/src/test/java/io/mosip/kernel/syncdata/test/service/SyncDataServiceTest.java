@@ -56,13 +56,13 @@ public class SyncDataServiceTest {
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
+	@Value("${mosip.kernel.syncdata.registration-center-config-file-temp}")// TODO remove  -temp before push
 	private String regCenterfileName;
 
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.global-config-file}")
+	@Value("${mosip.kernel.syncdata.global-config-file-temp}")// TODO remove -temp before push
 	private String globalConfigFileName;
 
 	private String configServerUri = null;
@@ -145,22 +145,6 @@ public class SyncDataServiceTest {
 
 	}
 
-	@Test
-	public void globalConfigsyncSuccess() {
-
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(uriBuilder.append(globalConfigFileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getGlobalConfigDetails();
-
-	}
-
-	@Test
-	public void registrationConfigsyncSuccess() {
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restemplate).build();
-		server.expect(requestTo(uriBuilder.append(regCenterfileName).toString())).andRespond(withSuccess());
-		syncConfigDetailsService.getRegistrationCenterConfigDetails("1");
-		// Assert.assertEquals(120, jsonObject.get("fingerprintQualityThreshold"));
-	}
 
 	@Test(expected = SyncDataServiceException.class)
 	public void registrationConfigsyncFailure() {
