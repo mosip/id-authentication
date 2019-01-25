@@ -669,7 +669,8 @@ public class RegistrationController extends BaseController {
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
-			ageField.setText(demo.getIdentity().getAge() + "");
+			if(demo.getIdentity().getAge()!=null)
+				ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
@@ -1505,10 +1506,9 @@ public class RegistrationController extends BaseController {
 		validation.setChild(isChild);
 		validation.setValidationMessage();
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
-		/*
-		 * if(gotoNext) gotoNext = validation.validateUinOrRid(uinId, isChild,
-		 * uinValidator, ridValidator);
-		 */ displayValidationMessage(validation.getValidationMessage().toString());
+		 if(gotoNext)
+			 gotoNext = validation.validateUinOrRid(uinId, isChild,uinValidator, ridValidator);
+		 displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
