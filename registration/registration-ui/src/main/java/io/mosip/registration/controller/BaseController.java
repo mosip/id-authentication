@@ -331,6 +331,14 @@ public class BaseController {
 		
 		
 	}
+	
+	protected void clearOnboardData() {
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, false);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.USER_ONBOARD_DATA);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);		
+	}
 
 	public static FXMLLoader loadChild(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.getInstance().getApplicationLanguageBundle());
