@@ -447,13 +447,5 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		}
 	}
 
-	private boolean isNull(List list) {
-		return list == null;
-
-	}
-
-	private boolean isEmpty(List list) {
-		return list.isEmpty();
-	}
 
 }
