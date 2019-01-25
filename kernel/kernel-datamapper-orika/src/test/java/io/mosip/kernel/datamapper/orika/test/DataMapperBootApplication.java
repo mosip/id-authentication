@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
  * Data Validator Boot Application for SpringBootTest
  */
 @SpringBootApplication
-@ComponentScan(basePackages = "io.mosip.kernel.*")
+@ComponentScan(basePackages = "io.mosip.kernel.datamapper.orika.test")
 public class DataMapperBootApplication {
 
 	public static void main(String[] args) {

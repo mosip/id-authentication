@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person2 {
+public class PersonDestination {
 
 	private String name;
 	private String nickName;
