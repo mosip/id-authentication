@@ -142,7 +142,6 @@ public class BioAuthServiceTest {
 		List<IdentityInfoDTO> leftIndexList = new ArrayList<>();
 		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 		String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
-		identityInfoDTO.setLanguage("fre");
 		identityInfoDTO.setValue(value);
 		leftIndexList.add(identityInfoDTO);
 		identity.setLeftIndex(leftIndexList);
@@ -488,11 +487,6 @@ public class BioAuthServiceTest {
 		authRequestDTO.setIdvIdType("D");
 		authRequestDTO.setKey(new AuthSecureDTO());
 		List<MatchInfo> matchInfoList = new ArrayList<>();
-		MatchInfo matchInfo = new MatchInfo();
-		matchInfo.setAuthType("bio");
-		matchInfo.setMatchingStrategy(MatchingStrategyType.PARTIAL.getType());
-		matchInfo.setMatchingThreshold(60);
-		matchInfoList.add(matchInfo);
 		authRequestDTO.setMatchInfo(matchInfoList);
 		authRequestDTO.setTspID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
@@ -543,7 +537,7 @@ public class BioAuthServiceTest {
 		bioIdentity.put("leftIndex", identityList);
 		bioIdentity.put("rightIndex", identityLists);
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
-		assertFalse(validateBioDetails.isStatus());
+		assertTrue(validateBioDetails.isStatus());
 
 	}
 	
