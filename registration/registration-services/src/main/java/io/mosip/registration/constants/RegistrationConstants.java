@@ -395,6 +395,7 @@ public class RegistrationConstants {
 		public static final String TEMPLATE_RO_NAME_LOCAL_LANG = "RONameLocalLang";
 		public static final String TEMPLATE_WITH_PARENT_DETAILS = "WithParent";
 		public static final String TEMPLATE_STYLE_HIDDEN_PROPERTY = "style='display:none;'";
+		public static final String TEMPLATE_CAPTURED_FINGERPRINTS = "capturedFingerprints";
 
 	// Web Camera Constants
 	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
@@ -497,7 +498,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_TYPE = "NEW";
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
-	public static final String RE_REGISTRATION_STATUS = "Re-Register";
+	public static final String RE_REGISTRATION_STATUS = "REREGISTER";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 	public static final String PACKET_UPLOAD_SUCCESS = "Uploaded";

@@ -275,6 +275,20 @@ public class FaceCaptureController extends BaseController implements Initializab
 			applicantImage.setImage(capture);
 			applicantBufferedImage = capturedImage;
 			applicantImageCaptured = true;
+			try {
+				if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+							byteArrayOutputStream);
+					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+					((BiometricDTO) SessionContext.getInstance().getMapObject()
+							.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO().getFaceDetailsDTO()
+									.setFace(photoInBytes);
+				}
+			} catch (Exception ioException) {
+				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+			}
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
@@ -336,7 +350,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	private boolean validateOperatorPhoto() {
-		if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO() != null) {
+		if (getBiometricDTOFromSession().getOperatorBiometricDTO().getFaceDetailsDTO().getFace() != null) {
 			return true;
 		} else {
 			generateAlert(RegistrationConstants.ERROR, "Please capture the photo");
