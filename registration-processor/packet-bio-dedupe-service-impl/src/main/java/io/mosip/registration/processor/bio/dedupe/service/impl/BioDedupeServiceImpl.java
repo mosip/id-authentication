@@ -2,6 +2,7 @@ package io.mosip.registration.processor.bio.dedupe.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +25,24 @@ import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
 import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
 import io.mosip.registration.processor.bio.dedupe.exception.UnexceptedError;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 
 /**
@@ -82,6 +88,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	/** The filesystem ceph adapter impl. */
 	@Autowired
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+
+	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
 	/*
 	 * (non-Javadoc)
@@ -248,11 +256,27 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Override
 	public byte[] getFile(String registrationId) {
 		byte[] file = null;
-
-		InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId,
-				PacketStructure.BIOMETRIC + PacketFiles.APPLICANT_BIO_CBEFF.name());
+		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
+				PacketFiles.PACKET_META_INFO.name());
+		PacketMetaInfo packetMetaInfo = null;
+		String applicantBiometricFileName = "";
 		try {
+			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+					PacketMetaInfo.class);
+
+			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence();
+			List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
+					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
+			if (hashList != null)
+				applicantBiometricFileName = hashList.get(0);
+			InputStream fileInStream = filesystemCephAdapterImpl.getFile(registrationId,
+					PacketStructure.BIOMETRIC + applicantBiometricFileName.toUpperCase());
+
 			file = IOUtils.toByteArray(fileInStream);
+
+		} catch (UnsupportedEncodingException exp) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() + exp.getMessage());
 		} catch (IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());

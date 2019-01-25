@@ -147,6 +147,8 @@ public class JsonConstant {
 	public static final String SUPERVISORBIOMETRICFILENAME = "SUPERVISORBIOMETRICFILENAME";
 
 	/** The Constant INTRODUCERBIOMETRICSEQUENCE. */
-	public static final String INTRODUCERBIOMETRICSEQUENCE = "introducerBiometricSequence";
+	public static final String INTRODUCERBIOMETRICSEQUENCE = "INTRODUCERBIOMETRICSEQUENCE";
+
+	public static final String APPLICANTBIOMETRICSEQUENCE = "APPLICANTBIOMETRICSEQUENCE";
 
 }
