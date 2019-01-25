@@ -49,7 +49,7 @@ public class Audit extends BaseAudit {
 
 	@NotNull
 	@Size(min = 1, max = 128)
-	@Column(name = "host_name", nullable = false, updatable = false, length = 32)
+	@Column(name = "host_name", nullable = false, updatable = false, length = 128)
 	private String hostName;
 
 	@NotNull

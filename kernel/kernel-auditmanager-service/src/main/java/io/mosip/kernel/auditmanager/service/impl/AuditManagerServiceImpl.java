@@ -1,14 +1,15 @@
 package io.mosip.kernel.auditmanager.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.entity.Audit;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.AuditManagerService;
-import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
+import io.mosip.kernel.auditmanager.util.AuditAsyncUtil;
 
 /**
  * AuditManager service implementation with function to add new {@link Audit}
@@ -18,14 +19,15 @@ import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
  *
  */
 @Service
-@Transactional
 public class AuditManagerServiceImpl implements AuditManagerService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuditManagerServiceImpl.class);
 
 	/**
 	 * Field for audit handler
 	 */
 	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
+	private AuditAsyncUtil auditUtil;
 
 	/*
 	 * (non-Javadoc)
@@ -36,8 +38,14 @@ public class AuditManagerServiceImpl implements AuditManagerService {
 	 */
 	@Override
 	public AuditResponseDto addAudit(AuditRequestDto auditRequestDto) {
+		LOGGER.info("{}- Request received to audit with {} {} {}", Thread.currentThread().getName(),
+				auditRequestDto.getSessionUserId(), auditRequestDto.getIdType(), auditRequestDto.getId());
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		auditResponseDto.setStatus(auditHandler.addAudit(auditRequestDto));
+		auditUtil.addAudit(auditRequestDto);
+		auditResponseDto.setStatus(true);
+		LOGGER.info("{}- Audit Status sent for audit request with {} {} {}", Thread.currentThread().getName(),
+				auditRequestDto.getSessionUserId(), auditRequestDto.getIdType(), auditRequestDto.getId());
 		return auditResponseDto;
 	}
+
 }
