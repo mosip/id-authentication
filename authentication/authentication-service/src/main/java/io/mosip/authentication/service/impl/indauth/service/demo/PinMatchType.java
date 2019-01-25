@@ -33,7 +33,7 @@ public enum PinMatchType implements MatchType {
 
 	/** Primary Pin Match Type. */
 	SPIN(IdaIdMapping.PIN,
-			setOf(NameMatchingStrategy.EXACT),
+			setOf(PinMatchingStrategy.EXACT),
 			authReqDTO -> {
 				return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equals("pin")).findFirst().map(PinInfo::getValue).orElse("");
 			}, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_STATIC_PIN,
@@ -90,6 +90,7 @@ public enum PinMatchType implements MatchType {
 	 * @see
 	 * io.mosip.authentication.core.spi.indauth.match.MatchType#getLanguageType()
 	 */
+	@Override
 	public LanguageType getLanguageType() {
 		return langType;
 	}

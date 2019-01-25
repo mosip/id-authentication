@@ -389,7 +389,6 @@ public class DemoAuthServiceTest {
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 	}
 
-	@Ignore
 	@Test
 	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -540,7 +539,6 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
 	}
 
-	@Ignore
 	@Test
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -622,7 +620,6 @@ public class DemoAuthServiceTest {
 		demoAuthServiceImpl.getDemoStatus(authRequestDTO, uin, demoEntity);
 	}
 
-	@Ignore
 	@Test
 	public void TestgetDemoStatus() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();

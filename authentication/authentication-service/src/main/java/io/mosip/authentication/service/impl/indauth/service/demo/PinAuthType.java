@@ -12,8 +12,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
@@ -147,19 +145,6 @@ public enum PinAuthType implements AuthType {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.authentication.service.impl.indauth.builder.AuthType#
-	 * getMatchingThreshold(io.mosip.authentication.core.dto.indauth.AuthRequestDTO,
-	 * java.util.function.Function)
-	 */
-	@Override
-	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq,
-			Function<LanguageType, String> languageInfoFetcher, Environment environment) {
-		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingThreshold);
-	}
-
 	/**
 	 * Gets the match info.
 	 *
@@ -227,8 +212,8 @@ public enum PinAuthType implements AuthType {
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
 		return Optional
-				.ofNullable(authRequestDTO.getMatchInfo()).flatMap(list -> list.stream()
-						.filter(matchInfo -> matchInfo.getAuthType().equalsIgnoreCase(getType())).findAny())
+				.ofNullable(authRequestDTO.getPinInfo()).flatMap(list -> list.stream()
+						.filter(pinInfo -> pinInfo.getType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
 	}
 

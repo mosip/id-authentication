@@ -1,4 +1,4 @@
-/*package io.mosip.authentication.service.impl.indauth.service.bio;
+package io.mosip.authentication.service.impl.indauth.service.bio;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -718,4 +718,3 @@ public class BioAuthServiceTest {
 	}
 
 }
-*/

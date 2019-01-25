@@ -77,7 +77,9 @@ public interface AuthType {
 	 * @param environment the environment
 	 * @return the matching threshold
 	 */
-	Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment);
+	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Environment environment){
+		return Optional.of(60);
+	}
 
 	/**
 	 * Gets the associated match types.
