@@ -49,6 +49,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class })
+@Ignore
 public class PreRegistrationDataSyncServiceTest {
 
 	@Rule
