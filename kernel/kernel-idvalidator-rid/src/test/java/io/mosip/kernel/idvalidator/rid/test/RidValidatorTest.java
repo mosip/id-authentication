@@ -26,16 +26,16 @@ public class RidValidatorTest {
 	@Value("${mosip.kernel.rid.test.machine-id}")
 	private String machineId;
 
-	@Value("${mosip.kernel.rid.test.center-id-length}")
+	@Value("${mosip.kernel.rid.centerid-length}")
 	private int centerIdLength;
 
-	@Value("${mosip.kernel.rid.test.machine-id-length}")
+	@Value("${mosip.kernel.rid.machineid-length}")
 	private int machineIdLength;
 
-	@Value("${mosip.kernel.rid.test.sequence-length}")
+	@Value("${mosip.kernel.rid.sequence-length}")
 	private int sequenceLength;
 
-	@Value("${mosip.kernel.rid.test.timestamp-length}")
+	@Value("${mosip.kernel.rid.timestamp-length}")
 	private int timeStampLength;
 
 	@Value("${mosip.kernel.rid.test.valid-rid}")
