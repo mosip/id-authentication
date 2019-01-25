@@ -74,7 +74,7 @@
 
   "documents": {
     "title_document": "تحميل المستندات",
-    "text_filetype": "نوع الملف المسموح به Pdf و Word و Max 1MB",
+    "text_filetype": "نوع الملف المسموح به Pdf و Word و Max 1 ميغابايت",
     "action_browse": "تصفح",
     "action_back": "الى الخلف",
     "action_skip": "تخطى",
@@ -100,7 +100,7 @@
     "label_mob_num": "رقم الهاتف المحمول",
     "label_alt_mob_num": "بديل رقم Moblie",
     "label_email_id": "عنوان الايميل",
-    "label_pin": "رقم CNIE / PIN",
+    "label_pin": "CNIE/EC",
     "title_document": "المستندات التي تم تحميلها",
     "action_modify": "تعديل",
     "action_back": "الى الخلف",
@@ -190,7 +190,8 @@
     "action_close": "قريب",
     "action_add_to_slot": "أضف إلى الفتحة"
   },
-  "ack": {
+  "ackowledgement": {
+    "title":"تم تأكيد الموعد",
     "container_guideline": "المبادئ التوجيهية الهامة",
     "action_download": "تحميل",
     "action_print": "طباعة"

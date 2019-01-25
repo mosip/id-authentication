@@ -99,7 +99,7 @@
     "label_mob_num": "Moblie Number",
     "label_alt_mob_num": "Alternative Moblie Number",
     "label_email_id": "Email ID",
-    "label_pin": "CINE/PIN Number",
+    "label_pin": "CNIE/EC",
     "title_document": "Documents Uploaded",
     "action_modify": "modify",
     "action_back": "BACK",
@@ -189,7 +189,8 @@
     "action_close":"Close",
     "action_add_to_slot":"Add to Slot"
   },
-  "ack": {
+  "ackowledgement": {
+    "title":"Appointment Confirmed",
     "container_guideline": "Important Guidelines",
     "action_download": "DOWNLOAD",
     "action_print": "PRINT"

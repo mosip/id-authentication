@@ -98,7 +98,7 @@
     "label_mob_num": "Numéro de portable",
     "label_alt_mob_num": "Numéro de téléphone alternatif (facultatif)",
     "label_email_id": "Identifiant Email",
-    "label_pin": "Numéro CINE / PIN",
+    "label_pin": "CNIE/EC",
     "title_document": "Documents téléchargés",
     "action_modify": "modifier",
     "action_back": "RETOUR",
@@ -188,7 +188,8 @@
     "action_close": "Fermer",
     "action_add_to_slot": "Ajouter à la fente"
   },
-  "ack": {
+  "ackowledgement": {
+    "title":"Rendez-vous confirmé",
     "container_guideline": "Directives importantes",
     "action_download": "TÉLÉCHARGER",
     "action_print": "IMPRESSION"
