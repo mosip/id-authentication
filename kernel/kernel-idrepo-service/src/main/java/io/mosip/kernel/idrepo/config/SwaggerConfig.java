@@ -52,12 +52,6 @@ public class SwaggerConfig {
 				.build();
 	}
 
-	/**
-	 * Produce Docket bean
-	 * 
-	 * @return Docket bean
-	 * @throws MalformedURLException 
-	 */
 	@Bean
 	public Docket api() throws MalformedURLException {
 		boolean targetSwagger = false;
