@@ -48,7 +48,7 @@ Following is the sequence diagram of the communication between the Registration 
 
 Following is the sequence diagram of the communication between the TSP and the IDA application, 
 
-![Sequence Diagram](_images/kernel_keymanager_Seq_TSP_IDA_diagram.png)
+![Sequence Diagram](_images/kernel_keymanager_Seq_TSP_IDA_diagram.jpg)
 
 ****2.1.4 IDA --> Kernel****
 
