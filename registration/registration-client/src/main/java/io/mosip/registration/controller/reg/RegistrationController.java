@@ -669,7 +669,8 @@ public class RegistrationController extends BaseController {
 			postalCode.setText(demo.getIdentity().getPostalCode());
 			mobileNo.setText(demo.getIdentity().getPhone());
 			emailId.setText(demo.getIdentity().getEmail());
-			ageField.setText(demo.getIdentity().getAge() + "");
+			if(demo.getIdentity().getAge()!=null)
+				ageField.setText(demo.getIdentity().getAge() + "");
 			cniOrPinNumber.setText(demo.getIdentity().getCnieNumber() + "");
 			postalCodeLocalLanguage.setAccessibleHelp(demo.getIdentity().getPostalCode());
 			mobileNoLocalLanguage.setText(demo.getIdentity().getPhone());
@@ -1155,7 +1156,8 @@ public class RegistrationController extends BaseController {
 	 * To detect the face part from the applicant photograph to use it for QR Code
 	 * generation
 	 * 
-	 * @param applicantImage the image that is captured as applicant photograph
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
 	 * @return BufferedImage the face that is detected from the applicant photograph
 	 */
 	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
@@ -1164,11 +1166,15 @@ public class RegistrationController extends BaseController {
 		List<DetectedFace> faces = null;
 		faces = detector.detectFaces(ImageUtilities.createFImage(applicantImage));
 		if (!faces.isEmpty()) {
-			Iterator<DetectedFace> dfi = faces.iterator();
-			while (dfi.hasNext()) {
-				DetectedFace face = dfi.next();
-				FImage image1 = face.getFacePatch();
-				detectedFace = ImageUtilities.createBufferedImage(image1);
+			if (faces.size() > 1) {
+				return null;
+			} else {
+				Iterator<DetectedFace> dfi = faces.iterator();
+				while (dfi.hasNext()) {
+					DetectedFace face = dfi.next();
+					FImage image1 = face.getFacePatch();
+					detectedFace = ImageUtilities.createBufferedImage(image1);
+				}
 			}
 		}
 		return detectedFace;
@@ -1178,7 +1184,8 @@ public class RegistrationController extends BaseController {
 	 * To compress the detected face from the image of applicant and store it in DTO
 	 * to use it for QR Code generation
 	 * 
-	 * @param applicantImage the image that is captured as applicant photograph
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
 	 */
 	private void compressImageForQRCode(BufferedImage detectedFace) {
 		try {
@@ -1288,9 +1295,11 @@ public class RegistrationController extends BaseController {
 						byteArrayOutputStream.close();
 					}
 				} else {
-					((BiometricDTO) SessionContext.getInstance().getMapObject()
-							.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
-									.getFaceDetailsDTO().setFace(null);
+					if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
+						((BiometricDTO) SessionContext.getInstance().getMapObject()
+								.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
+										.getFaceDetailsDTO().setFace(null);
+					}
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_CAPTURE_ERROR);
 				}
 			} catch (IOException ioException) {
@@ -1497,10 +1506,9 @@ public class RegistrationController extends BaseController {
 		validation.setChild(isChild);
 		validation.setValidationMessage();
 		gotoNext = validation.validate(paneToValidate, excludedIds, gotoNext, masterSync);
-		/*
-		 * if(gotoNext) gotoNext = validation.validateUinOrRid(uinId, isChild,
-		 * uinValidator, ridValidator);
-		 */ displayValidationMessage(validation.getValidationMessage().toString());
+		 if(gotoNext)
+			 gotoNext = validation.validateUinOrRid(uinId, isChild,uinValidator, ridValidator);
+		 displayValidationMessage(validation.getValidationMessage().toString());
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validated the fields");
@@ -1704,7 +1712,8 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * @param demoGraphicTitlePane the demoGraphicTitlePane to set
+	 * @param demoGraphicTitlePane
+	 *            the demoGraphicTitlePane to set
 	 */
 	public void setDemoGraphicTitlePane(TitledPane demoGraphicTitlePane) {
 		this.demoGraphicTitlePane = demoGraphicTitlePane;
@@ -1735,7 +1744,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the PhotoCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void togglePhotoCaptureVisibility(boolean visibility) {
 		if (visibility) {
@@ -1795,7 +1805,7 @@ public class RegistrationController extends BaseController {
 		registrationMetaDataDTO.setMachineId((String) applicationContextMap.get(RegistrationConstants.MACHINE_ID));
 
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
-		
+
 		// Set RID
 		registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
 				registrationMetaDataDTO.getMachineId()));
@@ -1806,7 +1816,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the IrisCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleIrisCaptureVisibility(boolean visibility) {
 		this.irisCapture.setVisible(visibility);
@@ -1815,7 +1826,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the FingerprintCapture Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleFingerprintCaptureVisibility(boolean visibility) {
 		this.fingerPrintCapturePane.setVisible(visibility);
@@ -1824,7 +1836,8 @@ public class RegistrationController extends BaseController {
 	/**
 	 * This method toggles the visible property of the BiometricException Pane.
 	 * 
-	 * @param visibility the value of the visible property to be set
+	 * @param visibility
+	 *            the value of the visible property to be set
 	 */
 	public void toggleBiometricExceptionVisibility(boolean visibility) {
 		this.biometricException.setVisible(visibility);
