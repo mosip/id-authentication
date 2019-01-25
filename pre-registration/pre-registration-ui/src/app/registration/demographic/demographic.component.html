@@ -5,7 +5,7 @@
       <hr />
       <div [dir]="textDir" class="user__container">
         <form [formGroup]="userForm" class="user__form">
-          <h6>Language - {{ 'demographic.language' | translate }}</h6>
+          <h6>{{ 'demographic.language' | translate }}</h6>
 
           <mat-form-field>
             <input
@@ -118,13 +118,13 @@
                 }}</mat-button-toggle>
               </mat-button-toggle-group>
             </div>
-            <div class="genderAndForeigner--foreigner"><mat-checkbox>Foreigner</mat-checkbox></div>
+            <div class="genderAndForeigner--foreigner"><mat-checkbox>{{ 'demographic.text_foreigner' | translate }} </mat-checkbox></div>
           </div>
           <div
             class="mat-error ng-star-inserted user__gender__error"
             *ngIf="userForm.get('gender').touched && userForm.get('gender').invalid"
           >
-            Please select gender
+          {{ 'demographic.validation.gender_validation' | translate }} 
           </div>
 
           <mat-form-field>
@@ -154,6 +154,9 @@
               (change)="onTransliteration(addressLine2, t_addressLine2)"
             />
             <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
+            <mat-error *ngIf="!addressLine2.invalid">{{
+              'demographic.validation.address_required' | translate
+            }}</mat-error>
           </mat-form-field>
           <mat-form-field>
             <input
@@ -166,6 +169,9 @@
               (change)="onTransliteration(addressLine3, t_addressLine3)"
             />
             <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
+            <mat-error *ngIf="!addressLine3.invalid">{{
+              'demographic.validation.address_required' | translate
+            }}</mat-error>
           </mat-form-field>
 
           <div class="user__dropdown">
@@ -293,7 +299,7 @@
                 maxlength="30"
                 matInput
                 type="text"
-                placeholder="{{ 'demographic.label1_pin' | translate }}"
+                placeholder="{{ 'demographic.label_pin' | translate }}"
                 formControlName="pin"
               />
               <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
@@ -304,7 +310,7 @@
       </div>
       <div [dir]="secTextDir" class="user__container">
         <form [formGroup]="transUserForm" class="user__form">
-          <h6>Language - Arabic</h6>
+          <h6>{{secondaryLanguagelabels.language}}</h6>
           <mat-form-field>
             <input
               matInput
@@ -316,7 +322,7 @@
               #t_fullName
             />
             <mat-hint align="end">{{ t_fullName.value.length }} / 50</mat-hint>
-            <mat-error *ngIf="!t_fullName.invalid">{{ 'demographic.validation.name_required' | translate }}</mat-error>
+            <mat-error *ngIf="!t_fullName.invalid">{{secondaryLanguagelabels.validation.name_required}}</mat-error>
           </mat-form-field>
 
           <div class="user__age-or-date">
@@ -347,7 +353,7 @@
               </mat-form-field>
             </div>
 
-            <div class="user__pref">OR</div>
+            <div class="user__pref">{{secondaryLanguagelabels.text_or}}</div>
             <div class="user__age">
               <mat-form-field>
                 <input
@@ -357,7 +363,7 @@
                   [placeholder]="secondaryLanguagelabels.label_age"
                 />
               </mat-form-field>
-              <span class="user__age--disabled">Years</span>
+              <span class="user__age--disabled">{{secondaryLanguagelabels.text_years}}</span>
             </div>
           </div>
           <div
@@ -381,7 +387,7 @@
           </div>
           <div class="genderAndForeigner">
             <div class="user__gender">
-              Gender
+              {{secondaryLanguagelabels.text_gender}}
               <mat-button-toggle-group
                 appearance="legacy"
                 aria-label="Font Style"
@@ -392,7 +398,7 @@
                 }}</mat-button-toggle>
               </mat-button-toggle-group>
             </div>
-            <div class="genderAndForeigner--foreigner"><mat-checkbox>Foreigner</mat-checkbox></div>
+            <div class="genderAndForeigner--foreigner"><mat-checkbox>{{secondaryLanguagelabels.text_foreigner}}</mat-checkbox></div>
           </div>
           <div
             class="mat-error ng-star-inserted user__gender__error"
@@ -412,7 +418,7 @@
               formControlName="t_addressLine1"
             />
             <mat-hint align="end">{{ t_addressLine1.value.length }} / 50</mat-hint>
-            <mat-error *ngIf="!addressLine1.invalid">Address Line 1 is required</mat-error>
+            <mat-error *ngIf="!addressLine1.invalid">{{secondaryLanguagelabels.validation.address_required}}</mat-error>
           </mat-form-field>
           <mat-form-field>
             <input
@@ -424,6 +430,7 @@
               maxlength="50"
               [placeholder]="secondaryLanguagelabels.label_address2"
             />
+            <mat-error *ngIf="!addressLine1.invalid">{{secondaryLanguagelabels.validation.address_required}}</mat-error>
             <mat-hint align="end">{{ t_addressLine2.value.length }} / 50</mat-hint>
           </mat-form-field>
           <mat-form-field>
@@ -436,6 +443,7 @@
               maxlength="50"
               [placeholder]="secondaryLanguagelabels.label_address3"
             />
+            <mat-error *ngIf="!addressLine1.invalid">{{secondaryLanguagelabels.validation.address_required}}</mat-error>
             <mat-hint align="end">{{ t_addressLine3.value.length }} / 50</mat-hint>
           </mat-form-field>
 
@@ -536,10 +544,10 @@
                 readonly
                 matInput
                 type="text"
-                [placeholder]="secondaryLanguagelabels.label1_pin"
+                [placeholder]="secondaryLanguagelabels.label_pin"
                 [value]="userForm.get('pin').value"
               />
-            </mat-form-field>
+               </mat-form-field>
           </div>
         </form>
       </div>
