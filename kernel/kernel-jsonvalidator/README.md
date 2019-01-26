@@ -11,10 +11,7 @@
  mvn javadoc:javadoc
 
  ```
- 
 
- 
- 
 **Maven Dependency**
 
 ```
@@ -25,6 +22,42 @@
 	</dependency>
 
 ```
+
+
+**Application Properties**
+
+```
+# Application name - the name appended at starting of file name to differentiate
+# between different property files for different microservices
+spring.application.name=kernel-json-validator
+ 
+#Active Profile - will relate to development properties file in the server.
+#If this property is absent then default profile will be activated which is
+#the property file without any environment name at the end.
+spring.profiles.active=dev
+
+
+# defining current branch in which we are working as label
+spring.cloud.config.label=DEV
+ 
+# url where spring cloud config server is running 
+spring.cloud.config.uri=http://confighost:50000
+
+# rest api where the files will be stored in git, change it accordingly in case of change of storage location.
+mosip.kernel.jsonvalidator.file-storage-uri=${spring.cloud.config.uri}/${spring.application.name}/${spring.profiles.active}/${spring.cloud.config.label}/
+
+#exposing refresh end point so that whenever configuration changes in GIT,
+#post /actuator/refresh end point can be called for the client micro-services
+#to update the configuration
+management.endpoints.web.exposure.include=refresh
+
+# Plug in property source as either 'LOCAL' or 'CONFIG_SERVER' through this key
+mosip.kernel.jsonvalidator.property-source=CONFIG_SERVER
+
+
+```
+
+
 
 The inputs which have to be provided are:
 

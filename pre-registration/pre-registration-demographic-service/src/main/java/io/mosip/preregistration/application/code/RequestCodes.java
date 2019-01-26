@@ -15,68 +15,93 @@ package io.mosip.preregistration.application.code;
 public enum RequestCodes {
 
 	/* id */
-	id,
+	ID("id"),
 
 	/* version */
-	ver,
+	VER("ver"),
 
 	/* request date time */
-	reqTime,
+	REQ_TIME("reqTime"),
 
 	/* request object */
-	request,
+	REQUEST("request"),
 
 	/* user id */
-	userId,
+	USER_ID("userId"),
 
 	/* preRegistration Id */
-	preRegistrationId,
+	PRE_REGISTRAION_ID("preRegistrationId"),
 
 	/* create by */
-	createdBy,
+	CREATED_BY("createdBy"),
 
 	/* created Date time */
-	createdDatetime,
+	CREATED_DATE_TIME("createdDatetime"),
 
 	/* updated By */
-	updatedBy,
+	UPDATED_BY("updatedBy"),
 
 	/* updated Date time */
-	updatedDatetime,
+	UPDATED_DATE_TIME("updatedDatetime"),
 
 	/* status Code */
-	statusCode,
+	STATUS_CODE("statusCode"),
 
 	/* language Code */
-	langCode,
+	LANG_CODE("langCode"),
 
 	/* demographic json Details */
-	demographicDetails,
+	DEMOGRAPHIC_DETATILS("demographicDetails"),
 
 	/* identity details */
-	identity,
+	IDENTITY("identity"),
 
 	/* value */
-	value,
+	VALUE("value"),
 
 	/* language */
-	language,
+	LANGUAGE("language"),
 
 	/* label */
-	label,
+	LABEL("label"),
 
 	/* Full name */
-	fullName,
+	FULLNAME("fullName"),
 
 	/* date of birth */
-	dateOfBirth,
+	DOB("dateOfBirth"),
 
 	/* gender */
-	gender,
+	GENDER("gender"),
 
 	/* from date */
-	fromDate,
+	FROM_DATE("fromDate"),
 
 	/* to date */
-	toDate;
+	TO_DATE("toDate"),
+	
+	/* save*/
+	SAVE("save"),
+	
+	/* update */
+	UPDATE("update");
+	
+	/**
+	 * @param code
+	 */
+	private RequestCodes(String code) {
+		this.code = code;
+	}
+
+	/**
+	 * Code
+	 */
+	private final String code;
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 }

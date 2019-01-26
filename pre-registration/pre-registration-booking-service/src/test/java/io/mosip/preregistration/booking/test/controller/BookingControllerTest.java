@@ -221,7 +221,7 @@ public class BookingControllerTest {
 	public void getAppointmentDetails() throws Exception {
 		MainResponseDTO<BookingRegistrationDTO> response=new MainResponseDTO<>();
 		Mockito.when(service.getAppointmentDetails("12345")).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking//appointmentDetails")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/booking/appointmentDetails")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")
 				.accept(MediaType.APPLICATION_JSON_VALUE).param("pre_registration_id", "12345");
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());

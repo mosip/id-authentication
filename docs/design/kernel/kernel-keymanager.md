@@ -19,7 +19,7 @@ The key solution considerations are
   4. Validator module to check the authenticity of the caller.
   5. Key store to store the keys.
 
-![Components Diagram](_images/kernel_keymanager_components_diagram.png)
+![Components Diagram](https://github.com/mosip/mosip/blob/0.8.0/docs/design/_images/kernel_keymanager_components_diagram.png)
 
 - The sequence of the key generations and the rotation of the keys are as follows,
   1. During the initial setup, the key rotation duration are configured.
@@ -48,7 +48,7 @@ Following is the sequence diagram of the communication between the Registration 
 
 Following is the sequence diagram of the communication between the TSP and the IDA application, 
 
-![Sequence Diagram](_images/kernel_keymanager_Seq_TSP_IDA_diagram.png)
+![Sequence Diagram](_images/kernel_keymanager_Seq_TSP_IDA_diagram.jpg)
 
 ****2.1.4 IDA --> Kernel****
 

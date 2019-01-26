@@ -11,7 +11,7 @@
       <div class="preview__body-content-container">
         <div class="preview__body-content-div">
           <div>
-            <p>Language - {{'preview.language'|translate}}</p>
+            <p>{{'preview.language'|translate}}</p>
             <h3>{{'preview.subheading_information' | translate}}</h3>
             <hr />
           </div>
@@ -43,8 +43,8 @@
         <div class="preview__body-content-div">
           <div>
             <div class="preview__modify-div">
-                <span>Language - {{secondaryLanguagelabels.language}}</span>
-                <span (click)="modifyDemographic()" class="preview__modify-div-span"><img src="assets/edit.png" /> Modify</span>
+                <span>{{secondaryLanguagelabels.language}}</span>
+                <span (click)="modifyDemographic()" class="preview__modify-div-span"><img src="assets/edit.png" /> {{'preview.action_modify'| translate}}</span>
             </div>
             <h3>{{secondaryLanguagelabels.subheading_information}}</h3>
             <hr />
@@ -79,8 +79,8 @@
     <mat-card-footer class="preview__footer-container">
           <hr />
           <div class="preview__footer">
-            <span>Documents Preview</span>
-            <span (click)="modifyDocument()" class="preview__modify-file"><img src="assets/edit.png" /> Modify</span>
+            <span>{{'preview.title_document'| translate}}</span>
+            <span (click)="modifyDocument()" class="preview__modify-file"><img src="assets/edit.png" /> {{'preview.action_modify'| translate}}</span>
             <hr />
             <div class="preview__file-container">
               <span class="preview__file-span" *ngFor="let file of files">
@@ -94,9 +94,9 @@
 
 <div>
     <mat-card class="center-selection__button-container">
-      <button mat-button (click)="navigateBack()" class="user-back-btn">Back</button>
+      <button mat-button (click)="navigateBack()" class="user-back-btn">{{'preview.action_back'| translate}}</button>
       <span class="spacer"></span>
-      <button mat-button (click)="navigateDashboard()" class="user-book_later-btn">Add Applicant</button>
-      <button mat-button (click)="navigateNext()" class="user-continue-btn">Continue</button>
+      <button mat-button (click)="navigateDashboard()" class="user-book_later-btn">{{'preview.action_add_applicant'| translate}}</button>
+      <button mat-button (click)="navigateNext()" class="user-continue-btn">{{'preview.action_continue'| translate}}</button>
     </mat-card>
   </div>
