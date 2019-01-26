@@ -3,13 +3,6 @@
 [Background & Design](../../docs/design/kernel/kernel-packetserver-http.md)
  
 
-[API Documentation]
-
-```
-mvn javadoc:javadoc
-```
-
-
 **Usage Sample**
 
 

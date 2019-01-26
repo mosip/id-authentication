@@ -22,8 +22,15 @@
  </dependency>
  ```
   
+ **Application Properties**
  
-Usage Sample
+ ```
+mosip.kernel.virus-scanner.host=104.211.209.102
+mosip.kernel.virus-scanner.port=3310
+ ```
+ 
+ 
+**Usage Sample**
  
  
  ```
