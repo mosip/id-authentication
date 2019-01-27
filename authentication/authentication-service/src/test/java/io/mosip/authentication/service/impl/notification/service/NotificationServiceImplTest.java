@@ -47,6 +47,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.NotificationType;
 import io.mosip.authentication.core.dto.indauth.SenderType;
@@ -134,6 +135,10 @@ public class NotificationServiceImplTest {
 	public void TestValidAuthSmsNotification()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setPersonalIdentity(true);
+		authRequestDTO.setAuthType(authType);
+		
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		ZoneOffset offset = ZoneOffset.MAX;
 		
@@ -187,6 +192,9 @@ public class NotificationServiceImplTest {
 		
 		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).toString());
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setPersonalIdentity(true);
+		authRequestDTO.setAuthType(authType);
 		
 		//authRequestDTO.setReqTime(ZonedDateTime.now()
 		//		.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
