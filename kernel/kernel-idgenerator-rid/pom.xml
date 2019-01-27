@@ -57,8 +57,13 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-rid</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
-		<build>
+	<build>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

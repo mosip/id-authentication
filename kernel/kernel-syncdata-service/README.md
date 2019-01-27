@@ -1,16 +1,37 @@
 ## Sync Data Service 
 
- [Refer wiki for spec](https://github.com/mosip/mosip/wiki/Kernel-APIs) 
- https://github.com/mosip/mosip/wiki/Kernel-APIs
+ [Refer wiki for spec](https://github.com/mosip/mosip/wiki/Kernel-APIs#3-sync-data) 
+ https://github.com/mosip/mosip/wiki/Kernel-APIs#3-sync-data
 
 
-
-[API Documentation]
-
-```
-localhost:8089/swagger-ui.html
+Default Port and Context Path
 
 ```
+server.port=8089
+server.servlet.path=/syncdata
+
+```
+
+localhost:8089/syncdata/swagger-ui.html
+
+
+**Application Properties**
+
+[kernel-syncdata-service-dev.properties](../../config/kernel-syncdata-service-dev.properties)
+
+```
+mosip.kernel.syncdata.global-config-file=global-config.json
+mosip.kernel.syncdata.registration-center-config-file=registration-center-config.json
+
+javax.persistence.jdbc.driver=org.postgresql.Driver
+javax.persistence.jdbc.url=jdbc:postgresql://localhost:8888/mosip_master
+javax.persistence.jdbc.user=dbuser
+javax.persistence.jdbc.password=dbpwd
+
+
+```
+
+
 ** 1. Global config **
 
 * This API takes care of the overall configuration of the application.   
