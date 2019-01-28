@@ -152,5 +152,13 @@ public interface MatchType {
 	 * @return the category
 	 */
 	public Category getCategory();
+	
+	public default boolean hasIdEntityInfo() {
+		return true;
+	}
+	
+	public default boolean hasRequestEntityInfo() {
+		return false;
+	}
 
 }

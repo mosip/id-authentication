@@ -16,9 +16,11 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
+import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 
 /**
  * The Enum PinAuthType.
@@ -29,8 +31,20 @@ public enum PinAuthType implements AuthType {
 
 	// @formatter:off
 
-	SPIN("pin", setOf(PinMatchType.SPIN), LanguageType.PRIMARY_LANG, AuthTypeDTO::isPin, "PIN")
-	;
+	SPIN("pin", setOf(PinMatchType.SPIN), LanguageType.PRIMARY_LANG, AuthTypeDTO::isPin, "PIN"),
+	OTP("otp", setOf(PinMatchType.OTP), LanguageType.PRIMARY_LANG, AuthTypeDTO::isOtp, "OTP") {
+		@Override
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
+			Map<String, Object> valueMap = new HashMap<>();
+			authRequestDTO.getPinInfo().stream().filter(pininfo -> pininfo.getType().equalsIgnoreCase(this.getType()))
+					.forEach((PinInfo pininfovalue) -> {
+						ValidateOtpFunction func = idInfoFetcher
+								.getValidateOTPFunction();
+						valueMap.put(ValidateOtpFunction.class.getSimpleName(), func);
+					});
+			return valueMap;
+		}
+	};
 
 	/** The type. */
 	private String type;
@@ -50,11 +64,11 @@ public enum PinAuthType implements AuthType {
 	/**
 	 * Instantiates a new demo auth type.
 	 *
-	 * @param type the type
+	 * @param type                 the type
 	 * @param associatedMatchTypes the associated match types
-	 * @param langType the lang type
-	 * @param authTypePredicate the auth type predicate
-	 * @param displayName the display name
+	 * @param langType             the lang type
+	 * @param authTypePredicate    the auth type predicate
+	 * @param displayName          the display name
 	 */
 	private PinAuthType(String type, Set<MatchType> associatedMatchTypes, LanguageType langType,
 			Predicate<? super AuthTypeDTO> authTypePredicate, String displayName) {
@@ -148,10 +162,10 @@ public enum PinAuthType implements AuthType {
 	/**
 	 * Gets the match info.
 	 *
-	 * @param <T> the generic type
-	 * @param authReq the auth req
+	 * @param                     <T> the generic type
+	 * @param authReq             the auth req
 	 * @param languageInfoFetcher the language info fetcher
-	 * @param infoFunction the info function
+	 * @param infoFunction        the info function
 	 * @return the match info
 	 */
 	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher,
@@ -163,10 +177,10 @@ public enum PinAuthType implements AuthType {
 	/**
 	 * Gets the match info.
 	 *
-	 * @param <T> the generic type
-	 * @param matchInfos the match infos
+	 * @param                     <T> the generic type
+	 * @param matchInfos          the match infos
 	 * @param languageInfoFetcher the language info fetcher
-	 * @param infoFunction the info function
+	 * @param infoFunction        the info function
 	 * @return the match info
 	 */
 	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, Function<LanguageType, String> languageInfoFetcher,
@@ -193,8 +207,13 @@ public enum PinAuthType implements AuthType {
 		return Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchProperties(io.mosip.authentication.core.dto.indauth.AuthRequestDTO, io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.match.AuthType#getMatchProperties(io
+	 * .mosip.authentication.core.dto.indauth.AuthRequestDTO,
+	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
 	 */
 	@Override
 	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher) {
@@ -206,14 +225,17 @@ public enum PinAuthType implements AuthType {
 		return valuemap;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#
+	 * isAuthTypeInfoAvailable(io.mosip.authentication.core.dto.indauth.
+	 * AuthRequestDTO)
 	 */
 	@Override
 	public boolean isAuthTypeInfoAvailable(AuthRequestDTO authRequestDTO) {
-		return Optional
-				.ofNullable(authRequestDTO.getPinInfo()).flatMap(list -> list.stream()
-						.filter(pinInfo -> pinInfo.getType().equalsIgnoreCase(getType())).findAny())
+		return Optional.ofNullable(authRequestDTO.getPinInfo()).flatMap(
+				list -> list.stream().filter(pinInfo -> pinInfo.getType().equalsIgnoreCase(getType())).findAny())
 				.isPresent();
 	}
 

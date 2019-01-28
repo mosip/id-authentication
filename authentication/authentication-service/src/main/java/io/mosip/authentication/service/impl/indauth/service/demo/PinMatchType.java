@@ -32,17 +32,20 @@ public enum PinMatchType implements MatchType {
 	// @formatter:off
 
 	/** Primary Pin Match Type. */
-	SPIN(IdaIdMapping.PIN,
-			setOf(PinMatchingStrategy.EXACT),
-			authReqDTO -> {
-				return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equals("pin")).findFirst().map(PinInfo::getValue).orElse("");
-			}, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_STATIC_PIN,
-			AuthUsageDataBit.MATCHED_STATIC_PIN),
-	;
+	SPIN(IdaIdMapping.PIN, setOf(PinMatchingStrategy.EXACT), authReqDTO -> {
+		return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equals("pin")).findFirst()
+				.map(PinInfo::getValue).orElse("");
+	}, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_STATIC_PIN, AuthUsageDataBit.MATCHED_STATIC_PIN),
+	OTP(IdaIdMapping.OTP, setOf(OtpMatchingStrategy.EXACT), 
+		authReqDTO -> {
+			return authReqDTO.getPinInfo().stream().filter(type -> type.getType().equalsIgnoreCase("otp")).findFirst()
+					.map(PinInfo::getValue).orElse("");
+		}, 
+		LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_OTP, AuthUsageDataBit.MATCHED_OTP);
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
-	
+
 	/** The request info function. */
 	private Function<AuthRequestDTO, Map<String, String>> requestInfoFunction;
 
@@ -61,16 +64,16 @@ public enum PinMatchType implements MatchType {
 	/**
 	 * Instantiates a new demo match type.
 	 *
-	 * @param idMapping the id mapping
+	 * @param idMapping               the id mapping
 	 * @param allowedMatchingStrategy the allowed matching strategy
-	 * @param requestInfoFunction the request info function
-	 * @param langType the lang type
-	 * @param usedBit the used bit
-	 * @param matchedBit the matched bit
+	 * @param requestInfoFunction     the request info function
+	 * @param langType                the lang type
+	 * @param usedBit                 the used bit
+	 * @param matchedBit              the matched bit
 	 */
 	private PinMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
-			Function<AuthRequestDTO, String> requestInfoFunction, LanguageType langType,
-			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
+			Function<AuthRequestDTO, String> requestInfoFunction, LanguageType langType, AuthUsageDataBit usedBit,
+			AuthUsageDataBit matchedBit) {
 		this.idMapping = idMapping;
 		this.requestInfoFunction = (AuthRequestDTO authReq) -> {
 			Map<String, String> map = new HashMap<>();
@@ -82,7 +85,6 @@ public enum PinMatchType implements MatchType {
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -177,6 +179,16 @@ public enum PinMatchType implements MatchType {
 	@Override
 	public Function<AuthRequestDTO, Map<String, String>> getReqestInfoFunction() {
 		return requestInfoFunction;
+	}
+	
+	@Override
+	public boolean hasIdEntityInfo() {
+		return false;
+	}
+
+	@Override
+	public boolean hasRequestEntityInfo() {
+		return true;
 	}
 
 }

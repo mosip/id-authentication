@@ -1,6 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,15 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.indauth.match.MatchInput;
+import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinMatchType;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -57,6 +64,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private IdInfoHelper idInfoHelper;
+
 	/**
 	 * Validates generated OTP via OTP Manager.
 	 *
@@ -66,20 +76,32 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.core.spi.indauth.service.PinAuthService#validatePin(
+	 * io.mosip.authentication.core.dto.indauth.AuthRequestDTO, java.lang.String)
+	 */
 	@Override
-	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String uin) throws IdAuthenticationBusinessException {
+	public AuthStatusInfo validateOtp(AuthRequestDTO authRequestDTO, String uin)
+			throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
-		String txnId = authreqdto.getTxnID();
-		String tspCode = authreqdto.getTspID();
-		Optional<String> otp = getOtpValue(authreqdto);
+		String txnId = authRequestDTO.getTxnID();
+		String tspCode = authRequestDTO.getTspID();
+		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
 			boolean isValidRequest = validateTxnId(txnId, uin);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-				String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnId, tspCode);
-				String key = Optional.ofNullable(otpKey).orElseThrow(
-						() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
-				isOtpValid = otpManager.validateOtp(otp.get(), key);
+
+				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
+				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
+				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
+				return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
+						PinAuthType.values());
+
 			} else {
 				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
 						getClass().toString());
@@ -89,8 +111,78 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		} else {
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 		}
+	}
 
-		return constructAuthStatusInfo(isOtpValid);
+	/**
+	 * Gets the s pin.
+	 *
+	 * @param uinValue  the uin value
+	 * @param matchType the match type
+	 * @return the s pin
+	 * @throws IdValidationFailedException
+	 */
+	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq) throws IdAuthenticationBusinessException {
+		Map<String, String> map = new HashMap<>();
+		String pin = null;
+		String txnID = authReq.getTxnID();
+		String tspID = authReq.getTspID();
+		String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnID, tspID);
+		String key = Optional.ofNullable(otpKey)
+				.orElseThrow(() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
+		map.put("value", key);
+		return map;
+	}
+
+	/**
+	 * Construct match input.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @return the list
+	 */
+	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
+		return idInfoHelper.constructMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
+	}
+
+//	public AuthStatusInfo validateOtpValue(AuthRequestDTO authreqdto, String uin)
+//			throws IdAuthenticationBusinessException {
+//		boolean isOtpValid = false;
+//		String txnId = authreqdto.getTxnID();
+//		String tspCode = authreqdto.getTspID();
+//		Optional<String> otp = getOtpValue(authreqdto);
+//		if (otp.isPresent()) {
+//			boolean isValidRequest = validateTxnId(txnId, uin);
+//			if (isValidRequest) {
+//				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
+//				String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnId, tspCode);
+//				String key = Optional.ofNullable(otpKey).orElseThrow(
+//						() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
+//				isOtpValid = otpManager.validateOtp(otp.get(), key);
+//			} else {
+//				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
+//						getClass().toString());
+//				mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+//				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+//			}
+//		} else {
+//			throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
+//		}
+//
+//		return constructAuthStatusInfo(isOtpValid);
+//	}
+
+	/**
+	 * Construct match output.
+	 *
+	 * @param authRequestDTO  the auth request DTO
+	 * @param listMatchInputs the list match inputs
+	 * @param uin             the uin
+	 * @return the list
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	private List<MatchOutput> constructMatchOutput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs,
+			String uin) throws IdAuthenticationBusinessException {
+		return idInfoHelper.matchIdentityData(authRequestDTO, uin, listMatchInputs, this::getOtpKey);
 	}
 
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {

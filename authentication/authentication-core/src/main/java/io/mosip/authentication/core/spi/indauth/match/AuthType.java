@@ -120,5 +120,5 @@ public interface AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType, AuthType[] authTypes) {
 		return Stream.of(authTypes).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
-
+	
 }

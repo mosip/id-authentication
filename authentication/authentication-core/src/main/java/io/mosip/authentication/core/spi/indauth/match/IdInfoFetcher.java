@@ -6,6 +6,7 @@ import java.util.Optional;
 import io.mosip.authentication.core.dto.indauth.BioInfo;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.bioauth.provider.MosipBiometricProvider;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;;
@@ -58,5 +59,7 @@ public interface IdInfoFetcher {
 	 * @return the finger print provider
 	 */
 	public MosipBiometricProvider getFingerPrintProvider(BioInfo bioinfovalue);
+
+	public ValidateOtpFunction getValidateOTPFunction();
 
 }

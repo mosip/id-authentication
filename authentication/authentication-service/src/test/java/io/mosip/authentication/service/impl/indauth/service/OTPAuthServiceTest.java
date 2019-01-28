@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -93,6 +94,7 @@ public class OTPAuthServiceTest {
 		authserviceimpl.validateOtp(authreqdto, "1234567890");
 	}
 
+	@Ignore
 	@Test
 	public void TestValidValidateOtp() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();

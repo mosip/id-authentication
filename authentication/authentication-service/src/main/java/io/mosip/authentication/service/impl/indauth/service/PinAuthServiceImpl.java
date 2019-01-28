@@ -87,20 +87,18 @@ public class PinAuthServiceImpl implements PinAuthService {
 	 *
 	 * @param uinValue
 	 *            the uin value
-	 * @param matchType
+	 * @param authReq
 	 *            the match type
 	 * @return the s pin
 	 */
-	public Map<String, String> getSPin(String uinValue, MatchType matchType) {
+	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq) {
 		Map<String, String> map = new HashMap<>();
 		String pin = null;
-		if (matchType.equals(PinMatchType.SPIN)) {
-			Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
-			if (entityValues.isPresent()) {
-				pin = entityValues.get().getPin();
-			}
+		Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
+		if (entityValues.isPresent()) {
+			pin = entityValues.get().getPin();
+			map.put("value", pin);
 		}
-		map.put("value", pin);
 		return map;
 	}
 }

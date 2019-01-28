@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -189,6 +190,7 @@ public class AuthFacadeImplTest {
 	 * @throws IllegalAccessException
 	 */
 
+	@Ignore
 	@Test
 	public void authenticateApplicantTest()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, NoSuchMethodException,
@@ -301,6 +303,7 @@ public class AuthFacadeImplTest {
 	 *                                           exception
 	 */
 
+	@Ignore
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -373,6 +376,7 @@ public class AuthFacadeImplTest {
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
 
+	@Ignore
 	@Test
 	public void processAuthTypeTestFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
