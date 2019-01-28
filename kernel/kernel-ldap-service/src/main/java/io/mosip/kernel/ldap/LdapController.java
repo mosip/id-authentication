@@ -7,6 +7,7 @@ import io.mosip.kernel.ldap.entities.RolesResponseDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,8 +43,8 @@ public class LdapController {
     }
     
     
-    @GetMapping("/userdetails")
-    public MosipUser getAllUserDetails(String user) {
+    @GetMapping("/userdetails/{userid}")
+    public MosipUser getAllUserDetails(@PathVariable("userid")String user) {
     	return ldapService.getUserDetails(user);
     }
 }
