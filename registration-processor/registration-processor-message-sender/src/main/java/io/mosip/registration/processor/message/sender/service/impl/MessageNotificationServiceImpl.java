@@ -329,7 +329,26 @@ public class MessageNotificationServiceImpl
 			template.setFirstName(getJsonValues(regProcessorTemplateJson.getFirstName()));
 			template.setEmailID((String) demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
 			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
-
+			template.setDateOfBirth((String) demographicIdentity.get(regProcessorTemplateJson.getDateOfBirth()));
+			template.setAge((int)demographicIdentity.get(regProcessorTemplateJson.getAge()));
+			template.setAddressLine1(getJsonValues(regProcessorTemplateJson.getAddressLine1()));
+			template.setAddressLine2(getJsonValues(regProcessorTemplateJson.getAddressLine2()));
+			template.setAddressLine3(getJsonValues(regProcessorTemplateJson.getAddressLine3()));
+			template.setRegion(getJsonValues(regProcessorTemplateJson.getRegion()));
+			template.setProvince(getJsonValues(regProcessorTemplateJson.getProvince()));
+			template.setCity(getJsonValues(regProcessorTemplateJson.getCity()));
+			template.setPostalCode((String)(regProcessorTemplateJson.getPostalCode()));
+			template.setParentOrGuardianName(getJsonValues(regProcessorTemplateJson.getParentOrGuardianName()));
+			template.setParentOrGuardianRIDOrUIN((String)(regProcessorTemplateJson.getParentOrGuardianRIDOrUIN()));
+            template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getProofOfAddress()));
+            template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getProofOfIdentity()));
+            template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getProofOfRelationship()));
+            template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getProofOfDateOfBirth()));
+            template.setIndividualBiometrics(getJsonValues(regProcessorTemplateJson.getIndividualBiometrics()));
+            template.setLocalAdministrativeAuthority(getJsonValues(regProcessorTemplateJson.getLocalAdministrativeAuthority()));
+            template.setIdSchemaVersion((double)(regProcessorTemplateJson.getIdSchemaVersion()));
+            template.setCnieNumber((int)(regProcessorTemplateJson.getCnieNumber()));
+    			
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
