@@ -56,13 +56,13 @@ public class SyncDataServiceTest {
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.registration-center-config-file-temp}")// TODO remove  -temp before push
+	@Value("${mosip.kernel.syncdata.registration-center-config-file}")
 	private String regCenterfileName;
 
 	/**
 	 * file name referred from the properties file
 	 */
-	@Value("${mosip.kernel.syncdata.global-config-file-temp}")// TODO remove -temp before push
+	@Value("${mosip.kernel.syncdata.global-config-file}")
 	private String globalConfigFileName;
 
 	private String configServerUri = null;
