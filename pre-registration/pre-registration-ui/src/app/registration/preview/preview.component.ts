@@ -75,7 +75,7 @@ export class PreviewComponent implements OnInit {
     );
     console.log(this.previewData);
     if (this.previewData['fullName'][1].language === 'ara') {
-      this.secondaryLanguage = 'ar';
+      this.secondaryLanguage = 'ara';
     }
     this.dataStorageService
       .getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language)

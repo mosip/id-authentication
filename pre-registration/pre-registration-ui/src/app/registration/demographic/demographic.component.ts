@@ -118,10 +118,10 @@ export class DemographicComponent implements OnInit {
     private translate: TranslateService
   ) {
     //need to remove
-    // translate.addLangs(['eng', 'fra', 'ara']);
-    // translate.setDefaultLang(localStorage.getItem('langCode'));
-    // const browserLang = translate.getBrowserLang();
-    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
+    translate.addLangs(['eng', 'fra', 'ara']);
+    translate.setDefaultLang(localStorage.getItem('langCode'));
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
     //till here
     this.initialization();
   }
@@ -241,6 +241,11 @@ export class DemographicComponent implements OnInit {
       [this.formControlNames.secondaryAddressLine3]: new FormControl(this.formControlValues.secondaryAddressLine3)
     });
 
+    this.setLocations();
+    this.setGender();
+  }
+
+  private async setLocations() {
     await this.getLocationMetadataHirearchy();
     this.selectedLocationCode = [
       this.uppermostLocationHierarchy[0].code,
@@ -253,10 +258,6 @@ export class DemographicComponent implements OnInit {
       this.locations = [this.regions, this.provinces, this.cities, this.localAdministrativeAuthorities];
     }
 
-    await this.getGenderDetails();
-    this.filterGenderOnLangCode(this.primaryLang, this.primaryGender);
-    this.filterGenderOnLangCode(this.secondaryLang, this.secondaryGender);
-
     for (let index = 0; index < this.locations.length; index++) {
       const parentLocationCode = this.selectedLocationCode[index];
       const currentLocationCode = this.selectedLocationCode[index + 1];
@@ -267,6 +268,12 @@ export class DemographicComponent implements OnInit {
         await this.getLocationImmediateHierearchy(language, parentLocationCode, element, currentLocationCode);
       }
     }
+  }
+
+  private async setGender() {
+    await this.getGenderDetails();
+    this.filterGenderOnLangCode(this.primaryLang, this.primaryGender);
+    this.filterGenderOnLangCode(this.secondaryLang, this.secondaryGender);
   }
 
   private setFormControlValues() {
@@ -432,11 +439,12 @@ export class DemographicComponent implements OnInit {
       genderEntity.forEach(element => {
         element.filter(element => {
           if (event.value === element.code) {
-            this.codeValue.push({
-              languageCode: element.langCode,
-              valueName: element.genderName,
-              valueCode: element.code
-            });
+            this.addCodeValue(element);
+            // this.codeValue.push({
+            //   languageCode: element.langCode,
+            //   valueName: element.genderName,
+            //   valueCode: element.code
+            // });
           }
         });
       });
