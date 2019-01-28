@@ -78,7 +78,7 @@ export class DemographicComponent implements OnInit {
     this.localAdministrativeAuthorities1,
     this.localAdministrativeAuthorities2
   ];
-  locations = [this.regions, , this.provinces, this.cities, this.localAdministrativeAuthorities];
+  locations = [this.regions];
   selectedLocationCode = [];
   codeValue: CodeValueModal[] = [];
 
@@ -118,10 +118,10 @@ export class DemographicComponent implements OnInit {
     private translate: TranslateService
   ) {
     //need to remove
-    // translate.addLangs(['en', 'fr', 'ar']);
-    // translate.setDefaultLang(localStorage.getItem('langCode'));
-    // const browserLang = translate.getBrowserLang();
-    // translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
+    translate.addLangs(['eng', 'fra', 'ara']);
+    translate.setDefaultLang(localStorage.getItem('langCode'));
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
     //till here
     this.initialization();
   }
@@ -249,8 +249,8 @@ export class DemographicComponent implements OnInit {
       this.formControlValues.city,
       this.formControlValues.localAdministrativeAuthority
     ];
-    if (!this.dataModification) {
-      this.locations = [this.regions];
+    if (this.dataModification) {
+      this.locations = [this.regions, this.provinces, this.cities, this.localAdministrativeAuthorities];
     }
 
     await this.getGenderDetails();
