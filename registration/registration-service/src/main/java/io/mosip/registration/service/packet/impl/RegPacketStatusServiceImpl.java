@@ -255,61 +255,57 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	private Registration delete(final Registration registration, final String clientStatus, boolean isToBeDeleted) {
 
-		Registration registartionToBeDeleted = registration;
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet started");
-
 		Registration updatedRegistration = null;
-
-		/* Get Registration Transaction List for each transaction */
-		List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
-		if (transactionList == null) {
-			transactionList = new LinkedList<>();
-		}
-		/* Prepare Registration Transaction */
-		RegistrationTransaction registrationTxn = new RegistrationTransaction();
-
-		registrationTxn.setRegId(registration.getId());
-		registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
-		registrationTxn.setLangCode("ENG");
-		registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
-		registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
-
-		File ackFile = null;
-		File zipFile = null;
 
 		isToBeDeleted = (clientStatus.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)
 				|| isToBeDeleted);
 
-		/**
-		 * Check whether the requirement matches to delete the registration packet or
-		 * not
-		 */
 		if (isToBeDeleted) {
-
-			registration.setClientStatusCode(RegistrationClientStatusCode.DELETED.getCode());
-			registrationTxn.setStatusCode(registration.getClientStatusCode());
+			File ackFile = null;
+			File zipFile = null;
 			String ackPath = registration.getAckFilename();
 			ackFile = new File(ackPath);
 			String zipPath = ackPath.replace("_Ack.png", RegistrationConstants.ZIP_FILE_EXTENSION);
 			zipFile = new File(zipPath);
-		} else {
+
+			if (ackFile != null) {
+
+				Files.delete(ackFile);
+				Files.delete(zipFile);
+
+				/* Delete row from DB */
+				regPacketStatusDAO.delete(registration);
+
+				return registration;
+
+			}
+		}
+
+		else {
+			/* Get Registration Transaction List for each transaction */
+			List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
+			if (transactionList == null) {
+				transactionList = new LinkedList<>();
+			}
+			/* Prepare Registration Transaction */
+			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+
+			registrationTxn.setRegId(registration.getId());
+			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
+			registrationTxn.setLangCode("ENG");
+			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
 			registrationTxn.setStatusCode(registration.getClientStatusCode());
-		}
-		transactionList.add(registrationTxn);
-		registration.setRegistrationTransaction(transactionList);
-		if (ackFile != null) {
-			Files.delete(ackFile);
-			Files.delete(zipFile);
 
-			/* Delete row from DB */
-			regPacketStatusDAO.delete(registartionToBeDeleted);
+			transactionList.add(registrationTxn);
+			registration.setRegistrationTransaction(transactionList);
 
-			return registration;
+			updatedRegistration = regPacketStatusDAO.update(registration);
 
 		}
-		updatedRegistration = regPacketStatusDAO.update(registration);
-
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet ended");
 
