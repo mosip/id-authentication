@@ -85,7 +85,7 @@ public class RegistrationCenterUserMachineController {
 	 *            {@link RegistrationCenterUserMachineMappingDto} request
 	 * @return {@link RegistrationCenterMachineUserID} as response
 	 */
-	@ApiOperation(value = "Create a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
+	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
 	@PutMapping("/v1.0/registrationmachineusermappings")
 	public ResponseEntity<RegistrationCenterMachineUserID> createOrUpdateRegistrationCentersMachineUserMapping(
 			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {

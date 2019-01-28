@@ -111,9 +111,9 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 				history.setCntrId(regCenterId);
 				history.setMachineId(machineId);
 				history.setUsrId(userId);
+				MapperUtils.setBaseFieldValue(centerUserMachine, history);
 				history.setEffectivetimes(centerUserMachine.getDeletedDateTime());
 				history.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-				MapperUtils.setBaseFieldValue(centerUserMachine, history);
 				registrationCenterUserMachineHistoryRepository.create(history);
 				registrationCenterMachineUserRepository.update(centerUserMachine);
 				registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
@@ -150,7 +150,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 							registrationCenterUserMachineMappingDto.getRequest().getMachineId(),
 							registrationCenterUserMachineMappingDto.getRequest().getUsrId());
 			if (!registrationCenterUserMachine.isPresent()) {
-				createRegistrationCentersMachineUserMapping(registrationCenterUserMachineMappingDto);
+				return createRegistrationCentersMachineUserMapping(registrationCenterUserMachineMappingDto);
 			} else {
 				RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine.get();
 				MetaDataUtils.setUpdateMetaData(registrationCenterUserMachineMappingDto.getRequest(), centerUserMachine,
@@ -169,9 +169,9 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 			}
 		} catch (DataAccessLayerException | DataAccessException e) {
 			throw new MasterDataServiceException(
-					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION
+					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_UPDATE_EXCEPTION
 							.getErrorCode(),
-					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_DELETE_EXCEPTION
+					RegistrationCenterMachineUserMappingErrorCode.REGISTRATION_CENTER_USER_MACHINE_UPDATE_EXCEPTION
 							.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return registrationCenterMachineUserID;
