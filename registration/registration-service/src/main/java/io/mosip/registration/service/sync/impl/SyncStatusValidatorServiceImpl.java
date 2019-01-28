@@ -156,7 +156,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
 					"Validating the Duration of oldest packet of status Registered with configured duration", "refId", "refIdType");
 			
-			if (getDifference(registrationDetails.get(RegistrationConstants.PARAM_ZERO)) < 0) {
+			if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO) : null) < 0) {
 				
 				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_TIME,
 						RegistrationConstants.REG_PKT_APPRVL_TIME_EXCEED, RegistrationConstants.ERROR,
@@ -345,15 +345,18 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 */
 	private long getDifference(Registration registration) {
 		
-		/* This will subtract configured number of days from current Date */
-		Date differDate = new Date(new Date().getTime() - (Long.parseLong(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
-				.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000 ));
-		
-		/* This will convert timestamp to Date */
-		Date createdDate = new Date(registration.getCrDtime().getTime());
-		
-		/* This will return differnce between 2 dates in minutes */
-		return ChronoUnit.MINUTES.between(differDate.toInstant(), createdDate.toInstant());
+		if(registration != null && registration.getCrDtime() != null) {
+			/* This will subtract configured number of days from current Date */
+			Date differDate = new Date(new Date().getTime() - (Long.parseLong(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000 ));
+			
+			/* This will convert timestamp to Date */
+			Date createdDate = new Date(registration.getCrDtime().getTime());
+			
+			/* This will return differnce between 2 dates in minutes */
+			return ChronoUnit.MINUTES.between(differDate.toInstant(), createdDate.toInstant());
+		}
+		return 0;
 	}
 
 	/**
