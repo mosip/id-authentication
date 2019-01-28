@@ -71,21 +71,21 @@ public class CbeffImplTest {
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(8))
 						.withQuality(90).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.RAW).build())
+						.withLevel(ProcessedLevelType.RAW).withCreationDate(new Date()).build())
 				.build();
 
 		BIR leftIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
 						.withQuality(80).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).build())
+						.withPurpose(PurposeType.ENROLL).withCreationDate(new Date()).withLevel(ProcessedLevelType.RAW).build())
 				.build();
 
 		BIR rightIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
 						.withQuality(90).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).build())
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date()).build())
 				.build();
 
 		createList = new ArrayList<>();
@@ -157,7 +157,7 @@ public class CbeffImplTest {
 		CbeffImpl cbeffImpl = new CbeffImpl();
 		Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
 		Set<String> testSet1 = new HashSet<>();
-		testSet1.add("RIGHT FINGER");
+		testSet1.add("RIGHT_FINGER_2_1548649570248");
 		assertEquals(testMap.keySet(),testSet1);
 		Map<String,String> testMap1 = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", null);
 		Set<String> testSet2 = new HashSet<>();

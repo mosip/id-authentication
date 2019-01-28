@@ -6,6 +6,7 @@ import java.util.Map;
 import io.mosip.kernel.cbeffutil.common.CbeffValidator;
 import io.mosip.kernel.cbeffutil.container.impl.CbeffContainerImpl;
 import io.mosip.kernel.cbeffutil.entity.BIR;
+import io.mosip.kernel.cbeffutil.exception.CbeffException;
 import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.cbeffutil.service.CbeffI;
 
@@ -22,10 +23,12 @@ public class CbeffImpl implements CbeffI {
 	 * @param birList pass List of BIR for creating Cbeff data
 	 *        
 	 * @return return byte array of XML data
+	 * @throws CbeffException 
+	 * @throws Exception 
 	 * 
 	 */
 	@Override
-	public byte[] createXML(List<BIR> birList) throws Exception {
+	public byte[] createXML(List<BIR> birList) throws Exception  {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
 		BIRType bir = cbeffContainer.createBIRType(birList);
 		byte[] xmlByte = CbeffValidator.createXMLBytes(bir);

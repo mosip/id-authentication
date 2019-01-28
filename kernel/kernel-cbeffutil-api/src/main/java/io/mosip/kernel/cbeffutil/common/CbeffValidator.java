@@ -5,7 +5,10 @@ package io.mosip.kernel.cbeffutil.common;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +20,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
+
+import org.xml.sax.SAXException;
 
 import io.mosip.kernel.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.cbeffutil.exception.CbeffException;
@@ -34,6 +39,7 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
  */
 public class CbeffValidator {
 	
+	private static final String tempPath = "./src/main/resources";
 	
 	/**
 	 * Method used for custom validation of the BIR
@@ -148,7 +154,22 @@ public class CbeffValidator {
 		jaxbMarshaller.marshal(bir, writer);
 		byte[] savedData = baos.toByteArray();
 		writer.close();
+		try
+		{
+		CbeffXSDValidator.validateXML(readXSD("cbeff"), savedData);
+		}
+		catch(SAXException sax)
+		{
+			String message = sax.getMessage();
+			message = message.substring(message.indexOf(":"));
+			throw new CbeffException("XSD validation failed due to attribute "+message);
+		}
 		return savedData;
+	}
+	
+	private static byte[] readXSD(String name) throws IOException {
+		byte[] fileContent = Files.readAllBytes(Paths.get(tempPath + "/schema/" + name + ".xsd"));
+		return fileContent;
 	}
 
 	/**
@@ -209,16 +230,16 @@ public class CbeffValidator {
 					Long bdbFormatType = bdbInfo.getFormatType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
-						bdbMap.put(singleType.toString() + " " + String.join(" ", singleSubTypeList) + " "
-								+ String.valueOf(bdbFormatType), new String(birType.getBDB(), "UTF-8"));
+						bdbMap.put(singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
+								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
 					} else if (singleType == null && singleSubTypeList.contains(singleAnySubType.value())) {
 						List<String> singleTypeStringList = convertToList(singleTypeList);
-						bdbMap.put(String.join(" ", singleSubTypeList) + " " + String.join(" ", singleTypeStringList)
-								+ " " + String.valueOf(bdbFormatType), new String(birType.getBDB(), "UTF-8"));
+						bdbMap.put(String.join(" ", singleSubTypeList) + "_" + String.join(" ", singleTypeStringList)
+								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
 					} else if (singleTypeList.contains(singleType)
 							&& singleSubTypeList.contains(singleAnySubType != null ? singleAnySubType.value() : null)
 							&& formatMatch) {
-						bdbMap.put(singleAnySubType.toString() + " " + singleType.toString(),
+						bdbMap.put(singleAnySubType.toString() + "_" + singleType.toString()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
 								new String(birType.getBDB(), "UTF-8"));
 					}
 				}
