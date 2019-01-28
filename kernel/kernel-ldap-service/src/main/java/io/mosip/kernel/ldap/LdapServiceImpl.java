@@ -220,14 +220,14 @@ public class LdapServiceImpl implements LdapService {
 			rolesData.close();
 			connection.unBind();
 			connection.close();
-
+			return rolesResponseDto;
 		
 		} catch (Exception e) {
 
 			throw new RuntimeException(e + "Unable to fetch user roles from LDAP");
 		}
 
-		return rolesResponseDto;
+		
 	}
 
 	@Override
@@ -251,9 +251,8 @@ public class LdapServiceImpl implements LdapService {
 					userLookup.get("mail").get().toString(), null);
 
 		}  catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e + "Unable to fetch user roles from LDAP");
 		}
-		return null;
 
 	}
     
