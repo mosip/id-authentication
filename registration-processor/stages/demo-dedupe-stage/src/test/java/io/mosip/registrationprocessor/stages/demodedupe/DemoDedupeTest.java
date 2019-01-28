@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyString;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -130,6 +131,8 @@ public class DemoDedupeTest {
 		DemographicInfoDto dto1 = new DemographicInfoDto();
 		DemographicInfoDto dto2 = new DemographicInfoDto();
 		List<DemographicInfoDto> Dtos = new ArrayList<>();
+		dto1.setDob(new Date());
+		dto2.setDob(new Date());
 		Dtos.add(dto1);
 		Dtos.add(dto2);
 

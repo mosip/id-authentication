@@ -110,10 +110,13 @@ public class ApplicantInfoDao {
 		photographDto.setActive(object.isActive());
 		photographDto.setCrBy(object.getCrBy());
 		photographDto.setExcpPhotoName(object.getExcpPhotoName());
-		photographDto.setExcpPhotoStore(object.getExcpPhotoStore());
+		String docValue = "dGVzdA";
+		byte[] docStore = docValue.getBytes();
+		
+		photographDto.setExcpPhotoStore(docStore);
 		photographDto.setHasExcpPhotograph(object.getHasExcpPhotograph());
 		photographDto.setImageName(object.getImageName());
-		photographDto.setImageStore(object.getImageStore());
+		photographDto.setImageStore(docStore);
 		photographDto.setNoOfRetry(object.getNoOfRetry());
 		photographDto.setPreRegId(object.getPreRegId());
 		photographDto.setQualityScore(object.getQualityScore());
