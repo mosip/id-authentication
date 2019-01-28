@@ -47,10 +47,10 @@ export class DashBoardComponent implements OnInit {
     private translate: TranslateService
   ) {
     //need to remove
-    translate.addLangs(['eng', 'fra', 'ara']);
-    translate.setDefaultLang(localStorage.getItem('langCode'));
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
+    // translate.addLangs(['eng', 'fra', 'ara']);
+    // translate.setDefaultLang(localStorage.getItem('langCode'));
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
     //till here
   }
   ngOnInit() {
