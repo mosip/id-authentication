@@ -151,6 +151,7 @@
 		<module>kernel-syncdata-service</module>
 		<module>kernel-auth-service</module>
 		<module>kernel-ldap-service</module>
+		<module>kernel-licensekeymanager-service</module>
 		<module>kernel-config-server</module>
 		
 		
