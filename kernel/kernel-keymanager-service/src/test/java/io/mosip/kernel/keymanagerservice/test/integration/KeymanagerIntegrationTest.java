@@ -273,7 +273,7 @@ public class KeymanagerIntegrationTest {
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
 				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().is(201)).andReturn();
+				.andExpect(status().is(200)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
 
@@ -354,7 +354,7 @@ public class KeymanagerIntegrationTest {
 		String content = mapper.writeValueAsString(symmetricKeyRequestDto);
 		MvcResult result = mockMvc
 				.perform(post("/v1.0/symmetrickey").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().is(201)).andReturn();
+				.andExpect(status().is(200)).andReturn();
 		System.out.println(result.getResponse().getContentAsString());
 	}
 
