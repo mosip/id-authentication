@@ -2,6 +2,7 @@ package io.mosip.kernel.ldap;
 
 import io.mosip.kernel.ldap.entities.LoginUser;
 import io.mosip.kernel.ldap.entities.MosipUser;
+import io.mosip.kernel.ldap.entities.OtpUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,11 @@ public class LdapController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public MosipUser authenticateUser(@RequestBody LoginUser user) throws Exception{
         return ldapService.authenticateUser(user);
+    }
+
+    @RequestMapping(value = "/verify_otp_user", method = RequestMethod.POST)
+    public MosipUser verifyOtpUser(@RequestBody OtpUser otpUser) throws Exception{
+        return ldapService.verifyOtpUser(otpUser);
     }
 
     @RequestMapping(value = "/isAuthorized", method = RequestMethod.POST)
