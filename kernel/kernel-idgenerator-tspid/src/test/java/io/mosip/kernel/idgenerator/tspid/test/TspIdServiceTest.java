@@ -23,7 +23,7 @@ import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
 @RunWith(SpringRunner.class)
 public class TspIdServiceTest {
 
-	@Value("${mosip.kernel.test.tspid.new-tspid}")
+	@Value("${mosip.kernel.tspid.test.valid-new-tspid}")
 	private String newTspId;
 	
 	@Autowired
