@@ -28,7 +28,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Service
 public class StaticPinServiceImpl implements StaticPinService {
-
+	/** The Constant for IDA*/
 	private static final String IDA = "IDA";
 
 	@Autowired
@@ -45,7 +45,13 @@ public class StaticPinServiceImpl implements StaticPinService {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
-
+	/**
+	 * This method is to store the StaticPin in StaticPin and StaticPinHistory Table.
+	 * 
+	 * @param staticPinRequestDTO
+	 * @param uinValue
+	 * @throws IdAuthenticationBusinessException
+	 */
 	@Override
 	public boolean storeSpin(StaticPinRequestDTO staticPinRequestDTO, String uinValue)
 			throws IdAuthenticationBusinessException {
@@ -54,7 +60,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 			StaticPinEntity staticPinEntity = new StaticPinEntity();
 			StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
 			staticPinEntity.setUin(uinValue);
-			String pinValue = staticPinRequestDTO.getRequest().getPinValue();
+			String pinValue = staticPinRequestDTO.getRequest().getStaticPin();
 			staticPinEntity.setPin(pinValue);
 			staticPinEntity.setCorrectedBy(IDA);
 			staticPinEntity.setCorrectedDate(new Date());
@@ -90,11 +96,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 			}
 			staticPinHistoryRepo.save(staticPinHistoryEntity);
 			return status;
-		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP,
-					e);
-		} catch (DataAccessException e) {
+		}  catch (DataAccessException e) {
 			logger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
 		}

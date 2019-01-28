@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.spinstore.controller;
+package io.mosip.authentication.service.impl.spin.controller;
 
 import javax.validation.Valid;
 
@@ -36,13 +36,17 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class StaticPinController {
 	
+	/** The  logger */
 	private static Logger logger = IdaLogger.getLogger(StaticPinController.class);
 	
+	/** The Constant DEAFULT_SESSION_ID */
 	private static final String DEAFULT_SESSION_ID = "sessionId";
 	
+	/** The Static Pin Facade */
 	@Autowired
 	private StaticPinFacade staticPinFacade;
 	
+	/** The Static Pin Request Validator  */
 	@Autowired
 	private StaticPinRequestValidator staticPinRequestValidator;
 	
@@ -66,7 +70,6 @@ public class StaticPinController {
 		try {
 			DataValidationUtil.validate(errors);
 			StaticPinResponseDTO staticPinResponseDTO =staticPinFacade.storeSpin(staticPinRequestDTO);
-			logger.info(DEAFULT_SESSION_ID, "NA", "NA", "NA");
 			return staticPinResponseDTO;
 		} catch (IDDataValidationException e) {
 			logger.error(DEAFULT_SESSION_ID, null, null, e.getErrorText());

@@ -197,10 +197,27 @@ public class AuthFacadeImpl implements AuthFacade {
 		
 		return authStatusList;
 	}
-
+	/**
+	 * Process the authorisation type and corresponding authorisation service is
+	 * called according to authorisation type. 
+	 * 
+	 * @param authRequestDTO
+	 * @param uin
+	 * @param isAuth
+	 * @param authStatusList
+	 * @param idType
+	 * @throws IdAuthenticationBusinessException
+	 */
 	private void processPinAuth(AuthRequestDTO authRequestDTO, String uin, boolean isAuth,
 			List<AuthStatusInfo> authStatusList, IdType idType) throws IdAuthenticationBusinessException {
 		AuthStatusInfo statusInfo = null;
+		String idvId = authRequestDTO.getIdvId();
+		String idvIdType = authRequestDTO.getIdvIdType();
+		String reqTime = authRequestDTO.getReqTime();
+		String txnId = authRequestDTO.getTxnID();
+		String desc="Pin Authentication requested";
+		String status;
+		String comment;
 		if (authRequestDTO.getAuthType().isPin()) {
 			AuthStatusInfo pinValidationStatus;
 			try {
@@ -209,12 +226,12 @@ public class AuthFacadeImpl implements AuthFacade {
 				authStatusList.add(pinValidationStatus);
 				statusInfo = pinValidationStatus;
 			} finally {
-
 				boolean isStatus = statusInfo != null && statusInfo.isStatus();
-
+				status = isStatus ? "Y" : "N";
+				comment = isStatus ? "Pin  Authenticated Success" : "Pin  Authenticated Failed";
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
-//				saveAndAuditBioAuthTxn(authRequestDTO, isAuth, idType, isStatus);
-
+				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO.getIdvId(), idType, desc);
+				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.PIN_AUTH);
 			}
 		}		
 	}
@@ -364,7 +381,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FGRMIN.getType())
 						|| bioInfo.getBioType().equals(BioType.FGRIMG.getType()))) {
 			desc = "Fingerprint Authentication requested";
-			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
+			auditHelper.audit(AuditModules.FINGERPRINT_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 			status = isStatus ? "Y" : "N";
 			comment = isStatus ? "Finger  Authentication Success" : "Finger  Authentication Failed";
 
@@ -373,7 +390,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.IRISIMG.getType()))) {
 			desc = "Iris Authentication requested";
-			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
+			auditHelper.audit(AuditModules.IRIS_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 			status = isStatus ? "Y" : "N";
 			comment = isStatus ? "Iris  Authentication Success" : "Iris  Authentication Failed";
 			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.IRIS_AUTH);
@@ -381,7 +398,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (authRequestDTO.getBioInfo().stream()
 				.anyMatch(bioInfo -> bioInfo.getBioType().equals(BioType.FACEIMG.getType()))) {
 			desc = "Face Authentication requested";
-			auditHelper.audit(AuditModules.BIO_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
+			auditHelper.audit(AuditModules.FACE_AUTH, getAuditEvent(isAuth), authRequestDTO.getIdvId(), idType, desc);
 			status = isStatus ? "Y" : "N";
 			comment = isStatus ? "Face  Authentication Success" : "Face  Authentication Failed";
 			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.FACE_AUTH);

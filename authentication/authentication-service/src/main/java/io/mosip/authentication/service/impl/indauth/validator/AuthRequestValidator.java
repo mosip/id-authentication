@@ -111,6 +111,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 				validateBioDetails(authRequestDto, errors);
 
+				validatePinDetails(authRequestDto,errors);
 				if (!errors.hasErrors()) {
 					checkAuthRequest(authRequestDto, errors);
 				}

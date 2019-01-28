@@ -14,5 +14,5 @@ public class PinRequestDTO {
 	private StaticPinIdentityDTO identity;
 	
 	/** The value pinValue */
-	private String pinValue;
+	private String staticPin;
 }
