@@ -198,10 +198,32 @@ public class PacketUploaderJobTest {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("1001.zip").getFile());
 		Mockito.doNothing().when(packetArchiver).archivePacket("1001");
 		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
-				.updateRegistrationStatus(entry);
+				.updateRegistrationStatus(any());
+		Mockito.when(adapter.storePacket("1001", file)).thenReturn(Boolean.TRUE);
+		Mockito.when(adapter.isPacketPresent("1001")).thenReturn(Boolean.TRUE);
+		Mockito.doNothing().when(adapter).unpackPacket("1001");
+		
 		packetUploaderStage.process(dto);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+		.containsExactly(
+				Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLEnull"));
+	}
+	
+	@Test
+	public void SystemExceptionTest() throws Exception {
+
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.doThrow(Exception.class).when(packetArchiver).archivePacket("1001");
+		
+		packetUploaderStage.process(dto);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+		.containsExactly(
+				Tuple.tuple(Level.ERROR, "SESSIONID - REGISTRATIONID - 1001 - PACKET_UPLOAD_FAILEDnull"));
 	}
 
 	@Test
