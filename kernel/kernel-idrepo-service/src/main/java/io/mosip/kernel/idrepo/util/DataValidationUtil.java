@@ -18,15 +18,12 @@ public final class DataValidationUtil {
 	}
 
 	/**
-	 * Get list of errors from error object and throws
-	 * {@link IDDataValidationException}, if any error is present.
+	 * Get list of errors from error object
 	 *
-	 * @param exceptionConstant
-	 *            the exception constant
 	 * @param errors
 	 *            the errors
-	 * @throws IDDataValidationException
-	 *             the ID data validation exception
+	 * @throws IdRepoDataValidationException
+	 *             the IdRepoDataValidationException
 	 */
 	public static void validate(Errors errors) throws IdRepoDataValidationException {
 		if (errors.hasErrors()) {

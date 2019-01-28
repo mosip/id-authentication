@@ -7,8 +7,8 @@ ENV active_profile_env=${active_profile}
 # change volume to whichever storage directory you want to use for this container.
 VOLUME /tmp
 
-copy ./target/kernel-auth-*.jar kernel-auth.jar
+copy ./target/kernel-auth-service*.jar kernel-auth-service.jar
 
-EXPOSE 5000
+EXPOSE 8091
 
-CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","kernel-auth.jar"]
+CMD ["java","-Dspring.profiles.active=${active_profile_env}","-jar","kernel-auth-service.jar"]

@@ -13,12 +13,6 @@ export interface Language {
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  // languages: Language[] = [
-  //   { value: 'English', viewValue: 'English' },
-  //   { value: 'French', viewValue: 'French' },
-  //   { value: 'Arabic', viewValue: 'Arabic' }
-  // ];
-
   constructor(public authService: AuthService, private router: Router) {}
 
   ngOnInit() {}
@@ -36,5 +30,14 @@ export class HeaderComponent implements OnInit {
       homeURL = '/';
     }
     this.router.navigate([homeURL]);
+  }
+
+  removeToken() {
+    localStorage.setItem('loggedIn', 'false');
+  }
+
+  doLogout() {
+    localStorage.setItem('loggedIn', 'false');
+    this.router.navigate(['/']);
   }
 }

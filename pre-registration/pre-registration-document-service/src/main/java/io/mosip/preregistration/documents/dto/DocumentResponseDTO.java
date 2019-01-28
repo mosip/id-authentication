@@ -27,7 +27,7 @@ public class DocumentResponseDTO implements Serializable {
 	/**
 	 * PreRegistration Id
 	 */
-	private String preRegsitrationId;
+	private String preRegistrationId;
 	/**
 	 * Document Id
 	 */

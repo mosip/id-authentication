@@ -33,6 +33,8 @@ public interface GenderTypeRepository extends BaseRepository<Gender, CodeAndLang
 	 *            code the gender type code.
 	 * @param deletedDateTime
 	 *            metadata Deleted Date time
+	 * @param updatedBy
+	 *            updatedBy
 	 * @return rows modified
 	 */
 	@Modifying

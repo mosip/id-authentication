@@ -121,7 +121,7 @@ stage('---------- SonarQube Analysis --------------') {
      */
      modulePath = locationOfDockerFiles[i].substring(2);
      updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$BUILD_NUMBER")
+     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      /*
      Updating containersToRun List
      */
@@ -132,19 +132,19 @@ stage('---------- SonarQube Analysis --------------') {
      containersNames = containersNames + " " + moduleName
      echo moduleName + " will be built"
      /*
-     Pushing the module image with tag as buildnumber and tag as latest to docker registry
+     Pushing the module image with tag as version.buildnumber and tag as latest to docker registry
      */
      docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = moduleName + ":$dockerImagesTagVersion"
-      newApp = docker.build(buildName, '--build-args spring_config_label='+branch+'-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      def buildName = moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
       newApp.push()
       newApp.push 'latest'
      }
      /*
      Removing local images
      */
-     sh "docker rmi $moduleName:$dockerImagesTagVersion"
-     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion"
+     sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
     }
    } 
@@ -168,7 +168,7 @@ stage('---------- SonarQube Analysis --------------') {
      */
      modulePath = changedModulesLocation[i].substring(2);
      updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion")
+     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      /*
      Updating containersToRun List
      */
@@ -179,10 +179,10 @@ stage('---------- SonarQube Analysis --------------') {
      containersNames = containersNames + " " + moduleName
      echo moduleName + " will be built"
      /*
-     Pushing the module image with tag as buildnumber and tag as latest to docker registry
+     Pushing the module image with tag as version.buildnumber and tag as latest to docker registry
      */
      docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = moduleName + ":$dockerImagesTagVersion"
+      def buildName = moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER"
       newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
       newApp.push()
       newApp.push 'latest'
@@ -190,8 +190,8 @@ stage('---------- SonarQube Analysis --------------') {
      /*
      Removing local images
      */
-     sh "docker rmi $moduleName:$dockerImagesTagVersion"
-     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion"
+     sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
     }
    }
@@ -206,12 +206,14 @@ stage('---------- SonarQube Analysis --------------') {
 
  }
   
+/*
 
+ // uncomment out this stage and comment out next stage 'Kubernetes Deploy : DEV-INT' if you want to run Docker containers without Kubernetes cluster
   stage('----deploy in dev----')
  {
-     /*
-     All the Deployment steps that have to be performed in deployment server are written in this command string
-     */
+     
+     //All the Deployment steps that have to be performed in deployment server are written in this command string
+     
 	  command = """
  		INDEX=0
 		containersToRunShell=(${containersToRun})
@@ -267,11 +269,13 @@ stage('---------- SonarQube Analysis --------------') {
 			fi
             echo Deployment process completed
     """
-    /*
-    Using sshPublisher class to publish this command over to the deployement server
-    */
+    
+    //Using sshPublisher class to publish this command over to the deployement server
+    
         sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
     }
+    */
+    
     stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"

@@ -137,7 +137,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * This method trigger query to fetch registration centers based on hierarchy
 	 * List of location_code
 	 * 
-	 * @param texts
+	 * @param codes
 	 *            provided by user
 	 * @return list of {@link RegistrationCenter} fetched from database
 	 */

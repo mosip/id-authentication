@@ -1,18 +1,18 @@
 {
   "id": "mosip.pre-registration.demographic.create",
   "ver": "1.0",
-  "reqTime": "2018-10-17T07:22:57.086+0000",
+  "reqTime": "2018-10-17T07:22:57.086Z",
   "request": {
     "preRegistrationId": "",
     "createdBy": "",
     "createdDateTime": "",
     "updatedBy": "",
     "updatedDateTime": "",
-    "statusCode": "",
     "langCode": "",
 	"demographicDetails":{
     "identity": {
-      "FullName": [
+    "IDSchemaVersion": "1.0",
+      "fullName": [
         {
           "language": "ar",
           "label": "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø§ÙˆÙ„",
@@ -24,18 +24,7 @@
           "value": "Ibrahim"
         }
       ],
-      "dateOfBirth": [
-        {
-          "language": "ar",
-          "label": "ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…ÙŠÙ„Ø§Ø¯",
-          "value": "18/03/1995"
-        },
-        {
-          "language": "fr",
-          "label": "date de naissance",
-          "value": "18/03/1995"
-        }
-      ],
+      "dateOfBirth":"12/01/2019",
       "gender": [
         {
           "language": "ar",
@@ -120,18 +109,7 @@
           "value": "Mangalore"
         }
       ],
-      "postalcode": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„ÙƒÙˆØ¯ Ø§Ù„Ø¨Ø±ÙŠØ¯Ù‰",
-          "value": "675123"
-        },
-        {
-          "language": "fr",
-          "label": "PrÃ©nom",
-          "value": "675123"
-        }
-      ],
+      "postalCode":"1234",
       "localAdministrativeAuthority": [
         {
           "language": "ar",
@@ -144,54 +122,9 @@
           "value": "La gestion"
         }
       ],
-      "emailId": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ",
-          "value": "ram@gmail.com"
-        },
-        {
-          "language": "fr",
-          "label": "Email",
-          "value": "ram@gmail.com"
-        }
-      ],
-      "mobileNumber": [
-        {
-          "language": "ar",
-          "label": "Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ� Ø§Ù„Ù…Ø­Ù…ÙˆÙ„",
-          "value": "984839347"
-        },
-        {
-          "language": "fr",
-          "label": "NumÃ©ro de portable",
-          "value": "984839347"
-        }
-      ],
-      "CNEOrPINNumber": [
-        {
-          "language": "ar",
-          "label": "Ø§Ù„Ø±Ù‚Ù… Ø§Ù„Ø³Ø±ÙŠ",
-          "value": "45667677"
-        },
-        {
-          "language": "fr",
-          "label": "Code PIN",
-          "value": "45667677"
-        }
-      ],
-      "age": [
-        {
-          "language": "ar",
-          "label": "Ø¹Ù…Ø±",
-          "value": "35"
-        },
-        {
-          "language": "fr",
-          "label": "Ã‚ge",
-          "value": "35"
-        }
-      ]
+      "email": "raj@gmail.com",
+      "phone":"9457897386",
+      "CNIENumber": "78432794820"
     }
   }
   }

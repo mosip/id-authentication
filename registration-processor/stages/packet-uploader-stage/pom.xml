@@ -95,11 +95,6 @@
 			<version>${awaitility.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>packet-manager</artifactId>
-			<version>${packet.manager.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

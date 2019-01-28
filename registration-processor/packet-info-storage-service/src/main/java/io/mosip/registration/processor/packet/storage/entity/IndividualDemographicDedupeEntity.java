@@ -76,11 +76,11 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	}
 
 	public Date getDob() {
-		return dob;
+		return new Date(dob.getTime());
 	}
 
 	public void setDob(Date dob) {
-		this.dob = dob;
+		this.dob = new Date(dob.getTime());
 	}
 
 	public String getGender() {

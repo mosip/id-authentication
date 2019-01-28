@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -19,127 +20,187 @@ public class RidValidatorTest {
 	@Autowired
 	RidValidator<String> ridValidatorImpl;
 
-	String centerId = "27847";
+	@Value("${mosip.kernel.rid.test.center-id}")
+	private String centerId;
 
-	String machineId = "65736";
+	@Value("${mosip.kernel.rid.test.machine-id}")
+	private String machineId;
 
-	int centerIdLength = 5;
-	int machineIdLength = 5;
-	int timeStampLength = 14;
+	@Value("${mosip.kernel.rid.centerid-length}")
+	private int centerIdLength;
+
+	@Value("${mosip.kernel.rid.machineid-length}")
+	private int machineIdLength;
+
+	@Value("${mosip.kernel.rid.sequence-length}")
+	private int sequenceLength;
+
+	@Value("${mosip.kernel.rid.timestamp-length}")
+	private int timeStampLength;
+
+	@Value("${mosip.kernel.rid.test.valid-rid}")
+	private String validRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-centerid-rid}")
+	private String invalidCenterIdRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-machineid-rid}")
+	private String invalidMachineIdRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-month-rid}")
+	private String invalidMonthRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-date-rid}")
+	private String invalidDateRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-hour-rid}")
+	private String invalidHourRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-minute-rid}")
+	private String invalidMinuteRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-second-rid}")
+	private String invalidSecondRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-alpha-numeric-rid}")
+	private String invalidAlphaNumericRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-length-rid}")
+	private String invalidLengthRid;
+
+	@Value("${mosip.kernel.rid.test.valid-custom-sequence-rid}")
+	private String validCustomSequenceRid;
 
 	@Test
 	public void validRidTest() {
-		String rid = "27847657360002520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid, centerId, machineId), is(true));
+		assertThat(ridValidatorImpl.validateId(validRid, centerId, machineId), is(true));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidCenterIdInRidTest() {
-		String rid = "27846657360002520181208183050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+		ridValidatorImpl.validateId(invalidCenterIdRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidMachineIdInRidTest() {
-		String rid = "27847657340002520181208183050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+		ridValidatorImpl.validateId(invalidMachineIdRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidMonthInTimestampOfRidTest() {
-		String rid = "27847657360002520181308183050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidMonthRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidDateInTimestampOfRidTest() {
-		String rid = "27847657360002520181232183050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidDateRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidHourInTimestampOfRidTest() {
-		String rid = "27847657360002520181208253050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidHourRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidMinuteInTimestampOfRidTest() {
-		String rid = "27847657360002520181208187050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidMinuteRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidSecondIntimestampOfRidTest() {
-		String rid = "27847657360002520181208183070";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidSecondRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidTest() {
-		String rid = "278476573600A2520181208183050";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidAlphaNumericRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void lengthOfRidTest() {
-		String rid = "2784765736000252018120818305";
-		ridValidatorImpl.validateId(rid, centerId, machineId);
+
+		ridValidatorImpl.validateId(invalidLengthRid, centerId, machineId);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidLengthTest() {
-		String rid = "2784765736000252018120818305";
-		ridValidatorImpl.validateId(rid);
+
+		ridValidatorImpl.validateId(invalidLengthRid);
 	}
 
 	@Test
 	public void validRidIsNumericTest() {
-		String rid = "27847657360002520181208183059";
-		assertThat(ridValidatorImpl.validateId(rid), is(true));
+
+		assertThat(ridValidatorImpl.validateId(validRid), is(true));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidTimestampTest() {
-		String rid = "27847657360002520181308183059";
-		assertThat(ridValidatorImpl.validateId(rid), is(false));
+
+		assertThat(ridValidatorImpl.validateId(invalidMonthRid), is(false));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidDateTest() {
-		String rid = "27847657360002520181232183059";
-		assertThat(ridValidatorImpl.validateId(rid), is(false));
+
+		assertThat(ridValidatorImpl.validateId(invalidDateRid), is(false));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidRidTimeTest() {
-		String rid = "27847657360002520181208253059";
-		assertThat(ridValidatorImpl.validateId(rid), is(false));
+
+		assertThat(ridValidatorImpl.validateId(invalidHourRid), is(false));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void nonNumericRidTest() {
-		String rid = "278476573600A2520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid), is(false));
+
+		assertThat(ridValidatorImpl.validateId(invalidAlphaNumericRid), is(false));
 	}
 
 	@Test
 	public void validRidCenterIdMachineIdWithCustomLengthTest() {
-		String rid = "27847657360002520181208183050";
-		assertThat(
-				ridValidatorImpl.validateId(rid, centerId, machineId, centerIdLength, machineIdLength, timeStampLength),
-				is(true));
+
+		assertThat(ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, 5,
+				timeStampLength), is(true));
 	}
 
 	@Test
 	public void validRidWithCustomLengthTest() {
-		String rid = "27847657360002520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid, centerIdLength, machineIdLength, timeStampLength), is(true));
+
+		assertThat(
+				ridValidatorImpl.validateId(validRid, centerIdLength, machineIdLength, sequenceLength, timeStampLength),
+				is(true));
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void validRidWithInvalidCustomLengthTest() {
-		String rid = "27847657360002520181208183050";
-		assertThat(ridValidatorImpl.validateId(rid, -1, machineIdLength, timeStampLength), is(false));
+
+		assertThat(ridValidatorImpl.validateId(validRid, -1, machineIdLength, sequenceLength, timeStampLength),
+				is(false));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void validRidWithInvalidSequenceTest() {
+
+		ridValidatorImpl.validateId(validRid, centerId, machineId, centerIdLength, machineIdLength, sequenceLength, 13);
+	}
+
+	@Test
+	public void validRidWithCustomSequenceTest() {
+
+		ridValidatorImpl.validateId(validCustomSequenceRid, "278476", "573621", 6, 6, 3, timeStampLength);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void validRidWithInvalidCustomSequenceTest() {
+
+		ridValidatorImpl.validateId(validCustomSequenceRid, "278476", "573621", 6, 6, 2, timeStampLength);
 	}
 }
