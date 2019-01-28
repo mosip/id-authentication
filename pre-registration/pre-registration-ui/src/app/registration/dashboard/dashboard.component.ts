@@ -55,7 +55,7 @@ export class DashBoardComponent implements OnInit {
   }
   ngOnInit() {
     // sessionStorage.clear();
-    sessionStorage.removeItem('modifyUser');
+    this.regService.changeMessage({ modifyUser: 'false' });
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });

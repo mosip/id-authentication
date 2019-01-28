@@ -117,6 +117,7 @@ export class DemographicComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
+    console.log('demo comp called');
     //need to remove
     // translate.addLangs(['eng', 'fra', 'ara']);
     // translate.setDefaultLang(localStorage.getItem('langCode'));
