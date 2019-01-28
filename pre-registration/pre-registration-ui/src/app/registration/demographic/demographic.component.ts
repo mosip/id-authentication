@@ -78,7 +78,7 @@ export class DemographicComponent implements OnInit {
     this.localAdministrativeAuthorities1,
     this.localAdministrativeAuthorities2
   ];
-  locations = [this.regions];
+  locations = [this.regions, this.provinces, this.cities, this.localAdministrativeAuthorities];
   selectedLocationCode = [];
   codeValue: CodeValueModal[] = [];
 
@@ -118,10 +118,10 @@ export class DemographicComponent implements OnInit {
     private translate: TranslateService
   ) {
     //need to remove
-    translate.addLangs(['eng', 'fra', 'ara']);
-    translate.setDefaultLang(localStorage.getItem('langCode'));
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
+    // translate.addLangs(['eng', 'fra', 'ara']);
+    // translate.setDefaultLang(localStorage.getItem('langCode'));
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
     //till here
     this.initialization();
   }
@@ -254,8 +254,8 @@ export class DemographicComponent implements OnInit {
       this.formControlValues.city,
       this.formControlValues.localAdministrativeAuthority
     ];
-    if (this.dataModification) {
-      this.locations = [this.regions, this.provinces, this.cities, this.localAdministrativeAuthorities];
+    if (!this.dataModification) {
+      this.locations = [this.regions];
     }
 
     for (let index = 0; index < this.locations.length; index++) {
@@ -347,6 +347,18 @@ export class DemographicComponent implements OnInit {
     this.genders.filter((element: any) => {
       if (element.langCode === langCode) genderEntity.push(element);
     });
+    if (this.formControlValues.gender) {
+      genderEntity.filter(element => {
+        if (element.code === this.formControlValues.gender) {
+          const codeValue: CodeValueModal = {
+            valueCode: element.code,
+            valueName: element.genderName,
+            languageCode: element.langCode
+          };
+          this.addCodeValue(codeValue);
+        }
+      });
+    }
   }
 
   getLocationMetadataHirearchy() {
@@ -390,14 +402,13 @@ export class DemographicComponent implements OnInit {
         });
       }
     }
-    console.log(this.codeValue);
   }
 
   private addCodeValue(element: CodeValueModal) {
     this.codeValue.push({
-      languageCode: element.languageCode,
       valueCode: element.valueCode,
-      valueName: element.valueName
+      valueName: element.valueName,
+      languageCode: element.languageCode
     });
   }
 
@@ -420,7 +431,6 @@ export class DemographicComponent implements OnInit {
             childLocations.push(codeValueModal);
             if (currentLocationCode && codeValueModal.valueCode === currentLocationCode) {
               this.codeValue.push(codeValueModal);
-              console.log(this.codeValue);
             }
           });
           return resolve(true);
@@ -534,7 +544,6 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.codeValue);
     // this.createIdentityJSONDynamic();
     const request = this.createRequestJSON();
     this.dataUploadComplete = false;
@@ -550,7 +559,6 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else if (response !== null) {
-          console.log(response);
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
           this.sharedService.addNameList({
