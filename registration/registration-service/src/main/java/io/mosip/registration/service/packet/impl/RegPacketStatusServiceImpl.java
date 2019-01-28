@@ -69,11 +69,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.packet.RegistrationDeletionService#
-	 * deleteReRegistrationPackets()
+	 * @see io.mosip.registration.service.packet.RegPacketStatusService#
+	 * deleteRegistrationPackets()
 	 */
 	@Override
-	synchronized public ResponseDTO deleteReRegistrationPackets() {
+	synchronized public ResponseDTO deleteRegistrationPackets() {
 
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete  Reg-packets started");
@@ -303,7 +303,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			Files.delete(zipFile);
 
 			/* Delete row from DB */
-			 regPacketStatusDAO.delete(registartionToBeDeleted);
+			regPacketStatusDAO.delete(registartionToBeDeleted);
 
 			return registration;
 

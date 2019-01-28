@@ -72,7 +72,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	@Autowired
 	private PreRegZipHandlingService preRegZipHandlingService;
-	
+
 	/**
 	 * Instance of {@code AuditFactory}
 	 */
@@ -473,6 +473,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			}
 
+			
 			if (!isEmpty(preRegistartionsToBeDeletedList)) {
 				deleteRecords(responseDTO, preRegistartionsToBeDeletedList);
 			}
