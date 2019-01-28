@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,6 +22,33 @@ import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 @SpringBootTest
 public class VidValidatorTest {
 
+	@Value("${mosip.kernel.vid.test.valid-vid}")
+	private String validVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-length-vid}")
+	private String invalidLengthVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-first-digit-zero-vid}")
+	private String invalidFirstDigitZeroVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-first-digit-one-vid}")
+	private String invalidFirstDigitOneVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-checksum-vid}")
+	private String invalidChecksumVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-alphanumeric-vid}")
+	private String invalidAlphaNumericVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-repeating-block-vid}")
+	private String invalidReapeatingBlockVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-sequencial-number-vid}")
+	private String invalidSequencialNumberVid;
+
+	@Value("${mosip.kernel.vid.test.invalid-repeating-number-vid}")
+	private String invalidRepeatingNumberVid;
+
 	@Autowired
 	private VidValidator<String> vidValidatorImpl;
 
@@ -33,59 +61,57 @@ public class VidValidatorTest {
 
 	@Test(expected = InvalidIDException.class)
 	public void lengthTest() {
-		String id = "537184361359820";
-		vidValidatorImpl.validateId(id);
+
+		vidValidatorImpl.validateId(invalidLengthVid);
 
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void firstDigitZeroTest() {
-		String id = "0247389354374855";
 
-		vidValidatorImpl.validateId(id);
+		vidValidatorImpl.validateId(invalidFirstDigitZeroVid);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void firstDigitOneTest() {
-		String id = "1247389354374855";
-		vidValidatorImpl.validateId(id);
+
+		vidValidatorImpl.validateId(invalidFirstDigitOneVid);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void ChecksumTest() {
-		String id = "5371843613598205";
-		vidValidatorImpl.validateId(id);
+
+		vidValidatorImpl.validateId(invalidChecksumVid);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void alphaNumericTest() {
 
-		String id = "53718A3613598206";
-		vidValidatorImpl.validateId(id);
+		vidValidatorImpl.validateId(invalidAlphaNumericVid);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void repeatingBlockTest() {
-		String id = "8241239351234855";
-		vidValidatorImpl.validateId(id);
+
+		vidValidatorImpl.validateId(invalidReapeatingBlockVid);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void sequentialNumberTest() {
-		String id = "8245679354374855";
-		vidValidatorImpl.validateId(id);
+
+		vidValidatorImpl.validateId(invalidSequencialNumberVid);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void repeatingNumberTest() {
-		String id = "5371143613598206";
-		vidValidatorImpl.validateId(id);
+
+		vidValidatorImpl.validateId(invalidRepeatingNumberVid);
 	}
 
 	@Test
 	public void ValidIdTest() {
-		String id = "5371843613598206";
-		assertEquals(true, vidValidatorImpl.validateId(id));
+
+		assertEquals(true, vidValidatorImpl.validateId(validVid));
 	}
 
 }

@@ -6,14 +6,16 @@ import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
 import * as appConstants from './../app.constants';
 import Utils from '../app.util';
+import { AppConfigService } from '../app-config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataStorageService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private appConfigService: AppConfigService) {}
 
-  BASE_URL = environment.BASE_URL;
+  // BASE_URL = environment.BASE_URL;
+  BASE_URL = this.appConfigService.getConfig()['BASE_URL'];
   SEND_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/documents';
   DELETE_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/deleteDocument';
   GET_FILE_URL = this.BASE_URL + 'document/v0.1/pre-registration/getDocument';
@@ -22,7 +24,7 @@ export class DataStorageService {
   BOOKING_URL = this.BASE_URL + 'booking/v0.1/pre-registration/booking/book';
   DELETE_REGISTRATION_URL = this.BASE_URL + 'demographic/v0.1/pre-registration/applications';
   COPY_DOCUMENT_URL = this.BASE_URL + 'document/v0.1/pre-registration/copyDocuments';
-  LANGUAGE_CODE = 'ENG';
+  LANGUAGE_CODE = 'eng';
   DISTANCE = 2000;
 
   getUsers(value: string) {
@@ -41,7 +43,11 @@ export class DataStorageService {
     });
   }
 
-  getTransliteration(request) {
+  getGenderDetails() {
+    return this.httpClient.get(this.BASE_URL + appConstants.APPEND_URL.gender);
+  }
+
+  getTransliteration(request: any) {
     const obj = {
       id: appConstants.IDS.transliteration,
       reqTime: Utils.getCurrentDate(),

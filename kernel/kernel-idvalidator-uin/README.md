@@ -14,7 +14,25 @@
 
 [application-dev.properties](../../config/application-dev.properties)
 
- 
+ ```
+ #-----------------------------UIN Properties--------------------------------------
+#length of the uin
+mosip.kernel.uin.length=12
+#minimun threshold of uin
+mosip.kernel.uin.min-unused-threshold=100000
+#number of uins to generate
+mosip.kernel.uin.uins-to-generate=200000
+#uin generation cron
+mosip.kernel.uin.uin-generation-cron=0 * * * * *
+#restricted numbers for uin
+mosip.kernel.uin.restricted-numbers=786,666
+#sequence limit for uin filter
+mosip.kernel.uin.length.sequence-limit=3
+#repeating block limit for uin filter
+mosip.kernel.uin.length.repeating-block-limit=2
+#repeating limit for uin filter
+mosip.kernel.uin.length.repeating-limit=2
+ ```
  
  **Maven Dependency**
  
