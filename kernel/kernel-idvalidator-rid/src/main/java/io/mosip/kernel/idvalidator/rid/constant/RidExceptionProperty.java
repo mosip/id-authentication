@@ -11,10 +11,11 @@ package io.mosip.kernel.idvalidator.rid.constant;
 public enum RidExceptionProperty {
 	INVALID_RID("KER-IDV-301", "Rid Must Be Numeric Only"),
 	INVALID_CENTER_ID("KER-IDV-302","Center Id Did Not Match"),
-	INVALID_DONGLE_ID("KER-IDV-303", "Dongle Id Did Not Match"),
+	INVALID_MACHINE_ID("KER-IDV-303", "Machine Id Did Not Match"),
 	INVALID_RID_LENGTH("KER-IDV-304","Rid Length Must Be "),
 	INVALID_RID_TIMESTAMP("KER-IDV-305", "Invalid Time Stamp Found"),
-	INVALID_RIDLENGTH_OR_CENTERIDLENGTH_MACHINEIDLENGTH_TIMESTAMPLENGTH("KER-IDV-306","Rid length or center id length or machine id length should not be less than or equals to zero");
+	INVALID_RID_SEQ_LENGTH("KER-IDV-305", "Invalid Time Stamp Found"),
+	INVALID_RIDLENGTH_OR_CENTERIDLENGTH_MACHINEIDLENGTH_TIMESTAMPLENGTH("KER-IDV-306","Rid length or center id length or machine id length or sequence length or timestamp length should not be less than or equals to zero");
 
 	/**
 	 * the errorCode.

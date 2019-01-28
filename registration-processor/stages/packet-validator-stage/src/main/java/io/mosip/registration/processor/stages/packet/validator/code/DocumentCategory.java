@@ -6,12 +6,12 @@ package io.mosip.registration.processor.stages.packet.validator.code;
 public enum DocumentCategory {
 
 	/** The poi. */
-	POI,
+	PROOFOFIDENTITY,
 	/** The poa. */
-	POA,
+	PROOFOFADDRESS,
 	/** The por. */
-	POR,
+	PROOFOFRELATIONSHIP,
 	/** The pob. */
-	POB
+	PROOFOFDATEOFBIRTH
 
 }

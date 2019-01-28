@@ -19,6 +19,6 @@ public class OtpGeneratorRequestDto {
 	 * The key against which OTP needs to be generated.
 	 */
 	@NotNull
-	@Size(min = 3, max = 255)
+	@Size(min = 3, max = 64)
 	private String key;
 }

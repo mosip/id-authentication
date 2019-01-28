@@ -1,5 +1,10 @@
 package io.mosip.kernel.idgenerator.regcenterid.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,7 +25,8 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
  *
  */
 @Component
-public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGenerator<Integer> {
+@Transactional
+public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGenerator<String> {
 
 	/**
 	 * The length of registration center id.
@@ -41,12 +47,16 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 	 * generateRegistrationCenterId()
 	 */
 	@Override
-	public Integer generateRegistrationCenterId() {
+	public String generateRegistrationCenterId() {
+		int generatedRCID;
+
 		final int initialValue = MathUtils.getPow(RegistrationCenterIdConstant.ID_BASE.getValue(),
 				registrationCenterIdLength - 1);
+
 		RegistrationCenterId registrationCenterId = null;
+
 		try {
-			registrationCenterId = registrationCenterIdRepository.findMaxRegistrationCenterId();
+			registrationCenterId = registrationCenterIdRepository.findLastRCID();
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new RegistrationCenterIdServiceException(
 					RegistrationCenterIdConstant.REG_CEN_ID_FETCH_EXCEPTION.getErrorCode(),
@@ -56,19 +66,23 @@ public class RegistrationCenterIdGeneratorImpl implements RegistrationCenterIdGe
 		if (registrationCenterId == null) {
 			registrationCenterId = new RegistrationCenterId();
 			registrationCenterId.setRcid(initialValue);
-		} else {
-			int lastGeneratedId = registrationCenterId.getRcid();
-			registrationCenterId = new RegistrationCenterId();
-			registrationCenterId.setRcid(lastGeneratedId + 1);
-		}
-		try {
+			generatedRCID = initialValue;
+			registrationCenterId.setCreatedBy("default@user");
+			registrationCenterId.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+			registrationCenterId.setUpdatedBy("default@user");
+			registrationCenterId.setUpdatedDateTime(null);
 			registrationCenterIdRepository.save(registrationCenterId);
-		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new RegistrationCenterIdServiceException(
-					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
-					RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(),
-					dataAccessLayerException.getCause());
+		} else {
+			try {
+				registrationCenterIdRepository.updateRCID(registrationCenterId.getRcid() + 1,
+						registrationCenterId.getRcid(), LocalDateTime.now(ZoneId.of("UTC")));
+				generatedRCID = registrationCenterId.getRcid() + 1;
+			} catch (DataAccessLayerException e) {
+				throw new RegistrationCenterIdServiceException(
+						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorCode(),
+						RegistrationCenterIdConstant.REG_CEN_ID_INSERT_EXCEPTION.getErrorMessage(), e);
+			}
 		}
-		return registrationCenterId.getRcid();
+		return String.valueOf(generatedRCID);
 	}
 }

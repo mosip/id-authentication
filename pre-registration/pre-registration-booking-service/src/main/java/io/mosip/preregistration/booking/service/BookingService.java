@@ -422,7 +422,7 @@ public class BookingService {
 					bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 					bookingEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
 
-					bookingEntity = bookingDAO.saveRegistrationEntityForCancel(bookingEntity);
+					bookingDAO.saveRegistrationEntityForCancel(bookingEntity);
 
 					/* Update the status to Canceled in demographic Table */
 					serviceUtil.callUpdateStatusRestService(cancelBookingDTO.getPreRegistrationId(),

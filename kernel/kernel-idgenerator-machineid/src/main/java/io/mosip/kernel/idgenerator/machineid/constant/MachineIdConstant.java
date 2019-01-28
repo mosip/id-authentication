@@ -9,8 +9,8 @@ package io.mosip.kernel.idgenerator.machineid.constant;
  */
 public enum MachineIdConstant {
 	ID_BASE(10),
-	MID_FETCH_EXCEPTION("KER-MIG-001", "Error occured while fetching id"),
-	MID_INSERT_EXCEPTION("KER-MIG-002", "Error occured while inserting id");
+	MID_FETCH_EXCEPTION("KER-MNG-001", "Error occured while fetching id"),
+	MID_INSERT_EXCEPTION("KER-MNG-002", "Error occured while inserting id");
 
 	/**
 	 * The value.

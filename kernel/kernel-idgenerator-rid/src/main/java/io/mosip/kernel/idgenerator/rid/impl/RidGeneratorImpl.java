@@ -40,8 +40,8 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	@Value("${mosip.kernel.rid.machineid-length:-1}")
 	private int machineIdLength;
 
-	@Value("${mosip.kernel.rid.sequence-max-digit}")
-	private int sequenceMaxDigit;
+	@Value("${mosip.kernel.rid.sequence-length:-1}")
+	private int sequenceLength;
 
 	@Value("${mosip.kernel.rid.sequence-initial-value:1}")
 	private int sequenceInitialValue;
@@ -54,8 +54,8 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 
 	@PostConstruct
 	public void constructValue() {
-		sequenceFormat = "%0" + sequenceMaxDigit + "d";
-		sequenceEndvalue = MathUtils.getPow(10, sequenceMaxDigit) - 1;
+		sequenceFormat = "%0" + sequenceLength + "d";
+		sequenceEndvalue = MathUtils.getPow(10, sequenceLength) - 1;
 	}
 
 	/*

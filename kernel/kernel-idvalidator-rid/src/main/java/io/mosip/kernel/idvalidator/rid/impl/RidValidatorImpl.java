@@ -34,6 +34,9 @@ public class RidValidatorImpl implements RidValidator<String> {
 	@Value("${mosip.kernel.rid.timestamp-length:-1}")
 	private int timeStampLength;
 
+	@Value("${mosip.kernel.rid.sequence-length:-1}")
+	private int sequenceLength;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -42,7 +45,7 @@ public class RidValidatorImpl implements RidValidator<String> {
 	 */
 	@Override
 	public boolean validateId(String id, String centerId, String machineId) {
-		validateAllInputs(id, centerId, machineId, centerIdLength, machineIdLength, timeStampLength);
+		validateAllInputs(id, centerId, machineId, centerIdLength, machineIdLength, sequenceLength, timeStampLength);
 		return true;
 	}
 
@@ -54,7 +57,7 @@ public class RidValidatorImpl implements RidValidator<String> {
 	 */
 	@Override
 	public boolean validateId(String id) {
-		validateInputs(id, centerIdLength, machineIdLength, timeStampLength);
+		validateInputs(id, centerIdLength, machineIdLength, sequenceLength, timeStampLength);
 		return true;
 
 	}
@@ -63,12 +66,12 @@ public class RidValidatorImpl implements RidValidator<String> {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.core.idvalidator.spi.RidValidator#validateId(java.lang.
-	 * Object, java.lang.Object, java.lang.Object, int, int, int)
+	 * Object, java.lang.Object, java.lang.Object, int, int, int, int)
 	 */
 	@Override
 	public boolean validateId(String id, String centerId, String machineId, int centerIdLength, int machineIdLength,
-			int timeStampLength) {
-		validateAllInputs(id, centerId, machineId, centerIdLength, machineIdLength, timeStampLength);
+			int sequenceLength, int timeStampLength) {
+		validateAllInputs(id, centerId, machineId, centerIdLength, machineIdLength, sequenceLength, timeStampLength);
 		return true;
 	}
 
@@ -76,37 +79,45 @@ public class RidValidatorImpl implements RidValidator<String> {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.core.idvalidator.spi.RidValidator#validateId(java.lang.
-	 * Object, int, int, int)
+	 * Object, int, int, int, int)
 	 */
 	@Override
-	public boolean validateId(String id, int centerIdLength, int machineIdLength, int timeStampLength) {
-		validateInputs(id, centerIdLength, machineIdLength, timeStampLength);
+	public boolean validateId(String id, int centerIdLength, int machineIdLength, int sequenceLength,
+			int timeStampLength) {
+		validateInputs(id, centerIdLength, machineIdLength, sequenceLength, timeStampLength);
 		return true;
 	}
 
 	private void validateAllInputs(String id, String centerId, String machineId, int centerIdLength,
-			int machineIdLength, int timeStampLength) {
-		validateInputs(id, centerIdLength, machineIdLength, timeStampLength);
+			int machineIdLength, int sequenceLength, int timeStampLength) {
+		validateInputs(id, centerIdLength, machineIdLength, sequenceLength, timeStampLength);
 		int endIndex = centerIdLength + machineIdLength;
 		if (!id.substring(0, centerIdLength).equals(centerId)) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_CENTER_ID.getErrorCode(),
 					RidExceptionProperty.INVALID_CENTER_ID.getErrorMessage());
 		}
 		if (!id.substring(centerIdLength, endIndex).equals(machineId)) {
-			throw new InvalidIDException(RidExceptionProperty.INVALID_DONGLE_ID.getErrorCode(),
-					RidExceptionProperty.INVALID_DONGLE_ID.getErrorMessage());
+			throw new InvalidIDException(RidExceptionProperty.INVALID_MACHINE_ID.getErrorCode(),
+					RidExceptionProperty.INVALID_MACHINE_ID.getErrorMessage());
 		}
 	}
 
-	private void validateInputs(String id, int centerIdLength, int machineIdLength, int timeStampLength) {
+	private void validateInputs(String id, int centerIdLength, int machineIdLength, int sequenceLength,
+			int timeStampLength) {
 		String pattern = RidPropertyConstant.TIME_STAMP_REGEX.getProperty();
 
-		int endIndex = centerIdLength + machineIdLength;
+		// start index of the sequence
+		int sequenceStartIndex = centerIdLength + machineIdLength;
+		// end index index of the sequence
+		int sequenceEndIndex = id.length() - timeStampLength;
 
-		int timeStampStartIndex = endIndex + 5;
+		// start index of timeStamp
+		int timeStampStartIndex = id.length() - timeStampLength;
 
-		int timeStampEndIndex = timeStampStartIndex + timeStampLength;
-		if (ridLength <= 0 || centerIdLength <= 0 || machineIdLength <= 0 || timeStampLength <= 0) {
+		// end index of timeStamp
+		int timeStampEndIndex = id.length();
+		if (ridLength <= 0 || centerIdLength <= 0 || machineIdLength <= 0 || sequenceLength <= 0
+				|| timeStampLength <= 0) {
 			throw new InvalidIDException(
 					RidExceptionProperty.INVALID_RIDLENGTH_OR_CENTERIDLENGTH_MACHINEIDLENGTH_TIMESTAMPLENGTH
 							.getErrorCode(),
@@ -122,10 +133,17 @@ public class RidValidatorImpl implements RidValidator<String> {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID.getErrorCode(),
 					RidExceptionProperty.INVALID_RID.getErrorMessage());
 		}
+
 		if (!Pattern.matches(pattern, id.subSequence(timeStampStartIndex, timeStampEndIndex))) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode(),
 					RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorMessage());
 		}
+
+		if ((id.substring(sequenceStartIndex, sequenceEndIndex).length()) != sequenceLength) {
+			throw new InvalidIDException(RidExceptionProperty.INVALID_RID_SEQ_LENGTH.getErrorCode(),
+					RidExceptionProperty.INVALID_RID_SEQ_LENGTH.getErrorMessage());
+		}
+
 	}
 
 }

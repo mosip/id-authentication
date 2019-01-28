@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- io.mosip.kernel.idgenerator.tspid.impl.TspIdGeneratorServiceImpl
+ io.mosip.kernel.idgenerator.tspid.impl.TspIdGeneratorImpl

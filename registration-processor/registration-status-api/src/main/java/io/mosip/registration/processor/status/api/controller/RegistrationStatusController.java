@@ -64,20 +64,19 @@ public class RegistrationStatusController {
 	/**
 	 * Sync registration ids.
 	 *
-	 * @param syncRegistrationList the sync registration list
+	 * @param syncRegistrationList
+	 *            the sync registration list
 	 * @return the response entity
 	 */
 	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched")})
+			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
 	public ResponseEntity<Object> syncRegistrationController(
 			@RequestBody(required = true) List<SyncRegistrationDto> syncRegistrationList) {
 		List<SyncResponseDto> syncResponseDtoList = syncRegistrationService.sync(syncRegistrationList);
-		if(!syncResponseDtoList.isEmpty()) {
-			return ResponseEntity.ok().body(syncResponseDtoList);
-		}else {
-			return ResponseEntity.badRequest().body(syncResponseDtoList);
-		}
+
+		return ResponseEntity.ok().body(syncResponseDtoList);
+
 	}
 }

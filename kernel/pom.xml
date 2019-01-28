@@ -28,6 +28,7 @@
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
+		<javax.interceptor.version>1.2</javax.interceptor.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -36,6 +37,7 @@
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
+		<vertx.version>3.5.3</vertx.version>
 		<javax.el-api.version>3.0.0</javax.el-api.version>
 		<glassfish.javax.el>2.2.6</glassfish.javax.el>
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
@@ -109,6 +111,7 @@
 
 	<modules>
 		<module>kernel-core</module>
+		<module>kernel-auth-adapter</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
@@ -123,6 +126,7 @@
 		<module>kernel-idvalidator-rid</module>
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
+		<module>kernel-idvalidator-tspid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
@@ -135,6 +139,7 @@
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-qrcodegenerator-zxing</module>
 
+		<!-- <module>kernel-uingenerator-service</module> -->
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
@@ -144,8 +149,11 @@
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-idrepo-service</module>
 		<module>kernel-syncdata-service</module>
+		<module>kernel-auth-service</module>
+		<module>kernel-ldap-service</module>
 		<module>kernel-config-server</module>
-
+		
+		
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-packetserver-http</module>
 		<module>kernel-idvalidator</module>
@@ -175,61 +183,6 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven.compiler.version}</version>
-					<configuration>
-						<source>${maven.compiler.source}</source>
-						<target>${maven.compiler.target}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.plugin.version}</version>
-					<configuration>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							</manifest>
-							<manifestEntries>
-								<Project-Name>${project.name}</Project-Name>
-								<Project-Version>${project.version}</Project-Version>
-								<Built-By>${user.name}</Built-By>
-								<Built-OS>${os.name}</Built-OS>
-								<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-								<Build-Date>${env.BUILD_ID}</Build-Date>
-								<Build-URL>${env.BUILD_URL}</Build-URL>
-							</manifestEntries>
-						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven.war.plugin.version}</version>
-					<configuration>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							</manifest>
-							<manifestEntries>
-								<Project-Name>${project.name}</Project-Name>
-								<Project-Version>${project.version}</Project-Version>
-								<Built-By>${user.name}</Built-By>
-								<Built-OS>${os.name}</Built-OS>
-								<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-								<Build-Date>${env.BUILD_ID}</Build-Date>
-								<Build-URL>${env.BUILD_URL}</Build-URL>
-							</manifestEntries>
-						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
@@ -247,6 +200,11 @@
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${maven.sonar.plugin.version}</version>
 				</plugin>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+			</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -281,7 +239,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven.javadoc.version}</version>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
