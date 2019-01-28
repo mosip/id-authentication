@@ -23,7 +23,7 @@ There can be applications in the MOSIP platform which can go in offline mode. Du
 
 
 
-![Module Diagram](_images/SyncServices.jpg)
+![Module Diagram](_images/kernel-syncservices.jpg)
 
 
 
