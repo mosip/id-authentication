@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
+import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.service.SyncRolesService;
 import io.swagger.annotations.ApiOperation;
 import net.minidev.json.JSONObject;
 
@@ -41,6 +43,9 @@ public class SyncDataController {
 	 */
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
+	
+	@Autowired
+	SyncRolesService syncDataService;
 
 	/**
 	 * This API method would fetch all synced global config details from server
@@ -102,5 +107,20 @@ public class SyncDataController {
 		}
 		return masterDataService.syncData(machineId, timestamp);
 	}
-
+	
+	/**
+	 * get all roles
+	 */
+      @GetMapping("/roles")
+      public RolesResponseDto getAllRoles() {
+    	 return syncDataService.getAllRoles();
+      }
+      
+      /**
+       * get all user details
+       */
+      @GetMapping("/userdetails")
+      public void getUserDetails() {
+    	  
+      }
 }
