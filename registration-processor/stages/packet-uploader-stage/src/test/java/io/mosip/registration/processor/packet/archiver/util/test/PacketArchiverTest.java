@@ -24,7 +24,7 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
-import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
+import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
