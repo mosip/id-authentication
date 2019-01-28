@@ -448,6 +448,7 @@ public class AuthFacadeImplTest {
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
 
+	@Ignore
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -519,6 +520,7 @@ public class AuthFacadeImplTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void processKycAuthInValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
