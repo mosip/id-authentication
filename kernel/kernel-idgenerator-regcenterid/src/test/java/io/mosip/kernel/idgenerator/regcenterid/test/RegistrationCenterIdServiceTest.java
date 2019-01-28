@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,6 +23,9 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
 @RunWith(SpringRunner.class)
 public class RegistrationCenterIdServiceTest {
 
+	@Value("${mosip.kernel.rcid.test.valid-new-rcid}")
+	private String newRcid;
+	
 	@Autowired
 	RegistrationCenterIdGenerator<String> service;
 
@@ -45,7 +49,7 @@ public class RegistrationCenterIdServiceTest {
 		entityResponse.setRcid(1001);
 		when(repository.findLastRCID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateRegistrationCenterId(), is("1001"));
+		assertThat(service.generateRegistrationCenterId(), is(newRcid));
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)

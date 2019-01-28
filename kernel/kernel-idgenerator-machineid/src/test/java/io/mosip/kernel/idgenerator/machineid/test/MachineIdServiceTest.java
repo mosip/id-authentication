@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,6 +22,10 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class MachineIdServiceTest {
+	
+	@Value("${mosip.kernel.mid.test.valid-new-mid}")
+	private String newMid;
+	
 	@Autowired
 	MachineIdGenerator<String> service;
 
@@ -44,7 +49,7 @@ public class MachineIdServiceTest {
 		entityResponse.setMId(1001);
 		when(repository.findLastMID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateMachineId(), is("1001"));
+		assertThat(service.generateMachineId(), is(newMid));
 	}
 
 	@Test(expected = MachineIdServiceException.class)
