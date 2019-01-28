@@ -39,6 +39,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.cbeffutil.service.CbeffI;
+import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -235,6 +237,11 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	@Bean
 	public List<String> status() {
 		return Collections.unmodifiableList(status);
+	}
+	
+	@Bean
+	public CbeffI cbeff() {
+		return new CbeffImpl();
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.assertj.core.util.Arrays;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
@@ -35,6 +36,8 @@ import io.mosip.kernel.idrepo.entity.UinHistory;
  */
 @Component
 public class IdRepoEntityInterceptor extends EmptyInterceptor {
+
+	private static final String ID_REPO_ENTITY_INTERCEPTOR = "IdRepoEntityInterceptor";
 
 	private static final String ID_REPO_SERVICE = "IdRepoService";
 
@@ -90,7 +93,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onSave",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "onSave",
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
@@ -113,12 +116,13 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				state[indexOfData] = CryptoUtil
 						.decodeBase64(new String(encryptDecryptIdentity((byte[]) state[indexOfData], DECRYPT)));
 
-				if (!hash((byte[]) state[indexOfData]).equals(state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
+				if (!StringUtils.equals(hash((byte[]) state[indexOfData]),
+						(String) state[propertyNamesList.indexOf(UIN_DATA_HASH)])) {
 					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.IDENTITY_HASH_MISMATCH);
 				}
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onLoad",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "onLoad",
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
@@ -140,7 +144,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				return super.onFlushDirty(uinEntity, id, currentState, previousState, propertyNames, types);
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "onSave",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "onSave",
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
@@ -172,12 +176,12 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			if (response.has("data")) {
 				return response.get("data").asText().getBytes();
 			} else {
-				mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "encryptDecryptIdentity",
+				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "encryptDecryptIdentity",
 						"No data block found in response");
 				throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 			}
 		} catch (RestClientException e) {
-			mosipLogger.error(ID_REPO_SERVICE, "IdRepoEntityInterceptor", "encryptDecryptIdentity",
+			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_ENTITY_INTERCEPTOR, "encryptDecryptIdentity",
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED);
 		}

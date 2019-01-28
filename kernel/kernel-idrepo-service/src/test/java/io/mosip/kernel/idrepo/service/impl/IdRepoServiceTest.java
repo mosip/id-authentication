@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -40,6 +42,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.mosip.kernel.cbeffutil.entity.BDBInfo;
+import io.mosip.kernel.cbeffutil.entity.BIR;
+import io.mosip.kernel.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.cbeffutil.jaxbclasses.ProcessedLevelType;
+import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
+import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.RequestDTO;
@@ -101,6 +110,16 @@ public class IdRepoServiceTest {
 
 	@Mock
 	private DefaultShardResolver shardResolver;
+	
+	BIR rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
+			.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+			.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
+					.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
+					.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
+							SingleAnySubtypeType.INDEX_FINGER.value()))
+					.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
+					.build())
+			.build();
 
 	/** The uin repo. */
 	@Mock
@@ -177,7 +196,7 @@ public class IdRepoServiceTest {
 	@Test
 	public void testAddIdentityWithDemoDocuments()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList("dGVzdA"));
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
 		when(connection.getConnection()).thenReturn(conn);
 		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(true);
 		Uin uinObj = new Uin();
@@ -197,7 +216,7 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testAddIdentityDocumentStoreFailed()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList("dGVzdA"));
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
 		when(connection.getConnection()).thenReturn(conn);
 		when(conn.doesBucketExistV2(Mockito.any())).thenThrow(new SdkClientException(""));
 		Uin uinObj = new Uin();
@@ -217,7 +236,7 @@ public class IdRepoServiceTest {
 	@Test
 	public void testAddIdentityWithBioDocuments()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList("dGVzdA"));
+		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
 		when(connection.getConnection()).thenReturn(conn);
 		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(false);
 		Uin uinObj = new Uin();
