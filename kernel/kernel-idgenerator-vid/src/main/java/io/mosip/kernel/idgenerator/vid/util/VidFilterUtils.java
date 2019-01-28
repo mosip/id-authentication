@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.idgenerator.vid.util;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -43,6 +44,15 @@ public class VidFilterUtils {
 	@Value("${mosip.kernel.vid.length.repeating-limit}")
 	private int repeatingLimit;
 
+	@Value("#{'${mosip.kernel.vid.not-start-with}'.split(',')}")
+	private List<String> notStartWith;
+
+	/**
+	 * The length of the VId
+	 */
+	@Value("${mosip.kernel.vid.length}")
+	private int vidLength;
+
 	/**
 	 * Ascending digits which will be checked for sequence in id
 	 */
@@ -77,7 +87,10 @@ public class VidFilterUtils {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+		if (repeatingLimit > 0) {
+			String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+			repeatingPattern = Pattern.compile(repeatingRegEx);
+		}
 		/**
 		 * Regex for matching repeating block of digits like 482xx482, 4827xx4827 (x is
 		 * any digit).<br/>
@@ -93,10 +106,10 @@ public class VidFilterUtils {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
-
-		repeatingPattern = Pattern.compile(repeatingRegEx);
-		repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
+		if (repeatingBlockLimit > 0) {
+			String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
+			repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
+		}
 	}
 
 	/**
@@ -109,8 +122,8 @@ public class VidFilterUtils {
 	 * @return true if the input id is valid
 	 */
 	public boolean isValidId(String id) {
-
-		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern));
+		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
+				|| validateNotStartWith(id) || validateIdLength(id));
 	}
 
 	/**
@@ -121,9 +134,11 @@ public class VidFilterUtils {
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
-		return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
-				.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-				.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		if (sequenceLimit > 0)
+			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
+					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		return false;
 	}
 
 	/**
@@ -137,6 +152,32 @@ public class VidFilterUtils {
 	 * @return true if the id matches the given regex pattern
 	 */
 	private static boolean regexFilter(String id, Pattern pattern) {
-		return pattern.matcher(id).find();
+		if (pattern != null) {
+			return pattern.matcher(id).find();
+		}
+		return false;
+	}
+
+	/**
+	 * Method to validate that the vid should not contains the specified digit at
+	 * first index
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if found otherwise false
+	 */
+	private boolean validateNotStartWith(String id) {
+		System.out.println("validateNotStartWith------" + id);
+		if (notStartWith != null && !notStartWith.isEmpty()) {
+			for (String str : notStartWith) {
+				if (id.startsWith(str))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean validateIdLength(String id) {
+		return (id.length() != vidLength);
 	}
 }
