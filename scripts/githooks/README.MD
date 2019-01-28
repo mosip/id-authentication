@@ -1,0 +1,1 @@
+Githooks specific to MOSIP project.
