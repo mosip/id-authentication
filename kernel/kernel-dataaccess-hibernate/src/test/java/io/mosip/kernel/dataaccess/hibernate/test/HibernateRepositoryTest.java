@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -32,17 +31,11 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
 import io.mosip.kernel.dataaccess.hibernate.test.model.Person;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { HibernateDaoConfig.class, PersonRepository.class })
+@SpringBootTest(classes = HibernateDaoConfig.class)
 
 public class HibernateRepositoryTest {
 
 	HibernateRepositoryImpl<Person, Integer> repository;
-
-	@Autowired
-	PersonRepository personRepository;
-
-	@Mock
-	CustomInterceptor customInterceptor;
 
 	@Mock
 	EntityManager em;
@@ -75,17 +68,6 @@ public class HibernateRepositoryTest {
 		when(em.createNamedQuery(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenReturn(query);
 		repository = new HibernateRepositoryImpl<Person, Integer>(information, em);
 		repository.setRepositoryMethodMetadata(metadata);
-	}
-
-	@Test
-	public void testInterceptor() {
-		Person person = new Person("Bal Vikash Sharma");
-		person.setId(1);
-		personRepository.create(person);
-		personRepository.update(person);
-		personRepository.findAll();
-		personRepository.delete(person);
-
 	}
 
 	@Test
@@ -428,5 +410,4 @@ public class HibernateRepositoryTest {
 		doThrow(new RuntimeException("Runtime exception")).when(query).executeUpdate();
 		repository.createNamedQueryUpdateOrDelete(name, Person.class, null);
 	}
-
 }
