@@ -76,6 +76,9 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+	
+	/** The Constant SUCCESS_STATUS. */
+	private static final String SUCCESS_STATUS = "Y";
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(AuthFacadeImpl.class);
@@ -459,7 +462,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		Map<String, List<IdentityInfoDTO>> idInfo = getIdEntity(idResDTO);
 		KycInfo info = null;
-		if (idResDTO != null) {
+		if (idResDTO != null && authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
 			info = kycService.retrieveKycInfo(String.valueOf(idResDTO.get("uin")),
 					KycType.getEkycAuthType(env.getProperty(key)), kycAuthRequestDTO.isEPrintReq(),
 					kycAuthRequestDTO.isSecLangReq(), idInfo);

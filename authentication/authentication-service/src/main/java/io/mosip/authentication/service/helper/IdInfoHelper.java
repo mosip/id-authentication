@@ -49,6 +49,7 @@ import io.mosip.authentication.service.factory.BiometricProviderFactory;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.match.IdaIdMapping;
 import io.mosip.authentication.service.impl.indauth.service.bio.BioAuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -554,33 +555,70 @@ public class IdInfoHelper implements IdInfoFetcher {
 	private void prepareErrorList(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
 
 		if (matchOutput != null && !matchOutput.isMatched()) {
-			Optional<AuthType> authTypeForMatchType = null;
-			AuthType authType = null;
 			String category = matchOutput.getMatchType().getCategory().getType();
-			AuthType[] authTypes;
 			if (category.equalsIgnoreCase(Category.BIO.getType())) {
-				authTypes = BioAuthType.values();
-				authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
-				
-				if (authTypeForMatchType.isPresent()) {
-					authType = authTypeForMatchType.get();
-					AuthError errors = null;
-
-					if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
-						errors = new AuthError(IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorCode(),
-								IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorMessage());
-					}
-
-					else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
-						errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
-								IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
-
-					}
-					statusInfoBuilder.addErrors(errors);
-				}
-			} 
+				constructBioError(matchOutput, statusInfoBuilder);
+			} else if(category.equalsIgnoreCase(Category.SPIN.getType())) {
+				constructPinError(matchOutput, statusInfoBuilder);
+			}
 			//TODO to be applied for DEMO and OTP authentications
 
+		}
+	}
+
+	/**
+	 * Construct pin error.
+	 *
+	 * @param matchOutput the match output
+	 * @param statusInfoBuilder the status info builder
+	 */
+	private void constructPinError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType authType;
+		AuthType[] authTypes;
+		authTypes = PinAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+		
+		if (authTypeForMatchType.isPresent()) {
+			authType = authTypeForMatchType.get();
+			AuthError errors = null;
+
+			if (authType.getDisplayName().equals(PinAuthType.SPIN.getDisplayName())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorMessage());
+			}
+			statusInfoBuilder.addErrors(errors);
+		}	
+	}
+
+	/**
+	 * Construct bio error.
+	 *
+	 * @param matchOutput the match output
+	 * @param statusInfoBuilder the status info builder
+	 */
+	private void constructBioError(MatchOutput matchOutput, AuthStatusInfoBuilder statusInfoBuilder) {
+		Optional<AuthType> authTypeForMatchType;
+		AuthType authType;
+		AuthType[] authTypes;
+		authTypes = BioAuthType.values();
+		authTypeForMatchType = AuthType.getAuthTypeForMatchType(matchOutput.getMatchType(), authTypes);
+		
+		if (authTypeForMatchType.isPresent()) {
+			authType = authTypeForMatchType.get();
+			AuthError errors = null;
+
+			if (authType.getDisplayName().equals(BioAuthType.FGR_MIN.getDisplayName())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.FGRMIN_MISMATCH.getErrorMessage());
+			}
+
+			else if (authType.getDisplayName().equals(BioAuthType.IRIS_IMG.getDisplayName())) {
+				errors = new AuthError(IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.IRISIMG_MISMATCH.getErrorMessage());
+
+			}
+			statusInfoBuilder.addErrors(errors);
 		}
 	}
 	/**
