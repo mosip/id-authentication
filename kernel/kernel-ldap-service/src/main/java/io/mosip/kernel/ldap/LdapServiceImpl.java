@@ -12,7 +12,6 @@ import org.apache.directory.api.ldap.model.entry.DefaultModification;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.entry.Modification;
 import org.apache.directory.api.ldap.model.entry.ModificationOperation;
-import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnection;
@@ -203,7 +202,7 @@ public class LdapServiceImpl implements LdapService {
 		RolesResponseDto rolesResponseDto = new RolesResponseDto();
 
 		try {
-			connection = createAnonymousConnection();
+			connection = CreateAnonymousConnection();
 			List<RolesDto> rolesDtos = new ArrayList<>();
 			Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
 			String searchFilter = mosipEnvironment.getAllRoles();
@@ -222,11 +221,10 @@ public class LdapServiceImpl implements LdapService {
 			connection.unBind();
 			connection.close();
 
-		} catch (LdapException err) {
-			throw new RuntimeException(err + "Unable to fetch user roles from LDAP");
+		
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			throw new RuntimeException(e + "Unable to fetch user roles from LDAP");
 		}
 
 		return rolesResponseDto;
@@ -252,9 +250,7 @@ public class LdapServiceImpl implements LdapService {
 			return new MosipUser(userLookup.get("uid").get().toString(), userLookup.get("mobile").get().toString(),
 					userLookup.get("mail").get().toString(), null);
 
-		} catch (LdapException ex) {
-			ex.printStackTrace();
-		} catch (Exception e) {
+		}  catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
