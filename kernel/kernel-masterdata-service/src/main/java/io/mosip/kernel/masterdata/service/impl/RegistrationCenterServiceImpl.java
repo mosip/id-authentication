@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
@@ -347,7 +349,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Override
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String timestamp) {
-		LocalDateTime localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
+		LocalDateTime localDateTime = null;
+		try {
+			localDateTime = MapperUtils.parseToLocalDateTime(timestamp);
+		} catch (DateTimeParseException ex) {
+			throw new RequestException(
+					RegistrationCenterDeviceHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION
+							.getErrorCode(),
+					RegistrationCenterDeviceHistoryErrorCode.INVALIDE_EFFECTIVE_DATE_TIME_FORMATE_EXCEPTION
+							.getErrorMessage() + ExceptionUtils.parseException(ex));
+		}
 		LocalDate localDate = localDateTime.toLocalDate();
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
@@ -378,7 +389,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					 * below is the validation to check if the time that is sent is between start
 					 * and end time
 					 */
-					if (isAfterStartTime && isBeforeEndTime) {
+					if ((locatime.equals(startTime) || isAfterStartTime) && isBeforeEndTime) {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_ACCEPTED);
 					} else {
 						resgistrationCenterStatusResponseDto.setStatus(MasterDataConstant.REGISTRATION_CENTER_REJECTED);

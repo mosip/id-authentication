@@ -104,11 +104,11 @@ public class DocumentControllerTest {
 				new Date(), "ENG", "Jagadishwari");
 
 		json = "{\r\n" + "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
-				+ "	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + "	\"request\": {\r\n"
-				+ "		\"prereg_id\": \"59276903416082\",\r\n" + "		\"doc_cat_code\": \"POA\",\r\n"
+				+ "	\"reqTime\": \"2018-10-17T07:22:57.086Z\",\r\n" + "	\"request\": {\r\n"
+				+ "		\"pre_registartion_id\": \"59276903416082\",\r\n" + "		\"doc_cat_code\": \"POA\",\r\n"
 				+ "		\"doc_typ_code\": \"address\",\r\n" + "		\"doc_file_format\": \"pdf\",\r\n"
 				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "		\"upload_by\": \"9217148168\",\r\n"
-				+ "		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + "	}\r\n" + "}";
+				+ "		\"upload_date_time\": \"2018-10-17T07:22:57.086Z\"\r\n" + "	}\r\n" + "}";
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("Doc.pdf").getFile());
 		try {
@@ -128,7 +128,7 @@ public class DocumentControllerTest {
 
 		response = new HashMap<String, String>();
 		response.put("DocumentId", "1");
-		response.put("Status", "Pending-Appoinment");
+		response.put("Status", "Pending_Appoinment");
 		documentId = response.get("DocumentId");
 		flag = true;
 
@@ -142,16 +142,14 @@ public class DocumentControllerTest {
 
 	}
 
-	// @Test
-	// public void successSave() throws Exception {
-	// Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(),
-	// Mockito.any());
-	// Mockito.when(service.uploadDoucment(multipartFile,
-	// jsonDTO)).thenReturn(responseCopy);
-	// this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-	// .file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
-	//
-	// }
+//	@Test
+//	public void successSave() throws Exception {
+//		Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+//		Mockito.when(service.uploadDoucment(multipartFile, jsonDTO)).thenReturn(responseCopy);
+//		this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+//				.file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
+//
+//	}
 
 	/**
 	 * @throws Exception

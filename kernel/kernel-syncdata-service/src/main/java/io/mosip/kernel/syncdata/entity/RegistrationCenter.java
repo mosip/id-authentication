@@ -3,14 +3,11 @@ package io.mosip.kernel.syncdata.entity;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -101,7 +98,4 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
-
-	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL,fetch=FetchType.LAZY)
-	private LocationHierarcyLevel location;
 }

@@ -21,13 +21,14 @@
 	<modules>
 		<module>packet-validator-stage</module>
 		<module>retry-stage</module>
-		<module>failover-stage</module>
 		<module>osi-validator-stage</module>
 		<module>virus-scanner-stage</module>
 		<module>packet-uploader-stage</module>
 		<module>demo-dedupe-stage</module>
 		<module>manual-verification-stage</module>
 		<module>packet-receiver-stage</module>
-	</modules>
+        <module>bio-dedupe-stage</module>
+        <module>uin-generator-stage</module>
+    </modules>
 
 </project>

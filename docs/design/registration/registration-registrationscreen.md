@@ -26,6 +26,9 @@ The **target users** are
 
 The key **requirements** are
 -   On successful login, show the "Registration Screen"
+-   System validates that the number of packets pending EoD approval is within the configured limit.
+-   System validates that the age of the oldest packet pending EoD approval is within the configured limit.
+-   If Not the system should show the proper alert and not to open the New Registration screen.
 -	Capture the individuals demographic, biometric and documents information.
 -   The demographic information should be capture in two languages.	  
     -   Application specific primary language

@@ -149,11 +149,11 @@ public class BioAuthServiceTest {
 		authRequestDTO.setRequest(requestDTO);
 		Map<String, List<IdentityInfoDTO>> bioIdentity = new HashMap<>();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
-		identityInfoDTO1.setLanguage("fre");
-		identityInfoDTO1.setValue(Base64.getEncoder().encodeToString(value.getBytes()));
+		identityInfoDTO1.setLanguage("ara");
+		identityInfoDTO1.setValue(value);
 		List<IdentityInfoDTO> identityList = new ArrayList<>();
 		identityList.add(identityInfoDTO1);
-		bioIdentity.put("sample", identityList);
+		bioIdentity.put("leftIndex", identityList);
 
 		AuthStatusInfo validateBioDetails = bioAuthServiceImpl.validateBioDetails(authRequestDTO, bioIdentity);
 		assertTrue(validateBioDetails.isStatus());

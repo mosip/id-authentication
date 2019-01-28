@@ -67,7 +67,6 @@ public class UserManagementServiceImpl implements UserManagementService {
 				}
 				try {
 					userManagementRepository.save(userManagmentEntity);
-					System.out.println("User inserted ");
 					responseMap.put("ok", StatusCodes.OTP_VALIDATION_SUCESSFUL);
 				} catch (Exception e) {
 					throw new DatabaseOperationException(StatusCodes.USER_INSERTION_FAILED.toString());
@@ -90,7 +89,6 @@ public class UserManagementServiceImpl implements UserManagementService {
 					throw new UserNameNotValidException(StatusCodes.USER_ID_INVALID.toString());
 				}
 				try {
-					// todo : OTP generation integration and OTP Validation
 					userManagementRepository.save(userManagmentEntity);
 					responseMap.put("ok", StatusCodes.USER_UPDATED);
 				} catch (Exception e) {

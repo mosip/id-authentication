@@ -5,8 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { DemographicComponent } from './demographic/demographic.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
-import { TimeSelectionComponent } from './time-selection/time-selection.component';
-import { CenterSelectionComponent } from './center-selection/center-selection.component';
 import { RegistrationRoutingModule } from './registration-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
@@ -17,9 +15,9 @@ import { DialougComponent } from '../shared/dialoug/dialoug.component';
 import { SharedModule } from '../shared/shared.module';
 import { DraggableDirective } from './file-upload/draggable.directive';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
-import { StepperComponent } from './stepper/stepper.component';
 import { I18nModule } from '../i18n.module';
 import { PreviewComponent } from './preview/preview.component';
+import { BookingModule } from './booking/booking.module';
 
 @NgModule({
   imports: [
@@ -31,20 +29,18 @@ import { PreviewComponent } from './preview/preview.component';
     MaterialModule,
     HttpClientModule,
     SharedModule,
-    I18nModule
+    I18nModule,
+    BookingModule
   ],
   exports: [],
   entryComponents: [DialougComponent],
   declarations: [
     DemographicComponent,
     FileUploadComponent,
-    TimeSelectionComponent,
-    CenterSelectionComponent,
     DashBoardComponent,
     ParentComponent,
     DraggableDirective,
     ConfirmationComponent,
-    StepperComponent,
     PreviewComponent
   ]
 })

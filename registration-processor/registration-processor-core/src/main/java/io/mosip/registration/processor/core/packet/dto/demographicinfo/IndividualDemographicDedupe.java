@@ -11,10 +11,10 @@ import lombok.Data;
 public class IndividualDemographicDedupe {
 	
 	/** The name. */
-	private List<JsonValue[]> name;
+	private JsonValue[] name;
 
 	/** The date of birth. */
-	private JsonValue[] dateOfBirth;
+	private String dateOfBirth;
 
 	/** The gender. */
 	private JsonValue[] gender;

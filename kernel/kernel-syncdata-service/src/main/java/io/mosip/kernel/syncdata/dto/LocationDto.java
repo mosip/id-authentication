@@ -24,7 +24,7 @@ public class LocationDto extends BaseDto{
 
 	private String parentLocCode;
 
-	private String languageCode;
+	private String langCode;
 
 	private Boolean isActive;
 

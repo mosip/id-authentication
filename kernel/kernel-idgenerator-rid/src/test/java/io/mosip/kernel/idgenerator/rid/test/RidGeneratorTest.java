@@ -31,7 +31,7 @@ public class RidGeneratorTest {
 	@Autowired
 	RidGenerator<String> ridGeneratorImpl;
 
-	@Test
+	//@Test
 	public void generateIdTypeTest() {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);

@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjobservices.exceptions.util;
 
 import java.util.Date;

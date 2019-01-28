@@ -31,4 +31,4 @@ TSPs call the IDA to authenticate the Individuals. There can be various service 
 ## Implementation
 
 
-**kernel-LicenseKeyGeneration** [README](../../kernel/LicenseKeyGeneration/README.md)
+**kernel-keyGeneration-license** [README](../../../kernel/kernel-keyGeneration-license/README.md)

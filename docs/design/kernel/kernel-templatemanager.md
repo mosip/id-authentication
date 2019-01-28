@@ -50,4 +50,4 @@ Applications generate automatic emails for account signup, password reminders or
 ## Implementation
 
 
-**kernel-templatemanager-velocity** [README](../../kernel/kernel-templatemanager-velocity/README.md)
+**kernel-templatemanager-velocity** [README](../../../kernel/kernel-templatemanager-velocity/README.md)

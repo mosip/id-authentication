@@ -28,8 +28,3 @@ The roles and userss are stored in LDAP and this is the single source of truth. 
 ![Module Diagram](_images/List_of_users.jpg)
 
 
-
-## Implementation
-
-
-**kernel-listofusers** [README](../../kernel/list-of-users/README.md)

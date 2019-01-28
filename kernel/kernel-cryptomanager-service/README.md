@@ -1,14 +1,33 @@
 ## kernel-cryptomanager-service
 
- 
+[Background & Design](../../docs/design/kernel/kernel-keymanager.md)
 
-**Api Documentation**
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#2-crypto-manager)
 
-[API Documentation <TBA>](TBA)
+Default Port and Context Path
 
 ```
-mvn javadoc:javadoc
+server.port=8087
+server.servlet.path=/cryptomanager
 ```
+localhost:8087/cryptomanager/swagger-ui.html
+
+
+**Application Properties**
+
+```
+#----------------------- Crypto --------------------------------------------------
+mosip.kernel.crypto.asymmetric-algorithm-name=RSA
+mosip.kernel.crypto.symmetric-algorithm-name=AES
+mosip.kernel.keygenerator.asymmetric-algorithm-length=2048
+mosip.kernel.keygenerator.symmetric-algorithm-length=256
+mosip.kernel.data-key-splitter=#KEY_SPLITTER#
+
+
+mosip.kernel.keymanager-service-publickey-url=http://host:8088/keymanager/v1.0/publickey/{applicationId}
+mosip.kernel.keymanager-service-decrypt-url=http://host:8088/keymanager/v1.0/symmetrickey
+```
+
 
 **The inputs which have to be provided are:**
 1. Data provided to encryption should be encoded to BASE64 encoding before requesting to encrypt and decrypt.
