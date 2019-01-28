@@ -2,8 +2,8 @@ package io.mosip.kernel.lkeymanager.service;
 
 import java.util.List;
 
-import io.mosip.kernel.lkeymanager.controller.dto.LicenseKeyGenerationDto;
-import io.mosip.kernel.lkeymanager.controller.dto.LicenseKeyMappingDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 
 public interface LicenseKeyManagerService {
 	public String generateLicenseKey(LicenseKeyGenerationDto licenseKeyGenerationDto);

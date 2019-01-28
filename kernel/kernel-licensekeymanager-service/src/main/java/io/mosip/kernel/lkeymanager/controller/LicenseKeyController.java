@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.lkeymanager.controller.dto.LicenseKeyGenerationDto;
-import io.mosip.kernel.lkeymanager.controller.dto.LicenseKeyMappingDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService;
 
 /**

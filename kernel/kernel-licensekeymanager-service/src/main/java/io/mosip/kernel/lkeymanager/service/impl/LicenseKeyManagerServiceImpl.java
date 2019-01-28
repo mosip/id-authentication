@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.lkeymanager.controller.dto.LicenseKeyGenerationDto;
-import io.mosip.kernel.lkeymanager.controller.dto.LicenseKeyMappingDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.entity.LicenseKey;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyRepository;
 import io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService;

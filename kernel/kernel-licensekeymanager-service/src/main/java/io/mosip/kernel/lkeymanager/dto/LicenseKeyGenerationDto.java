@@ -1,4 +1,4 @@
-package io.mosip.kernel.lkeymanager.controller.dto;
+package io.mosip.kernel.lkeymanager.dto;
 
 import lombok.Data;
 
