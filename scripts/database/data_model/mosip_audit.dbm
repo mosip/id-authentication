@@ -33,48 +33,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<role name="prereguser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="reguser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="regprcuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="idauser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="kerneluser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="masteruser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <role name="audituser"
       inherit="true"
       login="true"
@@ -82,21 +40,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<role name="admuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <role name="repuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="uinuser"
       inherit="true"
       login="true"
       encrypted="true"
@@ -143,7 +87,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 	</column>
 	<column name="host_name" not-null="true">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="128"/>
 	</column>
 	<column name="host_ip" not-null="true">
 		<type name="character varying" length="16"/>
@@ -196,6 +140,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </permission>
 <permission>
 	<object name="mosip_audit" type="database"/>
+	<roles names="postgres"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_audit" type="database"/>
 	<roles names="audituser"/>
 	<privileges create="true" connect="true" temporary="true"/>
 </permission>
@@ -207,7 +156,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="audit" type="schema"/>
 	<roles names="audituser"/>
-	<privileges usage="true"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="audit" type="schema"/>
+	<roles names="postgres"/>
+	<privileges create="true" usage="true"/>
 </permission>
 <permission>
 	<object name="audit.app_audit_log" type="table"/>

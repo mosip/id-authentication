@@ -1,4 +1,4 @@
-﻿INSERT INTO master.app_detail(id,name,descr,lang_code,is_active,cr_by,cr_dtimes)	VALUES ('10001','Pre-Registration','Web portal for pre-registrations','eng',true,'superadmin',now())
+﻿INSERT INTO master.module_detail(id,name,descr,lang_code,is_active,cr_by,cr_dtimes ) VALUES ('10001','Pre-Registration','Web portal for pre-registrations','eng',true,'superadmin',now())
 , ('10002','ما قبل التسجيل','بوابة الويب للتسجيلات المسبقة','ara',true,'superadmin',now())
 , ('10003','Registration Client','Desktop application for Registrations','eng',true,'superadmin',now())
 , ('10004','عميل التسجيل','تطبيق سطح المكتب للتسجيلات','ara',true,'superadmin',now())
