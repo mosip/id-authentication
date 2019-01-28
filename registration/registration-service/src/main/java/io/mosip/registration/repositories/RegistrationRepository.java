@@ -62,7 +62,7 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @param clientStatus status of resgistrationPacket
 	 * @return list of registrations
 	 */
-	List<Registration> findByCrDtimeBeforeAndClientStatusCodeNot(Timestamp crDtimes, String clientStatus);
+	List<Registration> findByCrDtimeBefore(Timestamp crDtimes);
 	
 	/**
 	 * This method returns the list of {@link Registration} based on status code

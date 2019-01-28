@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Rule;
@@ -21,6 +22,7 @@ import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.RegTransactionRepository;
 import io.mosip.registration.repositories.RegistrationRepository;
 
 public class RegPacketStatusDaoImplTest {
@@ -29,6 +31,9 @@ public class RegPacketStatusDaoImplTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
 	RegistrationRepository registrationRepository;
+	
+	@Mock
+	RegTransactionRepository regTransactionRepository;
 
 	@InjectMocks
 	RegPacketStatusDAOImpl packetStatusDao;
@@ -57,10 +62,15 @@ public class RegPacketStatusDaoImplTest {
 		packetStatusDao.getPacketIdsByStatusUploaded();
 	}
 	
+	
+	
 	@Test
 	public void deleteTest() {
+		Registration registration = new Registration();
 		Mockito.doNothing().when(registrationRepository).deleteById(Mockito.anyString());
-		packetStatusDao.delete(Mockito.anyString());
+		Mockito.doNothing().when(regTransactionRepository).deleteAll(Mockito.anyCollection());
+		packetStatusDao.delete(registration);
+		
 	}
 
 

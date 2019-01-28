@@ -73,7 +73,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 * deleteReRegistrationPackets()
 	 */
 	@Override
-	public ResponseDTO deleteReRegistrationPackets() {
+	synchronized public ResponseDTO deleteReRegistrationPackets() {
 
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete  Reg-packets started");
@@ -84,8 +84,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			/* Get Registrations to be deleted */
-			List<Registration> registrations = registrationDAO.getRegistrationsToBeDeleted(
-					getPacketDeletionLastDate(reqTime), RegistrationClientStatusCode.DELETED.getCode());
+			List<Registration> registrations = registrationDAO
+					.getRegistrationsToBeDeleted(getPacketDeletionLastDate(reqTime));
 
 			for (Registration registration : registrations) {
 				/* Delete each registration */
@@ -98,7 +98,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, runtimeException.getMessage());
 
-			setErrorResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS, null);
+			setErrorResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_FAILURE, null);
 		}
 
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -253,13 +253,13 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		return response;
 	}
 
-	private Registration delete(final Registration registration, final String clientStatus,
-			boolean isToBeDeleted) {
+	private Registration delete(final Registration registration, final String clientStatus, boolean isToBeDeleted) {
 
+		Registration registartionToBeDeleted = registration;
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet started");
-		
-		Registration updatedRegistration=null;
+
+		Registration updatedRegistration = null;
 
 		/* Get Registration Transaction List for each transaction */
 		List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
@@ -277,8 +277,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		File ackFile = null;
 		File zipFile = null;
-		
-		isToBeDeleted = (clientStatus.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED) || isToBeDeleted);
+
+		isToBeDeleted = (clientStatus.equalsIgnoreCase(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED)
+				|| isToBeDeleted);
 
 		/**
 		 * Check whether the requirement matches to delete the registration packet or
@@ -297,19 +298,17 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		}
 		transactionList.add(registrationTxn);
 		registration.setRegistrationTransaction(transactionList);
-		if (ackFile != null ) {
+		if (ackFile != null) {
 			Files.delete(ackFile);
 			Files.delete(zipFile);
-			
-			/* Delete row from DB */
-			regPacketStatusDAO.delete(registration.getId());
-			
-			return registration;
-			
-			
-		}
-		 updatedRegistration = regPacketStatusDAO.update(registration);
 
+			/* Delete row from DB */
+			 regPacketStatusDAO.delete(registartionToBeDeleted);
+
+			return registration;
+
+		}
+		updatedRegistration = regPacketStatusDAO.update(registration);
 
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet ended");
