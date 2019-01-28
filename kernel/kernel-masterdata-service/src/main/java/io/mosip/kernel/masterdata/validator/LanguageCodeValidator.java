@@ -32,8 +32,8 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	/**
 	 * Environment instance
 	 */
-	@Value("${mosip.kernel.syncdata-service-globalconfigs-url}")
-	private String globalconfigsUrl;
+	@Value("${mosip.kernel.syncdata-service-configs-url}")
+	private String configsUrl;
 
 	@Value("${mosip.kernel.supported-languages-key}")
 	private String supportedLanguages;
@@ -53,14 +53,17 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 			return false;
 		} else {
 			try {
-				JSONObject globalConfig = restTemplate.getForObject(globalconfigsUrl, JSONObject.class)
-						.getJSONObject(globalConfigName);
-				if (!EmptyCheckUtils.isNullEmpty(globalConfig)) {
-					String supportedLanguage = (String) globalConfig.get(supportedLanguages);
-					String[] langArray = supportedLanguage.split(",");
-					for (String string : langArray) {
-						if (langCode.equals(string)) {
-							return true;
+				String configString = restTemplate.getForObject(configsUrl, String.class);
+				if (!EmptyCheckUtils.isNullEmpty(configString)) {
+					JSONObject config = new JSONObject(configString);
+					JSONObject globalConfig = config.getJSONObject(globalConfigName);
+					if (!EmptyCheckUtils.isNullEmpty(globalConfig)) {
+						String supportedLanguage = (String) globalConfig.get(supportedLanguages);
+						String[] langArray = supportedLanguage.split(",");
+						for (String string : langArray) {
+							if (langCode.equals(string)) {
+								return true;
+							}
 						}
 					}
 				}
