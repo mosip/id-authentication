@@ -28,7 +28,7 @@
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Core -->
-		<spring.version>5.0.4.RELEASE</spring.version>
+		<spring-framework.version>5.0.6.RELEASE</spring-framework.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
@@ -70,7 +70,6 @@
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<commons.io.version>2.6</commons.io.version>
-		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
 		<velocity.version>1.7</velocity.version>
 		<velocity.tools.version>2.0</velocity.tools.version>
 

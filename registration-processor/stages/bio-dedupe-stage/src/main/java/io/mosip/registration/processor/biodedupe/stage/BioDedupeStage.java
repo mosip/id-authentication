@@ -45,7 +45,6 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  *
  * @author M1022006
  */
-@RefreshScope
 @Service
 public class BioDedupeStage extends MosipVerticleManager {
 	/** The reg proc logger. */

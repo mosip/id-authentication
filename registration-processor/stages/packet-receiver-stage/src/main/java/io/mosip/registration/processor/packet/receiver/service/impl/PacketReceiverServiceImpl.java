@@ -1,15 +1,15 @@
 package io.mosip.registration.processor.packet.receiver.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
@@ -36,6 +36,7 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.vertx.ext.web.RoutingContext;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -43,7 +44,7 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
  */
 @RefreshScope
 @Component
-public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
+public class PacketReceiverServiceImpl implements PacketReceiverService<File, MessageDTO, RoutingContext> {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverServiceImpl.class);
@@ -74,9 +75,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	PacketReceiverStage packetReceiverStage;
 
-	/** The env. */
-	@Autowired
-	private Environment env;
+	@Value("${registration.processor.packet.ext}")
+	private String extention;
+
+	@Value("${registration.processor.max.file.size}")
+	private String fileSize;
 
 	/*
 	 * (non-Javadoc)
@@ -86,15 +89,15 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 * java.lang.Object)
 	 */
 	@Override
-	public Boolean storePacket(MultipartFile file) {
+	public MessageDTO storePacket(File file, RoutingContext ctx) {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
 
 		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
 
-		if (file.getOriginalFilename() != null && !file.isEmpty()) {
-			String fileOriginalName = file.getOriginalFilename();
+		if (file.getName() != null && file.exists()) {
+			String fileOriginalName = file.getName();
 
 			String registrationId = fileOriginalName.split("\\.")[0];
 			messageDTO.setRid(registrationId);
@@ -104,18 +107,24 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"Registration Packet is Not yet sync in Sync table.");
+
+				ctx.put("exception", PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC);
 				throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 			}
 
-			if (file.getSize() > getMaxFileSize()) {
+			if (file.length() > getMaxFileSize()) {
+				ctx.put("exception", PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT);
 				throw new FileSizeExceedException(
 						PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 			}
-			if (!(fileOriginalName.endsWith(getFileExtension()))) {
+			if (!(fileOriginalName.endsWith(extention))) {
+				ctx.put("exception", PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT);
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} else if (!(isDuplicatePacket(registrationId))) {
 				try {
-					fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN_ENC);
+					fileManager.put(registrationId, new FileInputStream(file.getAbsolutePath()),
+							DirectoryPathDto.VIRUS_SCAN_ENC);
+				
 					InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 					dto.setRegistrationId(registrationId);
 					dto.setRegistrationType(regEntity.getRegistrationType());
@@ -149,27 +158,24 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 							registrationId);
 				}
 			} else {
-				throw new DuplicateUploadRequestException(
-						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+				ctx.put("exception", PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED);
+				new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 			}
 		}
 		if (storageFlag) {
-
 			messageDTO.setIsValid(true);
-			packetReceiverStage.sendMessage(messageDTO);
-
 		}
-		return storageFlag;
+		return messageDTO;
 	}
 
 	/**
-	 * Gets the file extension.
-	 *
-	 * @return the file extension
+	 * check if file exists or not
+	 * @param file
+	 * @param fileOriginalName
+	 * @return
 	 */
-	public String getFileExtension() {
-		return env.getProperty("registration.processor.packet.ext");
-
+	boolean fileExists(MultipartFile file, String fileOriginalName) {
+		return file.getOriginalFilename() != null && !file.isEmpty() && fileOriginalName != null;
 	}
 
 	/**
@@ -178,7 +184,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 * @return the max file size
 	 */
 	public long getMaxFileSize() {
-		int maxFileSize = Integer.parseInt(env.getProperty("registration.processor.max.file.size"));
+		int maxFileSize = Integer.parseInt(fileSize);
 		return maxFileSize * 1024L * 1024;
 	}
 

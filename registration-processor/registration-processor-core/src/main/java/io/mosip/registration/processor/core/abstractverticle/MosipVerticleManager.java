@@ -10,6 +10,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
@@ -76,6 +77,41 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 		}
 		return mosipEventBus;
 	}
+	
+	
+	public MosipEventBus getEventBus(Object verticleName, String clusterManagerUrl) {
+		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
+		MosipEventBus mosipEventBus = null;
+		URL url = null;
+		try {
+			url = new URL(clusterManagerUrl);
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+		ClusterManager clusterManager = new IgniteClusterManager(url);
+		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
+				.setHAEnabled(true);
+		Vertx.clusteredVertx(options, result -> {
+			if (result.succeeded()) {
+				result.result().deployVerticle((Verticle)verticleName,
+						new DeploymentOptions().setHa(true).setWorker(true));
+				eventBus.complete(result.result());
+				logger.debug(verticleName + " deployed successfully");
+			} else {
+				throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage());
+			}
+		});
+
+		try {
+			mosipEventBus = new MosipEventBus(eventBus.get());
+		} catch (InterruptedException | ExecutionException e) {
+			Thread.currentThread().interrupt();
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage(), e);
+
+		}
+		return mosipEventBus;
+	}
+	
 
 	/*
 	 * (non-Javadoc)

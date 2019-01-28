@@ -40,7 +40,6 @@ import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
  * The Class TriggerNotificationForUIN.
  * @author M1049387
  */
-@RefreshScope
 @Component
 public class TriggerNotificationForUIN {
 

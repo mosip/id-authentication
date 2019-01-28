@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.receiver.controller;
+/*package io.mosip.registration.processor.packet.receiver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,25 +16,25 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 	
-/**
+*//**
  * The Class PacketReceiverController.
- */
+ *//*
 @RestController
 @RequestMapping("/v0.1/registration-processor/packet-receiver")
 @Api(tags = "Packet Handler")
 public class PacketReceiverController {
 
-	/** The packet handler service. */
+	*//** The packet handler service. *//*
 	@Autowired
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
-	/**
+	*//**
 	 * Packet.
 	 *
 	 * @param file
 	 *            the file
 	 * @return the response entity
-	 */
+	 *//*
 	@PostMapping(path = "/registrationpackets", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Upload a packet to landing zone", response = RegistrationStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Packet successfully uploaded to landing zone"),
@@ -49,3 +49,4 @@ public class PacketReceiverController {
 	}
 
 }
+*/

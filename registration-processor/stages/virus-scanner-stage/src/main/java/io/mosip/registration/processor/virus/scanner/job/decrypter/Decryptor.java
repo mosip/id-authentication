@@ -30,7 +30,6 @@ import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFai
  *
  * @author Girish Yarru
  */
-@RefreshScope
 @Component
 public class Decryptor {
 	private final Logger logger = LoggerFactory.getLogger(Decryptor.class);

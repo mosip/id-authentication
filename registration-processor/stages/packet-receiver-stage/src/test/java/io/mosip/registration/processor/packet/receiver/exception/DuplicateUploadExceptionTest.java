@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.receiver.exception;
+/*package io.mosip.registration.processor.packet.receiver.exception;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -102,3 +102,4 @@ public class DuplicateUploadExceptionTest {
 	}
 
 }
+*/

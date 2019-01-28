@@ -1,42 +1,27 @@
 package io.mosip.registration.processor.packet.receiver;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 
 /**
  * The Class PacketReceiverApplication.
  */
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.receiver",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager",
-		"io.mosip.registration.processor.rest.client" })
 
 public class PacketReceiverApplication {
-
-	/** The packet receiver stage. */
-	@Autowired
-	PacketReceiverStage packetReceiverStage;
-
+	
 	/**
-	 * The main method.
-	 *
 	 * @param args
-	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(PacketReceiverApplication.class, args);
+		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
+		configApplicationContext.scan(
+				  "io.mosip.registration.processor.packet.receiver.config",
+				  "io.mosip.registration.processor.packet.manager.config",
+				  "io.mosip.registration.processor.status.config",
+				  "io.mosip.registration.processor.core.kernel.beans");
+		configApplicationContext.refresh();	
+		PacketReceiverStage packetReceiverStage = configApplicationContext.getBean(PacketReceiverStage.class);
+		packetReceiverStage.deployVerticle();
 	}
-
-	/**
-	 * Deploy manual verification stage.
-	 */
-	@PostConstruct
-	public void deployManualVerificationStage() {
-		packetReceiverStage.deployStage();
-	}
-
 }

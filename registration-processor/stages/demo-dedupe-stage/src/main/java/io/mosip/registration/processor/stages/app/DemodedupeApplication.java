@@ -1,25 +1,10 @@
 package io.mosip.registration.processor.stages.app;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
 
-/**
- * The Class DemodedupeApplication.
- */
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.stages.demodedupe",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
-		"io.mosip.registration.processor.rest.client","io.mosip.registration.processor.packet.storage",
-		"io.mosip.registration.processor.core"})
-public class DemodedupeApplication {
-
-	/** The validatebean. */
-	@Autowired
-	private DemodedupeStage validatebean;
+public class DemodedupeApplication{
 
 	/**
 	 * The main method.
@@ -28,15 +13,17 @@ public class DemodedupeApplication {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(DemodedupeApplication.class, args);
-	}
-
-	/**
-	 * Deploy verticle.
-	 */
-	@PostConstruct
-	public void deployVerticle() {
-		validatebean.deployVerticle();
+		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
+		configApplicationContext.scan("io.mosip.registration.processor.demo.dedupe.config",
+									  "io.mosip.registration.processor.status.config",
+										"io.mosip.registration.processor.filesystem.ceph.adapter.impl.config",
+										"io.mosip.registration.processor.packet.storage.config",
+										"io.mosip.registration.processor.core.config",
+										"io.mosip.registration.processor.core.kernel.beans");
+		configApplicationContext.refresh();
+		
+		DemodedupeStage demodedupeStage = configApplicationContext.getBean(DemodedupeStage.class);
+		demodedupeStage.deployVerticle();
 
 	}
 }

@@ -31,7 +31,6 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 /**
  * The Class OSIValidatorStage.
  */
-@RefreshScope
 @Service
 public class OSIValidatorStage extends MosipVerticleManager {
 
