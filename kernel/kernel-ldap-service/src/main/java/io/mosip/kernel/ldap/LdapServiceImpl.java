@@ -224,7 +224,7 @@ public class LdapServiceImpl implements LdapService {
 		
 		} catch (Exception e) {
 
-			throw new RuntimeException(e + "Unable to fetch user roles from LDAP");
+			throw new RuntimeException(e + " Unable to fetch user roles from LDAP");
 		}
 
 		
@@ -251,7 +251,7 @@ public class LdapServiceImpl implements LdapService {
 					userLookup.get("mail").get().toString(), null);
 
 		}  catch (Exception e) {
-			throw new RuntimeException(e + "Unable to fetch user roles from LDAP");
+			throw new RuntimeException(e + "  Unable to fetch user roles from LDAP");
 		}
 
 	}
