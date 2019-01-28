@@ -3,7 +3,11 @@ package io.mosip.kernel.ldap;
 import io.mosip.kernel.ldap.entities.LoginUser;
 import io.mosip.kernel.ldap.entities.MosipUser;
 import io.mosip.kernel.ldap.entities.OtpUser;
+import io.mosip.kernel.ldap.entities.RolesResponseDto;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,5 +34,17 @@ public class LdapController {
     @RequestMapping(value = "/isAuthorized", method = RequestMethod.POST)
     public Collection<String> isAuthorized(@RequestBody LoginUser user) throws Exception{
         return ldapService.getRoles(user);
+    }
+    
+    @GetMapping("/allroles")
+    public RolesResponseDto getAllRoles() {
+    	return ldapService.getAllRoles();
+    	
+    }
+    
+    
+    @GetMapping("/userdetails/{userid}")
+    public MosipUser getAllUserDetails(@PathVariable("userid")String user) {
+    	return ldapService.getUserDetails(user);
     }
 }
