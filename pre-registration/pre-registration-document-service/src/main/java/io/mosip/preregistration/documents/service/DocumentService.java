@@ -39,6 +39,7 @@ import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
+import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
 import io.mosip.preregistration.documents.repository.util.DocumentDAO;
@@ -217,6 +218,7 @@ public class DocumentService {
 			if (ValidationUtil.isvalidPreRegId(sourcePreId) && ValidationUtil.isvalidPreRegId(destinationPreId)
 					&& serviceUtil.isValidCatCode(catCode)) {
 				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
+				if(documentEntity!=null) {
 					DocumentEntity copyDocumentEntity = documnetDAO
 							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
@@ -231,6 +233,10 @@ public class DocumentService {
 					responseDto.setStatus(responseStatus);
 					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
+				}
+				else {
+					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
+				}
 			}
 
 		} catch (Exception ex) {
