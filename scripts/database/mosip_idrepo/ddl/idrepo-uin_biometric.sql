@@ -40,7 +40,7 @@ COMMENT ON COLUMN idrepo.uin_biometric.is_deleted IS 'Field to indicate whether 
 -- ddl-end --
 COMMENT ON COLUMN idrepo.uin_biometric.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
-ALTER TABLE idrepo.uin_biometric OWNER TO appadmin;
+ALTER TABLE idrepo.uin_biometric OWNER TO sysadmin;
 -- ddl-end --
 
 -- object: uk_uinb | type: CONSTRAINT --
