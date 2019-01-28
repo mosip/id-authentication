@@ -23,30 +23,30 @@ public class LdapServiceImpl implements LdapService {
     @Autowired
     MosipEnvironment mosipEnvironment;
 
-    private LdapConnection CreateAnonymousConnection() throws Exception {
+    private LdapConnection createAnonymousConnection() throws Exception {
         LdapConnection connection = new LdapNetworkConnection
                 (mosipEnvironment.getLdapHost(), mosipEnvironment.getLdapPort());
 
         return connection;
     }
 
-    private Dn CreateAdminDn() throws Exception {
+    private Dn createAdminDn() throws Exception {
         return new Dn(mosipEnvironment.getLdapAdminDn());
     }
 
-    private Dn CreateUserDn(LoginUser user) throws Exception {
+    private Dn createUserDn(LoginUser user) throws Exception {
         return new Dn(mosipEnvironment.getUserDnPrefix()
                 + user.getUserName()
                 + mosipEnvironment.getUserDnSuffix());
     }
 
-    private Dn CreateOtpUserDn(OtpUser otpUser) throws Exception {
+    private Dn createOtpUserDn(OtpUser otpUser) throws Exception {
         return new Dn(mosipEnvironment.getUserDnPrefix()
                 + otpUser.getPhone()
                 + mosipEnvironment.getUserDnSuffix());
     }
 
-    private String ConvertRolesToString(Collection<String> roles) throws Exception {
+    private String convertRolesToString(Collection<String> roles) throws Exception {
         StringBuilder rolesString = new StringBuilder();
         for (String role : roles) {
             rolesString.append(role);
@@ -58,8 +58,8 @@ public class LdapServiceImpl implements LdapService {
 
     public Collection<String> getRoles(LoginUser user) {
         try {
-            LdapConnection connection = CreateAnonymousConnection();
-            Dn userdn = CreateUserDn(user);
+            LdapConnection connection = createAnonymousConnection();
+            Dn userdn = createUserDn(user);
             Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
             String searchFilter = mosipEnvironment.getRolesSearchPrefix() + userdn + mosipEnvironment.getRolesSearchSuffix();
 
@@ -83,8 +83,8 @@ public class LdapServiceImpl implements LdapService {
 
     private Collection<String> getRolesForOtpUsers(OtpUser otpUser) {
         try {
-            LdapConnection connection = CreateAnonymousConnection();
-            Dn preregUserDn = CreateOtpUserDn(otpUser);
+            LdapConnection connection = createAnonymousConnection();
+            Dn preregUserDn = createOtpUserDn(otpUser);
             Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
             String searchFilter = mosipEnvironment.getRolesSearchPrefix() + preregUserDn + mosipEnvironment.getRolesSearchSuffix();
 
@@ -107,8 +107,8 @@ public class LdapServiceImpl implements LdapService {
     @Override
     public MosipUser authenticateUser(LoginUser user) throws Exception {
         try {
-            LdapConnection connection = CreateAnonymousConnection();
-            Dn userdn = CreateUserDn(user);
+            LdapConnection connection = createAnonymousConnection();
+            Dn userdn = createUserDn(user);
 
             connection.bind(userdn, user.getPassword());
 
@@ -119,7 +119,7 @@ public class LdapServiceImpl implements LdapService {
                 connection.close();
 
                 Collection<String> roles = getRoles(user);
-                String rolesString = ConvertRolesToString(roles);
+                String rolesString = convertRolesToString(roles);
                 MosipUser mosipUser = new MosipUser(
                         userLookup.get("uid").get().toString(),
                         userLookup.get("mobile").get().toString(),
@@ -142,8 +142,8 @@ public class LdapServiceImpl implements LdapService {
     @Override
     public MosipUser verifyOtpUser(OtpUser otpUser) throws Exception {
         try {
-            LdapConnection connection = CreateAnonymousConnection();
-            Dn otpUserDn = CreateOtpUserDn(otpUser);
+            LdapConnection connection = createAnonymousConnection();
+            Dn otpUserDn = createOtpUserDn(otpUser);
             if (!connection.exists(otpUserDn)) {
                 Entry userEntry = new DefaultEntry(
                         "uid=" + otpUser.getPhone() + ",ou=people,c=morocco",
@@ -171,7 +171,7 @@ public class LdapServiceImpl implements LdapService {
             connection.close();
 
             Collection<String> roles = getRolesForOtpUsers(otpUser);
-            String rolesString = ConvertRolesToString(roles);
+            String rolesString = convertRolesToString(roles);
             MosipUser mosipUser = new MosipUser(
                     userLookup.get("uid").get().toString(),
                     userLookup.get("mobile").get().toString(),
