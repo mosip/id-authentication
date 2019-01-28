@@ -1,5 +1,8 @@
 package io.mosip.registration.test.jobs;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +28,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -34,9 +39,8 @@ import io.mosip.registration.jobs.impl.SyncManagerImpl;
 import io.mosip.registration.repositories.SyncTransactionRepository;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
-public class SyncTransactionManagerTest {
+public class SyncManagerTest {
 
-	
 	@Mock
 	private SyncTransactionRepository syncTranscRepository;
 
@@ -61,6 +65,9 @@ public class SyncTransactionManagerTest {
 	@InjectMocks
 	private SyncManagerImpl syncTransactionManagerImpl;
 
+	@Mock
+	UserOnboardDAO onboardDAO;
+
 	SyncJobDef syncJob = new SyncJobDef();
 
 	List<SyncJobDef> syncJobList;
@@ -72,12 +79,12 @@ public class SyncTransactionManagerTest {
 
 	@Mock
 	SyncJobControlDAO syncJobDAO;
-	
+
 	@Mock
 	private MachineMappingDAO machineMappingDAO;
 
 	@Before
-	public void initializeSyncJob() {
+	public void initializeSyncJob() throws RegBaseCheckedException {
 		syncJob.setId("1");
 		syncJob.setName("Name");
 		syncJob.setApiName("API");
@@ -99,15 +106,15 @@ public class SyncTransactionManagerTest {
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
 		});
-		//JobConfigurationServiceImpl.SYNC_JOB_MAP = jobMap;
+		// JobConfigurationServiceImpl.SYNC_JOB_MAP = jobMap;
+
+		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("CNTR123");
+		Mockito.when(onboardDAO.getStationID(Mockito.anyString())).thenReturn("MCHN123");
+
 	}
 
-	
-
-	
-	
 	private SyncTransaction prepareSyncTransaction() {
-		SyncTransaction syncTransaction=new SyncTransaction();
+		SyncTransaction syncTransaction = new SyncTransaction();
 
 		String transactionId = Integer.toString(new Random().nextInt(10000));
 		syncTransaction.setId(transactionId);
@@ -127,93 +134,64 @@ public class SyncTransactionManagerTest {
 		syncTransaction.setSyncTo("SERVER???");
 
 		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
-		
+
 		// TODO
 		syncTransaction.setLangCode("EN");
 
-		
 		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
 		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 		return syncTransaction;
 
 	}
+
 	@Test
 	public void createSyncTest() throws RegBaseCheckedException {
 		SyncTransaction syncTransaction = prepareSyncTransaction();
-		SyncControl syncControl=null;
+		SyncControl syncControl = null;
 		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
-		
+
 		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenReturn(syncTransaction);
-		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId())).thenReturn(Mockito.anyString());
+		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()))
+				.thenReturn(Mockito.anyString());
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("CNTR123");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 
-		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1");
-	
-		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId())).thenThrow(RegBaseCheckedException.class);
-		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1");
 		
-		
+		assertSame(syncTransaction.getSyncJobId(),
+				syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1").getSyncJobId());
+
 	}
-	
+
 	@Test
 	public void createSyncControlUpdateTest() {
 		SyncTransaction syncTransaction = prepareSyncTransaction();
-		SyncControl syncControl=new SyncControl();
+		SyncControl syncControl = new SyncControl();
 		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
 		Mockito.when(syncJobDAO.update(Mockito.any(SyncControl.class))).thenReturn(syncControl);
-		syncTransactionManagerImpl.createSyncControlTransaction(syncTransaction);
-		
-		
+		assertNotNull(syncTransactionManagerImpl.createSyncControlTransaction(syncTransaction));
 	}
-	
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void createSyncTransactionExceptionTest() {
 		SyncTransaction syncTransaction = null;
-		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenThrow(NullPointerException.class);
+		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenThrow(RuntimeException.class);
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1");
-		
-		
+
 	}
-	
+
 	@Test
 	public void createSyncControlNullTest() {
-		SyncTransaction syncTransaction=new SyncTransaction();
+		SyncTransaction syncTransaction = prepareSyncTransaction();
 
-		String transactionId = Integer.toString(new Random().nextInt(10000));
-		syncTransaction.setId(transactionId);
-
-		syncTransaction.setSyncJobId(syncJob.getId());
-
-		syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
-		syncTransaction.setStatusCode("Completed");
-		syncTransaction.setStatusComment("Completed");
-
-		// TODO
-		syncTransaction.setTriggerPoint("User");
-
-		syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
-
-		// TODO
-		syncTransaction.setSyncTo("SERVER???");
-
-		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
-		
-		syncTransaction.setCntrId("CNTR123");
-		// TODO
-		syncTransaction.setLangCode("EN");
-
-		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
-
-		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
-		
-		SyncControl syncControl=null;
+		SyncControl syncControl = null;
 		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.any())).thenReturn(syncControl);
-		syncTransactionManagerImpl.createSyncControlTransaction(syncTransaction);
-		
-		
+
+		syncControl =new SyncControl();
+		syncControl.setId(syncTransaction.getId());
+		Mockito.when(syncJobDAO.save(Mockito.any(SyncControl.class))).thenReturn(syncControl);
+		assertNotNull(syncTransactionManagerImpl.createSyncControlTransaction(syncTransaction));
 	}
 
 }

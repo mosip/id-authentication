@@ -18,6 +18,7 @@ import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.SyncManager;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
@@ -29,7 +30,7 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
  *
  */
 @Component
-public class SyncManagerImpl implements SyncManager {
+public class SyncManagerImpl extends BaseService implements SyncManager {
 
 	@Autowired
 	private SyncTransactionDAO jobTransactionDAO;
@@ -46,7 +47,7 @@ public class SyncManagerImpl implements SyncManager {
 	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
 
 	@Override
-	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) {
+	synchronized public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) {
 
 		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncTransaction.getSyncJobId());
 
@@ -56,16 +57,16 @@ public class SyncManagerImpl implements SyncManager {
 			syncControl.setId(UUID.randomUUID().toString());
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
 			syncControl.setIsActive(true);
-			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
+			syncControl.setMachineId(getMacAddress());
 
 			syncControl.setRegcntrId(syncTransaction.getCntrId());
 			syncControl.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
-			syncControl.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			syncControl.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 			syncControl.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 		} else {
-			syncControl.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
+			syncControl.setUpdBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 			syncControl.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 
 		}
@@ -82,7 +83,7 @@ public class SyncManagerImpl implements SyncManager {
 	}
 
 	@Override
-	public SyncTransaction createSyncTransaction(final String status, final String statusComment,
+	synchronized public SyncTransaction createSyncTransaction(final String status, final String statusComment,
 			final String triggerPoint, final String syncJobId) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction started");
@@ -105,37 +106,25 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction.setSyncTo(RegistrationConstants.JOB_SYNC_TO_SERVER);
 
-			try {
-				syncTransaction
-						.setMachmId(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()));
+			syncTransaction.setMachmId(getStationId(getMacAddress()));
 
-			} catch (RegBaseCheckedException exception) {
-				LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
-						RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						exception.getMessage());
-
-			}
-
-			if (SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO() != null) {
-				syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-						.getRegistrationCenterId());
-			}
+			syncTransaction.setCntrId(getCenterId());
 
 			syncTransaction.setLangCode(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANUAGE));
 
-			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			syncTransaction.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 
-		} catch (NullPointerException nullPointerException) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					nullPointerException.getMessage());
+					runtimeException.getMessage());
 
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_RUNTIME_EXCEPTION,
+					runtimeException.getMessage());
 		}
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
