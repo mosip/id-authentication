@@ -202,7 +202,7 @@ public class LdapServiceImpl implements LdapService {
 		RolesResponseDto rolesResponseDto = new RolesResponseDto();
 
 		try {
-			connection = CreateAnonymousConnection();
+			connection = createAnonymousConnection();
 			List<RolesDto> rolesDtos = new ArrayList<>();
 			Dn searchBase = new Dn(mosipEnvironment.getRolesSearchBase());
 			String searchFilter = mosipEnvironment.getAllRoles();
@@ -235,12 +235,12 @@ public class LdapServiceImpl implements LdapService {
 		LdapConnection connection = null;
 
 		try {
-			connection = CreateAnonymousConnection();
+			connection = createAnonymousConnection();
 			LoginUser userObj = new LoginUser();
 			userObj.setUserName(user);
 			Dn userdn = null;
 
-			userdn = CreateUserDn(userObj);
+			userdn = createUserDn(userObj);
 
 			Entry userLookup = connection.lookup(userdn);
 
