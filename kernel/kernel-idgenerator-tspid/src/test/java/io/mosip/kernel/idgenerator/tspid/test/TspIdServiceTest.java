@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,6 +23,9 @@ import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
 @RunWith(SpringRunner.class)
 public class TspIdServiceTest {
 
+	@Value("${mosip.kernel.test.tspid.new-tspid}")
+	private String newTspId;
+	
 	@Autowired
 	TspIdGenerator<String> service;
 
@@ -43,7 +47,7 @@ public class TspIdServiceTest {
 		entity.setTspId(1000);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
 		when(tspRepository.updateTspId(Mockito.anyInt(), Mockito.anyInt(), Mockito.any())).thenReturn(1);
-		assertThat(service.generateId(), is("1001"));
+		assertThat(service.generateId(), is(newTspId));
 	}
 
 	@Test(expected = TspIdException.class)
