@@ -76,7 +76,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 	 * String)
 	 */
 	@Override
-	public ResponseDTO getMasterSync(String masterSyncDtls) {
+	synchronized public ResponseDTO getMasterSync(String masterSyncDtls) {
 
 		ResponseDTO responseDTO = null;
 		String resoponse = null;

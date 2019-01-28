@@ -516,6 +516,7 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String JOB_SYNC_TO_SERVER = "Server";
+	public static final String JOB_DETAIL = "jobDetail";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";

@@ -427,7 +427,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
-	public ResponseDTO fetchAndDeleteRecords() {
+	synchronized public ResponseDTO fetchAndDeleteRecords() {
 
 		LOGGER.debug(
 				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -473,10 +473,15 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			}
 
-			
 			if (!isEmpty(preRegistartionsToBeDeletedList)) {
 				deleteRecords(responseDTO, preRegistartionsToBeDeletedList);
+			} else {
+				/* Set Error response */
+				setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_DELETE_FAILURE, null);
+
 			}
+		} else {
+			setSuccessResponse(responseDTO, RegistrationConstants.PRE_REG_DELETE_SUCCESS, null);
 		}
 
 		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
