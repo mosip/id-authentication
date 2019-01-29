@@ -29,6 +29,7 @@
 		<module>packet-receiver-stage</module>
         <module>bio-dedupe-stage</module>
         <module>uin-generator-stage</module>
+		<module>http-stage</module>
     </modules>
 
 </project>
