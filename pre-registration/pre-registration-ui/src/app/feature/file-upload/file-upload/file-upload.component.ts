@@ -21,6 +21,8 @@ export class FileUploadComponent implements OnInit {
   @ViewChild('docCatSelect')
   docCatSelect: ElementRef;
 
+  sortedUserFiles: any[] = [];
+
   fileName = '';
   fileByteArray;
   fileUrl;
@@ -98,6 +100,7 @@ export class FileUploadComponent implements OnInit {
       ]
     }
   ];
+  fileIndex = -1;
   // JsonString = {
   //   id: 'mosip.pre-registration.document.upload',
   //   ver: '1.0',
@@ -146,9 +149,41 @@ export class FileUploadComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
+    if (this.users[0].files[0].length != 0) {
+      this.sortUserFiles();
+      this.viewFirstFile();
+    }
+  }
+
+  sortUserFiles() {
+    for (let document of this.LOD) {
+      for (let file of this.users[0].files[0]) {
+        if (document.document_name === file.doc_cat_code) {
+          this.sortedUserFiles.push(file);
+        }
+      }
+    }
+    for (let i = 0; i <= this.users[0].files[0]; i++) {
+      this.users[0].files[0][i] = this.sortedUserFiles[i];
+    }
+  }
+
+  viewFirstFile() {
+    this.fileIndex = 0;
+    this.viewFile(this.users[0].files[0][0]);
+  }
+
+  viewFileByIndex(i) {
+    console.log(i);
+
+    console.log('file', this.users[0].files[0][i]);
+
+    this.viewFile(this.users[0].files[0][i]);
   }
 
   viewFile(file) {
+    console.log('file', file);
+
     this.fileName = file.doc_name;
     this.fileByteArray = file.multipartFile;
     if (this.fileByteArray) {
@@ -206,6 +241,8 @@ export class FileUploadComponent implements OnInit {
         // this.fileName = '';
         // this.fileByteArray = '';
       }
+      this.users[applicantIndex].files[0].splice(fileIndex, 1);
+      this.viewFirstFile();
       // this.documentIndex = fileIndex;
     });
 
@@ -251,15 +288,9 @@ export class FileUploadComponent implements OnInit {
     this.users[this.step].files[0].push(this.userFiles);
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
+    this.sortUserFiles();
+    this.nextFile();
     console.log('updated users array', this.users);
-  }
-  documentPreview(fileIndex) {
-    this.fileByteArray = this.users[0].files[0][0].multipartFile;
-    if (this.fileByteArray) {
-      this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
-        'data:application/pdf;base64,' + this.fileByteArray
-      );
-    }
   }
 
   openFile() {
@@ -288,5 +319,19 @@ export class FileUploadComponent implements OnInit {
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
     this.router.navigate(['../preview'], { relativeTo: this.route });
+  }
+
+  nextFile() {
+    console.log('next file');
+
+    this.fileIndex++;
+    this.viewFileByIndex(this.fileIndex);
+  }
+
+  previousFile() {
+    console.log('previous file');
+
+    this.fileIndex--;
+    this.viewFileByIndex(this.fileIndex);
   }
 }

@@ -144,15 +144,17 @@
             </mat-form-field>
           </span>
         </span>
-        <div class="file-upload__body__document-name" *ngFor="let file of users[0].files[0]; let j = index">
-          <div *ngIf="file.doc_cat_code == document.document_name">
-            <span>{{ file.doc_name }}</span>
-            <span class="file-uplaoad__body__document-name__view" (click)="viewFile(file)">
-              <img src="assets\view.png" class="view-img" />
-            </span>
-            <span>
-              <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, j)">close</mat-icon>
-            </span>
+        <div class="file-upload__body__document-name">
+          <div *ngFor="let file of users[0].files[0]; let j = index">
+            <div *ngIf="file.doc_cat_code == document.document_name">
+              <span>{{ file.doc_name }}</span>
+              <span class="file-uplaoad__body__document-name__view" (click)="viewFile(file)">
+                <img src="assets\view.png" class="view-img" />
+              </span>
+              <span>
+                <mat-icon class="icon cross" style="cursor: pointer;" (click)="removeFile(0, j)">close</mat-icon>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -160,6 +162,10 @@
     <div class="file-upload__body__2">
       <p>{{ fileName }}</p>
       <iframe class="file-uplaoad__body__2__preview" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
+      <div>
+        <button [disabled]="fileIndex == 0 ? true : false" (click)="previousFile()">Previous</button> &nbsp;
+        <button [disabled]="fileIndex >= users[0].files[0].length - 1 ? true : false" (click)="nextFile()">Next</button>
+      </div>
     </div>
   </div>
 </div>

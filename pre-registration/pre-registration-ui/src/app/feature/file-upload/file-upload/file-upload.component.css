@@ -122,6 +122,7 @@ mat-select:focus {
 
 .file-upload__body__document-type {
   padding: 10px 0px;
+  min-height: 100px;
 }
 
 .file-upload__body__document-name {
