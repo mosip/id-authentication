@@ -87,7 +87,7 @@ public class TriggerNotificationForUINTest {
 		listAppender = new ListAppender<>();
 		fooLogger = (Logger) LoggerFactory.getLogger(TriggerNotification.class);
 		ReflectionTestUtils.setField(triggerNotification, "notificationEmails", "alokranjan1106@gmail.com");
-		ReflectionTestUtils.setField(triggerNotification, "notificationEmailSubject", "UIN Generated");
+
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("ID2.json").getFile());
@@ -135,10 +135,10 @@ public class TriggerNotificationForUINTest {
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
 
-		templateDto.setTemplateTypeCode("SMS_TEMP_FOR_UIN_GEN");
+		templateDto.setTemplateTypeCode("RPR_UIN_UPD_SMS");
 		List<TemplateDto> list = new ArrayList<TemplateDto>();
 		list.add(templateDto);
-		templateDto1.setTemplateTypeCode("EMAIL_TEMP_FOR_UIN_GEN");
+		templateDto1.setTemplateTypeCode("RPR_UIN_UPD_EMAIL");
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
@@ -148,6 +148,56 @@ public class TriggerNotificationForUINTest {
 		String uin = "123456789";
 
 		triggerNotification.triggerNotification(uin, NotificationTemplateType.UIN_UPDATE);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.contains(Tuple.tuple(Level.INFO, "SESSIONID - UIN - 123456789 - Email sent Successfully"));
+
+	}
+	
+	@Test
+	public void testTriggerNotificationDuplicateUINSuccess() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+
+		templateDto.setTemplateTypeCode("RPR_DUP_UIN_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_DUP_UIN_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+
+		String uin = "123456789";
+
+		triggerNotification.triggerNotification(uin, NotificationTemplateType.DUPLICATE_UIN);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.contains(Tuple.tuple(Level.INFO, "SESSIONID - UIN - 123456789 - Email sent Successfully"));
+
+	}
+	
+	@Test
+	public void testTriggerNotificationTechnicalIssue() throws Exception {
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+
+		templateDto.setTemplateTypeCode("RPR_TEC_ISSUE_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_TEC_ISSUE_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(templateResponseDto);
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+
+		String uin = "123456789";
+
+		triggerNotification.triggerNotification(uin, NotificationTemplateType.TECHNICAL_ISSUE);
 		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
 				.contains(Tuple.tuple(Level.INFO, "SESSIONID - UIN - 123456789 - Email sent Successfully"));
 
