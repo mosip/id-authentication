@@ -1,4 +1,5 @@
-package io.mosip.registrationprocessor.demodedupe.config;
+package io.mosip.registration.processor.stages.uigenerator.config;
+
 
 import static org.junit.Assert.assertNotNull;
 
@@ -13,15 +14,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-import io.mosip.registration.processor.stages.config.DemoDedupeConfig;
-
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigTest {
 
 	@InjectMocks
-	DemoDedupeConfig config;
+	UINBeanConfig config;
 
 	private Environment env;
 
@@ -44,13 +43,13 @@ public class ConfigTest {
 	}
 
 	@Test
-	public void getdemoDedupeStage() {
-		assertNotNull(config.getDemoDedupeStage());
+	public void getTriggerNotificationForUINTest() {
+		assertNotNull(config.getTriggerNotificationForUIN());
 	}
 	
 	@Test
-	public void getdemoDedupeTest() {
-		assertNotNull(config.getDemoDedupe());
+	public void ggetUinGeneratorStageTest() {
+		assertNotNull(config.getUinGeneratorStage());
 	}
 
 }
