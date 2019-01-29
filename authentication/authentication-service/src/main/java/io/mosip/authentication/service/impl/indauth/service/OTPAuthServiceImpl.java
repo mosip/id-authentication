@@ -89,19 +89,16 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
 		String txnId = authRequestDTO.getTxnID();
-		String tspCode = authRequestDTO.getTspID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
 			boolean isValidRequest = validateTxnId(txnId, uin);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 				List<MatchOutput> listMatchOutputs = constructMatchOutput(authRequestDTO, listMatchInputs, uin);
 				boolean isPinMatched = listMatchOutputs.stream().anyMatch(MatchOutput::isMatched);
 				return idInfoHelper.buildStatusInfo(isPinMatched, listMatchInputs, listMatchOutputs,
 						PinAuthType.values());
-
 			} else {
 				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
 						getClass().toString());
@@ -143,32 +140,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		return idInfoHelper.constructMatchInput(authRequestDTO, PinAuthType.values(), PinMatchType.values());
 	}
 
-//	public AuthStatusInfo validateOtpValue(AuthRequestDTO authreqdto, String uin)
-//			throws IdAuthenticationBusinessException {
-//		boolean isOtpValid = false;
-//		String txnId = authreqdto.getTxnID();
-//		String tspCode = authreqdto.getTspID();
-//		Optional<String> otp = getOtpValue(authreqdto);
-//		if (otp.isPresent()) {
-//			boolean isValidRequest = validateTxnId(txnId, uin);
-//			if (isValidRequest) {
-//				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-//				String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), uin, txnId, tspCode);
-//				String key = Optional.ofNullable(otpKey).orElseThrow(
-//						() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
-//				isOtpValid = otpManager.validateOtp(otp.get(), key);
-//			} else {
-//				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
-//						getClass().toString());
-//				mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
-//				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
-//			}
-//		} else {
-//			throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
-//		}
-//
-//		return constructAuthStatusInfo(isOtpValid);
-//	}
+//	
 
 	/**
 	 * Construct match output.

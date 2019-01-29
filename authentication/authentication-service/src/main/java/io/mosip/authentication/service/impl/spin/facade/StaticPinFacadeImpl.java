@@ -31,6 +31,8 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class StaticPinFacadeImpl implements StaticPinFacade {
 
+	private static final String UIN_KEY = "uin";
+
 	/** The Constant FAILED. */
 	private static final String FAILED = "N";
 
@@ -73,6 +75,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
 		String reqTime = staticPinRequestDTO.getReqTime();
 		Map<String, Object> idResDTO = null;
+		String uinValue = null;
 		boolean status = false;
 		boolean isUin = false;
 		String resTime = null;
@@ -82,12 +85,13 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		} else if (vid != null) {
 			idResDTO = idAuthService.processIdType(IdType.VID.getType(), vid, false);
 		}
+		
+		if (idResDTO != null && idResDTO.containsKey(UIN_KEY)) {
+			uinValue = (String) idResDTO.get(UIN_KEY);
+		}
 
-		String uinValue = String.valueOf(idResDTO.get("uin"));
-		if (uinValue != null) {
-
+		if (uinValue != null && !uinValue.isEmpty()) {
 			status = staticPinService.storeSpin(staticPinRequestDTO, uinValue);
-
 		}
 		staticPinResponseDTO.setId(staticPinRequestDTO.getId());
 		staticPinResponseDTO.setVer(staticPinRequestDTO.getVer());
