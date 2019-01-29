@@ -2,6 +2,7 @@ package io.mosip.kernel.auth;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.entities.*;
+import io.mosip.kernel.auth.entities.otp.*;
 import io.mosip.kernel.auth.jwtBuilder.TokenGenerator;
 import io.mosip.kernel.auth.jwtBuilder.TokenValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,15 @@ public class AuthServiceImpl implements AuthService {
     TokenValidator tokenValidator;
 
     @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
     MosipEnvironment mosipEnvironment;
 
-    public MosipUser authenticateWithLdap(LoginUser loginUser) {
+    private MosipUser authenticateWithLdap(LoginUser loginUser) {
         try {
-            final String uri = mosipEnvironment.getLdapSvcUrl() + mosipEnvironment.getLdapAuthenticate();
-            RestTemplate restTemplate = new RestTemplate();
-            MosipUser mosipUser = restTemplate.postForObject(uri, loginUser, MosipUser.class);
+            final String url = mosipEnvironment.getLdapSvcUrl() + mosipEnvironment.getLdapAuthenticate();
+            MosipUser mosipUser = restTemplate.postForObject(url, loginUser, MosipUser.class);
             if (mosipUser == null) {
                 throw new RuntimeException("Please enter valid user credentials");
             }
@@ -35,12 +38,81 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private void triggerOtp(MosipUser mosipUser) {
+    private MosipUser verifyOtpUserLdap(OtpUser otpUser) {
         try {
-            OtpTriggerRequestDto otpTriggerRequestDto = new OtpTriggerRequestDto(mosipUser);
-            final String uri = mosipEnvironment.getOtpSvcUrl() + mosipEnvironment.getTriggerOtpApi();
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.postForObject(uri, otpTriggerRequestDto, OtpTriggerResponseDto.class);
+            final String url = mosipEnvironment.getLdapSvcUrl() + mosipEnvironment.getLdapVerifyOtpUser();
+            MosipUser mosipUser = restTemplate.postForObject(url, otpUser, MosipUser.class);
+            if (mosipUser == null) {
+                throw new RuntimeException("Please enter valid user credentials");
+            }
+            return mosipUser;
+        } catch (Exception err) {
+            throw new RuntimeException(err);
+        }
+    }
+
+    private OtpGenerateResponseDto generateOtp(MosipUser mosipUser) {
+        try {
+            OtpGenerateRequestDto otpGenerateRequestDto = new OtpGenerateRequestDto(mosipUser);
+            final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getGenerateOtpApi();
+            OtpGenerateResponseDto otpGenerateResponseDto = restTemplate.postForObject(url, otpGenerateRequestDto, OtpGenerateResponseDto.class);
+            return otpGenerateResponseDto;
+        } catch (Exception err) {
+            throw new RuntimeException(err);
+        }
+    }
+
+    private String getOtpEmailMessage(OtpGenerateResponseDto otpGenerateResponseDto, OtpUser otpUser) {
+        try {
+            final String url = mosipEnvironment.getMasterDataUrl()
+                    + mosipEnvironment.getMasterDataTemplateApi()
+                    + otpUser.getLangCode()
+                    + mosipEnvironment.getMasterDataOtpTemplate();
+
+            OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url, OtpTemplateResponseDto.class);
+            OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
+            String template = otpTemplateDto.getFileText();
+            template.replace("$otp", otpGenerateResponseDto.getOtp());
+            return template;
+        } catch (Exception err) {
+            throw new RuntimeException(err);
+        }
+    }
+
+    private String getOtpSmsMessage(OtpGenerateResponseDto otpGenerateResponseDto, OtpUser otpUser) {
+        try {
+            final String url = mosipEnvironment.getMasterDataUrl()
+                    + mosipEnvironment.getMasterDataTemplateApi()
+                    + otpUser.getLangCode()
+                    + mosipEnvironment.getMasterDataOtpTemplate();
+
+            OtpTemplateResponseDto otpTemplateResponseDto = restTemplate.getForObject(url, OtpTemplateResponseDto.class);
+            OtpTemplateDto otpTemplateDto = otpTemplateResponseDto.getTemplates().get(0);
+            String template = otpTemplateDto.getFileText();
+            template.replace("$otp", otpGenerateResponseDto.getOtp());
+            return template;
+        } catch (Exception err) {
+            throw new RuntimeException(err);
+        }
+    }
+
+    private OtpEmailSendResponseDto sendOtpByEmail(String message, OtpUser otpUser) {
+        try {
+            OtpEmailSendRequestDto otpEmailSendRequestDto = new OtpEmailSendRequestDto(otpUser.getEmail(), message);
+            String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderEmailApi();
+            OtpEmailSendResponseDto otpEmailSendResponseDto = restTemplate.postForObject(url, otpEmailSendRequestDto, OtpEmailSendResponseDto.class);
+            return otpEmailSendResponseDto;
+        } catch (Exception err) {
+            throw new RuntimeException(err);
+        }
+    }
+
+    private OtpSmsSendResponseDto sendOtpBySms(String message, OtpUser otpUser) {
+        try {
+            OtpSmsSendRequestDto otpSmsSendRequestDto = new OtpSmsSendRequestDto(otpUser.getNumber(), message);
+            String url = mosipEnvironment.getOtpSenderSvcUrl() + mosipEnvironment.getOtpSenderSmsApi();
+            OtpSmsSendResponseDto otpSmsSendResponseDto = restTemplate.postForObject(url, otpSmsSendRequestDto, OtpSmsSendResponseDto.class);
+            return otpSmsSendResponseDto;
         } catch (Exception err) {
             throw new RuntimeException(err);
         }
@@ -54,26 +126,41 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public MosipUserWithToken authenticateUserWithOtp(LoginUser loginUser) throws Exception {
-        MosipUser mosipUser = authenticateWithLdap(loginUser);
-        triggerOtp(mosipUser);
+    public MosipUserWithToken authenticateWithOtp(OtpUser otpUser) throws Exception {
+        MosipUser mosipUser = verifyOtpUserLdap(otpUser);
+        OtpGenerateResponseDto otpGenerateResponseDto = generateOtp(mosipUser);
+        if (otpUser.getOtpChannel().equals("EMAIL")) {
+            String message = getOtpEmailMessage(otpGenerateResponseDto, otpUser);
+            OtpEmailSendResponseDto otpEmailSendResponseDto = sendOtpByEmail(message, otpUser);
+        } else {
+            String message = getOtpSmsMessage(otpGenerateResponseDto, otpUser);
+            OtpSmsSendResponseDto otpSmsSendResponseDto = sendOtpBySms(message, otpUser);
+        }
+
         String token = tokenGenerator.generateForOtp(mosipUser, false);
         return new MosipUserWithToken(mosipUser, token);
     }
 
     @Override
-    public MosipUserWithToken verifyOtp(OtpUser otpUser, String token) throws Exception {
+    public MosipUserWithToken authenticateUserWithOtp(LoginUser loginUser) throws Exception {
+        MosipUser mosipUser = authenticateWithLdap(loginUser);
+        OtpGenerateResponseDto otpGenerateResponseDto = generateOtp(mosipUser);
+        String token = tokenGenerator.generateForOtp(mosipUser, false);
+        return new MosipUserWithToken(mosipUser, token);
+    }
+
+    @Override
+    public MosipUserWithToken verifyOtp(OtpValidateRequestDto otpValidateRequestDto, String token) throws Exception {
         try {
             MosipUserWithToken mosipUserWithToken = tokenValidator.validateForOtpVerification(token);
-            String key = new OtpTriggerRequestDto(mosipUserWithToken.getMosipUser()).getKey();
+            String key = new OtpGenerateRequestDto(mosipUserWithToken.getMosipUser()).getKey();
 
-            final String url = mosipEnvironment.getOtpSvcUrl() + mosipEnvironment.getVerifyOtpApi();
+            final String url = mosipEnvironment.getOtpManagerSvcUrl() + mosipEnvironment.getVerifyOtpUserApi();
             UriComponentsBuilder builder = UriComponentsBuilder
                     .fromUriString(url)
                     .queryParam("key", key)
-                    .queryParam("otp", otpUser.getOtp());
+                    .queryParam("otp", otpValidateRequestDto.getOtp());
 
-            RestTemplate restTemplate = new RestTemplate();
             restTemplate.getForObject(builder.toUriString(), OtpValidateResponseDto.class);
             String verified_token = tokenGenerator.generateForOtp(mosipUserWithToken.getMosipUser(), true);
             return new MosipUserWithToken(mosipUserWithToken.getMosipUser(), verified_token);

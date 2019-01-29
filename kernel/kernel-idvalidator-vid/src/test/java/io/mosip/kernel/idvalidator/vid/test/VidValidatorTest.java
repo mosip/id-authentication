@@ -49,6 +49,9 @@ public class VidValidatorTest {
 	@Value("${mosip.kernel.vid.test.invalid-repeating-number-vid}")
 	private String invalidRepeatingNumberVid;
 
+	@Value("${mosip.kernel.vid.test.invalid-start-with}")
+	private String invalidVidStartWith;
+
 	@Autowired
 	private VidValidator<String> vidValidatorImpl;
 
@@ -84,11 +87,13 @@ public class VidValidatorTest {
 		vidValidatorImpl.validateId(invalidChecksumVid);
 	}
 
+	/*
 	@Test(expected = InvalidIDException.class)
 	public void alphaNumericTest() {
 
 		vidValidatorImpl.validateId(invalidAlphaNumericVid);
 	}
+	*/
 
 	@Test(expected = InvalidIDException.class)
 	public void repeatingBlockTest() {
@@ -112,6 +117,11 @@ public class VidValidatorTest {
 	public void ValidIdTest() {
 
 		assertEquals(true, vidValidatorImpl.validateId(validVid));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void idStartWithZeroTest() {
+		vidValidatorImpl.validateId(invalidVidStartWith);
 	}
 
 }

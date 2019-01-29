@@ -1,15 +1,11 @@
 package io.mosip.kernel.jsonvalidator.impl;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.DefaultResponseErrorHandler;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +39,7 @@ import io.mosip.kernel.jsonvalidator.constant.JsonValidatorReportConstant;
  * 
  */
 @Component
-public class JsonValidatorImpl implements JsonValidator{
+public class JsonValidatorImpl implements JsonValidator {
 
 	/*
 	 * Address of Spring cloud config server for getting the schema file
@@ -95,9 +91,7 @@ public class JsonValidatorImpl implements JsonValidator{
 		ProcessingReport report = null;
 		ArrayList<String> reportWarnings = new ArrayList<>();
 		try {
-			/**
-			 * creating a JsonObject node from json string provided.
-			 */
+			// creating a JsonObject node from json string provided.
 			jsonObjectNode = mapper.readTree(jsonString);
 		} catch (IOException e) {
 			throw new JsonIOException(JsonValidatorErrorConstant.JSON_IO_EXCEPTION.getErrorCode(),
@@ -107,11 +101,8 @@ public class JsonValidatorImpl implements JsonValidator{
 			throw new NullJsonNodeException(JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getErrorCode(),
 					JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getMessage());
 		}
-		/**
-		 * getting a JsonSchema node from json schema Name provided.
-		 */
+		// getting a JsonSchema node from json schema Name provided.
 		jsonSchemaNode = getJsonSchemaNode(schemaName);
-
 		if (jsonSchemaNode == null) {
 			throw new NullJsonSchemaException(JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getErrorCode(),
 					JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getMessage());
@@ -119,43 +110,27 @@ public class JsonValidatorImpl implements JsonValidator{
 		final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
 		try {
 			final JsonSchema jsonSchema = factory.getJsonSchema(jsonSchemaNode);
-
-			/**
-			 * Validating jsonObject against the schema and creating Processing Report
-			 */
-
+			// Validating jsonObject against the schema and creating Processing Report
 			report = jsonSchema.validate(jsonObjectNode);
-
 		} catch (ProcessingException e) {
 			throw new JsonValidationProcessingException(
 					JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.getErrorCode(),
 					JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.getMessage());
 		}
 
-		/**
-		 * iterating over report to get each processingMessage
-		 */
+		// iterating over report to get each processingMessage
 		report.forEach(processingMessage -> {
-			/**
-			 * processingMessage object as JsonNode
-			 */
+			// processingMessage object as JsonNode
 			JsonNode processingMessageAsJson = processingMessage.asJson();
-			/**
-			 * messageLevel variable to store level of message (eg: warning or error)
-			 */
+			// messageLevel variable to store level of message (eg: warning or error)
 			String messageLevel = processingMessageAsJson.get(JsonValidatorReportConstant.LEVEL.getProperty()).asText();
-			/**
-			 * messageBody variable storing actual message.
-			 */
+			// messageBody variable storing actual message.
 			String messageBody = processingMessageAsJson.get(JsonValidatorReportConstant.MESSAGE.getProperty())
 					.asText();
 			if (messageLevel.equals(JsonValidatorReportConstant.WARNING.getProperty())) {
 				reportWarnings.add(messageBody);
 			} else if (messageLevel.equals(JsonValidatorReportConstant.ERROR.getProperty())) {
-
-				/**
-				 * getting the location of error in JSON string.
-				 */
+				// getting the location of error in JSON string.
 				if (processingMessageAsJson.has(JsonValidatorReportConstant.INSTANCE.getProperty())
 						&& processingMessageAsJson.get(JsonValidatorReportConstant.INSTANCE.getProperty())
 								.has(JsonValidatorReportConstant.POINTER.getProperty())) {
@@ -175,53 +150,23 @@ public class JsonValidatorImpl implements JsonValidator{
 	}
 
 	private JsonNode getJsonSchemaNode(String schemaName) throws JsonSchemaIOException, FileIOException {
-
 		JsonNode jsonSchemaNode = null;
-		ObjectMapper mapper = new ObjectMapper();
-
-		/**
+		/*
 		 * If the property source selected is CONFIG_SERVER. In this scenario schema is
 		 * coming from Config Server, whose location has to be mentioned in the
 		 * bootstrap.properties by the application using this JSON validator API.
 		 */
 		if (JsonValidatorPropertySourceConstant.CONFIG_SERVER.getPropertySource().equals(propertySource)) {
-			RestTemplate restTemplate = new RestTemplate();
-
-			/**
-			 * setting an error handler and overriding handleError method of
-			 * DefaultResponseErrorHandler, such that if there is any error (status code
-			 * other than 200) while requesting the schema from config server it will throw
-			 * HttpRequestException.
-			 * 
-			 */
-			restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-
-				@Override
-				protected void handleError(ClientHttpResponse response, HttpStatus statusCode) {
-					throw new HttpRequestException(JsonValidatorErrorConstant.HTTP_REQUEST_EXCEPTION.getErrorCode(),
-							JsonValidatorErrorConstant.HTTP_REQUEST_EXCEPTION.getMessage());
-				}
-			});
 			try {
-				String jsonSchemaAsString = restTemplate.getForObject(this.configServerFileStorageURL + schemaName,
-						String.class);
-				/**
-				 * creating a JsonSchema node against which the JSON object will be validated.
-				 */
-				jsonSchemaNode = mapper.readTree(jsonSchemaAsString);
-			} catch (ResourceAccessException e) {
-				throw new ConfigServerConnectionException(
-						JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.getErrorCode(),
-						JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.getMessage());
+				// creating a JsonSchema node against which the JSON object will be validated.
+				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			} catch (IOException e) {
 				throw new JsonSchemaIOException(JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
 						JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e.getCause());
 			}
 		}
-		/**
-		 * If the property source selected is local. In this scenario schema is coming
-		 * from local resource location.
-		 */
+		// If the property source selected is local. In this scenario schema is coming
+		// from local resource location.
 		else if (JsonValidatorPropertySourceConstant.LOCAL.getPropertySource().equals(propertySource)) {
 			try {
 				jsonSchemaNode = JsonLoader

@@ -38,7 +38,7 @@ public class UinGeneratorServerVerticle extends AbstractVerticle {
 	 */
 	@Override
 	public void start(Future<Void> future) {
-		vertx.createHttpServer().requestHandler(uinGeneratorRouter.createRouter(vertx)::accept)
+		vertx.createHttpServer().requestHandler(uinGeneratorRouter.createRouter(vertx))
 				.listen(config().getInteger(UinGeneratorConstant.HTTP_PORT, 8080), result -> {
 					if (result.succeeded()) {
 						uinGeneratorRouter.checkAndGenerateUins(vertx);

@@ -134,19 +134,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
 				} finally {
-					String eventId = "";
-					String eventName = "";
-					String eventType = "";
-					eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-					eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-							: EventName.EXCEPTION.toString();
-					eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-							: EventType.SYSTEM.toString();
-					String description = isTransactionSuccessful ? "Packet registration status updated successfully"
-							: "Packet registration status updation unsuccessful";
-
-					auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-							registrationId);
+					logError(isTransactionSuccessful,registrationId);
 				}
 			} else {
 				throw new DuplicateUploadRequestException(
@@ -160,6 +148,22 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 		}
 		return storageFlag;
+	}
+
+	private void logError(boolean isTransactionSuccessful,String registrationId) {
+		String eventId = "";
+		String eventName = "";
+		String eventType = "";
+		eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+		eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+				: EventName.EXCEPTION.toString();
+		eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+				: EventType.SYSTEM.toString();
+		String description = isTransactionSuccessful ? "Packet registration status updated successfully"
+				: "Packet registration status updation unsuccessful";
+
+		auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+				registrationId);
 	}
 
 	/**

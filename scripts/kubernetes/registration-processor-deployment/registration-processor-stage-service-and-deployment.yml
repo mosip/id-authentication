@@ -41,5 +41,11 @@ spec:
         - name: active_profile_env
           value: dev-k8
         imagePullPolicy: Always
+      - name: registration-processor-camel-bridge
+        image: docker-registry.mosip.io:5000/registration-processor-camel-bridge
+        env:
+        - name: active_profile_env
+          value: dev-k8
+        imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
