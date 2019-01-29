@@ -12,15 +12,15 @@ host: integ.mosip.io
 basePath: /demographic
 tags:
   - name: Pre-Registration
-    description: Demographic Controller
+    description: Demographic Service
 schemes:
-  - http
+  - https
 paths:
-  /v0.1/pre-registration/applicationData:
+  /v0.1/pre-registration/applications/details:
     get:
       tags:
         - Pre-Registration
-      summary: Get Pre-Registartion data
+      summary: Get Pre-Registartion demographic details
       operationId: getApplicationUsingGET
       produces:
         - application/json
@@ -32,7 +32,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Demographic data successfully retrieved
+          description: Demographic details successfully retrieved
           schema:
             $ref: '#/definitions/ResponseDTO«CreateDemographicDTO»'
         '[PRG]':
@@ -40,7 +40,8 @@ paths:
           schema:
             $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
-  /v0.1/pre-registration/applicationDataByDateTime:
+      
+  /v0.1/pre-registration/applications/byDates:
     get:
       tags:
         - Pre-Registration
@@ -69,11 +70,12 @@ paths:
           schema:
             $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
-  /v0.1/pre-registration/applicationStatus:
+      
+  /v0.1/pre-registration/applications/status:
     get:
       tags:
         - Pre-Registration
-      summary: Fetch the status of a application
+      summary: Fetch the status of a pre-registration application
       operationId: getApplicationStatusUsingGET
       produces:
         - application/json
@@ -93,6 +95,7 @@ paths:
           schema:
             $ref: '#/definitions/ServiceErrors«ErrorObject»'
       deprecated: false
+      
   /v0.1/pre-registration/applications:
     get:
       tags:
@@ -246,14 +249,14 @@ definitions:
       errorMessage:
         type: string
     title: ErrorObject
-  ServiceErrors:
+  ServiceErrors«ErrorObject»:
     type: object
     properties:
       status:
-        type:number
+        type: number
       errors:
-        type:array
-        description: error response
+        type: array
+        description: errors
         items:
           $ref: '#/definitions/ErrorObject'
     title: ServiceErrors«ErrorObject»

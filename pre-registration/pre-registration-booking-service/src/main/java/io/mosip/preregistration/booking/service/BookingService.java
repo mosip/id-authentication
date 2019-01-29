@@ -16,7 +16,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
@@ -48,8 +47,6 @@ import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.BookingTimeSlotAlreadyBooked;
 import io.mosip.preregistration.booking.exception.CancelAppointmentFailedException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
-import io.mosip.preregistration.booking.repository.BookingAvailabilityRepository;
-import io.mosip.preregistration.booking.repository.RegistrationBookingRepository;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingLock;
 import io.mosip.preregistration.booking.service.util.BookingServiceUtil;
@@ -88,19 +85,6 @@ public class BookingService {
 	 */
 	@Value("${noOfDays}")
 	int noOfDays;
-
-	/**
-	 * Autowired reference for {@link #bookingAvailabilityRepository}
-	 */
-	@Autowired
-	BookingAvailabilityRepository bookingAvailabilityRepository;
-
-	/**
-	 * Autowired reference for {@link #registrationBookingRepository}
-	 */
-	@Autowired
-	@Qualifier("registrationBookingRepository")
-	RegistrationBookingRepository registrationBookingRepository;
 
 	@Autowired
 	private BookingDAO bookingDAO;
@@ -217,9 +201,6 @@ public class BookingService {
 							cancel(preRegistrationId, oldBookingRegistrationDTO, newBookingRegistrationDTO,
 									preRegStatusCode);
 						}
-						else {
-							checkAlreadyBooked(preRegistrationId,newBookingRegistrationDTO);
-						}
 						respList.add(book(preRegistrationId, newBookingRegistrationDTO, preRegStatusCode));
 					}
 				}
@@ -232,12 +213,6 @@ public class BookingService {
 		responseDTO.setResTime(serviceUtil.getCurrentResponseTime());
 		responseDTO.setResponse(respList);
 		return responseDTO;
-	}
-
-	public boolean checkAlreadyBooked(String preRegistrationId, BookingRegistrationDTO newBookingRegistrationDTO) {
-		log.info("sessionId", "idType", "id", "In checkAlreadyBooked method of Booking Service");
-		
-		return true;
 	}
 
 	public boolean cancel(String preRegistrationId, BookingRegistrationDTO oldBookingRegistrationDTO,
@@ -325,37 +300,25 @@ public class BookingService {
 				String regCenterId = requestDTO.getRequest().getRegistrationCenterId();
 				List<RegistrationBookingEntity> bookingEntities = bookingDAO
 						.findByRegistrationCenterIdAndStatusCode(regCenterId.trim(), StatusCodes.BOOKED.getCode());
-				if (!bookingEntities.isEmpty()) {
-					List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
-					List<String> entityPreRegIdList = new LinkedList<>();
+				List<String> preRegIdList = requestDTO.getRequest().getPreRegistrationIds();
+				List<String> entityPreRegIdList = new LinkedList<>();
+				for (RegistrationBookingEntity bookingEntity : bookingEntities) {
+					entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
+				}
+				preRegIdList.retainAll(entityPreRegIdList);
+				if (!preRegIdList.isEmpty()) {
+					preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId(regCenterId);
+					preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
+					preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
 
-					for (RegistrationBookingEntity bookingEntity : bookingEntities) {
-						entityPreRegIdList.add(bookingEntity.getBookingPK().getPreregistrationId());
-					}
-					preRegIdList.retainAll(entityPreRegIdList);
-					if (!preRegIdList.isEmpty()) {
-						preRegIdsByRegCenterIdResponseDTO.setRegistrationCenterId(regCenterId);
-						preRegIdsByRegCenterIdResponseDTO.setPreRegistrationIds(preRegIdList);
-						preRegIdsByRegCenterIdResponseDTOList.add(preRegIdsByRegCenterIdResponseDTO);
-
-						responseDto.setResTime(serviceUtil.getCurrentResponseTime());
-						responseDto.setStatus(true);
-						responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
-					} else {
-						throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
-								ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
-					}
+					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
+					responseDto.setStatus(true);
+					responseDto.setResponse(preRegIdsByRegCenterIdResponseDTOList);
 				} else {
 					throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 							ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 				}
 			}
-		} catch (DataAccessLayerException ex) {
-			log.error("sessionId", "idType", "id",
-					"In getPreIdsByRegCenterId method of Booking Service for DataAccessLayerException- "
-							+ ex.getMessage());
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_010.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString(), ex.getCause());
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getPreIdsByRegCenterId method of Booking Service for Exception- " + ex.getMessage());
@@ -431,7 +394,7 @@ public class BookingService {
 					bookingEntity.setStatusCode(StatusCodes.CANCELED.getCode());
 					bookingEntity.setUpdDate(DateUtils.parseDateToLocalDateTime(new Date()));
 
-					bookingEntity = bookingDAO.saveRegistrationEntityForCancel(bookingEntity);
+					bookingDAO.saveRegistrationEntityForCancel(bookingEntity);
 
 					/* Update the status to Canceled in demographic Table */
 					serviceUtil.callUpdateStatusRestService(cancelBookingDTO.getPreRegistrationId(),

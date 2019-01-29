@@ -237,7 +237,7 @@ public class DocumentServiceUtil {
 		if (catCode.equals("POA")) {
 			return true;
 		} else {
-			throw new InvalidDocumnetIdExcepion(ErrorCodes.PRG_PAM_DOC_019.toString(),
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
 					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.toString());
 		}
 	}
@@ -337,7 +337,7 @@ public class DocumentServiceUtil {
 	 *             if uploaded document is not valid
 	 */
 	public boolean isVirusScanSuccess(MultipartFile file) {
-		boolean flag = false;
+		boolean flag;
 		 try {
 			log.info("sessionId", "idType", "id", "In isVirusScanSuccess method of document service util");
 			return virusScan.scanDocument(file.getBytes());

@@ -16,14 +16,12 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
@@ -40,13 +38,11 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.CephServerException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
-import io.mosip.preregistration.documents.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.documents.exception.DocumentFailedToUploadException;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentVirusScanException;
-import io.mosip.preregistration.documents.exception.MandatoryFieldNotFoundException;
 import io.mosip.preregistration.documents.exception.util.DocumentExceptionCatcher;
-import io.mosip.preregistration.documents.repository.DocumentRepository;
+import io.mosip.preregistration.documents.repository.util.DocumentDAO;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 
@@ -61,13 +57,12 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
  */
 @Component
 public class DocumentService {
-
+	
 	/**
-	 * Autowired reference for {@link #DocumentRepository}
+	 * Autowired reference for {@link #DocumnetDAO}
 	 */
 	@Autowired
-	@Qualifier("documentRepository")
-	private DocumentRepository documentRepository;
+	private DocumentDAO documnetDAO;
 
 	/**
 	 * Reference for ${id} from property file
@@ -147,7 +142,6 @@ public class DocumentService {
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In uploadDoucment method of document service - " + ex.getMessage());
-
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return responseDto;
@@ -165,19 +159,19 @@ public class DocumentService {
 	 *             on input errors
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	private List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
+	public List<DocumentResponseDTO> createDoc(DocumentRequestDTO document, MultipartFile file) throws IOException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		List<DocumentResponseDTO> docResponseDtos = new LinkedList<>();
 		if (serviceUtil.callGetPreRegInfoRestService(document.getPreregId())) {
-			DocumentEntity getentity = documentRepository.findSingleDocument(document.getPreregId(),
+			DocumentEntity getentity = documnetDAO.findSingleDocument(document.getPreregId(),
 					document.getDocCatCode());
 			DocumentEntity documentEntity = serviceUtil.dtoToEntity(document);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
 			documentEntity.setDocName(file.getOriginalFilename());
-			documentEntity = documentRepository.save(documentEntity);
+			documentEntity = documnetDAO.saveDocument(documentEntity);
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 				boolean isStoreSuccess = ceph.storeFile(documentEntity.getPreregId(), key, file.getInputStream());
@@ -185,7 +179,7 @@ public class DocumentService {
 					throw new CephServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.toString());
 				}
-				docResponseDto.setPreRegsitrationId(documentEntity.getPreregId());
+				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
 				docResponseDto.setDocumnetId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocumentName(documentEntity.getDocName());
 				docResponseDto.setDocumentCat(documentEntity.getDocCatCode());
@@ -223,10 +217,10 @@ public class DocumentService {
 		try {
 			if (ValidationUtil.isvalidPreRegId(sourcePreId) && ValidationUtil.isvalidPreRegId(destinationPreId)
 					&& serviceUtil.isValidCatCode(catCode)) {
-				DocumentEntity documentEntity = documentRepository.findSingleDocument(sourcePreId, catCode);
-				if (documentEntity != null) {
-					DocumentEntity copyDocumentEntity = documentRepository
-							.save(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
+				DocumentEntity documentEntity = documnetDAO.findSingleDocument(sourcePreId, catCode);
+				if(documentEntity!=null) {
+					DocumentEntity copyDocumentEntity = documnetDAO
+							.saveDocument(serviceUtil.documentEntitySetter(destinationPreId, documentEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					sourceBucketName = documentEntity.getPreregId();
 				    copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
@@ -239,16 +233,12 @@ public class DocumentService {
 					responseDto.setStatus(responseStatus);
 					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(copyDocumentList);
-
-				} else {
+				}
+				else {
 					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
 				}
 			}
 
-		} catch (DataAccessLayerException ex) {
-			log.error("sessionId", "idType", "id", "In copyDoucment method of document service - " + ex.getMessage());
-			throw new DocumentFailedToCopyException(ErrorCodes.PRG_PAM_DOC_011.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_COPY.toString(), ex.getCause());
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In copyDoucment method of document service - " + ex.getMessage());
 			new DocumentExceptionCatcher().handle(ex);
@@ -296,14 +286,10 @@ public class DocumentService {
 		
 		try {
 			if (ValidationUtil.isvalidPreRegId(preId)) {
-				List<DocumentEntity> documentEntities = documentRepository.findBypreregId(preId);
-				if (documentEntities != null && !documentEntities.isEmpty()) {
+				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 					responseDto.setResponse(dtoSetter(documentEntities));
 					responseDto.setStatus(responseStatus);
 					responseDto.setResTime(serviceUtil.getCurrentResponseTime());
-				} else {
-					throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
-				}
 			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
@@ -362,9 +348,8 @@ public class DocumentService {
 		List<DocumentDeleteResponseDTO> deleteDocList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
 		try {
-			DocumentEntity documentEntity = documentRepository.findBydocumentId(documentId);
-			if (documentEntity != null) {
-				if (documentRepository.deleteAllBydocumentId(documentId) > 0) {
+			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
+				if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
 					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					boolean isDeleted = ceph.deleteFile(documentEntity.getPreregId(), key);
 					if (!isDeleted) {
@@ -379,17 +364,9 @@ public class DocumentService {
 				}
 				delResponseDto.setStatus(responseStatus);
 				delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
-			} else {
-				throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
-			}
-		} catch (DataAccessLayerException ex) {
-			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
-
-			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), ex.getCause());
+			
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
-
 			new DocumentExceptionCatcher().handle(ex);
 		}
 		return delResponseDto;
@@ -407,17 +384,10 @@ public class DocumentService {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		try {
 			if (ValidationUtil.isvalidPreRegId(preregId)) {
-				List<DocumentEntity> documentEntityList = documentRepository.findBypreregId(preregId);
+				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
 			   return deleteFile(documentEntityList, preregId);
 			}
-		} catch (DataAccessLayerException ex) {
-			log.error("sessionId", "idType", "id",
-					"In deleteAllByPreId method of document service - " + ex.getMessage());
-
-			throw new DocumentFailedToDeleteException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-					ErrorMessages.DOCUMENT_FAILED_TO_DELETE.toString(), ex.getCause());
-		} catch (Exception ex) {
-
+		}catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In deleteAllByPreId method of document service - " + ex.getMessage());
 
@@ -429,8 +399,7 @@ public class DocumentService {
 	public MainListResponseDTO<DocumentDeleteResponseDTO> deleteFile(List<DocumentEntity> documentEntityList, String preregId) {
 		List<DocumentDeleteResponseDTO> deleteAllList = new ArrayList<>();
 		MainListResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainListResponseDTO<>();
-		if (documentEntityList != null && !documentEntityList.isEmpty()) {
-			if (documentRepository.deleteAllBypreregId(preregId) > 0) {
+			if (documnetDAO.deleteAllBypreregId(preregId) > 0) {
 				for (DocumentEntity documentEntity : documentEntityList) {
 					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 					ceph.deleteFile(documentEntity.getPreregId(), key);
@@ -443,9 +412,7 @@ public class DocumentService {
 				delResponseDto.setStatus(responseStatus);
 				delResponseDto.setResTime(serviceUtil.getCurrentResponseTime());
 			}
-		} else {
-			throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
-		}
+		
 		return delResponseDto;
 	}
  

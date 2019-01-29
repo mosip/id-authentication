@@ -82,8 +82,9 @@
 	</properties>
 
 	<modules>
-		<module>registration-service</module>
-		<module>registration-ui</module>
+		<module>registration-services</module>
+		<module>registration-client</module>
+		<module>registration-libs</module>
 	</modules>
 
 	<dependencyManagement>

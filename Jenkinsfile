@@ -1,10 +1,10 @@
 node{
 	def server = Artifactory.server 'ART'
-   	def rtMaven = Artifactory.newMavenBuild()
+  def rtMaven = Artifactory.newMavenBuild()
 	def mvnHome = tool name: 'M2_HOME', type: 'maven'
-   	def buildInfo
+  def buildInfo
 	def branch = 'master'
-	
+
   stage('checkout'){
 	git branch: branch, credentialsId: '4c9741a2-4c15-4aad-a13d-39f4302a0e77', url: 'git@github.com:mosip/mosip.git'
   }
@@ -20,7 +20,7 @@ node{
  }
  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
 
-  rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
+  rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
 
   
  }

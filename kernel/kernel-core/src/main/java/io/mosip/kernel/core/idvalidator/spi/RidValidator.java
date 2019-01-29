@@ -45,11 +45,14 @@ public interface RidValidator<T> {
 	 *            the center id length
 	 * @param machineIdLength
 	 *            the machine id length
+	 * @param sequenceLength
+	 *            length of the sequence
 	 * @param timeStampLength
 	 *            timeStamp length
 	 * @return true if RID satisfied the specified generation logic.
 	 */
-	boolean validateId(T id, T centerId, T machineId, int centerIdLength, int machineIdLength, int timeStampLength);
+	boolean validateId(T id, T centerId, T machineId, int centerIdLength, int machineIdLength, int sequenceLength,
+			int timeStampLength);
 
 	/**
 	 * This method validate given RID against specified generation logic.
@@ -60,9 +63,12 @@ public interface RidValidator<T> {
 	 *            the center id length
 	 * @param machineIdLength
 	 *            the machine id length
+	 * @param sequenceLength
+	 *            length of the sequence
 	 * @param timeStampLength
 	 *            timeStamp length
 	 * @return true if RID satisfied the specified generation logic.
 	 */
-	public boolean validateId(T id, int centerIdLength, int machineIdLength, int timeStampLength);
+	public boolean validateId(T id, int centerIdLength, int machineIdLength, int sequenceLength,
+			int timeStampLength);
 }

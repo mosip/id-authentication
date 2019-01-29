@@ -1,5 +1,70 @@
 ## kernel-idgenerator-uin
 
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-uin.md)
+
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#4-uin)
+
+Default Port and Context Path
+
+```
+server.port=8080
+server.servlet.path=/uingenerator
+```
+localhost:8080/uingenerator/swagger-ui.html
+
+
+**Application Properties**
+
+[kernel-idgenerator-uin-dev.properties](../../config/kernel-idgenerator-uin-dev.properties)
+
+```
+#-----------------------------UIN Properties--------------------------------------
+#length of the uin
+mosip.kernel.uin.length=12
+#minimun threshold of uin
+mosip.kernel.uin.min-unused-threshold=100000
+#number of uins to generate
+mosip.kernel.uin.uins-to-generate=200000
+#uin generation cron
+mosip.kernel.uin.uin-generation-cron=0 * * * * *
+#restricted numbers for uin
+mosip.kernel.uin.restricted-numbers=786,666
+#sequence limit for uin filter
+mosip.kernel.uin.length.sequence-limit=3
+#repeating block limit for uin filter
+mosip.kernel.uin.length.repeating-block-limit=2
+#repeating limit for uin filter
+mosip.kernel.uin.length.repeating-limit=2
+
+
+# DB Properties For Development
+--------------------------------------
+javax.persistence.jdbc.driver=org.postgresql.Driver
+javax.persistence.jdbc.url=jdbc:postgresql://locallhost:8888/mosip_kernel
+javax.persistence.jdbc.user=dbuser
+javax.persistence.jdbc.password=dbpwd
+
+hibernate.hbm2ddl.auto=update
+hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
+hibernate.jdbc.lob.non_contextual_creation=true
+hibernate.show_sql=false
+hibernate.format_sql=false
+hibernate.connection.charSet=utf8
+hibernate.cache.use_second_level_cache=false
+hibernate.cache.use_query_cache=false
+hibernate.cache.use_structured_entries=false
+hibernate.generate_statistics=false
+hibernate.current_session_context_class=org.springframework.orm.hibernate5.SpringSessionContext
+```
+
+
+** Database Properties **
+
+Schema : kernel
+
+Table : uin
+
+
 Uin generator functionality is to generate, store and provide uins.
 
 Rules of UIN generation:
@@ -15,28 +80,7 @@ Rules of UIN generation:
 10. The last digit in the number should be reserved for a checksum
 11. The number should not contain '0' or '1' as the first digit.
 
-**Api Documentation**
 
-
-```
-mvn javadoc:javadoc
-```
-
-
-** Properties to be added in parent Spring Application environment **
-
-[application-dev.properties](../../config/application-dev.properties)
-
-[kernel-idgenerator-uin-dev.properties](../../config/kernel-idgenerator-uin-dev.properties)
-
-
-
-
-** Database Properties **
-
-Schema : ids
-
-Table : uin
 
 **Usage Sample:**
 

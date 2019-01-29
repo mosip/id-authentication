@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,10 +34,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.controller.DocumentController;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
+import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentService;
 import io.mosip.preregistration.documents.service.util.DocumentServiceUtil;
@@ -64,7 +67,7 @@ public class DocumentControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	private MockMultipartFile multipartFile, jsonMultiPart;
+	//private MockMultipartFile multipartFile, jsonMultiPart;
 
 	/**
 	 * Creating Mock Bean for DocumentUploadService
@@ -92,7 +95,9 @@ public class DocumentControllerTest {
 	Map<String, String> map = new HashMap<>();
 	MainListResponseDTO responseCopy = new MainListResponseDTO<>();
 	MainListResponseDTO responseDelete = new MainListResponseDTO<>();
+	MainListResponseDTO<DocumentResponseDTO> responseMain = new MainListResponseDTO<>();
 	DocumentRequestDTO documentDto = null;
+	List<DocumentResponseDTO> docResponseDtos=new ArrayList<>();
 
 	/**
 	 * @throws IOException
@@ -101,34 +106,21 @@ public class DocumentControllerTest {
 	public void setUp() throws IOException {
 
 		documentDto = new DocumentRequestDTO("59276903416082", "POA", "address", "pdf", "Pending-Appoinment",
-				new Date(), "ENG", "Jagadishwari");
+				new Date(), "ENG", "Kishan");
 
-		json = "{\r\n" + "	\"id\": \"mosip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
-				+ "	\"reqTime\": \"2018-10-17T07:22:57.086+0000\",\r\n" + "	\"request\": {\r\n"
-				+ "		\"prereg_id\": \"59276903416082\",\r\n" + "		\"doc_cat_code\": \"POA\",\r\n"
-				+ "		\"doc_typ_code\": \"address\",\r\n" + "		\"doc_file_format\": \"pdf\",\r\n"
-				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "		\"upload_by\": \"9217148168\",\r\n"
-				+ "		\"upload_DateTime\": \"2018-10-17T07:22:57.086+0000\"\r\n" + "	}\r\n" + "}";
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("Doc.pdf").getFile());
-		try {
-			URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
-			file = new File(uri.getPath());
-		} catch (URISyntaxException e2) {
-			e2.printStackTrace();
-		}
+		json = "{\r\n" + "	\"id\": \"osip.pre-registration.document.upload\",\r\n" + "	\"ver\": \"1.0\",\r\n"
+				+ "	\"reqTime\": \"2018-10-17T07:22:57.086Z\",\r\n" + "	\"request\": {\r\n"
+				+ "		\"pre_registartion_id\": \"59276903416082\",\r\n" + "\"doc_cat_code\": \"POA\",\r\n"
+				+ "		\"doc_typ_code\": \"address\",\r\n" + "\"doc_file_format\": \"pdf\",\r\n"
+				+ "		\"status_code\": \"Pending-Appoinment\",\r\n" + "\"upload_by\": \"9217148168\",\r\n"
+				+ "		\"upload_date_time\": \"2018-10-17T07:22:57.086Z\",\r\n" + "\"lang_code\": \"ENG\",\r\n"+"	}\r\n" + "}";
+		
 		ObjectMapper mapper = new ObjectMapper();
-		try {
-			multipartFile = new MockMultipartFile("file", "Doc.pdf", "application/pdf", new FileInputStream(file));
-
-			jsonMultiPart = new MockMultipartFile("JsonString", "", "application/json", json.getBytes());
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
+		
 
 		response = new HashMap<String, String>();
 		response.put("DocumentId", "1");
-		response.put("Status", "Pending-Appoinment");
+		response.put("Status", "Pending_Appoinment");
 		documentId = response.get("DocumentId");
 		flag = true;
 
@@ -140,18 +132,44 @@ public class DocumentControllerTest {
 		responseCopyList.add(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL);
 		responseDelete.setResponse(responseDeleteList);
 
+		DocumentResponseDTO responseDto=new DocumentResponseDTO();
+		responseDto.setDocumentCat("POA");
+		responseDto.setDocumnetId("12345");
+		responseDto.setPreRegistrationId("123546987412563");
+		
+		
+		docResponseDtos.add(responseDto);
+		responseMain.setStatus(true);
+		responseMain.setResponse(docResponseDtos);
 	}
 
-	// @Test
-	// public void successSave() throws Exception {
-	// Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(),
-	// Mockito.any());
-	// Mockito.when(service.uploadDoucment(multipartFile,
-	// jsonDTO)).thenReturn(responseCopy);
-	// this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
-	// .file(this.jsonMultiPart).file(this.multipartFile)).andExpect(status().isOk());
-	//
-	// }
+	@Test
+	public void successSave() throws Exception {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("Doc.pdf").getFile());
+		try {
+			URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
+			file = new File(uri.getPath());
+		} catch (URISyntaxException e2) {
+			e2.printStackTrace();
+		}
+		try {
+			MockMultipartFile multipartFile = new MockMultipartFile("file", "Doc.pdf", "application/pdf", new FileInputStream(file));
+
+			MockMultipartFile jsonMultiPart = new MockMultipartFile("json", "json", "application/json", json.getBytes());
+			
+			String documentStringDTO=JsonUtils.javaObjectToJsonString(documentDto);
+			Mockito.doReturn(true).when(ceph).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+			//Mockito.when(service.createDoc(documentDto, multipartFile)).thenReturn(docResponseDtos);
+			Mockito.when(service.uploadDoucment(Mockito.any(), Mockito.any())).thenReturn(responseMain);
+			this.mockMvc.perform(MockMvcRequestBuilders.multipart("/v0.1/pre-registration/documents")
+					.file(jsonMultiPart).file(multipartFile)).andExpect(status().isOk());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+
+
+	}
 
 	/**
 	 * @throws Exception

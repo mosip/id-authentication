@@ -1,6 +1,7 @@
 package io.mosip.preregistration.application.test.service.util;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -21,15 +22,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.application.code.RequestCodes;
 import io.mosip.preregistration.application.dto.DemographicRequestDTO;
 import io.mosip.preregistration.application.entity.DemographicEntity;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemUnsupportedEncodingException;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 
 /**
@@ -48,6 +52,8 @@ public class DemographicServiceUtilTest {
 	 */
 	@Autowired
 	private DemographicServiceUtil demographicServiceUtil;
+	
+	
 
 	private DemographicRequestDTO saveDemographicRequest = null;
 	private DemographicRequestDTO updateDemographicRequest = null;
@@ -88,20 +94,20 @@ public class DemographicServiceUtilTest {
 
 		demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId("35760478648170");
-		demographicEntity.setApplicantDetailJson(Mockito.anyString().getBytes());
+		demographicEntity.setApplicantDetailJson((jsonObject.toJSONString()+"623744").getBytes());
 	}
 
 	@Test(expected = InvalidRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest1() {
 		saveDemographicRequest.setCreatedBy(null);
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"Save",Mockito.anyString()))
+		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId,"save","Pending_Appointment"))
 				.thenThrow(InvalidRequestParameterException.class);
 	}
 
 	@Test(expected = MissingRequestParameterException.class)
 	public void prepareDemographicEntityFailureTest2() {
 		String type = null;
-		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,Mockito.anyString()))
+		Mockito.when(demographicServiceUtil.prepareDemographicEntity(saveDemographicRequest, requestId, type,"Pending_Appointment"))
 				.thenThrow(MissingRequestParameterException.class);
 	}
 
@@ -110,39 +116,48 @@ public class DemographicServiceUtilTest {
 		Mockito.when(demographicServiceUtil.setterForCreateDTO(demographicEntity)).thenThrow(JsonParseException.class);
 	}
 
-	@Test
+	/*@Test
 	public void isNullFailureTest() {
 		assertThat(demographicServiceUtil.isNull(Mockito.anyCollection()), is(true));
-	}
+	}*/
 
 	@Test(expected = OperationNotAllowedException.class)
 	public void checkStatusForDeletionFailureTest() {
-		Mockito.when(demographicServiceUtil.checkStatusForDeletion(Mockito.anyString()))
+		Mockito.when(demographicServiceUtil.checkStatusForDeletion(StatusCodes.EXPIRED.getCode()))
 				.thenThrow(OperationNotAllowedException.class);
 	}
 
-	@Test(expected = ParseException.class)
-	public void dateSetterTest1() {
+//	@Test(expected = ParseException.class)
+//	public void dateSetterTest1() {
+//		Map<String, String> dateMap = new HashMap<>();
+//		dateMap.put(RequestCodes.fromDate.toString(), "2018-10-10");
+//		String format = "yyyy-MM-dd HH:mm:ss";
+//		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
+//	}
+	
+	
+	@Test(expected = DateParseException.class)
+	public void dateSetterEncodingTest2() throws Exception{
 		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put(RequestCodes.fromDate.toString(), "2018-10-10");
+		dateMap.put(RequestCodes.FROM_DATE.getCode(),"2018-10-10");
 		String format = "yyyy-MM-dd HH:mm:ss";
-		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
+		demographicServiceUtil.dateSetter(dateMap, format);
 	}
 	
-	@Test(expected = SystemUnsupportedEncodingException.class)
-	public void dateSetterTest2() throws Exception {
+	@Test
+	public void dateSetterEncodingSuccess() {
 		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put(RequestCodes.fromDate.toString(), "2018-10-10");
+		Map<String, LocalDateTime> response = new HashMap<>();
+		dateMap.put(RequestCodes.FROM_DATE.getCode(), "2018-10-10 12:12:12");
+		dateMap.put(RequestCodes.TO_DATE.getCode(),"");
 		String format = "yyyy-MM-dd HH:mm:ss";
-		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(UnsupportedEncodingException.class);
+		response=demographicServiceUtil.dateSetter(dateMap, format);
+		assertEquals("2018-10-10T12:12:12",response.get(RequestCodes.FROM_DATE.getCode()).toString());
 	}
-
-	@Test(expected = UnsupportedEncodingException.class)
-	public void dateSetterEncodingTest() throws UnsupportedEncodingException {
-		Map<String, String> dateMap = new HashMap<>();
-		dateMap.put(RequestCodes.fromDate.toString(), URLEncoder.encode("", "UTF"));
-		String format = "yyyy-MM-dd HH:mm:ss";
-		Mockito.when(demographicServiceUtil.dateSetter(dateMap, format)).thenThrow(ParseException.class);
+	
+	@Test(expected = DateParseException.class)
+	public void getDateFromStringFailureTest() throws Exception {
+		demographicServiceUtil.getDateFromString("abc");
 	}
 
 }

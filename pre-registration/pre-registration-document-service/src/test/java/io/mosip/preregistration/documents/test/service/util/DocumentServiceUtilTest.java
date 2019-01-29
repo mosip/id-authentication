@@ -70,7 +70,7 @@ public class DocumentServiceUtilTest {
 		serviceUtil.parseDocumentId("1234!@#$&^$$~~~~~~#@!$^%");
 	}
 	
-	@Test(expected=InvalidDocumnetIdExcepion.class)
+	@Test(expected=InvalidRequestParameterException.class)
 	public void isValidCatCodeTest() throws Exception{
 		serviceUtil.isValidCatCode("13fww");
 	}
@@ -117,10 +117,16 @@ public class DocumentServiceUtilTest {
 		serviceUtil.isValidRequest(documentDto);
 	}
 	
-	@Test(expected=DemographicGetDetailsException.class)
-	public void callGetPreRegInfoRestServiceFailureTest() {
-		
+	@Test(expected=VirusScannerException.class)
+	public void virusscannerFailureTest() throws Exception{
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenThrow(java.io.IOException.class);
+		serviceUtil.isVirusScanSuccess(mockMultipartFile);
 	}
+	
+//	@Test(expected=DemographicGetDetailsException.class)
+//	public void callGetPreRegInfoRestServiceFailureTest() {
+//		
+//	}
 	
 
 }

@@ -50,6 +50,14 @@ spec:
         backend:
           serviceName: kernel-idrepo-service
           servicePort: 8090
+      - path: /authmanager
+        backend:
+          serviceName: kernel-auth-service
+          servicePort: 8091
+      - path: /ldapmanager
+        backend:
+          serviceName: kernel-ldap-service
+          servicePort: 8092
       - path: /config
         backend:
           serviceName: kernel-config-server
@@ -90,6 +98,10 @@ spec:
         backend:
           serviceName: registration-processor-dmz
           servicePort: 8081
+      - path: /registrationstatus
+        backend:
+          serviceName: registration-processor-registration-status-api
+          servicePort: 8083
       - path: /nginx
         backend:
           serviceName: sample-nginx

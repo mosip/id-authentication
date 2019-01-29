@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -60,7 +59,7 @@ public class BookingDAO {
 			availabilityList = bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId, regDate);
 		} catch (DataAccessLayerException e) {
 			throw new AvailablityNotFoundException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
 		return availabilityList;
 
@@ -71,11 +70,7 @@ public class BookingDAO {
 	 * @return boolean
 	 */
 	public boolean saveBookAppointment(RegistrationBookingEntity entity) {
-		if (registrationBookingRepository.save(entity) != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return registrationBookingRepository.save(entity) != null;
 	}
 
 	/**
@@ -94,7 +89,7 @@ public class BookingDAO {
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
 		return localDatList;
 	}
@@ -120,7 +115,7 @@ public class BookingDAO {
 
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
 		return entity;
 	}
@@ -140,7 +135,7 @@ public class BookingDAO {
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
 		}
 		return entity;
 	}
@@ -159,7 +154,7 @@ public class BookingDAO {
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
 		}
 		return entity;
 	}
@@ -178,7 +173,7 @@ public class BookingDAO {
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
 		return entity;
 	}
@@ -197,30 +192,11 @@ public class BookingDAO {
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
 		}
 		return entity;
 	}
 	
-	/**
-	 * @param bookingEntity
-	 * @return RegistrationBookingEntity
-	 */
-	/*public RegistrationBookingEntity getRegistrationEntityByPreId(String preId) {
-		RegistrationBookingEntity entity = null;
-		try {
-//			entity = registrationBookingRepository.findBy
-			if (entity == null) {
-				throw new AppointmentBookingFailedException(ErrorCodes.PRG_BOOK_RCI_005.toString(),
-						ErrorMessages.APPOINTMENT_BOOKING_FAILED.toString());
-			}
-		} catch (DataAccessLayerException e) {
-			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
-		}
-		return entity;
-	}*/
-
 	/**
 	 * @param registrationCenterId
 	 * @param statusCode
@@ -231,13 +207,13 @@ public class BookingDAO {
 		List<RegistrationBookingEntity> entityList = new ArrayList<>();
 		try {
 			entityList=registrationBookingRepository.findByRegistrationCenterIdAndStatusCode(registrationCenterId, statusCode);
-			if (entityList == null && entityList.isEmpty()) {
+			if (entityList.isEmpty()) {
 				throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_013.toString(),
 						ErrorMessages.BOOKING_DATA_NOT_FOUND.toString());
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
+					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
 		}
 		return entityList;
 	}
@@ -254,7 +230,7 @@ public class BookingDAO {
 			entityList=bookingAvailabilityRepository.findByRegcntrIdAndRegDateOrderByFromTimeAsc(regcntrId, regDate);
 		} catch (DataAccessLayerException e) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_BOOK_RCI_016.toString(),
-					ErrorMessages.BOOKING_TABLE_NOT_ACCESSIBLE.toString());
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.toString());
 		}
 		return entityList;
 	}
@@ -264,13 +240,7 @@ public class BookingDAO {
 	 * @return boolean
 	 */
 	public boolean saveAvailability(AvailibityEntity entity) {
-		if (bookingAvailabilityRepository.save(entity) != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return bookingAvailabilityRepository.save(entity) != null;
 	}
-	
-	
 
 }

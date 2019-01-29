@@ -23,8 +23,5 @@ local.properties
 *.logs
 *.ucls
 *.useq
-/Key_Store/
-/Packet_Store/
-
-Packet_Store/
-PacketStore/
+/PacketStore/*
+/PreRegPacketStore/*

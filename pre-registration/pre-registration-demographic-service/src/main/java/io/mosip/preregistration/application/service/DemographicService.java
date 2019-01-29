@@ -203,14 +203,14 @@ public class DemographicService {
 		PreRegistrationViewDTO viewDto = null;
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			requestParamMap.put(RequestCodes.userId.toString(), userId);
+			requestParamMap.put(RequestCodes.USER_ID.getCode(), userId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				List<DemographicEntity> demographicEntityList = demographicRepository.findByCreatedBy(userId,
 						StatusCodes.CONSUMED.getCode());
 				if (!serviceUtil.isNull(demographicEntityList)) {
 					for (DemographicEntity demographicEntity : demographicEntityList) {
 						String identityValue = serviceUtil.getValueFromIdentity(
-								demographicEntity.getApplicantDetailJson(), RequestCodes.fullName.toString());
+								demographicEntity.getApplicantDetailJson(), RequestCodes.FULLNAME.getCode());
 						viewDto = new PreRegistrationViewDTO();
 						viewDto.setPreId(demographicEntity.getPreRegistrationId());
 						viewDto.setFullname(identityValue);
@@ -256,7 +256,7 @@ public class DemographicService {
 		List<PreRegistartionStatusDTO> statusList = new ArrayList<>();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preRegId);
+			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
@@ -295,7 +295,7 @@ public class DemographicService {
 		DeletePreRegistartionDTO deleteDto = new DeletePreRegistartionDTO();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preregId);
+			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preregId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preregId);
 				if (!serviceUtil.isNull(demographicEntity)) {
@@ -340,7 +340,7 @@ public class DemographicService {
 		MainListResponseDTO<DemographicResponseDTO> response = new MainListResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preRegId);
+			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
@@ -379,8 +379,8 @@ public class DemographicService {
 		UpdateResponseDTO<String> response = new UpdateResponseDTO<>();
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			requestParamMap.put(RequestCodes.preRegistrationId.toString(), preRegId);
-			requestParamMap.put(RequestCodes.statusCode.toString(), status);
+			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
+			requestParamMap.put(RequestCodes.STATUS_CODE.getCode(), status);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				statusCheck(demographicEntity, status);
@@ -438,18 +438,18 @@ public class DemographicService {
 		Map<String, String> reqDateRange = new HashMap<>();
 		Map<String, String> inputDateRange = new HashMap<>();
 		try {
-			reqDateRange.put(RequestCodes.fromDate.toString(), fromDate);
-			reqDateRange.put(RequestCodes.toDate.toString(), toDate);
+			reqDateRange.put(RequestCodes.FROM_DATE.getCode(), fromDate);
+			reqDateRange.put(RequestCodes.TO_DATE.getCode(), toDate);
 			String format = "yyyy-MM-dd HH:mm:ss";
-			String parsedFromDate = URLDecoder.decode(reqDateRange.get(RequestCodes.fromDate.toString()), "UTF-8");
-			String parsedToDate = URLDecoder.decode(reqDateRange.get(RequestCodes.toDate.toString()), "UTF-8");
-			inputDateRange.put(RequestCodes.fromDate.toString(), parsedFromDate);
-			inputDateRange.put(RequestCodes.toDate.toString(), parsedToDate);
+			String parsedFromDate = URLDecoder.decode(reqDateRange.get(RequestCodes.FROM_DATE.getCode()), "UTF-8");
+			String parsedToDate = URLDecoder.decode(reqDateRange.get(RequestCodes.TO_DATE.getCode()), "UTF-8");
+			inputDateRange.put(RequestCodes.FROM_DATE.getCode(), parsedFromDate);
+			inputDateRange.put(RequestCodes.TO_DATE.getCode(), parsedToDate);
 			if (ValidationUtil.requstParamValidator(inputDateRange)) {
 				Map<String, LocalDateTime> reqTimeStamp = serviceUtil.dateSetter(reqDateRange, format);
 				List<DemographicEntity> details = demographicRepository.findBycreateDateTimeBetween(
-						reqTimeStamp.get(RequestCodes.fromDate.toString()),
-						reqTimeStamp.get(RequestCodes.toDate.toString()));
+						reqTimeStamp.get(RequestCodes.FROM_DATE.getCode()),
+						reqTimeStamp.get(RequestCodes.TO_DATE.getCode()));
 				response.setResponse(getPreRegistrationByDateEntityCheck(details));
 			}
 		} catch (Exception ex) {
@@ -534,14 +534,14 @@ public class DemographicService {
 		if (serviceUtil.isNull(demographicRequest.getPreRegistrationId())) {
 			demographicRequest.setPreRegistrationId(pridGenerator.generateId());
 			demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
-					requestId, RequestCodes.Save.toString(), StatusCodes.PENDING_APPOINTMENT.getCode()));
+					requestId, RequestCodes.SAVE.getCode(), StatusCodes.PENDING_APPOINTMENT.getCode()));
 		} else {
 			demographicEntity = demographicRepository
 					.findBypreRegistrationId(demographicRequest.getPreRegistrationId());
 			if (!serviceUtil.isNull(demographicEntity)) {
 				demographicRepository.deleteByPreRegistrationId(demographicRequest.getPreRegistrationId());
 				demographicEntity = demographicRepository.save(serviceUtil.prepareDemographicEntity(demographicRequest,
-						requestId, RequestCodes.Update.toString(), demographicEntity.getStatusCode()));
+						requestId, RequestCodes.UPDATE.getCode(), demographicEntity.getStatusCode()));
 			} else {
 				throw new RecordNotFoundException(ErrorCodes.PRG_PAM_APP_005.name(),
 						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.name());

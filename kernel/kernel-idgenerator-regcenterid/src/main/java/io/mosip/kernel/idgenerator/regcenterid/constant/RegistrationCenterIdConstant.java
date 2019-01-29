@@ -9,8 +9,8 @@ package io.mosip.kernel.idgenerator.regcenterid.constant;
  */
 public enum RegistrationCenterIdConstant {
 	ID_BASE(10), 
-	REG_CEN_ID_FETCH_EXCEPTION("KER-RIG-001","Error occured while fetching id"), 
-	REG_CEN_ID_INSERT_EXCEPTION("KER-RIG-002","Error occured while inserting id");
+	REG_CEN_ID_FETCH_EXCEPTION("KER-RCG-001","Error occured while fetching id"), 
+	REG_CEN_ID_INSERT_EXCEPTION("KER-RCG-002","Error occured while inserting id");
 
 	/**
 	 * The value.

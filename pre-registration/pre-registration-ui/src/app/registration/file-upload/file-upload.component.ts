@@ -43,7 +43,7 @@ export class FileUploadComponent implements OnInit {
         {
           name: 'CNIE Card',
           value: 'Electricity Bill'
-        },
+        }
         // {
         //   name: 'Passbook',
         //   value: 'Passbook'
@@ -95,7 +95,6 @@ export class FileUploadComponent implements OnInit {
           name: 'CNIE Card',
           value: 'CNIE Card'
         }
-        
       ]
     }
   ];
@@ -202,11 +201,11 @@ export class FileUploadComponent implements OnInit {
   removeFile(applicantIndex, fileIndex) {
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
       // this.users[applicantIndex].files[0][fileIndex] = '';
-      this.users[applicantIndex].files[0].splice(fileIndex, 1);
       if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
-        // this.fileName = '';
-        // this.fileByteArray = '';
+        this.fileName = '';
+        this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
       }
+      this.users[applicantIndex].files[0].splice(fileIndex, 1);
       // this.documentIndex = fileIndex;
     });
 
@@ -248,8 +247,20 @@ export class FileUploadComponent implements OnInit {
     this.userFiles.doc_typ_code = fileResponse.response[0].documentType;
     this.userFiles.multipartFile = this.fileByteArray;
     this.userFiles.prereg_id = this.users[0].preRegId;
+    let i = 0;
+    let flag = false;
+    for (let element of this.users[this.step].files[0]) {
+      i++;
+      if (element.doc_cat_code == this.userFiles.doc_cat_code) {
+        this.users[this.step].files[0][i - 1] = this.userFiles;
+        flag = true;
+        break;
+      }
+    }
+    if (!flag) {
+      this.users[this.step].files[0].push(this.userFiles);
+    }
 
-    this.users[this.step].files[0].push(this.userFiles);
     this.userFiles = new FileModel();
     this.registration.updateUser(this.step, this.users[this.step]);
     console.log('updated users array', this.users);

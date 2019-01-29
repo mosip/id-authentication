@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -26,14 +27,40 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 @SpringBootTest
 public class UinValidatorTest {
 
+	@Value("${mosip.kernel.uin.test.valid-uin}")
+	private String validUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-first-digit-zero-uin}")
+	private String invalidFirstDigitZeroUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-first-digit-one-uin}")
+	private String invalidFirstDigitOneUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-length-uin}")
+	private String invalidLengthUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-extra-length-uin}")
+	private String invalidExtraLengthUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-checksum-uin}")
+	private String invalidChecksumUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-repeating-number-uin}")
+	private String invalidRepeatingNumberUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-sequential-number-uin}")
+	private String invalidSequentialNumberUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-alpha-numeric-number-uin}")
+	private String invalidAlphaNumericUin;
+
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
 
 	@Test
 	public void uinValidatorImplTest() {
 
-		String id = "426789089018";
-		assertEquals(true, uinValidatorImpl.validateId(id));
+		assertEquals(true, uinValidatorImpl.validateId(validUin));
 	}
 
 	@Test(expected = InvalidIDException.class)
@@ -53,57 +80,49 @@ public class UinValidatorTest {
 	@Test(expected = InvalidIDException.class)
 	public void testFistDigitOne() throws InvalidIDException {
 
-		String id = "126789089018";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidFirstDigitOneUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testFistDigitZero() throws InvalidIDException {
 
-		String id = "026789089018";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidFirstDigitZeroUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testUinLenght() throws InvalidIDException {
 
-		String id = "42678908901";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidLengthUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testUinOverLenght() throws InvalidIDException {
 
-		String id = "4267890890188";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidExtraLengthUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testUinCkeckSum() throws InvalidIDException {
 
-		String id = "42678908900";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidChecksumUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testRepeated() throws InvalidIDException {
 
-		String id = "426789089011";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidRepeatingNumberUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testSequential() throws InvalidIDException {
 
-		String id = "426789089123";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidSequentialNumberUin);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void testAlphanumeric() throws InvalidIDException {
 
-		String id = "42678908912A";
-		uinValidatorImpl.validateId(id);
+		uinValidatorImpl.validateId(invalidAlphaNumericUin);
 	}
 
 }
