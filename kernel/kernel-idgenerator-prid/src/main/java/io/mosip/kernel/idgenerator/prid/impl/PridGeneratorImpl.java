@@ -52,7 +52,7 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	public void pridGeneratorPostConstruct() {
 		generatedIdLength = pridLength - 1;
 		lowerBound = Long.parseLong(
-				PridGeneratorConstants.TWO + StringUtils.repeat(PridGeneratorConstants.ZERO, generatedIdLength - 1));
+				PridGeneratorConstants.ZERO + StringUtils.repeat(PridGeneratorConstants.ZERO, generatedIdLength - 1));
 		upperBound = Long.parseLong(StringUtils.repeat(PridGeneratorConstants.NINE, generatedIdLength));
 	}
 

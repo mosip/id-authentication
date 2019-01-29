@@ -1,6 +1,7 @@
 
 package io.mosip.kernel.idvalidator.prid.impl;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -53,6 +54,9 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 */
 	@Value("${mosip.kernel.prid.repeating-limit}")
 	private int repeatLimit;
+
+	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
+	private List<String> notStartWith;
 
 	/**
 	 * Field for zero digit
@@ -166,7 +170,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 		 * Checking prid length , sequence length, repeat limit and block limit is not
 		 * equal or less than zero.
 		 */
-		//checkInput(pridLength, sequenceLimit, repeatLimit, blockLimit);
+		// checkInput(pridLength, sequenceLimit, repeatLimit, blockLimit);
 		/**
 		 * 
 		 * Check PRID, It Shouldn't be Null or empty
@@ -307,7 +311,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
-				|| regexFilter(id, repeatingBlockpattern));
+				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id));
 	}
 
 	/**
@@ -341,18 +345,34 @@ public class PridValidatorImpl implements PridValidator<String> {
 		return false;
 	}
 
-	
 	/**
 	 * Checking prid length , sequence length, repeat limit and block limit is not
 	 * equal or less than zero.
 	 */
 	/*
-	private void checkInput(int pridLength, int sequenceLimit, int repeatLimit, int blockLimit) {
-		if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <= 0 || blockLimit <= 0) {
-			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(),
-					PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage());
+	 * private void checkInput(int pridLength, int sequenceLimit, int repeatLimit,
+	 * int blockLimit) { if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <=
+	 * 0 || blockLimit <= 0) { throw new
+	 * InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(
+	 * ), PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage()); } }
+	 */
+
+	/**
+	 * Method to validate that the prid should not contains the specified digit at
+	 * first index
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if found otherwise false
+	 */
+	private boolean validateNotStartWith(String id) {
+		if (notStartWith != null && !notStartWith.isEmpty()) {
+			for (String str : notStartWith) {
+				if (id.startsWith(str))
+					return true;
+			}
 		}
+		return false;
 	}
-	*/
 
 }
