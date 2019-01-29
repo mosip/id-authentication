@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -25,54 +26,66 @@ import io.mosip.kernel.idgenerator.rid.repository.RidRepository;
 @SpringBootTest
 public class RidGeneratorTest {
 
+	@Value("${mosip.kernel.rid.test.centerId}")
+	private String centerId;
+
+	@Value("${mosip.kernel.rid.test.machineId}")
+	private String machineId;
+
+	@Value("${mosip.kernel.rid.test.invalid-length-centerId}")
+	private String invalidLengthCenterId;
+
+	@Value("${mosip.kernel.rid.test.invalid-length-machineId}")
+	private String invalidMachineId;
+
 	@MockBean
 	RidRepository repository;
 
 	@Autowired
 	RidGenerator<String> ridGeneratorImpl;
 
-	//@Test
+	// @Test
 	public void generateIdTypeTest() {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId("12345", "23432"), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
 	}
 
 	@Test(expected = NullValueException.class)
 	public void centerIdNullExceptionTest() {
-		ridGeneratorImpl.generateId(null, "23432");
+		ridGeneratorImpl.generateId(null, machineId);
 	}
 
 	@Test(expected = NullValueException.class)
 	public void dongleIdNullExceptionTest() {
-		ridGeneratorImpl.generateId("1234", null);
+		ridGeneratorImpl.generateId(centerId, null);
 	}
 
 	@Test(expected = EmptyInputException.class)
 	public void centerIdEmptyExceptionTest() {
-		ridGeneratorImpl.generateId("", "23432");
+		ridGeneratorImpl.generateId("", machineId);
 	}
 
 	@Test(expected = EmptyInputException.class)
 	public void dongleIdEmptyExceptionTest() {
-		ridGeneratorImpl.generateId("1234", "");
+		ridGeneratorImpl.generateId(centerId, "");
 	}
 
 	@Test(expected = InputLengthException.class)
 	public void centreIdLengthTest() {
-		ridGeneratorImpl.generateId("123", "23456");
+		ridGeneratorImpl.generateId(invalidLengthCenterId, machineId);
 	}
 
 	@Test(expected = InputLengthException.class)
 	public void dongleIdLengthTest() {
-		ridGeneratorImpl.generateId("1234", "23");
+		ridGeneratorImpl.generateId(centerId, invalidMachineId);
 	}
 
 	@Test
 	public void generateIdFirstSequenceTypeTest() {
 		when(repository.findLastRid()).thenReturn(null);
-		assertThat(ridGeneratorImpl.generateId("12345", "23432"), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
 	}
 
 	@Test
@@ -80,7 +93,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(99999);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId("12345", "23432"), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId), isA(String.class));
 	}
 
 	@Test
@@ -88,7 +101,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId("1234", "23432", 4, 5), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId, 5, 5), isA(String.class));
 	}
 
 	@Test(expected = RidException.class)
@@ -96,7 +109,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenThrow(DataRetrievalFailureException.class);
-		ridGeneratorImpl.generateId("1234", "23432", 4, 5);
+		ridGeneratorImpl.generateId(centerId, machineId, 5, 5);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,7 +118,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.save(entity)).thenThrow(DataRetrievalFailureException.class, DataAccessLayerException.class);
-		ridGeneratorImpl.generateId("1234", "23432", 4, 5);
+		ridGeneratorImpl.generateId(centerId, machineId, 5, 5);
 	}
 
 	@Test(expected = InputLengthException.class)
@@ -113,7 +126,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId("1234", "23432", 0, 5), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId, 0, 5), isA(String.class));
 	}
 
 }
