@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.idgenerator.prid.util;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -42,6 +43,9 @@ public class PridFilterUtils {
 	 */
 	@Value("${mosip.kernel.prid.repeating-limit}")
 	private int repeatingLimit;
+	
+	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
+	private List<String> notStartWith;
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
@@ -122,7 +126,7 @@ public class PridFilterUtils {
 	 */
 	public boolean isValidId(String id) {
 
-		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern));
+		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id));
 	}
 
 	/**
@@ -153,6 +157,24 @@ public class PridFilterUtils {
 	private static boolean regexFilter(String id, Pattern pattern) {
 		if (pattern != null)
 			return pattern.matcher(id).find();
+		return false;
+	}
+	
+	/**
+	 * Method to validate that the prid should not contains the specified digit at
+	 * first index
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if found otherwise false
+	 */
+	private boolean validateNotStartWith(String id) {
+		if (notStartWith != null && !notStartWith.isEmpty()) {
+			for (String str : notStartWith) {
+				if (id.startsWith(str))
+					return true;
+			}
+		}
 		return false;
 	}
 
