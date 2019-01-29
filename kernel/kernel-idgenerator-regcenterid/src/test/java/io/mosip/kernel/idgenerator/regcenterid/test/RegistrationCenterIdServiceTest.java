@@ -23,6 +23,9 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
 @RunWith(SpringRunner.class)
 public class RegistrationCenterIdServiceTest {
 
+	@Value("${mosip.kernel.rcid.test.valid-initial-rcid}")
+	private int initialRcid;
+	
 	@Value("${mosip.kernel.rcid.test.valid-new-rcid}")
 	private String newRcid;
 	
@@ -32,13 +35,13 @@ public class RegistrationCenterIdServiceTest {
 	@MockBean
 	RegistrationCenterIdRepository repository;
 
-	//@Test
+	@Test
 	public void generateRegistrationCenterIdTest() {
 		RegistrationCenterId entity = new RegistrationCenterId();
-		entity.setRcid(1000);
+		entity.setRcid(initialRcid);
 		when(repository.findLastRCID()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateRegistrationCenterId(), is("1000"));
+		assertThat(service.generateRegistrationCenterId(), is(Integer.toString(initialRcid)));
 	}
 
 	@Test

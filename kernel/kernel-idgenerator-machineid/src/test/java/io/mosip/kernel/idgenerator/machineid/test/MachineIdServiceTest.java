@@ -23,6 +23,9 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
 @RunWith(SpringRunner.class)
 public class MachineIdServiceTest {
 	
+	@Value("${mosip.kernel.mid.test.valid-initial-mid}")
+	private int initialMid;
+	
 	@Value("${mosip.kernel.mid.test.valid-new-mid}")
 	private String newMid;
 	
@@ -32,13 +35,13 @@ public class MachineIdServiceTest {
 	@MockBean
 	MachineIdRepository repository;
 
-	//@Test
+	@Test
 	public void generateMachineIdTest() {
 		MachineId entity = new MachineId();
-		entity.setMId(1000);
+		entity.setMId(initialMid);
 		when(repository.findLastMID()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateMachineId(), is("1000"));
+		assertThat(service.generateMachineId(), is(Integer.toString(initialMid)));
 	}
 
 	@Test
