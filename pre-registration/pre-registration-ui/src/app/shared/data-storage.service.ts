@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { environment } from './../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Applicant } from '../registration/dashboard/modal/dashboard.modal';
 import { BookingModelRequest } from './booking-request.model';
 import * as appConstants from './../app.constants';
 import Utils from '../app.util';
 import { AppConfigService } from '../app-config.service';
+import { Applicant } from './models/dashboard-model/dashboard.modal';
 
 @Injectable({
   providedIn: 'root'
