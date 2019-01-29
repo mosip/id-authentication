@@ -23,8 +23,11 @@ import io.mosip.kernel.idgenerator.tspid.repository.TspRepository;
 @RunWith(SpringRunner.class)
 public class TspIdServiceTest {
 
+	@Value("${mosip.kernel.tspid.test.valid-initial-tspid}")
+	private int initialTspid;
+	
 	@Value("${mosip.kernel.tspid.test.valid-new-tspid}")
-	private String newTspId;
+	private int newTspId;
 	
 	@Autowired
 	TspIdGenerator<String> service;
@@ -32,22 +35,22 @@ public class TspIdServiceTest {
 	@MockBean
 	TspRepository tspRepository;
 
-	//@Test
+	@Test
 	public void generateNewIdTest() {
 		Tsp entity = new Tsp();
-		entity.setTspId(1000);
+		entity.setTspId(initialTspid);
 		when(tspRepository.findLastTspId()).thenReturn(null);
 		when(tspRepository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateId(), is("1000"));
+		assertThat(service.generateId(), is(Integer.toString(initialTspid)));
 	}
 
 	@Test
 	public void generateIdTest() {
 		Tsp entity = new Tsp();
-		entity.setTspId(1000);
+		entity.setTspId(initialTspid);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
 		when(tspRepository.updateTspId(Mockito.anyInt(), Mockito.anyInt(), Mockito.any())).thenReturn(1);
-		assertThat(service.generateId(), is(newTspId));
+		assertThat(service.generateId(), is(Integer.toString(newTspId)));
 	}
 
 	@Test(expected = TspIdException.class)
