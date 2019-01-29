@@ -16,6 +16,7 @@ import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { RequestModel } from '../demographic/modal/request.modal';
 import { DemoIdentityModel } from '../demographic/modal/demo.identity.modal';
 import * as appConstants from '../../app.constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-registration',
@@ -42,12 +43,19 @@ export class DashBoardComponent implements OnInit {
     public dialog: MatDialog,
     private dataStorageService: DataStorageService,
     private regService: RegistrationService,
-    private sharedService: SharedService
-  ) {}
-
+    private sharedService: SharedService,
+    private translate: TranslateService
+  ) {
+    //need to remove
+    // translate.addLangs(['eng', 'fra', 'ara']);
+    // translate.setDefaultLang(localStorage.getItem('langCode'));
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
+    //till here
+  }
   ngOnInit() {
     // sessionStorage.clear();
-    sessionStorage.removeItem('modifyUser');
+    this.regService.changeMessage({ modifyUser: 'false' });
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -297,11 +305,12 @@ export class DashBoardComponent implements OnInit {
     );
   }
 
-  onSelectUser(user: Applicant, event?: MatCheckboxChange) {
-    if (!event && user) {
-      this.selectedUsers.length = 0;
-      this.selectedUsers.push(user);
-    } else if (event && event.checked) {
+  onSelectUser(user: Applicant, event: MatCheckboxChange) {
+    // if (!event && user) {
+    //   this.selectedUsers.length = 0;
+    //   this.selectedUsers.push(user);
+    // } else
+    if (event && event.checked) {
       this.selectedUsers.push(user);
     } else {
       this.selectedUsers.splice(this.selectedUsers.indexOf(user));
@@ -328,6 +337,67 @@ export class DashBoardComponent implements OnInit {
     }
     this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
   }
+
+  onAcknowledgementView(applicationID: any) {
+    console.log(applicationID);
+  }
+
+  // private createIdentityJSON(identityModal: IdentityModel) {
+  // const identity = new IdentityModel(
+  //   identityModal.IDSchemaVersion,
+  //   [
+  //     new AttributeModel(identityModal.fullName[0].language, identityModal.fullName[0].value),
+  //     new AttributeModel(identityModal.fullName[1].language, identityModal.fullName[1].value)
+  //   ],
+  //   identityModal.dateOfBirth,
+  //   [
+  //     new AttributeModel(identityModal.gender[0].language, identityModal.gender[0].value),
+  //     new AttributeModel(identityModal.gender[1].language, identityModal.gender[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(identityModal.addressLine1[0].language, identityModal.addressLine1[0].value),
+  //     new AttributeModel(identityModal.addressLine1[1].language, identityModal.addressLine1[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(identityModal.addressLine2[0].language, identityModal.addressLine2[0].value),
+  //     new AttributeModel(identityModal.addressLine2[1].language, identityModal.addressLine2[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(identityModal.addressLine3[0].language, identityModal.addressLine3[0].value),
+  //     new AttributeModel(identityModal.addressLine3[1].language, identityModal.addressLine3[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(identityModal.region[0].language, identityModal.region[0].value),
+  //     new AttributeModel(identityModal.region[1].language, identityModal.region[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(identityModal.province[0].language, identityModal.province[0].value),
+  //     new AttributeModel(identityModal.province[1].language, identityModal.province[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(identityModal.city[0].language, identityModal.city[0].value),
+  //     new AttributeModel(identityModal.city[1].language, identityModal.city[1].value)
+  //   ],
+  //   [
+  //     new AttributeModel(
+  //       identityModal.localAdministrativeAuthority[0].language,
+  //       identityModal.localAdministrativeAuthority[0].value
+  //     ),
+  //     new AttributeModel(
+  //       identityModal.localAdministrativeAuthority[1].language,
+  //       identityModal.localAdministrativeAuthority[1].value
+  //     )
+  //   ],
+  //   identityModal.postalcode,
+  //   identityModal.mobileNumber,
+  //   identityModal.emailId,
+  //   identityModal.CNEOrPINNumber
+  // );
+
+  // return identity;
+
+  // }
+
   private createIdentityJSON(identityModal: IdentityModel) {
     const identity = new IdentityModel(
       [
