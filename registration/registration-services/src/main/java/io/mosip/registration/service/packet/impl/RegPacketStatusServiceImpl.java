@@ -196,24 +196,24 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"PacketIds for sync with server have been retrieved");
 
-		/** Create Response to Return to UI layer */
+		/* Create Response to Return to UI layer */
 		ResponseDTO response = new ResponseDTO();
 		SuccessResponseDTO successResponse;
 
-		/** Validator response service API creation */
+		/* Validator response service API creation */
 		final String SERVICE_NAME = RegistrationConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
 
-		/** prepare request params to pass through URI */
+		/* prepare request params to pass through URI */
 		Map<String, String> requestParamMap = new HashMap<>();
 		String packetIdList = packetIds.stream().map(Object::toString).collect(Collectors.joining(","));
 		requestParamMap.put(RegistrationConstants.PACKET_STATUS_SYNC_URL_PARAMETER, packetIdList);
 
 		try {
-			/** Obtain RegistrationStatusDTO from service delegate util */
+			/* Obtain RegistrationStatusDTO from service delegate util */
 			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME, requestParamMap,
 					false);
 			if (!registrations.isEmpty()) {
-				/** update the status of packets after sync with server */
+				/* update the status of packets after sync with server */
 				try {
 					updatePacketIdsByServerStatus(registrations);
 				} catch (RegBaseUncheckedException regBaseUncheckedException) {
@@ -223,7 +223,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 					return response;
 				}
-				/** Create Success response */
+				/* Create Success response */
 				successResponse = new SuccessResponseDTO();
 				successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
 				successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
@@ -234,7 +234,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"Success Response Created");
 			} else {
-				/** Create Error response */
+				/* Create Error response */
 				setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 				return response;
 			}
