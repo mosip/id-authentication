@@ -54,15 +54,10 @@ public class DeleteAuditLogsJob extends BaseJob {
 			this.jobId = loadContext(context);
 			auditService = applicationContext.getBean(AuditService.class);
 
-			// Run the Parent JOB always first
-
-			String centerId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-					.getRegistrationCenterId();
-
-			// Run the Parent JOB always first
+			/* Run the Parent JOB always first */
 			this.responseDTO = auditService.deleteAuditLogs();
 
-			// To run the child jobs after the parent job Success
+			/* To run the child jobs after the parent job Success */
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				executeChildJob(jobId, jobMap);
 			}
@@ -91,9 +86,6 @@ public class DeleteAuditLogsJob extends BaseJob {
 
 		LOGGER.debug(RegistrationConstants.DELETE_AUDIT_LOGS_JOB, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		SessionContext sessionContext = SessionContext.getInstance();
-		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
-
 		this.responseDTO = auditService.deleteAuditLogs();
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
