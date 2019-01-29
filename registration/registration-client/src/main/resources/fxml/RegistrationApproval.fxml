@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="approveRegistrationRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.eodapproval.EODController" styleClass="anchorPanebgColor">
+	<children>
+      <Accordion fx:id="approvalAccordion" layoutX="18.0" layoutY="54.0" prefHeight="435.0" prefWidth="920.0">
+        <panes>
+          <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="%pendingapproval" styleClass="titledPaneStyle">
+               <content>
+                  <AnchorPane fx:id="pendingApprovalAnchorPane" prefHeight="200.0" prefWidth="200.0"  styleClass="anchorPanebgColor"/>
+               </content>
+            </TitledPane>
+            <TitledPane fx:id="reRegisterTitledPane" animated="false" prefWidth="850.0" text="%reregister" styleClass="titledPaneStyle">
+               <content>
+                  <AnchorPane fx:id="reRegisterAnchorPane" prefHeight="200.0" prefWidth="200.0" styleClass="anchorPanebgColor"/>
+               </content></TitledPane>
+        </panes>
+      </Accordion>
+      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="24.0" layoutY="22.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Home.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/approveregistration">
+         <font>
+            <Font size="10.0" />
+         </font></Text>
+		<Label layoutX="461.0" layoutY="19.0" text="%eodprocess" />
+	</children>
+</AnchorPane>

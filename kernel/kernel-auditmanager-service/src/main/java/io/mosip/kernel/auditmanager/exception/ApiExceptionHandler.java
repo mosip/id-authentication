@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
+import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
 import io.mosip.kernel.core.exception.ErrorResponse;
 import io.mosip.kernel.core.exception.ServiceError;
 
@@ -40,7 +40,7 @@ public class ApiExceptionHandler {
 		BindingResult bindingResult = e.getBindingResult();
 		final List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
+			ServiceError error = new ServiceError(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
 					Character.toUpperCase(x.getField().charAt(0)) + x.getField().substring(1) + WHITESPACE
 							+ x.getDefaultMessage());
 			errorResponse.getErrors().add(error);

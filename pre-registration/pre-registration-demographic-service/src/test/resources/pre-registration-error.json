@@ -1,6 +1,7 @@
 {
-"identity": {
-"FullName": [{
+	"identity": {
+		"FullName": [
+			{
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
 			},
@@ -10,8 +11,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"dateOfBirth": [
-				{
+		"dateOfBirth": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -22,8 +23,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"gender":[
-{
+		"gender": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -35,7 +36,7 @@
 			}
 		],
 		"addressLine1": [
-{
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -46,8 +47,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"addressLine2": [
-{
+		"addressLine2": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -58,8 +59,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"addressLine3": [
-{
+		"addressLine3": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -70,8 +71,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"region": [
-{
+		"region": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -82,8 +83,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"province": [
-{
+		"province": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -94,8 +95,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"city": [
-{
+		"city": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -106,8 +107,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"postalcode": [
-{
+		"postalcode": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -118,8 +119,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"localAdministrativeAuthority": [
-{
+		"localAdministrativeAuthority": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -130,8 +131,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"emailId": [
-{
+		"emailId": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -142,8 +143,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"mobileNumber":[
-{
+		"mobileNumber": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -154,8 +155,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"CNEOrPINNumber": [
-{
+		"CNEOrPINNumber": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -166,8 +167,8 @@
 				"value": "Ibrahim"
 			}
 		],
-				"age": [
-{
+		"age": [
+			{
 				"language": "ar",
 				"label": "الاسم الاول",
 				"value": "ابراهيم"
@@ -178,5 +179,5 @@
 				"value": "Ibrahim"
 			}
 		]
-		}
-		}
+	}
+}

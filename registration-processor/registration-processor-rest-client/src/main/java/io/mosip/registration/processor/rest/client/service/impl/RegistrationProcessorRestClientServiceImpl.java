@@ -16,6 +16,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationProcessorRestClientServiceImpl.
  * 
@@ -127,6 +128,58 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 		}
 		return obj;
+	}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService#postApi(io.mosip.registration.processor.core.code.ApiName, java.util.List, java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+	 */
+	@Override
+	public Object postApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue, Object requestedData,
+			Class<?> responseType) throws ApisResourceAccessException {
+
+		Object obj = null;
+		String apiHostIpPort = env.getProperty(apiName.name());
+		UriComponentsBuilder builder = null;
+		if (apiHostIpPort != null)
+			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
+		if (builder != null) {
+
+			
+			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
+				for (String segment : pathsegments) {
+					if (!((segment == null) || (("").equals(segment)))) {
+						builder.pathSegment(segment);
+					}
+				}
+
+			}
+			if (!checkNull(queryParamName)) {
+				String[] queryParamNameArr = queryParamName.split(",");
+				String[] queryParamValueArr = queryParamValue.split(",");
+
+				for (int i = 0; i < queryParamNameArr.length; i++) {
+					builder.queryParam(queryParamNameArr[i], queryParamValueArr[i]);
+				}
+			}
+
+			try {
+				obj = restApiClient.postApi(builder.toUriString(), requestedData, responseType);
+
+			} catch (Exception e) {
+
+				throw new ApisResourceAccessException(
+						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(), e);
+
+			}
+		}
+		return obj;
+	}
+
+	private boolean checkNull(String queryParamName) {
+		
+		return ((queryParamName == null) || (("").equals(queryParamName)));
 	}
 
 }

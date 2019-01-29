@@ -27,9 +27,9 @@ public class MosipCamelBridgeTest {
 	
 	@Before
 	public void setUp(TestContext testContext) throws Exception {
+		System.setProperty("spring.profiles.active", "dev");
+		System.setProperty("spring.cloud.config.label", "master");
 		vertx = Vertx.vertx();
-		
-		
 		dto.setRid("1001");
 		dto.setRetryCount(0);
 		dto.setIsValid(false);

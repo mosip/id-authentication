@@ -28,16 +28,21 @@
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
+		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
+  	<javax.interceptor.version>1.2</javax.interceptor.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+		<spring.data.version>2.0.7.RELEASE</spring.data.version>
 
 		<!-- Miscellaneous -->
+		<vertx.version>3.6.2</vertx.version>
 		<javax.el-api.version>3.0.0</javax.el-api.version>
 		<glassfish.javax.el>2.2.6</glassfish.javax.el>
+		<javax.transaction-api.version>1.2</javax.transaction-api.version>
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
 		<jackson.version>2.9.5</jackson.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
@@ -50,6 +55,7 @@
 		<swagger.version>2.9.2</swagger.version>
 
 		<!-- Data Access -->
+		<hibernate.version>5.2.17.Final</hibernate.version>
 		<eclipselink.version>2.5.0</eclipselink.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
 		<h2.version>1.4.197</h2.version>
@@ -103,12 +109,13 @@
 		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 
 	<modules>
 		<module>kernel-core</module>
+		<module>kernel-auth-adapter</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
@@ -136,6 +143,7 @@
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-qrcodegenerator-zxing</module>
 
+		<!-- <module>kernel-uingenerator-service</module> -->
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
@@ -145,8 +153,11 @@
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-idrepo-service</module>
 		<module>kernel-syncdata-service</module>
+		<module>kernel-auth-service</module>
+		<module>kernel-ldap-service</module>
 		<module>kernel-config-server</module>
-
+		
+		
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-packetserver-http</module>
 		<module>kernel-idvalidator</module>
@@ -176,61 +187,6 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven.compiler.version}</version>
-					<configuration>
-						<source>${maven.compiler.source}</source>
-						<target>${maven.compiler.target}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.plugin.version}</version>
-					<configuration>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							</manifest>
-							<manifestEntries>
-								<Project-Name>${project.name}</Project-Name>
-								<Project-Version>${project.version}</Project-Version>
-								<Built-By>${user.name}</Built-By>
-								<Built-OS>${os.name}</Built-OS>
-								<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-								<Build-Date>${env.BUILD_ID}</Build-Date>
-								<Build-URL>${env.BUILD_URL}</Build-URL>
-							</manifestEntries>
-						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven.war.plugin.version}</version>
-					<configuration>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							</manifest>
-							<manifestEntries>
-								<Project-Name>${project.name}</Project-Name>
-								<Project-Version>${project.version}</Project-Version>
-								<Built-By>${user.name}</Built-By>
-								<Built-OS>${os.name}</Built-OS>
-								<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-								<Build-Date>${env.BUILD_ID}</Build-Date>
-								<Build-URL>${env.BUILD_URL}</Build-URL>
-							</manifestEntries>
-						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
@@ -248,6 +204,11 @@
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${maven.sonar.plugin.version}</version>
 				</plugin>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+			</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -282,7 +243,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven.javadoc.version}</version>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>

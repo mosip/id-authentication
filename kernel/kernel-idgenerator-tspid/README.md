@@ -1,8 +1,8 @@
 # kernel-idgenerator-tspid
 
-1- [Background & Design]
+[Background & Design](../../docs/design/kernel/kernel-idgenerator-tspid.md)
 
-2- API Documentation
+API Documentation
 
  ```
 mvn javadoc:javadoc
@@ -12,14 +12,16 @@ mvn javadoc:javadoc
  
  **Properties to be added in Spring application environment using this component**
  
+ ```
  mosip.kernel.tspid.length=4
+ ```
  
  [application-dev.properties](../../config/application-dev.properties)
 
 
  **Database properties**
  
-schema:ida
+schema:master
 
 table:tspid_seq
 

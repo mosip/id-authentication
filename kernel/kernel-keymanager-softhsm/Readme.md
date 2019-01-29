@@ -1,15 +1,28 @@
 ## kernel-keymanager-softhsm
-This api can be used for handling keys and certificates in SoftHSM. 
 
-1- [Background & Design](../../design/kernel/KeyManager.md)
+[Background & Design](../../docs/design/kernel/keymanager-softhsm.md)
 
-
-2- Api Documentation
+[Api Documentation]
 
 
 ```
 mvn javadoc:javadoc
 ```
+
+**Application Properties**
+
+```
+	mosip.kernel.keymanager.softhsm.config-path=/etc/softhsm2-demo.conf
+	#mosip.kernel.keymanager.softhsm.config-path=D\:\\SoftHSM2\\etc\\softhsm2-demo.conf
+	mosip.kernel.keymanager.softhsm.keystore-type PKCS11
+	mosip.kernel.keymanager.softhsm.keystore-pass=pwd
+	mosip.kernel.keymanager.softhsm.certificate.common-name=www.mosip.io
+	mosip.kernel.keymanager.softhsm.certificate.organizational-unit=MOSIP
+	mosip.kernel.keymanager.softhsm.certificate.organization=IITB
+	mosip.kernel.keymanager.softhsm.certificate.country=IN
+
+```
+
 
 To use this api, add this to dependency list:
 

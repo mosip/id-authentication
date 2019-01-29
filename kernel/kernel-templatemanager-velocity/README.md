@@ -1,10 +1,10 @@
 ## kernel-templatemanager-velocity
 
  
- 1- [Background & Design](../../design/kernel/kernel-templatemanager.md)
+[Background & Design](../../docs/design/kernel/kernel-templatemanager.md)
  
 
- 2- [API Documentation <TBA>](TBA)
+[API Documentation]
  
  ```
  mvn javadoc:javadoc

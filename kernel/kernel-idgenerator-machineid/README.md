@@ -1,6 +1,6 @@
 # kernel-idgenerator-machineid
 
-1- [Background & Design]
+1- [Background & Design](../../docs/design/kernel/kernel-idgenerator-machineid.md)
 
 2- API Documentation
 
@@ -12,7 +12,9 @@ mvn javadoc:javadoc
  
  **Properties to be added in Spring application environment using this component**
  
+ ```
  mosip.kernel.machineid.length=4
+ ```
  
  [application-dev.properties](../../config/application-dev.properties)
 

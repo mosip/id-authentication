@@ -11,14 +11,14 @@
 	</parent>
 
 	<artifactId>kernel-core</artifactId>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -87,8 +87,13 @@
 			<artifactId>commons-codec</artifactId>
 			<version>${commons-codec}</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.interceptor</groupId>
+			<artifactId>javax.interceptor-api</artifactId>
+			<version>${javax.interceptor.version}</version>
+		</dependency>
 	</dependencies>
-	
-	
+
+
 
 </project>
