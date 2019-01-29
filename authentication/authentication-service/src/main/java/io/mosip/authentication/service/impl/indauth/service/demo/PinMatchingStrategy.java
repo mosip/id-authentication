@@ -8,6 +8,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -16,7 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * 
  * @author Sanjay Murali
  */
-public enum PinMatchingStrategy implements MatchingStrategy {
+public enum PinMatchingStrategy implements TextMatchingStrategy {
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
@@ -33,7 +34,7 @@ public enum PinMatchingStrategy implements MatchingStrategy {
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
-	
+
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
@@ -74,10 +75,10 @@ public enum PinMatchingStrategy implements MatchingStrategy {
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
-	
+
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(PinMatchingStrategy.class);
-	
+
 	/**
 	 * Log error.
 	 *

@@ -8,16 +8,15 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.spi.irisauth.provider.IrisProvider;
 
 /**
  * The Enum IrisMatchingStrategy.
  * @author Arun Bose S
  */
-public enum IrisMatchingStrategy implements MatchingStrategy {
+public enum IrisMatchingStrategy implements TextMatchingStrategy {
 	/** The Constant idvid. */
-	
-	
 	
 	PARTIAL(MatchingStrategyType.PARTIAL,(Object reqInfo,Object entityInfo,Map<String,Object> props)->{
 		 
@@ -87,15 +86,7 @@ public enum IrisMatchingStrategy implements MatchingStrategy {
 		return matchFunction;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#match(java.util.Map, java.util.Map, java.util.Map)
-	 */
-	@Override
-	public int match(Map<String, String> reqValues, Map<String, String> entityValues,
-			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
-		
-		return matchFunction.match(reqValues, entityValues, matchProperties);
-	}
+	
 
 	/**
 	 * Gets the idvid.

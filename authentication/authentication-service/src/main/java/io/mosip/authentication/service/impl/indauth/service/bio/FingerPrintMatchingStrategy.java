@@ -10,13 +10,14 @@ import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProv
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * @author Dinesh Karuppiah.T
  *
  */
-public enum FingerPrintMatchingStrategy implements MatchingStrategy {
+public enum FingerPrintMatchingStrategy implements TextMatchingStrategy {
 
 	PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
