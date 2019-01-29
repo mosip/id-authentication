@@ -1,23 +1,4 @@
 <routes xmlns="http://camel.apache.org/schema/spring">
-	<!-- Packet Validator to OSI Validator Route -->
-	<route id="packet-validator-->osi-validator route">
-		<from uri="vertx:packet-validator-bus-out" />
-		<log
-			message="packet-validator-->osi-validator route ${bodyAs(String)}" />
-		<choice>
-			<when>
-				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
-				<to uri="vertx:osi-validator-bus-in" />
-			</when>
-			<when>
-				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
-				<to uri="vertx:retry" />
-			</when>
-			<otherwise>
-				<to uri="vertx:error" />
-			</otherwise>
-		</choice>
-	</route>
 	<route id="packet-validator-->external-stage route">
 		<from uri="vertx:packet-validator-bus-out" />
 		<log message="packet-validator-->external-stage ${bodyAs(String)}" />
@@ -27,10 +8,13 @@
 				<setHeader headerName="CamelHttpMethod">
 					<constant>POST</constant>
 				</setHeader>
+				<setHeader headerName="Content-Type">
+					<constant>application/json</constant>
+				</setHeader>
 				<setBody>
-				<simple>${body}</simple>
+					<simple>${bodyAs(String)}</simple>
 				</setBody>
-				<to uri="http://localhost:8080"/>
+				<to uri="http://localhost:8080/test" />
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
