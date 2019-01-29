@@ -1,14 +1,19 @@
 package io.mosip.registration.processor.stages.osivalidator;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -17,8 +22,12 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHistoryResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
@@ -27,13 +36,11 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
-import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UMCValidator.
  * 
@@ -265,10 +272,13 @@ public class UMCValidator {
 	 * @return true, if is valid UMC
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
+	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, UnsupportedEncodingException {
+	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
 
 		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
@@ -318,11 +328,13 @@ public class UMCValidator {
 	 * @param registrationId
 	 *            the registration id
 	 * @return the center machine dto
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
+	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
 	private RegistrationCenterMachineDto getCenterMachineDto(String registrationId)
-			throws UnsupportedEncodingException {
+			throws JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
 
 		identity = getIdentity(registrationId);
 
@@ -355,13 +367,19 @@ public class UMCValidator {
 	 * @param registrationId
 	 *            the registration id
 	 * @return the identity
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
+	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	private Identity getIdentity(String registrationId) throws UnsupportedEncodingException {
+	private Identity getIdentity(String registrationId)
+			throws IOException, JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-				PacketMetaInfo.class);
+
+		String packetMetaInfoString = IOUtils.toString(packetMetaInfoStream, StandardCharsets.UTF_8.name());
+
+		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtils.jsonStringToJavaObject(PacketMetaInfo.class,
+				packetMetaInfoString);
 		return packetMetaInfo.getIdentity();
 
 	}
@@ -372,9 +390,143 @@ public class UMCValidator {
 	 * @param rcmDto
 	 *            the rcm dto
 	 * @return true, if is valid device
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
 	 */
-	private boolean isValidDevice(RegistrationCenterMachineDto rcmDto) {
+	private boolean isValidDevice(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+		boolean isValidDevice = false;
+		if (isDeviceActive(rcmDto) && isDeviceMappedWithCenter(rcmDto)) {
+			isValidDevice = true;
+		}
+		return isValidDevice;
+	}
 
-		return false;
+	/**
+	 * Checks if is device mapped with center.
+	 *
+	 * @param rcmDto
+	 *            the rcm dto
+	 * @return true, if is device mapped with center
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
+	private boolean isDeviceMappedWithCenter(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+		boolean isDeviceMappedWithCenter = false;
+		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
+		for (FieldValue fieldValue : registreredDeviceIds) {
+			String deviceId = null;
+			deviceId = fieldValue.getValue();
+			List<String> pathsegments = new ArrayList<>();
+			pathsegments.add(rcmDto.getRegcntrId());
+			pathsegments.add(deviceId);
+			pathsegments.add(rcmDto.getPacketCreationDate());
+
+			RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = (RegistrationCenterDeviceHistoryResponseDto) registrationProcessorRestService
+					.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments, "", "",
+							RegistrationCenterDeviceHistoryResponseDto.class);
+			isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
+					registrationCenterDeviceHistoryResponseDto);
+			if (!isDeviceMappedWithCenter) {
+				break;
+			}
+
+		}
+		return isDeviceMappedWithCenter;
+	}
+
+	/**
+	 * Validate device mapped with center response.
+	 *
+	 * @param registrationCenterDeviceHistoryResponseDto
+	 *            the registration center device history response dto
+	 * @return true, if successful
+	 */
+	private boolean validateDeviceMappedWithCenterResponse(
+			RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto) {
+		boolean isDeviceMappedWithCenter = false;
+		if (registrationCenterDeviceHistoryResponseDto == null) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+
+		} else {
+			RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDto = registrationCenterDeviceHistoryResponseDto
+					.getRegistrationCenterDeviceHistoryDetails();
+			if (registrationCenterDeviceHistoryDto == null) {
+				this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+
+			} else {
+
+				if (registrationCenterDeviceHistoryDto.getIsActive()) {
+					isDeviceMappedWithCenter = true;
+				} else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+
+				}
+
+			}
+		}
+		return isDeviceMappedWithCenter;
+
+	}
+
+	/**
+	 * Checks if is device active.
+	 *
+	 * @param rcmDto
+	 *            the rcm dto
+	 * @return true, if is device active
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
+	private boolean isDeviceActive(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
+		boolean isDeviceActive = false;
+		List<FieldValue> registreredDeviceIds = identity.getCapturedRegisteredDevices();
+		for (FieldValue fieldValue : registreredDeviceIds) {
+			String deviceId = null;
+			deviceId = fieldValue.getValue();
+			List<String> pathsegments = new ArrayList<>();
+			pathsegments.add(deviceId);
+			pathsegments.add(primaryLanguagecode);
+			pathsegments.add(rcmDto.getPacketCreationDate());
+
+			DeviceHistoryResponseDto deviceHistoryResponsedto = (DeviceHistoryResponseDto) registrationProcessorRestService
+					.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", DeviceHistoryResponseDto.class);
+			isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto);
+			if (!isDeviceActive) {
+				break;
+			}
+
+		}
+		return isDeviceActive;
+	}
+
+	/**
+	 * Validate device response.
+	 *
+	 * @param deviceHistoryResponsedto
+	 *            the device history responsedto
+	 * @return true, if successful
+	 */
+	private boolean validateDeviceResponse(DeviceHistoryResponseDto deviceHistoryResponsedto) {
+		boolean isDeviceActive = false;
+		if (deviceHistoryResponsedto == null) {
+			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+
+		} else {
+			List<DeviceHistoryDto> dtos = deviceHistoryResponsedto.getDeviceHistoryDetails();
+			if (deviceHistoryResponsedto.getDeviceHistoryDetails() == null) {
+				this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+
+			} else {
+				DeviceHistoryDto deviceHistoryDto = dtos.get(0);
+				if (deviceHistoryDto.getIsActive()) {
+					isDeviceActive = true;
+				} else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+
+				}
+
+			}
+		}
+		return isDeviceActive;
 	}
 }

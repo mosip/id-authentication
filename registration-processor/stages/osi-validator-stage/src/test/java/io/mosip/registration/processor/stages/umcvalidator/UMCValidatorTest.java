@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
@@ -70,7 +72,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void isValidUMCSuccessTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void isValidUMCSuccessTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -110,7 +113,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void UMCMappingNotFoundTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void UMCMappingNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -143,7 +147,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -183,7 +188,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void machineIdNotFoundTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void machineIdNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -221,7 +227,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void machinesNotFoundTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void machinesNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -257,7 +264,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void machineNotActiveTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void machineNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
+			IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -296,7 +304,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
@@ -334,7 +343,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
@@ -373,7 +383,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 		RegistrationCenterMachineDto rcmDto = new RegistrationCenterMachineDto();
 		rcmDto.setIsActive(true);
 		rcmDto.setLatitude("13.0049");
@@ -421,8 +432,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void noRegistrationCentersFoundInMasterTest()
-			throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void noRegistrationCentersFoundInMasterTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 
 		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 
@@ -457,8 +468,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void noRegistrationCenterIdsFoundInMasterTest()
-			throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void noRegistrationCenterIdsFoundInMasterTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
@@ -497,7 +508,8 @@ public class UMCValidatorTest {
 	}
 
 	@Test
-	public void registrationCenternotActiveTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+	public void registrationCenternotActiveTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(false);
