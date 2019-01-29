@@ -93,7 +93,7 @@ public class JsonValidatorConfigServerExceptionTest {
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
-	@Test(expected = HttpRequestException.class)
+	@Test(expected = JsonSchemaIOException.class)
 	public void testForInvalidSchemaFileName() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, IOException, JsonSchemaIOException, FileIOException {
 		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
@@ -111,7 +111,7 @@ public class JsonValidatorConfigServerExceptionTest {
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
-	@Test(expected = NullJsonSchemaException.class)
+	@Test(expected = JsonSchemaIOException.class)
 	public void testForNullJsonSchemaSyntax() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, JsonSchemaIOException, FileIOException, IOException {
 		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
