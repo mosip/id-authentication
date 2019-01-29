@@ -27,7 +27,7 @@ public class MachineIdServiceTest {
 	private int initialMid;
 	
 	@Value("${mosip.kernel.mid.test.valid-new-mid}")
-	private String newMid;
+	private int newMid;
 	
 	@Autowired
 	MachineIdGenerator<String> service;
@@ -45,14 +45,14 @@ public class MachineIdServiceTest {
 	}
 
 	@Test
-	public void generateRegCenterIdTest() {
+	public void generateNextMachineIdTest() {
 		MachineId entity = new MachineId();
-		entity.setMId(1000);
+		entity.setMId(initialMid);
 		MachineId entityResponse = new MachineId();
-		entityResponse.setMId(1001);
+		entityResponse.setMId(newMid);
 		when(repository.findLastMID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateMachineId(), is(newMid));
+		assertThat(service.generateMachineId(), is(Integer.toString(newMid)));
 	}
 
 	@Test(expected = MachineIdServiceException.class)

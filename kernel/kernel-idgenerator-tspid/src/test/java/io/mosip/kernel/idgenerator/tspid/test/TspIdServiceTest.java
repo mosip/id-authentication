@@ -27,7 +27,7 @@ public class TspIdServiceTest {
 	private int initialTspid;
 	
 	@Value("${mosip.kernel.tspid.test.valid-new-tspid}")
-	private String newTspId;
+	private int newTspId;
 	
 	@Autowired
 	TspIdGenerator<String> service;
@@ -47,10 +47,10 @@ public class TspIdServiceTest {
 	@Test
 	public void generateIdTest() {
 		Tsp entity = new Tsp();
-		entity.setTspId(1000);
+		entity.setTspId(initialTspid);
 		when(tspRepository.findLastTspId()).thenReturn(entity);
 		when(tspRepository.updateTspId(Mockito.anyInt(), Mockito.anyInt(), Mockito.any())).thenReturn(1);
-		assertThat(service.generateId(), is(newTspId));
+		assertThat(service.generateId(), is(Integer.toString(newTspId)));
 	}
 
 	@Test(expected = TspIdException.class)
