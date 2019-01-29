@@ -10,6 +10,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.repositories.PreRegistrationDataSyncRepository;
 
@@ -76,6 +77,20 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 				RegistrationConstants.APPLICATION_ID, "Update the deleted records");
 		
 		return preRegistrationRepository.update(preReg);
+		
+	}
+
+	@Override
+	public void deleteAll(List<PreRegistrationList> preRegistrationLists) {
+		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_UPDATE - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Delete records started");
+		/** Parase List to Iterable */
+		Iterable<PreRegistrationList> iterablePreRegistrationList = preRegistrationLists;
+
+		preRegistrationRepository.deleteInBatch(iterablePreRegistrationList);
+		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_UPDATE - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "delete records ended");
+		
 	}
 
 }

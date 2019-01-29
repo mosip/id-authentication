@@ -54,9 +54,9 @@ public class SyncTransactionDAOTest {
 		LinkedList<SyncTransaction> syncTransactions= new LinkedList<>();
 		syncTransactions.add(syncTransaction);
 		
-		Mockito.when(syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNot(new Timestamp(Mockito.anyLong()),Mockito.anyString())).thenReturn(syncTransactions);
+		Mockito.when(syncTranscRepository.findByCrDtimeAfter(new Timestamp(Mockito.anyLong()))).thenReturn(syncTransactions);
 
-		assertEquals(jobTransactionDAOImpl.getSyncTransactions(new Timestamp(Mockito.anyLong()),Mockito.anyString()), syncTransactions);
+		assertEquals(jobTransactionDAOImpl.getSyncTransactions(new Timestamp(Mockito.anyLong())), syncTransactions);
 
 		
 	}

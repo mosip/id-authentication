@@ -93,6 +93,6 @@ public interface RegistrationDAO {
 	 * @param clientStatus status of resgistrationPacket
 	 * @return list of registrations
 	 */
-	List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes, String clientStatus);
+	List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes);
 
 }

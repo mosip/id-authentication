@@ -163,7 +163,7 @@ public class RegistrationDAOTest {
 
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();
-		UserDetail regUserDetail=new UserDetail();
+		UserDetail regUserDetail = new UserDetail();
 
 		regUserDetail.setId("Mosip123");
 		regUserDetail.setName("RegistrationOfficer");
@@ -199,10 +199,8 @@ public class RegistrationDAOTest {
 	@Test
 	public void getRegistrationsToBeDeletedTest() {
 		List<Registration> registrations = null;
-		when(registrationRepository.findByCrDtimeBeforeAndClientStatusCodeNot(new Timestamp(Mockito.anyLong()),
-				Mockito.anyString())).thenReturn(registrations);
-		assertNull(
-				registrationDAOImpl.getRegistrationsToBeDeleted(new Timestamp(Mockito.anyLong()), Mockito.anyString()));
+		when(registrationRepository.findByCrDtimeBefore(new Timestamp(Mockito.anyLong()))).thenReturn(registrations);
+		assertNull(registrationDAOImpl.getRegistrationsToBeDeleted(new Timestamp(Mockito.anyLong())));
 
 	}
 
@@ -236,4 +234,6 @@ public class RegistrationDAOTest {
 
 		registrationDAOImpl.getPacketsToBeSynched(statusCodes);
 	}
+	
+	
 }

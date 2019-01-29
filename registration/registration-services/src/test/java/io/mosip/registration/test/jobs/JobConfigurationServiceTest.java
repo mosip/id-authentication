@@ -1,5 +1,6 @@
 package io.mosip.registration.test.jobs;
 
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doNothing;
 
 import java.sql.Timestamp;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
@@ -67,10 +69,10 @@ public class JobConfigurationServiceTest {
 
 	@Mock
 	SyncTransactionDAO syncJobTransactionDAO;
-	
+
 	@Mock
 	JobExecutionContext jobExecutionContext;
-	
+
 	@Mock
 	JobDetail jobDetail;
 
@@ -88,13 +90,12 @@ public class JobConfigurationServiceTest {
 		syncJob.setSyncFrequency("0/5 * * * * ?");
 		syncJob.setIsActive(true);
 		syncJobList.add(syncJob);
-		
 
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
 		});
 		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
-		
+
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(syncJobList);
 
 	}
@@ -109,53 +110,64 @@ public class JobConfigurationServiceTest {
 	public void startJobs() throws SchedulerException {
 		BaseJob job = new PacketSyncStatusJob();
 
-		// SchedulerFactoryBean
-		// schedulerFactoryBean=Mockito.mock(SchedulerFactoryBean.class);
-		// doNothing().when((schedulerFactoryBean)).getScheduler();//.scheduleJob(Mockito.any(),
-		// Mockito.any()));
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenReturn(new Date());
 
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startScheduler(applicationContext);
-		jobConfigurationService.startScheduler(applicationContext);
+		assertSame(RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE,
+				jobConfigurationService.startScheduler(applicationContext).getSuccessResponseDTO().getMessage());
 	}
 
 	@Test
 	public void startJobsShedulerExceptionTest() throws SchedulerException {
 		BaseJob job = new PacketSyncStatusJob();
 
-		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
-		//Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenThrow(SchedulerException.class);
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
 
+		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
+		doNothing().when(scheduler).clear();
 		initiateJobTest();
-		//Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startScheduler(applicationContext);
-		
-	
+		assertSame(RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE,
+				jobConfigurationService.startScheduler(applicationContext).getErrorResponseDTOs().get(0).getMessage());
+
 	}
-	
-	
+
+	@Test
+	public void startJobsShedulerExceptionTest2() throws SchedulerException {
+		BaseJob job = new PacketSyncStatusJob();
+
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
+		// Mockito.when(scheduler.scheduleJob(Mockito.any(),
+		// Mockito.any())).thenThrow(SchedulerException.class);
+
+		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
+		initiateJobTest();
+		// Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
+		// jobConfigurationService.startScheduler(applicationContext);
+
+	}
 
 	@Test
 	public void stopJobsTest() throws SchedulerException {
 
 		Mockito.when(schedulerFactoryBean.isRunning()).thenReturn(true);
+		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
+		doNothing().when(scheduler).clear();
+
 		doNothing().when(schedulerFactoryBean).stop();
 		jobConfigurationService.stopScheduler();
-		
+
 		Mockito.when(schedulerFactoryBean.isRunning()).thenReturn(false);
 		jobConfigurationService.stopScheduler();
-		
+
 	}
 
 	@Test
 	public void stopJobsExceptionTest() throws SchedulerException {
 		Mockito.when(schedulerFactoryBean.isRunning()).thenThrow(RuntimeException.class);
 		jobConfigurationService.stopScheduler();
-		
-		
+
 	}
 
 	@Test
@@ -163,21 +175,19 @@ public class JobConfigurationServiceTest {
 		initiateJobTest();
 		List<JobExecutionContext> jobExecutionContexts = new ArrayList<>();
 		jobExecutionContexts.add(jobExecutionContext);
-		
+
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		Mockito.when(scheduler.getCurrentlyExecutingJobs()).thenReturn(jobExecutionContexts);
 		Mockito.when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
 		Mockito.when(jobDetail.getKey()).thenReturn(new JobKey("1234"));
-		
-		
-		
+
 		jobConfigurationService.getCurrentRunningJobDetails();
 	}
 
 	@Test
 	public void getCurrentRunningJobDetailsEmptyTest() throws SchedulerException {
 		List<JobExecutionContext> jobExecutionContexts = new ArrayList<>();
-		
+
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		Mockito.when(scheduler.getCurrentlyExecutingJobs()).thenReturn(jobExecutionContexts);
 		jobConfigurationService.getCurrentRunningJobDetails();
@@ -186,10 +196,11 @@ public class JobConfigurationServiceTest {
 	@Test
 	public void getCurrentRunningJobDetailsExceptionTest() throws SchedulerException {
 		List<JobExecutionContext> jobExecutionContexts = new ArrayList<>();
-		
+
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
 		jobConfigurationService.getCurrentRunningJobDetails();
 	}
+
 	@Test
 	public void executeJobTest() throws SchedulerException {
 		initiateJobTest();
@@ -238,13 +249,12 @@ public class JobConfigurationServiceTest {
 
 		syncTransactions.add(syncTransaction);
 
-		Timestamp req =new Timestamp(System.currentTimeMillis());
-		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any(),Mockito.anyString())).thenReturn(syncTransactions);
+		Timestamp req = new Timestamp(System.currentTimeMillis());
+		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any())).thenReturn(syncTransactions);
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getSuccessResponseDTO());
 
 		syncTransactions.clear();
-
-		Mockito.when(syncJobTransactionDAO.getAll()).thenReturn(syncTransactions);
+		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any())).thenReturn(syncTransactions);
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getErrorResponseDTOs());
 
 	}

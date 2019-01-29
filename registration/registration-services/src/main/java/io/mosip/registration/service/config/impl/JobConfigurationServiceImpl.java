@@ -280,7 +280,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			} else {
 				List<SyncDataProcessDTO> dataProcessDTOs = executingJobList.stream().map(jobExecutionContext -> {
 
-					SyncJobDef syncJobDef = syncJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
+					SyncJobDef syncJobDef = syncActiveJobMap.get(jobExecutionContext.getJobDetail().getKey().getName());
 
 					return constructDTO(syncJobDef.getId(), syncJobDef.getName(), RegistrationConstants.JOB_RUNNING,
 							new Timestamp(System.currentTimeMillis()).toString());
@@ -399,7 +399,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		Timestamp req = new Timestamp(cal.getTimeInMillis());
 
 		/* Get All sync Transaction Details from DataBase */
-		List<SyncTransaction> syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req,RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		List<SyncTransaction> syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req);
 
 		if (!isNull(syncTransactionList) && !isEmpty(syncTransactionList)) {
 
@@ -408,9 +408,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			List<SyncDataProcessDTO> syncDataProcessDTOs = syncTransactionList.stream().map(syncTransaction -> {
 
-				String jobName = (syncJobMap.get(syncTransaction.getSyncJobId()) == null)
-						? syncTransaction.getSyncJobId()
-						: syncJobMap.get(syncTransaction.getSyncJobId()).getName();
+				String jobName = (syncActiveJobMap.get(syncTransaction.getSyncJobId()) == null)
+						? RegistrationConstants.JOB_UNKNOWN
+						: syncActiveJobMap.get(syncTransaction.getSyncJobId()).getName();
 
 				return constructDTO(syncTransaction.getSyncJobId(), jobName, syncTransaction.getStatusCode(),
 						syncTransaction.getCrDtime().toString());
@@ -447,13 +447,5 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		}
 	}
 
-	private boolean isNull(List list) {
-		return list == null;
-
-	}
-
-	private boolean isEmpty(List list) {
-		return list.isEmpty();
-	}
 
 }

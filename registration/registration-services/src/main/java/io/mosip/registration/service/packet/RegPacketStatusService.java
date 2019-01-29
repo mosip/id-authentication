@@ -20,7 +20,7 @@ public interface RegPacketStatusService {
 	/**
 	 * @return response DTO
 	 */
-	ResponseDTO deleteReRegistrationPackets();
+	ResponseDTO deleteRegistrationPackets();
 	
 	
 }

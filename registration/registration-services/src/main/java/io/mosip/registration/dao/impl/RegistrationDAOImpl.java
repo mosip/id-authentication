@@ -256,12 +256,12 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * @see io.mosip.registration.dao.RegistrationDAO#getRegistrationsToBeDeleted(java.sql.Timestamp, java.lang.String)
 	 */
 	@Override
-	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes, String clientStatus) {
+	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes) {
 		
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on crDtime and status");
 
-		return registrationRepository.findByCrDtimeBeforeAndClientStatusCodeNot(crDtimes, clientStatus);
+		return registrationRepository.findByCrDtimeBefore(crDtimes);
 
 	}
 

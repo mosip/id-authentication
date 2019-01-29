@@ -19,10 +19,13 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.impl.NotificationServiceImpl;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @Service
@@ -41,6 +44,9 @@ public class BaseService {
 
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
+
+	@Autowired
+	private UserOnboardDAO userOnboardDAO;
 
 	/**
 	 * create error response
@@ -131,6 +137,7 @@ public class BaseService {
 	protected String getUserIdFromSession() {
 
 		String userId = null;
+
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		if (userContext != null) {
 			userId = userContext.getUserId();
@@ -150,8 +157,68 @@ public class BaseService {
 	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
 
 		LOGGER.debug("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
-		
+
 		return machineMappingDAO.isValidDevice(deviceType, serialNo);
+	}
+
+	public boolean isNull(List list) {
+		/* Check Whether the list is Null or not */
+		return list == null;
+
+	}
+
+	public boolean isEmpty(List list) {
+		/* Check Whether the list is empty or not */
+		return list.isEmpty();
+	}
+
+	public String getStationId(String macAddress) {
+		String stationId = null;
+		try {
+			/* Get Station ID */
+			stationId = userOnboardDAO.getStationID(macAddress);
+		} catch (RegBaseCheckedException baseCheckedException) {
+			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					baseCheckedException.getMessage());
+
+		}
+		return stationId;
+	}
+
+	public String getCenterId() {
+		/* Initialize Center Id */
+		String centerId = null;
+
+		/* Get Station ID */
+		String stationId = getStationId(getMacAddress());
+
+		if (stationId != null) {
+			/* Get Center Id */
+			centerId = getCenterId(stationId);
+		}
+
+		return centerId;
+	}
+
+	public String getCenterId(String stationId) {
+		String centerId = null;
+		if (stationId != null) {
+			try {
+				/* Get Center ID */
+				centerId = userOnboardDAO.getCenterID(stationId);
+			} catch (RegBaseCheckedException baseCheckedException) {
+				LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						baseCheckedException.getMessage());
+
+			}
+		}
+		return centerId;
+	}
+
+	public String getMacAddress() {
+		/* Get Mac Address */
+		return RegistrationSystemPropertiesChecker.getMachineId();
+
 	}
 
 }

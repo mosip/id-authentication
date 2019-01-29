@@ -23,6 +23,7 @@ import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.RegTransactionRepository;
 import io.mosip.registration.repositories.RegistrationRepository;
 
 /**
@@ -37,13 +38,19 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	@Autowired
 	private RegistrationRepository registrationRepository;
 
+	@Autowired
+	private RegTransactionRepository regTransactionRepository;
+
 	/**
 	 * Object for Logger
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusDAOImpl.class);
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.RegPacketStatusDAO#getPacketIdsByStatusUploaded()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.RegPacketStatusDAO#getPacketIdsByStatusUploaded()
 	 */
 	@Override
 	public List<Registration> getPacketIdsByStatusUploaded() {
@@ -52,30 +59,46 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 
 		return registrationRepository
 				.findByclientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
-		
+
 	}
 
-		/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.dao.RegPacketStatusDAO#get(java.lang.String)
 	 */
 	@Override
 	public Registration get(String registrationId) {
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Get registration has been started");
-	
-		return registrationRepository.findById(Registration.class,
-				registrationId);
+
+		return registrationRepository.findById(Registration.class, registrationId);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.RegPacketStatusDAO#update(io.mosip.registration.entity.Registration)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.RegPacketStatusDAO#update(io.mosip.registration.
+	 * entity.Registration)
 	 */
 	@Override
 	public Registration update(Registration registration) {
 		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Update registration has been started");
 		return registrationRepository.update(registration);
-	
+
+	}
+
+	@Override
+	public void delete(Registration registration) {
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Delete registration has been started");
+
+		Iterable<RegistrationTransaction> iterableTransaction = registration.getRegistrationTransaction();
+		regTransactionRepository.deleteInBatch(iterableTransaction);
+		registrationRepository.deleteById(registration.getId());
+
 	}
 
 }
