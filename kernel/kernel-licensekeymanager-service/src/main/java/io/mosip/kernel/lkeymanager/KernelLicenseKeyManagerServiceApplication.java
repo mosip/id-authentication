@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Spring Boot Runner class for LicenseKeyManager Service.
  * 
  * @author Sagar Mahapatra
- * @since 1.0
+ * @since 1.0.0
  *
  */
 @SpringBootApplication

@@ -10,6 +10,6 @@ public interface LicenseKeyManagerService {
 
 	public String mapLicenseKey(LicenseKeyMappingDto licenseKeyMappingDto);
 
-	public List<String> fetchLicenseKeyPermissions(String licenseKey);
+	public List<String> fetchLicenseKeyPermissions(String tspID, String licenseKey);
 
 }

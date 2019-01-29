@@ -27,7 +27,6 @@ import io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService;
  */
 @RestController
 public class LicenseKeyController {
-
 	/**
 	 * Autowired reference for {@link LicenseKeyManagerService}.
 	 */
@@ -67,7 +66,8 @@ public class LicenseKeyController {
 	 * @return the permissions fetched.
 	 */
 	@GetMapping(value = "/v1.0/license/fetch")
-	public ResponseEntity<List<String>> fetchLicenseKeyPermissions(@RequestParam("licenseKey") String licenseKey) {
-		return new ResponseEntity<>(licenseKeyManagerService.fetchLicenseKeyPermissions(licenseKey), HttpStatus.OK);
+	public ResponseEntity<List<String>> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
+			@RequestParam("licenseKey") String licenseKey) {
+		return new ResponseEntity<>(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId,licenseKey), HttpStatus.OK);
 	}
 }
