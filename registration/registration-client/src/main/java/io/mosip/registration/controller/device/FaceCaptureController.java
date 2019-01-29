@@ -90,7 +90,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FaceCapture screen started");
 
 		if (capturePhotoUsingDevice.equals(RegistrationConstants.ENABLE)
@@ -180,7 +180,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 * @param imageType type of image that is to be captured
 	 */
 	private void openWebCamWindow(String imageType) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 		if (webCameraController.isWebcamPluggedIn()) {
 			try {
@@ -207,7 +207,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private void saveBiometricDetails() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 			if (validateOperatorPhoto()) {
@@ -267,7 +267,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@Override
 	public void saveApplicantPhoto(BufferedImage capturedImage, String photoType) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
@@ -299,7 +299,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@Override
 	public void clearPhoto(String photoType) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "clearing the image that is captured");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && applicantBufferedImage != null) {
@@ -314,7 +314,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	private boolean validateApplicantImage() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
 
 		toggleBiometricException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()

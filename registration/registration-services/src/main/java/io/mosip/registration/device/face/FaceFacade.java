@@ -36,7 +36,7 @@ public class FaceFacade {
 	 */
 	public byte[] captureFace() {
 		
-		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Stub data for Face");
 		
 		return RegistrationConstants.FACE.toLowerCase().getBytes();
@@ -49,7 +49,7 @@ public class FaceFacade {
 	 */
 	public boolean validateFace(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails) {
 		
-		LOGGER.debug(LOG_REG_FACE_FACADE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_FACE_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Stubbing face details for user registration");
 		
 		return userFaceDetails.stream().anyMatch(face -> Arrays.equals(faceDetail.getFace(), face.getBioIsoImage()));

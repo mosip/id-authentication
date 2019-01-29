@@ -43,7 +43,7 @@ public class JobManagerImpl implements JobManager {
 	@Override
 	public Map<String, SyncJobDef> getChildJobs(final JobExecutionContext context) {
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
 
 		JobDetail jobDetail = context.getJobDetail();
@@ -63,7 +63,7 @@ public class JobManagerImpl implements JobManager {
 			
 		});
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
 
 		return syncjobMap;

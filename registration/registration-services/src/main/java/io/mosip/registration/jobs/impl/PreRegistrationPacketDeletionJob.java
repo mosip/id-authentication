@@ -41,14 +41,14 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED_CHILD_JOB - PRE_REGISTRATION_PACKET_DELETION_JOB",
+		LOGGER.info("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED_CHILD_JOB - PRE_REGISTRATION_PACKET_DELETION_JOB",
 				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job started");
 
 		this.responseDTO = preRegistrationDataSyncService.fetchAndDeleteRecords();
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_CHILD_JOB_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB",
+		LOGGER.info("REGISTRATION - PRE_REG_PACKET_DELETION_CHILD_JOB_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB",
 				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job ended");
 
 		return responseDTO;
@@ -62,7 +62,7 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 	 */
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED - PRE_REGISTRATION_PACKET_DELETION_JOB",
+		LOGGER.info("REGISTRATION - PRE_REG_PACKET_DELETION_STARTED - PRE_REGISTRATION_PACKET_DELETION_JOB",
 				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job started");
 		this.responseDTO = new ResponseDTO();
 
@@ -98,7 +98,7 @@ public class PreRegistrationPacketDeletionJob extends BaseJob {
 			throw baseUncheckedException;
 		}
 
-		LOGGER.debug("REGISTRATION - PRE_REG_PACKET_DELETION_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB",
+		LOGGER.info("REGISTRATION - PRE_REG_PACKET_DELETION_ENDED - PRE_REGISTRATION_PACKET_DELETION_JOB",
 				APPLICATION_NAME, APPLICATION_ID, "Pre-Registration Packet Deletion job ended");
 
 	}

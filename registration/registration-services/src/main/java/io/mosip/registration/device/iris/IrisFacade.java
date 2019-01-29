@@ -40,7 +40,7 @@ public class IrisFacade {
 
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration");
 
 			Map<String, Object> scannedIrisMap = getIrisScannedImage(irisType);
@@ -60,7 +60,7 @@ public class IrisFacade {
 				}
 			}
 
-			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Stubbing iris details for user registration completed");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_REG_IRIS_SCAN_EXP,
@@ -71,7 +71,7 @@ public class IrisFacade {
 
 	private Map<String, Object> getIrisScannedImage(String irisType) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
 
 			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream("/images/scanned-iris.png"));
@@ -98,7 +98,7 @@ public class IrisFacade {
 			scannedIris.put(RegistrationConstants.IMAGE_BYTE_ARRAY_KEY, scannedIrisBytes);
 			scannedIris.put(RegistrationConstants.IMAGE_SCORE_KEY, qualityScore);
 
-			LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration completed");
 
 			return scannedIris;
@@ -119,7 +119,7 @@ public class IrisFacade {
 	 */
 	public byte[] captureIris() {
 
-		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
+		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
 
 		return RegistrationConstants.IRIS_STUB.getBytes();
 	}
@@ -131,7 +131,7 @@ public class IrisFacade {
 	 */
 	public boolean validateIris(IrisDetailsDTO irisDetailsDTO, List<UserBiometric> userIrisDetails) {
 
-		LOGGER.debug(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Validating iris details for user registration");
 
 		userIrisDetails.forEach(

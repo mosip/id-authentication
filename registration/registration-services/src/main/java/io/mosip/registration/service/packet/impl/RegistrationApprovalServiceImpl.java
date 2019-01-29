@@ -54,7 +54,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	 * getEnrollmentByStatus(java.lang.String)
 	 */
 	public List<RegistrationApprovalDTO> getEnrollmentByStatus(String status) {
-		LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status started");
 		auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 				"Packets are in retrived based on state", "refId", "refIdType");
@@ -62,7 +62,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 		List<RegistrationApprovalDTO> list = new ArrayList<>();
 		try {
 			List<Registration> details = registrationDAO.getEnrollmentByStatus(status);
-			LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					"Packets which are in given state are retrived", "refId", "refIdType");
@@ -72,7 +72,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
 		}
-		LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status ended");
 		return list;
 	}
@@ -87,7 +87,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	 */
 	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) {
 
-		LOGGER.debug("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME, APPLICATION_ID, "Updating status of Packet");
+		LOGGER.info("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME, APPLICATION_ID, "Updating status of Packet");
 		auditFactory.audit(AuditEvent.PACKET_UPDATE, Components.PACKET_UPDATE,
 				"Packets which are in created state are updated according to desired status", "refId", "refIdType");
 

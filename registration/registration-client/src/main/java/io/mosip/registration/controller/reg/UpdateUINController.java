@@ -88,7 +88,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	 */
 	private void toggleFunction() {
 		try {
-			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
+			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
 			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
@@ -112,7 +112,7 @@ public class UpdateUINController extends BaseController implements Initializable
 
 			toggleLabel1.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
 			toggleLabel2.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
-			LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
+			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID, runtimeException.getMessage());
@@ -121,7 +121,7 @@ public class UpdateUINController extends BaseController implements Initializable
 
 	@FXML
 	public void submitUINUpdate(ActionEvent event) {
-		LOGGER.debug(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Updating UIN details");
+		LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Updating UIN details");
 		try {
 
 			if (StringUtils.isEmpty(uinId.getText())) {
