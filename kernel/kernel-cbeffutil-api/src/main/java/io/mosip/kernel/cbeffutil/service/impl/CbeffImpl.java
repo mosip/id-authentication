@@ -100,4 +100,14 @@ public class CbeffImpl implements CbeffI {
 		return bir.getBIR();
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.cbeffutil.service.CbeffI#getLatestBDBData(io.mosip.kernel.cbeffutil.service.search.query.CbeffSearch)
+	 */
+	@Override
+	public Map<String, String> getAllBDBData(byte[] xmlBytes, String type, String subType) throws Exception {
+		BIRType bir = CbeffValidator.getBIRFromXML(xmlBytes);
+		Map<String, String> bdbMap = CbeffValidator.getAllBDBData(bir, type,subType);
+		return bdbMap;
+	}
+
 }

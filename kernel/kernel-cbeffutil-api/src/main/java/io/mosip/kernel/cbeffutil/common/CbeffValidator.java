@@ -12,9 +12,9 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import javax.naming.spi.ObjectFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -119,16 +119,16 @@ public class CbeffValidator {
 	 * 
 	 */
 	private static long getFormatType(String type) {
-		switch (type) {
-		case "Finger":
+		switch (type.toLowerCase()) {
+		case "finger":
 			return CbeffConstant.FORMAT_TYPE_FINGER;
-		case "Iris":
+		case "iris":
 			return CbeffConstant.FORMAT_TYPE_IRIS;
-		case "FMR":
+		case "fmr":
 			return CbeffConstant.FORMAT_TYPE_FINGER_MINUTIAE;
-		case "Face":
+		case "face":
 			return CbeffConstant.FORMAT_TYPE_FACE;
-		case "HandGeometry":
+		case "handgeometry":
 			return CbeffConstant.FORMAT_TYPE_FACE;
 		}
 		return 0;
@@ -234,18 +234,28 @@ public class CbeffValidator {
 								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
 					} else if (singleType == null && singleSubTypeList.contains(singleAnySubType.value())) {
 						List<String> singleTypeStringList = convertToList(singleTypeList);
-						bdbMap.put(String.join(" ", singleSubTypeList) + "_" + String.join(" ", singleTypeStringList)
+						bdbMap.put(String.join(" ", singleTypeStringList)+"_"+String.join(" ", singleSubTypeList)
 								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
 					} else if (singleTypeList.contains(singleType)
 							&& singleSubTypeList.contains(singleAnySubType != null ? singleAnySubType.value() : null)
 							&& formatMatch) {
-						bdbMap.put(singleAnySubType.toString() + "_" + singleType.toString()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
+						bdbMap.put(singleType.toString()+"_"+singleAnySubType.value()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
 								new String(birType.getBDB(), "UTF-8"));
 					}
 				}
 			}
 		}
-		return bdbMap;
+		Map<String, String> map = new TreeMap<>(bdbMap);
+		Map<String,String> finalMap = new HashMap<>();
+		for(Map.Entry<String, String> mapEntry :map.entrySet())
+		{
+			String pattern = mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_"));
+			if(mapEntry.getKey().contains(pattern))
+			{
+				finalMap.put( mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_")), mapEntry.getValue());
+			}
+		}
+		return finalMap;
 	}
 
 	/**
@@ -269,11 +279,66 @@ public class CbeffValidator {
 	 * 
 	 * */
 	private static SingleType getSingleType(String type) {
+		if(isInEnum(type,SingleType.class))
+		{
+			return SingleType.valueOf(type);
+		}
+		else
+		{
 		switch (type) {
 		case "FMR":
 			return SingleType.FINGER;
 		default:
 			return SingleType.fromValue(type);
 		}
+		}
+	}
+
+	public static <E extends Enum<E>> boolean isInEnum(String value, Class<E> enumClass) {
+		  for (E e : enumClass.getEnumConstants()) {
+		    if(e.name().equals(value)) { return true; }
+		  }
+		  return false;
+		}
+	public static Map<String, String> getAllBDBData(BIRType bir, String type, String subType) throws Exception {
+		SingleType singleType = null;
+		SingleAnySubtypeType singleAnySubType = null;
+		Long formatType = null;
+		if (type != null) {
+			singleType = getSingleType(type);
+		}
+		if (subType != null) {
+			singleAnySubType = getSingleAnySubtype(subType);
+		}
+		if (type != null) {
+			formatType = getFormatType(type);
+		}
+		Map<String, String> bdbMap = new HashMap<>();
+		if (bir.getBIR() != null && bir.getBIR().size() > 0) {
+			for (BIRType birType : bir.getBIR()) {
+				BDBInfoType bdbInfo = birType.getBDBInfo();
+
+				if (bdbInfo != null) {
+					List<String> singleSubTypeList = bdbInfo.getSubtype();
+					List<SingleType> singleTypeList = bdbInfo.getType();
+					Long bdbFormatType = bdbInfo.getFormatType();
+					boolean formatMatch = bdbFormatType.equals(formatType);
+					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
+						bdbMap.put(singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
+								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
+					} else if (singleType == null && singleSubTypeList.contains(singleAnySubType.value())) {
+						List<String> singleTypeStringList = convertToList(singleTypeList);
+						bdbMap.put(String.join(" ", singleSubTypeList) + "_" + String.join(" ", singleTypeStringList)
+								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
+					} else if (singleTypeList.contains(singleType)
+							&& singleSubTypeList.contains(singleAnySubType != null ? singleAnySubType.value() : null)
+							&& formatMatch) {
+						bdbMap.put(singleAnySubType.toString() + "_" + singleType.toString()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
+								new String(birType.getBDB(), "UTF-8"));
+					}
+				}
+			}
+		}
+		return bdbMap;
 	}
 }

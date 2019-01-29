@@ -8,8 +8,6 @@ import java.util.Map;
 
 import io.mosip.kernel.cbeffutil.entity.BIR;
 import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
-import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
 
 /**
  * @author Ramadurai Pandian
@@ -28,4 +26,6 @@ public interface CbeffI {
 	public Map<String,String> getBDBBasedOnType(byte[] fileBytes,String type,String subType)  throws Exception;
 	
 	public List<BIRType> getBIRDataFromXML(byte[] xmlBytes) throws Exception;
+	
+	public Map<String, String> getAllBDBData(byte[] xmlBytes, String type, String subType) throws Exception;
 }

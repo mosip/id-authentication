@@ -40,7 +40,6 @@ public class CbeffImplTest {
 	public void setUp() throws Exception {
 		byte[] fingerImg = CbeffISOReader.readISOImage(tempPath + "/images/" + "ISOImage.iso", "Finger");
 		byte[] irisImg = CbeffISOReader.readISOImage(tempPath + "/images/" + "Sample_IRIS.iso", "Iris");
-
 		BIR rFinger = new BIR.BIRBuilder().withBdb(fingerImg)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
@@ -97,7 +96,7 @@ public class CbeffImplTest {
 		createList.add(face);
 
 		// Finger Minutiae is of Single Type - Finger and BDB Format Type - 2
-		BIR fingerMinutiae = new BIR.BIRBuilder().withBdb(fingerImg)
+		BIR fingerMinutiae1 = new BIR.BIRBuilder().withBdb(fingerImg)
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
 						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
@@ -105,9 +104,19 @@ public class CbeffImplTest {
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
 						.build())
 				.build();
+		
+		BIR fingerMinutiae2 = new BIR.BIRBuilder().withBdb(new String("fingerminutae").getBytes())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
+						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date(new Date().getTime()+(1 * 60 * 60 * 1000)))
+						.build())
+				.build();
 
 		updateList = new ArrayList<>();
-		updateList.add(fingerMinutiae);
+		updateList.add(fingerMinutiae1);
+		updateList.add(fingerMinutiae2);
 
 	}
 
@@ -157,18 +166,18 @@ public class CbeffImplTest {
 		CbeffImpl cbeffImpl = new CbeffImpl();
 		Map<String,String> testMap = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
 		Set<String> testSet1 = new HashSet<>();
-		testSet1.add("RIGHT_FINGER_2_1548649570248");
+		testSet1.add("FINGER_Right_2");
 		assertEquals(testMap.keySet(),testSet1);
 		Map<String,String> testMap1 = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", null);
 		Set<String> testSet2 = new HashSet<>();
-		testSet2.add("FINGER Right IndexFinger MiddleFinger RingFinger LittleFinger 2");
+		testSet2.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
 		assertEquals(testMap1.keySet(),testSet2);
 		Map<String,String> testMap2 = cbeffImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), null, "Right");
 		Set<String> testSet3 = new HashSet<>();
-		testSet3.add("Right IndexFinger MiddleFinger RingFinger LittleFinger FINGER 7");
-		testSet3.add("Right IRIS 9");
-		testSet3.add("Right IndexFinger MiddleFinger RingFinger LittleFinger FINGER 2");
-		testSet3.add("Left Right Thumb FINGER 7");
+		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_7");
+		testSet3.add("IRIS_Right_9");
+		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
+		testSet3.add("FINGER_Left Right Thumb_7");
 		assertEquals(testMap2.keySet(),testSet3);
 	}
 
