@@ -170,7 +170,6 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails(uin))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(uin)).thenReturn(entity);
-		Optional<StaticPinHistoryEntity> entitySpin=Optional.of(staticPinHistoryEntity);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		pinFacadeImpl.storeSpin(staticPinRequestDTO);
@@ -226,7 +225,6 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(vid)).thenReturn(entity);
-		Optional<StaticPinHistoryEntity> entitySpin=Optional.of(staticPinHistoryEntity);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		pinFacadeImpl.storeSpin(staticPinRequestDTO);
@@ -282,7 +280,6 @@ public class StaticPinFacadeImplTest {
 		Mockito.when(idInfoService.getIdInfo(repoDetails(vid))).thenReturn(idInfo);
 
 		Mockito.when(staticPinRepository.findById(vid)).thenReturn(entity);
-		Optional<StaticPinHistoryEntity> entitySpin=Optional.of(staticPinHistoryEntity);
 		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);
 		pinFacadeImpl.storeSpin(staticPinRequestDTO);

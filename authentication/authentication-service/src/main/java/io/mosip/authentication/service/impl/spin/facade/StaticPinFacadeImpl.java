@@ -30,7 +30,7 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Service
 public class StaticPinFacadeImpl implements StaticPinFacade {
-	
+
 	/** The Constant FAILED. */
 	private static final String FAILED = "N";
 
@@ -43,7 +43,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	/** The Environment */
 	@Autowired
 	private Environment env;
-	
+
 	/** The Static Pin Service */
 	@Autowired
 	private StaticPinService staticPinService;
@@ -51,15 +51,15 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 	/** The id auth service. */
 	@Autowired
 	private IdAuthService idAuthService;
-	
+
 	/** The AuditHelper */
 	@Autowired
 	private AuditHelper auditHelper;
 
 	/**
 	 * 
-	 * This method is to call the StaticPinServiceImpl and constructs the Response based on
-	 * the status got from StaticPinServiceImpl
+	 * This method is to call the StaticPinServiceImpl and constructs the Response
+	 * based on the status got from StaticPinServiceImpl
 	 * 
 	 * @param staticPinRequestDTO
 	 * @throws IdAuthenticationBusinessException
@@ -74,11 +74,11 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		String reqTime = staticPinRequestDTO.getReqTime();
 		Map<String, Object> idResDTO = null;
 		boolean status = false;
-		boolean isUin=false;
+		boolean isUin = false;
 		String resTime = null;
 		if (uin != null) {
 			idResDTO = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
-			isUin=Boolean.TRUE;
+			isUin = Boolean.TRUE;
 		} else if (vid != null) {
 			idResDTO = idAuthService.processIdType(IdType.VID.getType(), vid, false);
 		}
@@ -102,14 +102,15 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		if (status) {
 			staticPinResponseDTO.setStatus(SUCCESS);
 			staticPinResponseDTO.setErr(Collections.emptyList());
-			String idvId=isUin ? uin:vid;
-			String statusValue= status ? SUCCESS : FAILED;
-			String idvIdType= isUin ? IdType.UIN.getType():IdType.VID.getType();
+			String idvId = isUin ? uin : vid;
+			String statusValue = status ? SUCCESS : FAILED;
+			String idvIdType = isUin ? IdType.UIN.getType() : IdType.VID.getType();
 			String comment = status ? "Static Pin  Save Success" : "Static Pin  Save Failed";
 			// FIXME check the tspIdValue value,it is for tspID
-			String tspIdValue="TSP001";
-			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, tspIdValue, statusValue, comment, RequestType.STATICPIN_STORE_REQUEST);
-//			auditHelper.audit(AuditModules., AuditEvents., idvId, idvIdType, desc);
+			String tspIdValue = "TSP001";
+			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, tspIdValue, statusValue, comment,
+					RequestType.STATICPIN_STORE_REQUEST);
+			// auditHelper.audit(AuditModules., AuditEvents., idvId, idvIdType, desc);
 		}
 
 		return staticPinResponseDTO;
