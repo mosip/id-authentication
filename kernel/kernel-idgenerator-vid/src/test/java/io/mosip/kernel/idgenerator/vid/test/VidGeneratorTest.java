@@ -45,9 +45,8 @@ public class VidGeneratorTest {
 	}
 
 	@Test
-	public void vidValidationTest() {
+	public void generateIdTest() {
 		String result = vidGenerator.generateId();
 		assertTrue(vidValidator.validateId(result));
 	}
-
 }

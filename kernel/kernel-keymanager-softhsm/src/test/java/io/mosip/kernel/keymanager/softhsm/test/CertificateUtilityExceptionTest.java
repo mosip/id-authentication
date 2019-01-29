@@ -23,11 +23,9 @@ public class CertificateUtilityExceptionTest {
 
 	@Before
 	public void setUp() throws Exception {
-
 		provider = new BouncyCastleProvider();
 		Security.addProvider(provider);
 		random = new SecureRandom();
-
 	}
 
 	@Test(expected = KeystoreProcessingException.class)
