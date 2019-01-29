@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
-import java.time.LocalDateTime;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +37,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 public class UMCValidatorTest {
 	@InjectMocks
 	UMCValidator umcValidator;
-	
+
 	@Mock
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
@@ -45,537 +45,494 @@ public class UMCValidatorTest {
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	RegistrationCenterMachineDto rcmDto;
 	RegOsiDto regOsi;
+
 	@Before
 	public void setUp() {
-		InternalRegistrationStatusDto registrationStatusDto= new InternalRegistrationStatusDto();
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
-		rcmDto=new RegistrationCenterMachineDto();
-		regOsi=new RegOsiDto();
+		rcmDto = new RegistrationCenterMachineDto();
+		regOsi = new RegOsiDto();
 		rcmDto.setIsActive(true);
 		rcmDto.setLatitude("13.0049");
 		rcmDto.setLongitude("80.24492");
 		rcmDto.setMachineId("yyeqy26356");
-		rcmDto.setPacketCreationDate(LocalDateTime.parse("2018-11-28T15:34:20.122"));
+		rcmDto.setPacketCreationDate("2018-11-28T15:34:20.122");
 		rcmDto.setRegcntrId("12245");
 		rcmDto.setRegId("2018782130000121112018103016");
-		 
+
 		regOsi.setOfficerId("O1234");
-	
 
 		regOsi.setSupervisorId("S1234");
-		
-		
-		
+
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsi);
 		Mockito.when(packetInfoManager.getRegistrationCenterMachine(anyString())).thenReturn(rcmDto);
-		 
-		
+
 	}
-	
+
 	@Test
-	public void isValidUMCSuccessTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void isValidUMCSuccessTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
-		
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void UMCMappingNotFoundTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void UMCMappingNotFoundTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
+
 	@Test
-	public void UMCMappingNotActiveTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(false);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void machineIdNotFoundTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void machineIdNotFoundTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
-		
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void machinesNotFoundTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void machinesNotFoundTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
-		
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
-	
+
 	@Test
-	public void machineNotActiveTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void machineNotActiveTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(false);
 		mcdto.setId("yyeqy26356");
-		
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
+
 	@Test
-	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void gpsDatanotPresentInMasterTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException {
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
 		rcdto.setLongitude("80.21492");
 		rcdto.setLatitude("13.10049");
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException {
-		RegistrationCenterMachineDto rcmDto=new RegistrationCenterMachineDto();
+	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+		RegistrationCenterMachineDto rcmDto = new RegistrationCenterMachineDto();
 		rcmDto.setIsActive(true);
 		rcmDto.setLatitude("13.0049");
 		rcmDto.setLongitude("");
 		rcmDto.setMachineId(" ");
-		rcmDto.setPacketCreationDate(LocalDateTime.parse("2018-11-28T15:34:20"));
+		rcmDto.setPacketCreationDate("2018-11-28T15:34:20");
 		rcmDto.setRegcntrId("12245");
 		rcmDto.setRegId("2018782130000121112018103016");
 		Mockito.when(packetInfoManager.getRegistrationCenterMachine(anyString())).thenReturn(rcmDto);
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setId("12245");
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.10049");
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void noRegistrationCentersFoundInMasterTest() throws ApisResourceAccessException {
-		
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
-		
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+	public void noRegistrationCentersFoundInMasterTest()
+			throws ApisResourceAccessException, UnsupportedEncodingException {
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void noRegistrationCenterIdsFoundInMasterTest() throws ApisResourceAccessException {
-		
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void noRegistrationCenterIdsFoundInMasterTest()
+			throws ApisResourceAccessException, UnsupportedEncodingException {
+
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.10049");
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void registrationCenternotActiveTest() throws ApisResourceAccessException {
-		
-		RegistrationCenterDto rcdto=new RegistrationCenterDto();
+	public void registrationCenternotActiveTest() throws ApisResourceAccessException, UnsupportedEncodingException {
+
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(false);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		List<RegistrationCenterDto> rcdtos=new ArrayList<>();
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
 		rcdtos.add(rcdto);
-		
-		RegistrationCenterResponseDto regrepdto=new RegistrationCenterResponseDto();
+
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
 		regrepdto.setRegistrationCentersHistory(rcdtos);
-		
-		MachineHistoryDto mcdto=new MachineHistoryDto();
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
 		mcdto.setId("yyeqy26356");
-		
-		List<MachineHistoryDto> mcdtos=new ArrayList<>();
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
-		MachineHistoryResponseDto  mhrepdto=new MachineHistoryResponseDto();
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
 		mhrepdto.setMachineHistoryDetails(mcdtos);
-		
-		
-		
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto=new RegistrationCenterUserMachineMappingHistoryDto();
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
 		officerucmdto.setIsActive(true);
 		officerucmdto.setCntrId("12245");
 		officerucmdto.setMachineId("yyeqy26356");
 		officerucmdto.setUsrId("O1234");
-		
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos=new ArrayList<>();
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
-		
-		
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto=new RegistrationCenterUserMachineMappingHistoryResponseDto(officerucmdtos);
-		
-		Mockito.when(registrationProcessorRestService.
-				getApi(any(),any(),any(),any(),any())).
-				thenReturn(regrepdto).thenReturn(mhrepdto).thenReturn(offrepdto);
-		
-		
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
+				officerucmdtos);
+
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto);
+
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 }

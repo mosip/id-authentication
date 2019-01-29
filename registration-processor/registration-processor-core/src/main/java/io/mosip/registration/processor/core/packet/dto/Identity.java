@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.packet.dto;
 
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * This contains the attributes which have to be displayed in PacketMetaInfo
  * JSON.
@@ -13,28 +14,34 @@ public class Identity {
 
 	/** The biometric. */
 	private Biometric biometric;
-	
+
 	/** The exception biometrics. */
 	private List<BiometricExceptionDto> exceptionBiometrics;
-	
+
 	/** The applicant photograph. */
 	private Photograph applicantPhotograph;
-	
+
 	/** The exception photograph. */
 	private Photograph exceptionPhotograph;
-	
+
 	/** The documents. */
 	private List<Document> documents;
-	
+
 	/** The meta data. */
 	private List<FieldValue> metaData;
-	
+
 	/** The osi data. */
 	private List<FieldValue> osiData;
-	
+
 	/** The hash sequence. */
 	private List<FieldValueArray> hashSequence;
-	
+
+	/** The captured registered devices. */
+	private List<FieldValue> capturedRegisteredDevices;
+
+	/** The captured non registered devices. */
+	private List<FieldValue> capturedNonRegisteredDevices;
+
 	/** The check sum. */
 	private List<FieldValue> checkSum;
 
@@ -50,7 +57,8 @@ public class Identity {
 	/**
 	 * Sets the biometric.
 	 *
-	 * @param biometric            the biometric to set
+	 * @param biometric
+	 *            the biometric to set
 	 */
 	public void setBiometric(Biometric biometric) {
 		this.biometric = biometric;
@@ -68,7 +76,8 @@ public class Identity {
 	/**
 	 * Sets the exception biometrics.
 	 *
-	 * @param exceptionBiometrics            the exceptionBiometrics to set
+	 * @param exceptionBiometrics
+	 *            the exceptionBiometrics to set
 	 */
 	public void setExceptionBiometrics(List<BiometricExceptionDto> exceptionBiometrics) {
 		this.exceptionBiometrics = exceptionBiometrics;
@@ -86,7 +95,8 @@ public class Identity {
 	/**
 	 * Sets the applicant photograph.
 	 *
-	 * @param applicantPhotograph            the applicantPhotograph to set
+	 * @param applicantPhotograph
+	 *            the applicantPhotograph to set
 	 */
 	public void setApplicantPhotograph(Photograph applicantPhotograph) {
 		this.applicantPhotograph = applicantPhotograph;
@@ -104,7 +114,8 @@ public class Identity {
 	/**
 	 * Sets the exception photograph.
 	 *
-	 * @param exceptionPhotograph            the exceptionPhotograph to set
+	 * @param exceptionPhotograph
+	 *            the exceptionPhotograph to set
 	 */
 	public void setExceptionPhotograph(Photograph exceptionPhotograph) {
 		this.exceptionPhotograph = exceptionPhotograph;
@@ -122,7 +133,8 @@ public class Identity {
 	/**
 	 * Sets the documents.
 	 *
-	 * @param documents            the documents to set
+	 * @param documents
+	 *            the documents to set
 	 */
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
@@ -140,7 +152,8 @@ public class Identity {
 	/**
 	 * Sets the meta data.
 	 *
-	 * @param metaData            the metaData to set
+	 * @param metaData
+	 *            the metaData to set
 	 */
 	public void setMetaData(List<FieldValue> metaData) {
 		this.metaData = metaData;
@@ -158,7 +171,8 @@ public class Identity {
 	/**
 	 * Sets the osi data.
 	 *
-	 * @param osiData            the osiData to set
+	 * @param osiData
+	 *            the osiData to set
 	 */
 	public void setOsiData(List<FieldValue> osiData) {
 		this.osiData = osiData;
@@ -176,7 +190,8 @@ public class Identity {
 	/**
 	 * Sets the hash sequence.
 	 *
-	 * @param hashSequence            the hashSequence to set
+	 * @param hashSequence
+	 *            the hashSequence to set
 	 */
 	public void setHashSequence(List<FieldValueArray> hashSequence) {
 		this.hashSequence = hashSequence;
@@ -194,10 +209,49 @@ public class Identity {
 	/**
 	 * Sets the check sum.
 	 *
-	 * @param checkSum            the checkSum to set
+	 * @param checkSum
+	 *            the checkSum to set
 	 */
 	public void setCheckSum(List<FieldValue> checkSum) {
 		this.checkSum = checkSum;
+	}
+
+	/**
+	 * Gets the captured registered devices.
+	 *
+	 * @return the captured registered devices
+	 */
+	public List<FieldValue> getCapturedRegisteredDevices() {
+		return capturedRegisteredDevices;
+	}
+
+	/**
+	 * Sets the captured registered devices.
+	 *
+	 * @param capturedRegisteredDevices
+	 *            the new captured registered devices
+	 */
+	public void setCapturedRegisteredDevices(List<FieldValue> capturedRegisteredDevices) {
+		this.capturedRegisteredDevices = capturedRegisteredDevices;
+	}
+
+	/**
+	 * Gets the captured non registered devices.
+	 *
+	 * @return the captured non registered devices
+	 */
+	public List<FieldValue> getCapturedNonRegisteredDevices() {
+		return capturedNonRegisteredDevices;
+	}
+
+	/**
+	 * Sets the captured non registered devices.
+	 *
+	 * @param capturedNonRegisteredDevices
+	 *            the new captured non registered devices
+	 */
+	public void setCapturedNonRegisteredDevices(List<FieldValue> capturedNonRegisteredDevices) {
+		this.capturedNonRegisteredDevices = capturedNonRegisteredDevices;
 	}
 
 }
