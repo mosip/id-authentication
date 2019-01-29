@@ -450,12 +450,18 @@ export class DemographicComponent implements OnInit {
       genderEntity.forEach(element => {
         element.filter(element => {
           if (event.value === element.code) {
-            this.addCodeValue(element);
-            // this.codeValue.push({
-            //   languageCode: element.langCode,
-            //   valueName: element.genderName,
-            //   valueCode: element.code
-            // });
+            const codeValue: CodeValueModal = {
+              languageCode: element.langCode,
+              valueCode: element.code,
+              valueName: element.genderName
+              };
+              this.addCodeValue(codeValue);               
+            // this.addCodeValue(element);
+            // // this.codeValue.push({
+            // //   languageCode: element.langCode,
+            // //   valueName: element.genderName,
+            // //   valueCode: element.code
+            // // });
           }
         });
       });
