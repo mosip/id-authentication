@@ -4,6 +4,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -55,6 +60,9 @@ public class OTPAuthServiceTest {
 
 	@InjectMocks
 	private OTPServiceImpl otpserviceimpl;
+
+	@InjectMocks
+	private OTPAuthServiceImpl otpauthserviceimpl;
 
 	@Autowired
 	Environment env;
@@ -224,23 +232,30 @@ public class OTPAuthServiceTest {
 	 */
 	@Test
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
-//		AutnTxn autntxn = new AutnTxn();
-//		autntxn.setRequestTxnId("TXN001");
-//		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
-//		autntxnList.add(autntxn);
-//		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
-//				.thenReturn(autntxnList);
-//		otpAuthRequestDTO.setTxnID("1234567890");
-//		otpAuthRequestDTO.setMuaCode("ASA000000011");
-//		otpAuthRequestDTO.setTxnID("TXN00001");
-//		otpAuthRequestDTO.setId("1134034024034");
-//		otpAuthRequestDTO.setMuaCode("AUA0001");
-//		PinDTO pindto = new PinDTO();
-//		pindto.setType(PinType.OTP);
-//		pindto.setValue("23232323");
-//		otpAuthRequestDTO.se(new PersonalIdentityDataDTO());
-//		otpAuthRequestDTO.getPii().setPin(pindto);
-//		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345").isStatus());
+		AutnTxn autntxn = new AutnTxn();
+		autntxn.setRequestTrnId("TXN00001");
+		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
+		autntxnList.add(autntxn);
+		Mockito.when(repository.findAllByRequestTrnIdAndRefId(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(autntxnList);
+		otpAuthRequestDTO.setTxnID("TXN00001");
+		otpAuthRequestDTO.setId("mosip.identity.auth");
+		otpAuthRequestDTO.setIdvIdType(IdType.VID.getType());
+		otpAuthRequestDTO.setTspID("TST0000001");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType(PinType.OTP.getType());
+		pinInfo.setValue("23232323");
+		List<PinInfo> pinInfoList = new ArrayList();
+		pinInfoList.add(pinInfo);
+		otpAuthRequestDTO.setPinInfo(pinInfoList);
+		ZoneOffset offset = ZoneOffset.MAX;
+		otpAuthRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		AuthTypeDTO authType=new AuthTypeDTO();
+		authType.setOtp(true);
+		otpAuthRequestDTO.setAuthType(authType);
+		AuthStatusInfo authStatus = authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345");
+		assertFalse(authStatus.isStatus());
 	}
 
 	/**

@@ -23,8 +23,8 @@ public enum OtpMatchingStrategy implements MatchingStrategy {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 			}
 		} else {
-			logError(IdAuthenticationErrorConstants.PIN_MISMATCH);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_MISMATCH);
+			logError(IdAuthenticationErrorConstants.INVALID_OTP);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
 		}
 	});
 
