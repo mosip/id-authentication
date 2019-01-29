@@ -32,17 +32,20 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.authentication.service.entity.StaticPinEntity;
 import io.mosip.authentication.service.factory.BiometricProviderFactory;
+import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.IdInfoHelper;
+import io.mosip.authentication.service.helper.RestHelper;
+import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
-@Import(value = { IDAMappingConfig.class, IdInfoHelper.class, BiometricProviderFactory.class })
+@Import(value = { IDAMappingConfig.class})
 public class PinAuthServiceImplTest {
 
 	/** The id info helper. */
-	@Autowired
+	@InjectMocks
 	public IdInfoHelper idInfoHelper;
 
 	/** The id mapping config. */
@@ -64,6 +67,15 @@ public class PinAuthServiceImplTest {
 	@InjectMocks
 	private PinAuthServiceImpl pinAuthServiceImpl;
 
+	@InjectMocks
+	private OTPManager otpManager;
+
+	@InjectMocks
+	private RestHelper restHelper;
+
+	@InjectMocks
+	private RestRequestFactory restRequestFactory;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(pinAuthServiceImpl, "idInfoHelper", idInfoHelper);
@@ -71,9 +83,11 @@ public class PinAuthServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "biometricProviderFactory", biometricProviderFactory);
+		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
+		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
+
 	}
 
-	@Ignore
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
 		StaticPinEntity stat = new StaticPinEntity();
@@ -84,7 +98,6 @@ public class PinAuthServiceImplTest {
 		assertTrue(validatePin.isStatus());
 	}
 
-	@Ignore
 	@Test
 	public void invalidPinTest() throws IdAuthenticationBusinessException {
 		StaticPinEntity stat = new StaticPinEntity();

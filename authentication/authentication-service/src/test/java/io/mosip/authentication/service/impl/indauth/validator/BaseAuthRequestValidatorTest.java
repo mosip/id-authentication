@@ -152,7 +152,6 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 	}
 
-
 	/**
 	 * Test validate bio details if bio info is null has error.
 	 */
@@ -176,7 +175,8 @@ public class BaseAuthRequestValidatorTest {
 	}
 
 	/**
-	 * Test validate bio details if bio info is not null but bio info is empty has error.
+	 * Test validate bio details if bio info is not null but bio info is empty has
+	 * error.
 	 */
 	@Test
 	public void testValidateBioDetails_IfBioInfoIsNotNullButBioInfoIsEmpty_hasError() {
@@ -712,7 +712,8 @@ public class BaseAuthRequestValidatorTest {
 	}
 
 	/**
-	 * Test validate finger request count any info is equal to one or less than one finger count not exceeding 2.
+	 * Test validate finger request count any info is equal to one or less than one
+	 * finger count not exceeding 2.
 	 */
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountNotExceeding2() {
@@ -736,7 +737,8 @@ public class BaseAuthRequestValidatorTest {
 	}
 
 	/**
-	 * Test validate finger request count any info is equal to one or less than one finger count exceeding 2.
+	 * Test validate finger request count any info is equal to one or less than one
+	 * finger count exceeding 2.
 	 */
 	@Test
 	public void testValidateFingerRequestCount_anyInfoIsEqualToOneOrLessThanOne_fingerCountExceeding2() {
@@ -1558,4 +1560,93 @@ public class BaseAuthRequestValidatorTest {
 		assertTrue(error.hasErrors());
 	}
 
+	@Test
+	public void testPinDetails_success() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("284169042058");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPin(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		PinInfo info = new PinInfo();
+		info.setType("pin");
+		info.setValue("112233");
+		List<PinInfo> infoList = new ArrayList<PinInfo>();
+		infoList.add(info);
+		authRequestDTO.setPinInfo(infoList);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+	}
+
+	@Test
+	public void testPinDetails_isEmpty() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("284169042058");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPin(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		PinInfo info = new PinInfo();
+		info.setType("");
+		info.setValue("");
+		List<PinInfo> infoList = new ArrayList<PinInfo>();
+		infoList.add(info);
+		authRequestDTO.setPinInfo(infoList);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+	}
+
+	@Test
+	public void testPinDetails_isNull() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvId("284169042058");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPin(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+	}
+
+	@Test
+	public void testPinDetails_invalidPinTypePinValue() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("mosip.identity.auth");
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("284169042058");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")) // offset
+				.format(DateTimeFormatter.ofPattern(environment.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setTspID("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPin(true);
+		authRequestDTO.setAuthType(authTypeDTO);
+		PinInfo info = new PinInfo();
+		info.setType("test");
+		info.setValue("test");
+		List<PinInfo> infoList = new ArrayList<PinInfo>();
+		infoList.add(info);
+		authRequestDTO.setPinInfo(infoList);
+		ReflectionTestUtils.invokeMethod(baseAuthRequestValidator, "validatePinDetails", authRequestDTO, error);
+	}
 }

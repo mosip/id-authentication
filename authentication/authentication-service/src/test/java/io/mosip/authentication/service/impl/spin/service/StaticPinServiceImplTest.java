@@ -197,6 +197,7 @@ public class StaticPinServiceImplTest {
 		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);	
 		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO,"794138547620");
 	}
+	
 	@Ignore
 	@Test(expected = IdValidationFailedException.class)
 	public void testStorePin_IdDataValidationException() throws IDDataValidationException, IdValidationFailedException {
