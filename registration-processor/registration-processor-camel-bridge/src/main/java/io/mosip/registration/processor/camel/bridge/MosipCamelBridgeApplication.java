@@ -1,11 +1,14 @@
 package io.mosip.registration.processor.camel.bridge;
 
 /**
- * @author M1041740
+ * This is main class for Vertx Camel Bridge
+ * 
+ * @author Pranav Kumar
+ * @since 0.0.1
  *
  */
 public class MosipCamelBridgeApplication {
-	
+
 	/**
 	 * @param args
 	 */

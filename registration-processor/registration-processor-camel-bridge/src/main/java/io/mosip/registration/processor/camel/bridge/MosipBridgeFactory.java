@@ -46,7 +46,7 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		try {
 			url = new URL(configServerUri);
 		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
+			regProcLogger.error("","","",e1.getMessage());
 		}
 		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
