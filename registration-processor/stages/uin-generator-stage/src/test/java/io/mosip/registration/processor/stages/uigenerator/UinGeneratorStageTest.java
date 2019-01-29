@@ -49,7 +49,8 @@ import io.mosip.registration.processor.stages.uingenerator.dto.UinResponseDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
-import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotificationForUIN;
+import io.mosip.registration.processor.stages.uingenerator.util.NotificationTemplateType;
+import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotification;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -123,7 +124,7 @@ public class UinGeneratorStageTest {
 
 	/** The trigger notification for UIN. */
 	@Mock
-	TriggerNotificationForUIN triggerNotificationForUIN;
+	TriggerNotification triggerNotification;
 
 	@Before
 	public void setup() throws Exception {
@@ -174,7 +175,7 @@ public class UinGeneratorStageTest {
 		Mockito.when(packetInfoManager.getDocumentsByRegId(Matchers.anyString())).thenReturn(applicantDocument);
 		doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		doNothing().when(demographicDedupeRepository).updateUinWrtRegistraionId(any(), any());
-		doNothing().when(triggerNotificationForUIN).triggerNotification("test", false);
+		doNothing().when(triggerNotification).triggerNotification("test", NotificationTemplateType.UIN_CREATED);
 
 		MessageDTO result = uinGeneratorStage.process(messageDTO);
 		//assertFalse(result.getInternalError());

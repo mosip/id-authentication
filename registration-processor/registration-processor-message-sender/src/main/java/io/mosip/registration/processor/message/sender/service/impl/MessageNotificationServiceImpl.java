@@ -232,8 +232,11 @@ public class MessageNotificationServiceImpl
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-		for (String item : mailCc) {
-			builder.queryParam("mailCc", item);
+
+		if (mailCc != null) {
+			for (String item : mailCc) {
+				builder.queryParam("mailCc", item);
+			}
 		}
 
 		builder.queryParam("mailSubject", subject);
@@ -269,7 +272,7 @@ public class MessageNotificationServiceImpl
 		InputStream demographicInfoStream;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
 			attributes.put("UIN", id);
-			// get registration id using UIN
+
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
 			attributes.put("RID", id);
 		} else {
