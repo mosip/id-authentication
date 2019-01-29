@@ -149,7 +149,7 @@ public class BaseService {
 	 */
 	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
 
-		LOGGER.debug("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
+		LOGGER.info("REGISTRATION - BASE SERVICE", APPLICATION_NAME, APPLICATION_ID, " isValidDevice Method called");
 		
 		return machineMappingDAO.isValidDevice(deviceType, serialNo);
 	}

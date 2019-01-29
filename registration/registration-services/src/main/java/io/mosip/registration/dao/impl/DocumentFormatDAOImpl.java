@@ -38,7 +38,7 @@ public class DocumentFormatDAOImpl implements DocumentFormatDAO {
 
 	@Override
 	public List<DocumentFormat> getDocumentFormats() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTFORMATDAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-PACKET_CREATION-DOCUMENTFORMATDAO", APPLICATION_NAME,
 				APPLICATION_ID, "fetching the documentformats");
 
 		return documentFormatRepository.findAll();

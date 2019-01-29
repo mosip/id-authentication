@@ -40,14 +40,14 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	 */
 	public Map<String, Object> getGlobalParams() {
 
-		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Fetching list of global params");
 
 		List<GlobalParamName> globalParams = globalParamRepository.findByIsActiveTrue();
 		Map<String, Object> globalParamMap = new LinkedHashMap<>();
 		globalParams.forEach(param -> globalParamMap.put(param.getName(), param.getVal()));
 
-		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of global params fetched successfully");
 
 		return globalParamMap;
@@ -56,7 +56,7 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 	@Override
 	public void saveAll(List<GlobalParam> globalParamList) {
 
-		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Save Global Params started");
 
 		/** Parase List to Iterable */
@@ -65,7 +65,7 @@ public class GlobalParamDAOImpl implements GlobalParamDAO {
 		/** Save all Global Params */
 		globalParamRepository.saveAll(globalParamIterableList);
 
-		LOGGER.debug("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - GLOBALPARAMS - GLOBAL_PARAM_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Save Global Params ended");
 
 	}

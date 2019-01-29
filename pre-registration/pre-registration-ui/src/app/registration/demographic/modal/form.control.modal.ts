@@ -17,4 +17,8 @@ export interface FormControlModal {
   postalCode: string;
   mobilePhone: string;
   pin: string;
+  secondaryFullName: string;
+  secondaryAddressLine1: string;
+  secondaryAddressLine2: string;
+  secondaryAddressLine3: string;
 }

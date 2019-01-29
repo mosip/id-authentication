@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,30 +22,37 @@ import io.mosip.kernel.idgenerator.machineid.repository.MachineIdRepository;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class MachineIdServiceTest {
+	
+	@Value("${mosip.kernel.mid.test.valid-initial-mid}")
+	private int initialMid;
+	
+	@Value("${mosip.kernel.mid.test.valid-new-mid}")
+	private int newMid;
+	
 	@Autowired
 	MachineIdGenerator<String> service;
 
 	@MockBean
 	MachineIdRepository repository;
 
-	//@Test
+	@Test
 	public void generateMachineIdTest() {
 		MachineId entity = new MachineId();
-		entity.setMId(1000);
+		entity.setMId(initialMid);
 		when(repository.findLastMID()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateMachineId(), is("1000"));
+		assertThat(service.generateMachineId(), is(Integer.toString(initialMid)));
 	}
 
 	@Test
-	public void generateRegCenterIdTest() {
+	public void generateNextMachineIdTest() {
 		MachineId entity = new MachineId();
-		entity.setMId(1000);
+		entity.setMId(initialMid);
 		MachineId entityResponse = new MachineId();
-		entityResponse.setMId(1001);
+		entityResponse.setMId(newMid);
 		when(repository.findLastMID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateMachineId(), is("1001"));
+		assertThat(service.generateMachineId(), is(Integer.toString(newMid)));
 	}
 
 	@Test(expected = MachineIdServiceException.class)

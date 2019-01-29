@@ -23,7 +23,17 @@ mvn javadoc:javadoc
 
 **Properties to be added in parent Spring Application environment** 
 
-[kernel-keygenerator-bouncycastle-dev.properties](../../config/kernel-keygenerator-bouncycastle-dev.properties)
+[application-dev.properties](../../config/application-dev.properties)
+
+```
+#----------------------- Crypto --------------------------------------------------
+mosip.kernel.crypto.asymmetric-algorithm-name=RSA
+mosip.kernel.crypto.symmetric-algorithm-name=AES
+mosip.kernel.keygenerator.asymmetric-algorithm-length=2048
+mosip.kernel.keygenerator.symmetric-algorithm-length=256
+
+```
+
 
 **The response will be [SecretKey](https://docs.oracle.com/javase/8/docs/api/javax/crypto/SecretKey.html) and [KeyPair](https://docs.oracle.com/javase/8/docs/api/index.html?java/security/KeyPair.html) for symmetric key generation and asymmetric key generation respectively.**
 

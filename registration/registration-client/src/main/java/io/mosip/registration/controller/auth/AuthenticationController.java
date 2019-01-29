@@ -147,7 +147,7 @@ public class AuthenticationController extends BaseController {
 	 * to generate OTP in case of OTP based authentication
 	 */
 	public void generateOtp() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Generate OTP for OTP based Authentication");
 
 		if (!otpUserId.getText().isEmpty()) {
@@ -177,7 +177,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate OTP in case of OTP based authentication
 	 */
 	public void validateOTP() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
 
 		if (isSupervisor) {
@@ -260,7 +260,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate the fingerprint in case of fingerprint based authentication
 	 */
 	public void validateFingerprint() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Fingerprint for Fingerprint based Authentication");
 
 		if (isSupervisor) {
@@ -294,7 +294,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate the iris in case of iris based authentication
 	 */
 	public void validateIris() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Iris for Iris based Authentication");
 
 		if (isSupervisor) {
@@ -328,7 +328,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate the face in case of face based authentication
 	 */
 	public void validateFace() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Face for Face based Authentication");
 
 		if (isSupervisor) {
@@ -362,7 +362,7 @@ public class AuthenticationController extends BaseController {
 	 * to get the configured modes of authentication
 	 */
 	private void getAuthenticationModes(String authType) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
 		Set<String> roleSet = new HashSet<>();
@@ -382,7 +382,7 @@ public class AuthenticationController extends BaseController {
 	 * authentication modes
 	 */
 	private void loadNextScreen() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
 		Boolean toogleBioException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
@@ -420,7 +420,7 @@ public class AuthenticationController extends BaseController {
 	 * @param loginMode - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the respective authentication screen in UI");
 
 		switch (loginMode) {
@@ -448,7 +448,7 @@ public class AuthenticationController extends BaseController {
 	 * to enable the OTP based authentication mode and disable rest of modes
 	 */
 	private void enableOTP() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
 		pwdBasedLogin.setVisible(false);
@@ -477,7 +477,7 @@ public class AuthenticationController extends BaseController {
 	 * to enable the password based authentication mode and disable rest of modes
 	 */
 	private void enablePWD() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Password based Authentication Screen in UI");
 
 		pwdBasedLogin.setVisible(true);
@@ -504,7 +504,7 @@ public class AuthenticationController extends BaseController {
 	 * to enable the fingerprint based authentication mode and disable rest of modes
 	 */
 	private void enableFingerPrint() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Fingerprint based Authentication Screen in UI");
 
 		fingerprintBasedLogin.setVisible(true);
@@ -530,7 +530,7 @@ public class AuthenticationController extends BaseController {
 	 * to enable the iris based authentication mode and disable rest of modes
 	 */
 	private void enableIris() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
 
 		irisBasedLogin.setVisible(true);
@@ -555,7 +555,7 @@ public class AuthenticationController extends BaseController {
 	 * to enable the face based authentication mode and disable rest of modes
 	 */
 	private void enableFace() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
 
 		faceBasedLogin.setVisible(true);
@@ -586,7 +586,7 @@ public class AuthenticationController extends BaseController {
 	 *         or "false", if not
 	 */
 	private boolean fetchUserRole(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the user role in case of Supervisor Authentication");
 
 		UserDetail userDetail = loginService.getUserDetail(userId);
@@ -604,7 +604,7 @@ public class AuthenticationController extends BaseController {
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
@@ -616,7 +616,7 @@ public class AuthenticationController extends BaseController {
 			// Thread to wait until capture the bio image/ minutia from FP. based on the
 			// error code or success code the respective action will be taken care.
 			waitToCaptureBioImage(5, 2000, fingerprintFacade);
-			LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
 					"Fingerprint scan done");
 
 			fingerPrintConnector.uninitFingerPrintDevice();
@@ -667,7 +667,7 @@ public class AuthenticationController extends BaseController {
 	 * @return true/false after validating iris
 	 */
 	private boolean captureAndValidateIris(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Iris");
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -708,7 +708,7 @@ public class AuthenticationController extends BaseController {
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Face");
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -738,7 +738,7 @@ public class AuthenticationController extends BaseController {
 	 * to submit the registration after successful authentication
 	 */
 	public void submitRegistration() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Submit Registration after Operator Authentication");
 
 		packetHandlerController.showReciept(capturePhotoUsingDevice);

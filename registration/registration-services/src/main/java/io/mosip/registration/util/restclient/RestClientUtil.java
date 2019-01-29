@@ -55,7 +55,7 @@ public class RestClientUtil {
 	 */
 	public Object invoke(RequestHTTPDTO requestHTTPDTO)
 			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
-		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method called");
 
 		ResponseEntity<?> responseEntity = null;
@@ -79,7 +79,7 @@ public class RestClientUtil {
 			responseBody = responseEntity.getBody();
 		}
 
-		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method ended");
 
 		return responseBody;

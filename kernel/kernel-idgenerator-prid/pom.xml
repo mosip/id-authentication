@@ -18,6 +18,11 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+				<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator-prid</artifactId>
+			<version>${project.version}</version>
+		</dependency>	
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>

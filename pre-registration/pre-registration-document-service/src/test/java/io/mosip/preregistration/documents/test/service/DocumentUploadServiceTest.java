@@ -232,19 +232,6 @@ public class DocumentUploadServiceTest {
 		documentUploadService.uploadDoucment(mockMultipartFileExtnCheck, docJson);
 	}
 
-	@Test(expected = DocumentNotFoundException.class)
-	public void uploadDocumentRepoFailurTest() throws IOException {
-		MainListResponseDTO restRes = new MainListResponseDTO<>();
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
-		restRes.setStatus(true);
-		ResponseEntity<MainListResponseDTO> rescenter = new ResponseEntity<>(restRes, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainListResponseDTO.class))).thenReturn(rescenter);
-		Mockito.when(virusScan.scanDocument(mockMultipartSaveCheck.getBytes())).thenReturn(true);
-		Mockito.when(documentRepository.save(entity)).thenReturn(null);
-		documentUploadService.uploadDoucment(mockMultipartSaveCheck, docJson);
-	}
 	
 	@Test(expected = TableNotAccessibleException.class)
 	public void uploadDocumentRepoFailurTest1() throws IOException {

@@ -1,16 +1,17 @@
 package io.mosip.kernel.auth;
 
-import io.mosip.kernel.auth.entities.MosipUser;
-import io.mosip.kernel.auth.entities.MosipUserWithToken;
-import io.mosip.kernel.auth.entities.LoginUser;
-import io.mosip.kernel.auth.entities.OtpUser;
+import io.mosip.kernel.auth.entities.*;
+import io.mosip.kernel.auth.entities.otp.OtpUser;
+import io.mosip.kernel.auth.entities.otp.OtpValidateRequestDto;
 
 public interface AuthService {
-    MosipUserWithToken authenticateUser(LoginUser user) throws Exception;
+    MosipUserWithToken authenticateUser(LoginUser loginUser) throws Exception;
 
-    MosipUserWithToken authenticateUserWithOtp(LoginUser user) throws Exception;
+    MosipUserWithToken authenticateWithOtp(OtpUser otpUser) throws Exception;
 
-    MosipUserWithToken verifyOtp(OtpUser otpUser, String token) throws Exception;
+    MosipUserWithToken authenticateUserWithOtp(LoginUser loginUser) throws Exception;
+
+    MosipUserWithToken verifyOtp(OtpValidateRequestDto otpValidateRequestDto, String token) throws Exception;
 
     MosipUserWithToken validateToken(String token) throws Exception;
 

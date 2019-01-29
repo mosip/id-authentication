@@ -1,3 +1,5 @@
+\c mosip_master sysadmin
+
 \ir ddl/master-admin_param.sql
 \ir ddl/master-appl_form_type.sql
 \ir ddl/master-app_authentication_method.sql

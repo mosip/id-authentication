@@ -141,7 +141,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * Method to reload table
 	 */
 	private void reloadTableView() {
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		approvalmapList = new ArrayList<>(5);
 
 		authenticateBtn.setVisible(false);
@@ -161,14 +161,14 @@ public class RegistrationPendingActionController extends BaseController implemen
 			}
 		});
 
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
 	}
 
 	/**
 	 * Viewing RegistrationAcknowledgement on selecting the Registration record
 	 */
 	private void viewAck() {
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form started");
 		if (pendingActionTable.getSelectionModel().getSelectedItem() != null) {
 
@@ -205,7 +205,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			}
 
 		}
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form completed");
 	}
 
@@ -213,7 +213,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * Opening registration acknowledgement form on clicking on image.
 	 */
 	public void openAckForm() {
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Opening the Acknowledgement Form started");
 		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 				fXComponents.getStage());
@@ -224,7 +224,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * 
 	 */
 	private void populateTable() {
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = registrationApprovalService
 				.getEnrollmentByStatus(RegistrationClientStatusCode.ON_HOLD.getCode());
 
@@ -242,7 +242,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			pendingActionTable.getItems().clear();
 			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 		}
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Registration status updation has been started");
 
 		ToggleButton btn = (ToggleButton) event.getSource();
@@ -311,7 +311,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 				throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 			}
 		}
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Registration status updation has been ended");
 	}
 
@@ -357,7 +357,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 */
 	@Override
 	public void updateAuthenticationStatus() {
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status has been started");
 
 		for (Map<String, String> map : approvalmapList) {
@@ -367,7 +367,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.AUTH_PENDING_ACTION_SUCCESS_MSG);
 		primaryStage.close();
 		reloadTableView();
-		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status has been ended");
 
 	}

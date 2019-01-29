@@ -153,7 +153,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Method to reload table.
 	 */
 	private void reloadTableView() {
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 
 		approvalmapList = new ArrayList<>(5);
 		authenticateBtn.setDisable(true);
@@ -173,14 +173,14 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 		});
 
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
 	}
 
 	/**
 	 * Viewing RegistrationAcknowledgement on selecting the Registration record.
 	 */
 	private void viewAck() {
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form started");
 		if (table.getSelectionModel().getSelectedItem() != null) {
 
@@ -219,7 +219,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 
 		}
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form completed");
 	}
 
@@ -227,7 +227,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Opening registration acknowledgement form on clicking on image.
 	 */
 	public void openAckForm() {
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Opening the Acknowledgement Form");
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "Opening the Acknowledgement Form");
 		viewAckController.viewAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 				fXComponents.getStage());
 	}
@@ -237,7 +237,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * 
 	 */
 	private void populateTable() {
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = null;
 
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
@@ -254,7 +254,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			table.getItems().clear();
 		}
 
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
 	}
 
 	/**
@@ -265,7 +265,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	public void updateStatus(ActionEvent event) throws RegBaseCheckedException {
 
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Registration status updation has been started");
 
 		ToggleButton tBtn = (ToggleButton) event.getSource();
@@ -274,7 +274,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			for (Map<String, String> registrationMap : approvalmapList) {
 
-				if (registrationMap.containsValue(table.getSelectionModel().getSelectedItem().getId())) {
+				if (registrationMap.containsValue(table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId())) {
 
 					approvalmapList.remove(registrationMap);
 
@@ -283,7 +283,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			}
 
 			Map<String, String> map = new HashMap<>();
-			map.put(RegistrationConstants.REGISTRATIONID, table.getSelectionModel().getSelectedItem().getId());
+			map.put(RegistrationConstants.REGISTRATIONID, table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId());
 			map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
 			map.put(RegistrationConstants.STATUSCOMMENT, RegistrationConstants.EMPTY);
 			approvalmapList.add(map);
@@ -292,11 +292,14 @@ public class RegistrationApprovalController extends BaseController implements In
 			approvalBtn.setSelected(true);
 			rejectionBtn.setSelected(false);
 
+			int rowNum = table.getSelectionModel().getFocusedIndex();
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
-					table.getSelectionModel().getSelectedItem().getId(),
-					table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
+					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getId(),
+					table.getItems().get(table.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationConstants.APPROVED);
-			table.getItems().set(table.getSelectionModel().getSelectedIndex(), approvalDTO);
+			table.getItems().set(rowNum, approvalDTO);
+			table.requestFocus();
+			table.getFocusModel().focus(rowNum);
 
 		} else {
 
@@ -306,7 +309,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 				if (tBtn.getId().equals(rejectionBtn.getId())) {
 
-					rejectionController.initData(table.getSelectionModel().getSelectedItem(), primarystage,
+					rejectionController.initData(table.getItems().get(table.getSelectionModel().getFocusedIndex()), primarystage,
 							approvalmapList, table, "RegistrationApprovalController");
 
 					loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
@@ -330,7 +333,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 			}
 		}
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Registration status updation has been ended");
 	}
 
@@ -375,7 +378,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	@Override
 	public void updateAuthenticationStatus() {
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status started");
 
 		for (Map<String, String> map : approvalmapList) {
@@ -385,7 +388,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.AUTH_APPROVAL_SUCCESS_MSG);
 		primaryStage.close();
 		reloadTableView();
-		LOGGER.debug(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");
 	}
 }

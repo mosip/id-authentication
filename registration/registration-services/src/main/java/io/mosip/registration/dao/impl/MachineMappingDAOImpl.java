@@ -107,7 +107,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	@Override
 	public String getStationID(String macAddress) throws RegBaseCheckedException {
 
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getStationID() macAddress --> " + macAddress);
 
 		try {
@@ -134,7 +134,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	@Override
 	public String getCenterID(String stationID) throws RegBaseCheckedException {
 
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getCenterID() stationID --> " + stationID);
 
 		try {
@@ -158,7 +158,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public List<UserDetail> getUsers(String ceneterID) throws RegBaseCheckedException {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getUsers() ceneterID -> " + ceneterID);
 		try {
 			List<UserDetail> registrationUserDetail = userDetailRepository
@@ -186,12 +186,12 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String save(UserMachineMapping user) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO save method called");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO save method called");
 
 		try {
 			// create new mapping
 			machineMappingRepository.save(user);
-			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
 					"DAO save method ended");
 
 			return RegistrationConstants.MACHINE_MAPPING_CREATED;
@@ -210,12 +210,12 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String update(UserMachineMapping user) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO update method called");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO update method called");
 
 		try {
 			// update user details in user mapping
 			machineMappingRepository.update(user);
-			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
 					"DAO update method ended");
 
 			return RegistrationConstants.MACHINE_MAPPING_UPDATED;
@@ -234,7 +234,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public UserMachineMapping findByID(UserMachineMappingID userID) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO findByID method called");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO findByID method called");
 
 		UserMachineMapping machineMapping = null;
 
@@ -245,7 +245,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO findByID method ended");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "DAO findByID method ended");
 
 		return machineMapping;
 	}
@@ -257,7 +257,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public List<DeviceType> getAllDeviceTypes() {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				" getAllDeviceTypes() method is started");
 
 		return deviceTypeRepository.findByIsActiveTrue();
@@ -272,7 +272,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public List<RegCenterDevice> getAllValidDevicesByCenterId(String centerId) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"  getAllDeviceBasedOnCenterId method has started");
 
 		return registrationCenterDeviceRepository
@@ -290,7 +290,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public List<RegCentreMachineDevice> getAllMappedDevices(String centerId, String machineId) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"  getAllMappedDevices method excecution has started");
 
 		return registrationCenterMachineDeviceRepository
@@ -306,7 +306,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public void deleteUnMappedDevice(List<RegCentreMachineDevice> regCentreMachineDevices) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"  deleteUnMappedDevice method excecution has started");
 
 		registrationCenterMachineDeviceRepository.deleteAll(regCentreMachineDevices);
@@ -320,7 +320,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public void addedMappedDevice(List<RegCentreMachineDevice> regCentreMachineDevices) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"  addedMappedDevice method excecution has started");
 
 		registrationCenterMachineDeviceRepository.saveAll(regCentreMachineDevices);
@@ -336,7 +336,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	@Override
 	public boolean isValidDevice(DeviceTypes deviceType, String serialNo) {
 
-		LOGGER.debug("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - COMMON REPOSITORY ", APPLICATION_NAME, APPLICATION_ID,
 				" isValidDevice DAO Method called");
 
 		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,

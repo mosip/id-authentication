@@ -70,7 +70,7 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 */
 	public void syncAndUploadPacket() {
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
 		table.getItems().clear();
 		table.refresh();
@@ -111,7 +111,7 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 */
 	private String packetSync() throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		String syncErrorStatus = "";
 		try {
@@ -177,7 +177,7 @@ public class PacketUploadController extends BaseController {
 	 * @param tableData
 	 */
 	private void displayData(List<PacketStatusDTO> tableData) {
-		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
@@ -193,7 +193,7 @@ public class PacketUploadController extends BaseController {
 	 * @return
 	 */
 	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
-		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
 		packetStatus.forEach((id, status) -> {
@@ -227,7 +227,7 @@ public class PacketUploadController extends BaseController {
 				@Override
 				protected String call() {
 
-					LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
+					LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 							APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();

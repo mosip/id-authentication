@@ -95,7 +95,7 @@ public class TemplateGenerator extends BaseService {
 		ResponseDTO response = new ResponseDTO();
 
 		try {
-			LOGGER.debug(LOG_TEMPLATE_GENERATOR, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(LOG_TEMPLATE_GENERATOR, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					"generateTemplate had been called for preparing Acknowledgement Template.");
 
@@ -381,7 +381,7 @@ public class TemplateGenerator extends BaseService {
 					qrCodeString.append(applicationLanguageProperties.getString("image")).append(" : ")
 							.append(CryptoUtil.encodeBase64(applicantPhoto));
 
-					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V30);
+					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V40);
 				} else {
 					qrCodeInBytes = qrCodeGenerator.generateQrCode(qrCodeString.toString(), QrVersion.V25);
 				}
@@ -476,7 +476,7 @@ public class TemplateGenerator extends BaseService {
 			Writer writer = new StringWriter();
 			Velocity.evaluate(templateValues, writer, "Acknowledgement Template", templateReader);
 			// try {
-			// LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+			// LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 			// "merge method of TemplateManager had been called for preparing
 			// Acknowledgement Template.");
 			//
@@ -490,7 +490,7 @@ public class TemplateGenerator extends BaseService {
 			// LOGGER.error(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 			// ioException.getMessage());
 			// }
-			LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 					"generateTemplate method has been ended for preparing Acknowledgement Template.");
 
 			Map<String, Object> responseMap = new HashMap<>();
@@ -587,7 +587,7 @@ public class TemplateGenerator extends BaseService {
 				InputStream inputStream = templateManager.merge(is, values);
 				IOUtils.copy(inputStream, writer, defaultEncoding);
 			} catch (IOException exception) {
-				LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 						"generateNotificationTemplate method has been ended for preparing Notification Template.");
 			}
 			return writer;
@@ -672,7 +672,7 @@ public class TemplateGenerator extends BaseService {
 
 	@SuppressWarnings("unchecked")
 	private String getValue(Object fieldValue, String lang) {
-		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Getting values of demographic fields in given specific language");
 		String value = RegistrationConstants.EMPTY;
 
@@ -688,7 +688,7 @@ public class TemplateGenerator extends BaseService {
 			}
 		}
 
-		LOGGER.debug(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_TEMPLATE_GENERATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Getting values of demographic fields in given specific language has been completed");
 		return value;
 	}

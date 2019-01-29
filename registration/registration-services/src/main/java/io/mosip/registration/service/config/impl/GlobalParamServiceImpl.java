@@ -74,7 +74,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	public Map<String, Object> getGlobalParams() {
 
-		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of global params");
 
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of global params",
@@ -91,13 +91,13 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 */
 	@Override
 	public ResponseDTO synchConfigData() {
-		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable() && getGlobalParams().isEmpty()) {
-			LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					" Unable to synch config data");
 			return setErrorResponse(responseDTO, RegistrationConstants.GLOBAL_CONFIG_ERROR_MSG, null);
 		}
@@ -161,7 +161,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
 			LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}
-		LOGGER.debug(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"config data synch is completed");
 
 		return responseDTO;
