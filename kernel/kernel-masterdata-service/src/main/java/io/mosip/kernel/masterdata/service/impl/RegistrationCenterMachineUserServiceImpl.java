@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -71,7 +69,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory = MetaDataUtils.setCreateMetaData(
 				registrationCenterUserMachineMappingDto.getRequest(), RegistrationCenterUserMachineHistory.class);
 		registrationCenterUserMachineHistory.setEffectivetimes(registrationCenterUserMachine.getCreatedDateTime());
-		registrationCenterUserMachineHistory.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+		registrationCenterUserMachineHistory.setCreatedDateTime(registrationCenterUserMachine.getCreatedDateTime());
 
 		try {
 			registrationCenterMachineUserRepository.create(registrationCenterUserMachine);
@@ -115,9 +113,8 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 				history.setCntrId(regCenterId);
 				history.setMachineId(machineId);
 				history.setUsrId(userId);
-				MapperUtils.setBaseFieldValue(centerUserMachine, history);
 				history.setEffectivetimes(centerUserMachine.getDeletedDateTime());
-				history.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
+				MapperUtils.setBaseFieldValue(centerUserMachine, history);
 				registrationCenterUserMachineHistoryRepository.create(history);
 				registrationCenterMachineUserRepository.update(centerUserMachine);
 				registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
@@ -191,9 +188,8 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 				RegistrationCenterUserMachineHistory.class);
 		MapperUtils.setBaseFieldValue(centerUserMachine, history);
 		history.setEffectivetimes(centerUserMachine.getUpdatedDateTime());
-		history.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
-		registrationCenterUserMachineHistoryRepository.create(history);
 		registrationCenterMachineUserRepository.update(centerUserMachine);
+		registrationCenterUserMachineHistoryRepository.create(history);
 		registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
 		registrationCenterMachineUserID.setCntrId(centerUserMachine.getCntrId());
 		registrationCenterMachineUserID.setMachineId(centerUserMachine.getMachineId());
@@ -209,7 +205,6 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 		RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory = MetaDataUtils
 				.setCreateMetaData(registrationCenterUserMachineMappingDto, RegistrationCenterUserMachineHistory.class);
 		registrationCenterUserMachineHistory.setEffectivetimes(registrationCenterUserMachine.getCreatedDateTime());
-		registrationCenterUserMachineHistory.setCreatedDateTime(LocalDateTime.now(ZoneId.of("UTC")));
 		registrationCenterMachineUserRepository.create(registrationCenterUserMachine);
 		registrationCenterUserMachineHistoryRepository.create(registrationCenterUserMachineHistory);
 		return MapperUtils.map(registrationCenterUserMachine, RegistrationCenterMachineUserID.class);
