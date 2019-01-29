@@ -1,6 +1,6 @@
-package io.mosip.kernel.auth.entities;
+package io.mosip.kernel.auth.entities.otp;
 
-public class OtpTriggerResponseDto {
+public class OtpGenerateResponseDto {
     private String otp;
     private String status;
 

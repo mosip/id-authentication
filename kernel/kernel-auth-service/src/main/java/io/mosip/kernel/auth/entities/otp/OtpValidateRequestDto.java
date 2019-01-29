@@ -1,6 +1,6 @@
-package io.mosip.kernel.auth.entities;
+package io.mosip.kernel.auth.entities.otp;
 
-public class OtpUser {
+public class OtpValidateRequestDto {
     private String otp;
 
     public String getOtp() {
