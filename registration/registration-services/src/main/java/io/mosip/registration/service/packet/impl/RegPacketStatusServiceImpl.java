@@ -286,7 +286,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		else {
 			/* Get Registration Transaction List for each transaction */
 			List<RegistrationTransaction> transactionList = registration.getRegistrationTransaction();
-			if (transactionList == null) {
+			if (isNull(transactionList)) {
 				transactionList = new LinkedList<>();
 			}
 			/* Prepare Registration Transaction */

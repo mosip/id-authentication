@@ -72,7 +72,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 	 * @see io.mosip.registration.service.PolicySyncService#fetchPolicy(centerId)
 	 */
 	@Override
-	public ResponseDTO fetchPolicy(String centerId) {
+	synchronized public ResponseDTO fetchPolicy(String centerId) {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
 
