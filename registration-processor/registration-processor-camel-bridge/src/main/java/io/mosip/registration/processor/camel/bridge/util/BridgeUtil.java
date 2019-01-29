@@ -38,7 +38,7 @@ public class BridgeUtil {
 			profile=PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.profiles.active");
 		}
 		if(label==null) {
-			profile=PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.label");
+			label=PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.label");
 		}
 		String url = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "url");
 		url=url+"/"+profile+"/"+label;
