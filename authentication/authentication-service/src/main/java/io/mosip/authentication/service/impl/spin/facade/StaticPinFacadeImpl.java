@@ -24,6 +24,8 @@ import io.mosip.authentication.service.helper.AuditHelper;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
+ * This Class Provide facade implementation for calling the StaticPinServiceImpl
+ * Class
  * 
  * @author Prem Kumar
  *
@@ -74,18 +76,23 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
 		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
 		String reqTime = staticPinRequestDTO.getReqTime();
+		String tspIdValue = staticPinRequestDTO.getTspID();
 		Map<String, Object> idResDTO = null;
 		String uinValue = null;
 		boolean status = false;
-		boolean isUin = false;
 		String resTime = null;
+		String idvId = null;
+		String idvIdType = null;
 		if (uin != null) {
 			idResDTO = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
-			isUin = Boolean.TRUE;
+			idvIdType = IdType.UIN.getType();
+			idvId = uin;
 		} else if (vid != null) {
 			idResDTO = idAuthService.processIdType(IdType.VID.getType(), vid, false);
+			idvIdType = IdType.VID.getType();
+			idvId = vid;
 		}
-		
+
 		if (idResDTO != null && idResDTO.containsKey(UIN_KEY)) {
 			uinValue = (String) idResDTO.get(UIN_KEY);
 		}
@@ -106,12 +113,8 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		if (status) {
 			staticPinResponseDTO.setStatus(SUCCESS);
 			staticPinResponseDTO.setErr(Collections.emptyList());
-			String idvId = isUin ? uin : vid;
 			String statusValue = status ? SUCCESS : FAILED;
-			String idvIdType = isUin ? IdType.UIN.getType() : IdType.VID.getType();
 			String comment = status ? "Static Pin  Save Success" : "Static Pin  Save Failed";
-			// FIXME check the tspIdValue value,it is for tspID
-			String tspIdValue = "TSP001";
 			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, tspIdValue, statusValue, comment,
 					RequestType.STATICPIN_STORE_REQUEST);
 			// auditHelper.audit(AuditModules., AuditEvents., idvId, idvIdType, desc);

@@ -129,6 +129,7 @@ public class StaticPinFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setTspID("TSP0001");
 		StaticPinIdentityDTO dto=new StaticPinIdentityDTO();
 		dto.setUin(uin);
 		PinRequestDTO pinRequestDTO=new PinRequestDTO();
@@ -184,6 +185,7 @@ public class StaticPinFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setTspID("TSP0001");
 		StaticPinIdentityDTO dto=new StaticPinIdentityDTO();
 		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO=new PinRequestDTO();
@@ -239,6 +241,7 @@ public class StaticPinFacadeImplTest {
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
 		staticPinRequestDTO.setReqTime(reqTime);
 		staticPinRequestDTO.setVer("1.0");
+		staticPinRequestDTO.setTspID("TSP0001");
 		StaticPinIdentityDTO dto=new StaticPinIdentityDTO();
 		dto.setVid(vid);
 		PinRequestDTO pinRequestDTO=new PinRequestDTO();
