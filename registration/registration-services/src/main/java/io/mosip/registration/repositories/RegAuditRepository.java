@@ -1,5 +1,7 @@
 package io.mosip.registration.repositories;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -36,4 +38,6 @@ public interface RegAuditRepository extends BaseRepository<Audit, Long> {
 	@Modifying
 	@Query(value = "UPDATE AUDIT.APP_AUDIT_LOG a SET a.IS_SYNC = true WHERE a.LOG_ID IN :audits", nativeQuery = true)
 	int updateSyncAudits(@Param("audits") List<String> auditUUIDs);
+	
+	void deleteAllInBatchBycreatedAtBetween(LocalDateTime auditLogFromDtimes,LocalDateTime auditLogToDtimes);
 }

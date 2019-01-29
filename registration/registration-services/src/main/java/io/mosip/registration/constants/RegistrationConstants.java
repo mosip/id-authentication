@@ -827,6 +827,8 @@ public class RegistrationConstants {
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
 	
 	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
+	public static final String DELETE_AUDIT_LOGS_JOB = "REGISTRATION - Delete Audit Logs Job";
+
 
 	// PRE-REG DELETE JOB
 	public static final String PRE_REG_DELETE_SUCCESS = "Pre-Registration Records deleted";

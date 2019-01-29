@@ -4,6 +4,8 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +85,15 @@ public class AuditDAOImpl implements AuditDAO {
 				APPLICATION_ID, "updateSyncAudits has been ended");
 		
 		return updatedCount;
+	}
+
+	
+	@Override
+	@Transactional
+	public void deleteAll(LocalDateTime auditLogFromDtimes, LocalDateTime auditLogToDtimes) {
+		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+				APPLICATION_ID, "Deleting Audit Logs");
+		regAuditRepository.deleteAllInBatchBycreatedAtBetween(auditLogFromDtimes, auditLogToDtimes);
 	}
 
 }

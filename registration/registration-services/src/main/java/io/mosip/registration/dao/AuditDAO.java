@@ -1,5 +1,7 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
@@ -28,5 +30,15 @@ public interface AuditDAO {
 	 * @return the number of records updated
 	 */
 	int updateSyncAudits(List<String> auditUUIDs);
+
+	/**
+	 * Delete All audit rows In between time
+	 * 
+	 * @param auditLogFromDtimes
+	 *            startTime
+	 * @param auditLogToDtimes
+	 *            end time
+	 */
+	void deleteAll(LocalDateTime auditLogFromDtimes, LocalDateTime auditLogToDtimes);
 
 }
