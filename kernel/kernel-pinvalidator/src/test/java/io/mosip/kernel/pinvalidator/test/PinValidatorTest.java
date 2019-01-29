@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,39 +30,41 @@ public class PinValidatorTest {
 	@Autowired
 	private PinValidator<String> pinValidatorImpl;
 
+	@Value("${mosip.kernel.pin.test.valid-pin}")
+	private String validPin;
+
+	@Value("${mosip.kernel.pin.test.invalid-length-pin}")
+	private String invalidPinLength;
+
+	@Value("${mosip.kernel.pin.test.invalid-alphanumric-pin}")
+	private String invalidAlphaNumricPin;
+
 	@Test
 	public void pinValidatorImplTest() {
 
-		String pin = "426789";
-		assertEquals(true, pinValidatorImpl.validatePin(pin));
+		assertEquals(true, pinValidatorImpl.validatePin(validPin));
 	}
 
 	@Test(expected = InvalidPinException.class)
 	public void testNull() throws InvalidPinException {
-
 		String pin = null;
 		pinValidatorImpl.validatePin(pin);
 	}
 
 	@Test(expected = InvalidPinException.class)
 	public void testEmpty() throws InvalidPinException {
-
 		String pin = "";
 		pinValidatorImpl.validatePin(pin);
 	}
 
 	@Test(expected = InvalidPinException.class)
 	public void testPinLenth() throws InvalidPinException {
-
-		String pin = "126789089018";
-		pinValidatorImpl.validatePin(pin);
+		pinValidatorImpl.validatePin(invalidPinLength);
 	}
 
 	@Test(expected = InvalidPinException.class)
 	public void testPinAlphaNumric() throws InvalidPinException {
-
-		String pin = "02ABC6";
-		pinValidatorImpl.validatePin(pin);
+		pinValidatorImpl.validatePin(invalidAlphaNumricPin);
 	}
 
 }
