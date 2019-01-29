@@ -2,6 +2,7 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 
 /**
@@ -92,4 +93,11 @@ public interface SyncJobControlDAO {
 	 * @return list of syncControl
 	 */
 	public List<SyncControl> findAll();
+	
+	/**
+	 * Get Registration Details
+	 * 
+	 * @return list of Registration
+	 */
+	List<Registration> getRegistrationDetails();
 }

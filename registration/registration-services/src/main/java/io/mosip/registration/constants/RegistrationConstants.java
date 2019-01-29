@@ -463,11 +463,12 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
 	public static final double OPT_TO_REG_EARTH_RADIUS = 6371000;
 	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
-	public static final String OPT_TO_REG_LOGGER_SESSION_ID = "REGISTRATION - SYNC - VALIDATION";
 	public static final String OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
 	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
 	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
+	public static final String PAK_APPRVL_MAX_CNT = "REG-ICS‌-008";
+	public static final String PAK_APPRVL_MAX_TIME = "REG-ICS‌-009";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
 	public static final String LATITUDE = "latitude";
 	public static final String OPT_TO_REG_MDS_J00001 = "MDS_J00001";
@@ -533,6 +534,9 @@ public class RegistrationConstants {
 	public static final String REGISTARTION_CENTER="REGISTARTION_CENTER";
 	public static final String CBEFF_ONLY_UNIQUE_TAGS = "CBEFF_ONLY_UNIQUE_TAGS";
 	public static final String GLOBAL_CONFIG_TRUE_VALUE = "Y";
+	public static final String REG_PAK_MAX_CNT_APPRV_LIMIT = "REG_PAK_MAX_CNT_APPRV_LIMIT";
+	public static final String REG_PAK_MAX_TIME_APPRV_LIMIT = "REG_PAK_MAX_TIME_APPRV_LIMIT";
+	public static final String FINGERPRINT_DISABLE_FLAG = "FINGERPRINT_DISABLE_FLAG";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -870,6 +874,8 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
 
 	// Sync Status
+	public static final String REG_PKT_APPRVL_CNT_EXCEED = "Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration";
+	public static final String REG_PKT_APPRVL_TIME_EXCEED = "Maximum duration for registration packets pending approval on client reached.Please approve or reject packets before proceeding with this registration";
 	public static final String OPT_TO_REG_TIME_EXPORT_EXCEED = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
 	public static final String OPT_TO_REG_TIME_SYNC_EXCEED = "Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration";
 	public static final String OPT_TO_REG_REACH_MAX_LIMIT = "Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration";

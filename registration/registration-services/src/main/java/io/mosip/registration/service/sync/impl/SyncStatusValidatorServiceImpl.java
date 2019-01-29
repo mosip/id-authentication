@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,13 +21,16 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
 import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
@@ -97,7 +101,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 * io.mosip.registration.service.SyncStatusValidatorService#validateSyncStatus()
 	 */
 	public ResponseDTO validateSyncStatus() {
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the sync status started");
 
 		Map<String, Integer> map = new HashMap<>();
@@ -119,9 +123,53 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		int syncFailureCount = 0;
 
 		try {
+			
+			LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Fetching Registration details where status is Registered");
+
+			List<Registration> registrationDetails = syncJObDao.getRegistrationDetails();
+
+			LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Validating the count of packets of status Registered with configured value");
+
+			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
+					"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
+
+			if (registrationDetails.size() > Integer.parseInt(String.valueOf(ApplicationContext.getInstance()
+					.getApplicationMap().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
+
+				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT,
+						RegistrationConstants.REG_PKT_APPRVL_CNT_EXCEED, RegistrationConstants.ERROR,
+						errorResponseDTOList);
+
+				LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+						"Generating Error Response if count of packets of status Registered is greater than configured value");
+
+				auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
+						"Generating Error Response if count of packets of status Registered is greater than configured value", "refId", "refIdType");
+			}
+
+			LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					"Validating the Duration of oldest packet of status Registered with configured duration");
+
+			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
+					"Validating the Duration of oldest packet of status Registered with configured duration", "refId", "refIdType");
+
+			if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO) : null) < 0) {
+
+				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_TIME,
+						RegistrationConstants.REG_PKT_APPRVL_TIME_EXCEED, RegistrationConstants.ERROR,
+						errorResponseDTOList);
+
+				LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value");
+
+				auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
+						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value", "refId", "refIdType");
+			}
 			SyncJobInfo syncJobInfo = syncJObDao.getSyncStatus();
 
-			LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Fetched SyncJobInfo containing the synccontrol list and yettoexportpacket count");
 
 			if (syncJobInfo.getSyncControlList() != null && !syncJobInfo.getSyncControlList().isEmpty()) {
@@ -131,7 +179,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 					// Comment:
 					Date lastSyncDate = new Date(syncControl.getLastSyncDtimes().getTime());
 
-					LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 							"Checking the actualdaysfrequency with the configured frequency [" + lastSyncDate + "]");
 
 					if (map.get(syncControl.getSyncJobId().trim()) <= getActualDays(lastSyncDate)) {
@@ -156,7 +204,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 			if (syncJobInfo.getYetToExportCount() >= packetMaxCount) {
 
-				LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 						"Checking the yet to export packets frequency with the configured limit count");
 
 				auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, Components.SYNC_VALIDATE,
@@ -176,7 +224,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 				captureGeoLocation(errorResponseDTOList);
 			}
 
-			LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the sync status ended");
 
 			auditFactory.audit(AuditEvent.SYNC_INFO_VALIDATE, Components.SYNC_VALIDATE,
@@ -207,7 +255,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		Map<String, Object> map = SessionContext.getInstance().getMapObject();
 		Instant lastCapturedTime = (Instant) map.get(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME);
 
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Capturing the login time Firsttime login");
 
 		return lastCapturedTime != null && Duration.between(lastCapturedTime, Instant.now()).toHours() < 24;
@@ -221,7 +269,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 */
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center started");
 
 		double centerLatitude = Double.parseDouble(SessionContext.getInstance().getUserContext()
@@ -230,7 +278,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		double centerLongitude = Double.parseDouble(SessionContext.getInstance().getUserContext()
 				.getRegistrationCenterDetailDTO().getRegistrationCenterLongitude());
 
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
 		Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,gpsDeviceModel);
@@ -264,7 +312,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 					RegistrationConstants.ERROR, errorResponseDTOList);
 		}
 
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center ended");
 
 		auditFactory.audit(AuditEvent.SYNC_GEO_VALIDATE, Components.SYNC_VALIDATE,
@@ -284,6 +332,29 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		return (int) (lastSyncDate != null
 				? ((new Date().getTime() - lastSyncDate.getTime()) / (24 * 60 * 60 * 1000) + 1)
 				: 0);
+	}
+	
+	/**
+	 * {@code getDifference} is to get difference between dates
+	 * day.
+	 * 
+	 * @return long
+	 */
+	private long getDifference(Registration registration) {
+		
+		if(registration != null && registration.getCrDtime() != null) {
+
+			/* This will subtract configured number of days from current Date */
+			Date differDate = new Date(new Date().getTime() - (Long.parseLong(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000 ));
+	
+			/* This will convert timestamp to Date */
+			Date createdDate = new Date(registration.getCrDtime().getTime());
+	
+			/* This will return differnce between 2 dates in minutes */
+			return ChronoUnit.MINUTES.between(differDate.toInstant(), createdDate.toInstant());
+		}
+		return 0;
 	}
 
 	/**
