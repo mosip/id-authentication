@@ -84,14 +84,14 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String insert(BiometricDTO biometricDTO) {
 		
-		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 				"Entering insert method");
 
 		String response = RegistrationConstants.EMPTY;
 		
 		try {
 			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric information insertion into table");
 			
 			List<UserBiometric> bioMetricsList = new ArrayList<>();
@@ -162,12 +162,12 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			userBiometricRepository.saveAll(bioMetricsList);
 			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Biometric information insertion succesful");
 
 			// find user
 			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching User and machine information to insertion");
 			
 			UserMachineMapping user = new UserMachineMapping();
@@ -186,12 +186,12 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			machineMappingDAO.save(user);
 			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"User and machine information insertion sucessful");
 
 			response = RegistrationConstants.success;
 			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"Leaving insert method");
 
 		} catch (RuntimeException runtimeException) {
@@ -214,12 +214,12 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String getStationID(String macAdres) throws RegBaseCheckedException {
 
-		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 				"getStationID() macAddress --> " + macAdres);
 
 		try {
 
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
 
 			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByMacAddress(macAdres);
 
@@ -248,12 +248,12 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String getCenterID(String stationId) throws RegBaseCheckedException {
 
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getCenterID() stationID --> " + stationId);
 
 		try {
 			
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching center details from reposiotry....");
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching center details from reposiotry....");
 			
 			CenterMachine regCenterMachineDtls = centerMachineRepository.findByCenterMachineIdId(stationId);
 			

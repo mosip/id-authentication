@@ -40,7 +40,7 @@ public class GenderDAOImpl implements GenderDAO {
 
 	@Override
 	public List<Gender> getGenders() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-GENDERDAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-PACKET_CREATION-GENDERDAO", APPLICATION_NAME,
 				APPLICATION_ID, "fetching the genders");
 
 		return registrationGenderRepository.findAll();

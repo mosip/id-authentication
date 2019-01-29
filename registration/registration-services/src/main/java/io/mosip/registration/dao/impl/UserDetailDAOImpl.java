@@ -49,13 +49,13 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 	 */
 	public UserDetail getUserDetail(String userId) {
 
-		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
+		LOGGER.info("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Fetching User details");
 
 		List<UserDetail> userDetail = userDetailRepository
 				.findByIdIgnoreCaseAndIsActiveTrue(userId);
 		
-		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
+		LOGGER.info("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID,
 				"User details fetched successfully");
 
@@ -71,12 +71,12 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 	 */
 	public void updateLoginParams(UserDetail userDetail) {
 		
-		LOGGER.debug("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
+		LOGGER.info("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Updating Login params");
 
 		userDetailRepository.save(userDetail);
 		
-		LOGGER.debug("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
+		LOGGER.info("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Updated Login params successfully");
 
 	}

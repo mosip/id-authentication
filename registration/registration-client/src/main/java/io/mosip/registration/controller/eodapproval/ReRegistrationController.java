@@ -111,7 +111,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PAGE_LOADING - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		reloadTableView();
 	}
@@ -121,7 +121,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * 
 	 */
 	private void reloadTableView() {
-		LOGGER.debug("REGISTRATION - LOADING_TABLE - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - LOADING_TABLE - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the table in the ui");
 		reRegisterStatusMap.clear();
 		setInvisible();
@@ -139,7 +139,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * Viewing RegistrationAcknowledgement on selecting the ReRegistration record
 	 */
 	private void viewAck() {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form image beside the Table");
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			informedBtn.setVisible(true);
@@ -195,7 +195,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * To display the Authentication UI page
 	 */
 	public void authenticateReregister() {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table after the authentication finished successfully");
 
 		try {
@@ -231,7 +231,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	@Override
 	public void updateAuthenticationStatus() {
-		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REREGISTRATION_APPROVE_SUCCESS);
@@ -244,7 +244,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * 
 	 */
 	private void showReregisterdPackets() {
-		LOGGER.debug("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - POPULATE_TABLE_DATA - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
 		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
 
@@ -259,7 +259,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
 		}
-		LOGGER.debug("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - TABLE_DATA_POPULATED - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");
 	}
 

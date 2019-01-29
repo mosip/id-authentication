@@ -48,7 +48,7 @@ public class HomeController extends BaseController implements Initializable {
 
 		try {
 
-			LOGGER.debug("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", APPLICATION_NAME, APPLICATION_ID,
 					"Constructing Registration Home Page");
 
 			HBox headerRoot = BaseController.load(getClass().getResource(RegistrationConstants.HEADER_PAGE));

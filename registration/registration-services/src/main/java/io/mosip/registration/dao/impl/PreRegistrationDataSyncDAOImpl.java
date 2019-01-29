@@ -41,7 +41,7 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 	@Override
 	public PreRegistrationList get(String preRegId) {
 		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Fetching Pre-Registration");
 
 
@@ -55,7 +55,7 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 	@Override
 	public PreRegistrationList save(PreRegistrationList preRegistration) {
 		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving Pre-Registration");
 
 		return preRegistrationRepository.save(preRegistration);
@@ -64,7 +64,7 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 	
 	public List<PreRegistrationList> fetchRecordsToBeDeleted(Date startDate){
 		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_FETCH - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_FETCH - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Fetch Records that needs to be deleted");
 		
 		return preRegistrationRepository.findByAppointmentDateBeforeAndIsDeleted(startDate, false);
@@ -72,7 +72,7 @@ public class PreRegistrationDataSyncDAOImpl implements PreRegistrationDataSyncDA
 	
 	public PreRegistrationList update(PreRegistrationList preReg){
 		
-		LOGGER.debug("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_UPDATE - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC_RECORD_UPDATE - PRE_REGISTRATION_DATA_SYNC_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Update the deleted records");
 		
 		return preRegistrationRepository.update(preReg);

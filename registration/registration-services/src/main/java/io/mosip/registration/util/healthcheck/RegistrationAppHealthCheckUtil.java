@@ -48,7 +48,7 @@ public class RegistrationAppHealthCheckUtil {
 	 * @throws URISyntaxException
 	 */
 	public static boolean isNetworkAvailable() {
-		LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
+		LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
 				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Network Checker had been called.");
 		boolean isNWAvailable = false;
@@ -65,10 +65,10 @@ public class RegistrationAppHealthCheckUtil {
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				isNWAvailable = true;
 			}
-			LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
+			LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
 					APPLICATION_NAME, APPLICATION_ID, "Internet Access Available.");
 		} catch (IOException ioException) {
-			LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
+			LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
 					APPLICATION_NAME, APPLICATION_ID, "No Internet Access.");
 		} catch (URISyntaxException e) {
 
@@ -82,7 +82,7 @@ public class RegistrationAppHealthCheckUtil {
 	 * @return
 	 */
 	public static boolean isDiskSpaceAvailable() {
-		LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
+		LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
 				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Disk Space Checker had been called.");
 		boolean isSpaceAvailable = false;
@@ -94,17 +94,17 @@ public class RegistrationAppHealthCheckUtil {
 			if (currentDirectory.equalsIgnoreCase(fs.getMount())) {
 				if (fs.getUsableSpace() > diskSpaceThreshold) {
 					isSpaceAvailable = true;
-					LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
+					LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
 							APPLICATION_NAME, APPLICATION_ID,
 							"Required Disk Space Available.");
 				} else {
-					LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
+					LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
 							APPLICATION_NAME, APPLICATION_ID,
 							"Required Disk Space Not Available.");
 				}
 			}
 		}
-		LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
+		LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
 				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Disk Space Checker had been ended.");
 		return isSpaceAvailable;

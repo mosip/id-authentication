@@ -78,7 +78,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	@Override
 	public ResponseDTO saveOrUpdate(UserMachineMappingDTO userMachineMappingDTO) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Service saveOrUpdate method called");
 
 		// find user
@@ -124,13 +124,13 @@ public class MapMachineServiceImpl implements MapMachineService {
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 			successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
-			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Success Response created");
+			LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Success Response created");
 		} catch (RegBaseUncheckedException exception) {
 			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE);
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 
 		}
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Service saveOrUpdate method ended");
 
 		return responseDTO;
@@ -143,7 +143,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	@Override
 	public ResponseDTO view() {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "View Method called");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "View Method called");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
@@ -165,7 +165,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, userDetails));
 
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
-				LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 						"View Method Success Response created");
 			} else {
 				getErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS);
@@ -194,7 +194,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	private Map<String, Object> constructDTOs(String machineID, String stationID, String centreID,
 			List<UserDetail> userDetails) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTOs() method called");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTOs() method called");
 		Map<String, Object> userDetailMap = new HashMap<>();
 		try {
 			List<UserMachineMappingDTO> userMachineMappingDTOs = userDetails.stream()
@@ -225,7 +225,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	private UserMachineMappingDTO constructDTO(UserDetail userDetail, String machineID,
 			String stationID, String centreID) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
+		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
 		String userID = userDetail.getId();
 		String userName = userDetail.getName();
 		StringBuilder role = new StringBuilder();
@@ -283,7 +283,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	@Override
 	public List<String> getAllDeviceTypes() {
-		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getAllDeviceTypes() method is started");
 
 		List<String> list = new ArrayList<>();
@@ -292,7 +292,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			machineMappingDAO.getAllDeviceTypes()
 					.forEach(deviceType -> list.add(deviceType.getRegDeviceTypeId().getCode()));
 
-			LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getAllDeviceTypes() method is ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.FETCH_DEVICE_TYPES_EXCEPTION,
@@ -311,7 +311,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	@Override
 	public Map<String, List<DeviceDTO>> getDeviceMappingList(String centerId, String machineId) {
-		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getDeviceMappingList(String,String) method is strarted");
 
 		Map<String, List<DeviceDTO>> map = new HashMap<>();
@@ -364,7 +364,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			map.put(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES, availableDeviceDTOs);
 			map.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, mappedDeviceDTOs);
 
-			LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getDeviceMappingList(String,String) method is ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.FETCH_DEVICE_MAPPING_EXCEPTION,
@@ -384,7 +384,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	@Override
 	@Transactional
 	public ResponseDTO updateMappedDevice(List<DeviceDTO> deletedList, List<DeviceDTO> addedList) {
-		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getDeviceMappedDevice(List,List) method is strarted");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -436,7 +436,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			successResponseDTO.setMessage(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 
-			LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"getDeviceMappedDevice(List,List) method is ended");
 		} catch (RuntimeException runtimeException) {
 			// Add the Error Response
