@@ -35,6 +35,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.entity.AutnTxn;
+import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
@@ -64,9 +65,14 @@ public class OTPAuthServiceTest {
 	@Mock
 	OTPManager otpmanager;
 
+	@InjectMocks
+	private IdInfoHelper idInfoHelper;
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authserviceimpl, "env", env);
+		ReflectionTestUtils.setField(authserviceimpl, "idInfoHelper", idInfoHelper);
+		ReflectionTestUtils.setField(idInfoHelper, "environment", env);
 	}
 
 	private AuthRequestDTO otpAuthRequestDTO = new AuthRequestDTO();
@@ -94,7 +100,6 @@ public class OTPAuthServiceTest {
 		authserviceimpl.validateOtp(authreqdto, "1234567890");
 	}
 
-	@Ignore
 	@Test
 	public void TestValidValidateOtp() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
