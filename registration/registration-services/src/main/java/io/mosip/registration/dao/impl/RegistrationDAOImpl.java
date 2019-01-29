@@ -20,6 +20,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.constants.RegistrationType;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
@@ -62,14 +63,22 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			Registration registration = new Registration();
 			registration.setId(zipFileName.substring(zipFileName.lastIndexOf('/') + 1));
-
 			registration.setRegType(RegistrationType.NEW.getCode());
 			registration.setRefRegId("12345");
-			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setLangCode("ENG");
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
-			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
+
+			// Checking the EOD Process ON/OFF
+			if (String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)).equals(RegistrationConstants.ENABLE)) {
+				registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
+				registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
+			} else {
+				registration.setClientStatusCode(RegistrationClientStatusCode.READY_TO_UPLOAD.getCode());
+				registration.setStatusCode(RegistrationClientStatusCode.READY_TO_UPLOAD.getCode());
+			}
+
 			registration.setUploadCount((short) 1);
 			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 					.getRegistrationCenterId());
@@ -252,12 +261,16 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByClientStatusCodeAndServerStatusCode(status[0], status[1]);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.RegistrationDAO#getRegistrationsToBeDeleted(java.sql.Timestamp, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.RegistrationDAO#getRegistrationsToBeDeleted(java.
+	 * sql.Timestamp, java.lang.String)
 	 */
 	@Override
 	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes) {
-		
+
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on crDtime and status");
 
@@ -265,5 +278,4 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 	}
 
-	
 }

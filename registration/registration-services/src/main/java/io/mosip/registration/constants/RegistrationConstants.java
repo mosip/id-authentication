@@ -186,6 +186,7 @@ public class RegistrationConstants {
 	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
 	public static final String APPROVED = "Approved";
 	public static final String REJECTED = "Rejected";
+	public static final String EOD_PROCESS_CONFIG_FLAG = "EOD_PROCESS_CONFIG_FLAG";
 
 	// AES Encryption Constants
 	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";
