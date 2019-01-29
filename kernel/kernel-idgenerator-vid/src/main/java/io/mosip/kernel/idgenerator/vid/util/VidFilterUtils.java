@@ -167,7 +167,6 @@ public class VidFilterUtils {
 	 * @return true if found otherwise false
 	 */
 	private boolean validateNotStartWith(String id) {
-		System.out.println("validateNotStartWith------" + id);
 		if (notStartWith != null && !notStartWith.isEmpty()) {
 			for (String str : notStartWith) {
 				if (id.startsWith(str))
