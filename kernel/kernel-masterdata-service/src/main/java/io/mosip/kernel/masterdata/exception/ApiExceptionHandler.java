@@ -30,17 +30,17 @@ public class ApiExceptionHandler {
 
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> controlDataServiceException(final MasterDataServiceException e) {
-		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		return getErrorResponseEntity(e, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> controlDataNotFoundException(final DataNotFoundException e) {
-		return getErrorResponseEntity(e, HttpStatus.NOT_FOUND);
+		return getErrorResponseEntity(e, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(RequestException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> controlRequestException(final RequestException e) {
-		return getErrorResponseEntity(e, HttpStatus.BAD_REQUEST);
+		return getErrorResponseEntity(e, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(DateTimeParseException.class)
@@ -50,7 +50,7 @@ public class ApiExceptionHandler {
 				e.getMessage() + MasterDataConstant.DATETIMEFORMAT);
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().add(error);
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -64,7 +64,7 @@ public class ApiExceptionHandler {
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
 		});
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	private ResponseEntity<ErrorResponse<ServiceError>> getErrorResponseEntity(BaseUncheckedException e,
