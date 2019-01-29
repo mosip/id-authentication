@@ -68,10 +68,11 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		CamelContext camelContext = new DefaultCamelContext();
 		VertxComponent vertxComponent = new VertxComponent();
 		vertxComponent.setVertx(vertx);
-		RestTemplate restTemplate = new RestTemplate();
-		String url = BridgeUtil.getPropertyFromConfigServer("camel.routes.configuration");
-		ResponseEntity<Resource> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, Resource.class);
-		RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+		//RestTemplate restTemplate = new RestTemplate();
+		//String url = BridgeUtil.getPropertyFromConfigServer("camel.routes.configuration");
+		//ResponseEntity<Resource> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, Resource.class);
+		//RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
+		RoutesDefinition routes = camelContext.loadRoutesDefinition(ClassLoader.getSystemResourceAsStream("camel-routes.xml"));
 		camelContext.addRouteDefinitions(routes.getRoutes());
 		camelContext.addComponent("vertx", vertxComponent);
 		camelContext.start();
