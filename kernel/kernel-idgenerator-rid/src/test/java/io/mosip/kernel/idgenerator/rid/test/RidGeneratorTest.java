@@ -1,5 +1,6 @@
 package io.mosip.kernel.idgenerator.rid.test;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -15,6 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.idgenerator.rid.entity.Rid;
 import io.mosip.kernel.idgenerator.rid.exception.EmptyInputException;
 import io.mosip.kernel.idgenerator.rid.exception.InputLengthException;
@@ -38,11 +41,34 @@ public class RidGeneratorTest {
 	@Value("${mosip.kernel.rid.test.invalid-length-machineId}")
 	private String invalidMachineId;
 
+	@Value("${mosip.kernel.rid.test.centerId-length}")
+	private int centerIdLength;
+
+	@Value("${mosip.kernel.rid.test.machineId-length}")
+	private int machineIDLength;
+
+	@Value("${mosip.kernel.rid.test.invalid-centerId-length}")
+	private int invalidCenterIdLength;
+	
+	@Value("${mosip.kernel.rid.test.valid-rid}")
+	private String validRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-centerid-rid}")
+	private String invalidCenterIdRid;
+
+	@Value("${mosip.kernel.rid.test.invalid-machineid-rid}")
+	private String invalidMachineIdRid;
+
+
 	@MockBean
 	RidRepository repository;
 
 	@Autowired
 	RidGenerator<String> ridGeneratorImpl;
+	
+	@Autowired
+	RidValidator<String> ridValidatorImpl;
+
 
 	// @Test
 	public void generateIdTypeTest() {
@@ -101,7 +127,8 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId, 5, 5), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength),
+				isA(String.class));
 	}
 
 	@Test(expected = RidException.class)
@@ -109,7 +136,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenThrow(DataRetrievalFailureException.class);
-		ridGeneratorImpl.generateId(centerId, machineId, 5, 5);
+		ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -118,7 +145,7 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.save(entity)).thenThrow(DataRetrievalFailureException.class, DataAccessLayerException.class);
-		ridGeneratorImpl.generateId(centerId, machineId, 5, 5);
+		ridGeneratorImpl.generateId(centerId, machineId, centerIdLength, machineIDLength);
 	}
 
 	@Test(expected = InputLengthException.class)
@@ -126,7 +153,22 @@ public class RidGeneratorTest {
 		Rid entity = new Rid();
 		entity.setCurrentSequenceNo(00001);
 		when(repository.findLastRid()).thenReturn(entity);
-		assertThat(ridGeneratorImpl.generateId(centerId, machineId, 0, 5), isA(String.class));
+		assertThat(ridGeneratorImpl.generateId(centerId, machineId, invalidCenterIdLength, machineIDLength),
+				isA(String.class));
 	}
 
+	@Test
+	public void validRidTest() {
+		assertThat(ridValidatorImpl.validateId(validRid, centerId, machineId), is(true));
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void invalidCenterIdInRidTest() {
+		ridValidatorImpl.validateId(invalidCenterIdRid, centerId, machineId);
+	}
+
+	@Test(expected = InvalidIDException.class)
+	public void invalidMachineIdInRidTest() {
+		ridValidatorImpl.validateId(invalidMachineIdRid, centerId, machineId);
+	}
 }
