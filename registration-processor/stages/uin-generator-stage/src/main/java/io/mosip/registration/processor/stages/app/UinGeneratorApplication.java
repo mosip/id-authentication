@@ -9,15 +9,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;
 
-@SpringBootApplication(scanBasePackages = { 
+/*@SpringBootApplication(scanBasePackages = { 
 		"io.mosip.registration.processor.status", "io.mosip.registration.processor.filesystem.ceph.adapter.impl",
 		"io.mosip.registration.processor.rest.client","io.mosip.registration.processor.packet.storage",
-		"io.mosip.registration.processor.core","io.mosip.registration.processor.stages","io.mosip.registration.processor.message.sender"})
+		"io.mosip.registration.processor.core","io.mosip.registration.processor.stages","io.mosip.registration.processor.message.sender"})*/
 public class UinGeneratorApplication {
 
-	/** The validatebean. */
-	@Autowired
-	private UinGeneratorStage validatebean;
 
 	/**
 	 * The main method.
@@ -46,12 +43,5 @@ public class UinGeneratorApplication {
 		uinGeneratorStage.deployVerticle();
 	}
 
-	/**
-	 * Deploy verticle.
-	 */
-	@PostConstruct
-	public void deployVerticle() {
-		validatebean.deployVerticle();
-
-	}
+	
 }

@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.stages.demodedupe.BiometricValidation;
 import io.mosip.registration.processor.stages.demodedupe.DemoDedupe;
 import io.mosip.registration.processor.stages.demodedupe.DemodedupeStage;
 
@@ -48,13 +49,17 @@ public class DemoDedupeConfig{
 	}
 
 	@Bean
-	public DemodedupeStage demoDedupeStage() {
+	public DemodedupeStage getDemoDedupeStage() {
 		return new DemodedupeStage();
 	}
 
 	@Bean
-	public DemoDedupe demoDedupe() {
+	public DemoDedupe getDemoDedupe() {
 		return new DemoDedupe();
 	}
 	
+	@Bean 
+	public BiometricValidation getBiometricValidation() {
+		return new BiometricValidation();
+	}
 }
