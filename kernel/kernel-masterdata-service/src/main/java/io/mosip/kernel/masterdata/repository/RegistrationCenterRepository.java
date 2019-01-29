@@ -104,7 +104,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	@Query("FROM RegistrationCenter WHERE centerTypeCode= ?1 and (isDeleted is null or isDeleted =false)")
 	List<RegistrationCenter> findByCenterTypeCode(String code);
 
-	@Query(value = "select EXISTS(select * from master.registration_center rc , master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=rc.location_code and rc.id=?2)", nativeQuery = true)
+	@Query(value = "select EXISTS(select * from master.registration_center rc , master.loc_holiday hol where hol.is_active=true and (hol.is_deleted is null or hol.is_deleted=false) and hol.holiday_date=?1 and hol.location_code=rc.holiday_loc_code)", nativeQuery = true)
 	boolean validateDateWithHoliday(LocalDate date, String regId);
 
 	/**

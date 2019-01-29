@@ -1,6 +1,7 @@
 
 package io.mosip.kernel.idvalidator.prid.impl;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -28,7 +29,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * This Field to hold the length of PRID Reading length of PRID from property
 	 * file
 	 */
-	@Value("${mosip.kernel.prid.length:-1}")
+	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
 
 	/**
@@ -36,14 +37,14 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
 	 */
-	@Value("${mosip.kernel.prid.sequence-limit:-1}")
+	@Value("${mosip.kernel.prid.sequence-limit}")
 	private int sequenceLimit;
 
 	/**
 	 * Number of digits in repeating block allowed in id. For example if limit is 2,
 	 * then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
 	 */
-	@Value("${mosip.kernel.prid.repeating-block-limit:-1}")
+	@Value("${mosip.kernel.prid.repeating-block-limit}")
 	private int blockLimit;
 
 	/**
@@ -51,8 +52,11 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
 	 * digit)
 	 */
-	@Value("${mosip.kernel.prid.repeating-limit:-1}")
+	@Value("${mosip.kernel.prid.repeating-limit}")
 	private int repeatLimit;
+
+	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
+	private List<String> notStartWith;
 
 	/**
 	 * Field for zero digit
@@ -166,7 +170,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 		 * Checking prid length , sequence length, repeat limit and block limit is not
 		 * equal or less than zero.
 		 */
-		checkInput(pridLength, sequenceLimit, repeatLimit, blockLimit);
+		// checkInput(pridLength, sequenceLimit, repeatLimit, blockLimit);
 		/**
 		 * 
 		 * Check PRID, It Shouldn't be Null or empty
@@ -254,7 +258,13 @@ public class PridValidatorImpl implements PridValidator<String> {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+		if (repeatingLimit > 0) {
+			String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+			/**
+			 * Compiled regex pattern of {@link #repeatingRegEx}
+			 */
+			repeatingPattern = Pattern.compile(repeatingRegEx);
+		}
 
 		/**
 		 * Regex for matching repeating block of digits like 482xx482, 4827xx4827 (x is
@@ -271,16 +281,15 @@ public class PridValidatorImpl implements PridValidator<String> {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingBlockRegex = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
 
-		/**
-		 * Compiled regex pattern of {@link #repeatingRegEx}
-		 */
-		repeatingPattern = Pattern.compile(repeatingRegEx);
-		/**
-		 * Compiled regex pattern of {@link #repeatingBlockRegex}
-		 */
-		repeatingBlockpattern = Pattern.compile(repeatingBlockRegex);
+		if (repeatingBlockLimit > 0) {
+			String repeatingBlockRegex = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
+
+			/**
+			 * Compiled regex pattern of {@link #repeatingBlockRegex}
+			 */
+			repeatingBlockpattern = Pattern.compile(repeatingBlockRegex);
+		}
 	}
 
 	/**
@@ -302,7 +311,7 @@ public class PridValidatorImpl implements PridValidator<String> {
 	private boolean isValidId(String id, int sequenceLimit, int repeatingLimit, int repeatingBlockLimit) {
 		initializeRegEx(repeatingLimit, repeatingBlockLimit);
 		return !(sequenceFilter(id, sequenceLimit) || regexFilter(id, repeatingPattern)
-				|| regexFilter(id, repeatingBlockpattern));
+				|| regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id));
 	}
 
 	/**
@@ -313,9 +322,11 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id, int sequenceLimit) {
-		return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
-				.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-				.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		if (sequenceLimit > 0)
+			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
+					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		return false;
 	}
 
 	/**
@@ -329,18 +340,39 @@ public class PridValidatorImpl implements PridValidator<String> {
 	 * @return true if the id matches the given regex pattern
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
-		return pattern.matcher(id).find();
+		if (pattern != null)
+			return pattern.matcher(id).find();
+		return false;
 	}
 
 	/**
 	 * Checking prid length , sequence length, repeat limit and block limit is not
 	 * equal or less than zero.
 	 */
-	private void checkInput(int pridLength, int sequenceLimit, int repeatLimit, int blockLimit) {
-		if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <= 0 || blockLimit <= 0) {
-			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(),
-					PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage());
+	/*
+	 * private void checkInput(int pridLength, int sequenceLimit, int repeatLimit,
+	 * int blockLimit) { if (pridLength <= 0 || sequenceLimit <= 0 || repeatLimit <=
+	 * 0 || blockLimit <= 0) { throw new
+	 * InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorCode(
+	 * ), PridExceptionConstant.PRID_VAL_INVALID_VALUE.getErrorMessage()); } }
+	 */
+
+	/**
+	 * Method to validate that the prid should not contains the specified digit at
+	 * first index
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if found otherwise false
+	 */
+	private boolean validateNotStartWith(String id) {
+		if (notStartWith != null && !notStartWith.isEmpty()) {
+			for (String str : notStartWith) {
+				if (id.startsWith(str))
+					return true;
+			}
 		}
+		return false;
 	}
 
 }

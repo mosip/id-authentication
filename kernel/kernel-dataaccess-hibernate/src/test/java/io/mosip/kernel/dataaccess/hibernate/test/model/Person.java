@@ -3,17 +3,30 @@
  */
 package io.mosip.kernel.dataaccess.hibernate.test.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
+@Entity
+@Table(name = "Person", schema = "master")
 public class Person {
 
+	@javax.persistence.Id
 	private int Id;
 
 	private String name;
 
+	
+	/**
+	 * No args constructor
+	 */
+	public Person() {
+		super();
+	}
 	/**
 	 * @param string
 	 */
