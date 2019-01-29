@@ -1,8 +1,10 @@
-package com.mindtree.rest_client_test;
+package io.mosip.registration.processor.http.stage.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.mosip.registration.processor.http.stage.dto.MessageDTO;
 
 @RestController
 public class AppController {

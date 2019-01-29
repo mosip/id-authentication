@@ -1,4 +1,4 @@
-package com.mindtree.rest_client_test;
+package io.mosip.registration.processor.http.stage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
