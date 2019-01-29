@@ -448,7 +448,7 @@ public class AuthFacadeImplTest {
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
 
-	@Ignore
+	
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -515,12 +515,13 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setStatus(STATUS_SUCCESS);
 		authResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		assertNotNull(authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO));
 
 	}
 
-	@Ignore
+	
 	@Test
 	public void processKycAuthInValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -587,6 +588,7 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setStatus(STATUS_SUCCESS);
 		authResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 		assertNotNull(authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO));
 
