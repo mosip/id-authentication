@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { BookingModelRequest } from './booking-request.model';
-import * as appConstants from './../app.constants';
-import Utils from '../app.util';
-import { AppConfigService } from '../app-config.service';
-import { Applicant } from './models/dashboard-model/dashboard.modal';
+import { BookingModelRequest } from '../../shared/booking-request.model';
+import * as appConstants from '../../app.constants';
+import Utils from '../../app.util';
+import { AppConfigService } from '../../app-config.service';
+import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 
 @Injectable({
   providedIn: 'root'

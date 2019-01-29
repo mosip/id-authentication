@@ -12,9 +12,9 @@ import { AuthModule } from './auth/auth.module';
 import { SharedModule } from './shared/shared.module';
 
 import { AppConfigService } from './app-config.service';
-import { DashboardModule } from './feature/dashboard/dashboard.module';
-import { FileUploadModule } from './feature/file-upload/file-upload.module';
-import { DemographicModule } from './feature/demographic/demographic.module';
+// import { DashboardModule } from './feature/dashboard/dashboard.module';
+// import { FileUploadModule } from './feature/file-upload/file-upload.module';
+// import { DemographicModule } from './feature/demographic/demographic.module';
 import { BookingModule } from './feature/booking/booking.module';
 import { SharedService } from './feature/booking/booking.service';
 import { AcknowledgementComponent } from './feature/components/acknowledgement/acknowledgement.component';
@@ -38,9 +38,9 @@ const appInitialization = (appConfig: AppConfigService) => {
     CoreModule,
     AuthModule,
     SharedModule,
-    DashboardModule,
-    FileUploadModule,
-    DemographicModule,
+    // DashboardModule,
+    // FileUploadModule,
+    // DemographicModule,
     BookingModule,
     NgxPrintModule
   ],

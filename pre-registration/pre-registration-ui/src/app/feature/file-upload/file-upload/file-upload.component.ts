@@ -7,7 +7,8 @@ import { ViewChild } from '@angular/core';
 import { FileModel } from 'src/app/shared/models/demographic-model/file.model';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { RegistrationService } from 'src/app/core/services/registration.service';
-import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-file-upload',
@@ -130,8 +131,11 @@ export class FileUploadComponent implements OnInit {
     private dataStroage: DataStorageService,
     private router: Router,
     private route: ActivatedRoute,
-    private domSanitizer: DomSanitizer
-  ) {}
+    private domSanitizer: DomSanitizer,
+    private translate: TranslateService
+  ) {
+    this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {
     this.allApplicants = this.registration.getUsers();
@@ -314,11 +318,21 @@ export class FileUploadComponent implements OnInit {
 
   onBack() {
     this.registration.changeMessage({ modifyUser: 'true' });
-    this.router.navigate(['../demographic'], { relativeTo: this.route });
+    const arr = this.router.url.split('/');
+    arr.pop();
+    arr.push('demographic');
+    const url = arr.join('/');
+    this.router.navigateByUrl(url);
+    // this.router.navigate(['../demographic'], { relativeTo: this.route });
   }
   onNext() {
     // this.router.navigate(['pre-registration', this.loginId, 'pick-center']);
-    this.router.navigate(['../preview'], { relativeTo: this.route });
+    const arr = this.router.url.split('/');
+    arr.pop();
+    arr.push('preview');
+    const url = arr.join('/');
+    this.router.navigateByUrl(url);
+    // this.router.navigate(['../preview'], { relativeTo: this.route });
   }
 
   nextFile() {

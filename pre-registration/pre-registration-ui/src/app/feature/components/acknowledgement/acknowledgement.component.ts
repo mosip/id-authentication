@@ -3,6 +3,7 @@ import * as html2pdf from 'html2pdf.js';
 import { MatDialog } from '@angular/material';
 import { SharedService } from '../../booking/booking.service';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-acknowledgement',
@@ -27,7 +28,9 @@ export class AcknowledgementComponent implements OnInit {
 
   opt = {};
 
-  constructor(private sharedService: SharedService, private dialog: MatDialog) {}
+  constructor(private sharedService: SharedService, private dialog: MatDialog, private translate: TranslateService) {
+    this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {
     this.usersInfo = this.sharedService.getNameList();

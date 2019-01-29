@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { RegistrationService } from 'src/app/core/services/registration.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preview',
@@ -20,8 +21,11 @@ export class PreviewComponent implements OnInit {
     private dataStorageService: DataStorageService,
     private route: ActivatedRoute,
     private router: Router,
-    private registrationService: RegistrationService
-  ) {}
+    private registrationService: RegistrationService,
+    private translate: TranslateService
+  ) {
+    this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {
     this.user = { ...this.registrationService.getUser(this.registrationService.getUsers().length - 1) };
@@ -115,10 +119,20 @@ export class PreviewComponent implements OnInit {
   }
 
   navigateBack() {
-    this.router.navigate(['../file-upload'], { relativeTo: this.route });
+    const arr = this.router.url.split('/');
+    arr.pop();
+    arr.push('file-upload');
+    const url = arr.join('/');
+    this.router.navigateByUrl(url);
+    // this.router.navigate(['../file-upload'], { relativeTo: this.route });
   }
 
   navigateNext() {
-    this.router.navigate(['../pick-center'], { relativeTo: this.route });
+    const arr = this.router.url.split('/');
+    arr.pop();
+    arr.push('booking/pick-center');
+    const url = arr.join('/');
+    this.router.navigateByUrl(url);
+    // this.router.navigate(['../booking/pick-center'], { relativeTo: this.route });
   }
 }

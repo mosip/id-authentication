@@ -5,7 +5,7 @@ import { MatSelectChange, MatButtonToggleChange } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
-import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
 
 import * as appConstants from '../../../app.constants';
 import Utils from 'src/app/app.util';
@@ -127,6 +127,7 @@ export class DemographicComponent implements OnInit {
     // const browserLang = translate.getBrowserLang();
     // translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
     //till here
+    this.translate.use(localStorage.getItem('langCode'));
     this.initialization();
   }
 
@@ -151,9 +152,9 @@ export class DemographicComponent implements OnInit {
       this.dataModification = false;
       this.step = this.regService.getUsers().length;
     }
-    this.route.parent.params.subscribe((params: Params) => {
-      this.loginId = params['id'];
-    });
+    const arr = this.router.url.split('/');
+    console.log(arr);
+    this.loginId = arr[2];
   }
 
   async initForm() {
@@ -557,6 +558,8 @@ export class DemographicComponent implements OnInit {
     this.dataUploadComplete = false;
     this.dataStorageService.addUser(request).subscribe(
       response => {
+        console.log(response);
+
         if (this.dataModification) {
           this.regService.updateUser(
             this.step,
@@ -567,6 +570,8 @@ export class DemographicComponent implements OnInit {
             preRegId: this.preRegId
           });
         } else if (response !== null) {
+          console.log(response);
+
           this.preRegId = response[appConstants.RESPONSE][0][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.preRegistrationId];
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
           this.sharedService.addNameList({
@@ -585,7 +590,14 @@ export class DemographicComponent implements OnInit {
       () => {
         this.checked = true;
         this.dataUploadComplete = true;
-        this.router.navigate(['../file-upload'], { relativeTo: this.route });
+        // this.router.navigate(['../file-upload'], { relativeTo: this.route });
+        // this.router.navigateByUrl('../file-upload');
+        const arr = this.router.url.split('/');
+        arr.pop();
+        arr.push('file-upload');
+        console.log(arr);
+        const url = arr.join('/');
+        this.router.navigateByUrl(url);
       }
     );
   }

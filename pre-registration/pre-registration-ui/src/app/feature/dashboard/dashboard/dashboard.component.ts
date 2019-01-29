@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
 
-import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import * as appConstants from '../../../app.constants';
 import { TranslateService } from '@ngx-translate/core';
@@ -46,6 +46,7 @@ export class DashBoardComponent implements OnInit {
     private sharedService: SharedService,
     private translate: TranslateService
   ) {
+    this.translate.use(localStorage.getItem('langCode'));
     //need to remove
     // translate.addLangs(['eng', 'fra', 'ara']);
     // translate.setDefaultLang(localStorage.getItem('langCode'));
@@ -55,6 +56,7 @@ export class DashBoardComponent implements OnInit {
   }
   ngOnInit() {
     // sessionStorage.clear();
+
     this.regService.changeMessage({ modifyUser: 'false' });
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];

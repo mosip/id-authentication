@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationCentre } from './registration-center-details.model';
 import { TimeSelectionComponent } from '../time-selection/time-selection.component';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -9,6 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UserModel } from 'src/app/shared/models/demographic-model/user.modal';
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
+import { TranslateService } from '@ngx-translate/core';
 
 let REGISTRATION_CENTRES: RegistrationCentre[] = [];
 
@@ -49,8 +50,11 @@ export class CenterSelectionComponent implements OnInit {
     private dataService: DataStorageService,
     private router: Router,
     private route: ActivatedRoute,
-    private registrationService: RegistrationService
-  ) {}
+    private registrationService: RegistrationService,
+    private translate: TranslateService
+  ) {
+    this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {
     this.getLocation();

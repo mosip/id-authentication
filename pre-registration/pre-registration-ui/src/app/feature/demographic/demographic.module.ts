@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DemographicRoutingModule } from './demographic-routing.module';
 import { DemographicComponent } from './demographic/demographic.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [DemographicComponent],

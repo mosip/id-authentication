@@ -10,7 +10,7 @@ import { AcknowledgementComponent } from './feature/components/acknowledgement/a
 // import { DashBoardComponent } from './registration/dashboard/dashboard.component';
 
 const appRoutes: Routes = [
-  // { path: 'dashboard/:id', component: DashBoardComponent },
+  { path: 'dashboard/:id', loadChildren: './feature/dashboard/dashboard.module#DashboardModule' },
   { path: 'about-us', component: AboutUsComponent },
   { path: 'faq', component: FaqComponent },
   { path: 'contact', component: ContactComponent },
@@ -20,12 +20,12 @@ const appRoutes: Routes = [
     path: 'pre-registration/:id',
     component: ParentComponent,
     children: [
-      //   { path: '', pathMatch: 'full', redirectTo: '/' },
-      //   { path: 'demographic', component: DemographicComponent },
-      // { path: 'file-upload', component: FileUploadComponent },
+      { path: '', pathMatch: 'full', redirectTo: '/' },
+      { path: 'demographic', loadChildren: './feature/demographic/demographic.module#DemographicModule' },
+      { path: 'file-upload', loadChildren: './feature/file-upload/file-upload.module#FileUploadModule' },
+      { path: 'booking', loadChildren: './feature/booking/booking.module#BookingModule' },
+
       { path: 'preview', component: PreviewComponent },
-      // { path: 'pick-center', component: CenterSelectionComponent },
-      // { path: 'pick-time', component: TimeSelectionComponent },
       { path: 'acknowledgement', component: AcknowledgementComponent }
     ]
   }

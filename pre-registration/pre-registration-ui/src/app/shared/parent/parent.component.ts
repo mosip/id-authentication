@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-parent',
@@ -9,7 +10,9 @@ import { Router } from '@angular/router';
 export class ParentComponent implements OnInit {
   componentName: string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private translate: TranslateService) {
+    this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {}
 
@@ -19,9 +22,9 @@ export class ParentComponent implements OnInit {
       this.componentName = 'DemographicComponent';
     } else if (route_parts[route_parts.length - 1] === 'file-upload') {
       this.componentName = 'FileUploadComponent';
-    } else if (route_parts[route_parts.length - 1] === 'pick-center') {
+    } else if (route_parts[route_parts.length - 1] === 'booking/pick-center') {
       this.componentName = 'CenterSelectionComponent';
-    } else if (route_parts[route_parts.length - 1] === 'pick-time') {
+    } else if (route_parts[route_parts.length - 1] === 'booking/pick-time') {
       this.componentName = 'TimeSelectionComponent';
     } else if (route_parts[route_parts.length - 1] === 'acknowledgement') {
       this.componentName = 'AcknowledgementComponent';

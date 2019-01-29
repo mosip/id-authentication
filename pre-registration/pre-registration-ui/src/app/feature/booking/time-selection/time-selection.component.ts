@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
-import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BookingModelRequest } from 'src/app/shared/booking-request.model';
 import { BookingModel } from '../center-selection/booking.model';
@@ -10,6 +10,7 @@ import { BookingModel } from '../center-selection/booking.model';
 import { NameList } from 'src/app/shared/models/demographic-model/name-list.modal';
 import { SharedService } from '../booking.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-time-selection',
@@ -42,8 +43,11 @@ export class TimeSelectionComponent implements OnInit {
     private dataService: DataStorageService,
     private router: Router,
     private route: ActivatedRoute,
-    private registrationService: RegistrationService
-  ) {}
+    private registrationService: RegistrationService,
+    private translate: TranslateService
+  ) {
+    this.translate.use(localStorage.getItem('langCode'));
+  }
 
   ngOnInit() {
     this.names = this.sharedService.getNameList();
@@ -213,7 +217,13 @@ export class TimeSelectionComponent implements OnInit {
                 (Number(time[0]) > 12 ? ' PM' : ' AM');
               this.sharedService.updateBookingDetails(name.preRegId, appointmentDateTime);
             });
-            this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
+            const arr = this.router.url.split('/');
+            arr.pop();
+            arr.pop();
+            arr.push('acknowledgement');
+            const url = arr.join('/');
+            this.router.navigateByUrl(url);
+            // this.router.navigate(['../acknowledgement'], { relativeTo: this.route });
           });
       },
       error => {
@@ -238,6 +248,6 @@ export class TimeSelectionComponent implements OnInit {
 
   navigateBack() {
     const routeParams = this.router.url.split('/');
-    this.router.navigate([routeParams[1], routeParams[2], 'pick-center']);
+    this.router.navigate([routeParams[1], routeParams[2], 'booking', 'pick-center']);
   }
 }
