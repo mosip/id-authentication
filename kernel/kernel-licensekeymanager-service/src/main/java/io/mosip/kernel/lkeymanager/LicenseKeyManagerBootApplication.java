@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class KernelLicenseKeyManagerServiceApplication {
+public class LicenseKeyManagerBootApplication {
 	/**
 	 * Main method
 	 * 
@@ -19,6 +19,6 @@ public class KernelLicenseKeyManagerServiceApplication {
 	 *            the input arguments.
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(KernelLicenseKeyManagerServiceApplication.class, args);
+		SpringApplication.run(LicenseKeyManagerBootApplication.class, args);
 	}
 }
