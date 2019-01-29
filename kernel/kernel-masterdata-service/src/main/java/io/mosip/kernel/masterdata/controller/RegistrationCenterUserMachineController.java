@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.RegCenterMachineUserReqDto;
+import io.mosip.kernel.masterdata.dto.RegCenterMachineUserResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
@@ -77,7 +79,7 @@ public class RegistrationCenterUserMachineController {
 		return new ResponseEntity<>(registrationCenterMachineUserService
 				.deleteRegistrationCentersMachineUserMapping(regCenterId, machineId, userId), HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Create or update a mapping of registration center,user,and machine
 	 * 
@@ -87,12 +89,10 @@ public class RegistrationCenterUserMachineController {
 	 */
 	@ApiOperation(value = "Create or update a mapping of registration center,user,and machine", response = RegistrationCenterMachineUserID.class)
 	@PutMapping("/v1.0/registrationmachineusermappings")
-	public ResponseEntity<RegistrationCenterMachineUserID> createOrUpdateRegistrationCentersMachineUserMapping(
-			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto) {
-		return new ResponseEntity<>(registrationCenterMachineUserService.createOrUpdateRegistrationCentersMachineUserMapping(
-						registrationCenterUserMachineMappingDto),
-				HttpStatus.CREATED);
+	public ResponseEntity<RegCenterMachineUserResponseDto> createOrUpdateRegistrationCentersMachineUserMapping(
+			@ApiParam("Registration center id,user id and ,machine id with metadata") @RequestBody @Valid RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
+		return new ResponseEntity<>(registrationCenterMachineUserService
+				.createOrUpdateRegistrationCentersMachineUserMapping(regCenterMachineUserReqDto), HttpStatus.OK);
 	}
-
 
 }

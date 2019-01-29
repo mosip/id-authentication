@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.service;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.masterdata.dto.RegCenterMachineUserReqDto;
+import io.mosip.kernel.masterdata.dto.RegCenterMachineUserResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineUserID;
@@ -50,11 +52,11 @@ public interface RegistrationCenterMachineUserService {
 	/**
 	 * Create or Update a mapping of registration center,user,and machine
 	 * 
-	 * @param registrationCenterUserMachineMappingDto
-	 *            {@link RegistrationCenterUserMachineMappingDto} request
-	 * @return {@link RegistrationCenterMachineUserID}
+	 * @param regCenterMachineUserReqDto
+	 *            {@link RegCenterMachineUserReqDto} request
+	 * @return {@link RegCenterMachineUserResponseDto}
 	 */
-	RegistrationCenterMachineUserID createOrUpdateRegistrationCentersMachineUserMapping(
-			RequestDto<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDto);
+	RegCenterMachineUserResponseDto createOrUpdateRegistrationCentersMachineUserMapping(
+			RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto);
 
 }
