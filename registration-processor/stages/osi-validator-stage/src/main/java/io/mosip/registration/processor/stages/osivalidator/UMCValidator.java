@@ -425,7 +425,7 @@ public class UMCValidator {
 					.getApi(ApiName.REGISTRATIONCENTERDEVICEHISTORY, pathsegments, "", "",
 							RegistrationCenterDeviceHistoryResponseDto.class);
 			isDeviceMappedWithCenter = validateDeviceMappedWithCenterResponse(
-					registrationCenterDeviceHistoryResponseDto);
+					registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(), rcmDto.getRegId());
 			if (!isDeviceMappedWithCenter) {
 				break;
 			}
@@ -442,23 +442,28 @@ public class UMCValidator {
 	 * @return true, if successful
 	 */
 	private boolean validateDeviceMappedWithCenterResponse(
-			RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto) {
+			RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto, String deviceId,
+			String centerId, String regId) {
 		boolean isDeviceMappedWithCenter = false;
 		if (registrationCenterDeviceHistoryResponseDto == null) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+			this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
+					+ StatusMessage.CENTER_ID + " " + centerId + StatusMessage.DEVICE_NOT_FOUND + " " + regId);
 
 		} else {
 			RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDto = registrationCenterDeviceHistoryResponseDto
 					.getRegistrationCenterDeviceHistoryDetails();
 			if (registrationCenterDeviceHistoryDto == null) {
-				this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+				this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
+						+ StatusMessage.CENTER_ID + " " + centerId + StatusMessage.DEVICE_NOT_FOUND + " " + regId);
 
 			} else {
 
 				if (registrationCenterDeviceHistoryDto.getIsActive()) {
 					isDeviceMappedWithCenter = true;
 				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+					this.registrationStatusDto
+							.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId + StatusMessage.CENTER_ID + " "
+									+ centerId + StatusMessage.DEVICE_WAS_IN_ACTIVE + " " + regId);
 
 				}
 
@@ -490,7 +495,7 @@ public class UMCValidator {
 
 			DeviceHistoryResponseDto deviceHistoryResponsedto = (DeviceHistoryResponseDto) registrationProcessorRestService
 					.getApi(ApiName.DEVICESHISTORIES, pathsegments, "", "", DeviceHistoryResponseDto.class);
-			isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto);
+			isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId());
 			if (!isDeviceActive) {
 				break;
 			}
@@ -506,22 +511,26 @@ public class UMCValidator {
 	 *            the device history responsedto
 	 * @return true, if successful
 	 */
-	private boolean validateDeviceResponse(DeviceHistoryResponseDto deviceHistoryResponsedto) {
+	private boolean validateDeviceResponse(DeviceHistoryResponseDto deviceHistoryResponsedto, String deviceId,
+			String regId) {
 		boolean isDeviceActive = false;
 		if (deviceHistoryResponsedto == null) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+			this.registrationStatusDto.setStatusComment(
+					StatusMessage.DEVICE_ID + " " + deviceId + StatusMessage.DEVICE_NOT_FOUND + " " + regId);
 
 		} else {
 			List<DeviceHistoryDto> dtos = deviceHistoryResponsedto.getDeviceHistoryDetails();
-			if (deviceHistoryResponsedto.getDeviceHistoryDetails() == null) {
-				this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+			if (dtos == null || dtos.isEmpty()) {
+				this.registrationStatusDto.setStatusComment(
+						StatusMessage.DEVICE_ID + " " + deviceId + StatusMessage.DEVICE_NOT_FOUND + " " + regId);
 
 			} else {
 				DeviceHistoryDto deviceHistoryDto = dtos.get(0);
 				if (deviceHistoryDto.getIsActive()) {
 					isDeviceActive = true;
 				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+					this.registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId
+							+ StatusMessage.DEVICE_WAS_IN_ACTIVE + " " + regId);
 
 				}
 
