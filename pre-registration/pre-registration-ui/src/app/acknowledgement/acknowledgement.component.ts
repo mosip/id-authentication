@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { RegistrationService } from "../registration/registration.service";
 import { SharedService } from "../registration/booking/booking.service";
+import * as html2pdf from 'html2pdf.js';
+import { MatDialog } from "@angular/material";
+import { DialougComponent } from "../shared/dialoug/dialoug.component";
 
 @Component({
   selector: "app-acknowledgement",
@@ -8,15 +10,73 @@ import { SharedService } from "../registration/booking/booking.service";
   styleUrls: ["./acknowledgement.component.css"]
 })
 export class AcknowledgementComponent implements OnInit {
-  message2 =
-    'The Pre-Registration id and Appointment details have been sent to the registered email id and phone number';
-  message1 = 'Appointment Confirmed';
+  // usersInfo = [{
+  //   fullName: 'Agnitra Banerjee',
+  //   preRegId: '1234',
+  //   registrationCenter: {
+  //     addressLine1: 'Mindtree Limited',
+  //     addressLine2: 'Global Village',
+  //     contactPhone: '1234567890'
+  //   },
+  //   bookingData: '7 Jan 2019, 2:30pm'
+  // }];
+
   usersInfo = [];
 
-  constructor(private sharedService: SharedService) {}
+  guidelines = [
+    'Guidelines yet to be decided'
+  ]
+
+  opt = { };
+
+  constructor(private sharedService: SharedService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.usersInfo = this.sharedService.getNameList();
+    this.opt = {
+      filename: this.usersInfo[0].preRegId + '.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 1 },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+    }
     console.log('acknowledgement component', this.sharedService.getNameList());
   }
+
+  download() {
+    const element = document.getElementById('print-section');
+    html2pdf(element, this.opt);
+  }
+
+  generateBlob() {
+    const element = document.getElementById('print-section');
+    html2pdf().from(element).outputPdf('dataurlstring', this.opt).then(response => {
+    // convert base64 to raw binary data held in a string
+    const byteString = atob(response.split(',')[1]);
+
+    // separate out the mime component
+    const mimeString = response.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+
+    const dataView = new DataView(arrayBuffer);
+    const blob = new Blob([dataView], { type: mimeString });
+      console.log(blob);
+      return blob;
+    });
+  }
+
+  sendAcknowledgement() {
+    const data = {
+      case: 'APPLICANTS'
+    };
+  const dialogRef = this.dialog.open(DialougComponent, {
+      width: '250px',
+      data: data
+    }).afterClosed().subscribe(applicantNumber => {
+        console.log(applicantNumber);
+        console.log(this.generateBlob());
+      });
+  }
+
 }

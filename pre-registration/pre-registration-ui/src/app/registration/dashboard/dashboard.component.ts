@@ -494,4 +494,11 @@ export class DashBoardComponent implements OnInit {
     if (value === appConstants.APPLICATION_STATUS_CODES.booked) return 'green';
     if (value === appConstants.APPLICATION_STATUS_CODES.expired) return 'red';
   }
+  getMargin(name:string){
+    if(name.length>25)
+    return "0px"
+    else
+    return "27px"
+
+  }
 }

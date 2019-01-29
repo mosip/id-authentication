@@ -1,52 +1,59 @@
-<div class="wrapper">
-  <div class="ack-appointmentConfirm">{{ message1 }}</div>
-  <div class="ack-appointmentMessage">
-    <img class="done" src="assets/img/done.png" />{{ message2 }}
-  </div>
-  <div class="ack-container">
-    <div  *ngFor="let user of usersInfo">
-      <div class="ack-userInfo-container">
-        <div class="ack-userInfo">
-          <div class="ack-userInfo_row">
-            <div class="ack-userInfo_label">Name</div>
-            <div class="ack-userInfo_separator">:</div>
-            <div class="ack-userInfo_data">{{user.fullName}}</div>
+<div id="print-section" *ngFor="let user of usersInfo">
+  <mat-card class="ack-container">
+      <mat-card-header class="ack__header-container">
+          <div class="ack__header">
+            <p>Appointment Confirmed</p>
+            <hr />
           </div>
-          <div class="ack-userInfo_row">
-            <div class="ack-userInfo_label">Pre Registration ID</div>
-            <div class="ack-userInfo_separator">:</div>
-            <div class="ack-userInfo_data">{{user.preRegId}}</div>
-          </div>
-          <div class="ack-userInfo_row">
-            <div class="ack-userInfo_label">Registration Center</div>
-            <div class="ack-userInfo_separator">:</div>
-            <div class="ack-userInfo_data">{{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine2}}</div>
-          </div>
-          <div class="ack-userInfo_row">
-            <div class="ack-userInfo_label">Center Contact Number</div>
-            <div class="ack-userInfo_separator">:</div>
-            <div class="ack-userInfo_data">{{user.registrationCenter.contactPhone}}</div>
-          </div>
-          <div class="ack-userInfo_row">
-            <div class="ack-userInfo_label">Appointment Date & Time</div>
-            <div class="ack-userInfo_separator">:</div>
-            <div class="ack-userInfo_data">{{user.bookingData}}</div>
-          </div>   
-          </div>
-        <div class="ack-userInfo_qr-code">
-          <img src="assets/img/QR_code.png" />
+          <hr />
+      </mat-card-header>
+      <mat-card-content>
+        <div id="message-container" class="ack__message-container">
+            <p><img style="vertical-align: middle;" src="assets/img/done.png" />&nbsp;&nbsp;The Pre-Registration id and Appointment details have been sent to the registered email id and phone number</p>
         </div>
-      </div>
-      <div class="ack-guidelines-container">
-        <div>Important Guidelines</div>
+        <div id="body-container" class="ack__body-container">
+          <div id="table-container">
+            <table>
+              <tr><td>Name</td><td>: {{user.fullName}}</td></tr>
+              <tr><td>Pre Registration ID</td><td>: {{user.preRegId}}</td></tr>
+              <tr><td>Registration Center</td><td>: {{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine3}} </td></tr>
+              <tr><td>Center Contact Number</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
+              <tr><td>Appointment Date & Time</td><td>: {{user.bookingData}}</td></tr>
+            </table>
+          </div>
+          <div class="spacer"></div>
+          <div id="table-container">
+              <table>
+                  <tr><td>Name</td><td>: {{user.fullName}}</td></tr>
+                  <tr><td>Pre Registration ID</td><td>: {{user.preRegId}}</td></tr>
+                  <tr><td>Registration Center</td><td>: {{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine3}} </td></tr>
+                  <tr><td>Center Contact Number</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
+                  <tr><td>Appointment Date & Time</td><td>: {{user.bookingData}}</td></tr>
+                </table>
+          </div>
+          <div class="spacer"></div>
+          <div id="qr-code-container" class="ack__qr-code">
+            <img id="qr-code" height="75px" width="75px" src="assets/img/QR_code.png" />
+          </div>
+        </div>
+        <hr />
+      </mat-card-content>
+      <mat-card-footer id="guidelines-container" class="ack__guidelines-container">
+        <h4>Important Guidelines</h4>
         <ul>
-          <li>Guidelines yet to be decided.</li>
+          <li *ngFor="let guideline of guidelines">
+            {{guideline}}
+          </li>
         </ul>
-      </div>
-    </div>
-  </div>
-  <div class="ack-actionButton-container">
-    <button id="download" type="button">DOWNLOAD</button>
-    <button id="print" type="button">PRINT</button>
-  </div>
+      </mat-card-footer>
+  </mat-card>
 </div>
+<div>
+    <mat-card class="ack__button-container">
+      <!-- <button mat-button (click)="navigateBack()" class="user-back-btn">{{'preview.action_back'| translate}}</button> -->
+      <span class="spacer"></span>
+      <button mat-button (click)="sendAcknowledgement()" class="ack-book_later-btn">SEND EMAIL/SMS</button>
+      <button mat-button (click)="download()" class="ack-book_later-btn">DOWNLOAD PDF</button>
+      <button mat-button [printStyle]="{'#message-container': {'display': 'none'}, '#body-container': {'display': 'flex', 'flex-wrap': 'wrap', 'width': '100%'}, '#table-container table tr td': {'padding': '10px'}}" printSectionId="print-section" ngxPrint class="ack-continue-btn">PRINT</button>
+    </mat-card>
+  </div>

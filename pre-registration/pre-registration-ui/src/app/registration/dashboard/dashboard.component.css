@@ -87,7 +87,7 @@ img {
 }
 .mat-card {
   width: 335px;
-  height: 230px;
+  height: 240px;
   padding: 0;
   box-shadow: 1px 1px 1px;
   opacity: 100%;
@@ -103,6 +103,20 @@ img {
   font-size: 12px;
   white-space: nowrap;
   margin-left: 25px;
+  width: 335px;
+}
+
+
+.mat-card table {
+  max-width: 310px;
+  width: 100% !important;
+  table-layout: fixed;
+}
+
+.mat-card table tr td {
+  padding: 8px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 .mat-card-footer {
   margin-left: 18px;
@@ -117,6 +131,7 @@ img {
 }
 .modifyapp-btn-img {
   height: 12px;
+  filter: grayscale();
 }
 .modifyinfo-btn-img {
   height: 14px;
@@ -147,12 +162,4 @@ img {
 }
 .footer-download-btn {
   margin-left: 18px;
-}
-
-.card-content table {
-  table-layout: fixed;
-}
-
-.card-content table td {
-  word-wrap: break-word;
 }

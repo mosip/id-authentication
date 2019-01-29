@@ -38,23 +38,20 @@
             <span class="checkbox"
               ><strong>{{ user.applicationID }}</strong></span
             >
-            <!-- <button mat-icon-button><img src="assets\view.png" class="view-img" /></button> -->
             <span class="spacer"></span>
             <button (click)="onDelete(user)" mat-icon-button><img src="assets\delete.png" class="delete-img" /></button>
           </div>
-          <mat-card-content>
+          <mat-card-content [ngStyle]="{ marginTop: getMargin(user.name) }">
             <div class="card-content">
               <table>
                 <tr>
                   <td>{{ 'uidStatus.card.text_name' | translate }}</td>
                   <td class="application-value">{{ user.name }}</td>
                 </tr>
-                <br />
                 <tr>
                   <td>{{ 'uidStatus.card.text_appoinment_date' | translate }}</td>
                   <td class="application-value">{{ user.appointmentDateTime }}</td>
                 </tr>
-                <br />
                 <tr>
                   <td>{{ 'uidStatus.card.text_status' | translate }}</td>
                   <td id="status" [ngStyle]="{ color: getColor(user.status) }">{{ user.status }}</td>
@@ -75,8 +72,10 @@
                 }}
               </button>
               <!-- (click)="onSelectUser(user)" -->
-              <button mat-button class="footer-btn" (click)="onAcknowledgementView(user)">
-                <img src="assets\view.png" class="view-img" class="modifyapp-btn-img" />View Acknowledgement
+                <button mat-button class="footer-btn" (click)="onAcknowledgementView(user)">
+                <img src="assets\view.png" class="modifyapp-btn-img" />{{
+                  'uidStatus.card.action_modify_appointment' | translate
+                }}
               </button>
               <!-- <button mat-icon-button class="footer-download-btn">
                 <img src="assets\download.png" class="download-btn-img" />

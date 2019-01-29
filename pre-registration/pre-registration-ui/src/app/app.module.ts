@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
+import {NgxPrintModule} from 'ngx-print';
 
 import { AppComponent } from './app.component';
 
@@ -21,7 +22,7 @@ const appInitialization = (appConfig: AppConfigService) => {
 
 @NgModule({
   declarations: [AppComponent, AcknowledgementComponent],
-  imports: [BrowserModule, AppRoutingModule, RegistrationModule, CoreModule, AuthModule, SharedModule],
+  imports: [BrowserModule, AppRoutingModule, RegistrationModule, CoreModule, AuthModule, SharedModule, NgxPrintModule],
   providers: [
     AuthService,
     SharedService,
