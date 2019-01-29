@@ -1,4 +1,4 @@
-package io.mosip.kernel.auth.entities;
+package io.mosip.kernel.auth.entities.otp;
 
 public class OtpValidateResponseDto {
     private String message;
