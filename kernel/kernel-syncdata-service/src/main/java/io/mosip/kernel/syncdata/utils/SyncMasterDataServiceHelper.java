@@ -35,6 +35,7 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
@@ -65,6 +66,7 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
@@ -97,6 +99,7 @@ import io.mosip.kernel.syncdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterUserMachineRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -175,6 +178,8 @@ public class SyncMasterDataServiceHelper {
 	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 	@Autowired
 	private RegistrationCenterUserMachineRepository registrationCenterUserMachineRepository;
+	@Autowired
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
 
 	/**
 	 * Method to fetch machine details by machine id
@@ -937,19 +942,26 @@ public class SyncMasterDataServiceHelper {
 			LocalDateTime lastUpdated) {
 		List<RegistrationCenterDeviceDto> registrationCenterDeviceDtos = null;
 		List<RegistrationCenterDevice> registrationCenterDevices = null;
+		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			String regID = registrationCenterMachineRepository.findAllByMachineId(machineId).get(0).getRegistrationCenterMachinePk().getRegCenterId();
-			if(lastUpdated != null) {
-				registrationCenterDevices = registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regID, lastUpdated);
-			} else {
-				registrationCenterDevices = registrationCenterDeviceRepository.findAllByRegistrationCenter(regID);
+			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
+			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
+				String regID = registrationCenterMachineRepository.findAllByMachineId(machineId).get(0)
+						.getRegistrationCenterMachinePk().getRegCenterId();
+				if (lastUpdated != null) {
+					registrationCenterDevices = registrationCenterDeviceRepository
+							.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regID, lastUpdated);
+				} else {
+					registrationCenterDevices = registrationCenterDeviceRepository.findAllByRegistrationCenter(regID);
+				}
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
-		if(registrationCenterDevices != null && !registrationCenterDevices.isEmpty()) {
-			registrationCenterDeviceDtos = MapperUtils.mapAll(registrationCenterDevices, RegistrationCenterDeviceDto.class);
+		if (registrationCenterDevices != null && !registrationCenterDevices.isEmpty()) {
+			registrationCenterDeviceDtos = MapperUtils.mapAll(registrationCenterDevices,
+					RegistrationCenterDeviceDto.class);
 		}
 		return CompletableFuture.completedFuture(registrationCenterDeviceDtos);
 	}
@@ -959,42 +971,84 @@ public class SyncMasterDataServiceHelper {
 			String machineId, LocalDateTime lastUpdated) {
 		List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDeviceDtos = null;
 		List<RegistrationCenterMachineDevice> registrationCenterMachineDevices = null;
+		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			String regId = registrationCenterMachineRepository.findAllByMachineId(machineId).get(0).getRegistrationCenterMachinePk().getRegCenterId();
-			if(lastUpdated != null) {
-				registrationCenterMachineDevices = registrationCenterMachineDeviceRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-			} else {
-				registrationCenterMachineDevices = registrationCenterMachineDeviceRepository.findAllByRegistrationCenterId(regId);
+			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
+			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
+				String regId = registrationCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
+				if (lastUpdated != null) {
+					registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
+							.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
+				} else {
+					registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
+							.findAllByRegistrationCenterId(regId);
+				}
 			}
 		} catch (DataAccessException e) {
-			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		if(registrationCenterMachineDevices != null && !registrationCenterMachineDevices.isEmpty()) {
-			registrationCenterMachineDeviceDtos = MapperUtils.mapAll(registrationCenterMachineDevices, RegistrationCenterMachineDeviceDto.class);
+		if (registrationCenterMachineDevices != null && !registrationCenterMachineDevices.isEmpty()) {
+			registrationCenterMachineDeviceDtos = MapperUtils.mapAll(registrationCenterMachineDevices,
+					RegistrationCenterMachineDeviceDto.class);
 		}
 		return CompletableFuture.completedFuture(registrationCenterMachineDeviceDtos);
 	}
 
+	@Async
 	public CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> getRegistrationCenterUserMachines(
 			String machineId, LocalDateTime lastUpdated) {
 		List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDtos = null;
 		List<RegistrationCenterUserMachine> registrationCenterUserMachines = null;
+		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			String regId = registrationCenterMachineRepository.findAllByMachineId(machineId).get(0).getRegistrationCenterMachinePk().getRegCenterId();
-			if(lastUpdated != null) {
-				registrationCenterUserMachines = registrationCenterUserMachineRepository.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated); 
-			} else {
-				registrationCenterUserMachines = registrationCenterUserMachineRepository.findAllByRegistrationCenterId(regId);
+			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
+			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
+				String regId = registrationCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
+				if (lastUpdated != null) {
+					registrationCenterUserMachines = registrationCenterUserMachineRepository
+							.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
+				} else {
+					registrationCenterUserMachines = registrationCenterUserMachineRepository
+							.findAllByRegistrationCenterId(regId);
+				}
 			}
-		} catch(DataAccessException e) {
-			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+		} catch (DataAccessException e) {
+			throw new SyncDataServiceException(
+					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		if(registrationCenterUserMachines != null && !registrationCenterUserMachines.isEmpty()) {
-			registrationCenterUserMachineMappingDtos = MapperUtils.mapAll(registrationCenterUserMachines, RegistrationCenterUserMachineMappingDto.class);
+		if (registrationCenterUserMachines != null && !registrationCenterUserMachines.isEmpty()) {
+			registrationCenterUserMachineMappingDtos = MapperUtils.mapAll(registrationCenterUserMachines,
+					RegistrationCenterUserMachineMappingDto.class);
 		}
 		return CompletableFuture.completedFuture(registrationCenterUserMachineMappingDtos);
 	}
-	
+
+	@Async
+	public CompletableFuture<List<RegistrationCenterUserDto>> getRegistrationCenterUsers(String machineId,
+			LocalDateTime lastUpdated) {
+		List<RegistrationCenterUserDto> registrationCenterUserDtos = null;
+		List<RegistrationCenterUser> registrationCenterUsers = null;
+		List<RegistrationCenterMachine> registrationCenterMachines = null;
+		try {
+			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
+			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
+				String regId = registrationCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
+				if (lastUpdated != null) {
+					registrationCenterUsers = registrationCenterUserRepository
+							.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
+				} else {
+					registrationCenterUsers = registrationCenterUserRepository.findAllByRegistrationCenterId(regId);
+				}
+			}
+		} catch (DataAccessException e) {
+			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
+					e.getMessage());
+		}
+		if (registrationCenterUsers != null && !registrationCenterUsers.isEmpty()) {
+			registrationCenterUserDtos = MapperUtils.mapAll(registrationCenterUsers, RegistrationCenterUserDto.class);
+		}
+		return CompletableFuture.completedFuture(registrationCenterUserDtos);
+	}
+
 }

@@ -33,7 +33,8 @@ public enum MasterDataErrorCode {
 	REG_CENTER_MACHINE_FETCH_EXCEPTION("KER-SYNC-129","Error occurred while fetching Registration Center Machine"),
 	REG_CENTER_DEVICE_FETCH_EXCEPTION("KER-SYNC-130","Error occurred while fetching Registration Center Device"),
 	REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION("KER-SYNC-131","Error occurred while fetching Registration Center Machine Device"),
-	REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION("KER-SYNC-132","Error occurred while fetching Registration Center Machine Device");
+	REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION("KER-SYNC-132","Error occurred while fetching Registration Center Machine Device"),
+	REG_CENTER_USER_FETCH_EXCEPTION("KER-SYNC-133","Error occurred while fetching Registration Center User");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -32,6 +32,7 @@ import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
@@ -97,6 +98,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterDeviceDto>> registrationCenterDevices = null;
 		CompletableFuture<List<RegistrationCenterMachineDeviceDto>> registrationCenterMachineDevices = null;
 		CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> registrationCenterUserMachines = null;
+		CompletableFuture<List<RegistrationCenterUserDto>> registrationCenterUsers = null;
 
 		// get data
 		applications = serviceHelper.getApplications(lastUpdated);
@@ -130,6 +132,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(machineId, lastUpdated);
 		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(machineId, lastUpdated);
 		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(machineId, lastUpdated);
+		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(machineId, lastUpdated);
 
 		// set data
 
@@ -138,7 +141,7 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
 				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
 				validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
-				registrationCenterMachineDevices, registrationCenterUserMachines).join();
+				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers).join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -166,6 +169,13 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setTemplatesTypes(templateTypes.get());
 		response.setDeviceTypes(deviceTypes.get());
 		response.setValidDocumentMapping(validDocumentsMapping.get());
+		
+		response.setRegistrationCenterMachines(registrationCenterMachines.get());
+		response.setRegistrationCenterDevices(registrationCenterDevices.get());
+		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
+		response.setRegistrationCenterUserMachines(registrationCenterUserMachines.get());
+		response.setRegistrationCenterUsers(registrationCenterUsers.get());
+		
 		return response;
 	}
 }
