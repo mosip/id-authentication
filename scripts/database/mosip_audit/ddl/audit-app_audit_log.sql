@@ -18,7 +18,7 @@ create table audit.app_audit_log (
 	event_type        character varying(64) not null ,
 	event_name        character varying(128) not null ,
 	action_dtimes    timestamp not null ,
-	host_name         character varying(32) not null ,
+	host_name         character varying(128) not null ,
 	host_ip           character varying(16) not null ,
 	session_user_id   character varying(64) not null ,
 	session_user_name character varying(128) ,

@@ -24,6 +24,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
 import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
+import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
 import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 
@@ -42,9 +43,7 @@ public class JsonValidatorConfigServerExceptionTest {
 	String configServerFileStorageURLString = "configServerFileStorageURL";
 	@InjectMocks
 	JsonValidatorImpl jsonValidator;
-	
 
-	
 	@Value("${mosip.kernel.jsonvalidator.valid-json-file-name}")
 	String validJson;
 
@@ -53,31 +52,25 @@ public class JsonValidatorConfigServerExceptionTest {
 
 	@Value("${mosip.kernel.jsonvalidator.schema-file-name}")
 	String schemaName;
-	
-	
+
 	@Value("${mosip.kernel.jsonvalidator.invalid-schema-file-name}")
 	String invalidSchemaName;
-	
+
 	@Value("${mosip.kernel.jsonvalidator.null-schema-file-name}")
 	String nullSchemaName;
 
-
-
-
-	
 	@Before
 	public void setup() {
 
 		ReflectionTestUtils.setField(jsonValidator, propertySourceString, "CONFIG_SERVER");
-		ReflectionTestUtils.setField(jsonValidator, configServerFileStorageURLString,
-				configServerFileStorageURL);
+		ReflectionTestUtils.setField(jsonValidator, configServerFileStorageURLString, configServerFileStorageURL);
 
 	}
 
-	@Test
+	 @Test
 	public void testWhenValidJsonProvided() throws HttpRequestException, JsonValidationProcessingException, IOException,
 			JsonIOException, JsonSchemaIOException, FileIOException {
-		//JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		JsonNode jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + validJson));
 		String jsonString = jsonSchemaNode.toString();
 		ValidationReport validationResponse = jsonValidator.validateJson(jsonString, schemaName);
@@ -100,17 +93,17 @@ public class JsonValidatorConfigServerExceptionTest {
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
-	@Test(expected = HttpRequestException.class)
+	@Test(expected = JsonSchemaIOException.class)
 	public void testForInvalidSchemaFileName() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, IOException, JsonSchemaIOException, FileIOException {
-		//JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		JsonNode jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + validJson));
 		String jsonString = jsonSchemaNode.toString();
 		String schemaName = "some-random-schema.json";
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
-	// @Test(expected = UnidentifiedJsonException.class)
+	@Test(expected = UnidentifiedJsonException.class)
 	public void testForUnidentifiedJson() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, IOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/invalid-json.json");
@@ -118,19 +111,20 @@ public class JsonValidatorConfigServerExceptionTest {
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
-	@Test(expected = NullJsonSchemaException.class)
+	@Test(expected = JsonSchemaIOException.class)
 	public void testForNullJsonSchemaSyntax() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, JsonSchemaIOException, FileIOException, IOException {
-		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		JsonNode jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + validJson));
 		String jsonString = jsonSchemaNode.toString();
-
 		jsonValidator.validateJson(jsonString, nullSchemaName);
 	}
 
 	@Test(expected = JsonSchemaIOException.class)
 	public void testForInvalidJsonSchemaSyntax() throws HttpRequestException, JsonValidationProcessingException,
 			JsonIOException, JsonSchemaIOException, FileIOException, IOException {
-		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		// JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		JsonNode jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + validJson));
 		String jsonString = jsonSchemaNode.toString();
 		jsonValidator.validateJson(jsonString, invalidSchemaName);
 	}

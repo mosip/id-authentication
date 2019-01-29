@@ -148,12 +148,15 @@ public class RejectionController extends BaseController implements Initializable
 
 		if (controllerName.equals("RegistrationApprovalController")) {
 
+			int rowNum=(regRejectionTable.getSelectionModel().getFocusedIndex());
 			RegistrationApprovalDTO approvalDTO = new RegistrationApprovalDTO(
-					regRejectionTable.getSelectionModel().getSelectedItem().getId(),
-					regRejectionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
+					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getId(),
+					regRejectionTable.getItems().get(regRejectionTable.getSelectionModel().getFocusedIndex()).getAcknowledgementFormPath(),
 					RegistrationConstants.REJECTED);
-			regRejectionTable.getItems().set(regRejectionTable.getSelectionModel().getSelectedIndex(), approvalDTO);
 
+			regRejectionTable.getItems().set(rowNum, approvalDTO);
+			regRejectionTable.requestFocus();
+			regRejectionTable.getFocusModel().focus(rowNum);
 			LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation as rejection has been ended");
 		}
