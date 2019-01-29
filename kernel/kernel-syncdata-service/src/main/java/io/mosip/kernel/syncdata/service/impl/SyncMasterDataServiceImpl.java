@@ -27,8 +27,12 @@ import io.mosip.kernel.syncdata.dto.MachineSpecificationDto;
 import io.mosip.kernel.syncdata.dto.MachineTypeDto;
 import io.mosip.kernel.syncdata.dto.PostReasonCategoryDto;
 import io.mosip.kernel.syncdata.dto.ReasonListDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterDeviceDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDeviceDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterMachineDto;
 import io.mosip.kernel.syncdata.dto.RegistrationCenterTypeDto;
+import io.mosip.kernel.syncdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.syncdata.dto.TemplateDto;
 import io.mosip.kernel.syncdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.syncdata.dto.TemplateTypeDto;
@@ -88,6 +92,12 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<DeviceTypeDto>> deviceTypes = null;
 		CompletableFuture<List<ValidDocumentDto>> validDocumentsMapping = null;
 		CompletableFuture<List<ReasonListDto>> reasonList = null;
+
+		CompletableFuture<List<RegistrationCenterMachineDto>> registrationCenterMachines = null;
+		CompletableFuture<List<RegistrationCenterDeviceDto>> registrationCenterDevices = null;
+		CompletableFuture<List<RegistrationCenterMachineDeviceDto>> registrationCenterMachineDevices = null;
+		CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> registrationCenterUserMachines = null;
+
 		// get data
 		applications = serviceHelper.getApplications(lastUpdated);
 		machineDetails = serviceHelper.getMachines(machineId, lastUpdated);
@@ -115,13 +125,20 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		deviceTypes = serviceHelper.getDeviceType(machineId, lastUpdated);
 		validDocumentsMapping = serviceHelper.getValidDocuments(lastUpdated);
 		reasonList = serviceHelper.getReasonList(lastUpdated);
+
+		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(machineId, lastUpdated);
+		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(machineId, lastUpdated);
+		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(machineId, lastUpdated);
+		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(machineId, lastUpdated);
+
 		// set data
 
 		CompletableFuture.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
 				templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
 				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
 				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
-				validDocumentsMapping).join();
+				validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
+				registrationCenterMachineDevices, registrationCenterUserMachines).join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());

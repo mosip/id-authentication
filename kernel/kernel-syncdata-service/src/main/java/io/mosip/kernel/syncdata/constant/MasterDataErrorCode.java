@@ -29,7 +29,11 @@ public enum MasterDataErrorCode {
 	DEVICE_TYPE_FETCH_EXCEPTION("KER-SYNC-125", "Error occurred while fetching Device Type"),
 	VALID_DOCUMENT_FETCH_EXCEPTION("KER-SYNC-126", "Error occurred while fetching Valid Document Type"),
 	REASON_LIST_FETCH_EXCEPTION("KER-SYNC-127", "Error occurred while fetching Valid Document Type"),
-	THREAD_INTERRUPTED_WHILE_FETCH_EXCEPTION("KER-SYNC-128", "Error occurred while fetching data");
+	THREAD_INTERRUPTED_WHILE_FETCH_EXCEPTION("KER-SYNC-128", "Error occurred while fetching data"),
+	REG_CENTER_MACHINE_FETCH_EXCEPTION("KER-SYNC-129","Error occurred while fetching Registration Center Machine"),
+	REG_CENTER_DEVICE_FETCH_EXCEPTION("KER-SYNC-130","Error occurred while fetching Registration Center Device"),
+	REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION("KER-SYNC-131","Error occurred while fetching Registration Center Machine Device"),
+	REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION("KER-SYNC-132","Error occurred while fetching Registration Center Machine Device");
 
 	private final String errorCode;
 	private final String errorMessage;
