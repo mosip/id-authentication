@@ -303,7 +303,7 @@ public class AuthFacadeImplTest {
 	 *                                           exception
 	 */
 
-	@Ignore
+	
 	@Test
 	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -376,7 +376,7 @@ public class AuthFacadeImplTest {
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
 
-	@Ignore
+	
 	@Test
 	public void processAuthTypeTestFailure() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -448,7 +448,7 @@ public class AuthFacadeImplTest {
 				status -> status.getUsageDataBits().contains(AuthUsageDataBit.USED_OTP) && status.isStatus()));
 	}
 
-	@Ignore
+	
 	@Test
 	public void processKycAuthValid() throws IdAuthenticationBusinessException {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -516,6 +516,7 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		authResponseDTO.setStatus("Y");
 		assertNotNull(authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO));
 
 	}
@@ -588,6 +589,8 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
+		Map<String, List<IdentityInfoDTO>> entityValue=new HashMap<>();
+		Mockito.when(idInfoService.getIdInfo(Mockito.any())).thenReturn(entityValue);
 		assertNotNull(authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO));
 
 	}
