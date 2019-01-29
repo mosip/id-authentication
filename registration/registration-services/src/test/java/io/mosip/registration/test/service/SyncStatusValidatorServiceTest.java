@@ -23,12 +23,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncJobControlDAO.SyncJobInfo;
@@ -36,6 +38,7 @@ import io.mosip.registration.device.gps.GPSFacade;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -76,6 +79,15 @@ public class SyncStatusValidatorServiceTest {
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		
+		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.when(ApplicationContext.getInstance()).thenReturn(applicationContext);
+
+		Map<String, Object> globalParams = new HashMap<>();
+		globalParams.put("REG_PAK_MAX_CNT_APPRV_LIMIT", "1");
+		globalParams.put("REG_PAK_MAX_TIME_APPRV_LIMIT", "1");
+		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
 	}
 
 	@Test
@@ -91,6 +103,11 @@ public class SyncStatusValidatorServiceTest {
 		listSync.add(syncControl1);
 		listSync.add(syncControl2);
 
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 12.99194);
 		map.put("longitude", 80.2471);
@@ -103,6 +120,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
 
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
@@ -144,6 +162,11 @@ public class SyncStatusValidatorServiceTest {
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);
 		listSync.add(syncControl2);
+		
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 12.99194);
@@ -160,6 +183,7 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
 				.thenReturn(map);
 
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
@@ -182,6 +206,11 @@ public class SyncStatusValidatorServiceTest {
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);
 		listSync.add(syncControl2);
+		
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 0.0);
@@ -195,6 +224,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
 
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
@@ -236,6 +266,11 @@ public class SyncStatusValidatorServiceTest {
 		listSync.add(syncControl1);
 		listSync.add(syncControl2);
 
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 0.0);
 		map.put("longitude", 0.0);
@@ -248,6 +283,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
 
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
@@ -288,6 +324,11 @@ public class SyncStatusValidatorServiceTest {
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);
 		listSync.add(syncControl2);
+		
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 0.0);
@@ -301,6 +342,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
 
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
@@ -341,6 +383,11 @@ public class SyncStatusValidatorServiceTest {
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);
 		listSync.add(syncControl2);
+		
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 0.0);
@@ -354,6 +401,7 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 100);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 10);
 
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
@@ -382,9 +430,112 @@ public class SyncStatusValidatorServiceTest {
 
 	}
 	
+	@Test
+	public void testValidatePacketCountFailureCase() {
+		SyncControl syncControl1 = new SyncControl();
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		SyncControl syncControl2 = new SyncControl();
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+
+		List<SyncControl> listSync = new ArrayList<>();
+		listSync.add(syncControl1);
+		listSync.add(syncControl2);
+
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		Registration registration1 = new Registration();
+		registration1.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
+		registrationList.add(registration1);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("latitude", 12.99194);
+		map.put("longitude", 80.2471);
+		map.put(RegistrationConstants.GPS_DISTANCE, 55.9);
+		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "geoFrequnecyFlag", "N");
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "mdsJobId", 20);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 20);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
+
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+				.thenReturn(map);
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
+		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
+		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
+		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
+
+		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
+		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+		assertEquals("REG-ICS‌-008", errorResponseDTOs.get(0).getCode());
+		assertEquals(
+				"Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration",
+				errorResponseDTOs.get(0).getMessage());
+
+	}
+
+	@Test
+	public void testValidatePacketDurationFailureCase() {
+		SyncControl syncControl1 = new SyncControl();
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+		SyncControl syncControl2 = new SyncControl();
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+
+		List<SyncControl> listSync = new ArrayList<>();
+		listSync.add(syncControl1);
+		listSync.add(syncControl2);
+
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000));
+		registrationList.add(registration);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("latitude", 12.99194);
+		map.put("longitude", 80.2471);
+		map.put(RegistrationConstants.GPS_DISTANCE, 55.9);
+		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
+
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "geoFrequnecyFlag", "N");
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "mdsJobId", 20);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 20);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
+
+		Mockito.when(gpsFacade.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+				.thenReturn(map);
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
+		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
+		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
+		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
+
+		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
+		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+		assertEquals("REG-ICS‌-009", errorResponseDTOs.get(0).getCode());
+		assertEquals(
+				"Maximum duration for registration packets pending approval on client reached.Please approve or reject packets before proceeding with this registration",
+				errorResponseDTOs.get(0).getMessage());
+
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testValidateException() throws RegBaseCheckedException {
+		
+		List<Registration> registrationList = new ArrayList<>();
+		Registration registration = new Registration();
+		registration.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		registrationList.add(registration);
+
+		Mockito.when(syncJobDAO.getRegistrationDetails()).thenReturn(registrationList);
+		
 		when(syncJobDAO.getSyncStatus()).thenThrow(RegBaseUncheckedException.class);
 		syncStatusValidatorServiceImpl.validateSyncStatus();
 	}
