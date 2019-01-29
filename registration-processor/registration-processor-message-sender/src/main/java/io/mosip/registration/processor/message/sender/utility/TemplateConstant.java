@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.message.sender.utility;
 
 public class TemplateConstant {
-	
+
 	private TemplateConstant() {
 	}
 
@@ -29,4 +29,6 @@ public class TemplateConstant {
 	public static final String LOCALADMINISTRATIVEAUTHORITY = "localAdministrativeAuthority";
 	public static final String IDSCHEMAVERSION = "idSchemaVersion";
 	public static final String CNIENUMBER = "cnieNumber";
+	public static final String UIN = "UIN";
+	public static final String RID = "RID";
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -79,9 +80,6 @@ public class MessageNotificationServiceImpl
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
 
-	/** The Constant UIN. */
-	private static final String UIN = "UIN";
-
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
@@ -146,7 +144,7 @@ public class MessageNotificationServiceImpl
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			String phoneNumber = (String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber());
-			if (phoneNumber == null) {
+			if (phoneNumber == null || phoneNumber.isEmpty()) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
 
@@ -187,7 +185,7 @@ public class MessageNotificationServiceImpl
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
 			String email = (String) demographicIdentity.get(regProcessorTemplateJson.getEmailID());
-			if (email == null) {
+			if (email == null || email.isEmpty()) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
 
@@ -272,12 +270,12 @@ public class MessageNotificationServiceImpl
 	private void setAttributes(String id, IdType idType, Map<String, Object> attributes) throws IOException {
 		InputStream demographicInfoStream;
 
-		if (idType.toString().equalsIgnoreCase(UIN)) {
-			attributes.put("UIN", id);
+		if (idType.toString().equalsIgnoreCase(TemplateConstant.UIN)) {
+			attributes.put(TemplateConstant.UIN, id);
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
-			attributes.put("RID", id);
+			attributes.put(TemplateConstant.RID, id);
 		} else {
-			attributes.put("RID", id);
+			attributes.put(TemplateConstant.RID, id);
 		}
 
 		demographicInfoStream = adapter.getFile(id,
@@ -316,21 +314,29 @@ public class MessageNotificationServiceImpl
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			attributes.put(TemplateConstant.FIRSTNAME, getParameter(getJsonValues(regProcessorTemplateJson.getFirstName())));
-			attributes.put(TemplateConstant.DATEOFBIRTH, (String) demographicIdentity.get(regProcessorTemplateJson.getDateOfBirth()));
-			attributes.put(TemplateConstant.AGE, (int) demographicIdentity.get(regProcessorTemplateJson.getAge()));
-			attributes.put(TemplateConstant.ADDRESSLINE1, getParameter(getJsonValues(regProcessorTemplateJson.getAddressLine1())));
-			attributes.put(TemplateConstant.ADDRESSLINE2, getParameter(getJsonValues(regProcessorTemplateJson.getAddressLine2())));
-			attributes.put(TemplateConstant.ADDRESSLINE3, getParameter(getJsonValues(regProcessorTemplateJson.getAddressLine3())));
+			attributes.put(TemplateConstant.FIRSTNAME,
+					getParameter(getJsonValues(regProcessorTemplateJson.getFirstName())));
+			attributes.put(TemplateConstant.DATEOFBIRTH,
+					(String) demographicIdentity.get(regProcessorTemplateJson.getDateOfBirth()));
+			attributes.put(TemplateConstant.AGE, (Integer) demographicIdentity.get(regProcessorTemplateJson.getAge()));
+			attributes.put(TemplateConstant.ADDRESSLINE1,
+					getParameter(getJsonValues(regProcessorTemplateJson.getAddressLine1())));
+			attributes.put(TemplateConstant.ADDRESSLINE2,
+					getParameter(getJsonValues(regProcessorTemplateJson.getAddressLine2())));
+			attributes.put(TemplateConstant.ADDRESSLINE3,
+					getParameter(getJsonValues(regProcessorTemplateJson.getAddressLine3())));
 			attributes.put(TemplateConstant.REGION, getParameter(getJsonValues(regProcessorTemplateJson.getRegion())));
-			attributes.put(TemplateConstant.PROVINCE, getParameter(getJsonValues(regProcessorTemplateJson.getProvince())));
+			attributes.put(TemplateConstant.PROVINCE,
+					getParameter(getJsonValues(regProcessorTemplateJson.getProvince())));
 			attributes.put(TemplateConstant.CITY, getParameter(getJsonValues(regProcessorTemplateJson.getCity())));
-			attributes.put(TemplateConstant.POSTALCODE, (String) demographicIdentity.get(regProcessorTemplateJson.getPostalCode()));
+			attributes.put(TemplateConstant.POSTALCODE,
+					(String) demographicIdentity.get(regProcessorTemplateJson.getPostalCode()));
 			attributes.put(TemplateConstant.PARENTORGUARDIANNAME,
 					getParameter(getJsonValues(regProcessorTemplateJson.getParentOrGuardianName())));
 			attributes.put(TemplateConstant.PARENTORGUARDIANRIDORUIN,
-					(String) demographicIdentity.get(regProcessorTemplateJson.getParentOrGuardianRIDOrUIN()));
-			attributes.put(TemplateConstant.PROOFOFADDRESS, getParameter(getJsonValues(regProcessorTemplateJson.getProofOfAddress())));
+					(BigInteger) demographicIdentity.get(regProcessorTemplateJson.getParentOrGuardianRIDOrUIN()));
+			attributes.put(TemplateConstant.PROOFOFADDRESS,
+					getParameter(getJsonValues(regProcessorTemplateJson.getProofOfAddress())));
 			attributes.put(TemplateConstant.PROOFOFIDENTITY,
 					getParameter(getJsonValues(regProcessorTemplateJson.getProofOfIdentity())));
 			attributes.put(TemplateConstant.PROOFOFRELATIONSHIP,
@@ -343,7 +349,8 @@ public class MessageNotificationServiceImpl
 					getParameter(getJsonValues(regProcessorTemplateJson.getLocalAdministrativeAuthority())));
 			attributes.put(TemplateConstant.IDSCHEMAVERSION,
 					(String) demographicIdentity.get(regProcessorTemplateJson.getIdSchemaVersion()));
-			attributes.put(TemplateConstant.CNIENUMBER, (String) demographicIdentity.get(regProcessorTemplateJson.getCnieNumber()));
+			attributes.put(TemplateConstant.CNIENUMBER,
+					(BigInteger) demographicIdentity.get(regProcessorTemplateJson.getCnieNumber()));
 
 		} catch (ParseException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

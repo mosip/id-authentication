@@ -50,7 +50,7 @@ import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotificat
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ MessageSenderUtil.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
-public class TriggerNotificationForUINTest {
+public class TriggerNotificationTest {
 
 	@InjectMocks
 	private TriggerNotification triggerNotification;

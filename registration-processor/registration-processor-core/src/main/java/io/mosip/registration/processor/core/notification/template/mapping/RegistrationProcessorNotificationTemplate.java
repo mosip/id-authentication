@@ -1,17 +1,20 @@
 package io.mosip.registration.processor.core.notification.template.mapping;
 
+import java.math.BigInteger;
+
 import org.springframework.stereotype.Component;
+
 import lombok.Data;
 
 @Data
 @Component
 public class RegistrationProcessorNotificationTemplate {
-	
+
 	private String firstName;
 	private String phoneNumber;
 	private String emailID;
-    private String dateOfBirth;
-	private int age;
+	private String dateOfBirth;
+	private Integer age;
 	private String gender;
 	private String addressLine1;
 	private String addressLine2;
@@ -21,7 +24,7 @@ public class RegistrationProcessorNotificationTemplate {
 	private String city;
 	private String postalCode;
 	private String parentOrGuardianName;
-	private String parentOrGuardianRIDOrUIN;
+	private BigInteger parentOrGuardianRIDOrUIN;
 	private String proofOfAddress;
 	private String proofOfIdentity;
 	private String proofOfRelationship;
@@ -30,7 +33,6 @@ public class RegistrationProcessorNotificationTemplate {
 	private String parentOrGuardianBiometrics;
 	private String localAdministrativeAuthority;
 	private double idSchemaVersion;
-	private int cnieNumber;
-	
-	
+	private BigInteger cnieNumber;
+
 }
