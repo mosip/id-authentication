@@ -41,7 +41,5 @@ public class DemographicInfoDto implements Serializable {
 	/** The gender code. */
 	private String genderCode;
 	
-	/** The phonetic name. */
-	private String phoneticName;
 
 }
