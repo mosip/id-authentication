@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.abis.dto;
 
+import java.util.Arrays;
+
 /**
  * The Class CandidateListDto.
  */
@@ -35,7 +37,8 @@ public class CandidateListDto {
 	 * @return the candidates
 	 */
 	public CandidatesDto[] getCandidates() {
-		return candidates;
+		return Arrays.copyOf(candidates, candidates.length);
+		
 	}
 	
 	/**
@@ -44,7 +47,7 @@ public class CandidateListDto {
 	 * @param candidates the new candidates
 	 */
 	public void setCandidates(CandidatesDto[] candidates) {
-		this.candidates = candidates;
+		this.candidates = candidates != null?candidates:null;
 	}
 	
 }

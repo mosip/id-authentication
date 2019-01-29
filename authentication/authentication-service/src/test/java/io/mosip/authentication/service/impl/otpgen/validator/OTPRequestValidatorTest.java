@@ -171,6 +171,20 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setReqTime(new Date("1/1/2017").toInstant().atOffset(ZoneOffset.of("+0530"))
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIdvId("5371843613598211");
+		OtpRequestDTO.setTxnID("1234567890");
+		otpRequestValidator.validate(OtpRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testTimeParseError() {
+		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
+		OtpRequestDTO.setIdvIdType("abcd");
+		OtpRequestDTO.setReqTime("123-123-45-32");
+		OtpRequestDTO.setIdvId("5371843613598211");
+		OtpRequestDTO.setTxnID("1234567890");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -182,6 +196,7 @@ public class OTPRequestValidatorTest {
 		otpRequestDTO.setIdvIdType("D");
 		otpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestDTO.setIdvId("5371843613598211");
+		otpRequestDTO.setTxnID("1234567890");
 		//otpRequestDTO.setVer("1.12");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
@@ -193,6 +208,7 @@ public class OTPRequestValidatorTest {
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
 		otpRequestDTO.setIdvIdType("D");
 		otpRequestDTO.setReqTime(Instant.now().toString());
+		otpRequestDTO.setTxnID("1234567890");
 		otpRequestDTO.setIdvId("5371843613598211");
 		//otpRequestDTO.setVer("1.1");
 		otpRequestDTO.setTspID("");

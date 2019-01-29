@@ -28,18 +28,21 @@
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
 		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
-		<javax.interceptor.version>1.2</javax.interceptor.version>
+		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
+  	<javax.interceptor.version>1.2</javax.interceptor.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+		<spring.data.version>2.0.7.RELEASE</spring.data.version>
 
 		<!-- Miscellaneous -->
-		<vertx.version>3.5.3</vertx.version>
+		<vertx.version>3.6.2</vertx.version>
 		<javax.el-api.version>3.0.0</javax.el-api.version>
 		<glassfish.javax.el>2.2.6</glassfish.javax.el>
+		<javax.transaction-api.version>1.2</javax.transaction-api.version>
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
 		<jackson.version>2.9.5</jackson.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
@@ -52,6 +55,7 @@
 		<swagger.version>2.9.2</swagger.version>
 
 		<!-- Data Access -->
+		<hibernate.version>5.2.17.Final</hibernate.version>
 		<eclipselink.version>2.5.0</eclipselink.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
 		<h2.version>1.4.197</h2.version>
@@ -105,7 +109,7 @@
 		<!-- Orika -->
 		<datamapper.orika>1.5.2</datamapper.orika>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 	</properties>
 

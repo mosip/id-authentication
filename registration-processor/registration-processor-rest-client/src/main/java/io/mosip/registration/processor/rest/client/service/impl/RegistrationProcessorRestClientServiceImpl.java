@@ -155,7 +155,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 				}
 
 			}
-			if (!((queryParamName == null) || (("").equals(queryParamName)))) {
+			if (!checkNull(queryParamName)) {
 				String[] queryParamNameArr = queryParamName.split(",");
 				String[] queryParamValueArr = queryParamValue.split(",");
 
@@ -175,6 +175,11 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 		}
 		return obj;
+	}
+
+	private boolean checkNull(String queryParamName) {
+		
+		return ((queryParamName == null) || (("").equals(queryParamName)));
 	}
 
 }
