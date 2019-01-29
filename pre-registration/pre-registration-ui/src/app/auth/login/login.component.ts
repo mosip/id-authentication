@@ -14,10 +14,12 @@ export class LoginComponent implements OnInit {
   inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
   timer: any;
+  secondaryLangCode = 'ar';
+  secondaryDir = 'rtl';
   inputContactDetails = '';
   inputOTP: string;
   selectedLanguage = '';
-  langCode = 'en';
+  langCode = 'eng';
   dir = 'ltr';
   showSendOTP = true;
   showResend = false;
@@ -36,11 +38,11 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(private router: Router, private translate: TranslateService) {
-    translate.addLangs(['en', 'fr', 'ar']);
-    translate.setDefaultLang('en');
+    translate.addLangs(['eng', 'fra', 'ara']);
+    translate.setDefaultLang('eng');
 
     const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|fr|ar/) ? browserLang : 'en');
+    translate.use(browserLang.match(/eng|fra|ara/) ? browserLang : 'eng');
     localStorage.setItem('langCode', this.langCode);
   }
 
@@ -53,18 +55,26 @@ export class LoginComponent implements OnInit {
 
   changeLanguage(): void {
     if (this.selectedLanguage === 'English') {
-      this.langCode = 'en';
+      this.langCode = 'eng';
+      this.secondaryLangCode = 'ara';
       this.dir = 'ltr';
+      this.secondaryDir = 'rtl';
     } else if (this.selectedLanguage === 'French') {
-      this.langCode = 'fr';
+      this.langCode = 'fra';
       this.dir = 'ltr';
+      this.secondaryLangCode = 'ara';
+      this.secondaryDir = 'rtl';
     } else if (this.selectedLanguage === 'Arabic') {
-      this.langCode = 'ar';
+      this.langCode = 'ara';
       this.dir = 'rtl';
+      this.secondaryLangCode = 'fra';
+      this.secondaryDir = 'ltr';
     }
     this.translate.use(this.langCode);
     localStorage.setItem('langCode', this.langCode);
+    localStorage.setItem('secondaryLangCode', this.secondaryLangCode);
     localStorage.setItem('dir', this.dir);
+    localStorage.setItem('secondaryDir', this.secondaryDir);
   }
 
   showVerifyBtn() {
@@ -128,6 +138,7 @@ export class LoginComponent implements OnInit {
     } else if (this.showVerify) {
       clearInterval(this.timer);
       console.log(this.inputContactDetails);
+      localStorage.setItem('loggedIn', 'true');
       this.router.navigate(['dashboard', this.inputContactDetails]);
     }
   }

@@ -2,17 +2,17 @@
 
 This module is used by modules that have to use the DAO layer. There can be multiple databases and multiple DAO framework implementation can be used in various applications in the MOSIP platform.
  
- 1- [Background & Design](../../docs/design/kernel/kernel-dataaccess.md)
+[Background & Design](../../docs/design/kernel/kernel-dataaccess.md)
  
 
- 2- [API Documentation ](TBA)
+ [API Documentation ]
  
  ```
  mvn javadoc:javadoc
 
  ```
  
- To use this api, add this to dependency list:
+**Maven Dependency**
 
 ```
 		<dependency>
@@ -22,7 +22,31 @@ This module is used by modules that have to use the DAO layer. There can be mult
 		</dependency>
 ```
 
-3- Usage Sample
+
+ **Properties to be added in Application environment using this component**
+
+```
+javax.persistence.jdbc.driver=org.h2.Driver
+javax.persistence.jdbc.url=jdbc:h2\:mem\:testdb
+javax.persistence.jdbc.user=sa
+javax.persistence.jdbc.password=
+
+hibernate.hbm2ddl.auto=create-drop
+hibernate.dialect=org.hibernate.dialect.H2Dialect
+hibernate.show_sql=false
+hibernate.format_sql=false
+hibernate.connection.charSet=utf8
+hibernate.cache.use_second_level_cache=false
+hibernate.cache.use_query_cache=false
+hibernate.cache.use_structured_entries=false
+hibernate.generate_statistics=false
+
+#property name is case sensitive and required for interceptors configuration
+#hibernate.ejb.interceptor=io.mosip.kernel.masterdata.config.MasterDataInterceptor
+
+```
+
+##Usage Sample
 
 Create repository using BaseRepository
 
@@ -33,7 +57,7 @@ public interface TestRepository extends BaseRepository<Person, Long>{
 
 ```
  
-Create:
+**Create:**
  
 ```
 @Autowired
@@ -44,7 +68,7 @@ Person baseEntity = new Person("personName");
  
  ```
  
- Update:
+ **Update:**
  
 ```
 @Autowired
@@ -55,7 +79,7 @@ Person baseEntity = new Person("personName");
  
  ```
  
-  FindById:
+**FindById:**
  
 ```
 @Autowired
@@ -67,7 +91,7 @@ Person baseEntity = new Person("personName");
  
  ```
  
-FindAll:
+**FindAll:**
  
 ```
 @Autowired
@@ -79,7 +103,7 @@ Person baseEntity = new Person("personName");
  
  ```
  
- Delete:
+**Delete:**
  
 ```
 @Autowired
@@ -91,7 +115,7 @@ Person baseEntity = new Person("personName");
  
  ```
  
- CreateQuery:
+**CreateQuery:**
  
  ```
  TestRepository repository;
@@ -106,7 +130,7 @@ Person baseEntity = new Person("personName");
  ```
  
   
- CreateNamedQuery:
+**CreateNamedQuery:**
  
  ```
  TestRepository repository;

@@ -1,3 +1,5 @@
+\c mosip_idrepo sysadmin
+
 -- object: grant_b0ae4f0dce | type: PERMISSION --
 GRANT CREATE,CONNECT,TEMPORARY
    ON DATABASE mosip_idrepo

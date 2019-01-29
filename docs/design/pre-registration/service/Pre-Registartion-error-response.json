@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "PRG_PAM_APP_005",
+      "errorMessage": "INVALID_PRE_REGISTRATION_ID"
+    }
+  ]
+}

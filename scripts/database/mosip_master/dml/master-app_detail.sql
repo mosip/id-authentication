@@ -9,4 +9,10 @@
 , ('10009','ID Control','Web portal for configuring applications','eng',true,'superadmin',now())
 , ('10010','التحكم في الهوية','بوابة الويب لتكوين التطبيقات','ara',true,'superadmin',now())
 , ('10011','Resident Portal','Web portal for Post ID generation services','eng',true,'superadmin',now())
-, ('10012','بوابة المقيمين','البوابة الإلكترونية لخدمات إنشاء معرف المشاركة','ara',true,'superadmin',now());
+, ('10012','بوابة المقيمين','البوابة الإلكترونية لخدمات إنشاء معرف المشاركة','ara',true,'superadmin',now())
+, ('10013','Pré-inscription','Portail Web pour les pré-inscriptions','fra',true,'superadmin',now())
+, ('10014','Client dinscription','Application de bureau pour les inscriptions','fra',true,'superadmin',now())
+, ('10015','Processeur dinscription','Demande de post-inscription','fra',true,'superadmin',now())
+, ('10016','Authentification ID','Application pour lauthentification du fournisseur de services tiers','fra',true,'superadmin',now())
+, ('10017','Contrôle didentité','Portail Web pour la configuration dapplications','fra',true,'superadmin',now())
+, ('10018','Portail Résident','Portail Web pour les services de génération de post-ID','fra',true,'superadmin',now());

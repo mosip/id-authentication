@@ -84,4 +84,7 @@
 , ('otp-email-content-template','OTP Email Content Template','fra',true,'superadmin',now())
 , ('otp-email-subject-template','Template for OTP email subject','fra',true,'superadmin',now())
 , ('otp-sms-template','Template for OTP SMS','fra',true,'superadmin',now())
-, ('SMS-Acknowledgement','Template for SMS Acknowledgment','fra',true,'superadmin',now());
+, ('SMS-Acknowledgement','Template for SMS Acknowledgment','fra',true,'superadmin',now())
+, ('Acknowledgement-email-subject','Template for email subject of Acknowledgement','eng',true,'superadmin',now())
+, ('Acknowledgement-email-subject','Modèle pour le sujet d`email d`accusé de réception','fra',true,'superadmin',now())
+, ('Acknowledgement-email-subject','قالب للتسليم البريد الكتروني الموضوع','ara',true,'superadmin',now());

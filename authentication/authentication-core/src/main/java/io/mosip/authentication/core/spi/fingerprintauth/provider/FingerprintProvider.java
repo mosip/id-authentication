@@ -69,7 +69,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	public double matchMinutiae(Object reqInfo, Object entityInfo) {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String reqInfoStr = (String) reqInfo;
-			String entityInfoStr = (String) reqInfo;
+			String entityInfoStr = (String) entityInfo;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
 			byte[] decodeEntityInfo = decodeValue(entityInfoStr);
 			FingerprintTemplate template1 = new FingerprintTemplate().convert(decodedrefInfo);
