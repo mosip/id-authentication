@@ -91,8 +91,7 @@ public class EncryptorTest {
 	@Test(expected = InvalidKeyException.class)
 	public void testAESSymmetricEncryptInvalidKey()
 			throws java.security.NoSuchAlgorithmException {
-		assertThat(encryptorImpl.symmetricEncrypt(null, data),
-				isA(byte[].class));
+		encryptorImpl.symmetricEncrypt(null, data);
 	}
 
 }
