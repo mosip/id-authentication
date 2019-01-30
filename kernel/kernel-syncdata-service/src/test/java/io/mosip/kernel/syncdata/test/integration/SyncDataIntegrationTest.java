@@ -43,6 +43,7 @@ import io.mosip.kernel.syncdata.entity.ReasonCategory;
 import io.mosip.kernel.syncdata.entity.ReasonList;
 import io.mosip.kernel.syncdata.entity.RegistrationCenter;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterType;
+import io.mosip.kernel.syncdata.entity.RegistrationCenterUser;
 import io.mosip.kernel.syncdata.entity.Template;
 import io.mosip.kernel.syncdata.entity.TemplateFileFormat;
 import io.mosip.kernel.syncdata.entity.TemplateType;
@@ -50,6 +51,7 @@ import io.mosip.kernel.syncdata.entity.Title;
 import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
+import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
@@ -71,6 +73,7 @@ import io.mosip.kernel.syncdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.syncdata.repository.ReasonListRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.syncdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.syncdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.syncdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
@@ -111,6 +114,7 @@ public class SyncDataIntegrationTest {
 	private List<ReasonList> reasonLists;
 	private List<IdType> idTypes;
 	private List<Location> locations;
+	private List<RegistrationCenterUser> registrationCenterUsers;
 
 	@MockBean
 	private ApplicationRepository applicationRepository;
@@ -164,6 +168,9 @@ public class SyncDataIntegrationTest {
 	private ValidDocumentRepository validDocumentRepository;
 	@MockBean
 	private ReasonListRepository reasonListRepository;
+
+	@MockBean
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
 
 	@Before
 	public void setup() {
@@ -244,6 +251,18 @@ public class SyncDataIntegrationTest {
 		reasonLists.add(new ReasonList("RL101", "RL1", "ENG", "RL", "description", null));
 		locations = new ArrayList<>();
 		locations.add(new Location("LOC01", "ENG", "Location", 1, "1", "1"));
+		registrationCenterUserSetup();
+
+	}
+
+	private void registrationCenterUserSetup() {
+		RegistrationCenterUser registrationCenterUser = new RegistrationCenterUser();
+		RegistrationCenterUserID registrationCenterUserId = new RegistrationCenterUserID();
+		registrationCenterUserId.setRegCenterId("1");
+		registrationCenterUserId.setUserId("1111");
+		registrationCenterUser.setRegistrationCenterUserID(registrationCenterUserId);
+		registrationCenterUsers=new ArrayList<>();
+		registrationCenterUsers.add(registrationCenterUser);
 
 	}
 
@@ -576,4 +595,15 @@ public class SyncDataIntegrationTest {
 		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01", "1001"))
 				.andExpect(status().isInternalServerError());
 	}
+
+	// ---------------------------RegistrationCenterUser--------------------------------//
+
+	@Test
+	public void getRegistrationCenterUser() throws Exception {
+		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
+				.thenReturn(registrationCenterUsers);
+		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isOk());
+	}
+	
+	
 }

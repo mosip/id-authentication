@@ -15,10 +15,12 @@ import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
+import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
+import io.mosip.kernel.syncdata.service.SyncUserDetailsService;
 import io.swagger.annotations.ApiOperation;
 import net.minidev.json.JSONObject;
 
@@ -43,9 +45,12 @@ public class SyncDataController {
 	 */
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
-	
+
 	@Autowired
-	SyncRolesService syncDataService;
+	SyncRolesService syncRolesService;
+
+	@Autowired
+	SyncUserDetailsService syncUserDetailsService;
 
 	/**
 	 * This API method would fetch all synced global config details from server
@@ -107,20 +112,25 @@ public class SyncDataController {
 		}
 		return masterDataService.syncData(machineId, timestamp);
 	}
-	
+
 	/**
-	 * get all roles
+	 * API will fetch all roles from LDAP server
+	 * @return RolesResponseDto
 	 */
-      @GetMapping("/roles")
-      public RolesResponseDto getAllRoles() {
-    	 return syncDataService.getAllRoles();
-      }
-      
-      /**
-       * get all user details
-       */
-      @GetMapping("/userdetails")
-      public void getUserDetails() {
-    	  
-      }
+	@GetMapping("/roles")
+	public RolesResponseDto getAllRoles() {
+		return syncRolesService.getAllRoles();
+	}
+
+	/**
+	 * API will all the userDetails from LDAP server
+	 * 
+	 * @param regId
+	 * @param lastUpdatedTime
+	 * @return UserDetailResponseDto
+	 */
+	@GetMapping("/userdetails/{regid}")
+	public UserDetailResponseDto getUserDetails(@PathVariable("regid") String regId) {
+		return syncUserDetailsService.getAllUserDetail(regId);
+	}
 }

@@ -9,11 +9,11 @@ public class UserDetailDto {
 	
 	private String userId;
 	
-	private String email;
+	private String mail;
 	
-	private String phone;
+	private String mobile;
 	
-	private String password;
+	private String userPassword;
 	
 	
 }

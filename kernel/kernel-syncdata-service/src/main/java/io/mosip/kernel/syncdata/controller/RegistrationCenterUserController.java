@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@RequestMapping("/registrationcenteruser")
+@RequestMapping("/v1.0/registrationcenteruser")
 public class RegistrationCenterUserController {
     /**
      * Service Instance
