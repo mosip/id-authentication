@@ -54,7 +54,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	 */
 	@Override
 	public List<Registration> getPacketIdsByStatusUploaded() {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"getting packets by status uploaded-successfully has been started");
 
 		return registrationRepository
@@ -69,7 +69,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	 */
 	@Override
 	public Registration get(String registrationId) {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Get registration has been started");
 
 		return registrationRepository.findById(Registration.class, registrationId);
@@ -84,7 +84,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	 */
 	@Override
 	public Registration update(Registration registration) {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Update registration has been started");
 		return registrationRepository.update(registration);
 
@@ -92,7 +92,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 
 	@Override
 	public void delete(Registration registration) {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Delete registration has been started");
 
 		Iterable<RegistrationTransaction> iterableTransaction = registration.getRegistrationTransaction();

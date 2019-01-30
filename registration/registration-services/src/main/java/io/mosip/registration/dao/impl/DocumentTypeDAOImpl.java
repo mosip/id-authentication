@@ -36,7 +36,7 @@ public class DocumentTypeDAOImpl implements DocumentTypeDAO {
 	 */
 	@Override
 	public List<DocumentType> getDocumentTypes() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTTYPESDAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-PACKET_CREATION-DOCUMENTTYPESDAO", APPLICATION_NAME,
 				APPLICATION_ID, "fetching the document types");
 		return documentTypeRepository.findAll();
 	}

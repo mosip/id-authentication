@@ -88,7 +88,7 @@ public class RejectionController extends BaseController implements Initializable
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
 
@@ -99,7 +99,7 @@ public class RejectionController extends BaseController implements Initializable
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
 
-		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
+		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param event
 	 */
 	public void packetUpdateStatus() {
-		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation as rejection has been started");
 
 		for (Map<String, String> registrationMap : rejectionmapList) {
@@ -157,7 +157,7 @@ public class RejectionController extends BaseController implements Initializable
 			regRejectionTable.getItems().set(rowNum, approvalDTO);
 			regRejectionTable.requestFocus();
 			regRejectionTable.getFocusModel().focus(rowNum);
-			LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation as rejection has been ended");
 		}
 	}
@@ -169,7 +169,7 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param event
 	 */
 	public void rejectionWindowExit() {
-		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Rejection Popup window is closed");
+		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Rejection Popup window is closed");
 		rejPrimarystage.close();
 	}
 

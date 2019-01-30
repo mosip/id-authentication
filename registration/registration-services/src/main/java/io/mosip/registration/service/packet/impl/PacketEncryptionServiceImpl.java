@@ -87,13 +87,13 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	@Override
 	public ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException {
-		LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+		LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been started");
 		try {
 			// Encrypt the packet
 			byte[] encryptedPacket = aesEncryptionService.encrypt(packetZipData);
 			
-			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet encrypted successfully");
 			
 			// Validate the size of the generated registration packet
@@ -105,18 +105,18 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 						RegistrationExceptionConstants.REG_PACKET_SIZE_EXCEEDED_ERROR_CODE.getErrorMessage());
 			}
 
-			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet size validated successfully");
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
 			
-			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Encrypted Packet saved successfully");
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Encrypted Packet saved successfully");
 
 			// Insert the Registration Details into DB
 			registrationDAO.save(filePath, registrationDTO);
 			
-			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Registration details persisted to database");
 
 			Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
@@ -137,7 +137,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					"Packet encrypted successfully", registrationDTO.getRegistrationId(),
 					RegistrationConstants.REGISTRATION_ID);
 			
-			LOGGER.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet encryption had been ended");
 			
 			// Return the Response Object

@@ -85,7 +85,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	 */
 	synchronized public void executeChildJob(String currentJobID, Map<String, SyncJobDef> jobMap) {
 
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution started");
 
 		try {
@@ -117,7 +117,7 @@ public abstract class BaseJob extends QuartzJobBean {
 					noSuchBeanDefinitionException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution Ended");
 
 	}

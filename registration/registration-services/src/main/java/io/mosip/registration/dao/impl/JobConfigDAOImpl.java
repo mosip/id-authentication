@@ -36,7 +36,7 @@ public class JobConfigDAOImpl implements SyncJobConfigDAO {
 	 */
 	@Override
 	public List<SyncJobDef> getAll() {
-		LOGGER.debug("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Get all Sync Jobs");
 
 		return jobConfigRepository.findAll();
@@ -47,7 +47,7 @@ public class JobConfigDAOImpl implements SyncJobConfigDAO {
 	 */
 	@Override
 	public List<SyncJobDef> getActiveJobs() {
-		LOGGER.debug("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-JOB_CONFIF_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Get all active Sync Jobs");
 		return jobConfigRepository.findByIsActiveTrue();
 	}

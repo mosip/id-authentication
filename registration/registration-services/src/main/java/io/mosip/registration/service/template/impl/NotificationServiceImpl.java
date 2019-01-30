@@ -69,7 +69,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public ResponseDTO sendSMS(String message, String number, String regId) {
 
-		LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendSMS Method called");
+		LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendSMS Method called");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		NotificationDTO smsdto = new NotificationDTO();
@@ -98,7 +98,7 @@ public class NotificationServiceImpl implements NotificationService {
 				sb = new StringBuilder();
 				sb.append(service.toUpperCase()).append(" request submitted successfully");
 
-				LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
+				LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
 				auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE, sb.toString(),
 						REGISTRATION_ID, regId);
 				// creating success response
@@ -112,7 +112,7 @@ public class NotificationServiceImpl implements NotificationService {
 			sb.append("Exception in sending ").append(service.toUpperCase()).append(" Notification - ")
 					.append(exception.getMessage());
 
-			LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
+			LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, sb.toString());
 			auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE, sb.toString(),
 					REGISTRATION_ID, regId);
 			// creating error response
@@ -134,7 +134,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public ResponseDTO sendEmail(String message, String emailId, String regId) {
 
-		LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendEmail Method called");
+		LOGGER.info(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendEmail Method called");
 		auditFactory.audit(AuditEvent.NOTIFICATION_STATUS, Components.NOTIFICATION_SERVICE,
 				"SMS request submitted successfully", REGISTRATION_ID, "regid");
 

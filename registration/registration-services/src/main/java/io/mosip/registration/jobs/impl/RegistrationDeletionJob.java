@@ -43,7 +43,7 @@ public class RegistrationDeletionJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
+		LOGGER.info(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"job execute internal started");
 		this.responseDTO = new ResponseDTO();
@@ -69,7 +69,7 @@ public class RegistrationDeletionJob extends BaseJob {
 			throw baseUncheckedException;
 		}
 
-		LOGGER.debug(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
+		LOGGER.info(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"job execute internal Ended");
 
@@ -84,14 +84,14 @@ public class RegistrationDeletionJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.debug(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
+		LOGGER.info(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "execute Job started");
 
 		this.responseDTO = packetStatusService.deleteRegistrationPackets();
 
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.debug(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
+		LOGGER.info(RegistrationConstants.REGISTRATION_DELETION_JOB_LOGGER_TITLE,
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return responseDTO;

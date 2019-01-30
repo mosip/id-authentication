@@ -75,7 +75,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	@Override
 	synchronized public ResponseDTO deleteRegistrationPackets() {
 
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete  Reg-packets started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -101,7 +101,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			setErrorResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_FAILURE, null);
 		}
 
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete  Reg-packets ended");
 
 		return responseDTO;
@@ -126,7 +126,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 *         with server
 	 */
 	private List<String> getPacketIds() {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"getting packets by status post-sync has been ended");
 
 		List<Registration> registrationList = regPacketStatusDAO.getPacketIdsByStatusUploaded();
@@ -138,7 +138,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			registrationMap.put(registrationId, registration);
 			packetIds.add(registrationId);
 		}
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"getting packets by status post-sync has been ended");
 		return packetIds;
 	}
@@ -153,7 +153,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 */
 	private void updatePacketIdsByServerStatus(List<LinkedHashMap<String, String>> registrations)
 			throws RegBaseUncheckedException {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"packets status sync from server has been started");
 
 		List<RegPacketStatusDTO> packetStatusDTO = new ArrayList<>();
@@ -173,7 +173,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				delete(registration, regPacketStatusDTO.getStatus(), false);
 
 			}
-			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, "packets status sync from server has been ended");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
@@ -188,12 +188,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	@SuppressWarnings("unchecked")
 	synchronized public ResponseDTO packetSyncStatus() {
 
-		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"packet status sync called");
 
 		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
 		List<String> packetIds = getPacketIds();
-		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"PacketIds for sync with server have been retrieved");
 
 		/* Create Response to Return to UI layer */
@@ -231,7 +231,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
 				successResponse.setOtherAttributes(otherAttributes);
 				response.setSuccessResponseDTO(successResponse);
-				LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"Success Response Created");
 			} else {
 				/* Create Error response */
@@ -247,7 +247,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 			return response;
 		}
-		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"Packet Status Sync ended");
 
 		return response;
@@ -255,7 +255,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	private Registration delete(final Registration registration, final String clientStatus, boolean isToBeDeleted) {
 
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet started");
 		Registration updatedRegistration = null;
 
@@ -306,7 +306,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			updatedRegistration = regPacketStatusDAO.update(registration);
 
 		}
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Delete Registration Packet ended");
 
 		return updatedRegistration;

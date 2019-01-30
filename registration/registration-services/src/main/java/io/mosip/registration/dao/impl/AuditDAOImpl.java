@@ -42,7 +42,7 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Override
 	public List<Audit> getAllUnsyncAudits() {
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "Fetching the list of unsync'ed Audits");
 		try {
 			return regAuditRepository.findAllUnsyncAudits();
@@ -60,7 +60,7 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	@Transactional
 	public int updateSyncAudits(List<String> auditUUIDs) {
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been started");
 		
 		int updatedCount = 0;
@@ -81,7 +81,7 @@ public class AuditDAOImpl implements AuditDAO {
 					runtimeException.toString());
 		}
 		
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been ended");
 		
 		return updatedCount;
@@ -91,7 +91,7 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	@Transactional
 	public void deleteAll(LocalDateTime auditLogFromDtimes, LocalDateTime auditLogToDtimes) {
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "Deleting Audit Logs");
 		regAuditRepository.deleteAllInBatchBycreatedAtBetween(auditLogFromDtimes, auditLogToDtimes);
 	}
@@ -105,7 +105,7 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Override
 	public List<Audit> getAudits(RegistrationAuditDates registrationAuditDates) {
-		LOGGER.debug("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching of unsynchronized which are to be added to Registartion packet had been started");
 
 		List<Audit> audits;
@@ -116,7 +116,7 @@ public class AuditDAOImpl implements AuditDAO {
 					registrationAuditDates.getAuditLogToDateTime().toLocalDateTime());
 		}
 
-		LOGGER.debug("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching of unsynchronized which are to be added to Registartion packet had been ended");
 
 		return audits;

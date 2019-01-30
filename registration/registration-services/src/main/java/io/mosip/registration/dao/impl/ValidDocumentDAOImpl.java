@@ -36,7 +36,7 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	 */
 	@Override
 	public List<ValidDocument> getValidDocuments() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME,
 				APPLICATION_ID, "fetching the validdocuments");
 
 		return validDocumentRepository.findAll();

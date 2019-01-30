@@ -155,7 +155,7 @@ public class FingerprintFacade {
 	 */
 	private Map<String, Object> getFingerPrintScannedImageWithStub(String path) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingerprints details for user registration");
 
 			BufferedImage bufferedImage = ImageIO.read(this.getClass().getResourceAsStream(path));
@@ -177,7 +177,7 @@ public class FingerprintFacade {
 				scannedFingerPrints.put(RegistrationConstants.IMAGE_SCORE_KEY, 90.0);
 			}
 
-			LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of fingerprints details for user registration completed");
 
 			return scannedFingerPrints;
@@ -207,7 +207,7 @@ public class FingerprintFacade {
 	 */
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path)
 			throws RegBaseCheckedException {
-		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID,
 				"Reading scanned Finger has started");
 
 		try {
@@ -275,7 +275,7 @@ public class FingerprintFacade {
 					"Exception while reading scanned fingerprints details for user registration: %s caused by %s",
 					runtimeException.getMessage(), runtimeException.getCause()));
 		}
-		LOGGER.debug(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
+		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
 	}
 
 	/**

@@ -58,7 +58,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public void save(String zipFileName, RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion had been started");
+			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion had been started");
 
 			Timestamp time = new Timestamp(System.currentTimeMillis());
 
@@ -102,7 +102,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			registrationRepository.create(registration);
 
-			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration had been ended");
+			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration had been ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
 					runtimeException.toString());
@@ -119,7 +119,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) {
 		try {
-			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation has been started");
 
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -146,7 +146,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registrationTxn.setCrDtime(timestamp);
 			registrationTransaction.add(registrationTxn);
 
-			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 					"Packet updation has been ended");
 
 			return registrationRepository.update(registration);
@@ -165,7 +165,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public List<Registration> getEnrollmentByStatus(String status) {
-		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving packets based on status");
 
 		return registrationRepository.findByclientStatusCode(status);
@@ -191,7 +191,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public List<Registration> getRegistrationByStatus(List<String> packetStatus) {
-		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"got the packet details by id");
 
 		return registrationRepository.findByStatusCodes(packetStatus.get(0), packetStatus.get(1), packetStatus.get(2));
@@ -204,7 +204,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
 	 */
 	public Registration updateRegStatus(Registration registrationPacket) {
-		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -223,7 +223,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	}
 
 	public Registration updatePacketSyncStatus(Registration packet) {
-		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -236,7 +236,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	}
 
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
-		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");
 
 		Timestamp time = new Timestamp(System.currentTimeMillis());
@@ -251,7 +251,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);
-		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");
 
 		return registrationTransaction;
@@ -271,7 +271,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes) {
 
-		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on crDtime and status");
 
 		return registrationRepository.findByCrDtimeBefore(crDtimes);

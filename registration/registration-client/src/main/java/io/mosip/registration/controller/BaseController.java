@@ -303,7 +303,7 @@ public class BaseController {
 	 * 
 	 */
 	public void goToHomePageFromRegistration() {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		clearRegistrationData();
@@ -448,7 +448,7 @@ public class BaseController {
 	 */
 	protected String validatePwd(String username, String password) {
 
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
 		if (password.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
@@ -484,7 +484,7 @@ public class BaseController {
 	 * @return appropriate message after validation
 	 */
 	private String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating credentials using database");
 
 		UserDetail userDetail = loginService.getUserDetail(authenticationValidatorDTO.getUserId());

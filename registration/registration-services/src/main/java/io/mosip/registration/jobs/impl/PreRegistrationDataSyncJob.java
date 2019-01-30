@@ -40,7 +40,7 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
@@ -71,7 +71,7 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 			responseDTO.setErrorResponseDTOs(errorResponsesList);
 		}
 
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
@@ -85,13 +85,13 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
 		this.responseDTO = preRegistrationDataSyncService.getPreRegistration(jobId);
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.debug(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return responseDTO;

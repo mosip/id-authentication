@@ -45,7 +45,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	synchronized public void triggerMisfired(Trigger trigger) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
 		
 		/*
@@ -61,7 +61,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
 
 	
@@ -77,7 +77,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	synchronized public void triggerFired(Trigger trigger, JobExecutionContext context) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired started");
 
 		/* TRIGGER Fired */
@@ -90,7 +90,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired ended");
 
 		
@@ -101,7 +101,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 			CompletedExecutionInstruction triggerInstructionCode) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed started");
 
 		try {
@@ -118,7 +118,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		/*
 		 * -------------------TRIGGER Completed-------------------------------
 		 */
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed ended");
 
 		

@@ -56,7 +56,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	@Override
 	public byte[] encrypt(final byte[] sessionKey) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
 
 			// encrypt AES Session Key using RSA public key

@@ -189,7 +189,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		final byte[] encryptedData = MosipEncryptor.symmetricEncrypt(symmetricKey.getEncoded(), preRegPacket,
 				MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
 
-		LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration packet Encrypted");
+		LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration packet Encrypted");
 
 		String filePath = storePreRegPacketToDisk(PreRegistrationId, encryptedData);
 
@@ -221,7 +221,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket), new File(filePath));
 
-			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
+			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 
 			return filePath;
 		} catch (io.mosip.kernel.core.exception.IOException exception) {
