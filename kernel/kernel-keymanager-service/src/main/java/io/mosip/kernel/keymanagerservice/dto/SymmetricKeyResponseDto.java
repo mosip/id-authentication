@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "Class representing a Decrypt Symmetric Key Response")
+@ApiModel(description = "Class representing a Decrypt Response")
 public class SymmetricKeyResponseDto {
 
 	/**
 	 * The string symmetric Key
 	 */
-	@ApiModelProperty(notes = "Decrypted Symmetric key in BASE64 encoding", required = true)
+	@ApiModelProperty(notes = "Decrypted Data in BASE64 encoding", required = true)
 	private String symmetricKey;
 
 }
