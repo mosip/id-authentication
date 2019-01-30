@@ -15,38 +15,38 @@ package io.mosip.preregistration.acknowledgement.code;
 public enum RequestCodes {
 
 	/* id */
-	id,
+	ID,
 
 	/* version */
-	ver,
+	VER,
 
 	/* request date time */
-	reqTime,
+	REQTIME,
 
 	/* request object */
-	request,
+	REQUEST,
 
 	
 
 	/* preRegistration Id */
-	preId,
+	PREID,
 
 	/*
 	  appointmentDate
 	 */
-	appointmentDate,
+	APPOINTMENTDATE,
 	
 	/*	appointmentTime	 */
-	appointmentTime,
+	APPOINTMENTTIME,
 	
 	/*
 	  mobNum
 	 */
-	mobNum,
+	MOBNUM,
 	
 	/* emailID */
-	emailID,
+	EMAILID,
 
 	/* language Code */
-	langCode;
+	LANGCODE;
 }

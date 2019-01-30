@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.preregistration.acknowledgement.dto.AcknowledgementDTO;
 import io.mosip.preregistration.acknowledgement.service.AcknowledgementService;
+import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -27,7 +29,7 @@ public class AcknowledgementController {
 	@PostMapping(path = "/notification",  consumes = { "multipart/form-data" },produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Trigger notification")
 	
-	public ResponseEntity<String> acknowledgementNotifier(@RequestPart (value = "AcknowledgementDTO", required = true)String jsonbObject,
+	public ResponseEntity<MainListResponseDTO<AcknowledgementDTO>> acknowledgementNotifier(@RequestPart (value = "AcknowledgementDTO", required = true)String jsonbObject,
 			@RequestPart(value = "langCode", required = true) String langCode,@RequestPart(value = "file", required = true)  MultipartFile file){
 	
 	return new ResponseEntity<>(acknowledgementService.acknowledgementNotifier(jsonbObject, langCode, file),
