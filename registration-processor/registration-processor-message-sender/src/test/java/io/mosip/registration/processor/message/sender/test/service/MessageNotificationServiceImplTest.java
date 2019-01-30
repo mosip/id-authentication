@@ -46,7 +46,6 @@ import io.mosip.registration.processor.message.sender.service.impl.MessageNotifi
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 @RunWith(PowerMockRunner.class)
@@ -176,13 +175,6 @@ public class MessageNotificationServiceImplTest {
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
 	}
 
-	@Test(expected = IdentityNotFoundException.class)
-	public void identityNotFoundExceptionTest() throws ApisResourceAccessException, IOException {
-		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
-
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
-	}
-
 	@Test(expected = TemplateGenerationFailedException.class)
 	public void testTemplateProcessingFailureException() throws Exception {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_EMAIL", attributes, "eng"))
@@ -193,4 +185,3 @@ public class MessageNotificationServiceImplTest {
 	}
 
 }
-

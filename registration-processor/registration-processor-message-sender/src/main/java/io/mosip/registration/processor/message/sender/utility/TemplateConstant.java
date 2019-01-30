@@ -5,7 +5,7 @@ public class TemplateConstant {
 	private TemplateConstant() {
 	}
 
-	public static final String FIRSTNAME = "firstName";
+	public static final String FULLNAME = "name";
 	public static final String PHONENUMBER = "phoneNumber";
 	public static final String EMAILID = "emailID";
 	public static final String DATEOFBIRTH = "dateOfBirth";
