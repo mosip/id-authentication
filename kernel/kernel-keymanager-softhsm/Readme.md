@@ -200,11 +200,11 @@ name = SoftHSM2
 library = D:\SoftHSM2\lib\softhsm2-x64.dll 
 slotListIndex = 0
 ```
-4. Go to `D:\SoftHSM2\bin` and run below commands:
+4. Go to `D:\SoftHSM2\bin` and run below command:
 ```
 > softhsm2-util.exe --init-token --slot 1 --label "My token 1"
 ```
-Check token is initialized in slot with below command.
+Check token is initialized in slot with below command:
 ```
 > softhsm2-util.exe --show-slots
 ```
