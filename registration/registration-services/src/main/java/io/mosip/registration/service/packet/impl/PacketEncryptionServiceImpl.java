@@ -110,7 +110,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
-			
+
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Encrypted Packet saved successfully");
 
 			// Insert the Registration Details into DB
@@ -120,7 +120,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					APPLICATION_ID, "Registration details persisted to database");
 
 			Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
-			
+
 			auditLogControlDAO.save(Builder.build(AuditLogControl.class)
 					.with(auditLogControl -> auditLogControl
 							.setAuditLogFromDateTime(registrationDTO.getAuditLogStartTime()))
@@ -132,6 +132,9 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					.with(auditLogControl -> auditLogControl
 							.setCrBy(SessionContext.getInstance().getUserContext().getUserId()))
 					.get());
+			
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID, "Sync'ed audit logs updated");
 			
 			auditFactory.audit(AuditEvent.PACKET_ENCRYPTED, Components.PACKET_ENCRYPTOR,
 					"Packet encrypted successfully", registrationDTO.getRegistrationId(),

@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.idgenerator.prid.util;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -42,6 +43,9 @@ public class PridFilterUtils {
 	 */
 	@Value("${mosip.kernel.prid.repeating-limit}")
 	private int repeatingLimit;
+	
+	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
+	private List<String> notStartWith;
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
@@ -77,7 +81,13 @@ public class PridFilterUtils {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+		if (repeatingLimit > 0) {
+			String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+			/**
+			 * Compiled regex pattern of {@link #repeatingRegEx}
+			 */
+			repeatingPattern = Pattern.compile(repeatingRegEx);
+		}
 
 		/**
 		 * Regex for matching repeating block of digits like 482xx482, 4827xx4827 (x is
@@ -94,16 +104,15 @@ public class PridFilterUtils {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingBlockRegex = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
 
-		/**
-		 * Compiled regex pattern of {@link #repeatingRegEx}
-		 */
-		repeatingPattern = Pattern.compile(repeatingRegEx);
-		/**
-		 * Compiled regex pattern of {@link #repeatingBlockRegex}
-		 */
-		repeatingBlockpattern = Pattern.compile(repeatingBlockRegex);
+		if (repeatingBlockLimit > 0) {
+			String repeatingBlockRegex = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
+
+			/**
+			 * Compiled regex pattern of {@link #repeatingBlockRegex}
+			 */
+			repeatingBlockpattern = Pattern.compile(repeatingBlockRegex);
+		}
 	}
 
 	/**
@@ -117,7 +126,7 @@ public class PridFilterUtils {
 	 */
 	public boolean isValidId(String id) {
 
-		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern));
+		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id));
 	}
 
 	/**
@@ -128,9 +137,11 @@ public class PridFilterUtils {
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
-		return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
-				.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-				.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		if (sequenceLimit > 0)
+			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
+					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		return false;
 	}
 
 	/**
@@ -144,6 +155,27 @@ public class PridFilterUtils {
 	 * @return true if the id matches the given regex pattern
 	 */
 	private static boolean regexFilter(String id, Pattern pattern) {
-		return pattern.matcher(id).find();
+		if (pattern != null)
+			return pattern.matcher(id).find();
+		return false;
 	}
+	
+	/**
+	 * Method to validate that the prid should not contains the specified digit at
+	 * first index
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if found otherwise false
+	 */
+	private boolean validateNotStartWith(String id) {
+		if (notStartWith != null && !notStartWith.isEmpty()) {
+			for (String str : notStartWith) {
+				if (id.startsWith(str))
+					return true;
+			}
+		}
+		return false;
+	}
+
 }

@@ -3,7 +3,6 @@ package io.mosip.registration.jobs;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
-import org.quartz.TriggerKey;
 import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

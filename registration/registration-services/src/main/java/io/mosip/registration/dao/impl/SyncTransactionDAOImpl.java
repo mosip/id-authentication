@@ -66,5 +66,4 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNot(req, syncJobId);
 	}
 
-
 }

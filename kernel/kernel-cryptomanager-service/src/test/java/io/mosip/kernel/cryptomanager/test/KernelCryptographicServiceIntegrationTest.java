@@ -12,6 +12,8 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -20,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,6 +32,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,6 +48,12 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class KernelCryptographicServiceIntegrationTest {
+
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
+	private String publicKeyUrl;
+
+	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
+	private String symmetricKeyUrl;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -64,10 +74,18 @@ public class KernelCryptographicServiceIntegrationTest {
 
 	private MockRestServiceServer server;
 
+	private UriComponentsBuilder builder;
+
+	private Map<String, String> uriParams;
+
 	@Before
 	public void setUp() {
 		keyPair = generator.getAsymmetricKey();
 		server = MockRestServiceServer.bindTo(restTemplate).build();
+		uriParams = new HashMap<>();
+		uriParams.put("applicationId", "REGISTRATION");
+		builder = UriComponentsBuilder.fromUriString(publicKeyUrl).queryParam("timeStamp", "2018-12-06T12:07:44.403")
+				.queryParam("referenceId", "ref123");
 	}
 
 	@Test
@@ -75,10 +93,8 @@ public class KernelCryptographicServiceIntegrationTest {
 		KeymanagerPublicKeyResponseDto keymanagerPublicKeyResponseDto = new KeymanagerPublicKeyResponseDto(
 				CryptoUtil.encodeBase64(keyPair.getPublic().getEncoded()), LocalDateTime.now(),
 				LocalDateTime.now().plusDays(100));
-		server.expect(requestTo(
-				"http://localhost:8088/keymanager/v1.0/publickey/REGISTRATION?timeStamp=2018-12-06T12:07:44.403&referenceId=ref123"))
-				.andRespond(withSuccess(objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto),
-						MediaType.APPLICATION_JSON));
+		server.expect(requestTo(builder.buildAndExpand(uriParams).toUriString())).andRespond(withSuccess(
+				objectMapper.writeValueAsString(keymanagerPublicKeyResponseDto), MediaType.APPLICATION_JSON));
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		MvcResult result = mockMvc
 				.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -92,7 +108,7 @@ public class KernelCryptographicServiceIntegrationTest {
 	public void testDecrypt() throws Exception {
 		KeymanagerSymmetricKeyResponseDto keymanagerSymmetricKeyResponseDto = new KeymanagerSymmetricKeyResponseDto(
 				CryptoUtil.encodeBase64(generator.getSymmetricKey().getEncoded()));
-		server.expect(requestTo("http://localhost:8088/keymanager/v1.0/symmetricKey")).andRespond(withSuccess(
+		server.expect(requestTo(symmetricKeyUrl)).andRespond(withSuccess(
 				objectMapper.writeValueAsString(keymanagerSymmetricKeyResponseDto), MediaType.APPLICATION_JSON));
 		when(decryptor.symmetricDecrypt(Mockito.any(), Mockito.any())).thenReturn("dXJ2aWw".getBytes());
 		String requestBody = "{\"applicationId\": \"uoiuoi\",\"data\": \"dXJ2aWwjS0VZX1NQTElUVEVSI3Vydmls\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";

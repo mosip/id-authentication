@@ -1503,6 +1503,7 @@ public class RegistrationController extends BaseController {
 		List<String> excludedIds = new ArrayList<String>();
 		excludedIds.add("preRegistrationId");
 		excludedIds.add("virtualKeyboard");
+		excludedIds.add("docPageNumber");
 
 		validation.setChild(isChild);
 		validation.setValidationMessage();

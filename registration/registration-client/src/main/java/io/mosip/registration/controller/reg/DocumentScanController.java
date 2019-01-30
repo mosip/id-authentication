@@ -292,8 +292,8 @@ public class DocumentScanController extends BaseController {
 			if (selectedDocument != null) {
 
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
-
-				LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				
+				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();

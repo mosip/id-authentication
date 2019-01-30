@@ -104,7 +104,7 @@ public class PacketEncryptionServiceTest {
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
 		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
 
-		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
+		packetEncryptionServiceImpl.encrypt(null, "PacketZip".getBytes());
 	}
 	
 	@Test(expected = RegBaseCheckedException.class)

@@ -25,7 +25,6 @@ import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.SessionContext;

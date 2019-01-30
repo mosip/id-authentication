@@ -41,7 +41,6 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.JobConfigurationService;
 

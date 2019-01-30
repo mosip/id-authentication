@@ -10,7 +10,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
-import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.repositories.PreRegistrationDataSyncRepository;
 
