@@ -20,10 +20,10 @@ import io.mosip.registration.repositories.SyncTransactionRepository;
 
 public class SyncTransactionDAOTest {
 	@Mock
-   private Logger logger;
-	
+	private Logger logger;
+
 	@Mock
-	private SyncTransactionRepository syncTranscRepository; 
+	private SyncTransactionRepository syncTranscRepository;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -32,34 +32,34 @@ public class SyncTransactionDAOTest {
 	private SyncTransactionDAOImpl jobTransactionDAOImpl;
 
 	@Test
-	public void saveTest()  {
-		SyncTransaction syncTransaction=new SyncTransaction();
+	public void saveTest() {
+		SyncTransaction syncTransaction = new SyncTransaction();
 		Mockito.when(syncTranscRepository.save(Mockito.any())).thenReturn(new SyncTransaction());
 		jobTransactionDAOImpl.save(syncTransaction);
 	}
-	
+
 	@Test
-	public void getAllTest()  {
-		SyncTransaction syncTransaction=new SyncTransaction();
-		LinkedList<SyncTransaction> syncTransactions= new LinkedList<>();
+	public void getAllTest() {
+		SyncTransaction syncTransaction = new SyncTransaction();
+		LinkedList<SyncTransaction> syncTransactions = new LinkedList<>();
 		syncTransactions.add(syncTransaction);
 		Mockito.when(syncTranscRepository.findAll()).thenReturn(syncTransactions);
-		
+
 		assertEquals(jobTransactionDAOImpl.getAll(), syncTransactions);
 	}
-	
+
 	@Test
-	public void getSyncTransactionsTest()  {
-		SyncTransaction syncTransaction=new SyncTransaction();
-		LinkedList<SyncTransaction> syncTransactions= new LinkedList<>();
+	public void getSyncTransactionsTest() {
+		SyncTransaction syncTransaction = new SyncTransaction();
+		LinkedList<SyncTransaction> syncTransactions = new LinkedList<>();
 		syncTransactions.add(syncTransaction);
-		
-		Mockito.when(syncTranscRepository.findByCrDtimeAfter(new Timestamp(Mockito.anyLong()))).thenReturn(syncTransactions);
 
-		assertEquals(jobTransactionDAOImpl.getSyncTransactions(new Timestamp(Mockito.anyLong())), syncTransactions);
+		Mockito.when(syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNot(new Timestamp(Mockito.anyLong()),
+				Mockito.anyString())).thenReturn(syncTransactions);
 
-		
+		assertEquals(jobTransactionDAOImpl.getSyncTransactions(new Timestamp(Mockito.anyLong()), Mockito.anyString()),
+				syncTransactions);
+
 	}
 
-	
 }

@@ -30,10 +30,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
@@ -76,6 +78,9 @@ public class JobConfigurationServiceTest {
 	@Mock
 	JobDetail jobDetail;
 
+	@Mock
+	GlobalParamDAO globalParamDAO;
+	
 	List<SyncJobDef> syncJobList;
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
@@ -249,12 +254,17 @@ public class JobConfigurationServiceTest {
 
 		syncTransactions.add(syncTransaction);
 
-		Timestamp req = new Timestamp(System.currentTimeMillis());
-		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any())).thenReturn(syncTransactions);
+		Timestamp req =new Timestamp(System.currentTimeMillis());
+		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any(),Mockito.anyString())).thenReturn(syncTransactions);
+		GlobalParam globalParam=new GlobalParam();
+		globalParam.setVal("2");
+		Mockito.when(globalParamDAO.get(Mockito.anyString())).thenReturn(globalParam);
+		
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getSuccessResponseDTO());
 
 		syncTransactions.clear();
-		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any())).thenReturn(syncTransactions);
+
+		Mockito.when(syncJobTransactionDAO.getAll()).thenReturn(syncTransactions);
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getErrorResponseDTOs());
 
 	}

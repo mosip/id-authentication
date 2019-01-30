@@ -917,4 +917,9 @@ public class RegistrationConstants {
 	public static final String USER_MACHINE_VALIDATION_CODE="REG-URE‌-009";
 	public static final String USER_MACHINE_VALIDATION_MSG="This computer is not mapped to the same Registration Centre as the dongle plugged in.";
 	public static final String USER_ONBOARD_DATA="UserOnboardBiometricData";
+	
+	//Configuration Constants
+	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
+	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
+	
 }

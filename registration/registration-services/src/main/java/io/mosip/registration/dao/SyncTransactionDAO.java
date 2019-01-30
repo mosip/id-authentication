@@ -32,9 +32,11 @@ public interface SyncTransactionDAO {
 	/**
 	 * Get All sync Transaction
 	 * @param request time
+	 * @param syncJobId 
 	 * @return list of sync transaction
 	 */
-	List<SyncTransaction> getSyncTransactions(Timestamp req);
+	List<SyncTransaction> getSyncTransactions(Timestamp req,String syncJobId);
+
 
 
 }

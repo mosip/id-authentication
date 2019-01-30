@@ -57,13 +57,13 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	}
 
 	/* (non-Javadoc)
-	 * @see io.mosip.registration.dao.SyncJobTransactionDAO#getSyncTransactions(java.sql.Timestamp)
+	 * @see io.mosip.registration.dao.SyncTransactionDAO#getSyncTransactions(java.sql.Timestamp, java.lang.String)
 	 */
 	@Override
-	public List<SyncTransaction> getSyncTransactions(Timestamp req) {
+	public List<SyncTransaction> getSyncTransactions(Timestamp req,String syncJobId) {
 		LOGGER.debug(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetch  sync details based on crDtime from databse started");
-		return syncTranscRepository.findByCrDtimeAfter(req);
+		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNot(req, syncJobId);
 	}
 
 
