@@ -765,6 +765,7 @@ public class RegistrationController extends BaseController {
 			}
 		}
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
+		documentScanController.clearDocSection();
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();

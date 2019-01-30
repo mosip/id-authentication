@@ -42,4 +42,6 @@ public interface DocumentScannerService {
 
 	byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException;
 
+	List<BufferedImage> pdfToImages(byte[] pdfBytes, String fileName) throws IOException;
+
 }
