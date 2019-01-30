@@ -249,6 +249,4 @@ Slot 1
 
 1. Follow installation steps from https://github.com/opendnssec/SoftHSMv2#installation
 
-### Docker
 
-`TODO`
