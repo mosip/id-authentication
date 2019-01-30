@@ -3,9 +3,7 @@ package io.mosip.kernel.idrepo.service.impl;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -22,7 +20,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +34,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.SdkBaseException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,6 +55,7 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppUncheckedException;
 import io.mosip.kernel.core.idrepo.spi.IdRepoService;
+import io.mosip.kernel.core.idrepo.spi.MosipDFSProvider;
 import io.mosip.kernel.core.idrepo.spi.MosipFingerprintProvider;
 import io.mosip.kernel.core.idrepo.spi.ShardDataSourceResolver;
 import io.mosip.kernel.core.idrepo.spi.ShardResolver;
@@ -86,7 +80,6 @@ import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
-import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 
 /**
  * The Class IdRepoServiceImpl.
@@ -195,9 +188,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	/** The Constant UPDATED_BY. */
 	private static final String UPDATED_BY = "updatedBy";
 
-	/** The Constant SUCCESS_UPLOAD_MESSAGE. */
-	private static final String SUCCESS_UPLOAD_MESSAGE = "Successfully uploaded to DFS";
-
 	/** The Constant ALL. */
 	private static final String ALL = "all";
 
@@ -242,16 +232,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Autowired
 	private UinHistoryRepo uinHistoryRepo;
 
-	/** The connection. */
-	@Autowired
-	private DFSConnectionUtil connection;
-
 	/** The fp provider. */
 	@Autowired
 	private MosipFingerprintProvider<BIRType, BIR> fpProvider;
 
 	@Autowired
-	private CbeffI cbeff;
+	private CbeffI cbeffUtil;
+
+	@Autowired
+	private MosipDFSProvider dfsAdapter;
 
 	/*
 	 * (non-Javadoc)
@@ -357,7 +346,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					String fileRefId = UUID.randomUUID().toString();
 					byte[] cbeffDoc = convertToFMR(doc.getCategory(), doc.getValue());
 
-					storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(), cbeffDoc);
+					dfsAdapter.storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
+							cbeffDoc);
 
 					bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(), docType.get(VALUE).asText(),
 							hash(cbeffDoc), LANG_CODE, CREATED_BY, now(), UPDATED_BY, now(), false, now()));
@@ -369,7 +359,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				} else {
 					String fileRefId = UUID.randomUUID().toString();
 
-					storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
+					dfsAdapter.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 							CryptoUtil.decodeBase64(doc.getValue()));
 
 					docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
@@ -401,8 +391,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	private byte[] convertToFMR(String category, String encodedCbeffFile) throws IdRepoAppException {
 		try {
 			byte[] cbeffFileData = CryptoUtil.decodeBase64(encodedCbeffFile);
-			if (cbeff.validateXML(cbeffFileData, Files.readAllBytes(Paths.get(TEMPPATH)))) {
-				return cbeff.updateXML(fpProvider.convertFIRtoFMR(cbeff.getBIRDataFromXML(cbeffFileData)),
+			if (cbeffUtil.validateXML(cbeffFileData, Files.readAllBytes(Paths.get(TEMPPATH)))) {
+				return cbeffUtil.updateXML(fpProvider.convertFIRtoFMR(cbeffUtil.getBIRDataFromXML(cbeffFileData)),
 						cbeffFileData);
 			} else {
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
@@ -417,39 +407,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), category));
 
 		}
-	}
-
-	/**
-	 * Store file.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param filePathAndName
-	 *            the file path and name
-	 * @param fileData
-	 *            the file data
-	 * @return true, if successful
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private boolean storeFile(String uin, String filePathAndName, byte[] fileData) throws IdRepoAppException {
-		try {
-			AmazonS3 conn = connection.getConnection();
-			mosipLogger.debug(ID_REPO_SERVICE_IMPL, uin, filePathAndName,
-					"bucket exists with uin: " + uin + " -- " + conn.doesBucketExistV2(uin));
-			if (!conn.doesBucketExistV2(uin)) {
-				conn.createBucket(uin);
-				mosipLogger.debug(ID_REPO_SERVICE_IMPL, uin, filePathAndName, "bucket created with uin : " + uin);
-			}
-			mosipLogger.debug(ID_REPO_SERVICE_IMPL, uin, filePathAndName, "before storing file");
-			conn.putObject(uin, filePathAndName, new ByteArrayInputStream(fileData), null);
-			mosipLogger.debug(ID_REPO_SERVICE_IMPL, uin, filePathAndName, SUCCESS_UPLOAD_MESSAGE);
-		} catch (SdkClientException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "storeFile",
-					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
-		}
-		return true;
 	}
 
 	/*
@@ -540,7 +497,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
 				String fileName = DEMOGRAPHICS + SLASH + demo.getDocId() + DOT
 						+ identityMap.get(demo.getDoccatCode()).get(FORMAT).asText();
-				String data = getFile(uinObject.getUin(), fileName);
+				String data = CryptoUtil.encodeBase64(dfsAdapter.getFile(uinObject.getUin(), fileName));
 				if (demo.getDocHash().equals(hash(CryptoUtil.decodeBase64(data)))) {
 					documents.add(new Documents(demo.getDoccatCode(), data));
 				} else {
@@ -570,7 +527,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 					ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
 					String fileName = BIOMETRICS + SLASH + bio.getBioFileId() + DOT
 							+ identityMap.get(bio.getBiometricFileType()).get(FORMAT).asText();
-					String data = getFile(uinObject.getUin(), fileName);
+					String data = CryptoUtil.encodeBase64(dfsAdapter.getFile(uinObject.getUin(), fileName));
 					if (Objects.nonNull(data)) {
 						if (StringUtils.equals(bio.getBiometricFileHash(), hash(CryptoUtil.decodeBase64(data)))) {
 							documents.add(new Documents(bio.getBiometricFileType(), data));
@@ -585,32 +542,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				}
 			}
 		});
-	}
-
-	/**
-	 * Gets the file.
-	 *
-	 * @param uin
-	 *            the uin
-	 * @param filePathAndName
-	 *            the file path and name
-	 * @return the file
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
-	 */
-	private String getFile(String uin, String filePathAndName) throws IdRepoAppException {
-		try {
-			if (connection.getConnection().doesBucketExistV2(uin)
-					&& connection.getConnection().doesObjectExist(uin, filePathAndName)) {
-				return CryptoUtil.encodeBase64(IOUtils.toByteArray((InputStream) connection.getConnection()
-						.getObject(new GetObjectRequest(uin, filePathAndName)).getObjectContent()));
-
-			}
-		} catch (SdkBaseException | IOException e) {
-			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, "getFile", "\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
-		}
-		return null;
 	}
 
 	/**
@@ -990,7 +921,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		List<UinBiometric> bioList = new ArrayList<>();
 		addDocuments(uin, convertToBytes(requestDTO.getIdentity()), requestDTO.getDocuments(), uinObject.getUinRefId(),
 				docList, bioList);
-		//TODO remove type code as primary key
+		// TODO remove type code as primary key
 		docList.stream().forEach(doc -> uinObject.getDocuments().stream()
 				.filter(docObj -> StringUtils.equals(doc.getDoccatCode(), docObj.getDoccatCode())).forEach(docObj -> {
 					docObj.setDocId(doc.getDocId());

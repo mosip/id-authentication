@@ -50,6 +50,7 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
+import io.mosip.kernel.idrepo.dfsAdapter.impl.AmazonS3DFSProvider;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 import io.mosip.kernel.idrepo.dto.RequestDTO;
 import io.mosip.kernel.idrepo.entity.Uin;
@@ -60,7 +61,6 @@ import io.mosip.kernel.idrepo.repository.UinBiometricHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinDocumentHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinHistoryRepo;
 import io.mosip.kernel.idrepo.repository.UinRepo;
-import io.mosip.kernel.idrepo.util.DFSConnectionUtil;
 
 /**
  * The Class IdRepoServiceTest.
@@ -78,7 +78,7 @@ public class IdRepoServiceTest {
 	FingerprintProvider fpProvider;
 
 	@Mock
-	DFSConnectionUtil connection;
+	AmazonS3DFSProvider connection;
 
 	@Mock
 	AmazonS3 conn;
