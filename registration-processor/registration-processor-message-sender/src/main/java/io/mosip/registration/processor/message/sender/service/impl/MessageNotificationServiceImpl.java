@@ -99,6 +99,7 @@ public class MessageNotificationServiceImpl
 	/** The sms dto. */
 	private SmsRequestDto smsDto = new SmsRequestDto();
 
+	/** The idjson. */
 	private IdentityJson idjson = new IdentityJson();
 
 	/*
@@ -271,9 +272,6 @@ public class MessageNotificationServiceImpl
 	 *            the attributes
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws io.mosip.kernel.core.exception.IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
 	 */
 	private void setAttributes(String demographicInfo, Map<String, Object> attributes) throws IOException {
 		try {
@@ -320,8 +318,8 @@ public class MessageNotificationServiceImpl
 	/**
 	 * Gets the parameter.
 	 *
-	 * @param jsonValues
-	 *            the json values
+	 * @param values
+	 *            the values
 	 * @return the parameter
 	 */
 	private String getParameter(List<ValuesDTO> values) {
