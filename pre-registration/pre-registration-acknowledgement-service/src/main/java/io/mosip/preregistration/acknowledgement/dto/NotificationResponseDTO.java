@@ -7,7 +7,7 @@ import lombok.Data;
  *@since 1.0.0
  */
 @Data
-public class EmailResponseDTO {
+public class NotificationResponseDTO {
 private String status;
 private  String message;
 }
