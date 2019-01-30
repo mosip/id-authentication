@@ -12,4 +12,7 @@ import lombok.Data;
 @Data
 public class DeviceHistoryResponseDto {
 	private List<DeviceHistoryDto> deviceHistoryDetails;
+
+	private List<ErrorDTO> errors;
+
 }
