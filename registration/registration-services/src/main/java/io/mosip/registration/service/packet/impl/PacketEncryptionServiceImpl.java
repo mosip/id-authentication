@@ -151,8 +151,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ENCRYPTION_MANAGER,
 					runtimeException.toString());
 		}finally {
-			LOGGER.info(LOG_PKT_ENCRYPTION,RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, 
+			LOGGER.info(LOG_PKT_ENCRYPTION,APPLICATION_NAME,APPLICATION_ID, 
 					"Registrtaion Process end for RID  : [ " + registrationDTO.getRegistrationId() + " ] ");
 		}
 	}
