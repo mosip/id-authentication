@@ -5,12 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
-import net.minidev.json.JSONObject;
 
 /**
  * 

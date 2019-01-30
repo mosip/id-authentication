@@ -52,6 +52,7 @@ import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
+import io.mosip.kernel.syncdata.exception.DataNotFoundException;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
@@ -261,7 +262,7 @@ public class SyncDataIntegrationTest {
 		registrationCenterUserId.setRegCenterId("1");
 		registrationCenterUserId.setUserId("1111");
 		registrationCenterUser.setRegistrationCenterUserID(registrationCenterUserId);
-		registrationCenterUsers=new ArrayList<>();
+		registrationCenterUsers = new ArrayList<>();
 		registrationCenterUsers.add(registrationCenterUser);
 
 	}
@@ -604,6 +605,20 @@ public class SyncDataIntegrationTest {
 				.thenReturn(registrationCenterUsers);
 		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isOk());
 	}
-	
-	
+
+	@Test
+	public void getRegistrationCenterUserMasterDataException() throws Exception {
+		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
+		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
+				.thenThrow(DataNotFoundException.class);
+		
+	mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
+	}
+
 }
