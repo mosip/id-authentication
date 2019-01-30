@@ -88,10 +88,10 @@ public class BridgeUtil {
 		return profile;
 	}
 	public static String getCloudConfigLabel() {
-		String profile = System.getProperty("spring.cloud.config.label");
-		if(profile==null) {
-			profile = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.label");
+		String label = System.getProperty("spring.cloud.config.label");
+		if(label==null) {
+			label = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.label");
 		}
-		return profile;
+		return label;
 	}
 }
