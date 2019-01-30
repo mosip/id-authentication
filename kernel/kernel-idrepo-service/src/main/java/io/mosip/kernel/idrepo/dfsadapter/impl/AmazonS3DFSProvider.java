@@ -1,4 +1,4 @@
-package io.mosip.kernel.idrepo.dfsAdapter.impl;
+package io.mosip.kernel.idrepo.dfsadapter.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,10 +25,8 @@ import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.core.idrepo.spi.MosipDFSProvider;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 
-// TODO: Auto-generated Javadoc
 /**
  * This class gets connection to CEPH storage cluster.
  *

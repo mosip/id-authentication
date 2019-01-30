@@ -3,7 +3,7 @@ package io.mosip.kernel.idrepo.util;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.idrepo.dfsAdapter.impl.AmazonS3DFSProvider;
+import io.mosip.kernel.idrepo.dfsadapter.impl.AmazonS3DFSProvider;
 
 public class AmazonS3DFSProviderTest {
 	AmazonS3DFSProvider util = new AmazonS3DFSProvider();
