@@ -40,7 +40,7 @@ public class EncryptorTest {
 		SecureRandom random = new SecureRandom();
 		generator.initialize(2048, random);
 		rsaPair = generator.generateKeyPair();
-		data = "a".getBytes();
+		data = "test".getBytes();
 
 	}
 
