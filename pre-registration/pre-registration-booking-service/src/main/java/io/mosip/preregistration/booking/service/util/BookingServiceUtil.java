@@ -323,10 +323,12 @@ public class BookingServiceUtil {
 
 				String statusCode = preRegResponsestatusDto.getStatusCode().trim();
 
+				//Date dateTime=preRegResponsestatusDto.get
 				if (statusCode.equals(StatusCodes.PENDING_APPOINTMENT.getCode())) {
 					throw new AppointmentCannotBeCanceledException(ErrorCodes.PRG_BOOK_RCI_018.toString(),
 							ErrorMessages.APPOINTMENT_CANNOT_BE_CANCELED.toString());
 				}
+				/// time span configuration will come here
 			} else {
 				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
 						respEntity.getBody().getErr().getMessage());
