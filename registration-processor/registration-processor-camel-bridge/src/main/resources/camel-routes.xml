@@ -1,0 +1,100 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+	<route id="packet-validator-->external-stage route">
+		<from uri="vertx:packet-validator-bus-out" />
+		<log message="packet-validator-->external-stage ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<setHeader headerName="CamelHttpMethod">
+					<constant>POST</constant>
+				</setHeader>
+				<setHeader headerName="Content-Type">
+					<constant>application/json</constant>
+				</setHeader>
+				<setBody>
+					<simple>${bodyAs(String)}</simple>
+				</setBody>
+				<to uri="http://localhost:8080/test" />
+				<getOut>
+				<log message="packet-validator-->external-stage ${bodyAs(String)}" />
+				</getOut>
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="osi-validator-->demo-dedupe route">
+		<from uri="vertx:osi-validator-bus-out" />
+		<log message="osi-validator-->demo-dedupe route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:demo-dedupe-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="demo-dedupe-->bio-dedupe route">
+		<from uri="vertx:demo-dedupe-bus-out" />
+		<log message="demo-dedupe-->bio-dedupe route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:bio-dedupe-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="bio-dedupe-->uin-generation route">
+		<from uri="vertx:bio-dedupe-bus-out" />
+		<log message="bio-dedupe-->uin-generation route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:uin-generation-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+	<route id="manual-verification-->uin-generation route">
+		<from uri="vertx:manual-verification-bus" />
+		<log
+			message="manual-verification-->uin-generation route ${bodyAs(String)}" />
+		<choice>
+			<when>
+				<simple>${bodyAs(String)} contains '"isValid":true'</simple>
+				<to uri="vertx:uin-generation-bus-in" />
+			</when>
+			<when>
+				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
+				<to uri="vertx:retry" />
+			</when>
+			<otherwise>
+				<to uri="vertx:error" />
+			</otherwise>
+		</choice>
+	</route>
+</routes>
