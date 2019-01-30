@@ -554,42 +554,7 @@ public class LogfactoryTest {
 	}
 
 
-	@Test
-	public void testgetDefaultFileLoggerDebugCall() {
-	 
-		Logger mosipLogger = Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, LogfactoryTest.class);
-		mosipLogger.debug("sessionid", "idType", "id", "description");
-	}
-
-	@Test
-	public void testgetDefaultFileLoggerTraceCall() {
-		Logger mosipLogger = Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, LogfactoryTest.class);
-		mosipLogger.trace("sessionid", "idType", "id", "description");
-
-	}
-
-	@Test
-	public void testgetDefaultFileLoggerErrorCall() {
-		
-		Logger mosipLogger = Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, LogfactoryTest.class);
-		mosipLogger.error("sessionid", "idType", "id", "description");
-
-	}
-
-	@Test
-	public void testgetDefaultFileLoggerWarnCall() {
-		Logger mosipLogger = Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, LogfactoryTest.class);
-		mosipLogger.warn("sessionid", "idType", "id", "description");
-
-	}
-
-	@Test
-	public void testgetDefaultFileLoggerInfoCall() {
-			Logger mosipLogger = Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, LogfactoryTest.class);
-		mosipLogger.info("sessionid", "idType", "id", "description");
-	}
-
-	@Test
+    @Test
 	public void testgetFileConsoleLoggerClazzImplementation() {
 		assertThat(Logfactory.getConsoleLogger(consoleAppenderFile,
 				LoggerMethod.MOSIPLOGBACK, LogfactoryTest.class),
