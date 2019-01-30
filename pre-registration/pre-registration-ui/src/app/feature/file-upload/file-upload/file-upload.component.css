@@ -127,7 +127,7 @@ mat-select:focus {
 }
 
 .file-upload__body__document-name {
-  max-width: 59%;
+  max-width: 49%;
   padding: 0.6em;
   font-size: 0.7em;
   position: relative;
