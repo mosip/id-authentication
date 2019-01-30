@@ -125,7 +125,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
 	}
-
+/**
+ * Validates the AuthType
+ * 
+ * @param authType
+ * @param errors
+ */
 	private void validateAuthType(AuthTypeDTO authType, Errors errors) {
 		if(!(authType.isAddress()||authType.isBio()||authType.isFullAddress()||authType.isOtp()||authType.isPersonalIdentity() ||authType.isPin())) {
 			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),

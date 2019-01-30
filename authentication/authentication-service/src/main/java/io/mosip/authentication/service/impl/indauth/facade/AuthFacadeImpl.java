@@ -116,6 +116,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private NotificationService notificationService;
 	
+	/** The Pin Auth Service */
 	@Autowired
 	private PinAuthService pinAuthService;
 

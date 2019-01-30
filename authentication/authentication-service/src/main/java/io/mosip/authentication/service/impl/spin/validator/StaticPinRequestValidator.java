@@ -15,17 +15,20 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
+ * This Class Provides the validation for StaticPinRequestValidator class.
+ * 
  * @author Prem Kumar
  *
  */
 @Component
 public class StaticPinRequestValidator extends IdAuthValidator {
+
 	/** The Constant ID_AUTH_VALIDATOR2. */
 	private static final String ID_AUTH_VALIDATOR2 = "IdAuthValidator";
 
-	/** The Constant PATTERN. */
-	private static final Pattern PATTERN = Pattern.compile("^[0-9]{6}");
-	
+	/** The Constant STATIC_PIN_PATTERN. */
+	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
+
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
@@ -37,50 +40,52 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 
 	/** The Constant REQUEST. */
 	private static final String REQUEST = "request";
-	
+
 	/** The Constant PINVALUE. */
 	private static final String PINVALUE = "pinValue";
 
 	/** The mosip logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(StaticPinRequestValidator.class);
 
-	
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return StaticPinRequestDTO.class.equals(clazz);
 	}
-	
+
 	@Override
 	public void validate(Object target, Errors errors) {
-		
+
 		if (Objects.nonNull(target)) {
-			StaticPinRequestDTO staticPinRequestDTO= (StaticPinRequestDTO)target;
+			StaticPinRequestDTO staticPinRequestDTO = (StaticPinRequestDTO) target;
 			validateId(staticPinRequestDTO.getId(), errors);
 			validateReqTime(staticPinRequestDTO.getReqTime(), errors);
-			validateUinVidValue(staticPinRequestDTO,errors);
-			validateStaticPin(staticPinRequestDTO.getRequest().getStaticPin(),errors);
+			validateUinVidValue(staticPinRequestDTO, errors);
+			validateStaticPin(staticPinRequestDTO.getRequest().getStaticPin(), errors);
 		}
 	}
-/**
- * Validation for static Pin Null or  empty check.
- * 
- * @param pinValue
- * @param errors
- */
+
+	/**
+	 * Validation for static Pin Null or empty check.
+	 * 
+	 * @param pinValue
+	 * @param errors
+	 */
 	private void validateStaticPin(String pinValue, Errors errors) {
-		if(Objects.isNull(pinValue) ||pinValue.isEmpty()) {
-			
-				mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2, MISSING_INPUT_PARAMETER + PINVALUE);
-				errors.rejectValue(REQUEST,  IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { PINVALUE }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-			} else if (!PATTERN.matcher(pinValue).matches()) {
-				mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2,
-						"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinValue);
-				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						new Object[] { PINVALUE }, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-			}
+		if (Objects.isNull(pinValue) || pinValue.isEmpty()) {
+
+			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2, MISSING_INPUT_PARAMETER + PINVALUE);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { PINVALUE },
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else if (!STATIC_PIN_PATTERN.matcher(pinValue).matches()) {
+			mosipLogger.error(SESSION_ID, SPIN_VALIDATE, ID_AUTH_VALIDATOR2,
+					"INVALID_INPUT_PARAMETER - pinValue - value -> " + pinValue);
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					new Object[] { PINVALUE },
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 		}
-	
+	}
+
 	/**
 	 * Validation for Uin and vid.
 	 * 
@@ -90,12 +95,10 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	private void validateUinVidValue(StaticPinRequestDTO staticPinRequestDTO, Errors errors) {
 		String uin = staticPinRequestDTO.getRequest().getIdentity().getUin();
 		String vid = staticPinRequestDTO.getRequest().getIdentity().getVid();
-		if(uin!=null) {
-			validateIdvId(uin,IdType.UIN.getType(),errors);
-		} else if(vid!=null){
-			validateIdvId(vid,IdType.VID.getType(),errors);
-			}
+		if (uin != null) {
+			validateIdvId(uin, IdType.UIN.getType(), errors);
+		} else if (vid != null) {
+			validateIdvId(vid, IdType.VID.getType(), errors);
 		}
 	}
-
-
+}

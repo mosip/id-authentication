@@ -51,11 +51,11 @@ public class VIDEntity {
 
 	/** The corrected by. */
 	@Column(name = "cr_by")
-	private String correctedBy ;         
+	private String createdBy ;         
 
 	/** The corrected date. */
 	@Column(name = "cr_dtimes")
-	private Date correctedDate;
+	private Date createdDTimes;
 
 	/** The updated by. */
 	@Column(name = "upd_by")

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.spin.service.StaticPinService;
@@ -19,6 +18,8 @@ import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.repository.StaticPinHistoryRepository;
 import io.mosip.authentication.service.repository.StaticPinRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * This Class will provide service for storing the Static Pin.
@@ -28,23 +29,27 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Service
 public class StaticPinServiceImpl implements StaticPinService {
+	
 	/** The Constant for IDA*/
 	private static final String IDA = "IDA";
 
+	/** The StaticPinRepository */
 	@Autowired
 	private StaticPinRepository staticPinRepo;
 
+	/** The StaticPinHistoryRepository */
 	@Autowired
 	private StaticPinHistoryRepository staticPinHistoryRepo;
 
+	/** The DateHelper */
 	@Autowired
 	private DateHelper dateHelper;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(StaticPinServiceImpl.class);
 
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
+	/** The Constant SESSION_ID. */
+	private static final String SESSION_ID = "sessionId";
 	/**
 	 * This method is to store the StaticPin in StaticPin and StaticPinHistory Table.
 	 * 
@@ -61,10 +66,11 @@ public class StaticPinServiceImpl implements StaticPinService {
 			StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
 			staticPinEntity.setUin(uinValue);
 			String pinValue = staticPinRequestDTO.getRequest().getStaticPin();
+			//TODO 
+			encryptStaticPin(pinValue.getBytes());
 			staticPinEntity.setPin(pinValue);
-			staticPinEntity.setCorrectedBy(IDA);
-			staticPinEntity.setCorrectedDate(new Date());
-			staticPinEntity.setCorrectedDate(new Date());
+			staticPinEntity.setCreatedBy(IDA);
+			staticPinEntity.setCreatedDTimes(new Date());
 			staticPinEntity.setUpdatedBy(IDA);
 			Date convertStringToDate = null;
 			convertStringToDate = dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime());
@@ -74,8 +80,8 @@ public class StaticPinServiceImpl implements StaticPinService {
 			staticPinEntity.setDeleted(false);
 			staticPinHistoryEntity.setUin(uinValue);
 			staticPinHistoryEntity.setPin(pinValue);
-			staticPinHistoryEntity.setCorrectedBy(IDA);
-			staticPinHistoryEntity.setCorrectedDate(new Date());
+			staticPinHistoryEntity.setCreatedBy(IDA);
+			staticPinHistoryEntity.setCreatedDTimes(new Date());
 			staticPinHistoryEntity.setGeneratedOn(convertStringToDate);
 			staticPinHistoryEntity.setEffectiveDate(new Date());
 			staticPinHistoryEntity.setActive(true);
@@ -83,22 +89,37 @@ public class StaticPinServiceImpl implements StaticPinService {
 			staticPinHistoryEntity.setUpdatedBy(IDA);
 			staticPinHistoryEntity.setUpdatedOn(new Date());
 			Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
+			
 			if (!entityValues.isPresent()) {
 				 staticPinRepo.save(staticPinEntity);
 				status = Boolean.TRUE;
 
 			} else {
-				entityValues.get().setPin(pinValue);
-				entityValues.get().setUpdatedOn(new Date());
-				entityValues.get().setUpdatedBy(IDA);
-				staticPinRepo.update(entityValues.get());
+				StaticPinEntity entity = entityValues.get();
+				entity.setPin(pinValue);
+				entity.setUpdatedOn(new Date());
+				entity.setUpdatedBy(IDA);
+				staticPinRepo.update(entity);
 				status = Boolean.TRUE;
 			}
 			staticPinHistoryRepo.save(staticPinHistoryEntity);
 			return status;
 		}  catch (DataAccessException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
+			logger.error(SESSION_ID, "StaticPinStoreImpl", e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
 		}
 	}
+	
+
+		/**
+		 * Hash the Static Pin.
+		 *
+		 * @param pinValue
+		 *            the Static Pin
+		 * @return the string
+		 */
+		private String encryptStaticPin(byte[] pinValue) {
+			return CryptoUtil.encodeBase64(HMACUtils.generateHash(pinValue));
+		}
+	
 }

@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -18,12 +17,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.spin.facade.StaticPinFacade;
 import io.mosip.authentication.service.impl.spin.validator.StaticPinRequestValidator;
 /**
@@ -46,9 +43,11 @@ public class StaticPinControllerTest {
 	@InjectMocks
 	private StaticPinRequestValidator staticPinRequestValidator;
 	
+	/** The Static Pin Controller */ 
 	@InjectMocks
 	private StaticPinController staticPinController;
 	
+	/** The WebDataBinder */
 	@Mock
 	WebDataBinder binder;
 	

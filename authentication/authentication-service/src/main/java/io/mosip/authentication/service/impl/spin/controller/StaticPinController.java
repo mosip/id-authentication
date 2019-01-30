@@ -72,7 +72,7 @@ public class StaticPinController {
 			StaticPinResponseDTO staticPinResponseDTO =staticPinFacade.storeSpin(staticPinRequestDTO);
 			return staticPinResponseDTO;
 		} catch (IDDataValidationException e) {
-			logger.error(DEAFULT_SESSION_ID, null, null, e.getErrorText());
+			logger.error(DEAFULT_SESSION_ID, "StaticPinController",e.getClass().getName(), e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
 			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());

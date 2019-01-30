@@ -73,28 +73,35 @@ public class StaticPinFacadeImplTest {
 	@Mock
 	private IdAuthService idAuthService;
 	
+	/** The Audit Helper */
 	@Mock
 	private AuditHelper auditHelper;
 	
+	/** The Date Helper */
 	@InjectMocks
 	DateHelper dateHelper;
 	
+	/** The StaticPin Entity */
 	@Mock
 	StaticPinEntity staticPinEntity;
 	
+	/** The Static Pin Repository */
 	@Mock
 	StaticPinRepository staticPinRepository;
 	
+	/** Static Pin History Repository */
 	@Mock
 	private StaticPinHistoryRepository staticPinHistoryRepo;
 	
-
+	/** The RestRequest Factory */
 	@InjectMocks
 	private RestRequestFactory restRequestFactory;
 	
+	/** The Id Repo Service */
 	@Mock
 	private IdRepoService idRepoService;
 	
+	/** The Rest Helper */
 	@InjectMocks
 	private RestHelper restHelper;
 	
@@ -138,14 +145,14 @@ public class StaticPinFacadeImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPinEntity stat = new StaticPinEntity();
-		stat.setCorrectedDate(new Date());
+		stat.setCreatedDTimes(new Date());
 		stat.setPin("123456");
 		stat.setUin(uin);
 		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
 		staticPinHistoryEntity.setUin(uin);
 		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCorrectedBy(IDA);
-		staticPinHistoryEntity.setCorrectedDate(new Date());
+		staticPinHistoryEntity.setCreatedBy(IDA);
+		staticPinHistoryEntity.setCreatedDTimes(new Date());
 		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
@@ -194,14 +201,14 @@ public class StaticPinFacadeImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPinEntity stat = new StaticPinEntity();
-		stat.setCorrectedDate(new Date());
+		stat.setCreatedDTimes(new Date());
 		stat.setPin("123456");
 		stat.setUin(vid);
 		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
 		staticPinHistoryEntity.setUin(vid);
 		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCorrectedBy(IDA);
-		staticPinHistoryEntity.setCorrectedDate(new Date());
+		staticPinHistoryEntity.setCreatedBy(IDA);
+		staticPinHistoryEntity.setCreatedDTimes(new Date());
 		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
@@ -250,14 +257,14 @@ public class StaticPinFacadeImplTest {
 		pinRequestDTO.setStaticPin(pin);
 		staticPinRequestDTO.setRequest(pinRequestDTO);
 		StaticPinEntity stat = new StaticPinEntity();
-		stat.setCorrectedDate(new Date());
+		stat.setCreatedDTimes(new Date());
 		stat.setPin("123456");
 		stat.setUin(vid);
 		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
 		staticPinHistoryEntity.setUin(vid);
 		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCorrectedBy(IDA);
-		staticPinHistoryEntity.setCorrectedDate(new Date());
+		staticPinHistoryEntity.setCreatedBy(IDA);
+		staticPinHistoryEntity.setCreatedDTimes(new Date());
 		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);

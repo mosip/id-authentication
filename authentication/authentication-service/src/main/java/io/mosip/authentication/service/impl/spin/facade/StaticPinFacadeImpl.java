@@ -33,6 +33,7 @@ import io.mosip.kernel.core.util.DateUtils;
 @Service
 public class StaticPinFacadeImpl implements StaticPinFacade {
 
+	/** The Constant UIN_Key */
 	private static final String UIN_KEY = "uin";
 
 	/** The Constant FAILED. */
@@ -114,7 +115,7 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 			staticPinResponseDTO.setStatus(SUCCESS);
 			staticPinResponseDTO.setErr(Collections.emptyList());
 			String statusValue = status ? SUCCESS : FAILED;
-			String comment = status ? "Static Pin  Save Success" : "Static Pin  Save Failed";
+			String comment = status ? "Static pin stored successfully" : "Faild to store Static pin";
 			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, tspIdValue, statusValue, comment,
 					RequestType.STATICPIN_STORE_REQUEST);
 			// auditHelper.audit(AuditModules., AuditEvents., idvId, idvIdType, desc);

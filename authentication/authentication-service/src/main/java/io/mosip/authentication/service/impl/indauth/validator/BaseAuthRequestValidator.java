@@ -144,7 +144,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	
 
 	/** The Constant PATTERN. */
-	private static final Pattern PATTERN = Pattern.compile("^[0-9]{6}");
+	private static final Pattern STATIC_PIN_PATTERN = Pattern.compile("^[0-9]{6}");
 
 	/** email Validator */
 	@Autowired
@@ -204,7 +204,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 
 				validatePinInfo(pinInfo, errors);
 
-			} else if (pinInfo == null || pinInfo.isEmpty()) {
+			} else {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "Missing pinval in the request");
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_PINDATA.getErrorCode(),
 						new Object[] { PIN_INFO },
@@ -244,7 +244,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkPinValue(List<PinInfo> pinInfo, Errors errors) {
 		for (PinInfo pinInfos : pinInfo) {
-			 if (!PATTERN.matcher(pinInfos.getValue()).matches()) {
+			 if (!STATIC_PIN_PATTERN.matcher(pinInfos.getValue()).matches()) {
 				 mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 							"Invalid Input Static pin Value");
 					errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -404,14 +404,13 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 		if (deviceNameList != null) {
 			String[] deviceName = deviceNameList.split(",");
-			List<String> wordList = Arrays.asList(deviceName);
-			bioInfo.stream().map(info -> info.getDeviceInfo().getMake()).filter(make -> !wordList.contains(make))
-					.forEach(make -> {
-						mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
-								"Invalid Input Make in DeviceInfo");
+			List<String> wordList = Arrays.asList(deviceName);			
+			bioInfo.stream().map(info->info).filter(make-> !wordList.contains(make.getDeviceInfo().getMake()))
+					.forEach(make->{
 						errors.rejectValue(REQUEST,
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								new Object[] { make },
+								// TODO
+								new Object[] { "make for " +make.getBioType() +" bioType" },
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 					});
 		}
