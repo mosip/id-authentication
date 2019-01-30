@@ -1,10 +1,10 @@
 package io.mosip.registration.dao;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
+import io.mosip.registration.entity.RegistrationAuditDates;
 
 /**
  * DAO class for Audit
@@ -40,5 +40,17 @@ public interface AuditDAO {
 	 *            end time
 	 */
 	void deleteAll(LocalDateTime auditLogFromDtimes, LocalDateTime auditLogToDtimes);
+
+	/**
+	 * Retrieves the {@link Audit} logs which are yet to be synchronized to the
+	 * server along with the registration packet
+	 * 
+	 * @param registrationAuditDates
+	 *            the start and end DateTimes of the audits synchronized with last
+	 *            registration packet
+	 * @return the {@link Audit} logs to be synchronized to the server with
+	 *         registration packet
+	 */
+	List<Audit> getAudits(RegistrationAuditDates registrationAuditDates);
 
 }

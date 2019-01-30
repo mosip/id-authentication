@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
+import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
 
@@ -94,6 +94,32 @@ public class AuditDAOImpl implements AuditDAO {
 		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "Deleting Audit Logs");
 		regAuditRepository.deleteAllInBatchBycreatedAtBetween(auditLogFromDtimes, auditLogToDtimes);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.AuditDAO#getAudits(io.mosip.registration.entity.
+	 * RegistrationAuditDates)
+	 */
+	@Override
+	public List<Audit> getAudits(RegistrationAuditDates registrationAuditDates) {
+		LOGGER.debug("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching of unsynchronized which are to be added to Registartion packet had been started");
+
+		List<Audit> audits;
+		if (registrationAuditDates == null || registrationAuditDates.getAuditLogToDateTime() == null) {
+			audits = regAuditRepository.findAllByOrderByCreatedAtAsc();
+		} else {
+			audits = regAuditRepository.findByCreatedAtGreaterThanOrderByCreatedAtAsc(
+					registrationAuditDates.getAuditLogToDateTime().toLocalDateTime());
+		}
+
+		LOGGER.debug("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching of unsynchronized which are to be added to Registartion packet had been ended");
+
+		return audits;
 	}
 
 }

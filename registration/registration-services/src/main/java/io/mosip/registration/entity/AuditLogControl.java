@@ -2,7 +2,6 @@ package io.mosip.registration.entity;
 
 import java.sql.Timestamp;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,8 +21,7 @@ import lombok.Setter;
 @Table(schema = "reg", name = "audit_log_control")
 @Getter
 @Setter
-@AttributeOverride(column = @Column(name = "isActive", insertable = false, updatable = false), name = "isActive")
-public class AuditLogControl extends RegistrationCommonFields {
+public class AuditLogControl {
 
 	@Id
 	@Column(name = "reg_id")
@@ -36,5 +34,13 @@ public class AuditLogControl extends RegistrationCommonFields {
 	private Timestamp auditLogSyncDateTime;
 	@Column(name = "audit_log_purge_dtimes")
 	private Timestamp auditLogPurgeDateTime;
+	@Column(name = "CR_BY")
+	private String crBy;
+	@Column(name = "CR_DTIMES")
+	private Timestamp crDtime;
+	@Column(name = "UPD_BY")
+	private String updBy;
+	@Column(name = "UPD_DTIMES")
+	private Timestamp updDtimes;
 
 }

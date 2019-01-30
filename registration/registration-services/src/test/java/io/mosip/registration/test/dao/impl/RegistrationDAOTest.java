@@ -8,10 +8,12 @@ import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -24,9 +26,15 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationTransactionType;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.demographic.DemographicDTO;
+import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.entity.UserDetail;
@@ -36,6 +44,7 @@ import io.mosip.registration.repositories.RegTransactionRepository;
 import io.mosip.registration.repositories.RegistrationRepository;
 
 public class RegistrationDAOTest {
+
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
@@ -47,8 +56,9 @@ public class RegistrationDAOTest {
 	private RegistrationTransaction regTransaction;
 
 	@BeforeClass
-	public static void setUp() {
+	public static void initializeContext() {
 		SessionContext.destroySession();
+		ApplicationContext.getInstance().setApplicationMap(new HashMap<>());
 	}
 
 	@Before
@@ -77,14 +87,29 @@ public class RegistrationDAOTest {
 	@Test
 	public void testSaveRegistration() throws RegBaseCheckedException {
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenReturn(new Registration());
-		registrationDAOImpl.save("../PacketStore/28-Sep-2018/111111", "Applicant");
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		DemographicDTO demographicDTO = new DemographicDTO();
+		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
+		Identity identity = new Identity();
+		List<ValuesDTO> fullNames = new ArrayList<>();
+		ValuesDTO valuesDTO = new ValuesDTO();
+		valuesDTO.setLanguage("eng");
+		valuesDTO.setValue("Individual Name");
+		fullNames.add(valuesDTO);
+		identity.setFullName(fullNames);
+		demographicInfoDTO.setIdentity(identity);
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
+		registrationDTO.setDemographicDTO(demographicDTO);
+
+		registrationDAOImpl.save("../PacketStore/28-Sep-2018/111111", registrationDTO);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testTransactionException() throws RegBaseCheckedException {
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenThrow(RegBaseUncheckedException.class);
-		registrationDAOImpl.save("file", "Invalid");
+
+		registrationDAOImpl.save("file", new RegistrationDTO());
 	}
 
 	@Test
@@ -234,6 +259,11 @@ public class RegistrationDAOTest {
 
 		registrationDAOImpl.getPacketsToBeSynched(statusCodes);
 	}
-	
-	
+
+	@AfterClass
+	public static void destroyContexts() {
+		SessionContext.destroySession();
+		ApplicationContext.getInstance().setApplicationMap(null);
+	}
+
 }

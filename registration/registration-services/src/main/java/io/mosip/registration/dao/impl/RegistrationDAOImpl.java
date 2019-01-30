@@ -23,6 +23,7 @@ import io.mosip.registration.constants.RegistrationType;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -51,18 +52,18 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.mosip.registration.dao.RegistrationDAO#save(java.lang.String,
-	 * java.lang.String)
+	 * @see io.mosip.registration.dao.RegistrationDAO#save(java.lang.String,
+	 * io.mosip.registration.dto.RegistrationDTO)
 	 */
 	@Override
-	public void save(String zipFileName, String individualName) throws RegBaseCheckedException {
+	public void save(String zipFileName, RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		try {
 			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion had been started");
 
 			Timestamp time = new Timestamp(System.currentTimeMillis());
 
 			Registration registration = new Registration();
-			registration.setId(zipFileName.substring(zipFileName.lastIndexOf('/') + 1));
+			registration.setId(registrationDTO.getRegistrationId());
 			registration.setRegType(RegistrationType.NEW.getCode());
 			registration.setRefRegId("12345");
 			registration.setLangCode("ENG");
@@ -82,7 +83,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setUploadCount((short) 1);
 			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 					.getRegistrationCenterId());
-			registration.setIndividualName(individualName);
+			registration.setIndividualName(registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
+					.getFullName().get(0).getValue());
 			registration.setIsActive(true);
 			registration.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registration.setCrDtime(time);

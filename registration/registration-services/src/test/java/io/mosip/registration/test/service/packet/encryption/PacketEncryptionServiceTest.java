@@ -1,8 +1,5 @@
 package io.mosip.registration.test.service.packet.encryption;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -26,16 +23,20 @@ import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.dao.AuditDAO;
+import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.external.StorageService;
 import io.mosip.registration.service.packet.impl.PacketEncryptionServiceImpl;
 import io.mosip.registration.test.util.datastub.DataProvider;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ApplicationContext.class })
@@ -46,7 +47,7 @@ public class PacketEncryptionServiceTest {
 	@InjectMocks
 	private PacketEncryptionServiceImpl packetEncryptionServiceImpl;
 	@Mock
-	private AESEncryptionService aesEncryptionManager;
+	private AESEncryptionService aesEncryptionService;
 	@Mock
 	private StorageService storageService;
 	@Mock
@@ -54,7 +55,7 @@ public class PacketEncryptionServiceTest {
 	@Mock
 	private AuditFactoryImpl auditFactory;
 	@Mock
-	private AuditDAO auditDAO;
+	private AuditLogControlDAO auditLogControlDAO;
 	private RegistrationDTO registrationDTO;
 
 	@Before
@@ -64,6 +65,7 @@ public class PacketEncryptionServiceTest {
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(auditLogControlDAO).save(Mockito.any(AuditLogControl.class));
 		
 		ApplicationContext applicationContext = Mockito.mock(ApplicationContext.class);
 		PowerMockito.mockStatic(ApplicationContext.class);
@@ -74,13 +76,13 @@ public class PacketEncryptionServiceTest {
 		PowerMockito.when(applicationContext.getApplicationMap()).thenReturn(globalParams);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testEncryption() throws RegBaseCheckedException {
-		when(aesEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("Encrypted_Data".getBytes());
+		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("Encrypted_Data".getBytes());
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
-		when(auditDAO.updateSyncAudits(Mockito.anyList())).thenReturn(2);
-		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.anyString());
+		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
+		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(null);
+
 		ResponseDTO responseDTO = packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
 		Assert.assertEquals("0000", responseDTO.getSuccessResponseDTO().getCode());
 		Assert.assertEquals("Success", responseDTO.getSuccessResponseDTO().getMessage());
@@ -89,31 +91,29 @@ public class PacketEncryptionServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseCheckedException.class)
 	public void testCheckedException() throws RegBaseCheckedException {
-		when(aesEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenThrow(RegBaseCheckedException.class);
+		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenThrow(RegBaseCheckedException.class);
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
-		when(auditDAO.updateSyncAudits(Mockito.anyList())).thenReturn(2);
-		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.anyString());
+		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
+
 		packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testUncheckedException() throws RegBaseCheckedException {
-		when(aesEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("Encrypted_Data".getBytes());
+		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("Encrypted_Data".getBytes());
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
-		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.anyString());
-		when(auditDAO.updateSyncAudits(Mockito.anyList())).thenReturn(2);
+		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
+
 		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseCheckedException.class)
 	public void packetSizeExceededTets() throws RegBaseCheckedException {
 		byte[] encryptedData = new byte[1050576];
-		when(aesEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn(encryptedData);
+		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn(encryptedData);
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
-		when(auditDAO.updateSyncAudits(Mockito.anyList())).thenReturn(2);
-		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.anyString());
+		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
+
 		packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
 	}
 

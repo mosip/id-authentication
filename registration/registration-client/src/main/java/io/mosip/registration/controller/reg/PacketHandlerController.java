@@ -25,7 +25,6 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
-import io.mosip.registration.util.dataprovider.DataProvider;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -115,7 +114,6 @@ public class PacketHandlerController extends BaseController {
 		try {
 			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA);
-			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
