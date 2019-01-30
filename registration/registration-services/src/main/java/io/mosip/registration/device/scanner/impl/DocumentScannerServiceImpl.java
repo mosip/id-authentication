@@ -7,14 +7,19 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -43,13 +48,13 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 	@Value("${DOCUMENT_SCANNER_DPI}")
 	private int scannerDpi;
-	
+
 	@Value("${DOCUMENT_SCANNER_CONTRAST}")
 	private int scannerContrast;
-	
+
 	@Value("${DOCUMENT_SCANNER_BRIGHTNESS}")
 	private int scannerBrightness;
-	
+
 	@Value("${DOCUMENT_SCANNER_DEPTH}")
 	private int scannerDepth;
 
@@ -58,7 +63,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 	@Value("${DOCUMENT_SCANNER_PORT}")
 	private int scannerPort;
-	
+
 	@Value("${DOCUMENT_SCANNER_TIMEOUT}")
 	private long scannerTimeout;
 
@@ -98,7 +103,7 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 				setScannerSettings(saneDevice);
 				bufferedImage = saneDevice.acquireImage();
-				
+
 				saneDevice.close();
 			} catch (IOException | SaneException e) {
 				LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
@@ -235,6 +240,27 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 
 		return newSingleImage;
 
+	}
+
+	@Override
+	public List<BufferedImage> pdfToImages(byte[] pdfBytes, String fileName) throws IOException {
+
+		List<BufferedImage> bufferedImages = new ArrayList<>();
+		PDDocument document = PDDocument.load(new ByteArrayInputStream(pdfBytes));
+		@SuppressWarnings("unchecked")
+		List<PDPage> list = document.getDocumentCatalog().getAllPages();
+
+		int pageNumber = 1;
+		for (PDPage page : list) {
+			BufferedImage image = page.convertToImage();
+			bufferedImages.add(image);
+			File outputfile = new File("C://Users//M1046540//Desktop/Test/" + fileName + "_" + pageNumber + ".png");
+			ImageIO.write(image, "png", outputfile);
+			pageNumber++;
+
+		}
+		document.close();
+		return bufferedImages;
 	}
 
 	private boolean isListNotEmpty(List<?> values) {
