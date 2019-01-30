@@ -3,7 +3,6 @@ package io.mosip.preregistration.acknowledgement.service;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,11 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,19 +29,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.preregistration.acknowledgement.code.RequestCodes;
 import io.mosip.preregistration.acknowledgement.dto.AcknowledgementDTO;
-import io.mosip.preregistration.acknowledgement.dto.EmailResponseDTO;
+import io.mosip.preregistration.acknowledgement.dto.NotificationResponseDTO;
 import io.mosip.preregistration.acknowledgement.dto.ResponseDTO;
 import io.mosip.preregistration.acknowledgement.dto.SMSRequestDTO;
 import io.mosip.preregistration.acknowledgement.dto.TemplateResponseDTO;
+import io.mosip.preregistration.acknowledgement.error.ErrorCodes;
+import io.mosip.preregistration.acknowledgement.error.ErrorMessages;
+import io.mosip.preregistration.acknowledgement.exception.MandatoryFieldException;
+import io.mosip.preregistration.acknowledgement.exception.util.AcknowledgementExceptionCatcher;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
-
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * @author Sanober Noor
@@ -63,6 +67,12 @@ public class AcknowledgementService {
 	@Value("${smsResourse.url}")
 	private String smsResourseUrl;
 
+	@Value("${ver}")
+	String versionUrl;
+
+	@Value("${id}")
+	String idUrl;
+
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	@Autowired
@@ -70,6 +80,16 @@ public class AcknowledgementService {
 
 	@Autowired
 	private TemplateManager templateManager;
+	AcknowledgementDTO acknowledgementDTO = new AcknowledgementDTO();
+
+	Map<String, String> requiredRequestMap = new HashMap<>();
+
+	@PostConstruct
+	public void setupAcknowledgementService() {
+		requiredRequestMap.put("id", idUrl);
+		requiredRequestMap.put("ver", versionUrl);
+
+	}
 
 	/**
 	 * @param jsonStirng
@@ -78,26 +98,41 @@ public class AcknowledgementService {
 	 * @return
 	 */
 	public String acknowledgementNotifier(String jsonStirng, String langCode, MultipartFile file) {
+		String emailResponse = null;
+		String smsResponse = null;
 
 		try {
-			AcknowledgementDTO acknowledgementDTO = new AcknowledgementDTO();
-			MainRequestDTO<AcknowledgementDTO> mainDTO = new MainRequestDTO<>();
-			JSONObject acknowledgementData= new JSONObject(jsonStirng);
 
-			
+			MainRequestDTO<AcknowledgementDTO> mainDTO = new MainRequestDTO<>();
+			JSONObject acknowledgementData = new JSONObject(jsonStirng);
+
 			JSONObject acknowledgementDTOData = (JSONObject) acknowledgementData.get("request");
 			acknowledgementDTO = (AcknowledgementDTO) JsonUtils.jsonStringToJavaObject(AcknowledgementDTO.class,
 					acknowledgementDTOData.toString());
 			mainDTO.setId(acknowledgementData.get("id").toString());
 			mainDTO.setVer(acknowledgementData.get("ver").toString());
-			mainDTO.setReqTime(new SimpleDateFormat(dateTimeFormat).parse(acknowledgementData.get("reqTime").toString()));
+			mainDTO.setReqTime(
+					new SimpleDateFormat(dateTimeFormat).parse(acknowledgementData.get("reqTime").toString()));
 			mainDTO.setRequest(acknowledgementDTO);
-			String smsTemplate = smsNotification(acknowledgementDTO, langCode);
-			String emailTemplate=emailNotification(acknowledgementDTO, langCode, file);
-		} catch (Exception e) {
-			e.printStackTrace();
+			if (ValidationUtil.requestValidator(prepareRequestParamMap(mainDTO), requiredRequestMap)) {
+				if (acknowledgementDTO.getMobNum() != null && !acknowledgementDTO.getMobNum().isEmpty()) {
+					smsResponse = smsNotification(acknowledgementDTO, langCode);
+				}
+				if (acknowledgementDTO.getEmailID() != null && !acknowledgementDTO.getEmailID().isEmpty()) {
+					emailResponse = emailNotification(acknowledgementDTO, langCode, file);
+				}
+
+				if ((acknowledgementDTO.getEmailID() == null||acknowledgementDTO.getEmailID().isEmpty())
+						&& (acknowledgementDTO.getMobNum() == null || acknowledgementDTO.getMobNum().isEmpty())) {
+					throw new MandatoryFieldException(ErrorCodes.PRG_ACK_001.getCode(),
+							ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode());
+				}
+
+			}
+		} catch (Exception ex) {
+			new AcknowledgementExceptionCatcher().handle(ex);
 		}
-		return null;
+		return emailResponse;
 
 	}
 
@@ -109,60 +144,61 @@ public class AcknowledgementService {
 	 */
 	public String emailNotification(AcknowledgementDTO acknowledgementDTO, String langCode, MultipartFile file) {
 		List<TemplateResponseDTO> response = null;
-		ResponseEntity<EmailResponseDTO> resp=null;
+		ResponseEntity<NotificationResponseDTO> resp = null;
 		String merseTemplate = null;
-		 try {
-		File convFile = new File( file.getOriginalFilename());
-		
-		 convFile.createNewFile(); 
-		    FileOutputStream fos = new FileOutputStream(convFile); 
-		    fos.write(file.getBytes());
-		   
-		FileSystemResource value = new FileSystemResource(convFile);
-		String url = resourceUrl + "/" + langCode + "/" + "Email-Acknowledgement";
+		try {
+			File convFile = new File(file.getOriginalFilename());
 
-		ResponseEntity<ResponseDTO> respEntity = restTemplate.getForEntity(url, ResponseDTO.class);
+			convFile.createNewFile();
+			FileOutputStream fos = new FileOutputStream(convFile);
+			fos.write(file.getBytes());
+			String url = resourceUrl + "/" + langCode + "/" + "Email-Acknowledgement";
 
-		response = respEntity.getBody().getTemplates();
+			ResponseEntity<ResponseDTO> respEntity = restTemplate.getForEntity(url, ResponseDTO.class);
 
-		String fileText = response.get(0).getFileText();
-		merseTemplate = templateMerge(fileText, acknowledgementDTO);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-		emailMap.add("attachments", value);
-		emailMap.add("mailContent", merseTemplate);
-		emailMap.add("mailSubject", getEmailSubject(acknowledgementDTO, langCode));
-		emailMap.add("mailTo", acknowledgementDTO.getEmailID());
-		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
+			response = respEntity.getBody().getTemplates();
 
-		 resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity,
-				EmailResponseDTO.class);
-		 fos.close(); 
-		}catch (IOException e) {
-			e.printStackTrace();
+			String fileText = response.get(0).getFileText();
+			merseTemplate = templateMerge(fileText, acknowledgementDTO);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
+			emailMap.add("attachments", convFile);
+			emailMap.add("mailContent", merseTemplate);
+			emailMap.add("mailSubject", getEmailSubject(acknowledgementDTO, langCode));
+			emailMap.add("mailTo", acknowledgementDTO.getEmailID());
+			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
+
+			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, NotificationResponseDTO.class);
+			fos.close();
+		} catch (Exception ex) {
+			new AcknowledgementExceptionCatcher().handle(ex);
+
 		}
 		return resp.getBody().getStatus();
 	}
-	
+
 	/**
 	 * @param acknowledgementDTO
 	 * @param langCode
 	 * @return
 	 */
-	public String getEmailSubject(AcknowledgementDTO acknowledgementDTO,String langCode) {
-		
+	public String getEmailSubject(AcknowledgementDTO acknowledgementDTO, String langCode) {
+
 		String url = resourceUrl + "/" + langCode + "/" + "Acknowledgement-email-subject";
 
 		ResponseEntity<ResponseDTO> respEntity = restTemplate.getForEntity(url, ResponseDTO.class);
 
-		List<TemplateResponseDTO>	response = respEntity.getBody().getTemplates();
+		List<TemplateResponseDTO> response = respEntity.getBody().getTemplates();
 
 		String fileText = response.get(0).getFileText();
-		String merseEmailSubject = templateMerge(fileText, acknowledgementDTO);
-		return merseEmailSubject;
+		return templateMerge(fileText, acknowledgementDTO);
 	}
 
+	/**
+	 * @param acknowledgementDTO
+	 * @return
+	 */
 	public Map<String, Object> mapSetting(AcknowledgementDTO acknowledgementDTO) {
 		Map<String, Object> responseMap = new HashMap<>();
 
@@ -170,12 +206,11 @@ public class AcknowledgementService {
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalTime localTime = LocalTime.now(ZoneId.of("UTC"));
-		
-		
+
 		responseMap.put("name", acknowledgementDTO.getName());
 		responseMap.put("PRID", acknowledgementDTO.getPreId());
 		responseMap.put("Date", dateFormate.format(now));
-		responseMap.put("Time",  localTime);
+		responseMap.put("Time", localTime);
 		responseMap.put("Appointmentdate", acknowledgementDTO.getAppointmentDate());
 		responseMap.put("Appointmenttime", acknowledgementDTO.getAppointmentTime());
 		return responseMap;
@@ -188,7 +223,8 @@ public class AcknowledgementService {
 	 */
 	public String smsNotification(AcknowledgementDTO acknowledgementDTO, String langCode) {
 		List<TemplateResponseDTO> response = null;
-		ResponseEntity<EmailResponseDTO> resp = null;
+		ResponseEntity<NotificationResponseDTO> resp = null;
+		try {
 		String url = resourceUrl + "/" + langCode + "/" + "SMS-Acknowledgement";
 
 		ResponseEntity<ResponseDTO> respEntity = restTemplate.getForEntity(url, ResponseDTO.class);
@@ -202,12 +238,15 @@ public class AcknowledgementService {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		HttpEntity<SMSRequestDTO> httpEntity = new HttpEntity<>(smsRequestDTO, headers);
-		try {
-			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, EmailResponseDTO.class);
-		} catch (HttpClientErrorException e) {
-			System.out.println(e.getResponseBodyAsString());
+		
+			resp = restTemplate.exchange(smsResourseUrl, HttpMethod.POST, httpEntity, NotificationResponseDTO.class);
+		
 		}
-		return resp.getBody().getStatus();
+		catch (Exception ex) {
+			new AcknowledgementExceptionCatcher().handle(ex);
+
+		}
+				return resp.getBody().getStatus();
 
 	}
 
@@ -228,10 +267,25 @@ public class AcknowledgementService {
 			InputStream resultedTemplate = templateManager.merge(templateInputStream, map);
 
 			merseTemplate = IOUtils.toString(resultedTemplate, StandardCharsets.UTF_8.name());
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			new AcknowledgementExceptionCatcher().handle(ex);
 		}
 
 		return merseTemplate;
 	}
+
+	/**
+	 * @param acknowledgementReqDto
+	 * @return
+	 */
+	public Map<String, String> prepareRequestParamMap(MainRequestDTO<AcknowledgementDTO> acknowledgementReqDto) {
+		Map<String, String> inputValidation = new HashMap<>();
+		inputValidation.put(RequestCodes.id.toString(), acknowledgementReqDto.getId());
+		inputValidation.put(RequestCodes.ver.toString(), acknowledgementReqDto.getVer());
+		inputValidation.put(RequestCodes.reqTime.toString(),
+				new SimpleDateFormat(dateTimeFormat).format(acknowledgementReqDto.getReqTime()));
+		inputValidation.put(RequestCodes.request.toString(), acknowledgementReqDto.getRequest().toString());
+		return inputValidation;
+	}
+
 }
