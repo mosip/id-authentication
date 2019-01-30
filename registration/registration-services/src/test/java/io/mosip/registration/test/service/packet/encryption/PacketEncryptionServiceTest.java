@@ -98,13 +98,14 @@ public class PacketEncryptionServiceTest {
 		packetEncryptionServiceImpl.encrypt(registrationDTO, "PacketZip".getBytes());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testUncheckedException() throws RegBaseCheckedException {
-		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenReturn("Encrypted_Data".getBytes());
+		when(aesEncryptionService.encrypt(Mockito.anyString().getBytes())).thenThrow(RuntimeException.class);
 		when(storageService.storeToDisk(Mockito.anyString(), Mockito.anyString().getBytes())).thenReturn("D:/Packet Store/27-Sep-2018/1111_Ack.jpg");
 		doNothing().when(registrationDAO).save(Mockito.anyString(), Mockito.any(RegistrationDTO.class));
 
-		packetEncryptionServiceImpl.encrypt(null, "PacketZip".getBytes());
+		packetEncryptionServiceImpl.encrypt(new RegistrationDTO(), "PacketZip".getBytes());
 	}
 	
 	@Test(expected = RegBaseCheckedException.class)
