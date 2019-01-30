@@ -21,6 +21,7 @@ import io.vertx.core.json.JsonObject;
 public class BridgeUtil {
 
 	private static JsonObject bridgeConfiguration = null;
+	private static String propertyFileName="bootstrap.properties";
 
 	private BridgeUtil() {
 
@@ -31,14 +32,20 @@ public class BridgeUtil {
 	 * locally
 	 */
 	public static void getConfiguration() {
-		String url = PropertyFileUtil.getProperty(BridgeUtil.class, "bootstrap.properties", "url");
+		String url = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "url");
+		url=url+"/"+getActiveProfile()+"/"+getCloudConfigLabel();
+		String configServerTimer = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "config.server.timer");
+		Long configServerTimerInMs=Long.parseLong(configServerTimer);
 		CompletableFuture<JsonObject> configuration = new CompletableFuture<>();
 
 		ConfigStoreOptions configStoreOptions = new ConfigStoreOptions().setType("spring-config-server")
 				.setConfig(new JsonObject().put("url", url).put("timeout", 70000));
 
-		ConfigRetriever configRetriever = ConfigRetriever.create(Vertx.vertx(),
-				new ConfigRetrieverOptions().addStore(configStoreOptions));
+		ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
+		configRetrieverOptions.setScanPeriod(configServerTimerInMs);
+		configRetrieverOptions.addStore(configStoreOptions);
+
+		ConfigRetriever configRetriever = ConfigRetriever.create(Vertx.vertx(), configRetrieverOptions);
 
 		configRetriever.getConfig(config -> {
 			if (config.succeeded()) {
@@ -71,5 +78,20 @@ public class BridgeUtil {
 			getConfiguration();
 		}
 		return BridgeUtil.bridgeConfiguration.getString(key);
+	}
+	
+	public static String getActiveProfile() {
+		String profile = System.getProperty("spring.profiles.active");
+		if(profile==null) {
+			profile = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.profiles.active");
+		}
+		return profile;
+	}
+	public static String getCloudConfigLabel() {
+		String label = System.getProperty("spring.cloud.config.label");
+		if(label==null) {
+			label = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.label");
+		}
+		return label;
 	}
 }

@@ -2,6 +2,7 @@
 package io.mosip.registration.processor.core.packet.dto;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * The Class ApplicantDocument.
@@ -143,7 +144,7 @@ public class ApplicantDocument {
 	 * @return the doc store
 	 */
 	public byte[] getDocStore() {
-		return docStore;
+		return Arrays.copyOf(docStore,docStore.length);
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class ApplicantDocument {
 	 * @param docStore the new doc store
 	 */
 	public void setDocStore(byte[] docStore) {
-		this.docStore = docStore;
+		this.docStore = docStore!=null?docStore:null;
 	}
 
 	/**

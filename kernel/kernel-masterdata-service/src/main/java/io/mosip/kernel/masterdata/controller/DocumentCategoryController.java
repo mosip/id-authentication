@@ -112,8 +112,6 @@ public class DocumentCategoryController {
 	 * 
 	 * @param code
 	 *            the document category code.
-	 * @param langCode
-	 *            the document category language code.
 	 * @return the code.
 	 */
 	@DeleteMapping("/v1.0/documentcategories/{code}")

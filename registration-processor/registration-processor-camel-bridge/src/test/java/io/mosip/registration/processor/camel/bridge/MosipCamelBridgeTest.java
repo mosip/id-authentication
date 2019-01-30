@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.mosip.registration.processor.camel.bridge.MosipBridgeFactory;
+import io.mosip.registration.processor.camel.bridge.util.PropertyFileUtil;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.vertx.core.Vertx;
@@ -27,9 +28,11 @@ public class MosipCamelBridgeTest {
 	
 	@Before
 	public void setUp(TestContext testContext) throws Exception {
+		String profile = PropertyFileUtil.getProperty(MosipCamelBridgeTest.class, "bootstrap.properties", "spring.profiles.active");
+		String label = PropertyFileUtil.getProperty(MosipCamelBridgeTest.class, "bootstrap.properties", "spring.cloud.config.label");
+		System.setProperty("spring.profiles.active", profile);
+		System.setProperty("spring.cloud.config.label", label);
 		vertx = Vertx.vertx();
-		
-		
 		dto.setRid("1001");
 		dto.setRetryCount(0);
 		dto.setIsValid(false);

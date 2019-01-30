@@ -1,4 +1,4 @@
-
+\c mosip_master sysadmin
 
 
 -- object: grant_b0ae4f0dce | type: PERMISSION --

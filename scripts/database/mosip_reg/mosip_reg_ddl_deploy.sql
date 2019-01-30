@@ -1,3 +1,5 @@
+\c mosip_reg sysadmin
+
 \ir ddl/reg-app_authentication_method.sql
 \ir ddl/reg-biometric_attribute.sql
 \ir ddl/reg-biometric_type.sql

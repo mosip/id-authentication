@@ -8,6 +8,7 @@ package io.mosip.kernel.emailnotification.constant;
  */
 public enum MailNotifierConstants {
 	MESSAGE_REQUEST_SENT("Email Request submitted"),
+	MESSAGE_SUCCESS_STATUS("success"),
 	ERROR_CODE("ERROR-CODE"),
 	LOGGER_TARGET("System.err"),
 	EMPTY_STRING(""),

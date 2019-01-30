@@ -1,16 +1,38 @@
 ## kernel-smsnotification-service
  
- 1- [Background & Design](../../design/kernel/kernel-smsnotification.md)
- 
+[Background & Design](../../docs/design/kernel/kernel-smsnotification.md)
 
- 2- [API Documentation <TBA>](TBA)
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#5-sms-notification)
+
+Default Port and Context Path
+
+```
+server.port=8084
+server.servlet.path=/smsnotifier
+
+```
+
+localhost:8084/smsnotifier/swagger-ui.html
+
+
+**Application Properties**
+
+[kernel-smsnotification-service-dev.properties](../../config/kernel-smsnotification-service-dev.properties)
+ 
  
  ```
- localhost:8084/swagger-ui.html
+mosip.kernel.sms.api=http://api.msg91.com/api/v2/sendsms
+mosip.kernel.sms.authkey=240764AwCGPlwv5bb455b0
+mosip.kernel.sms.country.code=91
+mosip.kernel.sms.sender=MOSMSG
+mosip.kernel.sms.route=4
 
+mosip.kernel.sms.number.length=10
+ 
  ```
  
- 3- Usage Sample
+ 
+**Usage Sample**
  
 Request
 
@@ -22,7 +44,7 @@ MediaType mediaType = MediaType.parse("application/json");
 RequestBody body = RequestBody.create(mediaType, "{\"message\": \"OTP-432467\",\"number\": \"98*****897\"}");
 
 Request request = new Request.Builder()
-  .url("http://104.211.214.143:8084/notifier/sms")
+  .url("http://localhost:8084/smsnotifier/sms")
   .post(body)
   .addHeader("content-type", "application/json")
   .build();

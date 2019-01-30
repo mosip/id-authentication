@@ -545,7 +545,7 @@ public class PacketInfoManagerImplTest {
 
 		Mockito.when(utility.getConfigServerFileStorageURL()).thenReturn(CONFIG_SERVER_URL);
 		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentityNew.json");
+		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
 	}
 
 	/**
@@ -655,6 +655,8 @@ public class PacketInfoManagerImplTest {
 		photographDto.setPreRegId("PEN1345T");
 		photographDto.setNoOfRetry(4);
 		photographDto.setHasExcpPhotograph(false);
+		
+		
 		DemographicInfoDto demoDto = new DemographicInfoDto();
 		List<DemographicInfoDto> demoDedupeList = new ArrayList<>();
 		demoDto.setRegId("2018782130000224092018121229");
@@ -730,7 +732,6 @@ public class PacketInfoManagerImplTest {
 		uinDto.setGenderCode("mâle");
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
-		uinDto.setPhoneticName("I165");
 		uinDto.setUin("1234567");
 		uinDto.setDob(date);
 
@@ -739,7 +740,6 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setGenderCode("الذكر");
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
-		uinDto1.setPhoneticName("A165");
 		uinDto1.setUin("1234567");
 		uinDto1.setDob(date);
 

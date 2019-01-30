@@ -8,8 +8,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -89,7 +91,8 @@ public class ManualVerificationServiceTest {
 		manualVerificationEntity.setCrBy("regprc");
 		manualVerificationEntity.setMvUsrId("test");
 		manualVerificationEntity.setIsActive(true);
-		manualVerificationEntity.setDelDtimes(null);
+		 Date date = new Date();
+		manualVerificationEntity.setDelDtimes(new Timestamp(date.getTime()));
 		manualVerificationEntity.setIsDeleted(true);
 		manualVerificationEntity.setStatusComment("test");
 		manualVerificationEntity.setStatusCode(ManualVerificationStatus.PENDING.name());
@@ -229,7 +232,7 @@ public class ManualVerificationServiceTest {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(any(), any())).thenReturn(null);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO);
 	}
-	
+
 	@Test
 	public void getApplicantPacketInfoSuccess() throws UnsupportedEncodingException, FileNotFoundException {
 		ClassLoader classLoader = getClass().getClassLoader();

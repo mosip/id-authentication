@@ -92,7 +92,8 @@ public class EmailNotificationServiceImpl
 		 * Sends the mail.
 		 */
 		emailNotificationUtils.sendMessage(message, emailSender);
-		dto.setStatus(MailNotifierConstants.MESSAGE_REQUEST_SENT.getValue());
+		dto.setStatus(MailNotifierConstants.MESSAGE_SUCCESS_STATUS.getValue());
+		dto.setMessage(MailNotifierConstants.MESSAGE_REQUEST_SENT.getValue());
 		return CompletableFuture.completedFuture(dto);
 	}
 }

@@ -1,9 +1,10 @@
 ## kernel-logger-logback
-[Background & Design](../../design/kernel/kernel-logger.md)
 
-**Api Documentation**
+[Background & Design](../../docs/design/kernel/kernel-logger.md)
 
-[API Documentation <TBA>](TBA)
+
+
+[API Documentation]
 
 ```
 mvn javadoc:javadoc

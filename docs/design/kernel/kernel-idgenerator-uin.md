@@ -11,13 +11,7 @@ The Registration processor module needs to generate a UIN and assign it to an in
 **The key solution considerations are**
 
 
-- There cannot be any duplicate numbers generated.
-
-
-- A pool of UIN should be maintained to serve the Registration processor module, so that the Registration Processor module doesn't spend much time in the UIN generation. 
-
-
-- The configurations should be caliberated for the needs of each country. For example, let's say that we expect a 50,000 user registrations per day, the already generated UIN in the pool should be 50,000
+- TODO. Changing to Vert.x implementation
 
 
 
@@ -25,7 +19,7 @@ The Registration processor module needs to generate a UIN and assign it to an in
 
 
 
-![Module Diagram](_images/kernel-idgenerator-uin.jpg)
+![Module Diagram](_images/TODO.jpg)
 
 
 
