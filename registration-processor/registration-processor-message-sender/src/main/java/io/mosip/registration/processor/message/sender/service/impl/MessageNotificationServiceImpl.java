@@ -273,7 +273,7 @@ public class MessageNotificationServiceImpl
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void setAttributes(String demographicInfo, Map<String, Object> attributes) throws IOException {
+	private void setAttributes(String demographicInfo, Map<String, Object> attributes) {
 		try {
 			// Get Identity Json from config server and map keys to Java Object
 

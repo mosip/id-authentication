@@ -1,15 +1,14 @@
 package io.mosip.registration.processor.message.sender;
 
 import org.springframework.boot.SpringApplication;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * 
+ * The Class MessageNotificationApplication.
+ *
  * @author Alok Ranjan
  * @author Shuchita
  * @author Ayush Keer
- * 
  */
 
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.message.sender",
@@ -20,12 +19,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MessageNotificationApplication {
 
 	/**
-	 * 
-	 * Main method to instantiate the spring boot application
+	 * Main method to instantiate the spring boot application.
 	 *
 	 * @param args
 	 *            the command line arguments
-	 * 
 	 */
 
 	public static void main(String[] args) {
