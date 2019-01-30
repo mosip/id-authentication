@@ -18,6 +18,7 @@ pipeline {
  agent any 
 stages {
  stage('------- Checkout --------') {
+	 steps{
   dir(branch) {
    checkout([$class: 'GitSCM',
     branches: [
@@ -42,10 +43,12 @@ stages {
     ],
    ])
   }
+	 }
 
  }
 
  stage('--------- Artifactory configuration ----------------') {
+	 steps {
   /*
   JFrog artifactory configuration
   */
@@ -54,27 +57,35 @@ stages {
   rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
   buildInfo = Artifactory.newBuildInfo()
   buildInfo.env.capture = true
+	 }
  }
 
  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
+	 steps {
   rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
- }
+	 }
+	 }
 
 stage('---------- SonarQube Analysis --------------') {
+ steps {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
+ }
 
  stage('----------- Publish build info -------------') {
+steps {
   /*
   Publishing build info to Artifcatory (JFrog)
   */
   server.publishBuildInfo buildInfo
+}
  }
 
  stage('------ Docker Images : Push & Cleanup -------') {
+	steps {
   /*
    Building Docker images of the services which have to be run inside a Docker Container and pushing the
    images to Docker Registry.
@@ -202,6 +213,7 @@ stage('---------- SonarQube Analysis --------------') {
     sh "docker rmi \$(docker images | awk '/<none>/ {print \$3}') || true"
 
   }
+	}
 
 
  }
@@ -276,6 +288,7 @@ stage('---------- SonarQube Analysis --------------') {
     */
     
     stage('Kubernetes Deploy : DEV-INT'){
+	    steps {
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
       for(int i = 0; i<updatedDockerImages.size(); i++){
@@ -287,6 +300,7 @@ stage('---------- SonarQube Analysis --------------') {
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+}
 }
 }
 
