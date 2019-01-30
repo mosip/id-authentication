@@ -19,7 +19,7 @@ The key solution considerations are
   4. Validator module to check the authenticity of the caller.
   5. Key store to store the keys.
 
-![Components Diagram](https://github.com/mosip/mosip/blob/0.8.0/docs/design/_images/kernel_keymanager_components_diagram.png)
+![Components Diagram](_images/kernel_keymanager_components_diagram.png)
 
 - The sequence of the key generations and the rotation of the keys are as follows,
   1. During the initial setup, the key rotation duration are configured.
@@ -59,3 +59,46 @@ Following is the sequence diagram of the communication between the IDA and the K
 Following is the flow chart for the step &quot;certValidityCheck()&quot;,
 
 ![Sequence Diagram](_images/kernel_keymanager_Flowchart_diagram.png)
+
+
+**2.2 Encryption and Decryption Steps (CryptoManager)**
+
+**Encryption**
+
+1. Request for data encryption along with applicationId, ReferenceId(optional) and the timestamp. ReferenceId could be multiple instance of entity within Application such as MachineId and TspID for REGISTRATION and IDA respectively. Data to be encrypted is sent as Base64 encoded.
+2. Generate session symmetric key for the request and encrypt the data using it.
+3. Use/Request for Application and ReferenceId specific public key and encrypt symmetric key using it.
+4. Combined the encrypted data and symmetric key separated by key-splitter and respond back as Base64 encoded string.
+
+**Decryption**
+
+1. Request for encrypted data decryption along with applicationId, ReferenceId(optional) and the timestamp.
+2. Decode the content from Base64 encoded string and split the data and symmetric key.
+3. Pass the symmetric key along with ApplicationId,ReferenceId and Timestamp to KeyManager service to decrypt.
+4. Use the decrypted symmetric key to decrypt data and respond back. 
+
+
+
+**2.3 Asymmetric key storage and validation (KeyManager)**
+
+**Get Public Key**
+
+1. Request for public key for the specific ApplicationId, ReferenceId(optional) and the timestamp. ReferenceId could be multiple instance of entity within Application such as MachineId and TspID for REGISTRATION and IDA respectively.If ReferenceId is not present fetch the public key from SoftHsm for ApplicationId else fetch it from KeyStore DB.
+
+2. If ReferenceId is not present, Fetch the key-alias for the ApplicationId at given timestamp from KeyAlias DB. Fetch the public key from SoftHSM for the key-alias and respond back.If there is no key-alias for ApplicationId and Timestamp then generate a new KeyPair based on expiry and overlapping policy and store in SoftHSM.
+ 
+3. If If ReferenceId is present, Fetch the key for the ApplicationId/ReferenceId at given timestamp from KeyStore DB and respond back with public key. If there is no key present for given ReferenceId and Timestamp then generate a new KeyPair based on expiry and overlapping policy and encrypt the private key using ApplicationId's public key (using master key-alias) and store in KeyStore and KeyAlias DB.
+
+
+**Decrypt Symmetric Key**
+
+1. Request for encrypted data decryption along with specific ApplicationId, ReferenceId(optional) and the timestamp. ReferenceId could be multiple instance of entity within Application such as MachineId and TspID for REGISTRATION and IDA respectively. If ReferenceId is not present decrypt the data using ApplicationId's private key else use ReferenceId's Private key for decryption.
+
+2. If ReferenceId is not present,Fetch the Private key of ApplicationId from SoftHSM and decrypt the data.
+
+3. If ReferenceId is present, Fetch the key for the ApplicationId/ReferenceId at given timestamp from KeyStore DB and decrypt the ReferenceId's private key with ApplicationId's private key (using master key-alias). Use decrypted ReferenceId's private key to decrypt the data.
+
+
+**ERD**
+
+![Module Diagram](_images/kernel-keymanager-erd.png)

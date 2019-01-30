@@ -1,6 +1,6 @@
 ## kernel-keymanager-softhsm
 
-[Background & Design](../../docs/design/kernel/keymanager-softhsm.md)
+[Background & Design](../../docs/design/kernel/kernel-keymanager-softhsm.md)
 
 [Api Documentation]
 
