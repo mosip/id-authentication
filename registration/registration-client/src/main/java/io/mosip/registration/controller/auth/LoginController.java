@@ -53,6 +53,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.AuthenticationService;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.UserOnboardService;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.event.ActionEvent;
@@ -170,7 +171,7 @@ public class LoginController extends BaseController implements Initializable {
 	private FaceFacade faceFacade;
 
 	private boolean isNewUser = false;
-	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		otpValidity.setText("Valid for " + otpValidityImMins + " minutes");
@@ -187,37 +188,44 @@ public class LoginController extends BaseController implements Initializable {
 	 */
 	public void loadInitialScreen(Stage primaryStage) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Retrieve Login mode");
+		ResponseDTO responseDTO = getSyncConfigData();
 
-		fXComponents.setStage(primaryStage);
+		if (responseDTO.getErrorResponseDTOs() != null) {
+			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+			generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
+		} else {
 
-		try {
+			LOGGER.info(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+					APPLICATION_ID, "Retrieve Login mode");
 
-			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
+			fXComponents.setStage(primaryStage);
 
-			scene = getScene(loginRoot);
-			getGlobalParams();
+			try {
 
-			primaryStage.setMaximized(true);
-			primaryStage.setResizable(false);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+				BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
-		} catch (IOException ioException) {
+				scene = getScene(loginRoot);
+				getGlobalParams();
 
-			LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
+				primaryStage.setMaximized(true);
+				primaryStage.setResizable(false);
+				primaryStage.setScene(scene);
+				primaryStage.show();
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
-		} catch (RuntimeException runtimeException) {
+			} catch (IOException ioException) {
 
-			LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
-					APPLICATION_ID, runtimeException.getMessage());
+				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+						APPLICATION_ID, ioException.getMessage());
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+			} catch (RuntimeException runtimeException) {
+
+				LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+						APPLICATION_ID, runtimeException.getMessage());
+
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+			}
 		}
-
 	}
 
 	/**
@@ -284,14 +292,14 @@ public class LoginController extends BaseController implements Initializable {
 								if (getCenterMachineStatus(userDetail)) {
 									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
 											isNewUser);
-									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE,
-											false);
+									SessionContext.getInstance().getMapObject()
+											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 									loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
 								} else {
 									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
 											true);
-									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE,
-											false);
+									SessionContext.getInstance().getMapObject()
+											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 									Set<String> roleSet = new HashSet<>();
 									roleSet.add("*");
 									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
@@ -431,12 +439,13 @@ public class LoginController extends BaseController implements Initializable {
 
 			boolean otpLoginStatus = false;
 
-			ResponseDTO responseDTO=otpGenerator.validateOTP(userId.getText(), otp.getText());
-			if (responseDTO.getSuccessResponseDTO()!=null) {
+			ResponseDTO responseDTO = otpGenerator.validateOTP(userId.getText(), otp.getText());
+			if (responseDTO.getSuccessResponseDTO() != null) {
 				otpLoginStatus = validateInvalidLogin(userDetail, "");
 			} else {
-//				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-//				generateAlert(errorResponseDTO.getMessage());
+				// ErrorResponseDTO errorResponseDTO =
+				// responseDTO.getErrorResponseDTOs().get(0);
+				// generateAlert(errorResponseDTO.getMessage());
 				otpLoginStatus = validateInvalidLogin(userDetail, RegistrationUIConstants.OTP_VALIDATION_ERROR_MESSAGE);
 			}
 
