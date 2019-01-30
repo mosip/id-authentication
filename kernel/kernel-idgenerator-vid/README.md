@@ -1,6 +1,6 @@
 ## kernel-idgenerator-vid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-vid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-vid.md)
 
 [API Documentation](doc/index.html)
 
