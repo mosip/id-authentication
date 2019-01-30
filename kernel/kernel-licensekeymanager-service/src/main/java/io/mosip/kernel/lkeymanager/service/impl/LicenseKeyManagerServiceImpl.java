@@ -66,6 +66,7 @@ public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
 	 */
 	@Override
 	public String generateLicenseKey(LicenseKeyGenerationDto licenseKeyGenerationDto) {
+		licenseKeyManagerUtil.hasNullOrEmptyParameters(licenseKeyGenerationDto.getTspId());
 		LicenseKey licenseKeyEntity = new LicenseKey();
 		licenseKeyEntity.setTspId(licenseKeyGenerationDto.getTspId());
 		licenseKeyEntity.setLKey(licenseKeyManagerUtil.generateLicense());
@@ -84,6 +85,8 @@ public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
 	 */
 	@Override
 	public String mapLicenseKey(LicenseKeyMappingDto licenseKeyMappingDto) {
+		licenseKeyManagerUtil.hasNullOrEmptyParameters(licenseKeyMappingDto.getPermissions(),
+				licenseKeyMappingDto.getLKey(), licenseKeyMappingDto.getTspId());
 		LicenseKeyPermissions licenseKeyPermissionsEntity = new LicenseKeyPermissions();
 		licenseKeyMappingDto.getPermissions().forEach(permission -> {
 			licenseKeyPermissionsEntity.setLKey(licenseKeyMappingDto.getLKey());
@@ -103,6 +106,7 @@ public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
 	 */
 	@Override
 	public List<String> fetchLicenseKeyPermissions(String tspId, String licenseKey) {
+		licenseKeyManagerUtil.hasNullOrEmptyParameters(tspId, licenseKey);
 		List<String> permissionsList = new ArrayList<>();
 		LicenseKey licenseKeyDetails = licenseKeyRepository.findByTspIdAndLKey(tspId, licenseKey);
 		if (licenseKeyDetails != null && (licenseKeyDetails.getCreatedAt().until(LocalDateTime.now(ZoneId.of("UTC")),
