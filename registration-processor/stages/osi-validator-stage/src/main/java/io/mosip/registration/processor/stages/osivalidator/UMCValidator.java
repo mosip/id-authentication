@@ -14,11 +14,15 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.google.gson.Gson;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.JsonConstant;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -29,6 +33,7 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.DeviceHi
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.ErrorDTO;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.MachineHistoryResponseDto;
+import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistartionCenterTimestampResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDeviceHistoryResponseDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterDto;
@@ -48,9 +53,13 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
  * The Class UMCValidator.
  * 
  * @author Jyothi
+ * @author Ranjitha Siddegowda
  */
 @Service
 public class UMCValidator {
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(UMCValidator.class);
 
 	/** The packet info manager. */
 	@Autowired
@@ -378,7 +387,7 @@ public class UMCValidator {
 	 * @throws JsonParseException
 	 */
 	private Identity getIdentity(String registrationId)
-			throws IOException, JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException {
+			throws IOException {
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("packet_meta_info.json").getFile());
@@ -572,5 +581,55 @@ public class UMCValidator {
 		}
 
 		return isDeviceActive;
+	}
+	
+	/**
+	 * Checks if is valid center id timestamp.
+	 *
+	 * @param centerId
+	 *            the center id
+	 * @param timestamp
+	 *            the timestamp
+	 * @return true, if is valid center id timestamp
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws UMCValidationException
+	 * @throws JSONException
+	 */
+	boolean validateCenterIdAndTimestamp(String regId, String centerId, String timestamp)
+			throws ApisResourceAccessException {
+		boolean isValid = false;
+		try {
+			List<String> pathsegments = new ArrayList<>();
+			pathsegments.add(centerId);
+			pathsegments.add(timestamp);
+			RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
+					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "", RegistartionCenterTimestampResponseDto.class);
+
+			if (result.getStatus().equals("Accepted")) {
+				isValid = true;
+			} else {
+				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " " + regId
+						+ StatusMessage.TIMESTAMP_VALIDATION2 + " " + centerId);
+			}
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, "" + e.getMessage() + ExceptionUtils.getStackTrace(e));
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+
+				String result = httpClientException.getResponseBodyAsString();
+				Gson gson = new Gson();
+				RegistartionCenterTimestampResponseDto responseDto = gson.fromJson(result,
+						RegistartionCenterTimestampResponseDto.class);
+				if (responseDto.getErrors().get(0).getErrorCode().equals("KER-MSD-033")) {
+					this.registrationStatusDto.setStatusComment(responseDto.getErrors().get(0).getErrorMessage());
+				} else {
+					this.registrationStatusDto.setStatusComment(StatusMessage.THE_CENTER_ID + " " + centerId
+							+ StatusMessage.CENTER_NOT_FOUND + " " + regId);
+				}
+			}
+		}
+		return isValid;
 	}
 }

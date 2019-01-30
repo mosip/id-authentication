@@ -93,6 +93,17 @@ public class StatusMessage {
 	/** The Constant CENTER_ID. */
 	public static final String CENTER_ID = "and Center ID ";
 
+	/** The Constant THE_CENTER_ID. */
+	public static final String THE_CENTER_ID = "The Center ID";
+	
+	/** The Constant CENTER_NOT_FOUND. */
+	public static final String CENTER_NOT_FOUND = " was not available for Registration ID";
+	
+	/** The Constant TIMESTAMP_VALIDATION1. */
+	public static final String TIMESTAMP_VALIDATION1 = "The Packet with Registration ID";
+	
+	/** The Constant TIMESTAMP_VALIDATION2. */
+	public static final String TIMESTAMP_VALIDATION2 = " was not created in Working Hours of the Center with Center ID";
 
 
 }
