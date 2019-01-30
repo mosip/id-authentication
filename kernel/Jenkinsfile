@@ -16,6 +16,7 @@
  k8DevContext = 'dev-k8-cluster'
 pipeline {
  agent any 
+stages {
  stage('------- Checkout --------') {
   dir(branch) {
    checkout([$class: 'GitSCM',
@@ -286,6 +287,7 @@ stage('---------- SonarQube Analysis --------------') {
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+}
 }
 
 /*This function will return paths all the Submodules which have been changed and 
