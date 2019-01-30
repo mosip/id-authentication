@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
@@ -46,8 +47,7 @@ public class PacketUploaderConfig {
 			String loc = env.getProperty("spring.cloud.config.uri") + "/registration-processor/"
 					+ env.getProperty("spring.profiles.active") + "/" + env.getProperty("spring.cloud.config.label")
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
-			System.out.println(loc);
-			appResources[i] = resolver.getResources(loc)[0];
+			appResources[i] = resolver.getResources(loc)[0];			
 			((AbstractEnvironment) env).getPropertySources()
             .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
