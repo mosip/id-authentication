@@ -52,7 +52,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintMatcher matcher = new FingerprintMatcher();
 			score = matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException illegalArgumentException) {
-			LOGGER.debug("REGISTRATION - FINGERPRINTPROVIDER - SCORECALCULATOR", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - FINGERPRINTPROVIDER - SCORECALCULATOR", APPLICATION_NAME, APPLICATION_ID,
 					"Calculating Finger print score for ISO Template");
 		}
 		return score;
@@ -77,7 +77,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintMatcher matcher = new FingerprintMatcher();
 			score = matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException | JsonSyntaxException exception) {
-			LOGGER.debug("REGISTRATION - FINGERPRINTPROVIDER - SCORECALCULATOR", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - FINGERPRINTPROVIDER - SCORECALCULATOR", APPLICATION_NAME, APPLICATION_ID,
 					"Calculating Finger print score for Minutia");
 		}
 		return score;

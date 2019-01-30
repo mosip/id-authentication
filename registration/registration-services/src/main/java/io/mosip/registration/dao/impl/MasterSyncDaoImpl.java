@@ -217,7 +217,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 		SyncControl syncControlResonse = null;
 
-		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 				"DAO findByID method started");
 
 		try {
@@ -229,7 +229,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					runtimeException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 				"DAO findByID method ended");
 
 		return syncControlResonse;
@@ -245,7 +245,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 	@Override
 	public String save(MasterDataResponseDto masterSyncDto) {
 
-		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 				"Entering into Insert Master Sync Data..");
 
 		List<MachineDto> masterMachineDto = masterSyncDto.getMachineDetails();
@@ -379,7 +379,7 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					runtimeException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 				"Leaving Insert Master Sync Data..");
 
 		return sucessResponse;

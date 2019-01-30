@@ -69,7 +69,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	 */
 	@Override
 	public byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException {
-		LOGGER.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encryption had been started");
+		LOGGER.info(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Packet encryption had been started");
 
 		try {
 			// Enable AES 256 bit encryption
@@ -81,13 +81,13 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 			// Encrypt the Data using AES
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
 
-			LOGGER.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"In-Memory zip file encrypted using AES Algorithm successfully");
 
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = rsaEncryptionService.encrypt(symmetricKey.getEncoded());
 
-			LOGGER.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"AES Session Key encrypted using RSA Algorithm successfully");
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data

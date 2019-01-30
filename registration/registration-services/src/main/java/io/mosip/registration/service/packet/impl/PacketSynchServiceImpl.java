@@ -65,7 +65,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Override
 	public List<Registration> fetchPacketsToBeSynched() {
-		LOGGER.debug("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
 		return syncRegistrationDAO.getPacketsToBeSynched(RegistrationConstants.PACKET_STATUS);
 	}
@@ -81,7 +81,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	@Override
 	public Object syncPacketsToServer(List<SyncRegistrationDTO> syncDtoList)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Sync the packets to the server");
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		RestTemplate restTemplate = new RestTemplate();
@@ -125,7 +125,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Override
 	public Boolean updateSyncStatus(List<Registration> synchedPackets) {
-		LOGGER.debug("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the status of the synched packets to the database");
 		for (Registration syncPacket : synchedPackets) {
 			syncRegistrationDAO.updatePacketSyncStatus(syncPacket);

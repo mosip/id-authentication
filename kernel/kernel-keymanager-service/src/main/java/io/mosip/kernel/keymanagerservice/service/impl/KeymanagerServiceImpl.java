@@ -106,7 +106,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	KeymanagerUtil keymanagerUtil;
 
 	/*
-	 * (non-Javadoc)
+	 * Get publi
 	 * 
 	 * @see
 	 * io.mosip.kernel.keymanager.service.KeymanagerService#getPublicKey(java.lang.
@@ -142,7 +142,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * Function to get Public key from HSM
+	 * Function to get Public key from HSM. On first request for an applicationId
+	 * and duration, will create a new keypair.
 	 * 
 	 * @param applicationId
 	 *            applicationId
@@ -190,7 +191,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * Function to get public key from DB store
+	 * Function to get public key from DB store. On first request for an
+	 * applicationId, referenceId and duration, will create a new keypair.
 	 * 
 	 * @param applicationId
 	 *            applicationId
@@ -247,6 +249,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			byte[] encryptedPrivateKey;
 			alias = UUID.randomUUID().toString();
 			KeyPair keypair = keyGenerator.getAsymmetricKey();
+			/**
+			 * Will get application's master key information from HSM. On first request for
+			 * an applicationId and duration, will create a new keypair.
+			 */
 			PublicKeyResponse<PublicKey> hsmPublicKey = getPublicKeyFromHSM(applicationId, timeStamp);
 			PublicKey masterPublicKey = hsmPublicKey.getPublicKey();
 			String masterAlias = hsmPublicKey.getAlias();
@@ -254,6 +260,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 			generationDateTime = timeStamp;
 			expiryDateTime = getExpiryPolicy(applicationId, generationDateTime,
 					keyAliasMap.get(KeymanagerConstant.KEYALIAS));
+			/**
+			 * Before storing a keypair in db, will first encrypt its private key with
+			 * application's master public key from softhsm's keystore
+			 */
 			try {
 				encryptedPrivateKey = keymanagerUtil.encryptKey(keypair.getPrivate(), masterPublicKey);
 			} catch (InvalidDataException | InvalidKeyException | NullDataException | NullKeyException
@@ -270,7 +280,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * Function to get key alias
+	 * Function to get keyalias from keyalias table
 	 * 
 	 * @param applicationId
 	 *            applicationId
@@ -278,7 +288,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 *            referenceId
 	 * @param timeStamp
 	 *            timeStamp
-	 * @return keyalias
+	 * @return a map containing a list of all keyalias matching applicationId and
+	 *         referenceId with key "keyAlias"; and a list of all keyalias with
+	 *         matching timestamp with key "currentKeyAlias"
 	 */
 	private Map<String, List<KeyAlias>> getKeyAliases(String applicationId, String referenceId,
 			LocalDateTime timeStamp) {
@@ -301,7 +313,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * Function to get Expiry policy
+	 * Function to get expiry datetime using keypolicy table. If a overlapping key
+	 * exists for same time interval, then expiry datetime of current key will be
+	 * till generation datetime of overlapping key
 	 * 
 	 * @param applicationId
 	 *            applicationId
@@ -386,7 +400,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * Function to get Private Key
+	 * Function to get Private Key which will be used to decrypt symmetric key.
 	 * 
 	 * @param referenceId
 	 *            referenceId
@@ -416,6 +430,10 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 						KeymanagerErrorConstant.NO_UNIQUE_ALIAS.getErrorMessage());
 			}
 			PrivateKey masterPrivateKey = keyStore.getPrivateKey(dbKeyStore.get().getMasterAlias());
+			/**
+			 * If the private key is in dbstore, then it will be first decrypted with
+			 * application's master private key from softhsm's keystore
+			 */
 			try {
 				byte[] decryptedPrivateKey = keymanagerUtil.decryptKey(dbKeyStore.get().getPrivateKey(),
 						masterPrivateKey);
@@ -430,7 +448,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	}
 
 	/**
-	 * Function to store key in alias
+	 * Function to store key in keyalias table
 	 * 
 	 * @param applicationId
 	 *            applicationId

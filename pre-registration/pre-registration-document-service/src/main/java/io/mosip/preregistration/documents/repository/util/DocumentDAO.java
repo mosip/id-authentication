@@ -73,9 +73,6 @@ public class DocumentDAO {
 		DocumentEntity entity= new DocumentEntity();
 		try {
 			entity=documentRepository.findSingleDocument(preId,catCode);
-			if(entity==null) {
-				throw new DocumentNotFoundException(DocumentStatusMessages.DOCUMENT_IS_MISSING.toString());
-			}
 		}catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findSingleDocument method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),

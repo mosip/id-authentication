@@ -87,7 +87,7 @@ public class VirtualKeyboard {
 	}
 
 	private VirtualKeyboard(ReadOnlyObjectProperty<Node> target) {
-		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening virtual keyboard");
 
 		this.root = new VBox(5);

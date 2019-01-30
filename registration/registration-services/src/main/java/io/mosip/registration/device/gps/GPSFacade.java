@@ -65,7 +65,7 @@ public class GPSFacade extends GPSBU343Connector {
 	 */
 	public Map<String, Object> getLatLongDtls(double centerLat, double centerLngt, String gpsConnectionDevice) {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Entering GPS fetch details methos");
 
 		if (System.getProperty("os.name").equals("Linux")) {
@@ -83,7 +83,7 @@ public class GPSFacade extends GPSBU343Connector {
 					? gpsConnector.getComPortGPSData(serialPortConnected, portThreadTime)
 					: RegistrationConstants.GPS_CAPTURE_FAILURE;
 
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 					"GPS SIGNAL ============>" + gpsRawData);
 
 			if (RegistrationConstants.GPS_CAPTURE_FAILURE.equals(gpsRawData)
@@ -143,7 +143,7 @@ public class GPSFacade extends GPSBU343Connector {
 
 			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, exception.getMessage());
 
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.toString());
 		}
 
@@ -173,7 +173,7 @@ public class GPSFacade extends GPSBU343Connector {
 	 */
 	private double actualDistance(BigDecimal fromlat, BigDecimal fromlng, double centerLat, double centerLngt) {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Calculation of distance between the geo location of machine and registration center started");
 
 		double earthRadius = RegistrationConstants.OPT_TO_REG_EARTH_RADIUS;
@@ -187,7 +187,7 @@ public class GPSFacade extends GPSBU343Connector {
 
 		double rounding = earthRadius * radius * RegistrationConstants.OPT_TO_REG_METER_CONVERSN / 1000;
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Calculation of distance between the geo location of machine and registration center started");
 
 		return Math.round(rounding * 10000.0) / 10000.0;
@@ -203,7 +203,7 @@ public class GPSFacade extends GPSBU343Connector {
 	 */
 	private GPSPosition getGPRMCLatLong(String[] gpsData) throws RegBaseCheckedException {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Entering into GRPMC method");
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Entering into GRPMC method");
 
 		GPSPosition geoLocation = null;
 
