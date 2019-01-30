@@ -210,3 +210,7 @@ softhsm2-util.exe --show-slots
 ### Linux
 
 1. Follow installation steps from https://github.com/opendnssec/SoftHSMv2#installation
+
+### Docker
+
+`TODO`
