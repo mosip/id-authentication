@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.preregistration.acknowledgement.dto.AcknowledgementDTO;
 import io.mosip.preregistration.acknowledgement.service.AcknowledgementService;
+import io.mosip.preregistration.core.common.dto.AcknowledgementDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
 import io.swagger.annotations.ApiOperation;
 
