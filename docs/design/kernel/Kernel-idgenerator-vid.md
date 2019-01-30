@@ -17,11 +17,20 @@ An alternate id needs to be generated for UIN to be used for authentication.
 
 
 
-![Module Diagram](_images/Kernel-idgenerator-vid.jpg)
+![Module Diagram](_images/kernel-idgenerator-vid.jpg)
 
+
+
+**Class diagram**
+
+
+
+![Class Diagram](_images/kernel-idgenerator-cd.png)
 
 
 ## Implementation
 
 
 **kernel-idgenerator-vid** [README](../../../kernel/kernel-idgenerator-vid/README.md)
+
+
