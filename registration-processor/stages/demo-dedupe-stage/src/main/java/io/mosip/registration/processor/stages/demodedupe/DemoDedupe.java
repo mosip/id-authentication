@@ -97,7 +97,7 @@ public class DemoDedupe {
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
-			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getPhoneticName(),
+			demographicInfoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(),
 					demoDto.getGenderCode(), demoDto.getDob(), demoDto.getLangCode()));
 		}
 		return demographicInfoDtos;

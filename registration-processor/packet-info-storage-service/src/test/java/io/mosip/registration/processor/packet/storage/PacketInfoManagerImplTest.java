@@ -732,7 +732,6 @@ public class PacketInfoManagerImplTest {
 		uinDto.setGenderCode("mâle");
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
-		uinDto.setPhoneticName("I165");
 		uinDto.setUin("1234567");
 		uinDto.setDob(date);
 
@@ -741,7 +740,6 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setGenderCode("الذكر");
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
-		uinDto1.setPhoneticName("A165");
 		uinDto1.setUin("1234567");
 		uinDto1.setDob(date);
 
