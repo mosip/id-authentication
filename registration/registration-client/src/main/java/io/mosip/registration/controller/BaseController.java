@@ -278,6 +278,15 @@ public class BaseController {
 	protected void getGlobalParams() {
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
+	
+	/**
+	 * Get the details form Global Param Map is the values existed or not
+	 * 
+	 * @return Response DTO 
+	 */
+	protected ResponseDTO getSyncConfigData() {
+		return globalParamService.synchConfigData();
+	}
 
 	/**
 	 * 
