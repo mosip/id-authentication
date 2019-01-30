@@ -38,22 +38,22 @@ public class KeymanagerExceptionHandler {
 
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> nullDataException(final NullDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidKeyException(final InvalidKeyException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoSuchAlgorithmException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> noSuchAlgorithmException(final NoSuchAlgorithmException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidFormatException.class)
@@ -61,35 +61,35 @@ public class KeymanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 				e.getMessage() + KeymanagerConstant.WHITESPACE
 						+ KeymanagerErrorConstant.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
-				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidDataException(final InvalidDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoUniqueAliasException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> noUniqueAliasException(final NoUniqueAliasException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(CryptoException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> cryptoException(final CryptoException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidApplicationIdException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidApplicationIdException(
 			final InvalidApplicationIdException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -101,9 +101,9 @@ public class KeymanagerExceptionHandler {
 			ServiceError error = new ServiceError(KeymanagerErrorConstant.INVALID_REQUEST.getErrorCode(),
 					x.getField() + KeymanagerConstant.WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			errorResponse.setStatus(HttpStatus.OK.value());
 		});
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	private ErrorResponse<ServiceError> getErrorResponse(String errorCode, String errorMessage, HttpStatus httpStatus) {

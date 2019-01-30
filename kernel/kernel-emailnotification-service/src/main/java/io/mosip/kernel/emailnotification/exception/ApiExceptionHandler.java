@@ -25,7 +25,7 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ErrorResponse<ServiceError>> mailNotifierArgumentsValidation(final InvalidArgumentsException exception) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().addAll(exception.getList());
-		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 }

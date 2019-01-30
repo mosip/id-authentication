@@ -42,22 +42,22 @@ public class CryptomanagerExceptionHandler {
 
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> nullDataException(final NullDataException e) {
-		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidKeyException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidKeyException(final InvalidKeyException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(NoSuchAlgorithmException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> noSuchAlgorithmException(final NoSuchAlgorithmException e) {
 		return new ResponseEntity<>(
-				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+				getErrorResponse(e.getErrorCode(), e.getErrorText(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -65,8 +65,8 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(
 				getErrorResponse(CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorCode(),
 						CryptomanagerErrorCode.INVALID_DATA_WITHOUT_KEY_BREAKER.getErrorMessage(),
-						HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+						HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(SocketException.class)
@@ -74,8 +74,8 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(
 				getErrorResponse(CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(),
 						CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage(),
-						HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+						HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidFormatException.class)
@@ -83,14 +83,14 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
 				e.getMessage() + CryptomanagerConstant.WHITESPACE
 						+ CryptomanagerErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage(),
-				HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidDataException.class)
 	public ResponseEntity<ErrorResponse<ServiceError>> invalidDataException(final InvalidDataException e) {
 		return new ResponseEntity<>(getErrorResponse(e.getErrorCode(),
-				e.getErrorText() + CryptomanagerErrorCode.INVALID_DATA.getErrorMessage(), HttpStatus.BAD_REQUEST),
-				HttpStatus.BAD_REQUEST);
+				e.getErrorText() + CryptomanagerErrorCode.INVALID_DATA.getErrorMessage(), HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(ConnectException.class)
@@ -98,8 +98,8 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(
 				getErrorResponse(CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorCode(),
 						CryptomanagerErrorCode.CANNOT_CONNECT_TO_KEYMANAGER_SERVICE.getErrorMessage(),
-						HttpStatus.INTERNAL_SERVER_ERROR),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+						HttpStatus.OK),
+				HttpStatus.OK);
 	}
 
 	@ExceptionHandler(HttpClientErrorException.class)
@@ -107,7 +107,7 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + CryptomanagerConstant.WHITESPACE
 						+ e.getResponseBodyAsString(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(HttpServerErrorException.class)
@@ -115,7 +115,7 @@ public class CryptomanagerExceptionHandler {
 		return new ResponseEntity<>(getErrorResponse(CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorCode(),
 				CryptomanagerErrorCode.KEYMANAGER_SERVICE_ERROR.getErrorMessage() + CryptomanagerConstant.WHITESPACE
 						+ e.getResponseBodyAsString(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -127,9 +127,9 @@ public class CryptomanagerExceptionHandler {
 			ServiceError error = new ServiceError(CryptomanagerErrorCode.INVALID_REQUEST.getErrorCode(),
 					x.getField() + CryptomanagerConstant.WHITESPACE + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			errorResponse.setStatus(HttpStatus.OK.value());
 		});
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	private ErrorResponse<ServiceError> getErrorResponse(String errorCode, String errorMessage, HttpStatus httpStatus) {

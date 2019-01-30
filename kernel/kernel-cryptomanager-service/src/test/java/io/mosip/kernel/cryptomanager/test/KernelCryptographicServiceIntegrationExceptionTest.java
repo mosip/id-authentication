@@ -69,14 +69,14 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 						MediaType.APPLICATION_JSON));
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void testMethodArgumentNotValidException() throws Exception {
 		String requestBody = "{\"applicationId\": \"\",\"data\": \"\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 				.andRespond(withBadRequest());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -96,7 +96,7 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 				.andRespond(withServerError());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -106,14 +106,14 @@ public class KernelCryptographicServiceIntegrationExceptionTest {
 				.andRespond(withServerError());
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-0\"}";
 		mockMvc.perform(post("/v1.0/encrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void testIllegalArgumentException() throws Exception {
 		String requestBody = "{\"applicationId\": \"REGISTRATION\",\"data\": \"dXJ2aWw\",\"referenceId\": \"ref123\",\"timeStamp\": \"2018-12-06T12:07:44.403Z\"}";
 		mockMvc.perform(post("/v1.0/decrypt").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isOk());
 	}
 
 }

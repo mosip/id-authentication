@@ -44,7 +44,7 @@ public class ApiExceptionHandler {
 			errorResponse.getErrors().add(error);
 		});
 
-		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 
 	}
 
@@ -58,7 +58,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(InvalidNumberException.class)
 	public ResponseEntity<ErrorResponse<Error>> smsNotificationInvalidNumber(final InvalidNumberException e) {
 
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.OK);
 
 	}
 

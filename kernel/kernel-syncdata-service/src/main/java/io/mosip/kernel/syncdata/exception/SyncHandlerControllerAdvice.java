@@ -18,12 +18,12 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 public class SyncHandlerControllerAdvice {
 	@ExceptionHandler(SyncDataServiceException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final SyncDataServiceException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(DateParsingException.class)
 	public ResponseEntity<ErrorResponse<Error>> controlDataServiceException(final DateParsingException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.OK);
 	}
 
 	private ErrorResponse<Error> getErrorResponse(BaseUncheckedException e) {
