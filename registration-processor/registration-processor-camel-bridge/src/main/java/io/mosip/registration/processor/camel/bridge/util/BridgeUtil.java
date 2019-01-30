@@ -21,6 +21,7 @@ import io.vertx.core.json.JsonObject;
 public class BridgeUtil {
 
 	private static JsonObject bridgeConfiguration = null;
+	private static String propertyFileName="bootstrap.properties";
 
 	private BridgeUtil() {
 
@@ -33,9 +34,15 @@ public class BridgeUtil {
 	public static void getConfiguration() {
 		String profile = System.getProperty("spring.profiles.active");
 		String label = System.getProperty("spring.cloud.config.label");
-		String url = PropertyFileUtil.getProperty(BridgeUtil.class, "bootstrap.properties", "url");
+		if(profile==null) {
+			profile=PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.profiles.active");
+		}
+		if(label==null) {
+			label=PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "spring.cloud.config.label");
+		}
+		String url = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "url");
 		url=url+"/"+profile+"/"+label;
-		String configServerTimer = PropertyFileUtil.getProperty(BridgeUtil.class, "bootstrap.properties", "config.server.timer");
+		String configServerTimer = PropertyFileUtil.getProperty(BridgeUtil.class, propertyFileName, "config.server.timer");
 		Long configServerTimerInMs=Long.parseLong(configServerTimer);
 		CompletableFuture<JsonObject> configuration = new CompletableFuture<>();
 
