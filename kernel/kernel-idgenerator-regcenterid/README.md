@@ -1,6 +1,6 @@
 # kernel-idgenerator-regcenterid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-regcenterid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-tspid.md)
 
 [API Documentation]
 
