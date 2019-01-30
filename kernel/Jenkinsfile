@@ -1,5 +1,5 @@
-node {
-
+pipeline {
+ agent any 
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
@@ -208,7 +208,6 @@ stage('---------- SonarQube Analysis --------------') {
  }
   
 /*
-
  // uncomment out this stage and comment out next stage 'Kubernetes Deploy : DEV-INT' if you want to run Docker containers without Kubernetes cluster
   stage('----deploy in dev----')
  {
