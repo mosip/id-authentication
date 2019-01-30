@@ -117,7 +117,10 @@ public enum IdAuthenticationErrorConstants {
 	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first."),
 	
 	//Static Pin Store
-	STATICPIN_NOT_STORED_PINVAUE("IDA-SPA-003","Could not store the static pin of the individual");
+	STATICPIN_NOT_STORED_PINVAUE("IDA-SPA-003","Could not store the static pin of the individual"),
+	
+	// for No authentication type selected
+	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");
 
 	private final String errorCode;
 	private final String errorMessage;

@@ -95,9 +95,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		AuthRequestDTO authRequestDto = (AuthRequestDTO) target;
 
 		if (authRequestDto != null) {
+			
 			validateReqTime(authRequestDto.getReqTime(), errors);
 			validateTxnId(authRequestDto.getTxnID(), errors);
-
+			if (!errors.hasErrors()) {
+				validateAuthType(authRequestDto.getAuthType(), errors);
+			}
 			if (!errors.hasErrors()) {
 				validateRequestTimedOut(authRequestDto.getReqTime(), errors);
 			}
@@ -120,6 +123,13 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+		}
+	}
+
+	private void validateAuthType(AuthTypeDTO authType, Errors errors) {
+		if(!(authType.isAddress()||authType.isBio()||authType.isFullAddress()||authType.isOtp()||authType.isPersonalIdentity() ||authType.isPin())) {
+			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST.getErrorMessage());
 		}
 	}
 
