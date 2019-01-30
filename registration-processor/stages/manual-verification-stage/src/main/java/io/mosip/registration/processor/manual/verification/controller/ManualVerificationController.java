@@ -91,7 +91,7 @@ public class ManualVerificationController {
 			@ApiResponse(code = 400, message = "Invalid file requested"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<byte[]> getApplicantDemographic(@RequestBody(required=true)PacketInfoRequestDto packetInfoRequestDto) {
-		byte[] packetInfo = manualAdjudicationService.getApplicantFile(packetInfoRequestDto.getRegId(), PacketFiles.ID.name());
+		byte[] packetInfo = manualAdjudicationService.getApplicantFile(packetInfoRequestDto.getRegId(), PacketFiles.DEMOGRAPHICINFO.name());
 		return ResponseEntity.status(HttpStatus.OK).body(packetInfo);
 	}
 
