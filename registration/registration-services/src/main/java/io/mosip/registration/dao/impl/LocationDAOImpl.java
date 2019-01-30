@@ -36,7 +36,7 @@ public class LocationDAOImpl implements LocationDAO {
 	 */
 	@Override
 	public List<Location> getLocations() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-LocationDAO", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION-PACKET_CREATION-LocationDAO", APPLICATION_NAME,
 				APPLICATION_ID, "fetching the locations");
 
 		return locationRepository.findAll();

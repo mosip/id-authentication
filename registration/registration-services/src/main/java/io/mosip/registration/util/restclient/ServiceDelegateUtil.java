@@ -71,7 +71,7 @@ public class ServiceDelegateUtil {
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Get method has been called");
 
 		Object responseBody = null;
@@ -89,7 +89,7 @@ public class ServiceDelegateUtil {
 				setURI(requestHTTPDTO,requestParams, url);
 			}
 			
-			LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 					"set uri method called");
 
 		} catch (RegBaseCheckedException baseCheckedException) {
@@ -98,7 +98,7 @@ public class ServiceDelegateUtil {
 		}
 
 		responseBody = restClientUtil.invoke(requestHTTPDTO);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Get method has been ended");
 
 		return responseBody;
@@ -125,7 +125,7 @@ public class ServiceDelegateUtil {
 	 */
 	public Object post(String serviceName, Object object)
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException, ResourceAccessException {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				" post method called");
 
 		RequestHTTPDTO requestDto;
@@ -137,7 +137,7 @@ public class ServiceDelegateUtil {
 					baseCheckedException.getMessage());
 		}
 		responseBody = restClientUtil.invoke(requestDto);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"post method ended");
 
 		return responseBody;
@@ -156,7 +156,7 @@ public class ServiceDelegateUtil {
 	 */
 	private RequestHTTPDTO prepareGETRequest(RequestHTTPDTO requestHTTPDTO,final String serviceName, final Map<String, String> requestParams)
 			throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare Get request method called");
 
 		// prepare httpDTO except rquest type and uri build
@@ -173,7 +173,7 @@ public class ServiceDelegateUtil {
 		}
 
 		requestHTTPDTO.setClazz(responseClass);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare Get request method ended");
 
 		return requestHTTPDTO;
@@ -189,7 +189,7 @@ public class ServiceDelegateUtil {
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object)
 			throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare post request method called");
 
 		// DTO need to to be prepared
@@ -201,14 +201,14 @@ public class ServiceDelegateUtil {
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegistrationConstants.SERVICE_URL);
 		setURI(requestHTTPDTO,null, url);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"get uri method called");
 
 		// RequestType
 		String requestClassName = environment.getProperty(serviceName + "." + RegistrationConstants.REQUEST_TYPE);
 		Class<?> requestClass = null;
 		requestHTTPDTO.setClazz(Object.class);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME, APPLICATION_ID,
 				"Prepare post request method ended");
 
 		return requestHTTPDTO;
@@ -292,7 +292,7 @@ public class ServiceDelegateUtil {
 	 * @return
 	 */
 	private RequestHTTPDTO prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object object) {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
 				" prepare request method  called");
 
 		// HTTP headers
@@ -305,7 +305,7 @@ public class ServiceDelegateUtil {
 
 		String headers = environment.getProperty(serviceName + "." + RegistrationConstants.HEADERS);
 		setHeaders(httpHeaders, headers);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
 				" set Headers method called");
 
 		// AuthHeader
@@ -316,7 +316,7 @@ public class ServiceDelegateUtil {
 				.valueOf(environment.getProperty(serviceName + "." + RegistrationConstants.AUTH_REQUIRED));
 
 		setAuthHeaders(httpHeaders, authRequired, authHeader, null);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
 				" set Auth Headers  method  called");
 
 		// HTTP entity
@@ -328,7 +328,7 @@ public class ServiceDelegateUtil {
 		// set timeout
 		setTimeout(requestHTTPDTO);
 
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME, APPLICATION_ID,
 				" prepare request method  called");
 
 		return requestHTTPDTO;

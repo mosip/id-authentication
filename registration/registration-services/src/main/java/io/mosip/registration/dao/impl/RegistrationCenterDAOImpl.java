@@ -42,7 +42,7 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 	 */
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
 
-		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
 				APPLICATION_ID, "Fetching Registration Center details");
 
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
@@ -66,7 +66,7 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 			registrationCenterDetailDTO.setRegistrationCenterHolidayLocCode(registrationCenter.get().getHolidayLocCode());
 		}
 
-		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
 				APPLICATION_ID, "Registration Center details fetched successfulyy");
 
 		return registrationCenterDetailDTO;

@@ -1,6 +1,7 @@
 package io.mosip.kernel.auditmanager.logger;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.appender.FileAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 
@@ -13,7 +14,15 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
  */
 public final class AuditManagerLogger {
 
+	/**
+	 * Field for file appender
+	 */
 	private static FileAppender auditManagerFileAppender;
+
+	/**
+	 * Field for console appender
+	 */
+	private static ConsoleAppender auditManagerConsoleAppender;
 
 	static {
 		auditManagerFileAppender = new FileAppender();
@@ -22,6 +31,9 @@ public final class AuditManagerLogger {
 		auditManagerFileAppender.setFileName("logs/audit.log");
 		auditManagerFileAppender.setImmediateFlush(true);
 		auditManagerFileAppender.setPrudent(false);
+		auditManagerConsoleAppender = new ConsoleAppender();
+		auditManagerConsoleAppender.setAppenderName("fileappender");
+		auditManagerConsoleAppender.setImmediateFlush(true);
 	}
 
 	/**
@@ -37,7 +49,18 @@ public final class AuditManagerLogger {
 	 *            the clazz
 	 * @return the logger
 	 */
-	public static Logger getLogger(Class<?> clazz) {
+	public static Logger getFileLogger(Class<?> clazz) {
 		return Logfactory.getDefaultFileLogger(auditManagerFileAppender, clazz);
+	}
+
+	/**
+	 * Method to get the console logger for the class provided.
+	 *
+	 * @param clazz
+	 *            the clazz
+	 * @return the logger
+	 */
+	public static Logger getConsoleLogger(Class<?> clazz) {
+		return Logfactory.getDefaultConsoleLogger(auditManagerConsoleAppender, clazz);
 	}
 }

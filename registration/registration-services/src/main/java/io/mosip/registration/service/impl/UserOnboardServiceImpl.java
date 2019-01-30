@@ -91,11 +91,11 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		ResponseDTO responseDTO = null;
 		String onBoardingResponse = RegistrationConstants.EMPTY;
 
-		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering save method");
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering save method");
 
 		try {
 
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering insert method");
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering insert method");
 
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
@@ -110,7 +110,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 
 			}
 
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");
 
 		} catch (RegBaseUncheckedException uncheckedException) {
 
@@ -147,7 +147,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 		String stationId = RegistrationConstants.EMPTY;
 		String centerId = RegistrationConstants.EMPTY;
 
-		LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac Id....");
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac Id....");
 		
 		try {
 
@@ -164,7 +164,7 @@ public class UserOnboardServiceImpl implements UserOnboardService {
 			mapOfCenterId.put(RegistrationConstants.USER_STATION_ID, stationId);
 			mapOfCenterId.put(RegistrationConstants.USER_CENTER_ID, centerId);
 
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					"station Id = " + stationId + "---->" + "center Id = " + centerId);
 
 		} catch (RegBaseCheckedException regBaseCheckedException) {

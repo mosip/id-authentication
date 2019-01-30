@@ -63,10 +63,10 @@ public class RegPacketStatusController extends BaseController implements Initial
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		packetSyncStatus();
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Registration Packet status sync has been done");
 	}
 

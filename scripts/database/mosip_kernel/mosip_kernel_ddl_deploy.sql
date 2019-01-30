@@ -1,3 +1,5 @@
+\c mosip_kernel sysadmin
+
 \ir ddl/kernel-key_alias.sql
 \ir ddl/kernel-key_policy_def.sql
 \ir ddl/kernel-key_policy_def_h.sql

@@ -91,7 +91,7 @@ public class HeaderController extends BaseController {
 	 */
 	public void initialize() {
 
-		LOGGER.debug("REGISTRATION - OFFICER_DETAILS - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - OFFICER_DETAILS - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Displaying Registration Officer details");
 
 		SessionContext sessionContext = SessionContext.getInstance();
@@ -125,7 +125,7 @@ public class HeaderController extends BaseController {
 	public void logout(ActionEvent event) {
 		try {
 
-			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Clearing Session context");
 
 			/** Stop Sync-Data Process */
@@ -152,7 +152,7 @@ public class HeaderController extends BaseController {
 	public void redirectHome(ActionEvent event) {
 		try {
 
-			LOGGER.debug("REGISTRATION - REDIRECT_HOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - REDIRECT_HOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Redirecting to Home page");
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
@@ -246,7 +246,7 @@ public class HeaderController extends BaseController {
 	 * @param actionEvent is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
-		LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 				"Navigating to Device Onboarding Page");
 
 		try {
@@ -269,7 +269,7 @@ public class HeaderController extends BaseController {
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");
 		}
 	}

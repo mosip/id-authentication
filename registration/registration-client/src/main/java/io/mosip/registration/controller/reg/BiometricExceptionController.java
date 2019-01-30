@@ -127,7 +127,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	private void fingerExceptionListener(Label fingerLabel) {
 
-		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the finger click funtionality");
 
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
@@ -176,7 +176,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			toggleFunctionForFinger.set(!toggleFunctionForFinger.get());
 		});
 
-		LOGGER.debug("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of Functionality");
 
 	}
@@ -188,7 +188,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	private void irisExceptionListener(ImageView irisImage) {
 
-		LOGGER.debug("REGISTRATION - IRIS_EXCEPTION_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - IRIS_EXCEPTION_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "It will listen the iris on click functionality");
 
 		SimpleBooleanProperty toggleFunctionForIris = new SimpleBooleanProperty(false);
@@ -211,7 +211,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			toggleFunctionForIris.set(!toggleFunctionForIris.get());
 		});
 
-		LOGGER.debug("REGISTRATION - IRIS_EXCEPTION_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - IRIS_EXCEPTION_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of Iris Functionality");
 
 	}
@@ -221,7 +221,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	public void goToNextPage() {
 
-		LOGGER.debug("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - NEXT_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
 				"Going to next page");
 
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
@@ -267,7 +267,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	private void exceptionDTOCreation() {
 
-		LOGGER.debug("REGISTRATION - EXCEPTION_DTO_CREATION - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - EXCEPTION_DTO_CREATION - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the exception dto in session context");
 		List<String> bioList = new ArrayList<>();
 		bioList.addAll(fingerList);
@@ -298,7 +298,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 		}
 
-		LOGGER.debug("REGISTRATION - EXCEPTION_DTO_CREATION_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - EXCEPTION_DTO_CREATION_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
 				APPLICATION_ID, "End of exception dto creation functionality");
 
 	}
@@ -309,7 +309,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	 */
 	public void goToPreviousPage() {
 
-		LOGGER.debug("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
 				"It will go to the previous page");
 
 		exceptionDTOCreation();

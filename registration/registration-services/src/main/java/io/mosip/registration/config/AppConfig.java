@@ -63,12 +63,13 @@ public class AppConfig {
 
 	static {
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
+		MOSIP_ROLLING_APPENDER.setAppend(true);
 		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
 		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
 		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
 		MOSIP_ROLLING_APPENDER.setMaxFileSize(resourceBundle.getString("log4j.appender.Appender.maxFileSize"));
 		MOSIP_ROLLING_APPENDER.setTotalCap(resourceBundle.getString("log4j.appender.Appender.totalCap"));
-		MOSIP_ROLLING_APPENDER.setMaxHistory(10);
+		MOSIP_ROLLING_APPENDER.setMaxHistory(Integer.valueOf(resourceBundle.getString("log4j.appender.Appender.maxBackupIndex")));
 		MOSIP_ROLLING_APPENDER.setImmediateFlush(true);
 		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}

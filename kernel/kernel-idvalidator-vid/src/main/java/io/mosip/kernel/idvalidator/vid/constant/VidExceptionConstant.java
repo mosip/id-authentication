@@ -7,7 +7,7 @@ public enum VidExceptionConstant {
 	VID_VAL_ILLEGAL_LENGTH("KER-IDV-003", "VID length should be 16 digit."), 
 	VID_VAL_INVALID_DIGITS("KER-IDV-004", "VID should not contain any alphanumeric characters."), 
 	VID_VAL_ILLEGAL_CHECKSUM("KER-IDV-005", "VID should match checksum."),
-	VID_VAL_INVALID_ZERO_ONE("KER-IDV-006", "VID should not contain Zero or One as first Digit.");
+	VID_VAL_INVALID_ZERO_ONE("KER-IDV-006", "VID should not contain specified not start at start index");
 	
 	
 	/**

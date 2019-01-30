@@ -43,7 +43,7 @@ public class ScreenAuthorizationDAOImpl implements ScreenAuthorizationDAO {
 	 */
 	public AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode) {
 
-		LOGGER.debug("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
+		LOGGER.info("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "Fetching List of Screens to be authorized");
 
 		AuthorizationDTO authorizationDTO = new AuthorizationDTO();
@@ -56,7 +56,7 @@ public class ScreenAuthorizationDAOImpl implements ScreenAuthorizationDAO {
 		authorizationDTO.setAuthorizationRoleCode(roleCode);
 		authorizationDTO.setAuthorizationIsPermitted(true);
 
-		LOGGER.debug("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
+		LOGGER.info("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID, "List of Screens to be authorized are fetched successfully");
 
 		return authorizationDTO;

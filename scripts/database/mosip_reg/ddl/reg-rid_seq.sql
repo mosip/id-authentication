@@ -1,17 +1,17 @@
 -- create table section --------------------------------------------------------
--- schema 		: master  	- Master Reference schema
--- table 		: rid_seq 	- Master tables to keep the current Registration ID sequence
+-- schema 		: reg  		- Registration schema
+-- table 		: rid_seq 	-Registration tables to keep the current Registration ID sequence
 -- table alias  : ridseq
 
 -- schemas section ---------------------------------------------------------------
 
--- create schema if master reference schema not exists
-create schema if not exists master
+-- create schema if registration schema not exists
+create schema if not exists reg
 ;
  
 -- table section -------------------------------------------------------------------------------
 
-	create table master.rid_seq (
+	create table reg.rid_seq (
 	
 		curr_seq_no integer NOT NULL, 
 
@@ -25,14 +25,14 @@ create schema if not exists master
 		
 
 -- keys section -------------------------------------------------------------------------------
-alter table master.rid_seq add constraint pk_ridseq_id primary key (curr_seq_no)
+alter table reg.rid_seq add constraint pk_ridseq_id primary key (curr_seq_no)
  ;
 
 -- indexes section -----------------------------------------------------------------------
--- create index idx_ridseq_<col> on master.rid_seq (col)
+-- create index idx_ridseq_<col> on reg.rid_seq (col)
 -- ;
 
 -- comments section -------------------------------------------------------------------------- 
-comment on table master.rid_seq is 'Master tables to keep the current Registration ID sequence'
+comment on table reg.rid_seq is 'reg tables to keep the current Registration ID sequence'
 ;
 

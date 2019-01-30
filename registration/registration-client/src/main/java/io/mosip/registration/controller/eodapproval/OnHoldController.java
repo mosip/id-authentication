@@ -74,12 +74,12 @@ public class OnHoldController extends BaseController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		LOGGER.info(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 
 		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
 		onHoldComboBox.setItems(FXCollections.observableArrayList(String.valueOf(applicationContext.getApplicationMap().get(RegistrationConstants.ONHOLD_COMMENTS)).split(",")));
-		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
+		LOGGER.info(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class OnHoldController extends BaseController implements Initializable {
 	 * @param event
 	 */
 	public void updatePacketStatus() {
-		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
+		LOGGER.info(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation to on hold has been started");
 
 		for (Map<String, String> registrationMap : onHoldMapList) {
@@ -119,7 +119,7 @@ public class OnHoldController extends BaseController implements Initializable {
 
 		submit.disableProperty().set(true);
 		primarystage.close();
-		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
+		LOGGER.info(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation to on hold has been ended");
 	}
 
