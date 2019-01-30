@@ -34,7 +34,7 @@ public class FileSizeExceedExceptionTest {
 	public void TestFileSizeExceedException() {
 
 		FileSizeExceedException ex = new FileSizeExceedException(
-				PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
+				PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -56,9 +56,9 @@ public class FileSizeExceedExceptionTest {
 
 		} catch (FileSizeExceedException e) {
 			assertThat("Should throw FileSizeExceed exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getCode()));
 			assertThat("Should throw FileSizeExceed exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage()));
 
 		}
 	}
