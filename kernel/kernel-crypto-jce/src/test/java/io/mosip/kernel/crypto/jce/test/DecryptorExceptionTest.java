@@ -41,7 +41,7 @@ public class DecryptorExceptionTest {
 		SecureRandom random = new SecureRandom();
 		generator.initialize(2048, random);
 		rsaPair = generator.generateKeyPair();
-		data = "abc".getBytes();
+		data = "test".getBytes();
 	}
 
 	private SecretKeySpec setSymmetricUp(int length, String algo) throws java.security.NoSuchAlgorithmException {
