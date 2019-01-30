@@ -186,3 +186,27 @@ Output: certificate
 ]
 ```
 
+
+## Setup steps:
+
+### Windows
+
+1. Download softhsm zip from https://github.com/disig/SoftHSM2-for-Windows
+2. Extract it to any location, e.g `D:\SoftHSM2`
+3. Create a conf file at `D:\SoftHSM2\etc` with below content
+```
+# Sun PKCS#11 provider configuration file for SoftHSMv2
+name = SoftHSM2
+library = D:\SoftHSM2\lib\softhsm2-x64.dll 
+slotListIndex = 0
+```
+4. Go to `D:\SoftHSM2\bin` and run below commands:
+```
+softhsm2-util.exe --init-token --slot 1 --label "My token 1"
+softhsm2-util.exe --show-slots
+```
+5. Put the conf file location in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
+
+### Linux
+
+1. Follow installation steps from https://github.com/opendnssec/SoftHSMv2#installation
