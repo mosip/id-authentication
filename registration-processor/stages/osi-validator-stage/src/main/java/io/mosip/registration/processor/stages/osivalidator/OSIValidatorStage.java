@@ -76,6 +76,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
+		System.out.println("Recieved in OSI "+object.toString());
 		object.setMessageBusAddress(MessageBusAddress.OSI_BUS_IN);
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);

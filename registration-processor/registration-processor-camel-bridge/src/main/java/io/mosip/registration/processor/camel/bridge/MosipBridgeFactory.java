@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
+import io.mosip.registration.processor.camel.bridge.util.PropertyFileUtil;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.vertx.camel.CamelBridge;
@@ -41,12 +42,15 @@ public class MosipBridgeFactory extends AbstractVerticle {
 	 * @return the event bus
 	 */
 	public static void getEventBus() {
-		String configServerUri = BridgeUtil.getPropertyFromConfigServer("vertx.ignite.configuration");
+		String igniteFileName = BridgeUtil.getPropertyFromConfigServer("ignite.cluster.manager.file.name");
+		String igniteUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
+		igniteUrl = igniteUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel() + "/"
+				+ igniteFileName;
 		URL url = null;
 		try {
-			url = new URL(configServerUri);
+			url = new URL(igniteUrl);
 		} catch (MalformedURLException e1) {
-			regProcLogger.error("","","",e1.getMessage());
+			regProcLogger.error("", "", "", e1.getMessage());
 		}
 		ClusterManager clusterManager = new IgniteClusterManager(url);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
@@ -69,8 +73,12 @@ public class MosipBridgeFactory extends AbstractVerticle {
 		VertxComponent vertxComponent = new VertxComponent();
 		vertxComponent.setVertx(vertx);
 		RestTemplate restTemplate = new RestTemplate();
-		String url = BridgeUtil.getPropertyFromConfigServer("camel.routes.configuration");
-		ResponseEntity<Resource> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, Resource.class);
+		String camelRoutesFileName = BridgeUtil.getPropertyFromConfigServer("camel.routes.file.name");
+		String camelRoutesUrl = PropertyFileUtil.getProperty(MosipBridgeFactory.class, "bootstrap.properties", "config.server.url");
+		camelRoutesUrl = camelRoutesUrl + "/*/" + BridgeUtil.getActiveProfile() + "/" + BridgeUtil.getCloudConfigLabel()
+				+ "/" + camelRoutesFileName;
+		ResponseEntity<Resource> responseEntity = restTemplate.exchange(camelRoutesUrl, HttpMethod.GET, null,
+				Resource.class);
 		RoutesDefinition routes = camelContext.loadRoutesDefinition(responseEntity.getBody().getInputStream());
 		camelContext.addRouteDefinitions(routes.getRoutes());
 		camelContext.addComponent("vertx", vertxComponent);
