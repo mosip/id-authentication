@@ -3,7 +3,8 @@ node {
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = env.NEXT_BRANCH_NAME
+ //def branch = env.NEXT_BRANCH_NAME
+ def branch = '0.8.0'
  def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  def projectToBuild = 'authentication'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
