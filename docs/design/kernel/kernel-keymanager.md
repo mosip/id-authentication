@@ -87,7 +87,7 @@ Following is the flow chart for the step &quot;certValidityCheck()&quot;,
 
 2. If ReferenceId is not present, Fetch the key-alias for the ApplicationId at given timestamp from KeyAlias DB. Fetch the public key from SoftHSM for the key-alias and respond back.If there is no key-alias for ApplicationId and Timestamp then generate a new KeyPair based on expiry and overlapping policy and store in SoftHSM.
  
-3. If If ReferenceId is present, Fetch the key for the ApplicationId/ReferenceId at given timestamp from KeyStore DB and respond back with public key. If there is no key present for given ReferenceId and Timestamp then generate a new KeyPair based on expiry and overlapping policy and encrypt the private key using ApplicationId's public key (using master key-alias) and store in KeyStore and KeyAlias DB.
+3. If ReferenceId is present, Fetch the key for the ApplicationId/ReferenceId at given timestamp from KeyStore DB and respond back with public key. If there is no key present for given ReferenceId and Timestamp then generate a new KeyPair based on expiry and overlapping policy and encrypt the private key using ApplicationId's public key (using master key-alias) and store in KeyStore and KeyAlias DB.
 
 
 **Decrypt Symmetric Key**
