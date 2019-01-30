@@ -15,6 +15,9 @@
 					<simple>${bodyAs(String)}</simple>
 				</setBody>
 				<to uri="http://localhost:8080/test" />
+				<getOut>
+				<log message="packet-validator-->external-stage ${bodyAs(String)}" />
+				</getOut>
 			</when>
 			<when>
 				<simple>${bodyAs(String)} contains '"internalError":true'</simple>
