@@ -194,7 +194,7 @@ public class DataSyncServiceUtil {
 					ErrorMessages.INVALID_REQUESTED_CREATED_DATE.toString());
 		} else {
 			try {
-				new SimpleDateFormat(dateTimeFormat).format(createdDateTime);
+				new SimpleDateFormat(dateTimeFormat).parse(createdDateTime.toString());
 			} catch (Exception ex) {
 				log.error("sessionId", "idType", "id",
 						"In validateReverseDataSyncRequest method of datasync service util - " + ex.getMessage());

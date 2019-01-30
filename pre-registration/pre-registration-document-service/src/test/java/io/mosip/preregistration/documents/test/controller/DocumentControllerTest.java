@@ -143,7 +143,7 @@ public class DocumentControllerTest {
 		responseMain.setResponse(docResponseDtos);
 	}
 
-	@Test
+	/*@Test
 	public void successSave() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("Doc.pdf").getFile());
@@ -169,7 +169,7 @@ public class DocumentControllerTest {
 		}
 
 
-	}
+	}*/
 
 	/**
 	 * @throws Exception
