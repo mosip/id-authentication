@@ -202,8 +202,46 @@ slotListIndex = 0
 ```
 4. Go to `D:\SoftHSM2\bin` and run below commands:
 ```
-softhsm2-util.exe --init-token --slot 1 --label "My token 1"
-softhsm2-util.exe --show-slots
+> softhsm2-util.exe --init-token --slot 1 --label "My token 1"
+```
+Check token is initialized in slot with below command.
+```
+> softhsm2-util.exe --show-slots
+```
+The output should be like below:
+```
+Slot 569035518
+    Slot info:
+        Description:      SoftHSM slot ID 0x21eacafe
+        Manufacturer ID:  SoftHSM project
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Token present:    yes
+    Token info:
+        Manufacturer ID:  SoftHSM project
+        Model:            SoftHSM v2
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Serial number:    b1ee933e21eacafe
+        Initialized:      yes
+        User PIN init.:   yes
+        Label:            My token 1
+Slot 1
+    Slot info:
+        Description:      SoftHSM slot ID 0x1
+        Manufacturer ID:  SoftHSM project
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Token present:    yes
+    Token info:
+        Manufacturer ID:  SoftHSM project
+        Model:            SoftHSM v2
+        Hardware version: 2.4
+        Firmware version: 2.4
+        Serial number:
+        Initialized:      no
+        User PIN init.:   no
+        Label:
 ```
 5. Put the conf file location in `mosip.kernel.keymanager.softhsm.config-path` property. Softhsm is ready to be used. 
 
