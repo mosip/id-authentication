@@ -168,8 +168,6 @@ public class SyncMasterDataServiceHelper {
 	private ValidDocumentRepository validDocumentRepository;
 	@Autowired
 	private ReasonListRepository reasonListRepository;
-
-	// Neha
 	@Autowired
 	private RegistrationCenterMachineRepository registrationCenterMachineRepository;
 	@Autowired
@@ -913,7 +911,6 @@ public class SyncMasterDataServiceHelper {
 		return CompletableFuture.completedFuture(validDocumentList);
 	}
 
-	// Neha
 	@Async
 	public CompletableFuture<List<RegistrationCenterMachineDto>> getRegistrationCenterMachines(String machineId,
 			LocalDateTime lastUpdated) {
