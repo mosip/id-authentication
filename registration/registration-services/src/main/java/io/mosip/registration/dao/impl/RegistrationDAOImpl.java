@@ -83,8 +83,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setUploadCount((short) 1);
 			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 					.getRegistrationCenterId());
-			registration.setIndividualName(registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-					.getFullName().get(0).getValue());
 			registration.setIsActive(true);
 			registration.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registration.setCrDtime(time);

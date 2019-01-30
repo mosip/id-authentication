@@ -143,7 +143,6 @@ public class RegistrationDAOTest {
 		Registration regobjectrequest = new Registration();
 		regobjectrequest.setId("123456");
 		regobjectrequest.setClientStatusCode("R");
-		regobjectrequest.setIndividualName("Balaji S");
 		regobjectrequest.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
 		regobjectrequest.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));
 		regobjectrequest.setAckFilename("file1");
@@ -155,7 +154,6 @@ public class RegistrationDAOTest {
 		assertEquals("mosip", regobj1.getUpdBy());
 		assertEquals("R", regobj1.getClientStatusCode());
 		assertEquals("SUPERADMIN", regobj1.getApproverRoleCode());
-		assertEquals("Balaji S", regobj1.getIndividualName());
 		assertEquals("file1", regobj1.getAckFilename());
 
 		Registration registration = new Registration();
@@ -195,7 +193,6 @@ public class RegistrationDAOTest {
 
 		regobject.setId("123456");
 		regobject.setClientStatusCode("R");
-		regobject.setIndividualName("Balaji S");
 		regobject.setCrBy("Mosip123");
 		regobject.setAckFilename("file1");
 
@@ -208,7 +205,6 @@ public class RegistrationDAOTest {
 		assertTrue(enrollmentsByStatus.size() > 0);
 		assertEquals("123456", enrollmentsByStatus.get(0).getId());
 		assertEquals("R", enrollmentsByStatus.get(0).getClientStatusCode());
-		assertEquals("Balaji S", enrollmentsByStatus.get(0).getIndividualName());
 		assertEquals("Mosip123", enrollmentsByStatus.get(0).getCrBy());
 		assertEquals("RegistrationOfficer", enrollmentsByStatus.get(0).getUserdetail().getName());
 		assertEquals("file1", enrollmentsByStatus.get(0).getAckFilename());
