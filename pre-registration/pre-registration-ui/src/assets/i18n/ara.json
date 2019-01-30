@@ -158,7 +158,7 @@
       "text_appoinment_date": "موعد موعد",
       "text_status": "الحالة",
       "action_modify_information": "تعديل المعلومات",
-      "action_modify_appointment": "تعديل موعد"
+      "action_modify_appointment": "عرض إقرار"
     }
   },
   "appointmentCentreSearch": {
@@ -177,9 +177,9 @@
     "action_print": "طباعة"
   },
   "dialog": {
-    "title_applicant": "عدد المتقدمون",
-    "content_applicant": "سيتم التعامل مع تفاصيل مقدم الطلب الأول على أنها أساسية",
-    "invalidApplicantNumber_msg": "يجب أن يكون الرقم بين 1 و 10",
+    "title_applicant": "إرسال تأكيد موعد",
+    "content_applicant": "البريد الإلكتروني / رقم الهاتف",
+    "invalidApplicantNumber_msg": "رقم البريد الإلكتروني / الهاتف غير صالح",
     "action_ok": "حسنا",
     "title_discard": "تجاهل",
     "action_discard_app": "تجاهل التطبيق بأكمله",
