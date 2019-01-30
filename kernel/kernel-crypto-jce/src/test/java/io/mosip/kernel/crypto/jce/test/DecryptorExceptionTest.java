@@ -44,7 +44,7 @@ public class DecryptorExceptionTest {
 		data = "abc".getBytes();
 	}
 
-	public SecretKeySpec setSymmetricUp(int length, String algo) throws java.security.NoSuchAlgorithmException {
+	private SecretKeySpec setSymmetricUp(int length, String algo) throws java.security.NoSuchAlgorithmException {
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[length];
 		random.nextBytes(keyBytes);

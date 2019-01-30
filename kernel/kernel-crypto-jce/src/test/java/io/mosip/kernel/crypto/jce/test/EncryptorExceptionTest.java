@@ -45,7 +45,7 @@ public class EncryptorExceptionTest {
 
 	}
 
-	public SecretKeySpec setSymmetricUp(int length, String algo)
+	private SecretKeySpec setSymmetricUp(int length, String algo)
 			throws java.security.NoSuchAlgorithmException {
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[length];
