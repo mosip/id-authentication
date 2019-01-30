@@ -109,6 +109,7 @@ mat-select:focus {
 
 .file-upload__body__2 {
   width: 30%;
+  padding-bottom: 20px;
 }
 
 .file-upload__body__2 > p {
@@ -202,4 +203,31 @@ mat-select:focus {
 
 .file-upload__or {
   padding-left: 1rem;
+}
+
+.file-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.file-buttons .previousFile,
+.file-buttons .nextFile {
+  background: none;
+  border: none;
+  height: 15px;
+}
+
+.file-buttons .previousFile img,
+.file-buttons .nextFile img {
+  height: 100%;
+}
+
+.file-buttons p {
+  margin: 0px;
+}
+
+.file-buttons .previousFile:disabled,
+.file-buttons .nextFile:disabled {
+  filter: brightness(170%);
 }

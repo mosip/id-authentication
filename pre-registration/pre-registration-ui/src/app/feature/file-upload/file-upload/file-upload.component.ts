@@ -149,7 +149,6 @@ export class FileUploadComponent implements OnInit {
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
-    console.log('users on init', this.users);
     this.route.params.subscribe((params: Params) => {
       this.loginId = params['id'];
     });
@@ -157,6 +156,7 @@ export class FileUploadComponent implements OnInit {
       this.sortUserFiles();
       this.viewFirstFile();
     }
+    console.log('users on init', this.users);
   }
 
   sortUserFiles() {
@@ -237,16 +237,25 @@ export class FileUploadComponent implements OnInit {
 
   onFilesChange(fileList: FileList) {}
 
-  removeFile(applicantIndex, fileIndex) {
+  removeFile(applicantIndex, file_cat_code) {
+    let fileIndex = 0;
+    for (let element of this.users[0].files[0]) {
+      if (element.doc_cat_code == file_cat_code) {
+        break;
+      }
+      fileIndex++;
+    }
+    console.log('removed file', fileIndex);
+
     this.dataStroage.deleteFile(this.users[applicantIndex].files[0][fileIndex].doc_id).subscribe(res => {
       // this.users[applicantIndex].files[0][fileIndex] = '';
       this.users[applicantIndex].files[0].splice(fileIndex, 1);
-      if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
-        // this.fileName = '';
-        // this.fileByteArray = '';
-      }
-      this.users[applicantIndex].files[0].splice(fileIndex, 1);
-      this.viewFirstFile();
+      // if (this.users[applicantIndex].files[0][fileIndex].doc_name === this.fileName) {
+      //   // this.fileName = '';
+      //   // this.fileByteArray = '';
+      // }
+      // this.users[applicantIndex].files[0][fileIndex] = new FileModel();
+      // this.sortUserFiles();
       // this.documentIndex = fileIndex;
     });
 
