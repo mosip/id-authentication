@@ -1,5 +1,3 @@
-pipeline {
- agent any 
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
@@ -16,8 +14,8 @@ pipeline {
  containersToRun = ''
  containersNames = ''
  k8DevContext = 'dev-k8-cluster'
-
-
+pipeline {
+ agent any 
  stage('------- Checkout --------') {
   dir(branch) {
    checkout([$class: 'GitSCM',
