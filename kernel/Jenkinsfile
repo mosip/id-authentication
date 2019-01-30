@@ -1,5 +1,6 @@
 node {
 
+ try{
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
@@ -30,7 +31,7 @@ node {
     extensions: [
      /*
      Using PathRestriction Class and adding Kernel in includedRegions so that the build will be triggered
-     only if tehre is any change in Kernel Module
+     only if there is any change in Kernel Module
      */
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      /*
@@ -204,7 +205,6 @@ stage('---------- SonarQube Analysis --------------') {
 
   }
 
-
  }
   
 /*
@@ -288,6 +288,36 @@ stage('---------- SonarQube Analysis --------------') {
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+ }
+ 
+   // Catching the exception for triggering email
+  catch (exception) {
+        print exception
+		// If the job was aborted by any user
+        if (exception instanceof InterruptedException) {
+           currentBuild.result = "ABORTED"
+        }
+		// If the job failed due to some error
+        else{
+            currentBuild.result = "FAILURE"
+        }
+        
+        throw exception //rethrow exception to prevent the build from proceeding
+    
+        
+        }
+	finally{
+		if(currentBuild.result == "FAILURE"){
+		// sending email to kernel recipients
+		recipients = "$env.KERNEL_RECIPIENT_LIST"
+		emailext (
+					subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER failed'",
+					body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
+					to: "$recipients",
+					from: '"Jenkins" <info@mosip.io>'
+				)
+	}
+	}
 }
 
 /*This function will return paths all the Submodules which have been changed and 
