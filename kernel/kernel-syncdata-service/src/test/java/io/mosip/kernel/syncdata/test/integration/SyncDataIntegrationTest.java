@@ -1,6 +1,9 @@
 package io.mosip.kernel.syncdata.test.integration;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,7 +23,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.entity.Application;
 import io.mosip.kernel.syncdata.entity.BiometricAttribute;
@@ -52,6 +57,7 @@ import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
@@ -79,6 +85,7 @@ import io.mosip.kernel.syncdata.repository.TemplateRepository;
 import io.mosip.kernel.syncdata.repository.TemplateTypeRepository;
 import io.mosip.kernel.syncdata.repository.TitleRepository;
 import io.mosip.kernel.syncdata.repository.ValidDocumentRepository;
+import io.mosip.kernel.syncdata.service.SyncRolesService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -87,6 +94,9 @@ public class SyncDataIntegrationTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	private List<Application> applications;
 	private List<Machine> machines;
@@ -171,6 +181,9 @@ public class SyncDataIntegrationTest {
 
 	@MockBean
 	private RegistrationCenterUserRepository registrationCenterUserRepository;
+	
+	@Autowired
+	private SyncRolesService syncRolesService;
 
 	@Before
 	public void setup() {
@@ -261,7 +274,7 @@ public class SyncDataIntegrationTest {
 		registrationCenterUserId.setRegCenterId("1");
 		registrationCenterUserId.setUserId("1111");
 		registrationCenterUser.setRegistrationCenterUserID(registrationCenterUserId);
-		registrationCenterUsers=new ArrayList<>();
+		registrationCenterUsers = new ArrayList<>();
 		registrationCenterUsers.add(registrationCenterUser);
 
 	}
@@ -604,6 +617,40 @@ public class SyncDataIntegrationTest {
 				.thenReturn(registrationCenterUsers);
 		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isOk());
 	}
+
+	@Test
+	public void getRegistrationCenterUserMasterDataException() throws Exception {
+		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	public void getRegistrationCenterUserMasterDataNotFoundExcepetion() throws Exception {
+		when(registrationCenterUserRepository.findByRegistrationCenterUserByRegCenterId(Mockito.anyString()))
+				.thenReturn(new ArrayList<RegistrationCenterUser>());
+		
+	mockMvc.perform(get("/v1.0/registrationcenteruser/1")).andExpect(status().isNotFound());
+	}
+	
+	//------------------------------------------AllRolesSync--------------------------//
+	
+	@Test
+	public void getAllRoles() {
+		
+		MockRestServiceServer mockRestServer=MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServer.expect(requestTo("https://integ.mosip.io/ldapmanager/allroles".toString())).andRespond(withSuccess());
+		syncRolesService.getAllRoles();
+	}
+	
+	@Test(expected=SyncDataServiceException.class)
+	public void getAllRolesException() {
+		
+		MockRestServiceServer mockRestServer=MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServer.expect(requestTo("https://integ.mosip.io/ldapmanager/allroles".toString())).andRespond(withServerError());
+		syncRolesService.getAllRoles();
+	}
 	
 	
+
 }

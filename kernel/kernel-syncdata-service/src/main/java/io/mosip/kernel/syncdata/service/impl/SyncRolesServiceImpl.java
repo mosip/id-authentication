@@ -5,12 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
+import io.mosip.kernel.syncdata.constant.SyncConfigDetailsErrorCode;
+import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.service.SyncRolesService;
-import net.minidev.json.JSONObject;
 
 /**
  * 
@@ -27,15 +26,17 @@ public class SyncRolesServiceImpl implements SyncRolesService {
 	public RolesResponseDto getAllRoles() {
 		RolesResponseDto rolesDtos = null;
 		try {
-			//URI should be called from properties file
-	    rolesDtos= restTemplate.getForObject("https://integ.mosip.io/ldapmanager/allroles", RolesResponseDto.class);
+			// URI should be called from properties file
+			rolesDtos = restTemplate.getForObject("https://integ.mosip.io/ldapmanager/allroles",
+					RolesResponseDto.class);
+		} catch (RestClientException ex) {
+			throw new SyncDataServiceException(
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorCode(),
+					SyncConfigDetailsErrorCode.SYNC_CONFIG_DETAIL_REST_CLIENT_EXCEPTION.getErrorMessage());
 		}
-		catch(RestClientException ex) {
-			//throw exception
-		}
-		
+
 		return rolesDtos;
-		
+
 	}
 
 }
