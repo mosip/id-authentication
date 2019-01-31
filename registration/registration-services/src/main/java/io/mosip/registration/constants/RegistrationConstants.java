@@ -587,8 +587,6 @@ public class RegistrationConstants {
 	public static final String POR_DOCUMENT = "POR";
 	public static final String DOB_DOCUMENT = "DOB";
 
-	public static List<String> DOCUMENT_LIST = Arrays.asList("Passport", "VoterId", "Licence", "PAN");
-
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
 
 	// Pre Registration
