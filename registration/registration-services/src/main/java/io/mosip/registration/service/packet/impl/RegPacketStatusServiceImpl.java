@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.File;
 import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,21 +25,25 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
+import io.mosip.registration.service.sync.PacketSynchService;
 
 /**
  * This class will update the packet status in the table after sync with the
@@ -54,6 +59,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	@Autowired
 	private RegistrationDAO registrationDAO;
+
+	@Autowired
+	private PacketSynchService packetSynchService;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusServiceImpl.class);
 
@@ -317,6 +325,48 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			delete(registration, registration.getStatusCode(), true);
 		}
 
+	}
+
+public ResponseDTO syncPacket() {
+
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Sync the packets to the server");
+		ResponseDTO responseDTO = new ResponseDTO();
+		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+		List<ErrorResponseDTO> errorList = new ArrayList<>();
+		try {
+
+			List<Registration> packetsToBeSynched = registrationDAO
+					.getPacketsToBeSynched(RegistrationConstants.PACKET_STATUS);
+			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+			Object response = null;
+			if (!packetsToBeSynched.isEmpty()) {
+				for (Registration packetToBeSynch : packetsToBeSynched) {
+					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
+					syncDto.setLangCode("ENG");
+					syncDto.setStatusComment(packetToBeSynch.getClientStatusCode() + " " + "-" + " "
+							+ packetToBeSynch.getClientStatusComments());
+					syncDto.setRegistrationId(packetToBeSynch.getId());
+					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+					syncDtoList.add(syncDto);
+				}
+				response = packetSynchService.syncPacketsToServer(syncDtoList);
+			}
+			if (response != null) {
+				packetSynchService.updateSyncStatus(packetsToBeSynched);
+				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+			}
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
+					APPLICATION_ID, "Error in Synching packets to the server");
+			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+			errorResponseDTO.setMessage(e.getMessage());
+			errorList.add(errorResponseDTO);
+			responseDTO.setErrorResponseDTOs(errorList);
+		}
+		return responseDTO;
 	}
 
 }
