@@ -2,6 +2,7 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -260,6 +261,28 @@ public class RegistrationDAOTest {
 	public static void destroyContexts() {
 		SessionContext.destroySession();
 		ApplicationContext.getInstance().setApplicationMap(null);
+	}
+	
+	@Test
+	public void getRegistrationByIdTest() {
+		Registration registration=new Registration();
+		Mockito.when(registrationRepository.findByClientStatusCodeAndId(Mockito.anyString(), Mockito.anyString())).thenReturn(registration);
+		assertSame(registration, registrationDAOImpl.getRegistrationById("PROCESSED","REG123456"));
+		
+	}
+	
+	@Test
+	public void getRegistrationsTest() {
+		List<String> ids=new  LinkedList<>();
+		ids.add("REG123456");
+		List<Registration> registrations=new LinkedList<>();
+		
+		Registration registration=new Registration();
+		registrations.add(registration);
+		
+		Mockito.when(registrationRepository.findAllById(ids)).thenReturn(registrations);
+		assertSame(registrations, registrationDAOImpl.getRegistrationById("PROCESSED","REG123456"));
+		
 	}
 
 }
