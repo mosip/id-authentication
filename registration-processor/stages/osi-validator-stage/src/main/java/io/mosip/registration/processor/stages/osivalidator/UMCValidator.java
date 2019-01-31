@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -604,7 +603,7 @@ public class UMCValidator {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 * @throws UMCValidationException
-	 * @throws JSONException
+	 * 
 	 */
 	boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isValid = false;
