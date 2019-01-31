@@ -30,7 +30,7 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class KycAuthFilter extends BaseAuthFilter {
-	
+
 	private static Logger mosipLogger = IdaLogger.getLogger(InternalAuthFilter.class);
 
 	private static final String TXN_ID = "txnID";
@@ -152,22 +152,23 @@ public class KycAuthFilter extends BaseAuthFilter {
 	protected Map<String, Object> setResponseParam(Map<String, Object> requestBody, Map<String, Object> responseBody)
 			throws IdAuthenticationAppException {
 		try {
-			Map<String, Object> authReq = (Map<String, Object>) requestBody.get(AUTH_REQUEST);
-			if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(TXN_ID))) {
-				responseBody.replace(TXN_ID, authReq.get(TXN_ID));
+			if (Objects.nonNull(requestBody)) {
+				Map<String, Object> authReq = (Map<String, Object>) requestBody.get(AUTH_REQUEST);
+				if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(TXN_ID))) {
+					responseBody.replace(TXN_ID, authReq.get(TXN_ID));
+				}
+				if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
+						&& isDate((String) authReq.get(REQ_TIME))) {
+					ZoneId zone = ZonedDateTime.parse((CharSequence) authReq.get(REQ_TIME)).getZone();
+					responseBody.replace(RES_TIME,
+							DateUtils.formatDate(
+									DateUtils.parseToDate((String) responseBody.get(RES_TIME),
+											env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
+									env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
+					return responseBody;
+				}
 			}
-			if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
-					&& isDate((String) authReq.get(REQ_TIME))) {
-				ZoneId zone = ZonedDateTime.parse((CharSequence) authReq.get(REQ_TIME)).getZone();
-				responseBody.replace(RES_TIME,
-						DateUtils.formatDate(
-								DateUtils.parseToDate((String) responseBody.get(RES_TIME),
-										env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)),
-								env.getProperty(DATETIME_PATTERN), TimeZone.getTimeZone(zone)));
-				return responseBody;
-			} else {
-				return responseBody;
-			}
+			return responseBody;
 		} catch (DateTimeParseException e) {
 			mosipLogger.error("sessionId", "IdAuthFilter", "setResponseParam", "\n" + ExceptionUtils.getStackTrace(e));
 			return responseBody;
