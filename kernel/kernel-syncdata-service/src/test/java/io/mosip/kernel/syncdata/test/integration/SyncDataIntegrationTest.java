@@ -2,6 +2,7 @@ package io.mosip.kernel.syncdata.test.integration;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +57,7 @@ import io.mosip.kernel.syncdata.entity.ValidDocument;
 import io.mosip.kernel.syncdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.syncdata.entity.id.HolidayID;
 import io.mosip.kernel.syncdata.entity.id.RegistrationCenterUserID;
+import io.mosip.kernel.syncdata.exception.SyncDataServiceException;
 import io.mosip.kernel.syncdata.repository.ApplicationRepository;
 import io.mosip.kernel.syncdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.syncdata.repository.BiometricTypeRepository;
@@ -638,6 +640,14 @@ public class SyncDataIntegrationTest {
 		
 		MockRestServiceServer mockRestServer=MockRestServiceServer.bindTo(restTemplate).build();
 		mockRestServer.expect(requestTo("https://integ.mosip.io/ldapmanager/allroles".toString())).andRespond(withSuccess());
+		syncRolesService.getAllRoles();
+	}
+	
+	@Test(expected=SyncDataServiceException.class)
+	public void getAllRolesException() {
+		
+		MockRestServiceServer mockRestServer=MockRestServiceServer.bindTo(restTemplate).build();
+		mockRestServer.expect(requestTo("https://integ.mosip.io/ldapmanager/allroles".toString())).andRespond(withServerError());
 		syncRolesService.getAllRoles();
 	}
 	
