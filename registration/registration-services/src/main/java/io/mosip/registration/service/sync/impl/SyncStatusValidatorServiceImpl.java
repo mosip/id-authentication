@@ -68,6 +68,10 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private int rdjJobId;
 	@Value("${RDJ_J00011}")
 	private int scdJobId;
+	@Value("${RDJ_J00011}")
+	private int delJobId;
+	@Value("${RDJ_J00011}")
+	private int adjJobId;
 	@Value("${GEO_CAP_FREQ}")
 	private String geoFrequnecyFlag;
 	@Value("${REG_PAK_MAX_CNT_OFFLINE_FREQ}")
@@ -117,13 +121,15 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		map.put(RegistrationConstants.OPT_TO_REG_LER_J00009, lerJobId);
 		map.put(RegistrationConstants.OPT_TO_REG_RDJ_J00010, rdjJobId);
 		map.put(RegistrationConstants.OPT_TO_REG_RDJ_J00011, scdJobId);
+		map.put(RegistrationConstants.OPT_TO_REG_ADJ_J00012, adjJobId);
+		map.put(RegistrationConstants.OPT_TO_REG_DEL_001, delJobId);
 
 		List<ErrorResponseDTO> errorResponseDTOList = new ArrayList<>();
 
 		int syncFailureCount = 0;
 
 		try {
-			
+
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching Registration details where status is Registered");
 
@@ -146,16 +152,19 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						"Generating Error Response if count of packets of status Registered is greater than configured value");
 
 				auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
-						"Generating Error Response if count of packets of status Registered is greater than configured value", "refId", "refIdType");
+						"Generating Error Response if count of packets of status Registered is greater than configured value",
+						"refId", "refIdType");
 			}
 
 			LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 					"Validating the Duration of oldest packet of status Registered with configured duration");
 
 			auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-					"Validating the Duration of oldest packet of status Registered with configured duration", "refId", "refIdType");
+					"Validating the Duration of oldest packet of status Registered with configured duration", "refId",
+					"refIdType");
 
-			if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO) : null) < 0) {
+			if (getDifference(!registrationDetails.isEmpty() ? registrationDetails.get(RegistrationConstants.PARAM_ZERO)
+					: null) < 0) {
 
 				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_TIME,
 						RegistrationConstants.REG_PKT_APPRVL_TIME_EXCEED, RegistrationConstants.ERROR,
@@ -165,7 +174,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value");
 
 				auditFactory.audit(AuditEvent.PENDING_PKT_DUR_VALIDATE, Components.SYNC_VALIDATE,
-						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value", "refId", "refIdType");
+						"Generating Error Response if Duration of oldest packet of status Registered is greater than configured value",
+						"refId", "refIdType");
 			}
 			SyncJobInfo syncJobInfo = syncJObDao.getSyncStatus();
 
@@ -188,8 +198,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
 							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
-									RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED,
-									RegistrationConstants.ERROR, errorResponseDTOList);
+									RegistrationConstants.OPT_TO_REG_TIME_EXPORT_EXCEED, RegistrationConstants.ERROR,
+									errorResponseDTOList);
 
 						}
 					}
@@ -265,7 +275,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 * {@code captureGeoLocation} is to capture the Geo location and calculate and
 	 * validate the distance between the registration center and machine.
 	 *
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 */
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
@@ -281,7 +292,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude,gpsDeviceModel);
+		Map<String, Object> gpsMapDetails = gpsFacade.getLatLongDtls(centerLatitude, centerLongitude, gpsDeviceModel);
 
 		if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
@@ -308,8 +319,9 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_INSERT_GPS,
 					RegistrationConstants.ERROR, errorResponseDTOList);
 		} else {
-			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007, RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH,
-					RegistrationConstants.ERROR, errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007,
+					RegistrationConstants.OPT_TO_REG_GPS_PORT_MISMATCH, RegistrationConstants.ERROR,
+					errorResponseDTOList);
 		}
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
@@ -324,7 +336,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 * {@code getActualDays} will calculate the difference of days between the given
 	 * date and present date.
 	 *
-	 * @param lastSyncDate date
+	 * @param lastSyncDate
+	 *            date
 	 * @return the number of days
 	 */
 	private int getActualDays(Date lastSyncDate) {
@@ -333,24 +346,24 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 				? ((new Date().getTime() - lastSyncDate.getTime()) / (24 * 60 * 60 * 1000) + 1)
 				: 0);
 	}
-	
+
 	/**
-	 * {@code getDifference} is to get difference between dates
-	 * day.
+	 * {@code getDifference} is to get difference between dates day.
 	 * 
 	 * @return long
 	 */
 	private long getDifference(Registration registration) {
-		
-		if(registration != null && registration.getCrDtime() != null) {
+
+		if (registration != null && registration.getCrDtime() != null) {
 
 			/* This will subtract configured number of days from current Date */
-			Date differDate = new Date(new Date().getTime() - (Long.parseLong(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
-					.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000 ));
-	
+			Date differDate = new Date(new Date().getTime()
+					- (Long.parseLong(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+							.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000));
+
 			/* This will convert timestamp to Date */
 			Date createdDate = new Date(registration.getCrDtime().getTime());
-	
+
 			/* This will return differnce between 2 dates in minutes */
 			return ChronoUnit.MINUTES.between(differDate.toInstant(), createdDate.toInstant());
 		}
@@ -360,10 +373,14 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	/**
 	 * Gets the error response.
 	 *
-	 * @param code                 the code
-	 * @param message              the message
-	 * @param infoType             the info type
-	 * @param errorResponseDTOList the error response DTO list
+	 * @param code
+	 *            the code
+	 * @param message
+	 *            the message
+	 * @param infoType
+	 *            the info type
+	 * @param errorResponseDTOList
+	 *            the error response DTO list
 	 * @return the error response
 	 */
 	private void getErrorResponse(String code, String message, String infoType,

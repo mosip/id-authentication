@@ -1,6 +1,7 @@
 package io.mosip.registration.dao;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.Registration;
@@ -28,5 +29,21 @@ public interface AuditLogControlDAO {
 	 * @param auditLogControl
 	 */
 	void save(AuditLogControl auditLogControl);
+
+	/**
+	 * Deletes the audit log control
+	 * 
+	 * @param auditLogControl
+	 */
+	void delete(AuditLogControl auditLogControl);
+
+	/**
+	 * Get Audit Log Control
+	 * 
+	 * @param req
+	 *            request time upto logs need to be retrieved
+	 * @return list of Audit logs
+	 */
+	List<AuditLogControl> get(Timestamp req);
 
 }

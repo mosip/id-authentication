@@ -104,4 +104,14 @@ public interface RegistrationDAO {
 	 * @return the registration by id
 	 */
 	Registration getRegistrationById(String clientStatusCode,String rId);
+
+	/**
+	 * Get Registration
+	 * 
+	 * @param regIds
+	 *            id
+	 * @return List of Registrations
+	 */
+	List<Registration> get(List<String> regIds);
+
 }

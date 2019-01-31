@@ -18,11 +18,14 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
+import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.repositories.AuditLogControlRepository;
 import io.mosip.registration.repositories.RegTransactionRepository;
 import io.mosip.registration.repositories.RegistrationRepository;
 
@@ -40,6 +43,12 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 
 	@Autowired
 	private RegTransactionRepository regTransactionRepository;
+
+	@Autowired
+	private AuditLogControlDAO auditLogControlDAO;
+	
+	@Autowired
+	private AuditLogControlRepository  auditLogControlRepository;
 
 	/**
 	 * Object for Logger
@@ -95,8 +104,16 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 		LOGGER.info("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Delete registration has been started");
 
+		AuditLogControl auditLogControl = auditLogControlRepository.findById(AuditLogControl.class , registration.getId());
+		
+		/* Delete Audit Logs */
+		auditLogControlDAO.delete(auditLogControl);
+		
+		/* Delete Registartion Transaction */
 		Iterable<RegistrationTransaction> iterableTransaction = registration.getRegistrationTransaction();
 		regTransactionRepository.deleteInBatch(iterableTransaction);
+		
+		/* Delete Registartion */
 		registrationRepository.deleteById(registration.getId());
 
 	}

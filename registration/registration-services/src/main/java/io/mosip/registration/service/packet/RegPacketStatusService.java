@@ -1,6 +1,9 @@
 package io.mosip.registration.service.packet;
 
+import java.util.List;
+
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.Registration;
 
 /**
  * {@code RegPacketStatusService} is the Registration Packet Status Service interface
@@ -22,5 +25,11 @@ public interface RegPacketStatusService {
 	 */
 	ResponseDTO deleteRegistrationPackets();
 	
+	/**
+	 * Delete Registrations
+	 * @param registrations
+	 * @return response
+	 */
+	void deleteRegistrations(List<Registration> registrations);
 	
 }

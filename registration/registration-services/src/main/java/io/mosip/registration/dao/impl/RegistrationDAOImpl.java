@@ -236,7 +236,8 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	/**
 	 * Builds the registration transaction.
 	 *
-	 * @param registrationPacket the registration packet
+	 * @param registrationPacket
+	 *            the registration packet
 	 * @return the list
 	 */
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
@@ -300,4 +301,12 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.findByClientStatusCodeAndId(clientStatusCode, rId);
 	}
 
+	@Override
+	public List<Registration> get(List<String> regIds) {
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Get Registration based on reg Id");
+
+		Iterable<String> iterableRegIds = regIds;
+		return registrationRepository.findAllById(iterableRegIds);
+	}
 }

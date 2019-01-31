@@ -483,6 +483,8 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
 	public static final String OPT_TO_REG_RDJ_J00010 = "RDJ_J00010";
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
+	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
+	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -787,6 +789,7 @@ public class RegistrationConstants {
 	public static final String REGISTRATION_DELETION_JOB_LOGGER_TITLE = "REGISTRATION - Registration Deletion Job";
 	public static final String SYNC_CONFIG_DATA_JOB_LOGGER_TITLE = "REGISTRATION - Sync Config Data Job";
 	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = "REGISTRATION - SYNCHCONFIGDATA - GLOBALPARAMSSERVICE";
+	public static final String AUDIT_SERVICE_LOGGER_TITLE = "REGISTRATION - AUDIT - AUDIT SERVICE";
 
 	// Regex Constants
 	public static final String FULL_NAME_REGEX = "([A-z]+\\s?\\.?)+";
@@ -922,4 +925,9 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
 	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
 	
+	//Audit Constants
+	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG="Audit Logs Deleted Successfully";
+	public static final String AUDIT_LOGS_DELETION_FLR_MSG="Audit Logs Deleted Failed";
+	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG="No Audit Logs Found to be deleted";
+
 }

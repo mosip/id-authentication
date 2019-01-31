@@ -86,10 +86,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			List<Registration> registrations = registrationDAO
 					.getRegistrationsToBeDeleted(getPacketDeletionLastDate(reqTime));
 
-			for (Registration registration : registrations) {
-				/* Delete each registration */
-				delete(registration, registration.getStatusCode(), true);
-			}
+			deleteRegistrations(registrations);
+
 			setSuccessResponse(responseDTO, RegistrationConstants.REGISTRATION_DELETION_BATCH_JOBS_SUCCESS, null);
 
 		} catch (RuntimeException runtimeException) {
@@ -309,6 +307,15 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				"Delete Registration Packet ended");
 
 		return updatedRegistration;
+
+	}
+
+	@Override
+	public void deleteRegistrations(List<Registration> registrations) {
+		for (Registration registration : registrations) {
+			/* Delete each registration */
+			delete(registration, registration.getStatusCode(), true);
+		}
 
 	}
 
