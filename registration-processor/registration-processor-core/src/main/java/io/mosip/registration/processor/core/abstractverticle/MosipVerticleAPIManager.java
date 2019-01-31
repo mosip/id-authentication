@@ -18,8 +18,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager{
 	}
 	
 	public void setResponse(RoutingContext ctx, Object object) {
-		String c= object.toString();
-		ctx.response().putHeader("content-type", "application/json").end(object.toString());
+		ctx.response().putHeader("content-type", "application/json").setStatusCode(200).end(object.toString());
 	};
 	
 }

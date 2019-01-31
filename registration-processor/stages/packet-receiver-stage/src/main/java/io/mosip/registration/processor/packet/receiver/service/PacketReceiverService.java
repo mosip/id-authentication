@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * @param <U> Return type of operations
  */
 @Service
-public interface PacketReceiverService<T, U, V> {
+public interface PacketReceiverService<T, U> {
 	
 	/**
 	 * Stores registration packets to landing zone.
@@ -18,6 +18,6 @@ public interface PacketReceiverService<T, U, V> {
 	 * @param file the file
 	 * @return the u
 	 */
-	public U storePacket(T file, V ctx);
+	public U storePacket(T file);
 
 }

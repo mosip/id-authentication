@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -86,7 +87,7 @@ public class PacketReceiverServiceTest {
 
 
 	@InjectMocks
-	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl(); /*{
+	private PacketReceiverService<File, MessageDTO> packetReceiverService = new PacketReceiverServiceImpl(); /*{
 
 		@Override
 		public String getFileExtension() {
