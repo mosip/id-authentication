@@ -22,8 +22,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * 
+ * The Class EncryptUtil.
+ *
  * @author Arun Bose S
  * The Class EncryptUtil.
  */
@@ -82,6 +84,18 @@ public class EncryptUtil {
 	}
 	
 	
+	/**
+	 * Asymmetric decrypt.
+	 *
+	 * @param privateKey the private key
+	 * @param encryptedSecretKeyByteArr the encrypted secret key byte arr
+	 * @return the secret key
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws BadPaddingException the bad padding exception
+	 */
 	public SecretKey asymmetricDecrypt(PrivateKey privateKey, byte[] encryptedSecretKeyByteArr) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 	   Cipher  cipher=Cipher.getInstance(EncryptUtil.RSAPADDING);
 		cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -90,6 +104,19 @@ public class EncryptUtil {
 	}
 	
 	
+	/**
+	 * Symmetric decrypt.
+	 *
+	 * @param secretKey the secret key
+	 * @param encryptedDataByteArr the encrypted data byte arr
+	 * @return the byte[]
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws BadPaddingException the bad padding exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 */
 	public byte[] symmetricDecrypt(SecretKey secretKey, byte[] encryptedDataByteArr) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
 	   Cipher  cipher=Cipher.getInstance(EncryptUtil.AESPADDING);
 	   cipher.init(Cipher.DECRYPT_MODE, secretKey,
