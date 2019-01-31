@@ -1,4 +1,4 @@
-package io.mosip.preregistration.acknowledgement.dto;
+package io.mosip.preregistration.core.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

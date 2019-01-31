@@ -1,4 +1,4 @@
-package io.mosip.preregistration.acknowledgement.config;
+package io.mosip.preregistration.core.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
