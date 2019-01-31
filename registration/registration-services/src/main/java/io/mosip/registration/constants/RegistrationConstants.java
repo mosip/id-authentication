@@ -599,7 +599,7 @@ public class RegistrationConstants {
 	public static final String PRE_REGISTRATION_DUMMY_ID = "mosip.pre-registration.datasync";
 	public static final String VER = "1.0";
 	public static final String PRE_REG_TO_GET_ID_ERROR = "Unable to get Pre registartion id's";
-	public static final String PRE_REG_TO_GET_PACKET_ERROR = "Unable to get Pre registartion for given id";
+	public static final String PRE_REG_TO_GET_PACKET_ERROR = "The Pre-registration ID entered does not exist in the database. Please enter the correct Pre-registration ID.";
 	public static final String PRE_REG_PACKET_NETWORK_ERROR = "You must be connected to the internet to sync data.";
 	public static final String PRE_REG_SUCCESS_MESSAGE = "Pre-Registartion Data Synced successfully ";
 	public static final String IS_PRE_REG_SYNC = "PreRegSync";
