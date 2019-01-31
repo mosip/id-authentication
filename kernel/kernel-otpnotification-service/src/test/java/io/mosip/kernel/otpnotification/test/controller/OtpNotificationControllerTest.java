@@ -36,7 +36,7 @@ public class OtpNotificationControllerTest {
 
 	@Autowired
 	private ObjectMapper mapper;
-
+	
 	@MockBean
 	private OtpNotificationServiceImpl service;
 
