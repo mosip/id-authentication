@@ -100,5 +100,14 @@ public class AuditDAOTest {
 
 		auditDAO.getAudits(null);
 	}
+	
+	@Test
+	public void deleteAllTest() {
+		LocalDateTime fromTime=new  Timestamp(System.currentTimeMillis()).toLocalDateTime();
+		LocalDateTime toTime=new  Timestamp(System.currentTimeMillis()).toLocalDateTime();
+		
+		Mockito.doNothing().when(auditRepository).deleteAllInBatchBycreatedAtBetween(fromTime,toTime);
+		auditDAO.deleteAll(fromTime, toTime);
+	}
 
 }

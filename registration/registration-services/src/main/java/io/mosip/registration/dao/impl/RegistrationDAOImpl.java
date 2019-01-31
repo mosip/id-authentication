@@ -298,15 +298,21 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public Registration getRegistrationById(String clientStatusCode, String rId) {
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Get Registration based on reg Id and client status code started");
 		return registrationRepository.findByClientStatusCodeAndId(clientStatusCode, rId);
 	}
 
 	@Override
 	public List<Registration> get(List<String> regIds) {
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Get Registration based on reg Id");
+				"Get Registrations based on reg Ids started");
 
 		Iterable<String> iterableRegIds = regIds;
+		
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Get Registration based on reg Ids completed");
+
 		return registrationRepository.findAllById(iterableRegIds);
 	}
 }
