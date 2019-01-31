@@ -32,6 +32,8 @@ import io.mosip.kernel.otpnotification.dto.SmsRequestDto;
 import io.mosip.kernel.otpnotification.exception.OtpNotifierServiceException;
 
 /**
+ * Utils class for OTP Notification.
+ * 
  * @author Ritesh Sinha
  * @since 1.0.0
  */
@@ -68,10 +70,27 @@ public class OtpNotificationUtil {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public String templateMerger(String otp, String template) {
+	/**
+	 * This method merge template with otp provided.
+	 * 
+	 * @param otp
+	 *            the otp generated.
+	 * @param template
+	 *            the template provided.
+	 * @return the merged template.
+	 */
+	public String templateMerger(String otp, String template, String notificationType) {
+
+		String otpTemplatePlaceholder = OtpNotificationPropertyConstant.NOTIFICATION_OTP_TEMPLATE_PLACEHOLDER
+				.getProperty();
+		if (!template.contains(otpTemplatePlaceholder)) {
+			throw new OtpNotifierServiceException(
+					OtpNotificationErrorConstant.NOTIFIER_TEMPLATE_MERGER_ERROR.getErrorCode(),
+					notificationType + OtpNotificationErrorConstant.NOTIFIER_TEMPLATE_MERGER_ERROR.getErrorMessage());
+		}
 
 		Map<String, Object> templateValues = new HashMap<>();
-		templateValues.put("otp", otp);
+		templateValues.put(OtpNotificationPropertyConstant.NOTIFICATION_TEMPLATE_OTP_VALUE.getProperty(), otp);
 
 		InputStream templateInputStream = new ByteArrayInputStream(template.getBytes(Charset.forName("UTF-8")));
 
@@ -81,12 +100,21 @@ public class OtpNotificationUtil {
 			template = IOUtils.toString(resultedTemplate, StandardCharsets.UTF_8.name());
 
 		} catch (IOException e) {
-			throw new OtpNotifierServiceException("xxxxx", "Input output error occur during email template merging");
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_IO_ERROR.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_IO_ERROR.getErrorMessage());
 		}
 
 		return template;
 	}
 
+	/**
+	 * This method send SMS notification to the number provided with given template.
+	 * 
+	 * @param number
+	 *            the mobile number.
+	 * @param smsTemplate
+	 *            the sms template provided.
+	 */
 	public void sendSmsNotification(String number, String smsTemplate) {
 		SmsRequestDto smsRequest = new SmsRequestDto();
 
@@ -102,19 +130,37 @@ public class OtpNotificationUtil {
 		restTemplate.exchange(smsServiceApi, HttpMethod.POST, smsEntity, NotifierResponseDto.class);
 	}
 
+	/**
+	 * This method send email notification to the emailid provided with given
+	 * template.
+	 * 
+	 * @param emailId
+	 *            the email id provided.
+	 * @param emailBodyTemplate
+	 *            the email body template provided.
+	 * @param emailSubjectTemplate
+	 *            the email subject template.
+	 */
 	public void sendEmailNotification(String emailId, String emailBodyTemplate, String emailSubjectTemplate) {
 		HttpHeaders emailHeaders = new HttpHeaders();
 		emailHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
-		MultiValueMap<Object, Object> map = new LinkedMultiValueMap<>();
-		map.add("mailCC", emailBodyTemplate);
-		map.add("mailTo", emailId);
-		map.add("mailSubject", emailSubjectTemplate);
-		map.add("mailContent", emailBodyTemplate);
-		HttpEntity<MultiValueMap<Object, Object>> emailEntity = new HttpEntity<>(map, emailHeaders);
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+		map.add(OtpNotificationPropertyConstant.NOTIFICATION_EMAIL_CC.getProperty(), emailBodyTemplate);
+		map.add(OtpNotificationPropertyConstant.NOTIFICATION_EMAIL_TO.getProperty(), emailId);
+		map.add(OtpNotificationPropertyConstant.NOTIFICATION_EMAIL_SUBJECT.getProperty(), emailSubjectTemplate);
+		map.add(OtpNotificationPropertyConstant.NOTIFICATION_EMAIL_CONTENT.getProperty(), emailBodyTemplate);
+		HttpEntity<MultiValueMap<String, Object>> emailEntity = new HttpEntity<>(map, emailHeaders);
 
 		restTemplate.exchange(emailServiceApi, HttpMethod.POST, emailEntity, NotifierResponseDto.class);
 	}
 
+	/**
+	 * This method generate OTP agains provided key.
+	 * 
+	 * @param request
+	 *            the dto with key.
+	 * @return the generated OTP.
+	 */
 	public String generateOtp(OtpRequestDto request) {
 
 		ResponseEntity<OtpResponseDto> response = null;
@@ -129,6 +175,17 @@ public class OtpNotificationUtil {
 		return response.getBody().getOtp();
 	}
 
+	/**
+	 * This method provide key as per notification channel type mentions.
+	 * 
+	 * @param notificationflag
+	 *            the notification types.
+	 * @param number
+	 *            the mobile number of user.
+	 * @param emailId
+	 *            the email id of user.
+	 * @return the key.
+	 */
 	public String getKey(List<String> notificationflag, String number, String emailId) {
 
 		String key = null;
@@ -150,7 +207,14 @@ public class OtpNotificationUtil {
 		}
 		return key;
 	}
-	
+
+	/**
+	 * This method validates notification channel type is valid or not.
+	 * 
+	 * @param types
+	 *            the notification channel type.
+	 * @return the true if type is valid.
+	 */
 	public boolean containsNotificationTypes(String types) {
 		if (!types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())
 				&& !types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {

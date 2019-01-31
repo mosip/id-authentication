@@ -62,14 +62,14 @@ public class OtpNotificationServiceImpl
 			if (requestDto.getNotificationTypes().get(type)
 					.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())) {
 
-				String smsTemplate = notificationUtil.templateMerger(otp, requestDto.getSmsTemplate());
+				String smsTemplate = notificationUtil.templateMerger(otp, requestDto.getSmsTemplate(),"sms");
 				notificationUtil.sendSmsNotification(requestDto.getMobileNumber(), smsTemplate);
 
 			}
 			if (requestDto.getNotificationTypes().get(type)
 					.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {
 
-				String emailBodyTemplate = notificationUtil.templateMerger(otp, requestDto.getEmailBodyTemplate());
+				String emailBodyTemplate = notificationUtil.templateMerger(otp, requestDto.getEmailBodyTemplate(),"email");
 				notificationUtil.sendEmailNotification(requestDto.getEmailId(), emailBodyTemplate,
 						requestDto.getEmailSubjectTemplate());
 
@@ -81,7 +81,5 @@ public class OtpNotificationServiceImpl
 		responseDto.setMessage(OtpNotificationPropertyConstant.NOTIFICATION_RESPONSE_MESSAGE.getProperty());
 		return responseDto;
 	}
-
-	
 
 }
