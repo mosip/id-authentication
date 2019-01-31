@@ -831,6 +831,7 @@ public class RegistrationConstants {
 	public static final String POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE = "You must be connected to the internet to sync data";
 	public static final String POLICY_SYNC_THRESHOLD_VALUE = "name";
 	public static final String SYNCH_CONFIG_DATA_JOB_TITLE="synch config data job";
+	public static final String REG_USER_MAPPING_SYNC_JOB_TITLE="registration user mapping sync job";
 	
 	public static final String KEY_POLICY_SYNC_JOB_TITLE = "REGISTRATION - key policy synch Job";
 	public static final String DELETE_AUDIT_LOGS_JOB = "REGISTRATION - Delete Audit Logs Job";

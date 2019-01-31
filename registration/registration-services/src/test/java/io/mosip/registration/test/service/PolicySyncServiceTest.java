@@ -70,7 +70,7 @@ public class PolicySyncServiceTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		ReflectionTestUtils.setField(policySyncServiceImpl, "url",
 				"https://integ.mosip.io/keymanager/v1.0/publickey/{applicationId}");
-		policySyncServiceImpl.fetchPolicy("centerId");
+		policySyncServiceImpl.fetchPolicy();
 
 	}
 
@@ -78,7 +78,7 @@ public class PolicySyncServiceTest {
 	public void netWorkAvailable() {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
-		policySyncServiceImpl.fetchPolicy("centerId");
+		policySyncServiceImpl.fetchPolicy();
 
 	}
 
@@ -94,7 +94,7 @@ public class PolicySyncServiceTest {
 		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(timestamp);
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
-		policySyncServiceImpl.fetchPolicy("centerId");
+		policySyncServiceImpl.fetchPolicy();
 
 	}
 
@@ -114,7 +114,7 @@ public class PolicySyncServiceTest {
 
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 
-		policySyncServiceImpl.fetchPolicy("centerId");
+		policySyncServiceImpl.fetchPolicy();
 
 	}
   
