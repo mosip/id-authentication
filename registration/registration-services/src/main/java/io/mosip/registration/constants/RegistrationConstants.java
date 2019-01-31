@@ -588,6 +588,8 @@ public class RegistrationConstants {
 	public static final String DOB_DOCUMENT = "DOB";
 
 	public static final List<String> PACKET_STATUS = Arrays.asList("APPROVED", "REJECTED", "RE_REGISTER_APPROVED");
+	
+	public static final List<String> PACKET_EXPORT_STATUS = Arrays.asList("EXPORTED", "SYNCED");
 
 	// Pre Registration
 	public static final String PRE_REGISTRATION_ID = "pre_registration_id";
@@ -878,6 +880,11 @@ public class RegistrationConstants {
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is :";
 	public static final String OTP_GENERATION_ERROR_MESSAGE = "Unable Generate OTP for entered username";
 	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Incorrect or expired OTP";
+	
+	//Packet Export
+	public static final String FILE_EXPLORER_NAME = "File Explorer";
+	public static final String INFO = "INFO";
+	
 
 	// Sync Status
 	public static final String REG_PKT_APPRVL_CNT_EXCEED = "Maximum number of registration packets pending approval on client reached. Please approve or reject packets before proceeding with this registration";

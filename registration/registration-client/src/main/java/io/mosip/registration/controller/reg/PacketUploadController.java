@@ -62,6 +62,9 @@ public class PacketUploadController extends BaseController {
 
 	@Autowired
 	private PacketSynchService packetSynchService;
+	
+	@Autowired
+	private PacketExportController packetExportController;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
@@ -326,4 +329,20 @@ public class PacketUploadController extends BaseController {
 			};
 		}
 	};
+	
+	/**
+	 * Export the packets and show the exported packets in the table
+	 */
+	public void packetExport() {
+		
+		LOGGER.info("REGISTRATION - PACKET_EXPORT_START - PACKET_UPLOAD_CONTROLLER",
+				APPLICATION_NAME, APPLICATION_ID, "Exporting the Synched the packets");
+		
+		List<Registration> exportedPackets = packetExportController.packetExport();
+		Map<String, String> exportedPacketMap  = new HashMap<>();
+		exportedPackets.forEach(regPacket -> {
+			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
+		});
+		displayData(populateTableData(exportedPacketMap));
+	}
 }
