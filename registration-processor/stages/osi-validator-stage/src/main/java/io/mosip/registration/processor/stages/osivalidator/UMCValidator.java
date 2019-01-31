@@ -1,12 +1,13 @@
 package io.mosip.registration.processor.stages.osivalidator;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,13 @@ import com.google.gson.Gson;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -44,7 +47,6 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
-import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -57,7 +59,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
  */
 @Service
 public class UMCValidator {
-	
+
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UMCValidator.class);
 
@@ -310,13 +312,13 @@ public class UMCValidator {
 		}
 
 		if (umc) {
-			//MOS-12822
+			// MOS-12822
 			boolean isValid = validateCenterIdAndTimestamp(rcmDto);
-			if(isValid) {
+			if (isValid) {
 				umc = isValidDevice(rcmDto);
 			}
 			// MOS-12831
-			
+
 		}
 
 		return umc;
@@ -388,26 +390,19 @@ public class UMCValidator {
 	 * @return the identity
 	 * @throws IOException
 	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
 	private Identity getIdentity(String registrationId)
-			throws IOException {
+			throws IOException, JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException {
 
-		ClassLoader classLoader = getClass().getClassLoader();
-		File idJsonFile = new File(classLoader.getResource("packet_meta_info.json").getFile());
-		InputStream packetMetaInfoStream = new FileInputStream(idJsonFile);
-		// InputStream packetMetaInfoStream = adapter.getFile(registrationId,
-		// PacketFiles.PACKET_META_INFO.name());
+		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 
-		// String packetMetaInfoString = IOUtils.toString(packetMetaInfoStream);
+		String packetMetaInfoString = IOUtils.toString(packetMetaInfoStream, StandardCharsets.UTF_8);
 
-		// PacketMetaInfo packetMetaInfo = (PacketMetaInfo)
-		// JsonUtils.jsonStringToJavaObject(PacketMetaInfo.class,
-		// packetMetaInfoString);
-
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-				PacketMetaInfo.class);
+		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtils.jsonStringToJavaObject(PacketMetaInfo.class,
+				packetMetaInfoString);
 
 		return packetMetaInfo.getIdentity();
 
@@ -587,7 +582,7 @@ public class UMCValidator {
 
 		return isDeviceActive;
 	}
-	
+
 	/**
 	 * Checks if is valid center id timestamp.
 	 *
@@ -601,21 +596,21 @@ public class UMCValidator {
 	 * @throws UMCValidationException
 	 * @throws JSONException
 	 */
-	boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto)
-			throws ApisResourceAccessException {
+	boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto) throws ApisResourceAccessException {
 		boolean isValid = false;
 		try {
 			List<String> pathsegments = new ArrayList<>();
 			pathsegments.add(rcmDto.getRegcntrId());
 			pathsegments.add(rcmDto.getPacketCreationDate());
 			RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
-					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "", RegistartionCenterTimestampResponseDto.class);
+					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "",
+							RegistartionCenterTimestampResponseDto.class);
 
 			if (result.getStatus().equals("Accepted")) {
 				isValid = true;
 			} else {
-				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " " + rcmDto.getRegId()
-						+ StatusMessage.TIMESTAMP_VALIDATION2 + " " + rcmDto.getRegcntrId());
+				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " "
+						+ rcmDto.getRegId() + StatusMessage.TIMESTAMP_VALIDATION2 + " " + rcmDto.getRegcntrId());
 			}
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -630,8 +625,8 @@ public class UMCValidator {
 				if (responseDto.getErrors().get(0).getErrorCode().equals("KER-MSD-033")) {
 					this.registrationStatusDto.setStatusComment(responseDto.getErrors().get(0).getErrorMessage());
 				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.THE_CENTER_ID + " " + rcmDto.getRegcntrId()
-							+ StatusMessage.CENTER_NOT_FOUND + " " + rcmDto.getRegId());
+					this.registrationStatusDto.setStatusComment(StatusMessage.THE_CENTER_ID + " "
+							+ rcmDto.getRegcntrId() + StatusMessage.CENTER_NOT_FOUND + " " + rcmDto.getRegId());
 				}
 			}
 		}
