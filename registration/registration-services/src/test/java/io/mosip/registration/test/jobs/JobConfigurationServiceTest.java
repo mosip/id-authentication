@@ -2,6 +2,7 @@ package io.mosip.registration.test.jobs;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -79,7 +81,7 @@ public class JobConfigurationServiceTest {
 	JobDetail jobDetail;
 
 	@Mock
-	GlobalParamDAO globalParamDAO;
+	io.mosip.registration.context.ApplicationContext context;
 	
 	List<SyncJobDef> syncJobList;
 
@@ -102,6 +104,14 @@ public class JobConfigurationServiceTest {
 		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
 
 		Mockito.when(jobConfigDAO.getAll()).thenReturn(syncJobList);
+		
+		
+		Map<String,Object> applicationMap =new HashMap<>();
+		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
+		
+		//when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
+		when(context.getApplicationMap()).thenReturn(applicationMap);
+
 
 	}
 
@@ -256,10 +266,7 @@ public class JobConfigurationServiceTest {
 
 		Timestamp req =new Timestamp(System.currentTimeMillis());
 		Mockito.when(syncJobTransactionDAO.getSyncTransactions(Mockito.any(),Mockito.anyString())).thenReturn(syncTransactions);
-		GlobalParam globalParam=new GlobalParam();
-		globalParam.setVal("2");
-		Mockito.when(globalParamDAO.get(Mockito.anyString())).thenReturn(globalParam);
-		
+				
 		Assert.assertNotNull(jobConfigurationService.getSyncJobsTransaction().getSuccessResponseDTO());
 
 		syncTransactions.clear();
