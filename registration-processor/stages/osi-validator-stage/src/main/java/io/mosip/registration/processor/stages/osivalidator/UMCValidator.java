@@ -310,8 +310,13 @@ public class UMCValidator {
 		}
 
 		if (umc) {
+			//MOS-12822
+			boolean isValid = validateCenterIdAndTimestamp(rcmDto);
+			if(isValid) {
+				umc = isValidDevice(rcmDto);
+			}
 			// MOS-12831
-			umc = isValidDevice(rcmDto);
+			
 		}
 
 		return umc;
@@ -596,25 +601,25 @@ public class UMCValidator {
 	 * @throws UMCValidationException
 	 * @throws JSONException
 	 */
-	boolean validateCenterIdAndTimestamp(String regId, String centerId, String timestamp)
+	boolean validateCenterIdAndTimestamp(RegistrationCenterMachineDto rcmDto)
 			throws ApisResourceAccessException {
 		boolean isValid = false;
 		try {
 			List<String> pathsegments = new ArrayList<>();
-			pathsegments.add(centerId);
-			pathsegments.add(timestamp);
+			pathsegments.add(rcmDto.getRegcntrId());
+			pathsegments.add(rcmDto.getPacketCreationDate());
 			RegistartionCenterTimestampResponseDto result = (RegistartionCenterTimestampResponseDto) registrationProcessorRestService
 					.getApi(ApiName.REGISTRATIONCENTERTIMESTAMP, pathsegments, "", "", RegistartionCenterTimestampResponseDto.class);
 
 			if (result.getStatus().equals("Accepted")) {
 				isValid = true;
 			} else {
-				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " " + regId
-						+ StatusMessage.TIMESTAMP_VALIDATION2 + " " + centerId);
+				this.registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " " + rcmDto.getRegId()
+						+ StatusMessage.TIMESTAMP_VALIDATION2 + " " + rcmDto.getRegcntrId());
 			}
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, "" + e.getMessage() + ExceptionUtils.getStackTrace(e));
+					rcmDto.getRegId(), "" + e.getMessage() + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 
@@ -625,8 +630,8 @@ public class UMCValidator {
 				if (responseDto.getErrors().get(0).getErrorCode().equals("KER-MSD-033")) {
 					this.registrationStatusDto.setStatusComment(responseDto.getErrors().get(0).getErrorMessage());
 				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.THE_CENTER_ID + " " + centerId
-							+ StatusMessage.CENTER_NOT_FOUND + " " + regId);
+					this.registrationStatusDto.setStatusComment(StatusMessage.THE_CENTER_ID + " " + rcmDto.getRegcntrId()
+							+ StatusMessage.CENTER_NOT_FOUND + " " + rcmDto.getRegId());
 				}
 			}
 		}
