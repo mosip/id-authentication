@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -61,6 +62,8 @@ import io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl;
  * 
  */
 public class BaseAuthRequestValidator extends IdAuthValidator {
+
+	private static final String MAKE_FOR_0_BIO_TYPE  = "make for {0} bioType";
 
 	private static final String PIN = "pin";
 
@@ -410,7 +413,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 						errors.rejectValue(REQUEST,
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 								// TODO
-								new Object[] { "make for " +make.getBioType() +" bioType" },
+								new Object[] { MessageFormat.format(MAKE_FOR_0_BIO_TYPE, make.getBioType()) },
 								IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 					});
 		}

@@ -29,8 +29,8 @@ import io.mosip.kernel.core.util.HMACUtils;
  */
 @Service
 public class StaticPinServiceImpl implements StaticPinService {
-	
-	/** The Constant for IDA*/
+
+	/** The Constant for IDA */
 	private static final String IDA = "IDA";
 
 	/** The StaticPinRepository */
@@ -50,8 +50,10 @@ public class StaticPinServiceImpl implements StaticPinService {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
+
 	/**
-	 * This method is to store the StaticPin in StaticPin and StaticPinHistory Table.
+	 * This method is to store the StaticPin in StaticPin and StaticPinHistory
+	 * Table.
 	 * 
 	 * @param staticPinRequestDTO
 	 * @param uinValue
@@ -66,9 +68,9 @@ public class StaticPinServiceImpl implements StaticPinService {
 			StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
 			staticPinEntity.setUin(uinValue);
 			String pinValue = staticPinRequestDTO.getRequest().getStaticPin();
-			//TODO 
-			encryptStaticPin(pinValue.getBytes());
-			staticPinEntity.setPin(pinValue);
+			// TODO
+			String hashedPin = hashStaticPin(pinValue.getBytes());
+			staticPinEntity.setPin(hashedPin);
 			staticPinEntity.setCreatedBy(IDA);
 			staticPinEntity.setCreatedDTimes(new Date());
 			staticPinEntity.setUpdatedBy(IDA);
@@ -79,7 +81,7 @@ public class StaticPinServiceImpl implements StaticPinService {
 			staticPinEntity.setActive(true);
 			staticPinEntity.setDeleted(false);
 			staticPinHistoryEntity.setUin(uinValue);
-			staticPinHistoryEntity.setPin(pinValue);
+			staticPinHistoryEntity.setPin(hashedPin);
 			staticPinHistoryEntity.setCreatedBy(IDA);
 			staticPinHistoryEntity.setCreatedDTimes(new Date());
 			staticPinHistoryEntity.setGeneratedOn(convertStringToDate);
@@ -89,37 +91,35 @@ public class StaticPinServiceImpl implements StaticPinService {
 			staticPinHistoryEntity.setUpdatedBy(IDA);
 			staticPinHistoryEntity.setUpdatedOn(new Date());
 			Optional<StaticPinEntity> entityValues = staticPinRepo.findById(uinValue);
-			
+
 			if (!entityValues.isPresent()) {
-				 staticPinRepo.save(staticPinEntity);
-				status = Boolean.TRUE;
+				staticPinRepo.save(staticPinEntity);
 
 			} else {
 				StaticPinEntity entity = entityValues.get();
-				entity.setPin(pinValue);
+				entity.setPin(hashedPin);
 				entity.setUpdatedOn(new Date());
 				entity.setUpdatedBy(IDA);
 				staticPinRepo.update(entity);
-				status = Boolean.TRUE;
 			}
+			status = Boolean.TRUE;
 			staticPinHistoryRepo.save(staticPinHistoryEntity);
 			return status;
-		}  catch (DataAccessException e) {
+		} catch (DataAccessException e) {
 			logger.error(SESSION_ID, "StaticPinStoreImpl", e.getClass().getName(), e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, e);
 		}
 	}
-	
 
-		/**
-		 * Hash the Static Pin.
-		 *
-		 * @param pinValue
-		 *            the Static Pin
-		 * @return the string
-		 */
-		private String encryptStaticPin(byte[] pinValue) {
-			return CryptoUtil.encodeBase64(HMACUtils.generateHash(pinValue));
-		}
-	
+	/**
+	 * Hash the Static Pin.
+	 *
+	 * @param pinValue
+	 *            the Static Pin
+	 * @return the string
+	 */
+	private String hashStaticPin(byte[] pinValue) {
+		return CryptoUtil.encodeBase64(HMACUtils.generateHash(pinValue));
+	}
+
 }
