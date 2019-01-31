@@ -11,6 +11,8 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.HMACUtils;
 
 /**
  * The Enum PinMatchingStrategy.
@@ -22,7 +24,8 @@ public enum PinMatchingStrategy implements TextMatchingStrategy {
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			return DemoMatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+			String hashPin = CryptoUtil.encodeBase64(HMACUtils.generateHash(((String) reqInfo).getBytes()));
+			return DemoMatcherUtil.doExactMatch(hashPin, (String) entityInfo);
 		} else {
 			logError(IdAuthenticationErrorConstants.PIN_MISMATCH);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PIN_MISMATCH);
