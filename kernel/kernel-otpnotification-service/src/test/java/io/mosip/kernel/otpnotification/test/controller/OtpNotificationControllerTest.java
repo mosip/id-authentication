@@ -56,7 +56,7 @@ public class OtpNotificationControllerTest {
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
 		when(service.sendOtpNotification(request)).thenReturn(response);
-		mockMvc.perform(post("/v1.0/otpnotification/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is("success")));
 
 	}

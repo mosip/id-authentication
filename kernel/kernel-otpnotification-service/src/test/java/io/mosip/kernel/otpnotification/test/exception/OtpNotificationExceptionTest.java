@@ -67,7 +67,7 @@ public class OtpNotificationExceptionTest {
 		request.setMobileNumber("8999898989");
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
-		mockMvc.perform(post("/v1.0/otpnotification/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
@@ -86,7 +86,7 @@ public class OtpNotificationExceptionTest {
 		String json = mapper.writeValueAsString(request);
 		when(service.sendOtpNotification(request))
 						.thenThrow(new HttpClientErrorException(HttpStatus.OK, "number cannot be null or blank"));
-		mockMvc.perform(post("/v1.0/otpnotification/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 
 	}
@@ -104,7 +104,7 @@ public class OtpNotificationExceptionTest {
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
 		when(templateManager.merge(Mockito.any(),Mockito.any())).thenThrow(IOException.class);
-		mockMvc.perform(post("/v1.0/otpnotification/send").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 		.andExpect(status().isOk());
 	}
 
