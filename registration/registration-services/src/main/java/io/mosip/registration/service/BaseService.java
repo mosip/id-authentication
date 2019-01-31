@@ -16,6 +16,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MachineMappingDAO;
@@ -47,6 +48,16 @@ public class BaseService {
 
 	@Autowired
 	private UserOnboardDAO userOnboardDAO;
+
+	/**
+	 * Application context
+	 */
+	private ApplicationContext applicationContext;
+
+	/**
+	 * Global Param Map as a Application Map
+	 */
+	private Map<String, Object> applicationMap;
 
 	/**
 	 * create error response
@@ -219,6 +230,23 @@ public class BaseService {
 		/* Get Mac Address */
 		return RegistrationSystemPropertiesChecker.getMachineId();
 
+	}
+
+	public String getGlobalConfigValueOf(String key) {
+
+		if (applicationMap == null) {
+
+			if (applicationContext == null) {
+
+				/* Get Application Instance */
+				applicationContext = ApplicationContext.getInstance();
+			}
+
+			/* Get Application Map */
+			applicationMap = applicationContext.getApplicationMap();
+		}
+
+		return (String) applicationMap.get(key);
 	}
 
 }
