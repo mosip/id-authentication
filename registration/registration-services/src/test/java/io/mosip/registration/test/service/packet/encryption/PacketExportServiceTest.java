@@ -28,12 +28,13 @@ public class PacketExportServiceTest {
 	@InjectMocks
 	private PacketExportServiceImpl packetExportServiceImpl;
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void getSynchedRecordsTest() {
 		Registration reg = new Registration();
 		List<Registration> packetList = new ArrayList<>();
 		packetList.add(reg);
-		Mockito.when(registrationDAO.getEnrollmentByStatus(Mockito.anyString())).thenReturn(packetList);
+		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(packetList);
 		assertEquals(1, packetExportServiceImpl.getSynchedRecords().size());
 	}
 	
