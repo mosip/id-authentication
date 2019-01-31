@@ -702,6 +702,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	/*
+	 * (non-Javadoc) Get PreregIds for OSI entity using list of regIds
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager
+	 * getRegOsiPreRegId(java.util.List)
+	 */
+	@Override
+	public List<String> getRegOsiPreRegId(List<String> regIds) {
+		return regOsiRepository.getRegOsiPreRegId(regIds);
+	}
+
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see
