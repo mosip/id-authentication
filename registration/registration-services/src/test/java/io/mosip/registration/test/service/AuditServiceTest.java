@@ -82,7 +82,7 @@ public class AuditServiceTest {
 	@Test
 	public void auditLogsDeletionFailureTest() {
 		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn(null);
-		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditServiceImpl.deleteAuditLogs().getSuccessResponseDTO().getMessage());
+		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditServiceImpl.deleteAuditLogs().getErrorResponseDTOs().get(0).getMessage());
 		
 	}
 	
@@ -90,7 +90,7 @@ public class AuditServiceTest {
 	public void auditLogsDeletionExceptionTest() {
 		Mockito.when(auditLogControlDAO.get(Mockito.any())).thenThrow(RuntimeException.class);
 		
-		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditServiceImpl.deleteAuditLogs().getSuccessResponseDTO().getMessage());
+		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditServiceImpl.deleteAuditLogs().getErrorResponseDTOs().get(0).getMessage());
 		
 	}
 
