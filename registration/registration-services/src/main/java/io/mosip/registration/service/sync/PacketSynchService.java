@@ -39,7 +39,7 @@ public interface PacketSynchService {
 	 *
 	 * @param rId 
 	 * 				the registration id
-	 * @return the packet to sync
+	 * @return the packet to sync 
 	 * @throws RegBaseCheckedException 
 	 */
 	String packetSync(String rId) throws RegBaseCheckedException;

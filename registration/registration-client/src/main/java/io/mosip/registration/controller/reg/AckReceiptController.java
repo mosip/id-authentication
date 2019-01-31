@@ -238,20 +238,28 @@ public class AckReceiptController extends BaseController implements Initializabl
 	}
 
 	private void updatePacketStatus() {
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Auto Approval of Packet when EOD process disabled started");
+
 		registrationApprovalService.updateRegistration((getRegistrationDTOFromSession().getRegistrationId()),
 				RegistrationConstants.EMPTY, RegistrationClientStatusCode.APPROVED.getCode());
+		
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Auto Approval of Packet when EOD process disabled ended");
+
 	}
 
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Sync and Upload of created Packet started");
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-			String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
+			 String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
 
 			if (response.equals(RegistrationConstants.EMPTY)) {
 
 				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
 			}
+
 		}
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Sync and Upload of created Packet ended");
 	}
 
 	/**

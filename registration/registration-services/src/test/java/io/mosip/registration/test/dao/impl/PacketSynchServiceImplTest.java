@@ -23,7 +23,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
@@ -64,8 +63,8 @@ public class PacketSynchServiceImplTest {
 	}
 
 	@Test
-	public void testSyncPacketsToServer()
-			throws RegBaseCheckedException, JsonProcessingException, URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+	public void testSyncPacketsToServer() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException,
+			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
@@ -83,7 +82,8 @@ public class PacketSynchServiceImplTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void testHttpException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+	public void testHttpException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException,
+			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
@@ -91,14 +91,59 @@ public class PacketSynchServiceImplTest {
 				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
 		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
 	}
-	
+
 	@Test(expected = RegBaseUncheckedException.class)
-	public void testUnCheckedException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+	public void testUnCheckedException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException,
+			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
-				.thenThrow(new RuntimeException());
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenThrow(new RuntimeException());
 		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));
+	}
+
+	@Test
+	public void packetSyncTest() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
+		List<Registration> synchedPackets = new ArrayList<>();
+		Registration reg = new Registration();
+		reg.setId("123456789");
+		synchedPackets.add(reg);
+
+		List<SyncRegistrationDTO> syncRegistrationDTOs = new ArrayList<>();
+		SyncRegistrationDTO syncRegistrationDTO = new SyncRegistrationDTO();
+		syncRegistrationDTOs.add(syncRegistrationDTO);
+		Object respObj = new Object();
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
+		Mockito.when(packetSynchServiceImpl.syncPacketsToServer(Mockito.anyList())).thenReturn(respObj);
+		Mockito.when(registrationDAO.updatePacketSyncStatus(reg)).thenReturn(new Registration());
+		packetSynchServiceImpl.packetSync("123456789");
+	}
+	
+	@Test(expected = RegBaseUncheckedException.class)
+	public void testsyncPacketException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException{
+		
+		Mockito.when(packetSynchServiceImpl.syncPacketsToServer(Mockito.anyList())).thenThrow(new RuntimeException());
+		packetSynchServiceImpl.packetSync("123456789");
+	}
+	
+	@Test(expected = RegBaseCheckedException.class)
+	public void testsyncPacketException1() throws HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException, JsonProcessingException, URISyntaxException {
+		List<Registration> synchedPackets = new ArrayList<>();
+		Registration reg = new Registration();
+		reg.setId("123456789");
+		synchedPackets.add(reg);
+
+		List<SyncRegistrationDTO> syncRegistrationDTOs = new ArrayList<>();
+		SyncRegistrationDTO syncRegistrationDTO = new SyncRegistrationDTO();
+		syncRegistrationDTOs.add(syncRegistrationDTO);
+		Object respObj = new Object();
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
+		
+		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+		syncDtoList.add(new SyncRegistrationDTO());
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+				.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
+		packetSynchServiceImpl.packetSync("123456789");
+		assertEquals(respObj, packetSynchServiceImpl.syncPacketsToServer(syncDtoList));		
 	}
 }

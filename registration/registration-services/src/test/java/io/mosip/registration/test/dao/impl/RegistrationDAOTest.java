@@ -256,6 +256,21 @@ public class RegistrationDAOTest {
 		registrationDAOImpl.getPacketsToBeSynched(statusCodes);
 	}
 
+	@Test
+	public void testgetRegistrationById() {
+		Registration registration = new Registration();
+		registration.setId("123456789");
+		registration.setClientStatusCode("APPROVED");
+		registration.setCrBy("mosip");
+
+		Mockito.when(registrationRepository.findByClientStatusCodeAndId("APPROVED", "123456789"))
+				.thenReturn(registration);
+		Registration reg = registrationDAOImpl.getRegistrationById("APPROVED", "123456789");
+		assertEquals("123456789", reg.getId());
+		assertEquals("APPROVED", reg.getClientStatusCode());
+		assertEquals("mosip", reg.getCrBy());
+	}
+
 	@AfterClass
 	public static void destroyContexts() {
 		SessionContext.destroySession();
