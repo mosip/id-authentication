@@ -7,8 +7,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -207,6 +209,11 @@ public class CbeffValidator {
 	 */
 	public static Map<String, String> getBDBBasedOnTypeAndSubType(BIRType bir, String type, String subType)
 			throws Exception {
+		
+		if(type==null && subType==null)
+		{
+			return getAllLatestDatafromBIR(bir);
+		}
 		SingleType singleType = null;
 		SingleAnySubtypeType singleAnySubType = null;
 		Long formatType = null;
@@ -245,6 +252,39 @@ public class CbeffValidator {
 				}
 			}
 		}
+		Map<String, String> map = new TreeMap<>(bdbMap);
+		Map<String,String> finalMap = new HashMap<>();
+		for(Map.Entry<String, String> mapEntry :map.entrySet())
+		{
+			String pattern = mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_"));
+			if(mapEntry.getKey().contains(pattern))
+			{
+				finalMap.put( mapEntry.getKey().substring(0, mapEntry.getKey().lastIndexOf("_")), mapEntry.getValue());
+			}
+		}
+		return finalMap;
+	}
+
+	private static Map<String, String> getAllLatestDatafromBIR(BIRType bir) throws Exception {
+		Map<String, String> bdbMap = new HashMap<>();
+		if (bir.getBIR() != null && bir.getBIR().size() > 0) {
+			for (BIRType birType : bir.getBIR()) {
+				BDBInfoType bdbInfo = birType.getBDBInfo();
+
+				if (bdbInfo != null) {
+					List<String> singleSubTypeList = bdbInfo.getSubtype();
+					List<SingleType> singleTypeList = bdbInfo.getType();
+					if(singleSubTypeList.isEmpty())
+					{
+						singleSubTypeList = new ArrayList<>();
+						singleSubTypeList.add("No Subtype");
+					}
+					Long bdbFormatType = bdbInfo.getFormatType();
+					bdbMap.put(String.join(" ", singleTypeList.get(0).toString())+"_"+String.join(" ", singleSubTypeList)+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
+							new String(birType.getBDB(), "UTF-8"));
+				}
+			}
+			}
 		Map<String, String> map = new TreeMap<>(bdbMap);
 		Map<String,String> finalMap = new HashMap<>();
 		for(Map.Entry<String, String> mapEntry :map.entrySet())
