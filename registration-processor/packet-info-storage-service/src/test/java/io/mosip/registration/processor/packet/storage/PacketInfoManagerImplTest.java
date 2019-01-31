@@ -33,7 +33,7 @@ import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
+import io.mosip.registration.processor.core.packet.dto.BiometricException;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
@@ -295,10 +295,10 @@ public class PacketInfoManagerImplTest {
 
 		Applicant applicant = new Applicant();
 		applicant.setLeftEye(lefteye);
-		applicant.setLeftSlap(leftPalm);
+		//applicant.setLeftSlap(leftPalm);
 		applicant.setRightEye(rightEye);
-		applicant.setRightSlap(rightPalm);
-		applicant.setThumbs(bothThumbs);
+		//applicant.setRightSlap(rightPalm);
+		//applicant.setThumbs(bothThumbs);
 		Introducer introducer = new Introducer();
 		introducer.setIntroducerFingerprint(rightThumb);
 		introducer.setIntroducerImage(face);
@@ -320,28 +320,28 @@ public class PacketInfoManagerImplTest {
 		checksum.add(registrationUi);
 		identity.setCheckSum(checksum);
 
-		BiometricExceptionDto thumb = new BiometricExceptionDto();
+		BiometricException thumb = new BiometricException();
 		thumb.setExceptionDescription("Lost in accident");
 		thumb.setExceptionType("Permanent");
 		thumb.setLanguage("eng");
 		thumb.setMissingBiometric("LeftThumb");
 		thumb.setType("fingerprint");
 
-		BiometricExceptionDto leftForefinger = new BiometricExceptionDto();
+		BiometricException leftForefinger = new BiometricException();
 		leftForefinger.setExceptionDescription("Lost in accident");
 		leftForefinger.setExceptionType("Permanent");
 		leftForefinger.setLanguage("eng");
 		leftForefinger.setMissingBiometric("LeftForefinger");
 		leftForefinger.setType("fingerprint");
 
-		BiometricExceptionDto rightEyeexp = new BiometricExceptionDto();
+		BiometricException rightEyeexp = new BiometricException();
 		rightEyeexp.setExceptionDescription("By birth");
 		rightEyeexp.setExceptionType("Permanent");
 		rightEyeexp.setLanguage("eng");
 		rightEyeexp.setMissingBiometric("LeftThumb");
 		rightEyeexp.setType("iris");
 
-		List<BiometricExceptionDto> excptionBiometrics = new ArrayList<>();
+		List<BiometricException> excptionBiometrics = new ArrayList<>();
 		excptionBiometrics.add(rightEyeexp);
 		excptionBiometrics.add(leftForefinger);
 		excptionBiometrics.add(thumb);
@@ -732,7 +732,6 @@ public class PacketInfoManagerImplTest {
 		uinDto.setGenderCode("mâle");
 		uinDto.setLangCode("fr");
 		uinDto.setName("IbrahimAli");
-		uinDto.setPhoneticName("I165");
 		uinDto.setUin("1234567");
 		uinDto.setDob(date);
 
@@ -741,7 +740,6 @@ public class PacketInfoManagerImplTest {
 		uinDto1.setGenderCode("الذكر");
 		uinDto1.setLangCode("ar");
 		uinDto1.setName("ابراهيمعلي");
-		uinDto1.setPhoneticName("A165");
 		uinDto1.setUin("1234567");
 		uinDto1.setDob(date);
 

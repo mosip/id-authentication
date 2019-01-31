@@ -26,7 +26,7 @@ public class FileSizeExceedException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public FileSizeExceedException(String message) {
-		super(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getCode(), message);
+		super(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getCode(), message);
 	}
 
 	/**
@@ -36,6 +36,6 @@ public class FileSizeExceedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public FileSizeExceedException(String message, Throwable cause) {
-		super(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getCode() + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

@@ -1,7 +1,7 @@
 ## kernel-auditmanager-api
 
 
- [Background & Design](../../docs/design/kernel/kernel-auditmanager.md)
+ [Background & Design](../../docs/design/kernel/kernel-auditmanager-api.md)
 
 This api can be used to audit events and operations. Event details are saved as audit in database.
 

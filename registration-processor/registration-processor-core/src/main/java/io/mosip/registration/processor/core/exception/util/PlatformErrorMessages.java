@@ -12,9 +12,8 @@ public enum PlatformErrorMessages {
 	RPR_PKR_PACKET_NOT_YET_SYNC(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "001",
 			"Registration packet is not in Sync with Sync table"),
 
-	/** The rpr pkr packet size greater than limit. */
-	RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
-			"The Registration Packet Size has exceeded the Max Size Limit"),
+	RPR_PKR_INVALID_PACKET_SIZE(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
+			"The Registration Packet Size is invalid"),
 
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),

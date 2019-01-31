@@ -69,6 +69,8 @@ public class PacketInfoDao {
 
 	/** The Constant IS_NOT_NULL. */
 	private static final String IS_NOT_NULL = " IS NOT NULL ";
+	
+	private static final boolean IS_ACTIVE_TRUE = true;
 
 	/**
 	 * Gets the packetsfor QC user.
@@ -224,7 +226,6 @@ public class PacketInfoDao {
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-		demo.setPhoneticName(object.getPhoneticName());
 
 		return demo;
 	}
@@ -281,13 +282,13 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic entities.
 	 *
-	 * @param phoneticName the phonetic name
+	 * @param name the name
 	 * @param gender the gender
 	 * @param dob the dob
 	 * @param langCode the lang code
 	 * @return the all demographic entities
 	 */
-	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String phoneticName, String gender,
+	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender,
 			Date dob, String langCode) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
@@ -295,9 +296,9 @@ public class PacketInfoDao {
 		StringBuilder query = new StringBuilder();
 		query.append(
 				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin " + IS_NOT_NULL + AND);
-		if (phoneticName != null) {
-			query.append(alias + ".phoneticName=:phoneticName ").append(AND);
-			params.put("phoneticName", phoneticName);
+		if (name != null) {
+			query.append(alias + ".name=:name ").append(AND);
+			params.put("name", name);
 
 		}
 		if (gender != null) {
@@ -308,8 +309,11 @@ public class PacketInfoDao {
 			query.append(alias + ".dob=:dob ").append(AND);
 			params.put("dob", dob);
 		}
-		query.append(alias + ".id.langCode=:langCode");
+		query.append(alias + ".id.langCode=:langCode").append(AND);
 		params.put("langCode", langCode);
+		
+		query.append(alias + ".isActive=:isActive");
+		params.put("isActive", IS_ACTIVE_TRUE);
 
 		return demographicDedupeRepository.createQuerySelect(query.toString(), params);
 	}
@@ -317,17 +321,17 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic info dtos.
 	 *
-	 * @param phoneticName the phonetic name
+	 * @param name the name
 	 * @param gender the gender
 	 * @param dob the dob
 	 * @param langCode the lang code
 	 * @return the all demographic info dtos
 	 */
-	public List<DemographicInfoDto> getAllDemographicInfoDtos(String phoneticName, String gender, Date dob,
+	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, Date dob,
 			String langCode) {
 
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(phoneticName,
+		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(name,
 				gender, dob, langCode);
 		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
 			demographicInfoDtos.add(convertEntityToDemographicDto(entity));
