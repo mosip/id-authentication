@@ -129,19 +129,24 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		reasonList = serviceHelper.getReasonList(lastUpdated);
 
 		registrationCenterMachines = serviceHelper.getRegistrationCenterMachines(machineId, lastUpdated);
-		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(machineId, lastUpdated);
-		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(machineId, lastUpdated);
-		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(machineId, lastUpdated);
-		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(machineId, lastUpdated);
+		List<RegistrationCenterMachineDto> registrationCenterMachineDto = registrationCenterMachines.get();
+
+		String regId = getRegistrationCenterId(registrationCenterMachineDto);
+		registrationCenterDevices = serviceHelper.getRegistrationCenterDevices(regId, lastUpdated);
+		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated);
+		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated);
+		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated);
 
 		// set data
 
-		CompletableFuture.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
-				templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
-				biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
-				deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes, deviceTypes,
-				validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
-				registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers).join();
+		CompletableFuture
+				.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
+						templateFileFormats, reasonCategory, reasonList, holidays, blacklistedWords, biometricTypes,
+						biometricAttributes, titles, languages, devices, documentCategories, documentTypes, idTypes,
+						deviceSpecifications, locationHierarchy, machineSpecification, machineType, templateTypes,
+						deviceTypes, validDocumentsMapping, registrationCenterMachines, registrationCenterDevices,
+						registrationCenterMachineDevices, registrationCenterUserMachines, registrationCenterUsers)
+				.join();
 
 		response.setMachineDetails(machineDetails.get());
 		response.setApplications(applications.get());
@@ -169,13 +174,21 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		response.setTemplatesTypes(templateTypes.get());
 		response.setDeviceTypes(deviceTypes.get());
 		response.setValidDocumentMapping(validDocumentsMapping.get());
-		
+
 		response.setRegistrationCenterMachines(registrationCenterMachines.get());
 		response.setRegistrationCenterDevices(registrationCenterDevices.get());
 		response.setRegistrationCenterMachineDevices(registrationCenterMachineDevices.get());
 		response.setRegistrationCenterUserMachines(registrationCenterUserMachines.get());
 		response.setRegistrationCenterUsers(registrationCenterUsers.get());
-		
+
 		return response;
+	}
+
+	private static String getRegistrationCenterId(List<RegistrationCenterMachineDto> registrationCenterMachineDto) {
+		String regId = null;
+		if (registrationCenterMachineDto != null && !registrationCenterMachineDto.isEmpty()) {
+			regId = registrationCenterMachineDto.get(0).getRegCenterId();
+		}
+		return regId;
 	}
 }

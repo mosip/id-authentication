@@ -935,22 +935,16 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	@Async
-	public CompletableFuture<List<RegistrationCenterDeviceDto>> getRegistrationCenterDevices(String machineId,
+	public CompletableFuture<List<RegistrationCenterDeviceDto>> getRegistrationCenterDevices(String regId,
 			LocalDateTime lastUpdated) {
 		List<RegistrationCenterDeviceDto> registrationCenterDeviceDtos = null;
 		List<RegistrationCenterDevice> registrationCenterDevices = null;
-		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
-			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
-				String regID = registrationCenterMachineRepository.findAllByMachineId(machineId).get(0)
-						.getRegistrationCenterMachinePk().getRegCenterId();
-				if (lastUpdated != null) {
-					registrationCenterDevices = registrationCenterDeviceRepository
-							.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regID, lastUpdated);
-				} else {
-					registrationCenterDevices = registrationCenterDeviceRepository.findAllByRegistrationCenter(regID);
-				}
+			if (lastUpdated != null) {
+				registrationCenterDevices = registrationCenterDeviceRepository
+						.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(regId, lastUpdated);
+			} else {
+				registrationCenterDevices = registrationCenterDeviceRepository.findAllByRegistrationCenter(regId);
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
@@ -964,22 +958,17 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	@Async
-	public CompletableFuture<List<RegistrationCenterMachineDeviceDto>> getRegistrationCenterMachineDevices(
-			String machineId, LocalDateTime lastUpdated) {
+	public CompletableFuture<List<RegistrationCenterMachineDeviceDto>> getRegistrationCenterMachineDevices(String regId,
+			LocalDateTime lastUpdated) {
 		List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDeviceDtos = null;
 		List<RegistrationCenterMachineDevice> registrationCenterMachineDevices = null;
-		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
-			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
-				String regId = registrationCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
-				if (lastUpdated != null) {
-					registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
-							.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-				} else {
-					registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
-							.findAllByRegistrationCenterId(regId);
-				}
+			if (lastUpdated != null) {
+				registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
+						.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
+			} else {
+				registrationCenterMachineDevices = registrationCenterMachineDeviceRepository
+						.findAllByRegistrationCenterId(regId);
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
@@ -994,21 +983,16 @@ public class SyncMasterDataServiceHelper {
 
 	@Async
 	public CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> getRegistrationCenterUserMachines(
-			String machineId, LocalDateTime lastUpdated) {
+			String regId, LocalDateTime lastUpdated) {
 		List<RegistrationCenterUserMachineMappingDto> registrationCenterUserMachineMappingDtos = null;
 		List<RegistrationCenterUserMachine> registrationCenterUserMachines = null;
-		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
-			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
-				String regId = registrationCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
-				if (lastUpdated != null) {
-					registrationCenterUserMachines = registrationCenterUserMachineRepository
-							.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-				} else {
-					registrationCenterUserMachines = registrationCenterUserMachineRepository
-							.findAllByRegistrationCenterId(regId);
-				}
+			if (lastUpdated != null) {
+				registrationCenterUserMachines = registrationCenterUserMachineRepository
+						.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
+			} else {
+				registrationCenterUserMachines = registrationCenterUserMachineRepository
+						.findAllByRegistrationCenterId(regId);
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
@@ -1022,21 +1006,16 @@ public class SyncMasterDataServiceHelper {
 	}
 
 	@Async
-	public CompletableFuture<List<RegistrationCenterUserDto>> getRegistrationCenterUsers(String machineId,
+	public CompletableFuture<List<RegistrationCenterUserDto>> getRegistrationCenterUsers(String regId,
 			LocalDateTime lastUpdated) {
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = null;
 		List<RegistrationCenterUser> registrationCenterUsers = null;
-		List<RegistrationCenterMachine> registrationCenterMachines = null;
 		try {
-			registrationCenterMachines = registrationCenterMachineRepository.findAllByMachineId(machineId);
-			if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
-				String regId = registrationCenterMachines.get(0).getRegistrationCenterMachinePk().getRegCenterId();
-				if (lastUpdated != null) {
-					registrationCenterUsers = registrationCenterUserRepository
-							.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
-				} else {
-					registrationCenterUsers = registrationCenterUserRepository.findAllByRegistrationCenterId(regId);
-				}
+			if (lastUpdated != null) {
+				registrationCenterUsers = registrationCenterUserRepository
+						.findAllByRegistrationCenterIdCreatedUpdatedDeleted(regId, lastUpdated);
+			} else {
+				registrationCenterUsers = registrationCenterUserRepository.findAllByRegistrationCenterId(regId);
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),

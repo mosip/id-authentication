@@ -651,7 +651,7 @@ public class SyncDataIntegrationTest {
 		mockSuccess();
 		when(registrationCenterDeviceRepository.findAllLatestByRegistrationCenterCreatedUpdatedDeleted(Mockito.anyString(),
 				Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "1001"))
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-11-01T12:10:01.021Z", "111"))
 				.andExpect(status().isInternalServerError());
 	}
 	
