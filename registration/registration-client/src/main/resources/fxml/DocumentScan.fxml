@@ -23,10 +23,10 @@
 		<ComboBox id="dobDocuments" fx:id="dobDocuments" layoutX="10.0" layoutY="190.0" prefWidth="150.0" promptText="%dobDocuments" styleClass="comboboxStyle" />
 		<VBox id="dobBox" fx:id="dobBox" layoutX="195.0" layoutY="190.0" prefHeight="50.0" prefWidth="250.0" styleClass="scanVBox" />
 		<Button fx:id="dobScanBtn" layoutX="350.0" layoutY="190.0" mnemonicParsing="false" onAction="#scanDobDocument" styleClass="RegbuttonStyle" text="%scan" />
-      <Label layoutX="674.0" layoutY="12.0" text="Preview" />
-      <Button fx:id="docPreviewPrev" disable="true" layoutX="544.0" layoutY="399.0" mnemonicParsing="false" onAction="#previewPrevPage" text="Previous" />
-      <Button fx:id="docPreviewNext" disable="true" layoutX="808.0" layoutY="399.0" mnemonicParsing="false" onAction="#previewNextPage" text="Next" />
-      <Text fx:id="docPageNumber" layoutX="705.0" layoutY="406.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <ImageView fx:id="docPreviewImgView" fitHeight="365.0" fitWidth="448.0" layoutX="523.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="663.0" layoutY="7.0" text="Preview" />
+      <Button fx:id="docPreviewPrev" disable="true" layoutX="526.0" layoutY="398.0" mnemonicParsing="false" onAction="#previewPrevPage" text="Previous" />
+      <Button fx:id="docPreviewNext" disable="true" layoutX="790.0" layoutY="398.0" mnemonicParsing="false" onAction="#previewNextPage" text="Next" />
+      <Text fx:id="docPageNumber" layoutX="686.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="29.0" />
+      <ImageView fx:id="docPreviewImgView" fitHeight="364.0" fitWidth="448.0" layoutX="453.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" />
 		</children>
 </AnchorPane>

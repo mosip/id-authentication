@@ -32,6 +32,7 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -487,8 +488,7 @@ public class DocumentScanController extends BaseController {
 			try {
 				docPages = documentScanFacade.pdfToImages(document, documentName);
 				if (!docPages.isEmpty()) {
-					docPreviewImgView.setImage(
-							convertBytesToImage(documentScanFacade.getImageBytesFromBufferedImage(docPages.get(0))));
+					docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(0), null));
 					docPageNumber.setText("1");
 					if (docPages.size() > 1) {
 						docPreviewNext.setDisable(false);
@@ -541,15 +541,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private void setDocPreview(int index, int pageNumber) {
-		try {
-			docPreviewImgView.setImage(
-					convertBytesToImage(documentScanFacade.getImageBytesFromBufferedImage(docPages.get(index))));
-		} catch (IOException e) {
-			LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					e.getMessage());
-			generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
-			return;
-		}
+		docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(index), null));
 		docPageNumber.setText(String.valueOf(pageNumber));
 	}
 
@@ -758,7 +750,7 @@ public class DocumentScanController extends BaseController {
 		poiBox.getChildren().clear();
 	}
 
-	private void initializePreviewSection() {
+	public void initializePreviewSection() {
 		docPreviewNext.setDisable(true);
 		docPreviewPrev.setDisable(true);
 		docPageNumber.setText("");
