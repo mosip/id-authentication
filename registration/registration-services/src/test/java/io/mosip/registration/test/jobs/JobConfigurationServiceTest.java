@@ -109,7 +109,6 @@ public class JobConfigurationServiceTest {
 		Map<String,Object> applicationMap =new HashMap<>();
 		applicationMap.put(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT, "5");
 		
-		//when(io.mosip.registration.context.ApplicationContext.getInstance()).thenReturn(context);
 		when(context.getApplicationMap()).thenReturn(applicationMap);
 
 
