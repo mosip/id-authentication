@@ -252,7 +252,7 @@ public class AuthenticationController extends BaseController {
 			userNameField = username.getText();
 			loadNextScreen();
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INCORRECT_PWORD);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 		}
 	}
 
