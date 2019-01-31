@@ -95,6 +95,15 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
+		/* Check Network Connectivity */
+		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
+
+		/* check if the machine is offline */
+		if (!isOnline) {
+			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
+			return responseDTO;
+		}
+		
 		/* prepare request DTO to pass on through REST call */
 		PreRegistrationDataSyncDTO preRegistrationDataSyncDTO = prepareDataSyncRequestDTO();
 
@@ -178,12 +187,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		/* Check in Database whether required record already exists or not */
 		PreRegistrationList preRegistration = preRegistrationDAO.get(preRegistrationId);
 
-		/* Has Network Connectivity */
+		/* Check Network Connectivity */
 		boolean isOnline = RegistrationAppHealthCheckUtil.isNetworkAvailable();
 
 		/* check if the packet is not available in db and the machine is offline */
 		if (!isOnline && preRegistration == null) {
-			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_TO_GET_PACKET_ERROR, null);
+			setErrorResponse(responseDTO, RegistrationConstants.PRE_REG_PACKET_NETWORK_ERROR, null);
 			return;
 		}
 
