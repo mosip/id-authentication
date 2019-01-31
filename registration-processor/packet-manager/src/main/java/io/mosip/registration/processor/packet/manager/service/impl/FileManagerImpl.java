@@ -36,8 +36,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
 	/** The path. */
-	@Value("${registration.processor.FTP_ZONE}")
-	private String path;
+//	@Value("${registration.processor.FTP_ZONE}")
+	//private String path;
 
 	/** The env. */
 	@Autowired
@@ -174,7 +174,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public String getCurrentDirectory() {
-		return path;
+	//	return path;
+		return null;
 	}
 
 	/*

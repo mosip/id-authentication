@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;

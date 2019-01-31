@@ -41,12 +41,12 @@ public enum DirectoryPathDto {
 		}
 	},
 	/** The ftp zone. */
-	FTP_ZONE {
+	/*FTP_ZONE {
 		@Override
 		public String toString() {
 			return "registration.processor.FTP_ZONE";
 		}
-	},
+	},*/
 	/** The archive location. */
 	ARCHIVE_LOCATION {
 		@Override
