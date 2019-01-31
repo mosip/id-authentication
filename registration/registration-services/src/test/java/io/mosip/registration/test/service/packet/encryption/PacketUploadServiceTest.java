@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.velocity.runtime.Runtime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -123,5 +124,96 @@ public class PacketUploadServiceTest {
 		.thenThrow(new RuntimeException());
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
+	
+	@Test
+	public void testUploadPacket() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		Registration registration=new Registration();
+		List<Registration> regList=new ArrayList<>();
+		registration.setId("123456789");
+		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
+		registration.setUploadCount((short)0);
+		regList.add(registration);
+		
+		Object respObj = new Object();
+		respObj="PACKET_UPLOADED_TO_VIRUS_SCAN";
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenReturn(respObj);
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
+		List<Registration> packetList=new ArrayList<>();
+		Registration registration1 = new Registration();
+		packetList.add(registration);
+		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
+		packetUploadServiceImpl.uploadPacket("123456789");
 
+	}
+	
+	@Test
+	public void testUploadPacket1() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		Registration registration=new Registration();
+		List<Registration> regList=new ArrayList<>();
+		registration.setId("123456789");
+		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
+		registration.setUploadCount((short)0);
+		regList.add(registration);
+		
+		Object respObj = new Object();
+		respObj="PACKET_FAILED_TO_UPLOAD";
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenReturn(respObj);
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
+		List<Registration> packetList=new ArrayList<>();
+		Registration registration1 = new Registration();
+		packetList.add(registration);
+		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
+		packetUploadServiceImpl.uploadPacket("123456789");
+
+	}
+	
+	@Test
+	public void testPacketNotExists() throws RegBaseCheckedException, URISyntaxException {
+		Registration registration=new Registration();
+		List<Registration> regList=new ArrayList<>();
+		registration.setId("123456789");
+		registration.setAckFilename("..//registration-services/src/test/resources/1234567895_Ack.png");
+		registration.setUploadCount((short)0);
+		regList.add(registration);
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
+		packetUploadServiceImpl.uploadPacket("123456789");
+	}
+	
+	@Test(expected=RegBaseUncheckedException.class)
+	public void testRuntimeException1() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		Registration registration=new Registration();
+		List<Registration> regList=new ArrayList<>();
+		registration.setId("123456789");
+		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
+		registration.setUploadCount((short)0);
+		regList.add(registration);
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
+		
+		File f=new File("");
+		Object respObj = new Object();
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		.thenThrow(new RuntimeException());
+		packetUploadServiceImpl.uploadPacket("12345");
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
+
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void testRuntimeException2() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		Registration registration=new Registration();
+		List<Registration> regList=new ArrayList<>();
+		registration.setId("123456789");
+		registration.setAckFilename("..//registration-services/src/test/resources/123456789_Ack.png");
+		registration.setUploadCount((short)0);
+		regList.add(registration);
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
+		
+		File f=new File("");
+		Object respObj = new Object();
+		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
+		packetUploadServiceImpl.uploadPacket("12345");
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
+
+	}
 }

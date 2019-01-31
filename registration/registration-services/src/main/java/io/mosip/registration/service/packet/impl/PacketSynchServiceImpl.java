@@ -179,15 +179,16 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 				updateSyncStatus(registrations);
 
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
-			if (e instanceof RegBaseUncheckedException) {
 
-				throw new RegBaseCheckedException(
-						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
-						RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
-			} else {
-				syncErrorStatus = e.getMessage();
-			}
+		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
+			LOGGER.error("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					exception.getMessage());
+
+			syncErrorStatus = exception.getMessage();
+
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 		return syncErrorStatus;
 	}

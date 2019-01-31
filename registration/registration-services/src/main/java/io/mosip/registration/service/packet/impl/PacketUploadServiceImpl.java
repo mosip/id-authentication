@@ -170,21 +170,16 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 					packetUploadList.add(syncedPacket);
 				}
 			}
-		} catch (RegBaseCheckedException e) {
+		} catch (RegBaseCheckedException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, "Error while pushing packets to the server");
+					APPLICATION_ID, "Error while pushing packets to the server" + exception.getMessage());
 			syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-			syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
 			packetUploadList.add(syncedPacket);
-		} catch (URISyntaxException e) {
-			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_URI_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, "Error in uri syntax");
-		} catch (RuntimeException e) {
+		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, "Run time error while connecting to the server");
+					APPLICATION_ID, "Run time error while connecting to the server" + runtimeException.getMessage());
 
 			syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-			syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
 			packetUploadList.add(syncedPacket);
 		}
 		updateStatus(packetUploadList);

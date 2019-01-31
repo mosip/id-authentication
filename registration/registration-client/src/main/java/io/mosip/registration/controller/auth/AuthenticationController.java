@@ -71,6 +71,12 @@ public class AuthenticationController extends BaseController {
 	@FXML
 	private AnchorPane faceBasedLogin;
 	@FXML
+	private AnchorPane errorPane;
+	@FXML
+	private Label errorLabel;
+	@FXML
+	private Label errorText;
+	@FXML
 	private Label otpValidity;
 	@FXML
 	private Label otpLabel;
@@ -402,9 +408,9 @@ public class AuthenticationController extends BaseController {
 					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 					.equals(RegistrationConstants.ENABLE)
 					&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO)) {
+
+				enableErrorPage();
 				
-				generateAlert(RegistrationConstants.ERROR,
-						RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
 			} else {
 				loadAuthenticationScreen(authenticationType);
 			}
@@ -459,6 +465,27 @@ public class AuthenticationController extends BaseController {
 			
 			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
 	}
+	
+	/**
+	 * to enable the OTP based authentication mode and disable rest of modes
+	 */
+	private void enableErrorPage() {
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling OTP based Authentication Screen in UI");
+
+		pwdBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		fingerprintBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
+		errorPane.setVisible(true);
+		errorPane.setVisible(true);
+		errorText.setText(RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
+		errorText.setWrapText(true);
+		if (isSupervisor) {
+			errorLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+		} 
+	}
 
 	/**
 	 * to enable the OTP based authentication mode and disable rest of modes
@@ -467,6 +494,7 @@ public class AuthenticationController extends BaseController {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
@@ -496,6 +524,7 @@ public class AuthenticationController extends BaseController {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Password based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -523,6 +552,7 @@ public class AuthenticationController extends BaseController {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Fingerprint based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		fingerprintBasedLogin.setVisible(true);
 		faceBasedLogin.setVisible(false);
 		irisBasedLogin.setVisible(false);
@@ -549,6 +579,7 @@ public class AuthenticationController extends BaseController {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		irisBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(false);
@@ -574,6 +605,7 @@ public class AuthenticationController extends BaseController {
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		faceBasedLogin.setVisible(true);
 		irisBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
