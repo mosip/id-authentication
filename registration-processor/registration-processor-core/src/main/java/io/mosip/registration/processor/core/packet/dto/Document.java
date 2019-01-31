@@ -2,30 +2,20 @@ package io.mosip.registration.processor.core.packet.dto;
 
 /**
  * This class contains the attributes to be displayed for Document object in
- * PacketMetaInfo JSON.
- *
+ * PacketMetaInfo JSON
+ * 
  * @author Balaji Sridharan
  * @since 1.0.0
  */
 public class Document {
 
-	/** The document name. */
 	private String documentName;
-
-	/** The document category. */
 	private String documentCategory;
-
-	/** The document owner. */
 	private String documentOwner;
-
-	/** The document type. */
 	private String documentType;
-
 	private String format;
 
 	/**
-	 * Gets the document name.
-	 *
 	 * @return the documentName
 	 */
 	public String getDocumentName() {
@@ -33,8 +23,6 @@ public class Document {
 	}
 
 	/**
-	 * Sets the document name.
-	 *
 	 * @param documentName
 	 *            the documentName to set
 	 */
@@ -43,8 +31,6 @@ public class Document {
 	}
 
 	/**
-	 * Gets the document category.
-	 *
 	 * @return the documentCategory
 	 */
 	public String getDocumentCategory() {
@@ -52,8 +38,6 @@ public class Document {
 	}
 
 	/**
-	 * Sets the document category.
-	 *
 	 * @param documentCategory
 	 *            the documentCategory to set
 	 */
@@ -62,8 +46,6 @@ public class Document {
 	}
 
 	/**
-	 * Gets the document owner.
-	 *
 	 * @return the documentOwner
 	 */
 	public String getDocumentOwner() {
@@ -71,8 +53,6 @@ public class Document {
 	}
 
 	/**
-	 * Sets the document owner.
-	 *
 	 * @param documentOwner
 	 *            the documentOwner to set
 	 */
@@ -81,8 +61,6 @@ public class Document {
 	}
 
 	/**
-	 * Gets the document type.
-	 *
 	 * @return the documentType
 	 */
 	public String getDocumentType() {
@@ -90,8 +68,6 @@ public class Document {
 	}
 
 	/**
-	 * Sets the document type.
-	 *
 	 * @param documentType
 	 *            the documentType to set
 	 */

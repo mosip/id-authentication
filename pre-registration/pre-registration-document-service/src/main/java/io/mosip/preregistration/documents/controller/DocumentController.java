@@ -75,7 +75,7 @@ public class DocumentController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document uploaded successfully"),
 			@ApiResponse(code = 400, message = "Document uploaded failed") })
 	public ResponseEntity<MainListResponseDTO<DocumentResponseDTO>> fileUpload(
-			@RequestPart(value = "Document request DTO", required = true) String reqDto,
+			@RequestPart(value = "Document request", required = true) String reqDto,
 			@RequestPart(value = "file", required = true) MultipartFile file) {
 
 		log.info("sessionId", "idType", "id",

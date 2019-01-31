@@ -1,6 +1,8 @@
 package io.mosip.kernel.keymanager.softhsm.test;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -63,28 +65,34 @@ public class KeyStoreImplTest {
 
 	@Test
 	public void testStoreAsymmetricKey() throws Exception {
-
 		KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA", provider);
 		keyGenerator.initialize(2048, random);
-
-		keyStoreImpl.storeAsymmetricKey(keyGenerator.generateKeyPair(), "alias", LocalDateTime.now(),
-				LocalDateTime.now().plusDays(100));
-
+		KeyPair keyPair = keyGenerator.generateKeyPair();
+		keyStoreImpl.storeAsymmetricKey(keyPair, "alias", LocalDateTime.now(), LocalDateTime.now().plusDays(100));
+		X509Certificate[] chain = new X509Certificate[1];
+		chain[0] = CertificateUtility.generateX509Certificate(keyPair, "commonName", "organizationalUnit",
+				"organization", "country", LocalDateTime.now(), LocalDateTime.now().plusDays(100));
+		PrivateKeyEntry keyEntry = new PrivateKeyEntry(keyPair.getPrivate(), chain);
+		when(keyStore.entryInstanceOf("alias", PrivateKeyEntry.class)).thenReturn(true);
+		when(keyStore.getEntry(Mockito.anyString(), Mockito.any())).thenReturn(keyEntry);
+		assertThat(keyStoreImpl.getPrivateKey("alias"), isA(PrivateKey.class));
 	}
 
 	@Test
 	public void testStoreSymmetricKey() throws Exception {
-
 		javax.crypto.KeyGenerator keyGenerator = javax.crypto.KeyGenerator.getInstance("AES", provider);
 		keyGenerator.init(256, random);
-
+		SecretKeyEntry secretKeyEntry = new SecretKeyEntry(keyGenerator.generateKey());
 		keyStoreImpl.storeSymmetricKey(keyGenerator.generateKey(), "alias");
-
+		when(keyStore.entryInstanceOf("alias", SecretKeyEntry.class)).thenReturn(true);
+		when(keyStore.getEntry(Mockito.anyString(), Mockito.any())).thenReturn(secretKeyEntry);
+		assertThat(keyStoreImpl.getSymmetricKey("alias"), isA(Key.class));
 	}
 
 	@Test
 	public void testDeleteKey() throws Exception {
 		keyStoreImpl.deleteKey("alias");
+		assertThat(keyStoreImpl.getKey("alias"), is(nullValue()));
 	}
 
 	@Test

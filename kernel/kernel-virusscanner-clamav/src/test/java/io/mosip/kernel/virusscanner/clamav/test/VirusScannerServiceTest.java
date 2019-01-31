@@ -67,28 +67,28 @@ public class VirusScannerServiceTest {
 
 	@Test
 	public void infectedFileCheck() throws ClamavException{
-			Mockito.when(clamavClient.scan(file.toPath())).thenReturn(virusFound);
+			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusFound);
 			Boolean result = virusScanner.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
 
 	@Test
 	public void nonInfectedFileCheck() throws ClamavException{
-			Mockito.when(clamavClient.scan(file.toPath())).thenReturn(virusNotFound);
+			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusNotFound);
 			Boolean result = virusScanner.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
 	}
 
 	@Test
 	public void infectedFolderCheck() throws ClamavException{
-			Mockito.when(clamavClient.scan(folder.toPath(), false)).thenReturn(virusFound);
+			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusFound);
 			Boolean result = virusScanner.scanFolder(folder.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
 
 	@Test
 	public void nonInfectedFolderCheck() throws ClamavException{
-			Mockito.when(clamavClient.scan(folder.toPath(), false)).thenReturn(virusNotFound);
+			Mockito.when(clamavClient.scan(any(FileInputStream.class))).thenReturn(virusNotFound);
 			Boolean result = virusScanner.scanFolder(folder.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
 	

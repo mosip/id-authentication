@@ -1,3 +1,5 @@
+\c mosip_regprc sysadmin
+
 \ir ddl/regprc-applicant_demographic.sql
 \ir ddl/regprc-applicant_document.sql
 \ir ddl/regprc-applicant_fingerprint.sql

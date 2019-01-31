@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjobservices;
 
 import org.springframework.boot.SpringApplication;

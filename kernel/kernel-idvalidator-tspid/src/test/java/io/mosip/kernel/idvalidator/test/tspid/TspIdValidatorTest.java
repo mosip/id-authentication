@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -15,21 +16,27 @@ import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 @SpringBootTest
 public class TspIdValidatorTest {
 
+	@Value("${mosip.kernel.tspid.test.valid-tspid}")
+	private String validTspId;
+
+	@Value("${mosip.kernel.tspid.test.invalid-tspid}")
+	private String invalidTspId;
+	
 	@Autowired
 	private IdValidator<String> tspIdValidatorImpl;
 
 	@Test
 	public void validIdTest() {
-		assertThat(tspIdValidatorImpl.validateId("1000"), is(true));
+		assertThat(tspIdValidatorImpl.validateId(validTspId), is(true));
 
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void invalidTspIdTest() {
 
-		tspIdValidatorImpl.validateId("100");
+		tspIdValidatorImpl.validateId(invalidTspId);
 	}
-	
+
 	@Test(expected = InvalidIDException.class)
 	public void nullTspIdTest() {
 		tspIdValidatorImpl.validateId(null);

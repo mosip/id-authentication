@@ -1,6 +1,6 @@
 ## kernel-idgenerator-prid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-prid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-prid.md)
 
 [API Documentation]
 
@@ -13,11 +13,27 @@
  
 [application-dev.properties](../../config/application-dev.properties)
  
- **Database properties**
- 
-schema:ids
+```
+#-----------------------------PRID Properties------------------------------------
+# length of the prid
+mosip.kernel.prid.length=14
 
-table:prid 
+# Upper bound of number of digits in sequence allowed in id. For example if
+# limit is 3, then 12 is allowed but 123 is not allowed in id (in both
+# ascending and descending order)
+mosip.kernel.prid.sequence-limit=3
+
+# Number of digits in repeating block allowed in id. For example if limit is 2,
+# then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
+mosip.kernel.prid.repeating-block-limit=3
+
+
+# Lower bound of number of digits allowed in between two repeating digits in
+# id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
+# digit)
+mosip.kernel.prid.repeating-limit=2
+
+```
  
  
 **Maven Dependency**
@@ -33,10 +49,7 @@ table:prid
 ```
  
 **Description**
-
-1.**ADMIN** _can only configure the length_ 
-
-2.Logic behind generating prid
+Logic behind generating prid
   1. _The  Id should not be generated sequentially._
   2. _cannot not have repeated numbers,cannot contain any repeating numbers for configured number of digit or more than configured number of digits in property file._
   3. _cannot have repeated block of numbers for configured number of digits in property file._ 
@@ -54,9 +67,9 @@ table:prid
 	  String generatedPrid = pridGeneratorImpl.generateId());
 	  
 	  
-**Sample PRId**
+**Sample PRID:"**
 	  
-_Generated Prid_: 58361782748604
+Generated Prid: 58361782748604
 	
    
    

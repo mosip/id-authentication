@@ -1,8 +1,8 @@
 ## kernel-idgenerator-rid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-rid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-rid.md)
 
- [API Documentation <TBA>](TBA)
+ [API Documentation]
  
  ```
  mvn javadoc:javadoc
@@ -12,6 +12,21 @@
  **Properties to be added in Spring application environment using this component**
 
 [application-dev.properties](../../config/application-dev.properties)
+
+
+```
+#-----------------------------RID Properties---------------------------------------
+# length of the rid
+mosip.kernel.rid.length=29
+# length of the center id
+mosip.kernel.rid.centerid-length=5
+#length of the machine id
+mosip.kernel.rid.machineid-length=5
+# length of the timestamp
+mosip.kernel.rid.timestamp-length=14
+
+```
+
 
  
 **Database properties**

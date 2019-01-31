@@ -1,12 +1,11 @@
 {
-                             "id": "mosip.pre-registration.datasync",
-                             "ver" : "1.0",
-                             "reqTime" : "2018-10-17T07:22:57.086+0000",
-                             "request" :
-                             {
-                                           "registartion-client-id" : "59276903416082",
-                                           "from-date" : "2018-10-07T07:22:57.086+0000",
-                                           "to-date" : "2018-10-07T07:22:57.086+0000",
-                                           "user-id" : "Officer"
-                             }
+  "id": "mosip.pre-registration.datasync",
+  "ver": "1.0",
+  "reqTime": "2019-01-17T05:23:08.019Z",
+  "request": {
+    "registartion-client-id":"12",
+    "from-date":"2019-01-01 00:00:00",
+    "to-date":"2019-01-31 00:00:00",
+    "user-id":"Officer"
+  }
 }

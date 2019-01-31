@@ -2,15 +2,57 @@
 
 [Background & Design](../../docs/design/kernel/kernel-otpmanager.md)
 
- 
-[API Documentation]
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#7-otp-manager)
 
- ```
-localhost:8085/swagger-ui.html
+Default Port and Context Path
 
- ```
+```
+server.port=8085
+server.servlet.path=/otpmanager
+
+```
+
+localhost:8085/otpmanager/swagger-ui.html
+
+
+**Application Properties**
+
+[kernel-otpmanager-service-dev.properties](../../config/kernel-otpmanager-service-dev.properties)
+
+
+```
+javax.persistence.jdbc.driver=org.h2.Driver
+javax.persistence.jdbc.url=jdbc:h2\:mem\:testdb;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS kernel
+javax.persistence.jdbc.user=sa
+javax.persistence.jdbc.password=
+
+
+#OTP Properties
+#-------------------------------
+#the default length for otp(in number)
+mosip.kernel.otp.default-length=6
+#the default crypto function
+#It can be: HmacSHA512, HmacSHA256, HmacSHA1.
+mosip.kernel.otp.mac-algorithm=HmacSHA512
+#the default shared key
+mosip.kernel.otp.shared-key=123456
+#the OTP expires after the given time(in seconds).
+mosip.kernel.otp.expiry-time=40
+#the key is freezed for the given time(in seconds).
+mosip.kernel.otp.key-freeze-time=40
+#the number of validation attempts allowed(in number).
+#mosip.kernel.otp.validation-attempt-threshold =3 means , the validation and generation will be blocked from 4th time.
+mosip.kernel.otp.validation-attempt-threshold=3
+#minimum length of key(in number).
+mosip.kernel.otp.min-key-length=3
+#maximum length of key(in number).
+mosip.kernel.otp.max-key-length=255
+
+
+```
  
-3- Usage Sample
+
+** Usage Sample**
  
  Usage1:
  

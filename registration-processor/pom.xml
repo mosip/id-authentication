@@ -116,8 +116,8 @@
 		<kernel.emailnotification.service.version>0.7.0</kernel.emailnotification.service.version>
 		<kernel.smsnotification.service.version>0.7.0</kernel.smsnotification.service.version>
 		<kernel.idvalidator.version>0.7.0</kernel.idvalidator.version>
-		<kernel.clamav.version>0.7.0</kernel.clamav.version>
-
+		<kernel.clamav.version>0.8.0</kernel.clamav.version>
+		
 		<sonar.coverage.exclusions>**/dto/**,
 		**/exception/*Exception.java,
 		**/core/code/*.java,
@@ -148,7 +148,38 @@
 **/registration/processor/core/packet/dto/demographicinfo/identify/*.java,
 **/registration/processor/core/packet/dto/regcentermachine/*.java,
 **/registration/processor/core/util/*.java,
-**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java
+**/registration/processor/filesystem/ceph/adapter/impl/exception/handler/*.java,
+
+**/registration/processor/quality/check/client/*.java,
+**/registration/processor/quality/check/code/*.java,
+**/registration/processor/quality/check/config/*.java,
+**/registration/processor/quality/check/entity/*.java,
+**/registration/processor/quality/check/exception/*.java,
+**/registration/processor/quality/check/*.java,
+**/registration/processor/status/api/RegistrationStatusApiApplication.java,
+**/registration/processor/camel/bridge/MosipCamelBridgeApplication.java,
+**/registration/processor/message/sender/*.java,
+**/registration/processor/message/sender/utility/*.java,
+**/registration/processor/core/logger/*.java,
+**/registration/processor/core/notification/template/mapping/*.java,
+**/registration/processor/bio/dedupe/api/*.java,
+**/registration/processor/bio/dedupe/exception/*.java,
+**/registration/processor/packet/storage/utils/*.java,
+**/registration/processor/packet/storage/handler/*.java,
+**/registration/processor/packet/storage/storage/*.java,
+**/registration/processor/packet/storage/exception/*.java,
+**/registration/processor/status/repositary/*.java,
+**/registration/processor/status/entity/*.java,
+**/registration/processor/stages/osivalidator/utils/*.java,
+**/registration/processor/virus/scanner/job/*.java,
+**/registration/processor/virus/scanner/job/util/*.java,
+**/registration/processor/packet/receiver/util/*.java,
+**/registration/processor/packet/uploader/*.java,
+**/registration/processor/biodedupe/*.java,
+**/registration/processor/biodedupe/stage/utils/*.java,
+
+**/registration/processor/abis/**/*.java
+
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 

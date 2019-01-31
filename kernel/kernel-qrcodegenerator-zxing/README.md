@@ -71,6 +71,6 @@ QrCodeGenerator<QrVersion> generator;
 
 *QR Code Sample*
 
-![kernel_qrcodesample.png](../../design/_images/kernel_qrcodesample.png)
+![kernel_qrcodesample.png](../../docs/design/kernel/_images/kernel_qrcodesample.png)
 
 
