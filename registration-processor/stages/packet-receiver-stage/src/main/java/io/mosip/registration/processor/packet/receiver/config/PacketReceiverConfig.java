@@ -81,7 +81,7 @@ public class PacketReceiverConfig {
 	 * @return
 	 */
 	@Bean
-	public PacketReceiverService<File, MessageDTO, RoutingContext> getPacketReceiverService(){
+	public PacketReceiverService<File, MessageDTO> getPacketReceiverService(){
 		return new PacketReceiverServiceImpl();
 	}
 	

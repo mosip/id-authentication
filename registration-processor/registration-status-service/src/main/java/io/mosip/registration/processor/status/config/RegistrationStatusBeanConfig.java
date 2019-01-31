@@ -11,16 +11,20 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.sql.DataSource;
+
 import org.springframework.boot.web.client.RestTemplateBuilder;
 
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -44,7 +48,7 @@ import io.mosip.registration.processor.status.service.impl.TransactionServiceImp
 
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
-@Import({ HibernateDaoConfig.class })
+//@Import({ HibernateDaoConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration.processor", repositoryBaseClass = HibernateRepositoryImpl.class)
 public class RegistrationStatusBeanConfig {
 
@@ -68,7 +72,8 @@ public class RegistrationStatusBeanConfig {
 		pspc.setLocations(appResources);
 		return pspc;
 
-	}
+	}	
+	
 
 	public List<String> getAppNames(Environment env) {
 		String names = env.getProperty("spring.application.name");
@@ -120,10 +125,6 @@ public class RegistrationStatusBeanConfig {
 	public SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> getSyncRegistrationService(){
 		return new SyncRegistrationServiceImpl();
 	}
-//	@Bean
-//	public RegistrationProcessorIdentity getRegProcessorIdentityJson() {
-//		return new RegistrationProcessorIdentity();
-//	}
 	
 	@Bean
 	public InternalRegistrationStatusDto internalRegistrationStatusDto() {

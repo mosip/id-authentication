@@ -44,7 +44,7 @@ import io.vertx.ext.web.RoutingContext;
  */
 @RefreshScope
 @Component
-public class PacketReceiverServiceImpl implements PacketReceiverService<File, MessageDTO, RoutingContext> {
+public class PacketReceiverServiceImpl implements PacketReceiverService<File, MessageDTO> {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverServiceImpl.class);
@@ -89,7 +89,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * java.lang.Object)
 	 */
 	@Override
-	public MessageDTO storePacket(File file, RoutingContext ctx) {
+	public MessageDTO storePacket(File file) {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
 
@@ -108,17 +108,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"Registration Packet is Not yet sync in Sync table.");
 
-				ctx.put("exception", PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC);
 				throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 			}
 
 			if (file.length() > getMaxFileSize()) {
-				ctx.put("exception", PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT);
 				throw new FileSizeExceedException(
 						PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 			}
 			if (!(fileOriginalName.endsWith(extention))) {
-				ctx.put("exception", PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT);
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} else if (!(isDuplicatePacket(registrationId))) {
 				try {
@@ -158,7 +155,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							registrationId);
 				}
 			} else {
-				ctx.put("exception", PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED);
 				new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 			}
 		}

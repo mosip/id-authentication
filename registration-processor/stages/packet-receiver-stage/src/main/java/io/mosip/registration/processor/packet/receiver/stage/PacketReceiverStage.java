@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -47,14 +48,14 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * The Packet Receiver Service
 	 */
 	@Autowired
-	public PacketReceiverService<File, MessageDTO, RoutingContext> packetReceiverService;
+	public PacketReceiverService<File, MessageDTO> packetReceiverService;
 
 	/**
 	 * Exception handler
 	 */
 	@Autowired
 	public GlobalExceptionHandler globalExceptionHandler;
-
+	
 	/**
 	 * The mosip event bus.
 	 */
@@ -74,6 +75,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @see io.vertx.core.AbstractVerticle#start()
 	 * 
 	 */
+	
 	@Override
 	public void start() {
 		Router router = this.postUrl(vertx);
@@ -92,21 +94,17 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		}).failureHandler(failureHandler -> {
 			String response = globalExceptionHandler.handler(failureHandler.failure());
 			this.setResponse(failureHandler, response);
-			//failureHandler.response().putHeader("content-type", "application/json").end(response.toString());
 		});
 		
 		
 		
 		
 		router.get("/health").handler(ctx -> {
-			throw new DuplicateUploadRequestException("DuplicateUploadRequestException Exception");
-			//this.setResponse(ctx, "Server is up and running");
+			this.setResponse(ctx, "Server is up and running");
 			
 		}).failureHandler(context->{
 			String obj = context.failure().getMessage();
-			//this.setResponse(context, obj);
-			context.response().putHeader("content-type", "application/json").end(obj);
-			System.out.println(obj);
+			this.setResponse(context, obj);
 		});
 
 	}
@@ -125,7 +123,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					new File(new File(f.uploadedFileName()).getParent() + "/" + f.fileName()));
 			FileUtils.forceDelete(new File(f.uploadedFileName()));
 			file = new File(new File(f.uploadedFileName()).getParent() + "/" + f.fileName());
-			MessageDTO messageDTO = packetReceiverService.storePacket(file, ctx);
+			MessageDTO messageDTO = packetReceiverService.storePacket(file);
 			if (messageDTO.getIsValid()) {
 				this.setResponse(ctx, RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN);
 				this.sendMessage(messageDTO);
