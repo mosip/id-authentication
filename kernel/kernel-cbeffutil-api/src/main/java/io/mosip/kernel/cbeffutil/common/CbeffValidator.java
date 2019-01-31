@@ -31,6 +31,7 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * @author Ramadurai Pandian
@@ -238,16 +239,16 @@ public class CbeffValidator {
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
-								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
+								+ String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), CryptoUtil.encodeBase64String(birType.getBDB()));
 					} else if (singleType == null && singleSubTypeList.contains(singleAnySubType.value())) {
 						List<String> singleTypeStringList = convertToList(singleTypeList);
 						bdbMap.put(String.join(" ", singleTypeStringList)+"_"+String.join(" ", singleSubTypeList)
-								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), new String(birType.getBDB(), "UTF-8"));
+								+ "_" + String.valueOf(bdbFormatType)+"_"+bdbInfo.getCreationDate().getTime(), CryptoUtil.encodeBase64String(birType.getBDB()));
 					} else if (singleTypeList.contains(singleType)
 							&& singleSubTypeList.contains(singleAnySubType != null ? singleAnySubType.value() : null)
 							&& formatMatch) {
 						bdbMap.put(singleType.toString()+"_"+singleAnySubType.value()+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
-								new String(birType.getBDB(), "UTF-8"));
+								CryptoUtil.encodeBase64String(birType.getBDB()));
 					}
 				}
 			}
@@ -281,7 +282,7 @@ public class CbeffValidator {
 					}
 					Long bdbFormatType = bdbInfo.getFormatType();
 					bdbMap.put(String.join(" ", singleTypeList.get(0).toString())+"_"+String.join(" ", singleSubTypeList)+ "_" + String.valueOf(bdbFormatType)+ "_"+bdbInfo.getCreationDate().getTime(),
-							new String(birType.getBDB(), "UTF-8"));
+							CryptoUtil.encodeBase64String(birType.getBDB()));
 				}
 			}
 			}
