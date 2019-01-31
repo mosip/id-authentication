@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -441,11 +442,10 @@ public class UMCValidatorTest {
 
 		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
-	
+
 	@Test
-	public void isValidUMCFailureForTimestampTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+	public void isValidUMCFailureForTimestampTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -478,25 +478,25 @@ public class UMCValidatorTest {
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 
 		offrepdto.setRegistrationCenters(officerucmdtos);
-		
+
 		byte[] responseBody = "{\"timestamp\":1548931133376,\"status\":400,\"errors\":[{\"errorCode\":\"KER-MSD-033\",\"errorMessage\":\"Invalid date format Text '2019-01-23T17:15:15.463' could not be parsed at index 23\"}]}"
 				.getBytes();
-	
+
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request",null, responseBody, null);
+				"Invalid request", null, responseBody, null);
 		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-	
-		
+
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenThrow(apisResourceAccessException);
+				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto)
+				.thenThrow(apisResourceAccessException);
 
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void isValidUMCFailureForRegistrationCenterIDTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+	public void isValidUMCFailureForRegistrationCenterIDTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -529,25 +529,25 @@ public class UMCValidatorTest {
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 
 		offrepdto.setRegistrationCenters(officerucmdtos);
-		
+
 		byte[] responseBody = "{\"timestamp\":1548931752579,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-042\",\"errorMessage\":\"Registration Center not found\"}]}"
 				.getBytes();
-	
+
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request",null, responseBody, null);
+				"Invalid request", null, responseBody, null);
 		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-	
-		
+
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenThrow(apisResourceAccessException);
+				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto)
+				.thenThrow(apisResourceAccessException);
 
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
-	
+
 	@Test
-	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
+	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
 		RegistrationCenterDto rcdto = new RegistrationCenterDto();
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
@@ -580,15 +580,15 @@ public class UMCValidatorTest {
 		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 
 		offrepdto.setRegistrationCenters(officerucmdtos);
-		
+
 		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
 		test.setStatus("Rejected");
-		
+
 		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
 		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
 		deviceHistoryDto.setIsActive(true);
 		deviceHistoryDetails.add(deviceHistoryDto);
-		
+
 		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
 		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
 
@@ -596,10 +596,349 @@ public class UMCValidatorTest {
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
-		registrationCenterDeviceHistoryResponseDto.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test).thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
+				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
 
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
+
+	@Test
+	public void validateDeviceMappedWithCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-133\",\"errorMessage\":\"Device History not found\"}]}"
+				.getBytes();
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", response, StandardCharsets.UTF_8);
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("12334");
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Accepted");
+
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
+				.thenReturn(deviceHistoryResponsedto).thenThrow(apisResourceAccessException);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+	}
+
+	@Test
+	public void validateDeviceFailureTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"Device History not found\"}]}"
+				.getBytes();
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", response, StandardCharsets.UTF_8);
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("12334");
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Accepted");
+
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
+				.thenThrow(apisResourceAccessException).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+	}
+
+	@Test
+	public void validateRegistrationCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"center History not found\"}]}"
+				.getBytes();
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", response, StandardCharsets.UTF_8);
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("12334");
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Accepted");
+
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
+				.thenThrow(apisResourceAccessException).thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto)
+				.thenReturn(test).thenReturn(deviceHistoryResponsedto)
+				.thenReturn(registrationCenterDeviceHistoryResponseDto);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+	}
+
+	@Test
+	public void validateMachineFailureTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"center History not found\"}]}"
+				.getBytes();
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", response, StandardCharsets.UTF_8);
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("12334");
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Accepted");
+
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenThrow(apisResourceAccessException).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
+				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+	}
+
+	@Test
+	public void validateUMCmappingFailureTest() throws ApisResourceAccessException, JsonParseException,
+			JsonMappingException, IOException, java.io.IOException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"center History not found\"}]}"
+				.getBytes();
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request", response, StandardCharsets.UTF_8);
+		RegistrationCenterDto rcdto = new RegistrationCenterDto();
+
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		rcdto.setIsActive(true);
+		rcdto.setLongitude("80.24492");
+		rcdto.setLatitude("13.0049");
+		rcdto.setId("12245");
+
+		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
+		rcdtos.add(rcdto);
+		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
+		regrepdto.setRegistrationCentersHistory(rcdtos);
+
+		MachineHistoryDto mcdto = new MachineHistoryDto();
+		mcdto.setIsActive(true);
+		mcdto.setId("12334");
+
+		List<MachineHistoryDto> mcdtos = new ArrayList<>();
+		mcdtos.add(mcdto);
+		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
+		mhrepdto.setMachineHistoryDetails(mcdtos);
+
+		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
+		officerucmdto.setIsActive(true);
+		officerucmdto.setCntrId("12245");
+		officerucmdto.setMachineId("yyeqy26356");
+		officerucmdto.setUsrId("O1234");
+
+		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
+		officerucmdtos.add(officerucmdto);
+
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
+		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
+		test.setStatus("Accepted");
+
+		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
+		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
+		deviceHistoryDto.setIsActive(true);
+		deviceHistoryDetails.add(deviceHistoryDto);
+
+		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
+		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
+
+		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
+		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
+
+		registrationCenterDeviceHistoryDetails.setIsActive(true);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
+				.thenReturn(mhrepdto).thenThrow(apisResourceAccessException).thenReturn(offrepdto).thenReturn(test)
+				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+	}
+
 }
