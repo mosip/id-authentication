@@ -85,6 +85,10 @@ public class AuditLogControlDAOImpl implements AuditLogControlDAO {
 
 	@Override
 	public List<AuditLogControl> get(Timestamp req) {
+		LOGGER.debug("AUDIT - GET_AUDIT_LOG_CONTROL - AUDIT_LOG_CONTROL_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Started fetching List of audit log control  before req Time");
+
+
 		return auditLogControlRepository.findByCrDtimeBefore(req);
 	}
 
