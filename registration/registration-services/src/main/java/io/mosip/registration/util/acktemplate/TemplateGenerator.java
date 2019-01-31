@@ -465,11 +465,22 @@ public class TemplateGenerator extends BaseService {
 					capturedFingers.stream()
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
+			
+			if (applicationContext.getApplicationMap()
+					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+						"Iris (" + fingersAndIrises[1] + "), Face");
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
+						"Iris (" + fingersAndIrises[1] + "), Face");
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
+						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+			}
 
-			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-					"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
-			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
-					"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+			
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
 					localProperties.getString("biometrics_captured"));
 

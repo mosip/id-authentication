@@ -947,7 +947,14 @@ public class RegistrationController extends BaseController {
 					toggleFingerprintCaptureVisibility(false);
 				} else {
 					biometricException.setVisible(false);
-					toggleFingerprintCaptureVisibility(true);
+					if (applicationContext.getApplicationMap()
+							.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)) {
+						toggleFingerprintCaptureVisibility(false);
+						toggleIrisCaptureVisibility(true);
+					} else {
+						toggleFingerprintCaptureVisibility(true);
+					}
 				}
 				biometricTitlePane.setExpanded(true);
 

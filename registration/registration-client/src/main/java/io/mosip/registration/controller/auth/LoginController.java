@@ -97,6 +97,9 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane facePane;
+	
+	@FXML
+	private AnchorPane errorPane;
 
 	@FXML
 	private TextField userId;
@@ -304,36 +307,36 @@ public class LoginController extends BaseController implements Initializable {
 									roleSet.add("*");
 									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
 								}
+								
+								if(loginList.size() > 1 && applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+										.equals(RegistrationConstants.ENABLE)) {
+										loginList.removeIf(login -> login.equalsIgnoreCase(RegistrationConstants.BIO));
+								}
 							}
 
-							try {
+							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
+									: null;
 
-								String loginMode = !loginList.isEmpty()
-										? loginList.get(RegistrationConstants.PARAM_ZERO)
-										: null;
+							LOGGER.debug(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER, APPLICATION_NAME,
+									APPLICATION_ID, "Retrieved corresponding Login mode");
 
-								if (!loginList.isEmpty()) {
-									loginList.remove(RegistrationConstants.PARAM_ZERO);
-								}
+							if (loginMode == null) {
+								userIdPane.setVisible(false);
+								errorPane.setVisible(true);
+							} else {
 
-								LOGGER.info(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
-										APPLICATION_NAME, APPLICATION_ID, "Retrieved corresponding Login mode");
-								if (loginMode == null) {
-									AnchorPane loginType = BaseController
-											.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
-									scene = getScene(loginType);
+								if (applicationContext.getApplicationMap()
+										.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+										.equals(RegistrationConstants.ENABLE)
+										&& loginMode.equalsIgnoreCase(RegistrationConstants.BIO)) {
+									
+									generateAlert(RegistrationConstants.ERROR,
+											RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
+									
 								} else {
 									userIdPane.setVisible(false);
 									loadLoginScreen(loginMode);
 								}
-
-							} catch (IOException ioException) {
-
-								LOGGER.error(RegistrationConstants.REGISTRATION_LOGIN_MODE_LOGIN_CONTROLLER,
-										APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
-
-								generateAlert(RegistrationConstants.ERROR,
-										RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 							}
 						}
 					}
@@ -595,25 +598,30 @@ public class LoginController extends BaseController implements Initializable {
 	 *            login screen to be loaded
 	 */
 	public void loadLoginScreen(String loginMode) {
+		
 		switch (loginMode) {
-		case RegistrationConstants.OTP:
-			otpPane.setVisible(true);
-			break;
-		case RegistrationConstants.PWORD:
-			credentialsPane.setVisible(true);
-			break;
-		case RegistrationConstants.BIO:
-			fingerprintPane.setVisible(true);
-			break;
-		case RegistrationConstants.IRIS:
-			irisPane.setVisible(true);
-			break;
-		case RegistrationConstants.FACE:
-			facePane.setVisible(true);
-			break;
-		default:
-			credentialsPane.setVisible(true);
-		}
+			case RegistrationConstants.OTP:
+				otpPane.setVisible(true);
+				break;
+			case RegistrationConstants.PWORD:
+				credentialsPane.setVisible(true);
+				break;
+			case RegistrationConstants.BIO:
+				fingerprintPane.setVisible(true);
+				break;
+			case RegistrationConstants.IRIS:
+				irisPane.setVisible(true);
+				break;
+			case RegistrationConstants.FACE:
+				facePane.setVisible(true);
+				break;
+			default:
+				credentialsPane.setVisible(true);
+			}
+	
+			if (!loginList.isEmpty()) {
+				loginList.remove(RegistrationConstants.PARAM_ZERO);
+			}
 	}
 
 	/**
@@ -731,8 +739,7 @@ public class LoginController extends BaseController implements Initializable {
 					"Loading next login screen in case of multifactor authentication");
 
 			loadLoginScreen(loginList.get(RegistrationConstants.PARAM_ZERO));
-			loginList.remove(RegistrationConstants.PARAM_ZERO);
-
+			
 		} else {
 			if (setInitialLoginInfo(userId.getText())) {
 
