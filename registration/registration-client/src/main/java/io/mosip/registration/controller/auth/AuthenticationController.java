@@ -373,6 +373,12 @@ public class AuthenticationController extends BaseController {
 		if (userAuthenticationTypeList.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
 		} else {
+			
+			if(userAuthenticationTypeList.size() > 1 && applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				userAuthenticationTypeList.removeIf(auth -> auth.equalsIgnoreCase(RegistrationConstants.BIO));
+			}
+			
 			loadNextScreen();
 		}
 	}
@@ -391,9 +397,17 @@ public class AuthenticationController extends BaseController {
 			authCount++;
 			String authenticationType = String
 					.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
-			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
-
-			loadAuthenticationScreen(authenticationType);
+			
+			if (applicationContext.getApplicationMap()
+					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)
+					&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO)) {
+				
+				generateAlert(RegistrationConstants.ERROR,
+						RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
+			} else {
+				loadAuthenticationScreen(authenticationType);
+			}
 		} else {
 			if (!isSupervisor) {
 				if (toogleBioException != null && toogleBioException.booleanValue()) {
@@ -424,24 +438,26 @@ public class AuthenticationController extends BaseController {
 				"Loading the respective authentication screen in UI");
 
 		switch (loginMode) {
-		case RegistrationConstants.OTP:
-			enableOTP();
-			break;
-		case RegistrationConstants.PWORD:
-			enablePWD();
-			break;
-		case RegistrationConstants.BIO:
-			enableFingerPrint();
-			break;
-		case RegistrationConstants.IRIS:
-			enableIris();
-			break;
-		case RegistrationConstants.FACE:
-			enableFace();
-			break;
-		default:
-			enablePWD();
-		}
+			case RegistrationConstants.OTP:
+				enableOTP();
+				break;
+			case RegistrationConstants.PWORD:
+				enablePWD();
+				break;
+			case RegistrationConstants.BIO:
+				enableFingerPrint();
+				break;
+			case RegistrationConstants.IRIS:
+				enableIris();
+				break;
+			case RegistrationConstants.FACE:
+				enableFace();
+				break;
+			default:
+				enablePWD();
+			}
+			
+			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
 	}
 
 	/**

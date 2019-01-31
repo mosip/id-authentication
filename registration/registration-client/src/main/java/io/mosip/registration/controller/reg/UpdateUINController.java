@@ -34,6 +34,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 
 @Controller
 public class UpdateUINController extends BaseController implements Initializable {
@@ -69,6 +70,9 @@ public class UpdateUINController extends BaseController implements Initializable
 	private Label toggleLabel1;
 	@FXML
 	private Label toggleLabel2;
+	@FXML
+	private HBox biometricBox;
+	
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
 
@@ -81,6 +85,17 @@ public class UpdateUINController extends BaseController implements Initializable
 		switchedOn = new SimpleBooleanProperty(false);
 		isChild = switchedOn.get();
 		toggleFunction();
+		if (applicationContext.getApplicationMap()
+				.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			
+			biometricBox.getChildren().forEach(bio -> {
+				if(bio.getId().equals("biometricFingerprint")) {
+					bio.setVisible(false);
+					bio.setManaged(false);
+				} 
+			});
+		} 
 	}
 
 	/**

@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -250,14 +249,9 @@ public class DocumentScannerServiceImpl implements DocumentScannerService {
 		@SuppressWarnings("unchecked")
 		List<PDPage> list = document.getDocumentCatalog().getAllPages();
 
-		int pageNumber = 1;
 		for (PDPage page : list) {
 			BufferedImage image = page.convertToImage();
 			bufferedImages.add(image);
-			File outputfile = new File("C://Users//M1046540//Desktop/Test/" + fileName + "_" + pageNumber + ".png");
-			ImageIO.write(image, "png", outputfile);
-			pageNumber++;
-
 		}
 		document.close();
 		return bufferedImages;

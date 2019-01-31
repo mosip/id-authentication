@@ -123,6 +123,7 @@ public class RegistrationConstants {
 	// UI Registration Validations
 	public static final String ADDRESS_KEY = "PrevAddress";
 	public static final String REGISTRATION_CONTROLLER = "REGISTRATION_CONTROLLER";
+	public static final String DOCUMNET_SCAN_CONTROLLER = "DOCUMNET_SCAN_CONTROLLER";
 	public static final String REGISTRATION_DATA = "registrationDTOContent";
 	public static final String REGISTRATION_AGE_DATA = "ageDatePickerContent";
 	public static final String REGISTRATION_PANE1_DATA = "demoGraphicPane1Content";
@@ -301,7 +302,7 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";
 
 	// Velocity Template Generator Constants
-	public static final String TEMPLATE_REGISTRATION_ID = "RegId";
+	public static final String TEMPLATE_REGISTRATION_ID = "RID";
 	public static final String TEMPLATE_DATE = "Date";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
 	public static final String TEMPLATE_DOB = "DOB";

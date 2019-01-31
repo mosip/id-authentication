@@ -32,6 +32,7 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -136,7 +137,7 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	private void initialize() {
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
@@ -209,24 +210,24 @@ public class DocumentScanController extends BaseController {
 	private void scanDocument(ComboBox<String> documents, VBox vboxElement, String document, String errorMessage) {
 
 		if (documents.getValue() == null) {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
 
 			generateAlert(RegistrationConstants.ERROR, errorMessage);
 			documents.requestFocus();
 		} else if (!vboxElement.getChildren().isEmpty()) {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "One Document can be added to the Category");
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
 				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
 
 			selectedDocument = document;
@@ -244,7 +245,7 @@ public class DocumentScanController extends BaseController {
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
 	}
 
@@ -283,7 +284,7 @@ public class DocumentScanController extends BaseController {
 	private void scanFromStubbed(Stage popupStage) throws IOException {
 		byte[] byteArray = documentScanFacade.getScannedDocument();
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 		if (byteArray.length > documentSize) {
@@ -292,8 +293,8 @@ public class DocumentScanController extends BaseController {
 			if (selectedDocument != null) {
 
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
-				
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
@@ -328,7 +329,7 @@ public class DocumentScanController extends BaseController {
 
 				popupStage.close();
 
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
 			}
 		}
@@ -364,7 +365,7 @@ public class DocumentScanController extends BaseController {
 
 	public void attachScannedDocument(Stage popupStage) throws IOException {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 		if (scannedPages == null || scannedPages.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
@@ -384,7 +385,7 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
@@ -420,7 +421,7 @@ public class DocumentScanController extends BaseController {
 				scannedPages.clear();
 				popupStage.close();
 
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
 			}
 		}
@@ -436,7 +437,7 @@ public class DocumentScanController extends BaseController {
 	private void attachDocuments(DocumentDetailsDTO documentDetailsDTO, String document, VBox vboxElement,
 			byte[] byteArray) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		documentDetailsDTO.setDocument(byteArray);
@@ -444,17 +445,17 @@ public class DocumentScanController extends BaseController {
 		documentDetailsDTO.setFormat(scannerDocType);
 		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 
 		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
 
 	}
@@ -468,7 +469,7 @@ public class DocumentScanController extends BaseController {
 
 		vboxElement.getChildren().add(gridPane);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
 
 	}
@@ -478,7 +479,7 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void displayDocument(byte[] document, String documentName) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
 		/* clearing the previously loaded pdf pages inorder to clear up the memory */
 		initializePreviewSection();
@@ -487,14 +488,15 @@ public class DocumentScanController extends BaseController {
 			try {
 				docPages = documentScanFacade.pdfToImages(document, documentName);
 				if (!docPages.isEmpty()) {
-					docPreviewImgView.setImage(
-							convertBytesToImage(documentScanFacade.getImageBytesFromBufferedImage(docPages.get(0))));
+					docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(0), null));
 					docPageNumber.setText("1");
 					if (docPages.size() > 1) {
 						docPreviewNext.setDisable(false);
 					}
 				}
 			} catch (IOException e) {
+				LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						e.getMessage());
 				generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
 				return;
 			}
@@ -503,7 +505,7 @@ public class DocumentScanController extends BaseController {
 			docPreviewImgView.setImage(convertBytesToImage(document));
 			docPageNumber.setText("1");
 		}
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
 	}
 
@@ -539,13 +541,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private void setDocPreview(int index, int pageNumber) {
-		try {
-			docPreviewImgView.setImage(
-					convertBytesToImage(documentScanFacade.getImageBytesFromBufferedImage(docPages.get(index))));
-		} catch (IOException e) {
-			generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
-			return;
-		}
+		docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(index), null));
 		docPageNumber.setText(String.valueOf(pageNumber));
 	}
 
@@ -554,14 +550,14 @@ public class DocumentScanController extends BaseController {
 	 */
 	private ImageView createImageView(VBox vboxElement) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
 
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
 		ImageView imageView = new ImageView(image);
 		imageView.setCursor(Cursor.HAND);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
 
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -595,7 +591,7 @@ public class DocumentScanController extends BaseController {
 
 		});
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
 
 		return imageView;
@@ -606,14 +602,14 @@ public class DocumentScanController extends BaseController {
 	 */
 	private Hyperlink createHyperLink(String document) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
 
 		Hyperlink hyperLink = new Hyperlink();
 		hyperLink.setId(document);
 		hyperLink.setText(document);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
 				"Binding OnAction event to Hyperlink to display Scanned document");
 
@@ -651,7 +647,7 @@ public class DocumentScanController extends BaseController {
 			}
 		});
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
 
 		return hyperLink;
@@ -691,7 +687,7 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void loadListOfDocuments(ComboBox<String> selectionList, String docCode) {
 		try {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
 			documents = masterSync.getDocumentCategories(docCode,
 					MappedCodeForLanguage
@@ -700,7 +696,7 @@ public class DocumentScanController extends BaseController {
 			List<String> documentNames = documents.stream().map(doc -> doc.getName()).collect(Collectors.toList());
 
 			selectionList.getItems().addAll(documentNames);
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
 
 		} catch (RuntimeException runtimeException) {
@@ -754,7 +750,7 @@ public class DocumentScanController extends BaseController {
 		poiBox.getChildren().clear();
 	}
 
-	private void initializePreviewSection() {
+	public void initializePreviewSection() {
 		docPreviewNext.setDisable(true);
 		docPreviewPrev.setDisable(true);
 		docPageNumber.setText("");
