@@ -1456,6 +1456,8 @@ public class RegistrationController extends BaseController {
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						toggleLabel1LocalLanguage.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						toggleLabel2LocalLanguage.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
 						ageFieldLocalLanguage.clear();
 						childSpecificFields.setVisible(false);
