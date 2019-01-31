@@ -302,7 +302,7 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";
 
 	// Velocity Template Generator Constants
-	public static final String TEMPLATE_REGISTRATION_ID = "RegId";
+	public static final String TEMPLATE_REGISTRATION_ID = "RID";
 	public static final String TEMPLATE_DATE = "Date";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
 	public static final String TEMPLATE_DOB = "DOB";

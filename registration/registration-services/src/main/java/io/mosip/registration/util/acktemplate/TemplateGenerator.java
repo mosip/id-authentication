@@ -395,7 +395,8 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL, "الوالد / الجارديان");
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("fullName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
@@ -465,9 +466,8 @@ public class TemplateGenerator extends BaseService {
 					capturedFingers.stream()
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
-			
-			if (applicationContext.getApplicationMap()
-					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+
+			if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 					.equals(RegistrationConstants.ENABLE)) {
 				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
 						"Iris (" + fingersAndIrises[1] + "), Face");
@@ -480,7 +480,6 @@ public class TemplateGenerator extends BaseService {
 						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
 			}
 
-			
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
 					localProperties.getString("biometrics_captured"));
 
