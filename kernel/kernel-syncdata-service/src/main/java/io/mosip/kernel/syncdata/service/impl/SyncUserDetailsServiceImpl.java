@@ -1,9 +1,14 @@
 package io.mosip.kernel.syncdata.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.syncdata.dto.RegistrationCenterUserDto;
@@ -29,20 +34,32 @@ public class SyncUserDetailsServiceImpl implements SyncUserDetailsService {
 	@Autowired
 	RegistrationCenterUserService registrationCenterUserService;
 
+	@Value("${mosip.auth.user-detail-url:https://integ.mosip.io/ldapmanager/userdetails/admin}")
+	private String authUrl;
+
 	/**
 	 * 
 	 */
 	@Override
 	public UserDetailResponseDto getAllUserDetail(String regId) {
-
+		String data = null;
+		ResponseEntity<String> response = null;
 		RegistrationCenterUserResponseDto registrationCenterResponseDto = registrationCenterUserService
 				.getUsersBasedOnRegistrationCenterId(regId);
 		List<RegistrationCenterUserDto> registrationCenterUserDtos = registrationCenterResponseDto
 				.getRegistrationCenterUsers();
-		String uri="https://integ.mosip.io/ldapmanager/userdetails/admin";
+		List<String> userIds = registrationCenterUserDtos.stream().map(RegistrationCenterUserDto::getUserId)
+				.collect(Collectors.toList());
+		try {
+			response = restTemplate.postForEntity(authUrl, userIds, String.class);
+			if (response.getStatusCode().is2xxSuccessful())
+				data = response.getBody();
+			System.out.println("----data---"+data);
+		} catch (RestClientException e) {
+			e.printStackTrace();
+		}
 		
-		    UserDetailDto userDetailDtos=restTemplate.getForObject(uri, UserDetailDto.class);
-		    System.out.println(userDetailDtos.getMobile());
+		
 		return null;
 
 	}
