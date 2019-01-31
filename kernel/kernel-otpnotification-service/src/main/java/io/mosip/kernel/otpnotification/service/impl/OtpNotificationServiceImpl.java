@@ -44,7 +44,7 @@ public class OtpNotificationServiceImpl
 
 		requestDto.getNotificationTypes().replaceAll(String::toLowerCase);
 
-		requestDto.getNotificationTypes().forEach(OtpNotificationServiceImpl::containsNotificationTypes);
+		requestDto.getNotificationTypes().forEach(notificationUtil::containsNotificationTypes);
 
 		if (requestDto.getNotificationTypes().size() > 2) {
 			throw new OtpNotifierServiceException(
@@ -82,15 +82,6 @@ public class OtpNotificationServiceImpl
 		return responseDto;
 	}
 
-	public static boolean containsNotificationTypes(String types) {
-		if (!types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())
-				&& !types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {
-
-			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_INVALID_TYPE.getErrorCode(),
-					OtpNotificationErrorConstant.NOTIFIER_INVALID_TYPE.getErrorMessage());
-
-		}
-		return true;
-	}
+	
 
 }

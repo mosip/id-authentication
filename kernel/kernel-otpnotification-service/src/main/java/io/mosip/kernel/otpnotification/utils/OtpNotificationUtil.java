@@ -23,6 +23,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
 import io.mosip.kernel.otpnotification.dto.NotifierResponseDto;
 import io.mosip.kernel.otpnotification.dto.OtpRequestDto;
@@ -148,6 +149,17 @@ public class OtpNotificationUtil {
 			}
 		}
 		return key;
+	}
+	
+	public boolean containsNotificationTypes(String types) {
+		if (!types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())
+				&& !types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {
+
+			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_INVALID_TYPE.getErrorCode(),
+					OtpNotificationErrorConstant.NOTIFIER_INVALID_TYPE.getErrorMessage());
+
+		}
+		return true;
 	}
 
 }
