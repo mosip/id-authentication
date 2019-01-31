@@ -1,5 +1,5 @@
 package io.mosip.registration.processor.core.packet.dto;
-	
+
 /**
  * This class contains the attributes to be displayed for Biometric object in
  * PacketMetaInfo JSON.
@@ -11,15 +11,10 @@ package io.mosip.registration.processor.core.packet.dto;
  */
 public class Biometric {
 
-	/** The applicant. */
 	private Applicant applicant;
-	
-	/** The introducer. */
 	private Introducer introducer;
 
 	/**
-	 * Gets the applicant.
-	 *
 	 * @return the applicant
 	 */
 	public Applicant getApplicant() {
@@ -27,17 +22,14 @@ public class Biometric {
 	}
 
 	/**
-	 * Sets the applicant.
-	 *
-	 * @param applicant            the applicant to set
+	 * @param applicant
+	 *            the applicant to set
 	 */
 	public void setApplicant(Applicant applicant) {
 		this.applicant = applicant;
 	}
 
 	/**
-	 * Gets the introducer.
-	 *
 	 * @return the introducer
 	 */
 	public Introducer getIntroducer() {
@@ -45,9 +37,8 @@ public class Biometric {
 	}
 
 	/**
-	 * Sets the introducer.
-	 *
-	 * @param introducer            the introducer to set
+	 * @param introducer
+	 *            the introducer to set
 	 */
 	public void setIntroducer(Introducer introducer) {
 		this.introducer = introducer;
