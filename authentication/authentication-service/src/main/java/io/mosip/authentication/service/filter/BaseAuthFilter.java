@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -208,7 +209,8 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @param inputStream
 	 *            the input stream
 	 * @return the request body
-	 * @throws IdAuthenticationAppException - the id authentication app exception
+	 * @throws IdAuthenticationAppException
+	 *             - the id authentication app exception
 	 */
 	private Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
@@ -330,7 +332,7 @@ public abstract class BaseAuthFilter implements Filter {
 			requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
 			chain.doFilter(requestWrapper, responseWrapper);
 			Map<String, Object> responseMap = getResponseBody(responseWrapper.toString());
-			if (Objects.nonNull(requestMap.get(REQ_TIME))) {
+			if (Objects.nonNull(requestMap.get(REQ_TIME)) && isDate((String) requestMap.get(REQ_TIME))) {
 				ZoneId zone = ZonedDateTime
 						.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME)
 						.getZone();
@@ -355,6 +357,21 @@ public abstract class BaseAuthFilter implements Filter {
 							+ ". Time taken in seconds: " + (duration / 1000));
 		}
 		return responseWrapper;
+	}
+
+	/**
+	 * To validate a string whether its a date or not
+	 * @param date
+	 * @return
+	 */
+	protected boolean isDate(String date) {
+		try {
+			DateUtils.parseToLocalDateTime(date);
+			return true;
+		} catch (DateTimeParseException e) {
+			mosipLogger.error("sessionId", BASE_AUTH_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
+		}
+		return false;
 	}
 
 	/**

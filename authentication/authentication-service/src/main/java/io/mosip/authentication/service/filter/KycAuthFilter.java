@@ -157,7 +157,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 				responseBody.replace(TXN_ID, authReq.get(TXN_ID));
 			}
 			if (Objects.nonNull(authReq) && Objects.nonNull(authReq.get(REQ_TIME))
-					&& Objects.nonNull(authReq.get(TXN_ID))) {
+					&& isDate((String) authReq.get(REQ_TIME))) {
 				ZoneId zone = ZonedDateTime.parse((CharSequence) authReq.get(REQ_TIME)).getZone();
 				responseBody.replace(RES_TIME,
 						DateUtils.formatDate(

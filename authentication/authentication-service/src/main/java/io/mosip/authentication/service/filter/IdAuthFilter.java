@@ -58,7 +58,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 				responseBody.replace(TXN_ID, requestBody.get(TXN_ID));
 			}
 
-			if (Objects.nonNull(requestBody.get(REQ_TIME))) {
+			if (Objects.nonNull(requestBody.get(REQ_TIME)) && isDate((String) requestBody.get(REQ_TIME))) {
 				ZoneId zone = ZonedDateTime.parse((CharSequence) requestBody.get(REQ_TIME)).getZone();
 				responseBody.replace(RES_TIME,
 						DateUtils.formatDate(
