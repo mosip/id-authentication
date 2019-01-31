@@ -145,6 +145,7 @@ public class RegistrationConstants {
 	public static final String REG_DDC_003_2 = "REG_DDC_003_2";
 	public static final String REG_DDC_004_1 = "REG_DDC_004_1";
 	public static final String REG_DDC_004_2 = "REG_DDC_004_2";
+
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
 	public static final String APPLICATION_LANGUAGE = "application_language";

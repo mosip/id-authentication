@@ -498,7 +498,8 @@ public class RegistrationController extends BaseController {
 			isChild = false;
 			toggleFunction();
 			toggleFunctionForBiometricException();
-			ageFieldValidations();
+			ageFieldValidations(ageField);
+			ageFieldValidations(ageFieldLocalLanguage);
 			listenerOnFields();
 			loadLocalLanguageFields();
 			loadKeyboard();
@@ -1371,7 +1372,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
-	private void ageFieldValidations() {
+	private void ageFieldValidations(TextField ageField) {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");

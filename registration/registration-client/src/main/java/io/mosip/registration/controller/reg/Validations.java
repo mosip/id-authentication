@@ -181,7 +181,7 @@ public class Validations extends BaseController {
 				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
 					if(!showAlert)
 						generateAlert(
-								node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
+								"For "+labelBundle.getString(label)+" "+node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
 								isConsolidated, validationMessage);
 					node.requestFocus();
 					return false;
@@ -215,7 +215,7 @@ public class Validations extends BaseController {
 			}
 			if(!showAlert)
 				generateAlert(
-						labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_1)).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_2)),
+						messageBundle.getString(label+"_"+RegistrationConstants.REG_DDC_004_1).concat(" "+labelBundle.getString(label)),
 						isConsolidated, validationMessage);
 			node.requestFocus();
 			return false;
