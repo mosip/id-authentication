@@ -1,8 +1,8 @@
 # kernel-idgenerator-machineid
 
-1- [Background & Design](../../docs/design/kernel/kernel-idgenerator-machineid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-machineid.md)
 
-2- API Documentation
+API Documentation
 
  ```
 mvn javadoc:javadoc

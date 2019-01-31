@@ -40,7 +40,7 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Override
 	public List<Audit> getAllUnsyncAudits() {
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "Fetching the list of unsync'ed Audits");
 		try {
 			return regAuditRepository.findAllUnsyncAudits();
@@ -58,7 +58,7 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	@Transactional
 	public int updateSyncAudits(List<String> auditUUIDs) {
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been started");
 		
 		int updatedCount = 0;
@@ -79,7 +79,7 @@ public class AuditDAOImpl implements AuditDAO {
 					runtimeException.toString());
 		}
 		
-		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been ended");
 		
 		return updatedCount;

@@ -45,7 +45,7 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 	 */
 	public List<String> getModesOfLogin(String authType, Set<String> roleList) {
 
-		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Fetching list of login modes");
 		
 		String role = null;
@@ -60,7 +60,7 @@ public class AppAuthenticationDAOImpl implements AppAuthenticationDAO {
 		List<AppAuthenticationDetails> loginList = appAuthenticationRepository
 				.findByIsActiveTrueAndAppAuthenticationMethodIdProcessIdAndAppAuthenticationMethodIdRoleCodeOrderByMethodSeq(authType, role);
 		
-		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");
 		
 		return loginList.stream().map(loginMethod -> loginMethod.getAppAuthenticationMethodId().getAuthMethodCode()).collect(Collectors.toList());

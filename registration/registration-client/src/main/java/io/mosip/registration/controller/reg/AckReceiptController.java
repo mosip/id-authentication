@@ -125,7 +125,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
 		if (getRegistrationData().getSelectionListDTO() != null) {
@@ -136,7 +136,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		WebEngine engine = webView.getEngine();
 		// loads the generated HTML template content into webview
 		engine.loadContent(stringWriter.toString());
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Acknowledgement template has been loaded to webview");
 
 		// pauses the view for 3 seconds so that the webview will be loaded with the
@@ -151,7 +151,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 * registration
 	 */
 	private void generateEmailNotification() {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
 
 		try {
@@ -227,7 +227,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 * create packet
 	 */
 	private void saveRegistrationData() {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "packet creation has been started");
 
 		// take a snapshot of the webview to save it along with the packet
@@ -267,7 +267,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 				FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
 
-				LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
@@ -300,7 +300,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 */
 	@FXML
 	public void printReceipt(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Printing the Acknowledgement Receipt");
 
 		if (packetCreationResponse.getSuccessResponseDTO() != null) {
@@ -322,7 +322,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@FXML
 	public void goToNewRegistration(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to New Registration Page after packet creation");
 
 		clearRegistrationData();

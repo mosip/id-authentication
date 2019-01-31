@@ -97,7 +97,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 		}
 
-		LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the last sync details from databse ended");
 		try {
 
@@ -112,17 +112,17 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 			// Getting machineID from data base
 			String machineId = masterSyncDetails.getMachineId();
 
-			LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + machineId,
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, "registrationCenterId" + "===>" + machineId,
 					"lastSyncTime" + "===>" + lastSyncTime);
 
 			Object masterSyncJson = getMasterSyncJson(machineId, masterLastSyncTime);
 
 			if (null != masterSyncJson) {
 
-				LOGGER.debug(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, "MASTER-SYNC-RESTFUL_SERVICE-ENDS",
+				LOGGER.info(RegistrationConstants.MASTER_SYNC, APPLICATION_NAME, "MASTER-SYNC-RESTFUL_SERVICE-ENDS",
 						"master sync json ======>" + masterSyncJson.toString());
 
-				LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
 						"MASTER-SYNC-RESTFUL_SERVICE-BEGINE");
 
 				// Mapping json object to respective dto's
@@ -131,7 +131,7 @@ public class MasterSyncServiceImpl implements MasterSyncService {
 
 				resoponse = masterSyncDao.save(masterSyncDto);
 
-				LOGGER.debug(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-ENDS");
+				LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "MASTER-SYNC-RESTFUL_SERVICE-ENDS");
 
 				sucessResponse.setCode(RegistrationConstants.MASTER_SYNC_SUCESS_MSG_CODE);
 				sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
