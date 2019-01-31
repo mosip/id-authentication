@@ -123,12 +123,7 @@ public class BaseController {
 		getScene(createRoot);
 	}
 
-	protected Scene getScene(Parent borderPane) {
-
-		if (!borderPane.getId().equals("loginScreen")) {
-			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-			borderPane.setLayoutX((fXComponents.getStage().getWidth() - 900) / 2);
-		}
+	protected Scene getScene(Parent borderPane) {		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		scene = fXComponents.getScene();
 		if (scene == null) {

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
@@ -7,10 +9,143 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="optionRoot" styleClass="optionsStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketHandlerController">
-   <children>
-      <Button layoutX="61.0" layoutY="110.0" mnemonicParsing="false" onAction="#createPacket" styleClass="optionsButtonStyle" text="%newregistration" />
-      <Button layoutX="347.0" layoutY="110.0" mnemonicParsing="false" onAction="#updateUIN" styleClass="optionsButtonStyle" text="%uinupdate" />
-      <Button layoutX="640.0" layoutY="110.0" mnemonicParsing="false" styleClass="optionsButtonStyle" text="%lostuin" />
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="homeParentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.PacketHandlerController">
+    <children>
+    <ImageView fitHeight="740.0" fitWidth="1300.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/pexels-photo.png" />
+               </image>
+            </ImageView>
+      <AnchorPane layoutY="70.0" styleClass="reggistrationPaneStyle">
+         <children>
+         	<Label layoutX="60.0" styleClass="optionHeaderStyle" text="Registration Tasks" />
+            <Button layoutX="40.0" layoutY="147.0" mnemonicParsing="false" onAction="#updateUIN" styleClass="uinUpdateBtnStyle" text="%uinupdate" />
+            <Button layoutX="40.0" layoutY="257.0" mnemonicParsing="false" styleClass="uinUpdateBtnStyle" text="%lostuin" />            
+            <Button layoutX="40.0" layoutY="37.0" mnemonicParsing="false" onAction="#createPacket" styleClass="newRegBtnStyle" text="%newregistration" />
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/NewRegistration.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="60.0" layoutY="172.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/UINUpdate.png" />
+               </image>
+            </ImageView>    		         
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="449.0" layoutY="70.0">
+         <children>
+            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="Operational Tasks" />
+            <AnchorPane layoutX="16.0" layoutY="37.0" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
+               <children>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/sync.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Synchronize Data" />
+                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Last Sync - on Monday 10 Jan 2:300 PM" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="16.0" layoutY="106.0" styleClass="operationalPaneDetails">
+               <children>                  
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/DownloadPreRegData.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Downloaded on Monday 10 Jan 8:00 AM; Size 564 MB" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Download Pre-Registration Data" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="16.0" layoutY="175.0" styleClass="operationalPaneDetails,operationalPaneDetailsBioUpdate">
+               <children>                  
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/UpdateOperatorBiometrics.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="Not uploaded yet" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Update Operator Biometrics" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="449.0" layoutY="340.0" styleClass="operationalPaneStyle">
+         <children>
+            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="End of Day Processes" />
+            <AnchorPane layoutX="16.0" layoutY="37.0" styleClass="operationalPaneDetails,operationalPaneDetailsSync">
+               <children>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/PendingApproval.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Pending Approval" />
+                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="18 Applications" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="16.0" layoutY="106.0" styleClass="operationalPaneDetails">
+               <children>                  
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Re-Registration.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="80.0" layoutY="33.0" styleClass="operationalDetails" text="8 Applications" />
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="Re-Registration" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="16.0" layoutY="175.0" styleClass="operationalPaneDetails,operationalPaneDetailsBioUpdate">
+               <children>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="14.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/ViewReports.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="80.0" layoutY="8.0" styleClass="operationalTitle" text="View Report" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="925.0" layoutY="70.0" styleClass="newsupdatePaneStyle">
+         <children>
+            <Label layoutX="60.0" styleClass="optionHeaderStyle" text="News and Updates" />
+            <Label fx:id="newsViewAll" layoutX="250.0" prefHeight="27.0" prefWidth="64.0" text="View all" />
+            <AnchorPane layoutY="37.0" styleClass="newsUpdates">
+               <children>
+                  <AnchorPane layoutX="6.0" layoutY="1.0" styleClass="newsUpdateDescPaneStyle">
+                     <children>
+                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
+                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
+                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="6.0" layoutY="110.0" styleClass="newsUpdateDescPaneStyle">
+                     <children>
+                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
+                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
+                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="6.0" layoutY="220.0" styleClass="newsUpdateDescPaneStyle">
+                     <children>
+                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
+                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
+                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="6.0" layoutY="330.0" styleClass="newsUpdateDescPaneStyle">
+                     <children>
+                        <Label layoutX="7.0" layoutY="10.0" styleClass="newsUpdatesTitle" text="Update Title" />
+                        <Label layoutX="7.0" layoutY="29.0" styleClass="newsUpdateTime" text="Monday 10 Jan 8:00 AM" />
+                        <Text layoutX="7.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="newsUpdateDescription" text="Description in 2-3 lines for an update will show here. The snippet of news and updates to be shown so that the user is informed of any changes in policy etc." wrappingWidth="288.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
