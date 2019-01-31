@@ -13,7 +13,7 @@ create schema if not exists ida
 create table ida.static_pin (
 	
 	uin  	character varying(28) not null,  			-- UIN of indivisuals and referenced from idrepo database
-	pin 	character varying(36) not null,				-- Static PIN of an Indivisuals, Created by user using resident portal
+	pin 	character varying(64) not null,				-- Static PIN of an Indivisuals, Created by user using resident portal
 	
 	generated_dtimes timestamp,
 	
