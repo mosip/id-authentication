@@ -17,7 +17,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  *
  */
 public interface RegistrationDAO {
-
 	/**
 	 * Saves the Registration entity
 	 * 
@@ -97,4 +96,12 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> getRegistrationsToBeDeleted(Timestamp crDtimes);
 
+	/**
+	 * Gets the registration by id.
+	 *
+	 * @param rId 
+	 * 			the registration id
+	 * @return the registration by id
+	 */
+	Registration getRegistrationById(String clientStatusCode,String rId);
 }

@@ -20,7 +20,6 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.constants.RegistrationType;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -66,20 +65,11 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setId(registrationDTO.getRegistrationId());
 			registration.setRegType(RegistrationType.NEW.getCode());
 			registration.setRefRegId("12345");
+			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setLangCode("ENG");
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
-
-			// Checking the EOD Process ON/OFF
-			if (String.valueOf(ApplicationContext.getInstance().getApplicationMap()
-					.get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG)).equals(RegistrationConstants.ENABLE)) {
-				registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-				registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-			} else {
-				registration.setClientStatusCode(RegistrationClientStatusCode.READY_TO_UPLOAD.getCode());
-				registration.setStatusCode(RegistrationClientStatusCode.READY_TO_UPLOAD.getCode());
-			}
-
+			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setUploadCount((short) 1);
 			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 					.getRegistrationCenterId());
@@ -222,12 +212,20 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.update(reg);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.RegistrationDAO#updatePacketSyncStatus(io.mosip.
+	 * registration.entity.Registration)
+	 */
 	public Registration updatePacketSyncStatus(Registration packet) {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Registration reg = registrationRepository.getOne(packet.getId());
+		reg.setStatusCode(packet.getClientStatusCode());
 		reg.setClientStatusCode(packet.getClientStatusCode());
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
@@ -235,9 +233,15 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		return registrationRepository.update(reg);
 	}
 
+	/**
+	 * Builds the registration transaction.
+	 *
+	 * @param registrationPacket the registration packet
+	 * @return the list
+	 */
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
-		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Packet encryption had been ended");
+		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Packet encryption had been ended");
 
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
@@ -251,12 +255,19 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);
-		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Packet encryption had been ended");
+		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Packet encryption had been ended");
 
 		return registrationTransaction;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.RegistrationDAO#getAllReRegistrationPackets(java.
+	 * lang.String[])
+	 */
 	public List<Registration> getAllReRegistrationPackets(String[] status) {
 		return registrationRepository.findByClientStatusCodeAndServerStatusCode(status[0], status[1]);
 	}
@@ -276,6 +287,17 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		return registrationRepository.findByCrDtimeBefore(crDtimes);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.dao.RegistrationDAO#getRegistrationById(java.lang.
+	 * String)
+	 */
+	@Override
+	public Registration getRegistrationById(String clientStatusCode, String rId) {
+		return registrationRepository.findByClientStatusCodeAndId(clientStatusCode, rId);
 	}
 
 }

@@ -73,4 +73,14 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 */
 	List<Registration> findByclientStatusCodeOrderByCrDtimeAsc(String statusCode);
 
+	/**
+	 * Find by client status code and id.
+	 *
+	 * @param clientStatusCode 
+	 * 				the client status code
+	 * @param id 
+	 * 				the registration id
+	 * @return the registration
+	 */
+	Registration findByClientStatusCodeAndId(String clientStatusCode,String id);
 }

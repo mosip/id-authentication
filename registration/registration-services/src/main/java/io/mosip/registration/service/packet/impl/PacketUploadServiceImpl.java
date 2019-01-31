@@ -7,6 +7,7 @@ import java.io.File;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
@@ -55,12 +57,12 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 
 	@Value("${PACKET_UPLOAD_URL}")
 	private String urlPath;
-	
+
 	@Value("${UPLOAD_API_READ_TIMEOUT}")
 	private int readTimeout;
-	
+
 	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
-	private int connectTimeout; 
+	private int connectTimeout;
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
 
@@ -99,12 +101,12 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		try {
 			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
 		} catch (HttpClientErrorException e) {
-			LOGGER.error("REGISTRATION - PUSH_PACKET_CLIENT_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					e.getRawStatusCode() + "Http error while pushing packets to the server");
+			LOGGER.error("REGISTRATION - PUSH_PACKET_CLIENT_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, e.getRawStatusCode() + "Http error while pushing packets to the server");
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
-			LOGGER.error("REGISTRATION - PUSH_PACKET_CONNECTION_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					e.getMessage() + "Runtime error while pushing packets to the server");
+			LOGGER.error("REGISTRATION - PUSH_PACKET_CONNECTION_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, e.getMessage() + "Runtime error while pushing packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
 		} catch (SocketTimeoutException e) {
@@ -132,13 +134,59 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		return true;
 
 	}
-	
-	private RequestHTTPDTO  setTimeout(RequestHTTPDTO requestHTTPDTO) {
+
+	private RequestHTTPDTO setTimeout(RequestHTTPDTO requestHTTPDTO) {
 		// Timeout in milli second
-		SimpleClientHttpRequestFactory requestFactory=new SimpleClientHttpRequestFactory(); 
+		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 		requestFactory.setReadTimeout(readTimeout);
 		requestFactory.setConnectTimeout(connectTimeout);
 		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
 		return requestHTTPDTO;
+	}
+
+	@Override
+	public void uploadPacket(String rid) {
+		Registration syncedPacket = registrationDAO
+				.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rid);
+		List<Registration> packetUploadList = new ArrayList<>();
+
+		syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
+		String ackFileName = syncedPacket.getAckFilename();
+		int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+		String packetPath = ackFileName.substring(0, lastIndex);
+		File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+		try {
+			if (packet.exists()) {
+				Object response = pushPacket(packet);
+
+				String responseCode = response.toString();
+				if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
+					syncedPacket.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+					syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+					packetUploadList.add(syncedPacket);
+
+				} else {
+					syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+					packetUploadList.add(syncedPacket);
+				}
+			}
+		} catch (RegBaseCheckedException e) {
+			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, "Error while pushing packets to the server");
+			syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+			syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
+			packetUploadList.add(syncedPacket);
+		} catch (URISyntaxException e) {
+			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_URI_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, "Error in uri syntax");
+		} catch (RuntimeException e) {
+			LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, "Run time error while connecting to the server");
+
+			syncedPacket.setFileUploadStatus(RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+			syncedPacket.setUploadCount((short) (syncedPacket.getUploadCount() + 1));
+			packetUploadList.add(syncedPacket);
+		}
+		updateStatus(packetUploadList);
 	}
 }
