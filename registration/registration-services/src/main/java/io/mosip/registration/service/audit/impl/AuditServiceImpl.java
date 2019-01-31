@@ -4,9 +4,9 @@
 package io.mosip.registration.service.audit.impl;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
-import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.audit.AuditService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
@@ -47,10 +44,12 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 	@Autowired
 	private AuditLogControlDAO auditLogControlDAO;
 
+	
+
 	/**
 	 * LOGGER for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(BaseJob.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AuditServiceImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -58,20 +57,18 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 	 * @see io.mosip.registration.service.audit.AuditService#deleteAuditLogs()
 	 */
 	@Override
-	synchronized public ResponseDTO deleteAuditLogs() {
+	public synchronized ResponseDTO deleteAuditLogs() {
 
 		LOGGER.info(RegistrationConstants.AUDIT_SERVICE_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Deletion of Audit Logs Started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		String val = (String) ApplicationContext.getInstance().getApplicationMap()
-				.get(RegistrationConstants.AUDIT_LOG_DELETION_CONFIGURED_DAYS);
+		String val = getGlobalConfigValueOf(RegistrationConstants.AUDIT_LOG_DELETION_CONFIGURED_DAYS);
 
-		int auditDeletionConfiguredDays;
 		if (val != null) {
 			try {
-				auditDeletionConfiguredDays = Integer.parseInt(val);
+				int auditDeletionConfiguredDays = Integer.parseInt(val);
 
 				/* Get Calendar instance */
 				Calendar cal = Calendar.getInstance();
@@ -85,7 +82,7 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 				List<AuditLogControl> auditLogControls = auditLogControlDAO.get(req);
 
 				if (isNull(auditLogControls) || isEmpty(auditLogControls)) {
-					
+
 					/* No Audit Logs Found */
 					return setSuccessResponse(responseDTO, RegistrationConstants.AUDIT_LOGS_DELETION_EMPTY_MSG, null);
 
@@ -121,4 +118,5 @@ public class AuditServiceImpl extends BaseService implements AuditService {
 		return responseDTO;
 	}
 
+	
 }

@@ -30,13 +30,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SyncDataProcessDTO;
-import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
@@ -69,8 +67,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Autowired
 	private SyncJobControlDAO syncJobDAO;
 
-	@Autowired
-	private GlobalParamDAO globalParamDAO;
+	
 
 	/**
 	 * LOGGER for logging
@@ -391,10 +388,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		GlobalParam globalParam = globalParamDAO.get(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT);
-
-		if (globalParam != null && globalParam.getVal() != null) {
-			int syncTransactionConfiguredDays = Integer.parseInt(globalParam.getVal());
+		String val = getGlobalConfigValueOf(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT);
+		
+		if (val != null) {
+			int syncTransactionConfiguredDays = Integer.parseInt(val);
 
 			/* Get Calendar instance */
 			Calendar cal = Calendar.getInstance();
@@ -405,7 +402,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			Timestamp req = new Timestamp(cal.getTimeInMillis());
 
 			/* Get All sync Transaction Details from DataBase */
-			List<SyncTransaction> syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req,RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			List<SyncTransaction> syncTransactionList = syncJobTransactionDAO.getSyncTransactions(req,
+					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 			if (!isNull(syncTransactionList) && !isEmpty(syncTransactionList)) {
 
