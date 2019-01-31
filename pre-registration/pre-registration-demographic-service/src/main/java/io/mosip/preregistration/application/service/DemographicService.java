@@ -6,6 +6,7 @@ package io.mosip.preregistration.application.service;
 
 import java.net.URLDecoder;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -262,6 +263,7 @@ public class DemographicService {
 				if (demographicEntity != null) {
 					statusdto.setPreRegistartionId(demographicEntity.getPreRegistrationId());
 					statusdto.setStatusCode(demographicEntity.getStatusCode());
+					statusdto.setCreatedDatTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(demographicEntity.getCreateDateTime().toString()));
 					statusList.add(statusdto);
 					response.setResponse(statusList);
 					response.setResTime(serviceUtil.getCurrentResponseTime());
