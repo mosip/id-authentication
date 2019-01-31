@@ -166,7 +166,6 @@ public class RestHelper {
 	 * @param sslContext the ssl context
 	 * @return the mono
 	 */
-	@SuppressWarnings("unchecked")
 	private Mono<?> request(RestRequestDTO request, SslContext sslContext) {
 		WebClient webClient;
 		Mono<?> monoResponse;
