@@ -52,7 +52,7 @@ public class UMCValidatorTest {
 
 	@Mock
 	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-	
+
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
@@ -78,19 +78,16 @@ public class UMCValidatorTest {
 		regOsi.setOfficerId("O1234");
 
 		regOsi.setSupervisorId("S1234");
-		
-		
+
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("packet_meta_info.json").getFile());
 		InputStream packetMetaInfoStream = new FileInputStream(idJsonFile);
-		
-		Mockito.when(adapter.getFile(any(),any())).thenReturn(packetMetaInfoStream);
+
+		Mockito.when(adapter.getFile(any(), any())).thenReturn(packetMetaInfoStream);
 
 		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsi);
 		Mockito.when(packetInfoManager.getRegistrationCenterMachine(anyString())).thenReturn(rcmDto);
-		//Mockito.when(packetInfoManager.getCenterMachineDto(registrationId);)
-		
-		
+		// Mockito.when(packetInfoManager.getCenterMachineDto(registrationId);)
 
 	}
 
@@ -126,17 +123,18 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
-		
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+
+		offrepdto.setRegistrationCenters(officerucmdtos);
+
 		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
 		test.setStatus("Accepted");
-		
+
 		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
 		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
 		deviceHistoryDto.setIsActive(true);
 		deviceHistoryDetails.add(deviceHistoryDto);
-		
+
 		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
 		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
 
@@ -144,45 +142,13 @@ public class UMCValidatorTest {
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
 
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
-		registrationCenterDeviceHistoryResponseDto.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
+		registrationCenterDeviceHistoryResponseDto
+				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test).thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
+				.thenReturn(mhrepdto).thenReturn(offrepdto).thenReturn(offrepdto).thenReturn(test)
+				.thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
 
 		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	@Test
-	public void UMCMappingNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245");
-
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-		mcdto.setLangCode("eng");
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
 	}
 
 	@Test
@@ -217,8 +183,8 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
@@ -256,45 +222,8 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	@Test
-	public void machinesNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
-			IOException, java.io.IOException {
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245");
-
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
@@ -334,8 +263,8 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
 
@@ -372,8 +301,8 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
@@ -412,8 +341,8 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
@@ -461,85 +390,9 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	@Test
-	public void noRegistrationCentersFoundInMasterTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
-
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
-
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
-				.thenReturn(mhrepdto).thenReturn(offrepdto);
-
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	@Test
-	public void noRegistrationCenterIdsFoundInMasterTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException {
-
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.10049");
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);
 
@@ -578,8 +431,8 @@ public class UMCValidatorTest {
 		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
 		officerucmdtos.add(officerucmdto);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto(
-				officerucmdtos);
+		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
+		offrepdto.setRegistrationCenters(officerucmdtos);
 
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any())).thenReturn(regrepdto)
 				.thenReturn(mhrepdto).thenReturn(offrepdto);

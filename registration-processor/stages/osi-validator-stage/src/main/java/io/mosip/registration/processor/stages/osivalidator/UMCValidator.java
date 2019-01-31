@@ -113,34 +113,39 @@ public class UMCValidator {
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(langCode);
 		pathsegments.add(effectiveDate);
+		RegistrationCenterResponseDto rcpdto;
+		try {
+			rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService.getApi(ApiName.CENTERHISTORY,
+					pathsegments, "", "", RegistrationCenterResponseDto.class);
 
-		RegistrationCenterResponseDto rcpdto = (RegistrationCenterResponseDto) registrationProcessorRestService
-				.getApi(ApiName.CENTERHISTORY, pathsegments, "", "", RegistrationCenterResponseDto.class);
+			RegistrationCenterDto dto = rcpdto.getRegistrationCentersHistory().get(0);
 
-		List<RegistrationCenterDto> dtos = new ArrayList<>();
-		if (rcpdto != null)
-			dtos = rcpdto.getRegistrationCentersHistory();
+			if (dto.getLatitude() != null && dto.getLongitude() != null && dto.getLatitude().matches(latitude)
+					&& dto.getLongitude().matches(longitude)) {
 
-		if (dtos == null || dtos.isEmpty()) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
-		} else {
-			for (RegistrationCenterDto dto : dtos) {
-
-				if (dto.getLatitude() != null && dto.getLongitude() != null && dto.getLatitude().matches(latitude)
-						&& dto.getLongitude().matches(longitude)) {
-
-					activeRegCenter = dto.getIsActive();
-					if (!activeRegCenter) {
-						this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
-					}
-					break;
-				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+				activeRegCenter = dto.getIsActive();
+				if (!activeRegCenter) {
+					this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
 				}
 
+			} else {
+				this.registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 			}
-		}
 
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				Gson gsonObj = new Gson();
+				rcpdto = gsonObj.fromJson(result, RegistrationCenterResponseDto.class);
+				ErrorDTO error = rcpdto.getErrors().get(0);
+				activeRegCenter = false;
+
+				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+
+			}
+
+		}
 		return activeRegCenter;
 
 	}
@@ -167,29 +172,36 @@ public class UMCValidator {
 		pathsegments.add(machineId);
 		pathsegments.add(langCode);
 		pathsegments.add(effdatetimes);
-		MachineHistoryResponseDto mhrdto = (MachineHistoryResponseDto) registrationProcessorRestService
-				.getApi(ApiName.MACHINEHISTORY, pathsegments, "", "", MachineHistoryResponseDto.class);
+		MachineHistoryResponseDto mhrdto;
+		try {
+			mhrdto = (MachineHistoryResponseDto) registrationProcessorRestService.getApi(ApiName.MACHINEHISTORY,
+					pathsegments, "", "", MachineHistoryResponseDto.class);
 
-		List<MachineHistoryDto> dtos = new ArrayList<>();
-		if (mhrdto != null)
-			dtos = mhrdto.getMachineHistoryDetails();
-		if (dtos == null || dtos.isEmpty()) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
-		} else {
-			for (MachineHistoryDto dto : dtos) {
-				if (dto.getId() != null && dto.getId().matches(machineId)) {
-					isActiveMachine = dto.getIsActive();
-					if (!isActiveMachine) {
-						this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
-					}
-					break;
-				} else {
-					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+			MachineHistoryDto dto = mhrdto.getMachineHistoryDetails().get(0);
+
+			if (dto.getId() != null && dto.getId().matches(machineId)) {
+				isActiveMachine = dto.getIsActive();
+				if (!isActiveMachine) {
+					this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
 				}
+
+			} else {
+				this.registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
 			}
 
-		}
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				Gson gsonObj = new Gson();
+				mhrdto = gsonObj.fromJson(result, MachineHistoryResponseDto.class);
+				ErrorDTO error = mhrdto.getErrors().get(0);
+				isActiveMachine = false;
 
+				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
+
+			}
+		}
 		return isActiveMachine;
 
 	}
@@ -221,38 +233,36 @@ public class UMCValidator {
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(machineId);
 		pathsegments.add(superviserId);
+		RegistrationCenterUserMachineMappingHistoryResponseDto supervisordto;
+		try {
+			supervisordto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
+					.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
+							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+			List<String> officerpathsegments = new ArrayList<>();
+			officerpathsegments.add(effectiveTimestamp);
+			officerpathsegments.add(registrationCenterId);
+			officerpathsegments.add(machineId);
+			officerpathsegments.add(officerId);
+			RegistrationCenterUserMachineMappingHistoryResponseDto officerdto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
+					.getApi(ApiName.CENTERUSERMACHINEHISTORY, officerpathsegments, "", "",
+							RegistrationCenterUserMachineMappingHistoryResponseDto.class);
 
-		RegistrationCenterUserMachineMappingHistoryResponseDto supervisordto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
-				.getApi(ApiName.CENTERUSERMACHINEHISTORY, pathsegments, "", "",
-						RegistrationCenterUserMachineMappingHistoryResponseDto.class);
-		List<String> officerpathsegments = new ArrayList<>();
-		officerpathsegments.add(effectiveTimestamp);
-		officerpathsegments.add(registrationCenterId);
-		officerpathsegments.add(machineId);
-		officerpathsegments.add(officerId);
-		RegistrationCenterUserMachineMappingHistoryResponseDto officerdto = (RegistrationCenterUserMachineMappingHistoryResponseDto) registrationProcessorRestService
-				.getApi(ApiName.CENTERUSERMACHINEHISTORY, officerpathsegments, "", "",
-						RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+			supervisorActive = supervisordto.getRegistrationCenters().get(0).getIsActive();
+			officerActive = officerdto.getRegistrationCenters().get(0).getIsActive();
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
+				String result = httpClientException.getResponseBodyAsString();
+				Gson gsonObj = new Gson();
+				supervisordto = gsonObj.fromJson(result, RegistrationCenterUserMachineMappingHistoryResponseDto.class);
+				ErrorDTO error = supervisordto.getErrors().get(0);
+				supervisorActive = false;
 
-		List<RegistrationCenterUserMachineMappingHistoryDto> supervisordtos = new ArrayList<>();
-		if (supervisordto != null)
-			supervisordtos = supervisordto.getRegistrationCenters();
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerdtos = new ArrayList<>();
-		if (officerdto != null)
-			officerdtos = officerdto.getRegistrationCenters();
+				this.registrationStatusDto.setStatusComment(error.getErrorMessage());
 
-		if (checkNotNull(supervisordtos)) {
-
-			supervisorActive = supervisordtos.get(0).getIsActive();
+			}
 
 		}
-		if (checkNotNull(officerdtos)) {
-			officerActive = officerdtos.get(0).getIsActive();
-		}
-		if (checkNull(supervisordtos) && checkNull(officerdtos)) {
-			this.registrationStatusDto.setStatusComment(StatusMessage.CENTER_MACHINE_USER_MAPPING_NOT_FOUND);
-		}
-
 		return supervisorActive || officerActive;
 	}
 
