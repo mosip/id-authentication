@@ -102,6 +102,11 @@
 			<artifactId>packet-info-storage-service</artifactId>
 			<version>${packet.info.storage.service.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-message-sender</artifactId>
+			<version>${registration.processor.message.sender.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

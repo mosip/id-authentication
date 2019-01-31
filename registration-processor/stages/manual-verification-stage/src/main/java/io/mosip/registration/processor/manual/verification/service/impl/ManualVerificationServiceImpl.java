@@ -30,6 +30,8 @@ import io.mosip.registration.processor.manual.verification.exception.NoRecordAss
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.manual.verification.util.StatusMessage;
+import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
+import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -69,6 +71,10 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
+	
+	/** The trigger. */
+	@Autowired
+	private TriggerNotification trigger;
 
 	/*
 	 * (non-Javadoc)
@@ -248,6 +254,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.MANUAL_ADJUDICATION_FAILED.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
 				description = "Manual verification rejected for registration id : " + registrationId;
+				trigger.triggerNotification(registrationId, NotificationTemplateType.DUPLICATE_UIN);
 			}
 			ManualVerificationEntity maVerificationEntity = basePacketRepository.update(manualVerificationEntity);
 			manualVerificationDTO.setStatusCode(maVerificationEntity.getStatusCode());

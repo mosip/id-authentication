@@ -2,6 +2,8 @@ package io.mosip.registration.processor.message.sender.utility;
 
 /**
  * The Class TemplateConstant.
+ * 
+ * @author M1048358
  */
 public class TemplateConstant {
 

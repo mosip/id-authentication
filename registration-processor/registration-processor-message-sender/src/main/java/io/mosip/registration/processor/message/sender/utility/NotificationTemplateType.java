@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.stages.uingenerator.util;
+package io.mosip.registration.processor.message.sender.utility;
 
 /**
  * The Enum NotificationTemplateType.

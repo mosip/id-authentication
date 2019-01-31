@@ -21,10 +21,6 @@ public class MessageSenderUtil {
 	@Value("${registration.processor.globalconfigjson}")
 	private String getGlobalConfigJson;
 
-	/** The get reg processor template json. */
-	@Value("${registration.processor.templatejson}")
-	private String getRegProcessorTemplateJson;
-
 	/** The get reg processor demographic identity. */
 	@Value("${registration.processor.demographic.identity}")
 	private String getRegProcessorDemographicIdentity;
