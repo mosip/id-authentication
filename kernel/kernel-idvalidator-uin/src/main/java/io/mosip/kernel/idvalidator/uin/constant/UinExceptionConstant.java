@@ -13,7 +13,7 @@ package io.mosip.kernel.idvalidator.uin.constant;
 public enum UinExceptionConstant {
 	
 	UIN_VAL_INVALID_NULL("KER-IDV-201" , "UIN should not be Empty or Null."),
-	UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE("KER-IDV-202", "UIN should not contain any sequential and repeated block of number for 2 or more than two digits"), 
+	UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE("KER-IDV-202", "UIN should not contain any sequential and repeated block of number for 2 or more than two digits and Admin ristricted numbers"), 
 	UIN_VAL_ILLEGAL_LENGTH("KER-IDV-203", "UIN length should be 12 digit."), 
 	UIN_VAL_INVALID_DIGITS("KER-IDV-204", "UIN should not contain any alphanumeric characters."), 
 	UIN_VAL_ILLEGAL_CHECKSUM("KER-IDV-205", "UIN should match checksum."),

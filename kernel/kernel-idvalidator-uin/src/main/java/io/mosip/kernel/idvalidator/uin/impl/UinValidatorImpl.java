@@ -3,6 +3,7 @@
  */
 package io.mosip.kernel.idvalidator.uin.impl;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -85,10 +86,10 @@ public class UinValidatorImpl implements UinValidator<String> {
 	private int conjugativeEvenDigitsLimit;
 
 	/**
-	 * Admin restricted digits
+	 * List of restricted numbers
 	 */
-	@Value("${mosip.kernel.uin.length.restricted-admin-digits:-1}")
-	private String restrictedAdminDigit;
+	@Value("#{'${mosip.kernel.uin.restricted-numbers}'.split(',')}")
+	private List<String> restrictedAdminDigits;
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
@@ -114,11 +115,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * Compiled regex pattern of {@link #conjugativeEvenDigitsLimitRegEx}
 	 */
 	private Pattern conjugativeEvenDigitsLimitPattern = null;
-	/**
-	 * Compiled regex pattern of {@link #restrictedAdminDigitRegex}
-	 */
-	private Pattern restrictedAdminDigitPattern = null;
-
+	
 	/**
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
@@ -155,14 +152,12 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 */
 		String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
 
-		String conjugativeEvenDigitsLimitRegEx = "[02468]{" + conjugativeEvenDigitsLimit + "}";
+		String conjugativeEvenDigitsLimitRegEx = "[2468]{" + conjugativeEvenDigitsLimit + "}";
 
-		String restrictedAdminDigitRegex = "(" + restrictedAdminDigit + ")";
 
 		repeatingPattern = Pattern.compile(repeatingRegEx);
 		repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
 		conjugativeEvenDigitsLimitPattern = Pattern.compile(conjugativeEvenDigitsLimitRegEx);
-		restrictedAdminDigitPattern = Pattern.compile(restrictedAdminDigitRegex);
 	}
 
 	/**
@@ -317,7 +312,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	private boolean isValidId(String id) {
 
 		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockPattern)
-				|| regexFilter(id, conjugativeEvenDigitsLimitPattern) || regexFilter(id, restrictedAdminDigitPattern));
+				|| regexFilter(id, conjugativeEvenDigitsLimitPattern) || restrictedAdminFilter(id));
 	}
 
 	/**
@@ -365,7 +360,7 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 */
 	private boolean firstAndLastDigitsReverseValidation(String id, int reverseLimit) {
 
-		StringBuilder rev = new StringBuilder(id.substring(reverseLimit, id.length()));
+		StringBuilder rev = new StringBuilder(id.substring(id.length()-reverseLimit, id.length()));
 		rev = rev.reverse();
 
 		return (id.substring(0, reverseLimit).equals(rev.toString()));
@@ -388,8 +383,19 @@ public class UinValidatorImpl implements UinValidator<String> {
 
 	private boolean firstAndLastDigitsValidation(String id, int limit) {
 
-		return (id.substring(0, limit).equals(id.substring(limit, id.length())));
+		return (id.substring(0, limit).equals(id.substring(id.length()-limit, id.length())));
 
+	}
+	
+	/**
+	 * Checks the input id for {@link #restrictedNumbers} filter
+	 * 
+	 * @param id
+	 *            The input id to validate
+	 * @return true if the id matches the filter
+	 */
+	private boolean restrictedAdminFilter(String id) {
+		return restrictedAdminDigits.parallelStream().anyMatch(id::contains);
 	}
 
 }
