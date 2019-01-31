@@ -1,9 +1,5 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,10 +16,15 @@ import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 /**
  * The implementation class of {@link AuditDAO}
  * 
  * @author Balaji Sridharan
+ * @author Yaswanth S
  * @since 1.0.0
  */
 @Repository
@@ -35,59 +36,6 @@ public class AuditDAOImpl implements AuditDAO {
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(AuditDAOImpl.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.dao.AuditDAO#getAllAudits()
-	 */
-	@Override
-	public List<Audit> getAllUnsyncAudits() {
-		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
-				APPLICATION_ID, "Fetching the list of unsync'ed Audits");
-		try {
-			return regAuditRepository.findAllUnsyncAudits();
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.FETCH_UNSYNC_AUDIT,
-					runtimeException.toString());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.dao.AuditDAO#updateSyncAudits()
-	 */
-	@Override
-	@Transactional
-	public int updateSyncAudits(List<String> auditUUIDs) {
-		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
-				APPLICATION_ID, "updateSyncAudits has been started");
-		
-		int updatedCount = 0;
-		try {
-			int syncAuditCount = auditUUIDs.size();
-			int endIndex = 0;
-			int updateLimit = 1000;
-
-			for (int updatedAuditCount = 0; updatedAuditCount < syncAuditCount; updatedAuditCount += updateLimit) {
-				endIndex += updateLimit;
-				if ((syncAuditCount - endIndex) < 0) {
-					endIndex = syncAuditCount;
-				}
-				updatedCount += regAuditRepository.updateSyncAudits(auditUUIDs.subList(updatedAuditCount, endIndex));
-			}
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.UPDATE_SYNC_AUDIT,
-					runtimeException.toString());
-		}
-		
-		LOGGER.info(LOG_AUDIT_DAO, APPLICATION_NAME,
-				APPLICATION_ID, "updateSyncAudits has been ended");
-		
-		return updatedCount;
-	}
-
-	
 	@Override
 	@Transactional
 	public void deleteAll(LocalDateTime auditLogFromDtimes, LocalDateTime auditLogToDtimes) {
@@ -106,20 +54,25 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	public List<Audit> getAudits(RegistrationAuditDates registrationAuditDates) {
 		LOGGER.info("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
-				"Fetching of unsynchronized which are to be added to Registartion packet had been started");
+				"Fetching of unsynchronized which are to be added to Registartion packet started");
 
-		List<Audit> audits;
-		if (registrationAuditDates == null || registrationAuditDates.getAuditLogToDateTime() == null) {
-			audits = regAuditRepository.findAllByOrderByCreatedAtAsc();
-		} else {
-			audits = regAuditRepository.findByCreatedAtGreaterThanOrderByCreatedAtAsc(
-					registrationAuditDates.getAuditLogToDateTime().toLocalDateTime());
+		try {
+			List<Audit> audits;
+			if (registrationAuditDates == null || registrationAuditDates.getAuditLogToDateTime() == null) {
+				audits = regAuditRepository.findAllByOrderByCreatedAtAsc();
+			} else {
+				audits = regAuditRepository.findByCreatedAtGreaterThanOrderByCreatedAtAsc(
+						registrationAuditDates.getAuditLogToDateTime().toLocalDateTime());
+			}
+
+			LOGGER.info("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
+					"Fetching of unsynchronized which are to be added to Registartion packet ended");
+
+			return audits;
+		} catch (RuntimeException exception) {
+			throw new RegBaseUncheckedException(RegistrationConstants.UPDATE_SYNC_AUDIT, exception.getMessage(),
+					exception);
 		}
-
-		LOGGER.info("REGISTRATION - FETCH_UNSYNCED_AUDITS - GET_ALL_AUDITS", APPLICATION_NAME, APPLICATION_ID,
-				"Fetching of unsynchronized which are to be added to Registartion packet had been ended");
-
-		return audits;
 	}
 
 }

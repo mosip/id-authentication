@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,9 +16,6 @@ import io.mosip.registration.repositories.AuditLogControlRepository;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
-import java.sql.Timestamp;
-import java.util.List;
 
 /**
  * DAO class for the {@link AuditLogControl} entity
@@ -42,7 +42,7 @@ public class AuditLogControlDAOImpl implements AuditLogControlDAO {
 	 */
 	@Override
 	public RegistrationAuditDates getLatestRegistrationAuditDates() {
-		LOGGER.debug("AUDIT - GET_LATEST_REGISTRATION_AUDIT_DATES - AUDIT_LOG_CONTROL_DAO", APPLICATION_NAME,
+		LOGGER.info("AUDIT - GET_LATEST_REGISTRATION_AUDIT_DATES - AUDIT_LOG_CONTROL_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Retrieving the latest audit logs start and end timestamps stored");
 
 		return auditLogControlRepository.findTopByOrderByCrDtimeDesc();
@@ -56,8 +56,8 @@ public class AuditLogControlDAOImpl implements AuditLogControlDAO {
 	 */
 	@Override
 	public void save(AuditLogControl auditLogControl) {
-		LOGGER.debug("AUDIT - SAVE_AUDIT_LOG_CONTROL - AUDIT_LOG_CONTROL_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Saves the audit log control for the latest registration packet");
+		LOGGER.info("AUDIT - SAVE_AUDIT_LOG_CONTROL - AUDIT_LOG_CONTROL_DAO", APPLICATION_NAME,
+				APPLICATION_ID, "Saves the audit log control for the latest registration packet");
 
 		auditLogControlRepository.save(auditLogControl);
 	}

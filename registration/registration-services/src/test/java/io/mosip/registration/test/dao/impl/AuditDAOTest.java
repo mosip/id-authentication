@@ -1,8 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -21,8 +19,12 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.registration.dao.impl.AuditDAOImpl;
+import io.mosip.registration.entity.RegistrationAuditDates;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
+
+import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
 
 public class AuditDAOTest {
 
@@ -47,34 +49,56 @@ public class AuditDAOTest {
 		audit.setCreatedAt(LocalDateTime.now());
 		audits.add(audit);
 	}
-	
+
 	@Test
-	public void findAllUnsyncAuditsTest() {		
-		when(auditRepository.findAllUnsyncAudits()).thenReturn(audits);
-		List<Audit> unsyncAudits = auditDAO.getAllUnsyncAudits();
-		assertEquals(audits.size(), unsyncAudits.size());
+	public void testGetAudits() {
+		when(auditRepository.findAllByOrderByCreatedAtAsc()).thenReturn(audits);
+
+		Assert.assertThat(auditDAO.getAudits(null), is(audits));
 	}
-	
-	@Test(expected = RegBaseUncheckedException.class)
-	public void getUnsyncAuditsExceptionTest() {
-		when(auditRepository.findAllUnsyncAudits()).thenThrow(new NullPointerException("Input is null"));
-		auditDAO.getAllUnsyncAudits();
-	}
-	
+
 	@Test
-	public void updateSyncAuditsTest() {
-		List<String> auditUUIDs = new LinkedList<>();
-		audits.parallelStream().map(audit -> audit.getUuid()).forEach(auditUUIDs :: add);
-		when(auditRepository.updateSyncAudits(Mockito.anyListOf(String.class))).thenReturn(auditUUIDs.size());
-		int updatedCount = auditDAO.updateSyncAudits(auditUUIDs);
-		Assert.assertEquals(auditUUIDs.size(), updatedCount);
+	public void testGetAuditsByNullAuditLogToTime() {
+		when(auditRepository.findAllByOrderByCreatedAtAsc()).thenReturn(audits);
+
+		Assert.assertThat(auditDAO.getAudits(new RegistrationAuditDates() {
+			
+			@Override
+			public Timestamp getAuditLogToDateTime() {
+				return null;
+			}
+			
+			@Override
+			public Timestamp getAuditLogFromDateTime() {
+				return null;
+			}
+		}), is(audits));
 	}
-	
+
+	@Test
+	public void testGetAuditsByAuditLogToTime() {
+		when(auditRepository.findByCreatedAtGreaterThanOrderByCreatedAtAsc(Mockito.any(LocalDateTime.class)))
+				.thenReturn(audits);
+
+		Assert.assertThat(auditDAO.getAudits(new RegistrationAuditDates() {
+			
+			@Override
+			public Timestamp getAuditLogToDateTime() {
+				return Timestamp.valueOf(LocalDateTime.now().minusDays(1));
+			}
+			
+			@Override
+			public Timestamp getAuditLogFromDateTime() {
+				return null;
+			}
+		}), is(audits));
+	}
+
 	@Test(expected = RegBaseUncheckedException.class)
-	public void updateSyncAuditsExceptionTest() {
-		when(auditRepository.updateSyncAudits(Mockito.anyListOf(String.class))).thenThrow(new NullPointerException("list is null"));
-		List<String> auditUUIDs = new LinkedList<>();
-		audits.parallelStream().map(audit -> audit.getUuid()).forEach(auditUUIDs :: add);
-		auditDAO.updateSyncAudits(auditUUIDs);
+	public void testGetAuditsRuntimeException() {
+		when(auditRepository.findAllByOrderByCreatedAtAsc()).thenThrow(new RuntimeException("SQL exception"));
+
+		auditDAO.getAudits(null);
 	}
+
 }
