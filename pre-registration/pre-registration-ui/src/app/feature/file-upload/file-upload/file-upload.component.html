@@ -161,7 +161,7 @@
         </div>
       </div>
     </div>
-    <div class="file-upload__body__2">
+    <div class="file-upload__body__2" *ngIf="this.users[0].files[0].length != 0">
       <p>{{ fileName }}</p>
       <iframe class="file-uplaoad__body__2__preview" [attr.src]="fileUrl" type="application/pdf;Base64,"></iframe>
       <div class="file-buttons">
