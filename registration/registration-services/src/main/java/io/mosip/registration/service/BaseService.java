@@ -232,6 +232,13 @@ public class BaseService {
 
 	}
 
+	/**
+	 * Get Global Param configuration value
+	 * 
+	 * @param key
+	 *            as name
+	 * @return value
+	 */
 	public String getGlobalConfigValueOf(String key) {
 
 		if (applicationMap == null) {
@@ -249,5 +256,4 @@ public class BaseService {
 		return (String) applicationMap.get(key);
 	}
 
-	
 }
