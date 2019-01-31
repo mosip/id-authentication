@@ -106,11 +106,11 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	KeymanagerUtil keymanagerUtil;
 
 	/*
-	 * Get publi
+	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.kernel.keymanager.service.KeymanagerService#getPublicKey(java.lang.
-	 * String, java.time.LocalDateTime, java.util.Optional)
+	 * io.mosip.kernel.keymanagerservice.service.KeymanagerService#getPublicKey(java
+	 * .lang.String, java.time.LocalDateTime, java.util.Optional)
 	 */
 	@Override
 	public PublicKeyResponse<String> getPublicKey(String applicationId, LocalDateTime timeStamp,
