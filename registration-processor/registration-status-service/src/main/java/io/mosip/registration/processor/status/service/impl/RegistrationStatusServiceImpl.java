@@ -36,7 +36,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
  */
 @Component
 public class RegistrationStatusServiceImpl
-		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
 	/** The threshhold time. */
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
@@ -80,6 +80,7 @@ public class RegistrationStatusServiceImpl
 		try {
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 			isTransactionSuccessful = true;
+
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(
@@ -314,11 +315,12 @@ public class RegistrationStatusServiceImpl
 	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
-		Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMap = RegistrationStatusMapUtil
-				.statusMapper();
+		String statusCode=entity.getStatusCode();
+		Integer retryCount=entity.getRetryCount()!=null?entity.getRetryCount():0;
 		// get the mapped value for the entity StatusCode
-		String mappedValue = statusMap.get(RegistrationStatusCode.valueOf(entity.getStatusCode())).toString();
-		registrationStatusDto.setStatusCode(mappedValue);
+		RegistrationExternalStatusCode mappedValue =RegistrationStatusMapUtil.getExternalStatus(statusCode,retryCount);			
+		registrationStatusDto.setRetryCount(retryCount);
+		registrationStatusDto.setStatusCode(mappedValue.toString());
 		return registrationStatusDto;
 	}
 

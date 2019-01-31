@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +51,7 @@ import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiv
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -106,6 +109,10 @@ public class PacketReceiverServiceTest {
 
 	private MockMultipartFile mockMultipartFile, invalidPacket, largerFile;
 
+	List<RegistrationStatusDto> registrations = new ArrayList<>();
+	RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+	
+	
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -122,6 +129,14 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 
+		
+		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+		registrationStatusDto.setRetryCount(2);
+		registrationStatusDto.setRegistrationId("60762783330000520190114162541");
+		registrations.add(registrationStatusDto);
+	Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
+
+		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -171,7 +186,8 @@ public class PacketReceiverServiceTest {
 
 		Mockito.doNothing().when(fileManager).put(mockMultipartFile.getOriginalFilename(),
 				mockMultipartFile.getInputStream(), DirectoryPathDto.LANDING_ZONE);
-
+		
+		
 		boolean successResult = packetReceiverService.storePacket(mockMultipartFile);
 
 		assertEquals(true, successResult);

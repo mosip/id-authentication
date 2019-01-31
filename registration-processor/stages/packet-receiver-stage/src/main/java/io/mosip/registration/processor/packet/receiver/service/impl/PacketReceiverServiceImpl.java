@@ -2,6 +2,8 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -28,6 +30,7 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -36,6 +39,7 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -54,6 +58,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	/** The Constant LOG_FORMATTER. */
 	public static final String LOG_FORMATTER = "{} - {}";
 
+	private static final String RESEND = "RESEND";
+	
 	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
@@ -113,7 +119,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			}
 			if (!(fileOriginalName.endsWith(getFileExtension()))) {
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
-			} else if (!(isDuplicatePacket(registrationId))) {
+			} else if (isNotDuplicatePacket(registrationId)) {
 				try {
 					fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.VIRUS_SCAN_ENC);
 					InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
@@ -193,8 +199,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 *            the enrolment id
 	 * @return the boolean
 	 */
-	private Boolean isDuplicatePacket(String enrolmentId) {
-		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
+	public Boolean isNotDuplicatePacket(String enrolmentId) {
+		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(enrolmentId);
+		RegistrationExternalStatusCode mappedValue;
+		mappedValue = RegistrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
+		return (registrationStatusService.getRegistrationStatus(enrolmentId) == null) && (mappedValue.toString().equals(RESEND)) ;
 	}
 
 }

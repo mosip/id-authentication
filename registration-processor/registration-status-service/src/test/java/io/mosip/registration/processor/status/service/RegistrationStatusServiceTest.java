@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -26,7 +27,8 @@ import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
-import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;;
+import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;;
 
 @RunWith(MockitoJUnitRunner.class)
 @DataJpaTest
@@ -67,7 +69,8 @@ public class RegistrationStatusServiceTest {
 		registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setIsActive(true);
 		registrationStatusEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
-
+		registrationStatusEntity.setRetryCount(2);
+		
 		entities = new ArrayList<>();
 		entities.add(registrationStatusEntity);
 
@@ -186,9 +189,11 @@ public class RegistrationStatusServiceTest {
 
 	@Test
 	public void testGetByIdsSuccess() {
+		
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
+		
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
-		assertEquals("PROCESSING", list.get(0).getStatusCode());
+		assertEquals("RESEND", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)

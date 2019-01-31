@@ -10,10 +10,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -26,12 +29,15 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @RunWith(SpringRunner.class)
 public class DuplicateUploadExceptionTest {
@@ -89,6 +95,17 @@ public class DuplicateUploadExceptionTest {
 		Mockito.doReturn(dto).when(registrationStatusService).getRegistrationStatus("0000");
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
+		
+		List<RegistrationStatusDto> registrations = new ArrayList<>();
+		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+		
+		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+		registrationStatusDto.setRetryCount(2);
+		registrationStatusDto.setRegistrationId("60762783330000520190114162541");
+		registrations.add(registrationStatusDto);
+		
+	Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);	
+		
 		try {
 			packetReceiverService.storePacket(mockMultipartFile);
 			fail();
