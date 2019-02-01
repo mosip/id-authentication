@@ -290,23 +290,26 @@ public class LoginController extends BaseController implements Initializable {
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
 						} else {
 
-							if (SessionContext.getInstance().getMapObject() == null) {
+							sessionContext = sessionContext.getInstance();
+							if (sessionContext.getMapObject() == null) {
 
-								SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+								sessionContextMap = new HashMap<>();
+								
+								sessionContext.setMapObject(sessionContextMap);
 
-								SessionContext.getInstance().getMapObject().put(RegistrationConstants.USER_STATION_ID,
+								sessionContextMap.put(RegistrationConstants.USER_STATION_ID,
 										stationID);
 
 								if (getCenterMachineStatus(userDetail)) {
-									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
+									sessionContextMap.put(RegistrationConstants.ONBOARD_USER,
 											isNewUser);
-									SessionContext.getInstance().getMapObject()
+									sessionContextMap
 											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 									loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), roleList);
 								} else {
-									SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER,
+									sessionContextMap.put(RegistrationConstants.ONBOARD_USER,
 											true);
-									SessionContext.getInstance().getMapObject()
+									sessionContextMap
 											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 									
 									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), RegistrationConstants.getRoles());
