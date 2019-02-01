@@ -11,7 +11,6 @@
 	
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>0.8.0</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -35,10 +34,10 @@
 		<maven.sonar.version>3.2</maven.sonar.version>
 		
 		<!-- Kernel components -->
-		<kernel.core.version>0.7.0-SNAPSHOT</kernel.core.version>
-		<kernel.hibernate.version>0.7.0-SNAPSHOT</kernel.hibernate.version>
-		<kernel.template.version>0.7.0-SNAPSHOT</kernel.template.version>
-		<kernel.pdfgenerate.version>0.7.0-SNAPSHOT</kernel.pdfgenerate.version>
+		<kernel.core.version>0.8.0</kernel.core.version>
+		<kernel.hibernate.version>0.8.0</kernel.hibernate.version>
+		<kernel.template.version>0.8.0</kernel.template.version>
+		<kernel.pdfgenerate.version>0.8.0</kernel.pdfgenerate.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>

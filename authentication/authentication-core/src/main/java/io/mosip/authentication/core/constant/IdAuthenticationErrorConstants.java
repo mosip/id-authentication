@@ -96,7 +96,10 @@ public enum IdAuthenticationErrorConstants {
 	PHONE_MISMATCH("IDA-DEA-026", "Demographic data - Phone(pi) did not match", "A0140"),
 	AGE_MISMATCH("IDA-DEA-028", "Demographic data - Age(pi) did not match", "A0141"),
 	DOB_MISMATCH("IDA-DEA-023", "Demographic data - DOB(pi) did not match", "A0137"),
-
+	
+	//pin validation
+	PIN_MISMATCH("IDA-SPA-001", "Pin value did not match", "A0151"),
+	MISSING_PINDATA("IDA-SPA-002","Missing pinval in the request"),
 	// Bio validation
 	DUPLICATE_FINGER("IDA-BIA-003", "Duplicate fingers in request.", "A0145"),
 	DUPLICATE_IRIS("IDA-BIA-016", "Duplicate Irises in request", "A0149"),
@@ -111,7 +114,13 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_CERTIFICATE("IDA-TSA-001", "Invalid certificate used in digital signature"),
 	
 	// OTP Generation
-	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first.");
+	VAL_KEY_NOT_FOUND_OTP_NOT_GENERATED("KER-OTV-005","Validation can't be performed against this key. Generate OTP first."),
+	
+	//Static Pin Store
+	STATICPIN_NOT_STORED_PINVAUE("IDA-SPA-003","Could not store the static pin of the individual"),
+	
+	// for No authentication type selected
+	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008","No authentication type selected");
 
 	private final String errorCode;
 	private final String errorMessage;

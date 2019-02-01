@@ -20,10 +20,9 @@ public interface MatchingStrategy {
 	
 	public MatchFunction getMatchFunction();
 	
-	public default int match(Map<String, String> reqValues, Map<String, String> entityValues, Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
-		String reqInfo = reqValues.values().stream().collect(Collectors.joining(" "));
-		String entityInfo = entityValues.values().stream().collect(Collectors.joining(" "));
-		return  getMatchFunction().match(reqInfo, entityInfo, matchProperties);
+	public default int match(Map<String, String> reqValues, Map<String, String> entityValues,
+			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
+		return getMatchFunction().match(reqValues, entityValues, matchProperties);
 	}
 	
 }

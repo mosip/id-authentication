@@ -1,4 +1,4 @@
-package io.mosip.demo.authentication.service.impl.indauth.controller;
+package io.mosip.demo.dto;
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyFactory;
