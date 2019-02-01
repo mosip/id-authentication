@@ -32,6 +32,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.face.FaceFacade;
@@ -372,6 +373,9 @@ public class LoginController extends BaseController implements Initializable {
 		userDTO.setUserId(userId.getText().toLowerCase());
 		userDTO.setPassword(password.getText());
 
+		//TODO for temporary fix , but later userDto should be getting from session
+		ApplicationContext.getInstance().getApplicationMap().put("userDTO", userDTO);
+		
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;
 
