@@ -1,10 +1,5 @@
 package io.mosip.registration.processor.stages.app;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;

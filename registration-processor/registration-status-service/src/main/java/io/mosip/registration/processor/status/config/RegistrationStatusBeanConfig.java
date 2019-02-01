@@ -48,7 +48,7 @@ import io.mosip.registration.processor.status.service.impl.TransactionServiceImp
 
 @Configuration
 @PropertySource("classpath:bootstrap.properties")
-//@Import({ HibernateDaoConfig.class })
+@Import({ HibernateDaoConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration.processor", repositoryBaseClass = HibernateRepositoryImpl.class)
 public class RegistrationStatusBeanConfig {
 
