@@ -26,6 +26,7 @@ import net.minidev.json.JSONObject;
  * 
  * @author Abhishek Kumar
  * @author Srinivasan
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 @RestController
@@ -43,6 +44,17 @@ public class SyncDataController {
 	@Autowired
 	SyncConfigDetailsService syncConfigDetailsService;
 
+	/**
+	 * This API method would fetch all synced global config details from server
+	 * 
+	 * @return JSONObject - global config response
+	 */
+	@ApiOperation(value = "API to sync global config details")
+	@GetMapping(value = "/configs")
+	public JSONObject getConfigDetails() {
+		return syncConfigDetailsService.getConfigDetails();
+	}
+	
 	/**
 	 * This API method would fetch all synced global config details from server
 	 * 
