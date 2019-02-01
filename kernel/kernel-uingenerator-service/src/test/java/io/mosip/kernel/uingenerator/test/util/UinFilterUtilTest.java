@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -22,62 +23,126 @@ import io.mosip.kernel.uingenerator.util.UinFilterUtil;
 @ContextConfiguration(classes = UinGeneratorTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
 public class UinFilterUtilTest {
 
+	@Value("${mosip.kernel.uin.test.valid-uin}")
+	private String validUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-sequence-asc-uin}")
+	private String invalidSequenceAscendingUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-sequence-desc-uin}")
+	private String invalidSequenceDescendingUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-repeating-uin}")
+	private String invalidRepeatingUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-repeating-one-uin}")
+	private String invalidRepeatingOneUin;
+
+	@Value("${mosip.kernel.uin.test.valid-repeating-uin}")
+	private String validRepeatingUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-repeating-block-uin}")
+	private String invalidRepeatingBlockUin;
+
+	@Value("${mosip.kernel.uin.test.valid-repeating-block-uin}")
+	private String validRepeatingBlockUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-repeating-group-uin}")
+	private String invalidRepeatingGroupUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-repeating-reverse-group-uin}")
+	private String invalidRepeatingReverseGroupUin;
+
+	@Value("${mosip.kernel.uin.test.valid-adjacent-even-digit-uin}")
+	private String validAdjacentEvenDigitUin;
+
+	@Value("${mosip.kernel.uin.test.invalid-adjacent-even-digit-uin}")
+	private String invalidAdjacentEvenDigitUin;
+
 	@Autowired
 	private UinFilterUtil uinFilterUtils;
 
 	@Test
 	public void filterIdTest() {
-		String id = "1029384756";
-		boolean res = uinFilterUtils.isValidId(id);
+		boolean res = uinFilterUtils.isValidId(validUin);
 		assertThat(res, is(true));
 	}
 
 	@Test
 	public void filterSeqAscFailTest() {
-		String id = "123";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(invalidSequenceAscendingUin);
 		assertThat(res, is(false));
 	}
 
 	@Test
 	public void filterSeqDescFailTest() {
-		String id = "987";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(invalidSequenceDescendingUin);
 		assertThat(res, is(false));
 	}
 
 	@Test
 	public void filterRepeatFailTest() {
-		String id = "1199";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(invalidRepeatingUin);
 		assertThat(res, is(false));
 	}
 
 	@Test
 	public void filterRepeatOneFailTest() {
-		String id = "101202";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(invalidRepeatingOneUin);
 		assertThat(res, is(false));
 	}
 
 	@Test
 	public void filterRepeatPassTest() {
-		String id = "39032802";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(validRepeatingUin);
 		assertThat(res, is(true));
 	}
 
 	@Test
 	public void filterRepeatBlockFailTest() {
-		String id = "198198";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(invalidRepeatingBlockUin);
 		assertThat(res, is(false));
 	}
 
 	@Test
 	public void filterRepeatBlockPassTest() {
-		String id = "19841984";
-		boolean res = uinFilterUtils.isValidId(id);
+
+		boolean res = uinFilterUtils.isValidId(validRepeatingBlockUin);
+		assertThat(res, is(true));
+	}
+
+	@Test
+	public void filterRepeatGroupFailTest() {
+
+		boolean res = uinFilterUtils.isValidId(invalidRepeatingGroupUin);
 		assertThat(res, is(false));
 	}
+
+	@Test
+	public void filterReverseRepeatGroupFailTest() {
+
+		boolean res = uinFilterUtils.isValidId(invalidRepeatingReverseGroupUin);
+		assertThat(res, is(false));
+	}
+
+	@Test
+	public void filterAdjacentEvenDigitFailTest() {
+
+		boolean res = uinFilterUtils.isValidId(validAdjacentEvenDigitUin);
+		assertThat(res, is(false));
+	}
+
+	@Test
+	public void filterAdjacentEvenDigitPassTest() {
+
+		boolean res = uinFilterUtils.isValidId(invalidAdjacentEvenDigitUin);
+		assertThat(res, is(true));
+	}
+
 }

@@ -2,7 +2,7 @@
 
 #### Background
 
-This application can be used to encrpyt and decrypt data based on defined set of algorithms. It contains several methods that accept symmetric key and asymmetric key pairs for encryption and decryption.
+This library can be used to encrpyt and decrypt data based on defined set of algorithms. It contains several methods that accept symmetric key and asymmetric key pairs for encryption and decryption.
 
 - Symmetric key
 

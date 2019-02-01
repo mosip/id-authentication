@@ -1,4 +1,4 @@
-## kernel-auditmanager-service:-
+## kernel-auditmanager-service
 
 
 [Background & Design](../../docs/design/kernel/kernel-auditmanager.md)

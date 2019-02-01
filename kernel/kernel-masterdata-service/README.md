@@ -48,5 +48,5 @@ mosip.kernel.supported-languages-key=mosip.supported-languages
 -----------------------------
 
 
-![ERD](kernel-masterdata-erd.png)
+![ERD](../../docs/design/kernel/_images/kernel-masterdata-erd.png)
 

@@ -92,8 +92,9 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	 */
 	private String generateRandomId(int generatedIdLength, long lowerBound, long upperBound) {
 		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedID));
-		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
+		String id = String.valueOf(generatedID);
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(id);
+		return appendChecksum(id, verhoeffDigit);
 	}
 
 	/**
@@ -106,10 +107,10 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 	 * @param verhoeffDigit
 	 *            The checksum to append
 	 */
-	private String appendChecksum(int generatedIdLength, Long generatedVId, String verhoeffDigit) {
+	private String appendChecksum(String generatedVId, String verhoeffDigit) {
 		StringBuilder vidSb = new StringBuilder();
 		vidSb.setLength(pridLength);
-		return vidSb.insert(0, generatedVId).insert(generatedIdLength, verhoeffDigit).toString().trim();
+		return vidSb.insert(0, generatedVId).insert(generatedVId.length(), verhoeffDigit).toString().trim();
 	}
 
 }

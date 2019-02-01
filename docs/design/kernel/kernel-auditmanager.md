@@ -66,6 +66,16 @@ This service can be used to audit events and operations. Service has REST API ex
 
 
 
+**ERD**
+
+
+
+
+
+![ERD](_images/kernel-auditmanager-erd.png)
+
+
+
 ## Implementation
 
 

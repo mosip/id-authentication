@@ -60,6 +60,12 @@ This service can be used to generate and validate OTP based on configured busine
 ![Class Diagram](_images/kernel-otpmanager-cd.png)
 
 
+**ERD**
+
+
+
+![ERD](_images/kernel-otpmanager-erd.png)
+
 ## Implementation
 
 

@@ -43,9 +43,12 @@ public class PridFilterUtils {
 	 */
 	@Value("${mosip.kernel.prid.repeating-limit}")
 	private int repeatingLimit;
-	
+
 	@Value("#{'${mosip.kernel.prid.not-start-with}'.split(',')}")
 	private List<String> notStartWith;
+
+	@Value("${mosip.kernel.prid.length}")
+	private int pridLength;
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
@@ -126,7 +129,8 @@ public class PridFilterUtils {
 	 */
 	public boolean isValidId(String id) {
 
-		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern) || validateNotStartWith(id));
+		return !(sequenceFilter(id) || regexFilter(id, repeatingPattern) || regexFilter(id, repeatingBlockpattern)
+				|| validateNotStartWith(id) || validateIdLength(id));
 	}
 
 	/**
@@ -159,7 +163,7 @@ public class PridFilterUtils {
 			return pattern.matcher(id).find();
 		return false;
 	}
-	
+
 	/**
 	 * Method to validate that the prid should not contains the specified digit at
 	 * first index
@@ -176,6 +180,10 @@ public class PridFilterUtils {
 			}
 		}
 		return false;
+	}
+
+	private boolean validateIdLength(String id) {
+		return (id.length() != pridLength);
 	}
 
 }

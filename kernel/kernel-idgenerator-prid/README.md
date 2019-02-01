@@ -1,6 +1,6 @@
 ## kernel-idgenerator-prid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-prid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-prid.md)
 
 [API Documentation]
 

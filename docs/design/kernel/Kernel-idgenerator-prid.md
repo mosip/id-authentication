@@ -11,7 +11,7 @@ The Pre-registration application needs to display an acknowledgement number when
 **The key solution considerations are**
 
 
-- There cannot be any duplicate numbers generated.
+- Generate an Id numeric id of configured length and policy. 
 
 
 - The configurations of the PRID is injected to the PRID generator module by the Pre-Registration module. 
@@ -28,6 +28,11 @@ The Pre-registration application needs to display an acknowledgement number when
 ![Module Diagram](_images/Kernel-idgenerator-prid.jpg)
 
 
+**Class diagram**
+
+
+
+![Class Diagram](_images/kernel-idgenerator-cd.png)
 
 ## Implementation
 

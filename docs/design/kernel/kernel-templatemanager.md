@@ -30,7 +30,7 @@ Applications generate automatic emails for account signup, password reminders or
 - Create a project which implements TemplateManager from provided template based on template engine like velocity template engine or freemarker template processor.
 
 
-- TemplateManager can be used in any MOSIP module to process template after adding PDFGrenerate implementation to their class path.
+- TemplateManager can be used in any MOSIP module to process template after adding its implementation to their class path.
 
 
 - Configure the template and data which you can pass to template manager.

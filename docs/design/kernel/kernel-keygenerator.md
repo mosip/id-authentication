@@ -2,7 +2,7 @@
 
 #### Background
 
-This application can be used to generate symmetric secret key and asymmetric public-private key pair based on defined set of algorithms. It contains two methods which provide symmetric key and asymmetric key pair.
+This library can be used to generate symmetric secret key and asymmetric public-private key pair based on defined set of algorithms. It contains two methods which provide symmetric key and asymmetric key pair.
 
 
 #### Solution
