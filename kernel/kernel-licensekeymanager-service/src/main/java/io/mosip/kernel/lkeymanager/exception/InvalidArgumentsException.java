@@ -1,29 +1,23 @@
-package io.mosip.kernel.lkeymanager.errorresponse;
+package io.mosip.kernel.lkeymanager.exception;
 
 import java.util.List;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ServiceError;
 
-/**
- * @author M1044542
- *
- */
-public class InvalidArgumentsErrorResponse extends BaseUncheckedException {
+public class InvalidArgumentsException extends BaseUncheckedException {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5896143672403925512L;
-	/**
-	 * 
-	 */
+	private static final long serialVersionUID = -7670097659608957076L;
+
 	private final List<ServiceError> list;
 
 	/**
 	 * @param list
 	 *            The error list.
 	 */
-	public InvalidArgumentsErrorResponse(List<ServiceError> list) {
+	public InvalidArgumentsException(List<ServiceError> list) {
 		this.list = list;
 	}
 
@@ -35,4 +29,5 @@ public class InvalidArgumentsErrorResponse extends BaseUncheckedException {
 	public List<ServiceError> getList() {
 		return list;
 	}
+
 }

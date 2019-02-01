@@ -1,7 +1,13 @@
 package io.mosip.kernel.lkeymanager.constant;
 
 public enum LicenseKeyManagerExceptionConstants {
-	ILLEGAL_INPUT_ARGUMENTS("KER-LKM-001", "Illegal Input");
+	ILLEGAL_INPUT_ARGUMENTS("KER-LKM-001", "BAD REQUEST : Input values has null or empty values."), 
+	INVALID_GENERATED_LICENSEKEY("KER-LKM-002", "The length of license key generated was not of the specified length."),
+	NOT_ACCEPTABLE_PERMISSION("KER-LKM-003","Permission value not accepted.");
+	
+	/**
+	 * The error code. 
+	 */
 	private final String errorCode;
 
 	/**

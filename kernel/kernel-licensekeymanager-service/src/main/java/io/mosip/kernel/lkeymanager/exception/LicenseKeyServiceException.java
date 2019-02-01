@@ -1,6 +1,9 @@
 package io.mosip.kernel.lkeymanager.exception;
 
+import java.util.List;
+
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ServiceError;
 
 /**
  * Exception class for License Key Manager service.
@@ -16,17 +19,22 @@ public class LicenseKeyServiceException extends BaseUncheckedException {
 	 */
 	private static final long serialVersionUID = 2506481216920647423L;
 
+	private final List<ServiceError> list;
+
 	/**
-	 * Constructor with erroCode, errorMessage and rootCause as the arguments.
-	 * 
-	 * @param errorCode
-	 *            the error code.
-	 * @param errorMessage
-	 *            the error message.
-	 * @param rootCause
-	 *            root cause of the exceptionn.
+	 * @param list
+	 *            The error list.
 	 */
-	public LicenseKeyServiceException(String errorCode, String errorMessage, Throwable rootCause) {
-		super(errorCode, errorMessage, rootCause);
+	public LicenseKeyServiceException(List<ServiceError> list) {
+		this.list = list;
+	}
+
+	/**
+	 * Getter for error list.
+	 * 
+	 * @return The error list.
+	 */
+	public List<ServiceError> getList() {
+		return list;
 	}
 }

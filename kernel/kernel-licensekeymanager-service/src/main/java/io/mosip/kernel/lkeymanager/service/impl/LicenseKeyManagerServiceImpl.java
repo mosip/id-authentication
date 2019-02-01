@@ -1,7 +1,5 @@
 package io.mosip.kernel.lkeymanager.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
+import io.mosip.kernel.lkeymanager.constant.LicenseKeyManagerPropertyConstants;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 import io.mosip.kernel.lkeymanager.entity.LicenseKey;
 import io.mosip.kernel.lkeymanager.entity.LicenseKeyPermissions;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyPermissionsRepository;
 import io.mosip.kernel.lkeymanager.repository.LicenseKeyRepository;
-import io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.util.LicenseKeyManagerUtil;
 
 /**
@@ -27,7 +26,8 @@ import io.mosip.kernel.lkeymanager.util.LicenseKeyManagerUtil;
  *
  */
 @Service
-public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
+public class LicenseKeyManagerServiceImpl
+		implements LicenseKeyManagerService<String, LicenseKeyGenerationDto, LicenseKeyMappingDto> {
 	/**
 	 * Autowired reference for {@link LicenseKeyManagerUtil}.
 	 */
@@ -58,11 +58,17 @@ public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
 	@Value("${mosip.kernel.licensekey.expiry-period-in-days}")
 	private String licenseKeyExpiryPeriod;
 
+	/**
+	 * The list of specified permissions by ADMIN.
+	 */
+	@Value("#{'${mosip.kernel.licensekey.permissions}'.split(',')}")
+	private List<String> validPermissions;
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService#
-	 * generateLicenseKey()
+	 * @see io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService#
+	 * generateLicenseKey(java.lang.Object)
 	 */
 	@Override
 	public String generateLicenseKey(LicenseKeyGenerationDto licenseKeyGenerationDto) {
@@ -70,8 +76,8 @@ public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
 		LicenseKey licenseKeyEntity = new LicenseKey();
 		licenseKeyEntity.setTspId(licenseKeyGenerationDto.getTspId());
 		licenseKeyEntity.setLKey(licenseKeyManagerUtil.generateLicense());
-		licenseKeyEntity.setCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
-		licenseKeyEntity.setCreatedBy("defaultadmin@mosip.io");
+		licenseKeyEntity.setCreatedAt(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
+		licenseKeyEntity.setCreatedBy(LicenseKeyManagerPropertyConstants.DEFAULT_CREATED_BY.getValue());
 		licenseKeyRepository.save(licenseKeyEntity);
 		return licenseKeyEntity.getLKey();
 	}
@@ -79,39 +85,40 @@ public class LicenseKeyManagerServiceImpl implements LicenseKeyManagerService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService#mapLicenseKey(io
-	 * .mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto)
+	 * @see io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService#
+	 * mapLicenseKey(java.lang.Object)
 	 */
 	@Override
 	public String mapLicenseKey(LicenseKeyMappingDto licenseKeyMappingDto) {
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(licenseKeyMappingDto.getPermissions(),
 				licenseKeyMappingDto.getLKey(), licenseKeyMappingDto.getTspId());
+		licenseKeyManagerUtil.areValidPermissions(licenseKeyMappingDto.getPermissions(), validPermissions);
 		LicenseKeyPermissions licenseKeyPermissionsEntity = new LicenseKeyPermissions();
 		licenseKeyMappingDto.getPermissions().forEach(permission -> {
 			licenseKeyPermissionsEntity.setLKey(licenseKeyMappingDto.getLKey());
 			licenseKeyPermissionsEntity.setTspId(licenseKeyMappingDto.getTspId());
 			licenseKeyPermissionsEntity.setPermission(permission);
-			licenseKeyPermissionsEntity.setCreatedAt(LocalDateTime.now(ZoneId.of("UTC")));
+			licenseKeyPermissionsEntity.setCreatedAt(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone());
 			licenseKeyPermissionsRepository.save(licenseKeyPermissionsEntity);
 		});
-		return "Mapped License with the permissions";
+		return LicenseKeyManagerPropertyConstants.MAPPED_STATUS.getValue();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService#
-	 * fetchLicenseKeyPermissions(java.lang.String, java.lang.String)
+	 * @see io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService#
+	 * fetchLicenseKeyPermissions(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public List<String> fetchLicenseKeyPermissions(String tspId, String licenseKey) {
-		licenseKeyManagerUtil.hasNullOrEmptyParameters(tspId, licenseKey);
+	public List<String> fetchLicenseKeyPermissions(String tspID, String licenseKey) {
+		licenseKeyManagerUtil.hasNullOrEmptyParameters(tspID, licenseKey);
 		List<String> permissionsList = new ArrayList<>();
-		LicenseKey licenseKeyDetails = licenseKeyRepository.findByTspIdAndLKey(tspId, licenseKey);
-		if (licenseKeyDetails != null && (licenseKeyDetails.getCreatedAt().until(LocalDateTime.now(ZoneId.of("UTC")),
-				ChronoUnit.DAYS)) < Integer.parseInt(licenseKeyExpiryPeriod)) {
-			List<LicenseKeyPermissions> licenseKeyPermissions = licenseKeyPermissionsRepository.findByTspId(tspId);
+		LicenseKey licenseKeyDetails = licenseKeyRepository.findByTspIdAndLKey(tspID, licenseKey);
+		if (licenseKeyDetails != null
+				&& (licenseKeyDetails.getCreatedAt().until(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone(),
+						ChronoUnit.DAYS)) < Integer.parseInt(licenseKeyExpiryPeriod)) {
+			List<LicenseKeyPermissions> licenseKeyPermissions = licenseKeyPermissionsRepository.findByTspId(tspID);
 			licenseKeyPermissions.forEach(permission -> permissionsList.add(permission.getPermission()));
 		}
 		return permissionsList;

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
-import io.mosip.kernel.lkeymanager.service.LicenseKeyManagerService;
 
 /**
  * Controller class that provides various methods for license key management
@@ -31,7 +31,7 @@ public class LicenseKeyController {
 	 * Autowired reference for {@link LicenseKeyManagerService}.
 	 */
 	@Autowired
-	LicenseKeyManagerService licenseKeyManagerService;
+	LicenseKeyManagerService<String, LicenseKeyGenerationDto, LicenseKeyMappingDto> licenseKeyManagerService;
 
 	/**
 	 * This method will generate license key against a certain TSP ID.
@@ -68,6 +68,7 @@ public class LicenseKeyController {
 	@GetMapping(value = "/v1.0/license/fetch")
 	public ResponseEntity<List<String>> fetchLicenseKeyPermissions(@RequestParam("tspId") String tspId,
 			@RequestParam("licenseKey") String licenseKey) {
-		return new ResponseEntity<>(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId,licenseKey), HttpStatus.OK);
+		return new ResponseEntity<>(licenseKeyManagerService.fetchLicenseKeyPermissions(tspId, licenseKey),
+				HttpStatus.OK);
 	}
 }
