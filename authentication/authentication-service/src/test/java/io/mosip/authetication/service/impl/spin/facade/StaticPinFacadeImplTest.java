@@ -153,7 +153,6 @@ public class StaticPinFacadeImplTest {
 		staticPinHistoryEntity.setPin(pin);
 		staticPinHistoryEntity.setCreatedBy(IDA);
 		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
 		staticPinHistoryEntity.setDeleted(false);
@@ -209,7 +208,6 @@ public class StaticPinFacadeImplTest {
 		staticPinHistoryEntity.setPin(pin);
 		staticPinHistoryEntity.setCreatedBy(IDA);
 		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
 		staticPinHistoryEntity.setDeleted(false);
@@ -265,7 +263,6 @@ public class StaticPinFacadeImplTest {
 		staticPinHistoryEntity.setPin(pin);
 		staticPinHistoryEntity.setCreatedBy(IDA);
 		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
 		staticPinHistoryEntity.setDeleted(false);

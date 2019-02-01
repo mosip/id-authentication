@@ -17,7 +17,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.spinstore.PinRequestDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinIdentityDTO;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
@@ -137,7 +135,6 @@ public class StaticPinServiceImplTest {
 		staticPinHistoryEntity.setPin(pin);
 		staticPinHistoryEntity.setCreatedBy(IDA);
 		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setGeneratedOn(dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
 		staticPinHistoryEntity.setDeleted(false);
@@ -178,7 +175,6 @@ public class StaticPinServiceImplTest {
 		staticPinHistoryEntity.setPin(pin);
 		staticPinHistoryEntity.setCreatedBy(IDA);
 		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
 		staticPinHistoryEntity.setEffectiveDate(new Date());
 		staticPinHistoryEntity.setActive(true);
 		staticPinHistoryEntity.setDeleted(false);
@@ -198,49 +194,5 @@ public class StaticPinServiceImplTest {
 		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO,"794138547620");
 	}
 	
-	@Ignore
-	@Test(expected = IdValidationFailedException.class)
-	public void testStorePin_IdDataValidationException() throws IDDataValidationException, IdValidationFailedException {
-		
-		String uin = "794138547620";
-		staticPinRequestDTO.setId("mosip.identity.static-pin");
-		String reqTime = ZonedDateTime.now()
-				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString();
-		staticPinRequestDTO.setReqTime(reqTime);
-		staticPinRequestDTO.setVer("1.0");
-		StaticPinIdentityDTO dto=new StaticPinIdentityDTO();
-		dto.setUin(uin);
-		PinRequestDTO pinRequestDTO=new PinRequestDTO();
-		pinRequestDTO.setIdentity(dto);
-		String pin = "123454";
-		pinRequestDTO.setStaticPin(pin);
-		staticPinRequestDTO.setRequest(pinRequestDTO);
-		StaticPinEntity stat = new StaticPinEntity();
-		stat.setCreatedDTimes(new Date());
-		stat.setPin("123456");
-		stat.setUin(uin);
-		StaticPinHistoryEntity staticPinHistoryEntity = new StaticPinHistoryEntity();
-		staticPinHistoryEntity.setUin(uin);
-		staticPinHistoryEntity.setPin(pin);
-		staticPinHistoryEntity.setCreatedBy(null);
-		staticPinHistoryEntity.setCreatedDTimes(new Date());
-		staticPinHistoryEntity.setGeneratedOn( dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime()));
-		staticPinHistoryEntity.setEffectiveDate(new Date());
-		staticPinHistoryEntity.setActive(true);
-		staticPinHistoryEntity.setDeleted(false);
-		staticPinHistoryEntity.setUpdatedBy(IDA);
-		staticPinHistoryEntity.setUpdatedOn(new Date());
-		Optional<StaticPinEntity> entity1 = Optional.empty();
-		Optional<StaticPinEntity> entity = Optional.of(stat);
-		Map<String, Object> idRepo = new HashMap<>();
-		idRepo.put("uin", uin);
-		idRepo.put("registrationId", "1234567890");
-		Optional<StaticPinHistoryEntity> entitySpin=Optional.of(staticPinHistoryEntity);
-		errors.rejectValue(null, "test error", "test error");
-//		Mockito.when(staticPinRepository.findById(uin)).thenThrow( DataAccessException(IdAuthenticationErrorConstants.STATICPIN_NOT_STORED_PINVAUE, errors));
-		Mockito.when(staticPinRepository.save(stat)).thenReturn(stat);
-		Mockito.when(staticPinHistoryRepo.save(staticPinHistoryEntity)).thenReturn(staticPinHistoryEntity);
-		Mockito.when(staticPinRepository.update(entity.get())).thenReturn(stat);	
-		ReflectionTestUtils.invokeMethod(staticPinServiceImpl, "storeSpin", staticPinRequestDTO,"794138547620");
-	}
+	
 }

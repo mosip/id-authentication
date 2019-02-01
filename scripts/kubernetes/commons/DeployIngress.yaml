@@ -42,6 +42,10 @@ spec:
         backend:
           serviceName: kernel-masterdata-service
           servicePort: 8086
+      - path: /cryptomanager
+        backend:
+          serviceName: kernel-cryptomanager-service
+          servicePort: 8087
       - path: /syncdata
         backend:
           serviceName: kernel-syncdata-service

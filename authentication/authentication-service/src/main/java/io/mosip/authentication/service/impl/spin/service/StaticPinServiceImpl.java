@@ -77,14 +77,12 @@ public class StaticPinServiceImpl implements StaticPinService {
 			Date convertStringToDate = null;
 			convertStringToDate = dateHelper.convertStringToDate(staticPinRequestDTO.getReqTime());
 			staticPinEntity.setUpdatedOn(convertStringToDate);
-			staticPinEntity.setGeneratedOn(convertStringToDate);
 			staticPinEntity.setActive(true);
 			staticPinEntity.setDeleted(false);
 			staticPinHistoryEntity.setUin(uinValue);
 			staticPinHistoryEntity.setPin(hashedPin);
 			staticPinHistoryEntity.setCreatedBy(IDA);
 			staticPinHistoryEntity.setCreatedDTimes(new Date());
-			staticPinHistoryEntity.setGeneratedOn(convertStringToDate);
 			staticPinHistoryEntity.setEffectiveDate(new Date());
 			staticPinHistoryEntity.setActive(true);
 			staticPinHistoryEntity.setDeleted(false);

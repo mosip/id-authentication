@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.dto.spinstore;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Data;
 
 /**
@@ -12,8 +14,10 @@ import lombok.Data;
 public class StaticPinIdentityDTO {
 	
 	/** The value UIN */
+	@JsonProperty("UIN")
 	private String uin;
 	
 	/** The value VID */
+	@JsonProperty("VID")
 	private String vid;
 }

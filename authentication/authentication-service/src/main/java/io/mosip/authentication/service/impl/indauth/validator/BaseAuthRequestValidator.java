@@ -45,6 +45,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DOBType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoAuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
+import io.mosip.authentication.service.impl.indauth.service.demo.PinAuthType;
 import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.datavalidator.exception.InvalidPhoneNumberException;
 import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
@@ -229,14 +230,18 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 					new Object[] { PIN_TYPE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
-		checkPinType(pinInfo,errors);
+		if(!errors.hasErrors()) {
+			checkPinType(pinInfo,errors);
+		}
 		if (!isPinValueEmptyOrNull(pinInfo)) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "missing Pin Value Info request");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					new Object[] { PIN_VALUE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		}
-		checkPinValue(pinInfo,errors);
+		if(!errors.hasErrors()) {
+			checkPinValue(pinInfo,errors);
+		}
 		
 	}
 	/**
@@ -263,7 +268,7 @@ public class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkPinType(List<PinInfo> pinInfo,Errors errors) {
 		for (PinInfo pinInfos : pinInfo) {
-			if (!PIN.equals((pinInfos.getType()))) {
+			if (!Stream.of(PinAuthType.values()).anyMatch(pinType -> pinInfos.getType().equals(pinType.getType()))) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new Object[] { PIN_TYPE },
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

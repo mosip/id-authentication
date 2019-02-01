@@ -208,12 +208,11 @@ public abstract class IdAuthValidator implements Validator {
 					new Object[] { IDV_ID_TYPE },
 					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 		} else if (idType.equals(IdType.UIN.getType())) {
+			boolean uinValid = false;
 			try {
-				uinValidator.validateId(id);
+				uinValid = uinValidator.validateId(id);
 			} catch (InvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
-				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
 			try {

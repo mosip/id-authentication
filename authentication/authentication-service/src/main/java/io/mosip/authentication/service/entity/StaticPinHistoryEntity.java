@@ -32,9 +32,6 @@ public class StaticPinHistoryEntity {
 	@Column(name = "uin", unique = true, nullable = false)
 	private String uin;
 	
-	/** The generated on. */
-	@Column(name = "generated_dtimes")
-	private Date generatedOn;
 	
 	/** The is active. */
 	@Column(name = "is_active")

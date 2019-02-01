@@ -58,13 +58,14 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
-
+	
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT);
+
 	}
 
 	/*
@@ -91,7 +92,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = true;//umcValidator.isValidUMC(registrationId);
+			isValidUMC = umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId);
 			}

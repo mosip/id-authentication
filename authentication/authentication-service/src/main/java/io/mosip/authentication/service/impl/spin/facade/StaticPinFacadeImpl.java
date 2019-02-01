@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.spinstore.StaticPinRequestDTO;
@@ -84,13 +86,16 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 		String resTime = null;
 		String idvId = null;
 		String idvIdType = null;
+		IdType idType=null;
 		if (uin != null) {
 			idResDTO = idAuthService.processIdType(IdType.UIN.getType(), uin, false);
 			idvIdType = IdType.UIN.getType();
+			idType=IdType.UIN;
 			idvId = uin;
 		} else if (vid != null) {
 			idResDTO = idAuthService.processIdType(IdType.VID.getType(), vid, false);
 			idvIdType = IdType.VID.getType();
+			idType=IdType.VID;
 			idvId = vid;
 		}
 
@@ -118,7 +123,8 @@ public class StaticPinFacadeImpl implements StaticPinFacade {
 			String comment = status ? "Static pin stored successfully" : "Faild to store Static pin";
 			idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, tspIdValue, statusValue, comment,
 					RequestType.STATICPIN_STORE_REQUEST);
-			// auditHelper.audit(AuditModules., AuditEvents., idvId, idvIdType, desc);
+			 String desc="Static Pin Storage requested";
+			auditHelper.audit(AuditModules.STATIC_PIN_STORAGE, AuditEvents.STATIC_PIN_STORAGE_REQUEST_RESPONSE, idvId, idType, desc);
 		}
 
 		return staticPinResponseDTO;
