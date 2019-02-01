@@ -51,7 +51,13 @@ public class StaticPinRequestValidator extends IdAuthValidator {
 	public boolean supports(Class<?> clazz) {
 		return StaticPinRequestDTO.class.equals(clazz);
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.service.impl.spin.validator.
+	 * StaticPinRequestValidator#validate(java.lang.Object,
+	 * org.springframework.validation.Errors)
+	 */
 	@Override
 	public void validate(Object target, Errors errors) {
 

@@ -58,19 +58,6 @@ public class PinMatchingStrategyTest {
 	}
 
 	/**
-	 * Tests doMatch function on Matching Strategy Function
-	 * 
-	 * @throws IdAuthenticationBusinessException
-	 */
-	@Test
-	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
-		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
-
-		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", null);
-		assertEquals(100, value);
-	}
-
-	/**
 	 * 
 	 * Tests the Match function with in-valid values
 	 * 

@@ -37,6 +37,8 @@ import io.mosip.authentication.service.helper.IdInfoHelper;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.StaticPinRepository;
+import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.HMACUtils;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -91,7 +93,7 @@ public class PinAuthServiceImplTest {
 	@Test
 	public void validPinTest() throws IdAuthenticationBusinessException {
 		StaticPinEntity stat = new StaticPinEntity();
-		stat.setPin("12345");
+		stat.setPin(CryptoUtil.encodeBase64(HMACUtils.generateHash(("12345").getBytes())));
 		Optional<StaticPinEntity> entityValue = Optional.of(stat);
 		Mockito.when(staticPinRepo.findById(Mockito.anyString())).thenReturn(entityValue);
 		AuthStatusInfo validatePin = pinAuthServiceImpl.validatePin(constructRequest(), "284169042058");

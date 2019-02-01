@@ -11,9 +11,11 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
+ * This class Instantiates a new Static Pin entity.
+ * 
  * @author Prem Kumar
  * 
- * This class Instantiates a new Static Pin entity.
+ *
  */
 @Data
 @Entity

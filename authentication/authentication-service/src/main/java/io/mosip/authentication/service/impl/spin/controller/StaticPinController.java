@@ -55,6 +55,7 @@ public class StaticPinController {
 		binder.setValidator(staticPinRequestValidator);
 	}
 	/**
+	 * This class provides store Request of Static Pin and sends proper Response
 	 * 
 	 * @param staticPinRequestDTO
 	 * @param errors
@@ -62,9 +63,9 @@ public class StaticPinController {
 	 * @throws IdAuthenticationAppException
 	 */
 	@PostMapping(path = "/v1.0/static-pin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-			@ApiResponse(code = 400, message = "Request authenticated failed") })
+	@ApiOperation(value = "Static Pin Store Request", response = IdAuthenticationAppException.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request Stored successfully"),
+			@ApiResponse(code = 400, message = "Request Store failed") })
 	public StaticPinResponseDTO storeSpin(@Valid @RequestBody StaticPinRequestDTO staticPinRequestDTO,@ApiIgnore Errors errors)
 			throws IdAuthenticationAppException  {
 		try {

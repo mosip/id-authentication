@@ -10,9 +10,11 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 /**
- * @author Prem Kumar
- * 
+ *
  * This class Instantiates a new Static Pin History entity.
+ * 
+ *  @author Prem Kumar
+ * 
  */
 @Data
 @Entity

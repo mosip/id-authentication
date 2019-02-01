@@ -99,7 +99,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
-				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.INTERNAL_SERVER_ERROR
+				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.OK
 						+ "\n" + ExceptionUtils.getStackTrace(ex));
 
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
@@ -108,7 +108,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
 
-		return new ResponseEntity<>(buildExceptionResponse(unknownException), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(buildExceptionResponse(unknownException), HttpStatus.OK);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(DEFAULT_SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
 				ex.toString() + "Error message Object : "
 						+ Optional.ofNullable(errorMessage).orElseGet(() -> "null").toString() + "\nStatus returned: "
-						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.INTERNAL_SERVER_ERROR).toString()
+						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.OK).toString()
 						+ "\n" + ExceptionUtils.getStackTrace(ex));
 
 		if (ex instanceof ServletException || ex instanceof BeansException
@@ -149,12 +149,12 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else if (ex instanceof AsyncRequestTimeoutException) {
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
 					IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage());
 
-			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.REQUEST_TIMEOUT);
+			return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.OK);
 		} else {
 			return handleAllExceptions(ex, request);
 		}
@@ -176,7 +176,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(), ex.toString()
-				+ "\n Status returned: " + HttpStatus.INTERNAL_SERVER_ERROR + ExceptionUtils.getStackTrace(ex));
+				+ "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
 
 		Throwable e = ex;
 		while (e.getCause() != null) {
@@ -188,10 +188,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 		if (e instanceof IDDataValidationException) {
 			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e),
-					HttpStatus.BAD_REQUEST);
+					HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e),
-					HttpStatus.INTERNAL_SERVER_ERROR);
+					HttpStatus.OK);
 		}
 	}
 
