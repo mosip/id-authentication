@@ -38,7 +38,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.service.packet.impl.PacketUploadServiceImpl;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
-import io.mosip.registration.util.restclient.RestClientUtil;
+import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class PacketUploadServiceTest {
 	
@@ -52,7 +52,7 @@ public class PacketUploadServiceTest {
 	private RequestHTTPDTO requestHTTPDTO;
 	
 	@Mock
-	private RestClientUtil restClientUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@Mock
 	private Environment environment;
@@ -93,7 +93,7 @@ public class PacketUploadServiceTest {
 		requestHTTPDTO.setUri(new URI("http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets"));
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object respObj = new Object();
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap())).thenReturn(respObj);
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
@@ -110,7 +110,7 @@ public class PacketUploadServiceTest {
 	public void testHttpException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f=new File("");
 		Object respObj = new Object();
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap()))
 		.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
@@ -119,13 +119,13 @@ public class PacketUploadServiceTest {
 	public void testRuntimeException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f=new File("");
 		Object respObj = new Object();
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap()))
 		.thenThrow(new RuntimeException());
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 	
 	@Test
-	public void testUploadPacket() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+	public void testUploadPacket() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		Registration registration=new Registration();
 		List<Registration> regList=new ArrayList<>();
 		registration.setId("123456789");
@@ -135,7 +135,7 @@ public class PacketUploadServiceTest {
 		
 		Object respObj = new Object();
 		respObj="PACKET_UPLOADED_TO_VIRUS_SCAN";
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap())).thenReturn(respObj);
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
 		List<Registration> packetList=new ArrayList<>();
 		Registration registration1 = new Registration();
@@ -149,7 +149,7 @@ public class PacketUploadServiceTest {
 	}
 	
 	@Test
-	public void testUploadPacket1() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+	public void testUploadPacket1() throws URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 		Registration registration=new Registration();
 		List<Registration> regList=new ArrayList<>();
 		registration.setId("123456789");
@@ -159,7 +159,7 @@ public class PacketUploadServiceTest {
 		
 		Object respObj = new Object();
 		respObj="PACKET_FAILED_TO_UPLOAD";
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenReturn(respObj);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap())).thenReturn(respObj);
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
 		List<Registration> packetList=new ArrayList<>();
 		Registration registration1 = new Registration();
@@ -195,8 +195,7 @@ public class PacketUploadServiceTest {
 		
 		File f=new File("");
 		Object respObj = new Object();
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
-		.thenThrow(new RuntimeException());
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap())).thenThrow(new RuntimeException());
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 		assertEquals("E", registration.getFileUploadStatus());
@@ -215,7 +214,7 @@ public class PacketUploadServiceTest {
 		
 		File f=new File("");
 		Object respObj = new Object();
-		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(),Mockito.anyMap()))
 		.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
