@@ -64,14 +64,16 @@ public class ServiceDelegateUtil {
 	private static final Logger LOGGER = AppConfig.getLogger(ServiceDelegateUtil.class);
 
 	/**
-	 * Prepare GET request
-	 * 
+	 * Prepare GET request.
+	 *
 	 * @param serviceName   service to be invoked
 	 * @param requestParams parameters along with url
+	 * @param hasPathParams the has path params
 	 * @return Object requiredType of object response Body
 	 * @throws RegBaseCheckedException  generalised exception with errorCode and
 	 *                                  errorMessage
 	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws SocketTimeoutException the socket timeout exception
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams, boolean hasPathParams)
@@ -88,7 +90,8 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getInstance().getApplicationMap().get("userDTO");
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
 		}
@@ -130,14 +133,16 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * prepare POST request
-	 * 
+	 * prepare POST request.
+	 *
 	 * @param serviceName service to be invoked
 	 * @param object      request type
 	 * @return Object requiredType of object response Body
 	 * @throws RegBaseCheckedException  generalised exception with errorCode and
 	 *                                  errorMessage
 	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws SocketTimeoutException the socket timeout exception
+	 * @throws ResourceAccessException the resource access exception
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object post(String serviceName, Object object)
@@ -155,7 +160,8 @@ public class ServiceDelegateUtil {
 
 		if (authRequired) {
 			// TODO - if batch get secrete key , normal login get user from session context
-			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getInstance().getApplicationMap().get("userDTO");
+			LoginUserDTO userDTO = (LoginUserDTO) ApplicationContext.getInstance().getApplicationMap()
+					.get(RegistrationConstants.USER_DTO);
 			authHeader = getAuthTokenId(userDTO);
 
 		}
@@ -176,13 +182,14 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
-	 * Prepare GET request
-	 * 
+	 * Prepare GET request.
+	 *
+	 * @param requestHTTPDTO the request HTTPDTO
 	 * @param serviceName   service to be invoked
 	 * @param requestParams params need to add along with url
+	 * @param authHeader the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException
-	 * 
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private RequestHTTPDTO prepareGETRequest(RequestHTTPDTO requestHTTPDTO, final String serviceName,
 			final Map<String, String> requestParams, String authHeader) throws RegBaseCheckedException {
@@ -210,10 +217,13 @@ public class ServiceDelegateUtil {
 	}
 
 	/**
+	 * Prepare POST request.
+	 *
 	 * @param serviceName service to be invoked
 	 * @param object      request type
+	 * @param authHeader the auth header
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
-	 * @throws RegBaseCheckedException
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object, String authHeader)
 			throws RegBaseCheckedException {
@@ -242,6 +252,13 @@ public class ServiceDelegateUtil {
 
 	}
 
+	/**
+	 * Sets the URI.
+	 *
+	 * @param requestHTTPDTO the request HTTPDTO
+	 * @param requestParams the request params
+	 * @param url the url
+	 */
 	private void setURI(RequestHTTPDTO requestHTTPDTO, Map<String, String> requestParams, String url) {
 		// BuildURIComponent
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
@@ -277,7 +294,7 @@ public class ServiceDelegateUtil {
 			if (arrayAuthHeaders[1].equals(RegistrationConstants.AUTH_TYPE)) {
 				httpHeaders.add(arrayAuthHeaders[0], arrayAuthHeaders[1] + " " + authDetails);
 
-			} else if (arrayAuthHeaders[1].equals("oauth")) {
+			} else if (arrayAuthHeaders[1].equals(RegistrationConstants.REST_OAUTH)) {
 				httpHeaders.add(arrayAuthHeaders[0], oauthHeader);
 			}
 
@@ -387,8 +404,8 @@ public class ServiceDelegateUtil {
 
 		// setting params
 		Map<String, Object> map = new HashMap<>();
-		map.put("userName", loginUserDTO.getUserId());
-		map.put("password", loginUserDTO.getPassword());
+		map.put(RegistrationConstants.REST_OAUTH_USER_NAME, loginUserDTO.getUserId());
+		map.put(RegistrationConstants.REST_OAUTH_USER_PSWD, loginUserDTO.getPassword());
 
 		// setting headers
 		HttpHeaders headers = new HttpHeaders();
@@ -402,7 +419,8 @@ public class ServiceDelegateUtil {
 		} catch (URISyntaxException uriSyntaxException) {
 			LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
 					uriSyntaxException.getMessage());
-			throw new RegBaseCheckedException("REST-001", "Internal Server Error");
+			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
+					RegistrationConstants.REST_OAUTH_ERROR_MSG);
 		}
 
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
@@ -416,7 +434,8 @@ public class ServiceDelegateUtil {
 				| SocketTimeoutException restException) {
 			LOGGER.error("REGISTRATION - SERVICE_DELEGATE_UTIL - GET_AUTH_TOKEN", APPLICATION_NAME, APPLICATION_ID,
 					restException.getMessage());
-			throw new RegBaseCheckedException("REST-001", "Internal Server Error");
+			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
+					RegistrationConstants.REST_OAUTH_ERROR_MSG);
 		}
 
 		if (null != responseHeader && !responseHeader.isEmpty()) {

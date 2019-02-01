@@ -938,5 +938,14 @@ public class RegistrationConstants {
 	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG="Audit Logs Deleted Successfully";
 	public static final String AUDIT_LOGS_DELETION_FLR_MSG="Audit Logs Deleted Failed";
 	public static final String AUDIT_LOGS_DELETION_EMPTY_MSG="No Audit Logs Found to be deleted";
+	
+	//Rest Authentication Constants
+	
+	public static final String USER_DTO="userDTO";
+	public static final String REST_OAUTH="oauth";
+	public static final String REST_OAUTH_USER_NAME="userName";
+	public static final String REST_OAUTH_USER_PSWD="password";
+	public static final String REST_OAUTH_ERROR_CODE="REST-OAUTH-001";
+	public static final String REST_OAUTH_ERROR_MSG="Internal Server Error";
 
 }
