@@ -29,6 +29,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
@@ -59,6 +61,10 @@ public class OtpMatchingStrategyTest {
 
 	@InjectMocks
 	private RestHelper restHelper;
+	
+	/** The mapper. */
+	@InjectMocks
+	private ObjectMapper mapper;
 
 	@Autowired
 	Environment environment;
@@ -77,7 +83,7 @@ public class OtpMatchingStrategyTest {
 						OTPValidateResponseDTO.class));
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		server = HttpServer.create(8890).start(adapter);
+		server = HttpServer.create(7895).start(adapter);
 		server.installShutdownHook();
 		System.err.println("started server");
 
@@ -94,6 +100,7 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(idInfoHelper, "otpManager", otpManager);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
+		ReflectionTestUtils.setField(restHelper, "mapper", mapper);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 	}
 
