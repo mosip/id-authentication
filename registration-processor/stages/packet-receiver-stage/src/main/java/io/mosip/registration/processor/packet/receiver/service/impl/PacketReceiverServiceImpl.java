@@ -109,10 +109,12 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} else if (file.getSize() > getMaxFileSize()) {
 				throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
-			} else if (!isNotDuplicatePacket(registrationId)) {
+			} else if (isDuplicate(registrationId) && !isExternalStatusResend(registrationId)) {
 				throw new DuplicateUploadRequestException(
 						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
-			} else {
+			} 
+			
+			else {
 				messageDTO.setRid(registrationId);
 				boolean isTransactionSuccessful = false;
 				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
@@ -199,11 +201,13 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 *            the enrolment id
 	 * @return the boolean
 	 */
-	public Boolean isNotDuplicatePacket(String enrolmentId) {
+	public Boolean isDuplicate(String enrolmentId) {
+			return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
+	}
+	public Boolean isExternalStatusResend(String enrolmentId) {
 		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(enrolmentId);
-
 		 RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
-		return (registrationStatusService.getRegistrationStatus(enrolmentId) == null) && (mappedValue.toString().equals(RESEND)) ;
+		return (mappedValue.toString().equals(RESEND));
 	}
 
 }

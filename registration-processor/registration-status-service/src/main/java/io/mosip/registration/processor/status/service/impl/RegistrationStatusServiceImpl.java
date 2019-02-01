@@ -84,8 +84,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	public InternalRegistrationStatusDto getRegistrationStatus(String registrationId) {
 		boolean isTransactionSuccessful = false;
 		try {
-			System.out.println(threshold);
-			System.out.println(threshholdTime);
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 			isTransactionSuccessful = true;
 
