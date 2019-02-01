@@ -21,8 +21,6 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
-import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -61,10 +59,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Value("${vertx.ignite.configuration}")
 	private String clusterManagerUrl;
 	
-	/** The trigger. */
-	@Autowired
-	private TriggerNotification trigger;
-
 	/**
 	 * Deploy verticle.
 	 */
@@ -116,7 +110,6 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 				registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.toString());
-				trigger.triggerNotification(registrationId, NotificationTemplateType.TECHNICAL_ISSUE);
 
 				description = "OSI validation Failed for registration id : " + registrationId;
 			}

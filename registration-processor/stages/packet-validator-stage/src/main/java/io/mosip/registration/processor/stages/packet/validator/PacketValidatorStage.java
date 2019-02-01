@@ -34,8 +34,6 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
-import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
@@ -107,10 +105,6 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The secs. */
 	private long secs = 30;
-	
-	/** The trigger. */
-	@Autowired
-	private TriggerNotification trigger;
 	
 	/**
 	 * Deploy verticle.
@@ -222,7 +216,6 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 							registrationStatusDto
 									.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
-							trigger.triggerNotification(registrationId, NotificationTemplateType.TECHNICAL_ISSUE);
 
 						}
 

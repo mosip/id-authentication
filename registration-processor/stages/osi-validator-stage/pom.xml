@@ -73,11 +73,6 @@
 			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-message-sender</artifactId>
-			<version>${registration.processor.message.sender.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>${powermock.module.junit4.version}</version>
