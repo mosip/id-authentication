@@ -38,6 +38,8 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.message.sender.utility.NotificationTemplateType;
+import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -47,7 +49,6 @@ import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.Documents;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdRequestDto;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.stages.uingenerator.idrepo.dto.RequestDto;
-import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotificationForUIN;
 import io.mosip.registration.processor.stages.uingenerator.util.UinStatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -136,7 +137,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 	/** The trigger notification for UIN. */
 	@Autowired
-	TriggerNotificationForUIN triggerNotificationForUIN;
+	private TriggerNotification triggerNotification;
 
 	private String idRepoApiVersion = "1.0";
 
@@ -183,9 +184,10 @@ public class UinGeneratorStage extends MosipVerticleManager {
 			if ((idResponseDTO.getResponse() != null)) {
 				if (isUinCreate) {
 					demographicDedupeRepository.updateUinWrtRegistraionId(registrationId, uinResponseDto.getUin());
-					triggerNotificationForUIN.triggerNotification(uinResponseDto.getUin(), isUinCreate);
+					triggerNotification.triggerNotification(uinResponseDto.getUin(),
+							NotificationTemplateType.UIN_CREATED);
 				} else {
-					triggerNotificationForUIN.triggerNotification(uinFieldCheck, isUinCreate);
+					triggerNotification.triggerNotification(uinFieldCheck, NotificationTemplateType.UIN_UPDATE);
 
 				}
 
@@ -209,19 +211,19 @@ public class UinGeneratorStage extends MosipVerticleManager {
 
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-		} 
+		}
 
 		catch (IOException | ParseException | ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.REGISTRATIONID.toString(),registrationId,e.getMessage());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, e.getMessage());
 
-		}  catch (Exception ex) {
+		} catch (Exception ex) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getMessage() + ex.getMessage()
-					+ ExceptionUtils.getStackTrace(ex));
+							+ ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
-		}
-		finally {
+		} finally {
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
@@ -272,7 +274,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
-					+ ExceptionUtils.getStackTrace(e));
+							+ ExceptionUtils.getStackTrace(e));
 		}
 		return idResponseDTO;
 
@@ -330,7 +332,7 @@ public class UinGeneratorStage extends MosipVerticleManager {
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage() + e.getMessage()
-					+ ExceptionUtils.getStackTrace(e));
+							+ ExceptionUtils.getStackTrace(e));
 		}
 
 		return idResponseDTO;
