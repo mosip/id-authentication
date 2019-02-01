@@ -70,7 +70,9 @@ public class ApiExceptionalHandler {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 		fieldErrors.forEach(x -> {
-			ServiceError error = new ServiceError("xxxx", x.getField() + ": " + x.getDefaultMessage());
+			ServiceError error = new ServiceError(
+					OtpNotificationErrorConstant.NOTIFIER_INVALID_REQUEST_ERROR.getErrorCode(),
+					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
 			errorResponse.setStatus(HttpStatus.OK.value());
 		});

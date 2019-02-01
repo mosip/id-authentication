@@ -16,7 +16,8 @@ public enum OtpNotificationErrorConstant {
 	NOTIFIER_SMS_NUMBER_ERROR("KER-NOT-006","Number cannot be empty or null"),
 	NOTITFIER_EMAIL_ID_ERROR("KER-NOT-007","Email id cannot be empty or null"),
 	NOTITFIER_EMAIL_SUBJECT_ERROR("KER-NOT-008","Email subject cannot be empty or null"),
-	NOTIFIER_EMAIL_BODY_TEMPLATE_ERROR("KER-NOT-009","Email body template cannot be empty or null");
+	NOTIFIER_EMAIL_BODY_TEMPLATE_ERROR("KER-NOT-009","Email body template cannot be empty or null"),
+	NOTIFIER_INVALID_REQUEST_ERROR("KER-NOT-010","notificationTypes: must not be empty");
 
 	/**
 	 * The error code.
