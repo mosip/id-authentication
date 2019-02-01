@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,13 +22,14 @@ import io.swagger.annotations.ApiOperation;
  * @since 1.0.0
  */
 @RestController
+@CrossOrigin
 public class OtpNotificationController {
 
 	/**
-	 * Reference to OtpNotification.
+	 * Reference to {@link OtpNotification}.
 	 */
 	@Autowired
-	private OtpNotification<OtpNotificationResponseDto,OtpNotificationRequestDto> otpNotificationService;
+	private OtpNotification<OtpNotificationResponseDto, OtpNotificationRequestDto> otpNotificationService;
 
 	/**
 	 * Api to notify with OTP to user.

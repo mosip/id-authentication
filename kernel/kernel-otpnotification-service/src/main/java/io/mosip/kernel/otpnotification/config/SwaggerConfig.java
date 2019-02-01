@@ -18,8 +18,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * Configuration class for swagger config
  * 
- * @author Dharmesh Khandelwal
- * @author Sagar Mahapatra
  * @author Ritesh Sinha
  * @since 1.0.0
  *
@@ -72,7 +70,6 @@ public class SwaggerConfig {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");
 		}
-		
 
 		return docket;
 	}

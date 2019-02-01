@@ -20,7 +20,7 @@ Default Port and Context Path
  OTP Notification Request:
  
  ```
-HttpResponse<String> response = Unirest.post("http://localhost:8080/v1.0/otpnotification/send")
+HttpResponse<String> response = Unirest.post("http://localhost:8080/v1.0/otp/send")
   .header("content-type", "application/json")
   .header("cache-control", "no-cache")
   .header("postman-token", "16196521-5e9d-7d61-ae46-8fda4e3220ca")
@@ -37,7 +37,7 @@ HttpStatus : 200 Ok
 ```
 {
     "status": "success",
-    "message": "Otp notification sent successfully"
+    "message": "Otp notification request submitted"
 }
 ```
 

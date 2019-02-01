@@ -19,8 +19,15 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 
+/**
+ * Configuration class for Otp notification.
+ * 
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ */
 @Configuration
 public class OtpNotificationConfig {
+
 	@Bean
 	public RestTemplate restTemplateConfig()
 			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
@@ -40,11 +47,11 @@ public class OtpNotificationConfig {
 		return new RestTemplate(requestFactory);
 
 	}
-	
+
 	@Bean
-	public TemplateManager templateManager(TemplateManagerBuilder templateManagerBuilder){
-	   
-	    return templateManagerBuilder.build();
+	public TemplateManager templateManager(TemplateManagerBuilder templateManagerBuilder) {
+
+		return templateManagerBuilder.build();
 	}
 
 }

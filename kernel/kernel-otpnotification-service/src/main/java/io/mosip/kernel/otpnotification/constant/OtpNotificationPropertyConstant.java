@@ -9,8 +9,8 @@ package io.mosip.kernel.otpnotification.constant;
 public enum OtpNotificationPropertyConstant {
 
 	NOTIFICATION_TYPE_SMS("sms"),
-	NOTIFICATIPON_TYPE_EMAIL("email"),
-	NOTIFICATION_RESPONSE_MESSAGE("Otp notification sent successfully"),
+	NOTIFICATION_TYPE_EMAIL("email"),
+	NOTIFICATION_RESPONSE_MESSAGE("Otp notification request submitted"),
 	NOTIFICATION_RESPONSE_STATUS("success"),
 	NOTIFICATION_OTP_TEMPLATE_PLACEHOLDER("$otp"),
 	NOTIFICATION_TEMPLATE_OTP_VALUE("otp"),

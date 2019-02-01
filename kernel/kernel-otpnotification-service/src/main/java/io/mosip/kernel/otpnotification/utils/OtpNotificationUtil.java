@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationErrorConstant;
 import io.mosip.kernel.otpnotification.constant.OtpNotificationPropertyConstant;
 import io.mosip.kernel.otpnotification.dto.NotifierResponseDto;
+import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpResponseDto;
 import io.mosip.kernel.otpnotification.dto.SmsRequestDto;
@@ -59,13 +62,13 @@ public class OtpNotificationUtil {
 	private String emailServiceApi;
 
 	/**
-	 * Reference to TemplateManager.
+	 * Reference to {@link TemplateManager}.
 	 */
 	@Autowired
 	private TemplateManager templateManager;
 
 	/**
-	 * Reference to rest template.
+	 * Reference to {@link RestTemplate}.
 	 */
 	@Autowired
 	private RestTemplate restTemplate;
@@ -191,7 +194,7 @@ public class OtpNotificationUtil {
 		String key = null;
 
 		if (notificationflag.contains(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())
-				&& notificationflag.contains(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {
+				&& notificationflag.contains(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_EMAIL.getProperty())) {
 
 			key = number + emailId;
 
@@ -201,7 +204,7 @@ public class OtpNotificationUtil {
 				key = number;
 			}
 
-			if (notificationflag.contains(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {
+			if (notificationflag.contains(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_EMAIL.getProperty())) {
 				key = emailId;
 			}
 		}
@@ -217,13 +220,64 @@ public class OtpNotificationUtil {
 	 */
 	public boolean containsNotificationTypes(String types) {
 		if (!types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())
-				&& !types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATIPON_TYPE_EMAIL.getProperty())) {
+				&& !types.equalsIgnoreCase(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_EMAIL.getProperty())) {
 
 			throw new OtpNotifierServiceException(OtpNotificationErrorConstant.NOTIFIER_INVALID_TYPE.getErrorCode(),
 					OtpNotificationErrorConstant.NOTIFIER_INVALID_TYPE.getErrorMessage());
 
 		}
 		return true;
+	}
+
+	/**
+	 * This method validate request dto with valid notification types mention.
+	 * 
+	 * @param request
+	 *            the request dto for OTP notification.
+	 * @return the list of {@link ServiceError}.
+	 */
+	public List<ServiceError> validationRequestArguments(OtpNotificationRequestDto request) {
+
+		List<ServiceError> validationErrorsList = new ArrayList<>();
+
+		for (int type = 0; type < request.getNotificationTypes().size(); type++) {
+
+			if (request.getNotificationTypes().get(type)
+					.equals(OtpNotificationPropertyConstant.NOTIFICATION_TYPE_SMS.getProperty())) {
+
+				if (request.getSmsTemplate() == null || request.getSmsTemplate().isEmpty()) {
+					validationErrorsList.add(
+							new ServiceError(OtpNotificationErrorConstant.NOTIFIER_SMS_TEMPLATE_ERROR.getErrorCode(),
+									OtpNotificationErrorConstant.NOTIFIER_SMS_TEMPLATE_ERROR.getErrorMessage()));
+				}
+				if (request.getMobileNumber() == null || request.getMobileNumber().isEmpty()) {
+					validationErrorsList
+							.add(new ServiceError(OtpNotificationErrorConstant.NOTIFIER_SMS_NUMBER_ERROR.getErrorCode(),
+									OtpNotificationErrorConstant.NOTIFIER_SMS_NUMBER_ERROR.getErrorMessage()));
+				}
+
+			} else {
+
+				if (request.getEmailId() == null || request.getEmailId().isEmpty()) {
+					validationErrorsList
+							.add(new ServiceError(OtpNotificationErrorConstant.NOTITFIER_EMAIL_ID_ERROR.getErrorCode(),
+									OtpNotificationErrorConstant.NOTITFIER_EMAIL_ID_ERROR.getErrorMessage()));
+				}
+				if (request.getEmailSubjectTemplate() == null || request.getEmailSubjectTemplate().isEmpty()) {
+					validationErrorsList.add(
+							new ServiceError(OtpNotificationErrorConstant.NOTITFIER_EMAIL_SUBJECT_ERROR.getErrorCode(),
+									OtpNotificationErrorConstant.NOTITFIER_EMAIL_SUBJECT_ERROR.getErrorMessage()));
+				}
+				if (request.getEmailBodyTemplate() == null || request.getEmailBodyTemplate().isEmpty()) {
+					validationErrorsList.add(new ServiceError(
+							OtpNotificationErrorConstant.NOTIFIER_EMAIL_BODY_TEMPLATE_ERROR.getErrorCode(),
+							OtpNotificationErrorConstant.NOTIFIER_EMAIL_BODY_TEMPLATE_ERROR.getErrorMessage()));
+				}
+
+			}
+
+		}
+		return validationErrorsList;
 	}
 
 }
