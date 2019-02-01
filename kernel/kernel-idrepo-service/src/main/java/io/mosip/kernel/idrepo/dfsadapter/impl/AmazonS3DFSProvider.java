@@ -125,7 +125,7 @@ public class AmazonS3DFSProvider implements MosipDFSProvider {
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 		}
-		return null;
+		return new byte[0];
 	}
 
 }

@@ -37,6 +37,7 @@ import io.mosip.kernel.core.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.core.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
 
@@ -323,6 +324,13 @@ public class IdRequestValidator implements Validator {
 							if (!identityMap.containsKey(doc.get(DOC_CAT))) {
 								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
+								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+												doc.get(DOC_CAT)));
+							}
+							if (StringUtils.isEmpty(doc.get("value"))) {
+								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
+										(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 												doc.get(DOC_CAT)));
