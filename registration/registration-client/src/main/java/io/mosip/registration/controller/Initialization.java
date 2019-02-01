@@ -13,10 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.auth.LoginController;
-import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.config.GlobalParamService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -42,19 +39,9 @@ public class Initialization extends Application {
 		LOGGER.info("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen initilization "
 						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
-
-		BaseController baseController = applicationContext.getBean("baseController", BaseController.class);
-
-		GlobalParamService globalParamService = applicationContext.getBean(GlobalParamService.class);
-		ResponseDTO responseDTO = globalParamService.synchConfigData();
-		if (responseDTO.getErrorResponseDTOs() != null) {
-			ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-			baseController.generateAlert(RegistrationConstants.ERROR, errorResponseDTO.getMessage());
-		} else {
-
-			LoginController loginController = applicationContext.getBean(LoginController.class);
-			loginController.loadInitialScreen(primaryStage);
-		}
+		
+		LoginController loginController = applicationContext.getBean(LoginController.class);
+		loginController.loadInitialScreen(primaryStage);
 
 		io.mosip.registration.context.ApplicationContext.getInstance().getApplicationMap().put("hostServices",
 				getHostServices());

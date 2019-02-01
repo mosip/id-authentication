@@ -121,7 +121,7 @@ public class RegistrationDeletionJobTest {
 		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(registrationDeletionJob);
 	
-		Mockito.when(regPacketStatusService.deleteReRegistrationPackets()).thenReturn(responseDTO);
+		Mockito.when(regPacketStatusService.deleteRegistrationPackets()).thenReturn(responseDTO);
 
 	
 		registrationDeletionJob.executeInternal(context);

@@ -4,20 +4,27 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_ENCRYPTION
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.AuditLogControl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -64,6 +71,12 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	private AuditFactory auditFactory;
 
 	/**
+	 * Instance of {@link AuditLogControlDAO}
+	 */
+	@Autowired
+	private AuditLogControlDAO auditLogControlDAO;
+
+	/**
 	 * Encrypts the input data using AES algorithm followed by RSA
 	 * 
 	 * @param packetZipData
@@ -97,29 +110,35 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket);
-			
-			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID,
-					"Encrypted Packet and Acknowledgement Receipt saved successfully");
+
+			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID, "Encrypted Packet saved successfully");
 
 			// Insert the Registration Details into DB
-			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemographicInfoDTO().getIdentity()
-					.getFullName().get(0).getValue());
+			registrationDAO.save(filePath, registrationDTO);
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Encrypted Packet persisted");
-			
-			// Update the sync'ed audits
-			// TODO: Below lines of code had been commented intentionally. Will be updated.
-			//List<String> auditUUIDs = new LinkedList<>();
-			//registrationDTO.getAuditDTOs().parallelStream().map(AuditDTO::getUuid).forEach(auditUUIDs::add);
-			//auditDAO.updateSyncAudits(auditUUIDs);
+					APPLICATION_ID, "Registration details persisted to database");
+
+			Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
+
+			auditLogControlDAO.save(Builder.build(AuditLogControl.class)
+					.with(auditLogControl -> auditLogControl
+							.setAuditLogFromDateTime(registrationDTO.getAuditLogStartTime()))
+					.with(auditLogControl -> auditLogControl
+							.setAuditLogToDateTime(registrationDTO.getAuditLogEndTime()))
+					.with(auditLogControl -> auditLogControl.setRegistrationId(registrationDTO.getRegistrationId()))
+					.with(auditLogControl -> auditLogControl.setAuditLogSyncDateTime(currentTimestamp))
+					.with(auditLogControl -> auditLogControl.setCrDtime(currentTimestamp))
+					.with(auditLogControl -> auditLogControl
+							.setCrBy(SessionContext.getInstance().getUserContext().getUserId()))
+					.get());
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Sync'ed audit logs updated");
 			
 			auditFactory.audit(AuditEvent.PACKET_ENCRYPTED, Components.PACKET_ENCRYPTOR,
-					"Packet encrypted successfully", "registration reference id", "123456");
+					"Packet encrypted successfully", registrationDTO.getRegistrationId(),
+					RegistrationConstants.REGISTRATION_ID);
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet encryption had been ended");
@@ -134,6 +153,9 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ENCRYPTION_MANAGER,
 					runtimeException.toString());
+		}finally {
+			LOGGER.info(LOG_PKT_ENCRYPTION,APPLICATION_NAME,APPLICATION_ID, 
+					"Registrtaion Process end for RID  : [ " + registrationDTO.getRegistrationId() + " ] ");
 		}
 	}
 }

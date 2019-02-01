@@ -69,15 +69,6 @@ public enum CompositeIrisMatchingStrategy implements MatchingStrategy {
 		return matchFunction;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.core.spi.indauth.match.MatchingStrategy#match(java.util.Map, java.util.Map, java.util.Map)
-	 */
-	@Override
-	public int match(Map<String, String> reqValues, Map<String, String> entityValues,
-			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
-		return matchFunction.match(reqValues, entityValues, matchProperties);
-	}
-	
 	public static String getIdvid() {
 		return IDVID;
 	}

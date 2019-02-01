@@ -7,8 +7,8 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
-import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
+import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -17,7 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Dinesh Karuppiah.T
  */
 
-public enum FullAddressMatchingStrategy implements MatchingStrategy {
+public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {

@@ -40,14 +40,14 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * Gets the match output.
 	 *
 	 * @param listMatchInputs the list match inputs
-	 * @param identitydto    the demo DTO
+	 * @param authRequestDTO    the demo DTO
 	 * @param demoEntity     the demo entity
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
+	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, AuthRequestDTO authRequestDTO,
 			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
-		return idInfoHelper.matchIdentityData(identitydto, demoEntity, listMatchInputs);
+		return idInfoHelper.matchIdentityData(authRequestDTO, demoEntity, listMatchInputs);
 	}
 
 	/*
@@ -65,7 +65,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 
-		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getRequest().getIdentity(),
+		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO,
 				demoEntity);
 		// Using AND condition on the match output for Bio auth.
 		boolean demoMatched = !listMatchOutputs.isEmpty() && listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
