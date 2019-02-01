@@ -33,8 +33,10 @@ import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
 import io.mosip.kernel.otpnotification.utils.OtpNotificationUtil;
 
 /**
+ * The exception test class for otp notification.
+ * 
  * @author Ritesh Sinha
- *
+ * @since 1.0.0
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { OtpNotificationBootApplication.class })
@@ -85,7 +87,7 @@ public class OtpNotificationExceptionTest {
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
 		when(service.sendOtpNotification(request))
-						.thenThrow(new HttpClientErrorException(HttpStatus.OK, "number cannot be null or blank"));
+				.thenThrow(new HttpClientErrorException(HttpStatus.OK, "number cannot be null or blank"));
 		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 
@@ -103,9 +105,9 @@ public class OtpNotificationExceptionTest {
 		request.setNotificationTypes(notificationTypes);
 		request.setSmsTemplate("YOUR LOGIN OTP IS $otp");
 		String json = mapper.writeValueAsString(request);
-		when(templateManager.merge(Mockito.any(),Mockito.any())).thenThrow(IOException.class);
+		when(templateManager.merge(Mockito.any(), Mockito.any())).thenThrow(IOException.class);
 		mockMvc.perform(post("/v1.0/otp/send").contentType(MediaType.APPLICATION_JSON).content(json))
-		.andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 
 }

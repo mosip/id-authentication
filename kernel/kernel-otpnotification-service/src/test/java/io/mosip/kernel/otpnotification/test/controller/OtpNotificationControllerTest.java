@@ -26,6 +26,12 @@ import io.mosip.kernel.otpnotification.dto.OtpNotificationRequestDto;
 import io.mosip.kernel.otpnotification.dto.OtpNotificationResponseDto;
 import io.mosip.kernel.otpnotification.service.impl.OtpNotificationServiceImpl;
 
+/**
+ * The controller test class for otp notification.
+ * 
+ * @author Ritesh Sinha
+ * @since 1.0.0
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { OtpNotificationBootApplication.class })
@@ -36,7 +42,7 @@ public class OtpNotificationControllerTest {
 
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@MockBean
 	private OtpNotificationServiceImpl service;
 
