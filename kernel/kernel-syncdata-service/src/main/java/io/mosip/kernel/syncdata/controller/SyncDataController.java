@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.ConfigDto;
+import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.dto.response.RolesResponseDto;
-import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
@@ -29,6 +29,7 @@ import net.minidev.json.JSONObject;
  * 
  * @author Abhishek Kumar
  * @author Srinivasan
+ * @author Megha Tanga
  * @since 1.0.0
  */
 @RestController
@@ -130,7 +131,7 @@ public class SyncDataController {
 	 * @return UserDetailResponseDto
 	 */
 	@GetMapping("/userdetails/{regid}")
-	public UserDetailResponseDto getUserDetails(@PathVariable("regid") String regId) {
+	public SyncUserDetailDto getUserDetails(@PathVariable("regid") String regId) {
 		return syncUserDetailsService.getAllUserDetail(regId);
 	}
 }

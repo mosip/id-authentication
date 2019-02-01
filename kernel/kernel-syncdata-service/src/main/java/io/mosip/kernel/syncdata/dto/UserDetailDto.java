@@ -1,5 +1,7 @@
 package io.mosip.kernel.syncdata.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -7,13 +9,15 @@ public class UserDetailDto {
 
 	private String userName;
 	
-	private String userId;
-	
 	private String mail;
 	
 	private String mobile;
 	
-	private String userPassword;
+	private byte[] userPassword;
 	
+    private String userId;
+    
+    private String role;
+
 	
 }
