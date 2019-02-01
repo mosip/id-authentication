@@ -222,7 +222,7 @@ public class IdRequestValidatorTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
-		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.JSON_SCHEMA_PROCESSING_FAILED.getErrorCode(), error.getCode());
@@ -240,12 +240,12 @@ public class IdRequestValidatorTest {
 				"{\"identity\":{\"IDSchemaVersion\":1.0,\"UIN\":795429385028},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				Object.class);
-		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-					"individualBiometrics"), error.getDefaultMessage());
+					"Documents - individualBiometrics"), error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
@@ -258,7 +258,7 @@ public class IdRequestValidatorTest {
 				"{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				Object.class);
-		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 	}
 
@@ -280,7 +280,7 @@ public class IdRequestValidatorTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
-		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.JSON_SCHEMA_RETRIEVAL_FAILED.getErrorCode(), error.getCode());
@@ -299,11 +299,11 @@ public class IdRequestValidatorTest {
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
 				Object.class);
-		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "request"),
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "identity - at /identity"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
@@ -317,7 +317,7 @@ public class IdRequestValidatorTest {
 		Object request = mapper.readValue(
 				"{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}".getBytes(),
 				Object.class);
-		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
+		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
