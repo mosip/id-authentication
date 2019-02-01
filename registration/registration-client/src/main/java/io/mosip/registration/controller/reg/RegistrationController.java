@@ -1643,6 +1643,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private void gotoFirstDemographicPane() {
+		documentScanController.initializePreviewSection();
 		demoGraphicTitlePane.setContent(null);
 		demoGraphicTitlePane.setExpanded(false);
 		demoGraphicTitlePane.setContent(demoGraphicPane1);
