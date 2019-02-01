@@ -2,6 +2,7 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -28,6 +29,7 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
 import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -36,6 +38,7 @@ import io.mosip.registration.processor.status.dto.SyncResponseDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 /**
  * The Class PacketReceiverServiceImpl.
@@ -54,6 +57,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	/** The Constant LOG_FORMATTER. */
 	public static final String LOG_FORMATTER = "{} - {}";
 
+	private static final String RESEND = "RESEND";
+
 	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
@@ -68,16 +73,20 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	/** The core audit request builder. */
 	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The packet receiver stage. */
 	@Autowired
-	PacketReceiverStage packetReceiverStage;
+	private PacketReceiverStage packetReceiverStage;
 
 	/** The env. */
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -100,10 +109,12 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} else if (file.getSize() > getMaxFileSize()) {
 				throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
-			} else if (isDuplicatePacket(registrationId)) {
+			} else if (isDuplicate(registrationId) && !isExternalStatusResend(registrationId)) {
 				throw new DuplicateUploadRequestException(
 						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
-			} else {
+			} 
+			
+			else {
 				messageDTO.setRid(registrationId);
 				boolean isTransactionSuccessful = false;
 				SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
@@ -128,7 +139,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					registrationStatusService.addRegistrationStatus(dto);
 					storageFlag = true;
 					isTransactionSuccessful = true;
-				} catch (DataAccessException | IOException e) {
+				} catch (DuplicateUploadRequestException|DataAccessException | IOException e) {
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
@@ -190,8 +201,13 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 *            the enrolment id
 	 * @return the boolean
 	 */
-	private Boolean isDuplicatePacket(String enrolmentId) {
-		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
+	public Boolean isDuplicate(String enrolmentId) {
+			return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
+	}
+	public Boolean isExternalStatusResend(String enrolmentId) {
+		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(enrolmentId);
+		 RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
+		return (mappedValue.toString().equals(RESEND));
 	}
 
 }
