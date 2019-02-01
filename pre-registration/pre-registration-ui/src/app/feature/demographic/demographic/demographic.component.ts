@@ -567,6 +567,7 @@ export class DemographicComponent implements OnInit {
           );
           this.sharedService.updateNameList(this.step, {
             fullName: this.userForm.controls[this.formControlNames.fullName].value,
+            fullNameSecondaryLang: this.formControlValues.secondaryFullName,
             preRegId: this.preRegId
           });
         } else if (response !== null) {
@@ -576,6 +577,7 @@ export class DemographicComponent implements OnInit {
           this.regService.addUser(new UserModel(this.preRegId, request, [], this.codeValue));
           this.sharedService.addNameList({
             fullName: this.userForm.controls[this.formControlNames.fullName].value,
+            fullNameSecondaryLang: this.formControlValues.secondaryFullName,
             preRegId: this.preRegId
           });
         } else {

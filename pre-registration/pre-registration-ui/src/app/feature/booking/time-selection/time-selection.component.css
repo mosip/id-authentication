@@ -21,8 +21,8 @@
 }
 
 .time-selection__tile-date-text {
-    margin: 15px 0 15px 0;
-    font-size: 10px;
+    margin: 10px 0 10px 0;
+    font-size: 12px;
 }
 
 .time-selection__tile-availability-text {
@@ -93,6 +93,10 @@
 .time-selection__name-list {
     padding: 5px;
     list-style: none;
+    max-width: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
 }
 
 .time-selection__name-list-item {
@@ -195,8 +199,8 @@
 
 
 .sizing {
-    height: 100px;
-    width: 100px;
+    height: 130px;
+    width: 130px;
     display: inline-block;
     margin: 0 15px 0 15px;
     text-align: left;
@@ -295,6 +299,11 @@
     font-size: 12px;
     letter-spacing: 1px;
     
+  }
+
+  .time-selection__date {
+    margin: 10px 0 10px 5px;
+    text-align: center;
   }
 
   @media(max-width: 500px) {

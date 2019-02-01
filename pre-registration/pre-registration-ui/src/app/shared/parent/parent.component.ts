@@ -22,9 +22,9 @@ export class ParentComponent implements OnInit {
       this.componentName = 'DemographicComponent';
     } else if (route_parts[route_parts.length - 1] === 'file-upload') {
       this.componentName = 'FileUploadComponent';
-    } else if (route_parts[route_parts.length - 1] === 'booking/pick-center') {
+    } else if (route_parts[route_parts.length - 1] === 'pick-center') {
       this.componentName = 'CenterSelectionComponent';
-    } else if (route_parts[route_parts.length - 1] === 'booking/pick-time') {
+    } else if (route_parts[route_parts.length - 1] === 'pick-time') {
       this.componentName = 'TimeSelectionComponent';
     } else if (route_parts[route_parts.length - 1] === 'acknowledgement') {
       this.componentName = 'AcknowledgementComponent';

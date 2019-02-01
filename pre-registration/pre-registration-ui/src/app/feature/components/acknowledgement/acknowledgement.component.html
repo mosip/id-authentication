@@ -1,4 +1,5 @@
-<div id="print-section" *ngFor="let user of usersInfo">
+<div id="print-section">
+<div *ngFor="let user of usersInfo">
   <mat-card class="ack-container">
       <mat-card-header class="ack__header-container">
           <div class="ack__header">
@@ -24,7 +25,7 @@
           <div class="spacer"></div>
           <div id="table-container">
               <table>
-                  <tr><td>Name</td><td>: {{user.fullName}}</td></tr>
+                  <tr><td>Name</td><td>: {{user.fullNameSecondaryLang}}</td></tr>
                   <tr><td>Pre Registration ID</td><td>: {{user.preRegId}}</td></tr>
                   <tr><td>Registration Center</td><td>: {{user.registrationCenter.addressLine1}}, {{user.registrationCenter.addressLine2}}, {{user.registrationCenter.addressLine3}} </td></tr>
                   <tr><td>Center Contact Number</td><td>: {{user.registrationCenter.contactPhone}}</td></tr>
@@ -47,6 +48,7 @@
         </ul>
       </mat-card-footer>
   </mat-card>
+</div>
 </div>
 <div>
     <mat-card class="ack__button-container">

@@ -86,6 +86,7 @@ export class AcknowledgementComponent implements OnInit {
       .subscribe(applicantNumber => {
         console.log(applicantNumber);
         console.log(this.generateBlob());
+        // Api call here
       });
   }
 }

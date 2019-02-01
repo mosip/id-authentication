@@ -45,49 +45,24 @@ export class PreviewComponent implements OnInit {
       (this.previewData.addressLine2[1].value ? ', ' + this.previewData.addressLine2[1].value : '') +
       (this.previewData.addressLine3[1].value ? ', ' + this.previewData.addressLine3[1].value : '');
     this.previewData.secondaryAddress = address;
-    this.previewData.region[0].name = this.locCodeToName(
-      this.previewData.region[0].value,
-      this.previewData.region[0].language
-    );
-    this.previewData.region[1].name = this.locCodeToName(
-      this.previewData.region[1].value,
-      this.previewData.region[1].language
-    );
-    this.previewData.province[0].name = this.locCodeToName(
-      this.previewData.province[0].value,
-      this.previewData.province[0].language
-    );
-    this.previewData.province[1].name = this.locCodeToName(
-      this.previewData.province[1].value,
-      this.previewData.province[1].language
-    );
-    this.previewData.city[0].name = this.locCodeToName(
-      this.previewData.city[0].value,
-      this.previewData.city[0].language
-    );
-    this.previewData.city[1].name = this.locCodeToName(
-      this.previewData.city[1].value,
-      this.previewData.city[1].language
-    );
-    this.previewData.localAdministrativeAuthority[0].name = this.locCodeToName(
-      this.previewData.localAdministrativeAuthority[0].value,
-      this.previewData.localAdministrativeAuthority[0].language
-    );
-    this.previewData.localAdministrativeAuthority[1].name = this.locCodeToName(
-      this.previewData.localAdministrativeAuthority[1].value,
-      this.previewData.localAdministrativeAuthority[1].language
-    );
+    this.previewData.region[0].name = this.locCodeToName(this.previewData.region[0].value,this.previewData.region[0].language);
+    this.previewData.region[1].name = this.locCodeToName(this.previewData.region[1].value,this.previewData.region[1].language);
+    this.previewData.province[0].name = this.locCodeToName(this.previewData.province[0].value,this.previewData.province[0].language);
+    this.previewData.province[1].name = this.locCodeToName(this.previewData.province[1].value,this.previewData.province[1].language);
+    this.previewData.city[0].name = this.locCodeToName(this.previewData.city[0].value,this.previewData.city[0].language);
+    this.previewData.city[1].name = this.locCodeToName(this.previewData.city[1].value,this.previewData.city[1].language);
+    this.previewData.localAdministrativeAuthority[0].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[0].value,this.previewData.localAdministrativeAuthority[0].language);
+    this.previewData.localAdministrativeAuthority[1].name = this.locCodeToName(this.previewData.localAdministrativeAuthority[1].value,this.previewData.localAdministrativeAuthority[1].language);
+    this.previewData.gender[0].name = this.locCodeToName(this.previewData.gender[0].value,this.previewData.gender[0].language);
+    this.previewData.gender[1].name = this.locCodeToName(this.previewData.gender[1].value,this.previewData.gender[1].language);
     console.log(this.previewData);
-    if (this.previewData['fullName'][1].language === 'ara') {
-      this.secondaryLanguage = 'ara';
-    }
     this.dataStorageService
-      .getSecondaryLanguageLabels(this.secondaryLanguage || this.previewData['fullName'][1].language)
+      .getSecondaryLanguageLabels(localStorage.getItem('secondaryLangCode'))
       .subscribe(response => {
         this.secondaryLanguagelabels = response['preview'];
         console.log(this.secondaryLanguagelabels);
       });
-    this.files = this.registrationService.getUsers()[this.registrationService.getUsers().length - 1].files[0];
+    this.files = this.user.files[0];
   }
 
   modifyDemographic() {
@@ -106,7 +81,7 @@ export class PreviewComponent implements OnInit {
     const locationName = locations.filter(
       location => location.languageCode === language && location.valueCode === locationCode
     );
-    return locationName[0].valueCode;
+    return locationName[0].valueName;
   }
 
   navigateDashboard() {

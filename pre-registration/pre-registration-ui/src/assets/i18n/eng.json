@@ -189,7 +189,7 @@
     "action_close":"Close",
     "action_add_to_slot":"Add to Slot"
   },
-  "ackowledgement": {
+  "acknowledgement": {
     "title":"Appointment Confirmed",
     "container_guideline": "Important Guidelines",
     "action_download": "DOWNLOAD",
