@@ -698,41 +698,44 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 		try {
 			ShardDataSourceResolver.setCurrentShard(shardResolver.getShard(uin));
 			if (uinRepo.existsByUin(uin)) {
+				if (uinRepo.existsByRegId(request.getRegistrationId())) {
+					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
+				}
 				Uin uinObject = retrieveIdentityByUin(uin);
-
+				uinObject.setRegId(request.getRegistrationId());
 				if (Objects.nonNull(request.getStatus())
 						&& !StringUtils.equals(uinObject.getStatusCode(), request.getStatus())) {
 					uinObject.setStatusCode(request.getStatus());
 					uinObject.setUpdatedDateTime(now());
 				}
+				if (Objects.nonNull(request.getRequest()) && Objects.nonNull(request.getRequest().getIdentity())) {
+					RequestDTO requestDTO = request.getRequest();
+					Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
+							.mappingProvider(new JacksonMappingProvider()).build();
+					DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
+					DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
+					JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
+							dbData.jsonString(), JSONCompareMode.LENIENT);
 
-				RequestDTO requestDTO = request.getRequest();
-				Configuration configuration = Configuration.builder().jsonProvider(new JacksonJsonProvider())
-						.mappingProvider(new JacksonMappingProvider()).build();
-				DocumentContext inputData = JsonPath.using(configuration).parse(requestDTO.getIdentity());
-				DocumentContext dbData = JsonPath.using(configuration).parse(new String(uinObject.getUinData()));
-				JSONCompareResult comparisonResult = JSONCompare.compareJSON(inputData.jsonString(),
-						dbData.jsonString(), JSONCompareMode.LENIENT);
+					if (comparisonResult.failed()) {
+						updateIdentity(inputData, dbData, comparisonResult);
+						uinObject
+								.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
+						uinObject.setUinDataHash(hash(uinObject.getUinData()));
+						uinObject.setUpdatedDateTime(now());
+					}
 
-				if (Objects.nonNull(requestDTO.getIdentity()) && comparisonResult.failed()) {
-					updateIdentity(inputData, dbData, comparisonResult);
-					uinObject.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
-					uinObject.setUinDataHash(hash(uinObject.getUinData()));
-					uinObject.setUpdatedDateTime(now());
+					if (Objects.nonNull(requestDTO.getDocuments()) && !requestDTO.getDocuments().isEmpty()) {
+						updateDocuments(uin, uinObject, requestDTO);
+						uinObject.setUpdatedDateTime(now());
+					}
+
 				}
-
-				if (Objects.nonNull(requestDTO.getIdentity()) && Objects.nonNull(requestDTO.getDocuments())
-						&& !requestDTO.getDocuments().isEmpty()) {
-					updateDocuments(uin, uinObject, requestDTO);
-					uinObject.setUpdatedDateTime(now());
-				}
-
 				uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uin, uinObject.getUinData(),
 						uinObject.getUinDataHash(), uinObject.getRegId(), uinObject.getStatusCode(), LANG_CODE,
 						CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 				uinRepo.save(uinObject);
-
 				return constructIdResponse(MOSIP_ID_UPDATE, retrieveIdentityByUin(uin), null);
 			} else {
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
