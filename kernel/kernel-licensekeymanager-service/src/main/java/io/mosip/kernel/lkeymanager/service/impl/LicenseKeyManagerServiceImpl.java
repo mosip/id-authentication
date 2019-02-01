@@ -1,11 +1,9 @@
 package io.mosip.kernel.lkeymanager.service.impl;
 
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
@@ -46,24 +44,6 @@ public class LicenseKeyManagerServiceImpl
 	@Autowired
 	LicenseKeyPermissionsRepository licenseKeyPermissionsRepository;
 
-	/**
-	 * The length of license key to be generated.
-	 */
-	@Value("${mosip.kernel.licensekey.length}")
-	private String licenseKeyLength;
-
-	/**
-	 * The time after which a license key expires.
-	 */
-	@Value("${mosip.kernel.licensekey.expiry-period-in-days}")
-	private String licenseKeyExpiryPeriod;
-
-	/**
-	 * The list of specified permissions by ADMIN.
-	 */
-	@Value("#{'${mosip.kernel.licensekey.permissions}'.split(',')}")
-	private List<String> validPermissions;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -92,7 +72,7 @@ public class LicenseKeyManagerServiceImpl
 	public String mapLicenseKey(LicenseKeyMappingDto licenseKeyMappingDto) {
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(licenseKeyMappingDto.getPermissions(),
 				licenseKeyMappingDto.getLKey(), licenseKeyMappingDto.getTspId());
-		licenseKeyManagerUtil.areValidPermissions(licenseKeyMappingDto.getPermissions(), validPermissions);
+		licenseKeyManagerUtil.areValidPermissions(licenseKeyMappingDto.getPermissions());
 		LicenseKeyPermissions licenseKeyPermissionsEntity = new LicenseKeyPermissions();
 		licenseKeyMappingDto.getPermissions().forEach(permission -> {
 			licenseKeyPermissionsEntity.setLKey(licenseKeyMappingDto.getLKey());
@@ -115,9 +95,7 @@ public class LicenseKeyManagerServiceImpl
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(tspID, licenseKey);
 		List<String> permissionsList = new ArrayList<>();
 		LicenseKey licenseKeyDetails = licenseKeyRepository.findByTspIdAndLKey(tspID, licenseKey);
-		if (licenseKeyDetails != null
-				&& (licenseKeyDetails.getCreatedAt().until(licenseKeyManagerUtil.getCurrentTimeInUTCTimeZone(),
-						ChronoUnit.DAYS)) < Integer.parseInt(licenseKeyExpiryPeriod)) {
+		if (licenseKeyDetails != null && licenseKeyManagerUtil.isLicenseExpired(licenseKeyDetails.getCreatedAt())) {
 			List<LicenseKeyPermissions> licenseKeyPermissions = licenseKeyPermissionsRepository.findByTspId(tspID);
 			licenseKeyPermissions.forEach(permission -> permissionsList.add(permission.getPermission()));
 		}

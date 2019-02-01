@@ -2,6 +2,7 @@ package io.mosip.kernel.lkeymanager.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,12 @@ public class LicenseKeyManagerUtil {
 	private List<String> validPermissions;
 
 	/**
+	 * The time after which a license key expires.
+	 */
+	@Value("${mosip.kernel.licensekey.expiry-period-in-days}")
+	private String licenseKeyExpiryPeriod;
+
+	/**
 	 * The length of license key as specified by ADMIN.
 	 */
 	@Value("${mosip.kernel.licensekey.length}")
@@ -42,7 +49,7 @@ public class LicenseKeyManagerUtil {
 	 * @param validPermissions
 	 * @return
 	 */
-	public boolean areValidPermissions(List<String> inputPermissions, List<String> validPermissions) {
+	public boolean areValidPermissions(List<String> inputPermissions) {
 		List<ServiceError> errorList = new ArrayList<>();
 		if (!(inputPermissions.stream()
 				.allMatch(permission -> validPermissions.stream().anyMatch(permission::contains)))) {
@@ -116,5 +123,10 @@ public class LicenseKeyManagerUtil {
 				throw new LicenseKeyServiceException(errorList);
 			}
 		}
+	}
+
+	public boolean isLicenseExpired(LocalDateTime licenseCreatedAt) {
+		return licenseCreatedAt.until(getCurrentTimeInUTCTimeZone(), ChronoUnit.DAYS) < Integer
+				.parseInt(licenseKeyExpiryPeriod);
 	}
 }
