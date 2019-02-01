@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * This contains the attributes which have to be displayed in PacketMetaInfo
  * JSON
- * 
+ *
  * @author Balaji Sridharan
  * @since 1.0.0
  */
