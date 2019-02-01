@@ -28,6 +28,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -46,51 +49,85 @@ import io.mosip.registration.processor.message.sender.service.impl.MessageNotifi
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
+/**
+ * The Class MessageNotificationServiceImplTest.
+ */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MessageSenderUtil.class })
+@PrepareForTest({ MessageSenderUtil.class, JsonUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class MessageNotificationServiceImplTest {
 
+	/** The message notification service impl. */
 	@InjectMocks
 	MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> messageNotificationServiceImpl = new MessageNotificationServiceImpl();
 
+	/** The adapter. */
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/** The template generator. */
 	@Mock
 	private TemplateGenerator templateGenerator;
 
+	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
+	/** The utility. */
 	@Mock
 	private MessageSenderUtil utility;
 
+	/** The rest client service. */
 	@Mock
 	RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The rest api client. */
 	@Mock
 	private RestApiClient restApiClient;
 
+	/** The env. */
 	@Mock
 	private Environment env;
 
+	/** The attributes. */
 	private Map<String, Object> attributes = new HashMap<>();
+
+	/** The sms response dto. */
 	private SmsResponseDto smsResponseDto;
+
+	/** The response dto. */
 	private ResponseDto responseDto;
 
+	/** The file. */
 	MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+
+	/** The file two. */
 	MultipartFile fileTwo = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+
+	/** The attachment. */
 	MultipartFile[] attachment = { file, fileTwo };
 
+	/** The mail to. */
 	String[] mailTo = { "mosip.emailnotifier@gmail.com" };
+
+	/** The mail cc. */
 	String[] mailCc = { "mosip.emailcc@gmail.com" };
+
+	/** The mail content. */
 	String mailContent = "Test Content";
+
+	/** The subject. */
 	String subject = "test";
 
+	/**
+	 * Setup.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Before
 	public void setup() throws Exception {
 		String RegId = "27847657360002520181208094056";
@@ -121,6 +158,14 @@ public class MessageNotificationServiceImplTest {
 		Mockito.when(templateGenerator.getTemplate(any(), any(), any())).thenReturn(artifact);
 	}
 
+	/**
+	 * Test send sms notification success.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test
 	public void testSendSmsNotificationSuccess() throws ApisResourceAccessException, IOException {
 		smsResponseDto = new SmsResponseDto();
@@ -131,9 +176,15 @@ public class MessageNotificationServiceImplTest {
 
 		SmsResponseDto resultResponse = messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345",
 				IdType.UIN, attributes);
-		assertEquals("Success", resultResponse.getMessage());
+		assertEquals("Test for SMS Notification Success", "Success", resultResponse.getMessage());
 	}
 
+	/**
+	 * Test send email notification success.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test
 	public void testSendEmailNotificationSuccess() throws Exception {
 		responseDto = new ResponseDto();
@@ -143,9 +194,17 @@ public class MessageNotificationServiceImplTest {
 
 		ResponseDto resultResponse = messageNotificationServiceImpl.sendEmailNotification("RPR_UIN_GEN_EMAIL", "12345",
 				IdType.UIN, attributes, mailCc, subject, null);
-		assertEquals("Success", resultResponse.getStatus());
+		assertEquals("Test for Email Notification Success", "Success", resultResponse.getStatus());
 	}
 
+	/**
+	 * Test phone number not found exception.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Test(expected = PhoneNumberNotFoundException.class)
 	public void testPhoneNumberNotFoundException() throws ApisResourceAccessException, IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -157,6 +216,12 @@ public class MessageNotificationServiceImplTest {
 
 	}
 
+	/**
+	 * Test email ID not found exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test(expected = EmailIdNotFoundException.class)
 	public void testEmailIDNotFoundException() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -168,6 +233,14 @@ public class MessageNotificationServiceImplTest {
 				mailCc, subject, null);
 	}
 
+	/**
+	 * Test template generation failed exception.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test(expected = TemplateGenerationFailedException.class)
 	public void testTemplateGenerationFailedException() throws IOException, ApisResourceAccessException {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_SMS", attributes, "eng"))
@@ -176,13 +249,12 @@ public class MessageNotificationServiceImplTest {
 		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
 	}
 
-	@Test(expected = IdentityNotFoundException.class)
-	public void identityNotFoundExceptionTest() throws ApisResourceAccessException, IOException {
-		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("test");
-
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
-	}
-
+	/**
+	 * Test template processing failure exception.
+	 *
+	 * @throws Exception
+	 *             the exception
+	 */
 	@Test(expected = TemplateGenerationFailedException.class)
 	public void testTemplateProcessingFailureException() throws Exception {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_EMAIL", attributes, "eng"))
@@ -193,4 +265,3 @@ public class MessageNotificationServiceImplTest {
 	}
 
 }
-

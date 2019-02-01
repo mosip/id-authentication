@@ -105,7 +105,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The secs. */
 	private long secs = 30;
-
+	
 	/**
 	 * Deploy verticle.
 	 */

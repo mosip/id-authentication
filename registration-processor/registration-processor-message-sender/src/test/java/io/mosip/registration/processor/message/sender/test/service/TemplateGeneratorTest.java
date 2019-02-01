@@ -23,17 +23,34 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
 
+/**
+ * The Class TemplateGeneratorTest.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateGeneratorTest {
+
+	/** The template generator. */
 	@InjectMocks
 	TemplateGenerator templateGenerator;
 
+	/** The rest client service. */
 	@Mock
 	RegistrationProcessorRestClientService<Object> restClientService;
 
+	/** The template dto. */
 	private TemplateDto templateDto;
+
+	/** The response dto. */
 	private TemplateResponseDto responseDto;
 
+	/**
+	 * Setup.
+	 *
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	@Before
 	public void setup() throws ApisResourceAccessException, IOException {
 		templateDto = new TemplateDto();
@@ -46,6 +63,14 @@ public class TemplateGeneratorTest {
 
 	}
 
+	/**
+	 * Test successful template generator.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 */
 	@Test
 	public void testSuccessfulTemplateGenerator() throws IOException, ApisResourceAccessException {
 		String templateTypeCode = "SMS";
@@ -54,7 +79,7 @@ public class TemplateGeneratorTest {
 		attributes.put("FirstName", "Alok");
 
 		String result = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
-		assertEquals("Hi Alok, your UIN is generated", result);
+		assertEquals("Test for Successful Template generation", "Hi Alok, your UIN is generated", result);
 	}
 
 }
