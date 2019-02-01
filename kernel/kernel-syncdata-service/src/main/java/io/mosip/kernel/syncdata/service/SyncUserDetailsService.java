@@ -1,10 +1,12 @@
 package io.mosip.kernel.syncdata.service;
 
+import io.mosip.kernel.syncdata.dto.SyncUserDetailDto;
 import io.mosip.kernel.syncdata.dto.response.UserDetailResponseDto;
 
 /**
  * This service class handles CRUD opertaion method signature
  * @author Srinivasan
+ * @author Megha Tanga
  *
  */
 public interface SyncUserDetailsService {
@@ -15,5 +17,5 @@ public interface SyncUserDetailsService {
 	 * @param timestamp
 	 * @return {@link UserDetailResponseDto}
 	 */
-	UserDetailResponseDto getAllUserDetail(String regId);
+	SyncUserDetailDto getAllUserDetail(String regId);
 }
