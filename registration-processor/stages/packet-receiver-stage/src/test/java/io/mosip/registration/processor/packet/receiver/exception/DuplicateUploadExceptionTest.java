@@ -48,8 +48,14 @@ public class DuplicateUploadExceptionTest {
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
+
+	@Mock
     private SyncRegistrationService syncRegistrationService;
 
+	List<RegistrationStatusDto> registrations = new ArrayList<>();
+	RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+	
 	SyncRegistrationEntity regEntity;
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -81,6 +87,16 @@ public class DuplicateUploadExceptionTest {
 		regEntity.setRegistrationType("new");
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
+		
+		
+		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
+		registrationStatusDto.setRetryCount(2);
+		registrationStatusDto.setRegistrationId("12345");
+		registrations.add(registrationStatusDto);
+	Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
+Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(RegistrationExternalStatusCode.RESEND);
+		
+		
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());

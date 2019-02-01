@@ -79,13 +79,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	private PacketReceiverStage packetReceiverStage;
 
-	@Autowired
-	private RegistrationStatusMapUtil registrationStatusMapUtil;
-
 	/** The env. */
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -104,28 +105,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		if (file.getOriginalFilename() != null && !file.isEmpty()) {
 			String fileOriginalName = file.getOriginalFilename();
 			String registrationId = fileOriginalName.split("\\.")[0];
-			messageDTO.setRid(registrationId);
-			boolean isTransactionSuccessful = false;
-			SyncRegistrationEntity regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			if (regEntity == null) {
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"Registration Packet is Not yet sync in Sync table.");
-				throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
-			}
-
-			if (file.getSize() > getMaxFileSize()) {
-				throw new FileSizeExceedException(
-						PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
-			}
-			if (!(fileOriginalName.endsWith(getFileExtension()))) {
-				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
-			} else if (isNotDuplicatePacket(registrationId)) {
 			if (!(fileOriginalName.endsWith(getFileExtension()))) {
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} else if (file.getSize() > getMaxFileSize()) {
 				throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
-			} else if (isNotDuplicatePacket(registrationId)) {
+			} else if (!isNotDuplicatePacket(registrationId)) {
 				throw new DuplicateUploadRequestException(
 						PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 			} else {
@@ -153,7 +137,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					registrationStatusService.addRegistrationStatus(dto);
 					storageFlag = true;
 					isTransactionSuccessful = true;
-				} catch (DataAccessException | IOException e) {
+				} catch (DuplicateUploadRequestException|DataAccessException | IOException e) {
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							"Error while updating status : " + e.getMessage());
