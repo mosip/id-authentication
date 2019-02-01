@@ -178,8 +178,13 @@ public class PacketValidatorStageTest {
 		FieldValue isVerified = new FieldValue();
 		isVerified.setLabel("isVerified");
 		isVerified.setValue("Verified");
+		
+		FieldValue preRegistrationId = new FieldValue();
+		preRegistrationId.setLabel("preRegistrationId");
+		preRegistrationId.setValue("2018701130000410092018110736");
+		
 
-		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified));
+		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified,preRegistrationId));
 
 		Document documentPob = new Document();
 		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
@@ -264,7 +269,7 @@ public class PacketValidatorStageTest {
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
 		preRegIds.add("123456789");
-		Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
+		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
@@ -620,7 +625,7 @@ public class PacketValidatorStageTest {
 
 	@Test
 	public void testPreRegIdsAreNull() {
-		Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
+		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertTrue(messageDto.getIsValid());
 
@@ -667,7 +672,7 @@ public class PacketValidatorStageTest {
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
 		preRegIds.add("123456789");
-		Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
+		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 

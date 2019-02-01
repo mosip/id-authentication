@@ -32,7 +32,6 @@ import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricException;
-
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -308,11 +307,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the applicant
 	 */
 	private void saveApplicantBioMetricDatas(Applicant applicant) {
-		/*saveIris(applicant.getLeftEye());
-		saveIris(applicant.getRightEye());
-		saveFingerPrint(applicant.getLeftSlap());
-		saveFingerPrint(applicant.getRightSlap());
-		saveFingerPrint(applicant.getThumbs());*/
+		/*
+		 * saveIris(applicant.getLeftEye()); saveIris(applicant.getRightEye());
+		 * saveFingerPrint(applicant.getLeftSlap());
+		 * saveFingerPrint(applicant.getRightSlap());
+		 * saveFingerPrint(applicant.getThumbs());
+		 */
 
 	}
 
@@ -700,17 +700,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public RegOsiDto getOsi(String regid) {
 		return packetInfoDao.getEntitiesforRegOsi(regid);
-	}
-
-	/*
-	 * (non-Javadoc) Get PreregIds for OSI entity using list of regIds
-	 * 
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager
-	 * getRegOsiPreRegId(java.util.List)
-	 */
-	@Override
-	public List<String> getRegOsiPreRegId(List<String> regIds) {
-		return regOsiRepository.getRegOsiPreRegId(regIds);
 	}
 
 	/*

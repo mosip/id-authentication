@@ -147,14 +147,6 @@ public interface PacketInfoManager<T, /** D, M, */
 	 * @return the rid by reference id
 	 */
 	public List<String> getRidByReferenceId(String refId);
-	
-	/**
-	 * Gets the PreRegistrationIds from RegOsiEntity.
-	 *
-	 * @param regIds the reg ids
-	 * @return the reg osi pre reg id
-	 */
-	public List<String> getRegOsiPreRegId(List<String> regIds);
 
 	public void saveDocuments(List<Document> documentDtos);
 

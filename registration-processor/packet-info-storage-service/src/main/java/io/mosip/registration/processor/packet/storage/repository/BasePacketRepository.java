@@ -56,16 +56,6 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	public List<E> findByRegOsiId(@Param("regId") String regId);
 
 	/**
-	 * Gets the pre RegIds from RegOsiEntity.
-	 * 
-	 * @param regIds
-	 *            the reg ids
-	 * @return the reg osi pre reg id
-	 */
-	@Query("SELECT osi.preregId FROM RegOsiEntity osi WHERE osi.id.regId in :regIds and osi.preregId is not null")
-	public List<String> getRegOsiPreRegId(@Param("regIds") List<String> regIds);
-
-	/**
 	 * Find demo by id.
 	 *
 	 * @param regId

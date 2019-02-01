@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -157,8 +158,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	public MessageDTO process(MessageDTO object) {
 
 		List<InternalRegistrationStatusDto> dtolist = null;
-		List<String> preregIds = null;
 		List<String> registrationIds = new ArrayList<>();
+		List<String> preRegistrationIds = new ArrayList<>();
 
 		try {
 
@@ -226,6 +227,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 							packetInfoManager.saveDocuments(documentList);
 							// ReverseDataSync
 							registrationIds.add(dto.getRegistrationId());
+							IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+							String preRegId = identityIteratorUtil.getFieldValue(
+									packetMetaInfo.getIdentity().getMetaData(), JsonConstant.PREREGISTRATIONID);
+							if (preRegId != null)
+								preRegistrationIds.add(preRegId);
 							object.setRid(dto.getRegistrationId());
 
 						} else {
@@ -318,9 +324,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			if (!registrationIds.isEmpty()) {
 				isTransactionSuccessful = false;
-				preregIds = packetInfoManager.getRegOsiPreRegId(registrationIds);
+				//preregIds = packetInfoManager.getRegOsiPreRegId(registrationIds);
 				MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDto = null;
-				if (preregIds!=null && !preregIds.isEmpty()) {
+				if (preRegistrationIds != null && !preRegistrationIds.isEmpty()) {
 					MainRequestDTO<ReverseDataSyncRequestDTO> mainRequestDto = new MainRequestDTO<>();
 					mainRequestDto.setId(PRE_REG_ID);
 					mainRequestDto.setVer(VERSION);
@@ -328,7 +334,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					ReverseDataSyncRequestDTO reverseDataSyncRequestDto = new ReverseDataSyncRequestDTO();
 					reverseDataSyncRequestDto.setCreatedBy(CREATED_BY);
 					reverseDataSyncRequestDto.setLangCode("eng");
-					reverseDataSyncRequestDto.setPreRegistrationIds(preregIds);
+					reverseDataSyncRequestDto.setPreRegistrationIds(preRegistrationIds);
 					reverseDataSyncRequestDto.setCreatedDateTime(new Date());
 					reverseDataSyncRequestDto.setUpdateDateTime(new Date());
 					reverseDataSyncRequestDto.setUpdateBy(CREATED_BY);
@@ -377,7 +383,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
 						httpServerException.getResponseBodyAsString() + ExceptionUtils.getStackTrace(e));
-			}  else {
+			} else {
 
 				regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationIds.toString(),
 						PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(), e.getMessage());
