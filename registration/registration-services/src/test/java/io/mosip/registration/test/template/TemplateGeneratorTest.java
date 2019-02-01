@@ -17,7 +17,6 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
