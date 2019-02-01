@@ -24,7 +24,7 @@ spec:
           servicePort: 8081
       - path: /packetserver
         backend:
-          serviceName: kernel-packetserver-http
+          serviceName: kernel-otpnotification-service
           servicePort: 8082
       - path: /emailnotifier
         backend:
