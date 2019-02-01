@@ -8,9 +8,6 @@ import lombok.Data;
 @Data	
 public class JsonValue {
 
-	/** The label. */
-	private String label;
-	
 	/** The language. */
 	private String language;
 	

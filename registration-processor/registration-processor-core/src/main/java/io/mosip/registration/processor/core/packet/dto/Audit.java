@@ -1,23 +1,11 @@
 package io.mosip.registration.processor.core.packet.dto;
 
-import lombok.Data;
 /**
- * Instantiates a new audit.
+ * This class is to capture the time duration for each event
+ * 
+ * @author Dinesh Asokan
+ * @since 1.0.0
+ *
  */
-
-/**
- * Instantiates a new audit.
- */
-@Data
-public class Audit {
-
-	/** The event id. */
-	private String eventId;
-
-	/** The start timestamp. */
-	private String startTimestamp;
-
-	/** The end timestamp. */
-	private String endTimestamp;
-
+public class Audit extends AuditDTO {
 }

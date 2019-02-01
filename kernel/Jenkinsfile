@@ -1,9 +1,12 @@
 node {
 
+ try{
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = env.NEXT_BRANCH_NAME
+ //def branch = env.NEXT_BRANCH_NAME
+ def branch = '0.8.0'
+ def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  projectToBuild = 'kernel'
  def registryUrl = 'http://docker-registry.mosip.io:5000'
  def registryName = 'docker-registry.mosip.io:5000'
@@ -28,7 +31,7 @@ node {
     extensions: [
      /*
      Using PathRestriction Class and adding Kernel in includedRegions so that the build will be triggered
-     only if tehre is any change in Kernel Module
+     only if there is any change in Kernel Module
      */
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      /*
@@ -56,7 +59,7 @@ node {
  }
 
  stage('---------- mvn-clean-install and push to artifactory  ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
  }
 
 stage('---------- SonarQube Analysis --------------') {
@@ -120,7 +123,7 @@ stage('---------- SonarQube Analysis --------------') {
      */
      modulePath = locationOfDockerFiles[i].substring(2);
      updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$BUILD_NUMBER")
+     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      /*
      Updating containersToRun List
      */
@@ -131,19 +134,19 @@ stage('---------- SonarQube Analysis --------------') {
      containersNames = containersNames + " " + moduleName
      echo moduleName + " will be built"
      /*
-     Pushing the module image with tag as buildnumber and tag as latest to docker registry
+     Pushing the module image with tag as version.buildnumber and tag as latest to docker registry
      */
      docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = moduleName + ":$BUILD_NUMBER"
-      newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      def buildName = moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
       newApp.push()
       newApp.push 'latest'
      }
      /*
      Removing local images
      */
-     sh "docker rmi $moduleName:$BUILD_NUMBER"
-     sh "docker rmi $registryName/$moduleName:$BUILD_NUMBER"
+     sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
     }
    } 
@@ -167,7 +170,7 @@ stage('---------- SonarQube Analysis --------------') {
      */
      modulePath = changedModulesLocation[i].substring(2);
      updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$BUILD_NUMBER")
+     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
      /*
      Updating containersToRun List
      */
@@ -178,19 +181,19 @@ stage('---------- SonarQube Analysis --------------') {
      containersNames = containersNames + " " + moduleName
      echo moduleName + " will be built"
      /*
-     Pushing the module image with tag as buildnumber and tag as latest to docker registry
+     Pushing the module image with tag as version.buildnumber and tag as latest to docker registry
      */
      docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = moduleName + ":$BUILD_NUMBER"
-      newApp = docker.build(buildName, '-f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
+      def buildName = moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+' -f ' + currentModule + "/Dockerfile" + ' ' + modulePath)
       newApp.push()
       newApp.push 'latest'
      }
      /*
      Removing local images
      */
-     sh "docker rmi $moduleName:$BUILD_NUMBER"
-     sh "docker rmi $registryName/$moduleName:$BUILD_NUMBER"
+     sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
+     sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
     }
    }
@@ -202,15 +205,15 @@ stage('---------- SonarQube Analysis --------------') {
 
   }
 
-
  }
   
-
+/*
+ // uncomment out this stage and comment out next stage 'Kubernetes Deploy : DEV-INT' if you want to run Docker containers without Kubernetes cluster
   stage('----deploy in dev----')
  {
-     /*
-     All the Deployment steps that have to be performed in deployment server are written in this command string
-     */
+     
+     //All the Deployment steps that have to be performed in deployment server are written in this command string
+     
 	  command = """
  		INDEX=0
 		containersToRunShell=(${containersToRun})
@@ -266,11 +269,13 @@ stage('---------- SonarQube Analysis --------------') {
 			fi
             echo Deployment process completed
     """
-    /*
-    Using sshPublisher class to publish this command over to the deployement server
-    */
+    
+    //Using sshPublisher class to publish this command over to the deployement server
+    
         sshPublisher(publishers: [sshPublisherDesc(configName: targetDeploymentServer, transfers: [sshTransfer(execCommand: "$command")])])
     }
+    */
+    
     stage('Kubernetes Deploy : DEV-INT'){
       //this stage will rollout the changes on Kubernetes Cluster
       sh "kubectl config use-context $k8DevContext"
@@ -281,8 +286,38 @@ stage('---------- SonarQube Analysis --------------') {
         sh "kubectl set image deployment/$updatedService $updatedService=$updatedDockerImage"
       }
       echo "Getting list of all services" 
-      sh "kubectl get services"
+      sh "kubectl get pods"
     }
+ }
+ 
+   // Catching the exception for triggering email
+  catch (exception) {
+        print exception
+		// If the job was aborted by any user
+        if (exception instanceof InterruptedException) {
+           currentBuild.result = "ABORTED"
+        }
+		// If the job failed due to some error
+        else{
+            currentBuild.result = "FAILURE"
+        }
+        
+        throw exception //rethrow exception to prevent the build from proceeding
+    
+        
+        }
+	finally{
+		if(currentBuild.result == "FAILURE"){
+		// sending email to kernel recipients
+		recipients = "$env.KERNEL_RECIPIENT_LIST"
+		emailext (
+					subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER failed'",
+					body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
+					to: "$recipients",
+					from: '"Jenkins" <info@mosip.io>'
+				)
+	}
+	}
 }
 
 /*This function will return paths all the Submodules which have been changed and 

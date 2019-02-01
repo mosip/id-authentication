@@ -16,7 +16,7 @@ public class ApisResourceAccessException extends BaseCheckedException {
 	/**
 	 * Instantiates a new apis resource access exception.
 	 */
-	private ApisResourceAccessException() {
+	public ApisResourceAccessException() {
 		super();
 	}
 

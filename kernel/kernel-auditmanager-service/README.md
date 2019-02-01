@@ -1,17 +1,46 @@
-## kernel-auditmanager-service:-
-This service can be used to audit events and operations. Service has REST API exposed to save event details as audit in database.
+## kernel-auditmanager-service
 
-1. [Background & Design](../../design/kernel/kernel-auditmanager.md)
 
-2. Api Documentation
+[Background & Design](../../docs/design/kernel/kernel-auditmanager.md)
 
+[Api Documentation](https://github.com/mosip/mosip/wiki/Kernel-APIs#8-audit-manager)
+
+Default Port and Context Path
 
 ```
-http://localhost:8081/swagger-ui.html
+server.port=8081
+server.servlet.path=/auditmanager
+
 ```
 
-**Properties to be added in parent Spring Application environment**
+localhost:8081/auditmanager/swagger-ui.html
+
+
+**Application Properties**
+
 [kernel-auditmanager-service-dev.properties](../../config/kernel-auditmanager-service-dev.properties)
+
+```
+#logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG
+
+javax.persistence.jdbc.driver=org.postgresql.Driver
+javax.persistence.jdbc.url=jdbc:postgresql://localhost:8888/mosip_audit
+javax.persistence.jdbc.user=dbuser
+javax.persistence.jdbc.password=dbpwd
+
+hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
+hibernate.jdbc.lob.non_contextual_creation=true
+hibernate.hbm2ddl.auto=none
+hibernate.show_sql=false
+hibernate.format_sql=false
+hibernate.connection.charSet=utf8
+hibernate.cache.use_second_level_cache=false
+hibernate.cache.use_query_cache=false
+hibernate.cache.use_structured_entries=false
+hibernate.generate_statistics=false
+spring.datasource.initialization-mode=always
+
+```
 
 
 **The inputs which have to be provided are:**

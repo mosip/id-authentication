@@ -1,3 +1,7 @@
+/* 
+ * Copyright
+ * 
+ */
 package io.mosip.preregistration.batchjobservices.config;
 
 import java.net.MalformedURLException;

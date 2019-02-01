@@ -1,7 +1,8 @@
 ## kernel-idgenerator-rid
-This folder has RID generator module which can be used to generate RID as numeric string based on the centerId and machineId provided.
 
- [API Documentation <TBA>](TBA)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-rid.md)
+
+ [API Documentation]
  
  ```
  mvn javadoc:javadoc
@@ -11,6 +12,21 @@ This folder has RID generator module which can be used to generate RID as numeri
  **Properties to be added in Spring application environment using this component**
 
 [application-dev.properties](../../config/application-dev.properties)
+
+
+```
+#-----------------------------RID Properties---------------------------------------
+# length of the rid
+mosip.kernel.rid.length=29
+# length of the center id
+mosip.kernel.rid.centerid-length=5
+#length of the machine id
+mosip.kernel.rid.machineid-length=5
+# length of the timestamp
+mosip.kernel.rid.timestamp-length=14
+
+```
+
 
  
 **Database properties**

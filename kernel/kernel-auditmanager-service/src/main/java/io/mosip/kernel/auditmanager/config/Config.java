@@ -1,43 +1,48 @@
 package io.mosip.kernel.auditmanager.config;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
+import java.util.concurrent.Executor;
+
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import io.mosip.kernel.auditmanager.exception.AuditAsyncExceptionHandler;
 
 /**
- * Config class with beans for modelmapper and request logging
+ * Config class for Audit manager
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
 @Configuration
-public class Config {
+@EnableAsync
+public class Config implements AsyncConfigurer {
 
-	/**
-	 * Produce modelmapper bean
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return Modelmapper instance
+	 * @see
+	 * org.springframework.scheduling.annotation.AsyncConfigurer#getAsyncExecutor()
 	 */
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
+	@Override
+	public Executor getAsyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.initialize();
+		return executor;
 	}
 
-	/**
-	 * Produce Request Logging bean
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return Request logging bean
+	 * @see org.springframework.scheduling.annotation.AsyncConfigurer#
+	 * getAsyncUncaughtExceptionHandler()
 	 */
-	@Bean
-	public CommonsRequestLoggingFilter logFilter() {
-		CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
-		filter.setIncludeQueryString(true);
-		filter.setIncludePayload(true);
-		filter.setMaxPayloadLength(10000);
-		filter.setIncludeHeaders(false);
-		filter.setAfterMessagePrefix("REQUEST DATA : ");
-		return filter;
+	@Override
+	public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+		return new AuditAsyncExceptionHandler();
 	}
+
 }

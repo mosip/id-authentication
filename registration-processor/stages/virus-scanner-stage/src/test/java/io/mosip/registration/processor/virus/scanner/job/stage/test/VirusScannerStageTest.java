@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.virus.scanner.job.stage.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -14,7 +16,6 @@ import java.io.InputStream;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -151,7 +152,6 @@ public class VirusScannerStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFailureVirusScan() throws Exception {
 
 		listAppender.start();
@@ -167,7 +167,6 @@ public class VirusScannerStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void testFailureVirusScanFiles() throws Exception {
 
 		listAppender.start();
@@ -207,17 +206,25 @@ public class VirusScannerStageTest {
 	}
 
 	@Test
-	@Ignore
 	public void testVirusScanFailureException() throws Exception {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 
 		doThrow(VirusScanFailedException.class).when(virusScanner).scanFile(anyString());
-		virusScannerStage.process(dto);
+		MessageDTO object = virusScannerStage.process(dto);
 
-		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
-				.containsExactly(Tuple.tuple(Level.ERROR,
-						"SESSIONID - REGISTRATIONID - 1000 - The Virus Scan for the Packet Failed null"));
-
+		assertTrue("Should be an internal error", object.getInternalError());
 	}
+
+    @Test
+    public void exceptionTest() throws Exception {
+
+        Mockito.when(virusScanner.scanFile(anyString())).thenThrow(new NullPointerException());
+
+        Mockito.when(decryptor.getScanResult()).thenThrow(new NullPointerException());
+        MessageDTO object = virusScannerStage.process(dto);
+
+        assertTrue(object.getInternalError());
+
+    }
 }

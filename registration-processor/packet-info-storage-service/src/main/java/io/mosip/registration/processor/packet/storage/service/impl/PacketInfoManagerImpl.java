@@ -1,3 +1,4 @@
+
 package io.mosip.registration.processor.packet.storage.service.impl;
 
 import java.io.ByteArrayOutputStream;
@@ -5,11 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,14 +28,17 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
+import io.mosip.registration.processor.core.packet.dto.BiometricException;
+
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
@@ -56,6 +58,9 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
+import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
@@ -64,7 +69,6 @@ import io.mosip.registration.processor.packet.storage.exception.IdentityNotFound
 import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
-import io.mosip.registration.processor.packet.storage.exception.StreamToBytesConversionException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
@@ -125,6 +129,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
+	/** The Reg abis ref repository. */
+	@Autowired
+	private BasePacketRepository<RegAbisRefEntity, String> regAbisRefRepository;
+
 	/** The applicant demographic repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicInfoJsonEntity, String> demographicJsonRepository;
@@ -136,6 +144,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The reg center machine repository. */
 	@Autowired
 	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
+
+	/** The manual verfication repository. */
+	@Autowired
+	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
 	/** The event id. */
 	private String eventId = "";
@@ -184,11 +196,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The Constant LANGUAGE. */
 	private static final String LANGUAGE = "language";
 
-	/** The Constant LABEL. */
-	private static final String LABEL = "label";
-
 	/** The Constant VALUE. */
 	private static final String VALUE = "value";
+
+	/** The Constant MATCHED_REFERENCE_TYPE. */
+	private static final String MATCHED_REFERENCE_TYPE = "uin";
 
 	/*
 	 * (non-Javadoc)
@@ -203,15 +215,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		boolean isTransactionSuccessful = false;
 
 		Biometric biometric = identity.getBiometric();
-		List<Document> documentDtos = identity.getDocuments();
+
 		List<FieldValue> osiData = identity.getOsiData();
-		List<BiometricExceptionDto> exceptionBiometrics = identity.getExceptionBiometrics();
+		List<BiometricException> exceptionBiometrics = identity.getExceptionBiometrics();
 		Photograph applicantPhotographData = identity.getApplicantPhotograph();
 		Photograph exceptionPhotographData = identity.getExceptionPhotograph();
 		metaData = identity.getMetaData();
 
 		try {
-			saveDocuments(documentDtos);
+
 			saveApplicantBioMetricDatas(biometric.getApplicant());
 			saveExceptionBiometricDatas(exceptionBiometrics);
 			savePhotoGraph(applicantPhotographData, exceptionPhotographData);
@@ -241,10 +253,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save exception biometric datas.
 	 *
-	 * @param exceptionBiometrics the exception biometrics
+	 * @param exceptionBiometrics
+	 *            the exception biometrics
 	 */
-	private void saveExceptionBiometricDatas(List<BiometricExceptionDto> exceptionBiometrics) {
-		for (BiometricExceptionDto exp : exceptionBiometrics) {
+	private void saveExceptionBiometricDatas(List<BiometricException> exceptionBiometrics) {
+		for (BiometricException exp : exceptionBiometrics) {
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exp, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
@@ -253,8 +266,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getPacketsforQCUser(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getPacketsforQCUser(java.lang.String)
 	 */
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
@@ -287,14 +304,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save bio metric data.
 	 *
-	 * @param applicant the applicant
+	 * @param applicant
+	 *            the applicant
 	 */
 	private void saveApplicantBioMetricDatas(Applicant applicant) {
-		saveIris(applicant.getLeftEye());
+		/*saveIris(applicant.getLeftEye());
 		saveIris(applicant.getRightEye());
 		saveFingerPrint(applicant.getLeftSlap());
 		saveFingerPrint(applicant.getRightSlap());
-		saveFingerPrint(applicant.getThumbs());
+		saveFingerPrint(applicant.getThumbs());*/
 
 	}
 
@@ -335,7 +353,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param documentDtos
 	 *            the document dto
 	 */
-	private void saveDocuments(List<Document> documentDtos) {
+	public void saveDocuments(List<Document> documentDtos) {
 
 		for (Document document : documentDtos) {
 			saveDocument(document);
@@ -352,30 +370,47 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveDocument(Document documentDetail) {
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
-
+		boolean isTransactionSuccessful = false;
 		String fileName;
-		if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
-		} else {
-			fileName = DEMOGRAPHIC_APPLICANT + documentDetail.getDocumentName().toUpperCase();
+
+		try {
+			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + documentDetail.getDocumentName().toUpperCase();
+
+			Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
+					.findFirst();
+
+			String registrationId = "";
+			if (filterRegId.isPresent())
+				registrationId = filterRegId.get().getValue();
+			applicantDocumentEntity.setDocStore(getDocumentAsByteArray(registrationId, fileName));
+			applicantDocumentRepository.save(applicantDocumentEntity);
+			LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId(), "  Document Demographic DATA SAVED");
+			isTransactionSuccessful = true;
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Document Demographic DATA SAVED successfully"
+					: "Document Demographic DATA  Failed to save";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
 		}
-
-		Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
-				.findFirst();
-
-		String registrationId = "";
-		if (filterRegId.isPresent())
-			registrationId = filterRegId.get().getValue();
-		applicantDocumentEntity.setDocStore(getDocumentAsByteArray(registrationId, fileName));
-		applicantDocumentRepository.save(applicantDocumentEntity);
-		LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId(), "  Document Demographic DATA SAVED");
 	}
 
 	/**
 	 * Save osi data.
 	 *
-	 * @param osiData            the osi data
-	 * @param introducer the introducer
+	 * @param osiData
+	 *            the osi data
+	 * @param introducer
+	 *            the introducer
 	 */
 	private void saveOsiData(List<FieldValue> osiData, Introducer introducer) {
 		if (osiData != null) {
@@ -388,8 +423,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save photo graph.
 	 *
-	 * @param photoGraphData            the photo graph data
-	 * @param exceptionPhotographData the exception photograph data
+	 * @param photoGraphData
+	 *            the photo graph data
+	 * @param exceptionPhotographData
+	 *            the exception photograph data
 	 */
 	private void savePhotoGraph(Photograph photoGraphData, Photograph exceptionPhotographData) {
 		ApplicantPhotographEntity applicantPhotographEntity = PacketInfoMapper
@@ -443,15 +480,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Map json node to java object.
 	 *
-	 * @param <T> the generic type
-	 * @param genericType the generic type
-	 * @param demographicJsonNode the demographic json node
+	 * @param <T>
+	 *            the generic type
+	 * @param genericType
+	 *            the generic type
+	 * @param demographicJsonNode
+	 *            the demographic json node
 	 * @return the t[]
 	 */
 	@SuppressWarnings("unchecked")
 	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
-		String label;
 		String value;
 		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
 		try {
@@ -461,12 +500,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
 				language = (String) objects.get(LANGUAGE);
-				label = (String) objects.get(LABEL);
 				value = (String) objects.get(VALUE);
-
-				Field labelField = jsonNodeElement.getClass().getDeclaredField(LABEL);
-				labelField.setAccessible(true);
-				labelField.set(jsonNodeElement, label);
 
 				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
 				languageField.setAccessible(true);
@@ -496,11 +530,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Gets the json values.
 	 *
-	 * @param identityKey the identity key
+	 * @param identityKey
+	 *            the identity key
 	 * @return the json values
 	 */
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
+
 		if (demographicIdentity != null)
 			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
 		return (demographicJsonNode != null)
@@ -512,16 +548,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Gets the identity keys and fetch values from JSON.
 	 *
-	 * @param demographicJsonString the demographic json string
+	 * @param demographicJsonString
+	 *            the demographic json string
 	 * @return the identity keys and fetch values from JSON
 	 */
-	private IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
+	public IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
 			// Get Identity Json from config server and map keys to Java Object
 			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 					utility.getGetRegProcessorIdentityJson());
-
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -531,20 +567,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			List<JsonValue[]> jsonNameList = new ArrayList<>();
-
-			String[] nameArray = regProcessorIdentityJson.getIdentity().getName().getValue().split("\\+");
-			for (int i = 0; i < nameArray.length; i++) {
-				JsonValue[] name = getJsonValues(nameArray[i]);
-				if (name != null) {
-					jsonNameList.add(getJsonValues(nameArray[i]));
-
-				}
-
-			}
-
-			demographicData.setName(jsonNameList.isEmpty() ? null : jsonNameList);
-			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob().getValue()));
+			demographicData.setName(getJsonValues(regProcessorIdentityJson.getIdentity().getName().getValue()));
+			demographicData.setDateOfBirth(
+					(String) (demographicIdentity.get(regProcessorIdentityJson.getIdentity().getDob().getValue())));
 			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender().getValue()));
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
@@ -562,7 +587,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Gets the registration id.
 	 *
-	 * @param metaData the meta data
+	 * @param metaData
+	 *            the meta data
 	 * @return the registration id
 	 */
 	private void getRegistrationId(List<FieldValue> metaData) {
@@ -582,7 +608,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/**
 	 * Save individual demographic dedupe.
 	 *
-	 * @param demographicJsonBytes the demographic json bytes
+	 * @param demographicJsonBytes
+	 *            the demographic json bytes
 	 */
 	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes) {
 
@@ -616,19 +643,23 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#saveDemographicInfoJson(java.io.InputStream, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * saveDemographicInfoJson(java.io.InputStream, java.util.List)
 	 */
 	@Override
-	public void saveDemographicInfoJson(InputStream demographicJsonStream, List<FieldValue> metaData) {
+	public void saveDemographicInfoJson(byte[] bytes, List<FieldValue> metaData) {
 		DemographicInfoJson demoJson = new DemographicInfoJson();
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
-		if (demographicJsonStream == null)
+		if (bytes == null)
 			throw new FileNotFoundInPacketStore(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getMessage());
 
 		try {
-			byte[] bytes = IOUtils.toByteArray(demographicJsonStream);
+
 			demoJson.setDemographicDetails(bytes);
 			demoJson.setLangCode("eng");
 			demoJson.setPreRegId(preRegId);
@@ -640,10 +671,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			saveIndividualDemographicDedupe(bytes);
 
 			isTransactionSuccessful = true;
-		} catch (IOException e) {
-			LOGGER.error("Unable to convert InputStream to bytes", e);
-			throw new StreamToBytesConversionException(
-					PlatformErrorMessages.RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES.getMessage(), e);
 		} catch (DataAccessLayerException e) {
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {
@@ -663,16 +690,24 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getOsi(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getOsi(java.lang.String)
 	 */
 	@Override
 	public RegOsiDto getOsi(String regid) {
 		return packetInfoDao.getEntitiesforRegOsi(regid);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getRegistrationCenterMachine(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getRegistrationCenterMachine(java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
@@ -680,34 +715,168 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return packetInfoDao.getRegistrationCenterMachine(regid);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#findDemoById(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * findDemoById(java.lang.String)
 	 */
 	@Override
 	public List<DemographicInfoDto> findDemoById(String regId) {
 		return packetInfoDao.findDemoById(regId);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getApplicantFingerPrintImageNameById(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getApplicantFingerPrintImageNameById(java.lang.String)
 	 */
 	@Override
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
 		return packetInfoDao.getApplicantFingerPrintImageNameById(regId);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getApplicantIrisImageNameById(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getApplicantIrisImageNameById(java.lang.String)
 	 */
 	@Override
 	public List<String> getApplicantIrisImageNameById(String regId) {
 		return packetInfoDao.getApplicantIrisImageNameById(regId);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getRegIdByUIN(java.lang.String)
+	 */
 	@Override
 	public List<String> getRegIdByUIN(String uin) {
 		return packetInfoDao.getRegIdByUIN(uin);
 	}
 
+	@Override
+	public List<ApplicantDocument> getDocumentsByRegId(String regId) {
+		return packetInfoDao.getDocumentsByRegId(regId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * saveManualAdjudicationData(java.util.Set, java.lang.String)
+	 */
+	@Override
+	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId) {
+		boolean isTransactionSuccessful = false;
+
+		try {
+			for (String matchedRefId : uniqueMatchedRefIds) {
+				ManualVerificationEntity manualVerificationEntity = new ManualVerificationEntity();
+				ManualVerificationPKEntity manualVerificationPKEntity = new ManualVerificationPKEntity();
+				manualVerificationPKEntity.setMatchedRefId(matchedRefId);
+				manualVerificationPKEntity.setMatchedRefType(MATCHED_REFERENCE_TYPE);
+				manualVerificationPKEntity.setRegId(registrationId);
+
+				manualVerificationEntity.setId(manualVerificationPKEntity);
+				manualVerificationEntity.setLangCode("eng");
+				manualVerificationEntity.setMatchedScore(null);
+				manualVerificationEntity.setMvUsrId(null);
+				manualVerificationEntity.setReasonCode("Potential Match");
+				manualVerificationEntity.setStatusCode("PENDING");
+				manualVerificationEntity.setStatusComment("Assigned to manual Adjudication");
+				manualVerificationEntity.setIsActive(true);
+				manualVerificationEntity.setIsDeleted(false);
+				manualVerificationEntity.setCrBy("SYSTEM");
+
+				manualVerficationRepository.save(manualVerificationEntity);
+				isTransactionSuccessful = true;
+
+			}
+
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Manual Adjudication data saved successfully"
+					: "Manual Adjudication data Failed to save";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getReferenceIdByRid(java.lang.String)
+	 */
+	@Override
+	public List<String> getReferenceIdByRid(String rid) {
+		return regAbisRefRepository.getReferenceIdByRid(rid);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getRidByReferenceId(java.lang.String)
+	 */
+	@Override
+	public List<String> getRidByReferenceId(String refId) {
+		return regAbisRefRepository.getRidByReferenceId(refId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * saveAbisRef(io.mosip.registration.processor.core.packet.dto.RegAbisRefDto)
+	 */
+	@Override
+	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
+		boolean isTransactionSuccessful = false;
+		try {
+			if (regAbisRefDto != null) {
+				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
+				regAbisRefRepository.save(regAbisRefEntity);
+				isTransactionSuccessful = true;
+				LOGGER.info(LOG_FORMATTER, regAbisRefEntity.getId(), "Registration ABIS Reference Date saved");
+			}
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "ABIS data saved successfully" : "ABIS data Failed to save";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
+		}
+	}
 
 }

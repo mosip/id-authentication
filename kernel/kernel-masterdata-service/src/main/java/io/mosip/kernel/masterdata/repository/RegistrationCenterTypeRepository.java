@@ -29,6 +29,8 @@ public interface RegistrationCenterTypeRepository
 	 *            the Date and time of deletion.
 	 * @param code
 	 *            the registration center type code.
+	 * @param updatedBy
+	 *            updatedBy
 	 * @return the number of rows whose isDeleted is set to true.
 	 */
 	@Modifying

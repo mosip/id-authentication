@@ -36,6 +36,13 @@ The Registration client module needs to generate a RID and assign it to an indiv
 ![Module Diagram](_images/kernel-idgenerator-rid.jpg)
 
 
+**Class diagram**
+
+
+
+![Class Diagram](_images/kernel-idgenerator-cd.png)
+
+
 ## Implementation
 
 

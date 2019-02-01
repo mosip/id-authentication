@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.notification.template.mapping;
 
+import java.util.Arrays;
+
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import lombok.Data;
 
@@ -8,8 +10,16 @@ public class NotificationTemplate {
 	
 	private JsonValue[] firstName;
 
-	private JsonValue[] phoneNumber;
+	public JsonValue[] getFirstName() {
+		return Arrays.copyOf(firstName, firstName.length);
+	}
 
-	private JsonValue[] emailID;
+	public void setFirstName(JsonValue[] firstName) {
+		this.firstName = firstName!=null?firstName:null;
+	}
+
+	private String phoneNumber;
+
+	private String emailID;
 	
 }

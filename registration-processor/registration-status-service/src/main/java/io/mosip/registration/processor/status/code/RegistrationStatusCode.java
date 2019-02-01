@@ -89,6 +89,12 @@ public enum RegistrationStatusCode {
     MANUAL_ADJUDICATION_FAILED,
 
     /** The virus scan success. */
-    VIRUS_SCAN_SUCCESSFUL
+    VIRUS_SCAN_SUCCESSFUL,
+    
+    /** The packet uin updation success. */
+    PACKET_UIN_UPDATION_SUCCESS,
+
+    /** The packet uin updation failure. */
+    PACKET_UIN_UPDATION_FAILURE
 
 }

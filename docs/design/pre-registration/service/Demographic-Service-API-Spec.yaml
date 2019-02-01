@@ -1,0 +1,344 @@
+swagger: '2.0'
+info:
+  description: Api Documentation
+  version: '1.0'
+  title: Api Documentation
+  termsOfService: 'urn:tos'
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+host: integ.mosip.io
+basePath: /demographic
+tags:
+  - name: Pre-Registration
+    description: Demographic Service
+schemes:
+  - https
+paths:
+  /v0.1/pre-registration/applications/details:
+    get:
+      tags:
+        - Pre-Registration
+      summary: Get Pre-Registartion demographic details
+      operationId: getApplicationUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: preRegistartionId
+          in: query
+          description: preRegistartionId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Demographic details successfully retrieved
+          schema:
+            $ref: '#/definitions/ResponseDTO«CreateDemographicDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
+      deprecated: false
+      
+  /v0.1/pre-registration/applications/byDates:
+    get:
+      tags:
+        - Pre-Registration
+      summary: Get Pre-Registartion data By Date And Time
+      operationId: getApplicationByDateUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: fromDate
+          in: query
+          description: fromDate
+          required: true
+          type: string
+        - name: toDate
+          in: query
+          description: toDate
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Demographic data successfully retrieved
+          schema:
+            $ref: '#/definitions/ResponseDTO«string»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
+      deprecated: false
+      
+  /v0.1/pre-registration/applications/status:
+    get:
+      tags:
+        - Pre-Registration
+      summary: Fetch the status of a pre-registration application
+      operationId: getApplicationStatusUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: preRegistartionId
+          in: query
+          description: preRegistartionId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: All applications status fetched successfully
+          schema:
+            $ref: '#/definitions/ResponseDTO«PreRegistartionStatusDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
+      deprecated: false
+      
+  /v0.1/pre-registration/applications:
+    get:
+      tags:
+        - Pre-Registration
+      summary: Fetch all the applications created by user
+      operationId: getAllApplicationsUsingGET
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: query
+          description: userId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: All applications fetched successfully
+          schema:
+            $ref: '#/definitions/ResponseDTO«PreRegistrationViewDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
+      deprecated: false
+    post:
+      tags:
+        - Pre-Registration
+      summary: Create form data
+      operationId: registerUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: jsonObject
+          description: jsonObject
+          required: true
+          schema:
+            $ref: '#/definitions/RequestDTO«CreateDemographicDTO»'
+      responses:
+        '200':
+          description: Demographic data successfully Created
+          schema:
+            $ref: '#/definitions/ResponseDTO«CreateDemographicDTO»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
+      deprecated: false
+    put:
+      tags:
+        - Pre-Registration
+      summary: Update Pre-Registartion status
+      operationId: updateApplicationStatusUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: preRegistartionId
+          in: query
+          description: preRegistartionId
+          required: true
+          type: string
+        - name: status
+          in: query
+          description: status
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Pre-Registration Status successfully updated
+          schema:
+            $ref: '#/definitions/ResponseDTO«string»'
+        '[PRG]':
+          description: Pre-Registration Exception
+          schema:
+            $ref: '#/definitions/ServiceErrors«ErrorObject»'
+      deprecated: false
+    delete:
+      tags:
+        - Pre-Registration
+      summary: Discard individual
+      operationId: discardIndividualUsingDELETE
+      produces:
+        - application/json
+      parameters:
+        - name: preRegistartionId
+          in: query
+          description: preRegistartionId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Deletion of individual is successfully
+          schema:
+            $ref: '#/definitions/ResponseDTO«DeletePreRegistartionDTO»'
+      deprecated: false
+definitions:
+  BookingRegistrationDTO:
+    type: object
+    properties:
+      reg_date:
+        type: string
+      registration_center_id:
+        type: string
+      time_slot_from:
+        type: string
+      time_slot_to:
+        type: string
+    title: BookingRegistrationDTO
+  CreateDemographicDTO:
+    type: object
+    properties:
+      createdBy:
+        type: string
+      createdDateTime:
+        type: string
+      demographicDetails:
+        type: object
+        additionalProperties:
+          type: object
+      langCode:
+        type: string
+      preRegistrationId:
+        type: string
+      statusCode:
+        type: string
+      updatedBy:
+        type: string
+      updatedDateTime:
+        type: string
+    title: CreateDemographicDTO  
+  DeletePreRegistartionDTO:
+    type: object
+    properties:
+      deletedBy:
+        type: string
+      deletedDateTime:
+        type: string
+        format: date-time
+      prId:
+        type: string
+    title: DeletePreRegistartionDTO
+  ErrorObject:
+    type: object
+    properties:
+      errorCode:
+        type: string
+      errorMessage:
+        type: string
+    title: ErrorObject
+  ServiceErrors«ErrorObject»:
+    type: object
+    properties:
+      status:
+        type: number
+      errors:
+        type: array
+        description: errors
+        items:
+          $ref: '#/definitions/ErrorObject'
+    title: ServiceErrors«ErrorObject»
+  ResponseDTO«CreateDemographicDTO»:
+    type: object
+    properties:
+      response:
+        type: array
+        description: response
+        items:
+          $ref: '#/definitions/CreateDemographicDTO'
+    title: ResponseDTO«CreateDemographicDTO»
+  ResponseDTO«DeletePreRegistartionDTO»:
+    type: object
+    properties:
+      response:
+        type: array
+        description: response
+        items:
+          $ref: '#/definitions/DeletePreRegistartionDTO'
+    title: ResponseDTO«DeletePreRegistartionDTO»
+  ResponseDTO«PreRegistartionStatusDTO»:
+    type: object
+    properties:
+      response:
+        type: array
+        description: response
+        items:
+          $ref: '#/definitions/PreRegistartionStatusDTO'
+    title: ResponseDTO«PreRegistartionStatusDTO»
+  ResponseDTO«PreRegistrationViewDTO»:
+    type: object
+    properties:
+      response:
+        type: array
+        description: response
+        items:
+          $ref: '#/definitions/PreRegistrationViewDTO'
+    title: ResponseDTO«PreRegistrationViewDTO»
+  ResponseDTO«string»:
+    type: object
+    properties:
+      response:
+        type: array
+        description: response
+        items:
+          type: string
+    title: ResponseDTO«string»
+  RequestDTO«CreateDemographicDTO»:
+    type: object
+    properties:
+      id:
+        type: string
+        description: request id
+      ver:
+        type: string
+        description: request ver
+      reqTime:
+        type: string
+        format: date-time
+        description: request time
+      request:
+        description: request
+        $ref: '#/definitions/CreateDemographicDTO'
+    title: RequestDTO«CreateDemographicDTO»
+  PreRegistartionStatusDTO:
+    type: object
+    properties:
+      preRegistartionId:
+        type: string
+      statusCode:
+        type: string
+    title: PreRegistartionStatusDTO
+  PreRegistrationViewDTO:
+    type: object
+    properties:
+      bookingRegistrationDTO:
+        $ref: '#/definitions/BookingRegistrationDTO'
+      fullname:
+        type: string
+      preRegistartionId:
+        type: string
+      statusCode:
+        type: string
+    title: PreRegistrationViewDTO

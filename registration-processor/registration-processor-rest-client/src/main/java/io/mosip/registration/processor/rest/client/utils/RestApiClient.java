@@ -8,18 +8,21 @@ import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 
 /**
  * The Class RestApiClient.
@@ -30,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestApiClient {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(RestApiClient.class);
+	private final Logger logger = RegProcessorLogger.getLogger(RestApiClient.class);
 
 	/** The builder. */
 	@Autowired
@@ -49,19 +52,22 @@ public class RestApiClient {
 	 * @param responseType
 	 *            the response type
 	 * @return the api
+	 * @throws Exception
 	 */
-	public <T> T getApi(String getURI, Class<?> responseType) {
+	@SuppressWarnings("unchecked")
+	public <T> T getApi(String getURI, Class<?> responseType) throws Exception {
 		RestTemplate restTemplate;
+		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			T result = (T) restTemplate.getForObject(getURI, responseType);
+			result = (T) restTemplate.getForObject(getURI, responseType);
 
-			return result;
 		} catch (Exception e) {
-
-			logger.error(e.getMessage());
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+			throw e;
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -77,26 +83,35 @@ public class RestApiClient {
 	 *            the response class
 	 * @return the t
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T postApi(String uri, Object requestType, Class<?> responseClass) throws Exception {
 
 		RestTemplate restTemplate;
 		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			logger.info(uri);
-			logger.info(requestType.toString());
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), uri);
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.postForObject(uri, requestType, responseClass);
 		} catch (Exception e) {
-			logger.error("Error: {}", e);
+
+			logger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), e.getMessage() + ExceptionUtils.getStackTrace(e));
+
 			throw e;
 		}
 		return result;
 	}
 
 	public RestTemplate getRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		logger.info(Arrays.asList(environment.getActiveProfiles()).toString());
+		logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				LoggerFileConstant.APPLICATIONID.toString(), Arrays.asList(environment.getActiveProfiles()).toString());
 		if (Arrays.stream(environment.getActiveProfiles()).anyMatch("dev-k8"::equals)) {
-			logger.info(Arrays.asList(environment.getActiveProfiles()).toString());
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(),
+					Arrays.asList(environment.getActiveProfiles()).toString());
 			return new RestTemplate();
 		} else {
 			TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;

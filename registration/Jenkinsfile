@@ -1,14 +1,17 @@
 node {
+ try{
  def server = Artifactory.server 'ART'
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
- def branch = env.NEXT_BRANCH_NAME
+ //def branch = env.NEXT_BRANCH_NAME
+ def branch = '0.8.0'
+ def dockerImagesTagVersion = branch  //This will ensure that docker images tag should have 1-1 relation ship with project version
  projectToBuild = 'registration'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
 
  stage('------- Checkout --------') {
-  // Checkout only Kernel Module
+  // Checkout only registration Module
   dir(branch) {
    checkout([$class: 'GitSCM',
     branches: [
@@ -38,7 +41,7 @@ node {
  }
 
  stage('---------- mvn-clean-install ---------------') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
  }
 
  stage('---------- SonarQube Analysis --------------') {
@@ -51,6 +54,8 @@ node {
  stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
  }
+
+ /*
 
  stage('-----------Docker image push and cleanup-----------') {
   dir(branch) {
@@ -80,13 +85,13 @@ node {
      if (changedModules[j].contains(parentDirectoryPathForamtted)) {
       echo parentDirectoryPathForamtted + " will be built"
       docker.withRegistry(registryUrl) {
-      def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+      def buildName = "$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
+      newApp = docker.build(buildName, '--build-arg spring_config_label='+branch+'-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
       newApp.push()
       newApp.push 'latest'
       }
-      sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-      sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+      sh "docker rmi $parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
+      sh "docker rmi $registryName/$parentDirectoryName:$dockerImagesTagVersion.$BUILD_NUMBER"
       sh "docker rmi $registryName/$parentDirectoryName"
 
      }
@@ -96,8 +101,37 @@ node {
    }
 
   }
- }
+ }*/
 
+ }
+    // Catching the exception for triggering email
+  catch (exception) {
+        print exception
+		// If the job was aborted by any user
+        if (exception instanceof InterruptedException) {
+           currentBuild.result = "ABORTED"
+        }
+		// If the job failed due to some error
+        else{
+            currentBuild.result = "FAILURE"
+        }
+        
+        throw exception //rethrow exception to prevent the build from proceeding
+    
+        
+        }
+	finally{
+		if(currentBuild.result == "FAILURE"){
+		// sending email to kernel recipients
+		recipients = "$env.REGISTRATION_RECIPIENT_LIST"
+		emailext (
+					subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER failed'",
+					body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
+					to: "$recipients",
+					from: '"Jenkins" <info@mosip.io>'
+				)
+	}
+  }
 
 }
 

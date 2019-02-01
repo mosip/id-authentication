@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { RegistrationService } from "../registration/registration.service";
-import { SharedService } from "../shared/shared.service";
+import { SharedService } from "../registration/booking/booking.service";
 
 @Component({
   selector: "app-acknowledgement",

@@ -12,9 +12,8 @@ public enum PlatformErrorMessages {
 	RPR_PKR_PACKET_NOT_YET_SYNC(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "001",
 			"Registration packet is not in Sync with Sync table"),
 
-	/** The rpr pkr packet size greater than limit. */
-	RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
-			"The Registration Packet Size has exceeded the Max Size Limit"),
+	RPR_PKR_INVALID_PACKET_SIZE(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "002",
+			"The Registration Packet Size is invalid"),
 
 	/** The rpr pkr invalid packet format. */
 	RPR_PKR_INVALID_PACKET_FORMAT(PlatformErrorConstants.RPR_PACKET_RECEIVER_MODULE + "003", "Invalid packet format"),
@@ -38,36 +37,47 @@ public enum PlatformErrorMessages {
 	RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "002",
 			"Transaction table is not accessible"),
 
+	/** The rpr rgs invalid synctype. */
 	RPR_RGS_INVALID_SYNCTYPE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "003",
 			"Invalid syncType. Available types are NEW, CORRECTION, UPDATE, LOST_UIN, UPDATE_UIN, ACTIVATE_UIN, DEACTIVATE_UIN"),
 
+	/** The rpr rgs invalid languagecode. */
 	RPR_RGS_INVALID_LANGUAGECODE(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "004",
 			"Language Code must be of three character"),
 
+	/** The rpr rgs invalid regid parentregid. */
 	RPR_RGS_INVALID_REGID_PARENTREGID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "005",
 			"RegistrationId and Parent RegistrationId cannot be same"),
 
+	/** The rpr rgs empty registrationid. */
 	RPR_RGS_EMPTY_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "006",
 			"RegistrationId cannot be null"),
 
+	/** The rpr rgs invalid registrationid timestamp. */
 	RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "007",
 			"Invalid Time Stamp Found in RegistrationId"),
 
+	/** The rpr rgs invalid registrationid. */
 	RPR_RGS_INVALID_REGISTRATIONID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "008",
 			"RegistrationId Must Be Numeric Only"),
 
+	/** The rpr rgs invalid registrationid length. */
 	RPR_RGS_INVALID_REGISTRATIONID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "009",
 			"RegistrationId Length Must Be 29"),
 
+	/** The rpr rgs invalid prid timestamp. */
 	RPR_RGS_INVALID_PRID_TIMESTAMP(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "010",
 			"Invalid Time Stamp Found in Parent RegistrationId"),
 
+	/** The rpr rgs invalid prid. */
 	RPR_RGS_INVALID_PRID(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "011",
 			"Parent RegistrationId Must Be Numeric Only"),
 
+	/** The rpr rgs invalid prid length. */
 	RPR_RGS_INVALID_PRID_LENGTH(PlatformErrorConstants.RPR_REGISTRATION_STATUS_MODULE + "012",
 			"Parent RegistrationId Length Must Be 29"),
 
+	/** The rpr pis registration table not accessible. */
 	// Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001",
 			"The Registration Table is not accessible"),
@@ -140,6 +150,9 @@ public enum PlatformErrorMessages {
 	// Stages - Packet validator Exception error code and message
 	STRUCTURAL_VALIDATION_FAILED("", "Structural Validation Failed"),
 
+	//UIN check - JSON file encoding failed.
+	UNSUPPORTED_ENCODING("","json object parsing failed"),
+
 	/** The osi validation failed. */
 	// Stages - OSI Exception error code and message
 	OSI_VALIDATION_FAILED("", "OSI Validation Failed"),
@@ -147,6 +160,10 @@ public enum PlatformErrorMessages {
 	/** The packet demo dedupe failed. */
 	// Stages - Demo-Dedupe error code and message
 	PACKET_DEMO_DEDUPE_FAILED("", "Demo dedupe Failed"),
+
+	/** The packet bio dedupe failed. */
+	// Stages - Bio-Dedupe error code and message
+	PACKET_BIO_DEDUPE_FAILED("", "Bio dedupe Failed"),
 
 	/** The rpr psj dfs not accessible. */
 	// Packet scanner job Exception error code and message
@@ -205,30 +222,54 @@ public enum PlatformErrorMessages {
 	RPR_MVS_NO_ASSIGNED_RECORD(PlatformErrorConstants.RPR_MANUAL_VERIFICATION_MODULE + "004",
 			"No Assigned Record Found"),
 
+	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
 	RPR_TEM_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Template was Not Found"),
 
+	/** The rpr tem processing failure. */
 	RPR_TEM_PROCESSING_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
 			"The Processing of Template Failed "),
 
+	/** The rpr sms template generation failure. */
 	RPR_SMS_TEMPLATE_GENERATION_FAILURE(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001",
 			"Template Generation failed"),
 
+	/** The rpr sms phone number not found. */
 	RPR_SMS_PHONE_NUMBER_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "002",
 			"Phone number was not found"),
 
+	/** The rpr eml emailid not found. */
 	RPR_EML_EMAILID_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "001", "Email Id was not found"),
 
+	/** The rpr tem configuration not found. */
 	RPR_TEM_CONFIGURATION_NOT_FOUND(PlatformErrorConstants.RPR_MESSAGE_SENDER_TEMPLATE + "003",
 			"The Configuration and Language code not found"),
 
-	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "001",
+	/** The rpr pum packet not found exception. */
+	RPR_PUM_PACKET_NOT_FOUND_EXCEPTION(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "001",
 			"Packet Not Found in Packet Store"),
 
-	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RER_PACKET_UPLOADER_MODULE + "002",
+	/** The rpr pum packet deletion info. */
+	RPR_PUM_PACKET_DELETION_INFO(PlatformErrorConstants.RPR_PACKET_UPLOADER_MODULE + "002",
 			"File is Already exists in DFS location And its now Deleted from Virus scanner job"),
 
-	/***** System Exception *****/
+	/** The rpr bdd abis internal error. */
+	RPR_BDD_ABIS_INTERNAL_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "001",
+			"ABIS for the Reference ID and Request ID threw an Internal Error"),
+
+	/** The rpr bdd abis abort. */
+	RPR_BDD_ABIS_ABORT(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "002",
+			"ABIS for the Reference ID and Request ID was Abort"),
+
+	/** The rpr bdd unexcepted error. */
+	RPR_BDD_UNEXCEPTED_ERROR(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "003",
+			"ABIS for the Reference ID and Request ID was Not able to Access Biometric Data"),
+
+	/** The rpr bdd unable to serve request. */
+	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformErrorConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
+			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
+
+	/** *** System Exception ****. */
 
 	RPR_SYS_UNEXCEPTED_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001", "Unexpected exception"),
 

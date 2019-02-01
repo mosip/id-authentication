@@ -1,10 +1,10 @@
 ## kernel-idvalidator-tspid
 
- 1- [Background & Design](../../design/kernel/kernel-idvalidator.md)
+[Background & Design](../../docs/design/kernel/kernel-idvalidator.md)
  
 
  
- 2- [API Documentation ]
+[API Documentation ]
  
  ```
  mvn javadoc:javadoc
@@ -13,11 +13,12 @@
  
 **Properties to be added in Spring application environment using this component**
 
+```
 mosip.kernel.tspid.length=4
+```
 
 [application-dev.properties](../../config/application-dev.properties)
 
- 
  
  **Maven Dependency**
  

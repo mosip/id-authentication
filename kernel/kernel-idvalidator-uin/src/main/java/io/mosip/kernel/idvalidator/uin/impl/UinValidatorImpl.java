@@ -100,7 +100,10 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+		if (repeatingLimit > 0) {
+			String repeatingRegEx = "(\\d)\\d{0," + (repeatingLimit - 1) + "}\\1";
+			repeatingPattern = Pattern.compile(repeatingRegEx);
+		}
 		/**
 		 * Regex for matching repeating block of digits like 482xx482, 4827xx4827 (x is
 		 * any digit).<br/>
@@ -116,10 +119,10 @@ public class UinValidatorImpl implements UinValidator<String> {
 		 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
 		 * group<br/>
 		 */
-		String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
-
-		repeatingPattern = Pattern.compile(repeatingRegEx);
-		repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
+		if (repeatingBlockLimit > 0) {
+			String repeatingBlockRegEx = "(\\d{" + repeatingBlockLimit + ",}).*?\\1";
+			repeatingBlockPattern = Pattern.compile(repeatingBlockRegEx);
+		}
 	}
 
 	/**
@@ -255,9 +258,11 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * @return true if the id matches the filter
 	 */
 	private boolean sequenceFilter(String id) {
-		return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
-				.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
-				.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		if (sequenceLimit > 0)
+			return IntStream.rangeClosed(0, id.length() - sequenceLimit).parallel()
+					.mapToObj(index -> id.subSequence(index, index + sequenceLimit))
+					.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
+		return false;
 	}
 
 	/**
@@ -271,7 +276,9 @@ public class UinValidatorImpl implements UinValidator<String> {
 	 * @return true if the id matches the given regex pattern
 	 */
 	private boolean regexFilter(String id, Pattern pattern) {
-		return pattern.matcher(id).find();
+		if (pattern != null)
+			return pattern.matcher(id).find();
+		return false;
 	}
 
 }

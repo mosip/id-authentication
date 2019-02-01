@@ -1,10 +1,10 @@
 ## kernel-virusscanner-clamav
 
  
- 1- [Background & Design](../../design/kernel/kernel-virusscanner.md)
+[Background & Design](../../docs/design/kernel/kernel-virusscanner.md)
  
 
- 2- [API Documentation <TBA>](TBA)
+[API Documentation]
  
  ```
  mvn javadoc:javadoc
@@ -22,8 +22,15 @@
  </dependency>
  ```
   
+ **Application Properties**
  
- 3- Usage Sample
+ ```
+mosip.kernel.virus-scanner.host=104.211.209.102
+mosip.kernel.virus-scanner.port=3310
+ ```
+ 
+ 
+**Usage Sample**
  
  
  ```

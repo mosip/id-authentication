@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +17,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.RegistrationCenterMachineDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
@@ -32,23 +35,45 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiPkEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
+/**
+ * The Class PacketInfoDaoTest.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoDaoTest {
+
+	/** The packet infodao. */
 	@InjectMocks
 	PacketInfoDao packetInfodao;
 
+	/** The qcuser reg repositary. */
 	@Mock
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
+
+	/** The reg center machine repository. */
 	@Mock
 	private BasePacketRepository<RegCenterMachineEntity, RegCenterMachinePKEntity> regCenterMachineRepository;
+
+	/** The demographic dedupe repository. */
 	@Mock
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
+
+	/** The reg osi repository. */
 	@Mock
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
+	/** The applicant document entity. */
+	@Mock
+	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentEntity;
+
+	/** The dedupe entity. */
 	private IndividualDemographicDedupeEntity dedupeEntity;
+
+	/** The dedupe PK entity. */
 	private IndividualDemographicDedupePKEntity dedupePKEntity;
 
+	/**
+	 * Setup.
+	 */
 	@Before
 	public void setup() {
 		dedupeEntity = new IndividualDemographicDedupeEntity();
@@ -65,6 +90,11 @@ public class PacketInfoDaoTest {
 
 	}
 
+	/**
+	 * Gets the packetsfor QC user test.
+	 *
+	 * @return the packetsfor QC user test
+	 */
 	@Test
 	public void getPacketsforQCUserTest() {
 		List<QcuserRegistrationIdEntity> assignedPackets = new ArrayList<>();
@@ -89,6 +119,11 @@ public class PacketInfoDaoTest {
 		applicantPhotoEntity.setExcpPhotoName("ExpPhoto");
 		applicantPhotoEntity.setHasExcpPhotograph(false);
 		applicantPhotoEntity.setImageName("PhotoImageName");
+		String docValue = "dGVzdA";
+		byte[] docStore = docValue.getBytes();
+		applicantPhotoEntity.setExcpPhotoStore(docStore);
+		applicantPhotoEntity.setImageStore(docStore);
+		
 		applicantphotoArray[0] = applicantPhotoEntity;
 
 		List<Object[]> applicantInfo = new ArrayList<>();
@@ -104,6 +139,11 @@ public class PacketInfoDaoTest {
 
 	}
 
+	/**
+	 * Gets the entitiesfor reg osi test.
+	 *
+	 * @return the entitiesfor reg osi test
+	 */
 	@Test
 	public void getEntitiesforRegOsiTest() {
 		List<RegOsiEntity> osiEntityList = new ArrayList<>();
@@ -127,6 +167,11 @@ public class PacketInfoDaoTest {
 
 	}
 
+	/**
+	 * Gets the registration center machine test.
+	 *
+	 * @return the registration center machine test
+	 */
 	@Test
 	public void getRegistrationCenterMachineTest() {
 		RegCenterMachineEntity regMachineEntity = new RegCenterMachineEntity();
@@ -149,6 +194,11 @@ public class PacketInfoDaoTest {
 		assertEquals("2018782130000224092018121229", regCenterMachineDto.getRegId());
 	}
 
+	/**
+	 * Gets the all demo with UIN test.
+	 *
+	 * @return the all demo with UIN test
+	 */
 	@Test
 	public void getAllDemoWithUINTest() {
 		dedupeEntity.setUin("1234");
@@ -161,6 +211,9 @@ public class PacketInfoDaoTest {
 
 	}
 
+	/**
+	 * Find demo by id test.
+	 */
 	@Test
 	public void findDemoByIdTest() {
 		List<IndividualDemographicDedupeEntity> demographicDedupeEntityList = new ArrayList<>();
@@ -173,6 +226,11 @@ public class PacketInfoDaoTest {
 		assertEquals("2018782130000224092018121229", demographicDedupeDtoList.get(0).getRegId());
 	}
 
+	/**
+	 * Gets the applicant iris image name by id test.
+	 *
+	 * @return the applicant iris image name by id test
+	 */
 	@Test
 	public void getApplicantIrisImageNameByIdTest() {
 		List<String> irisImageList = new ArrayList<>();
@@ -185,6 +243,11 @@ public class PacketInfoDaoTest {
 
 	}
 
+	/**
+	 * Gets the applicant finger print image name by id test.
+	 *
+	 * @return the applicant finger print image name by id test
+	 */
 	@Test
 	public void getApplicantFingerPrintImageNameByIdTest() {
 		List<String> applicantFingerPrint = new ArrayList<>();
@@ -194,6 +257,42 @@ public class PacketInfoDaoTest {
 
 		List<String> result = packetInfodao.getApplicantIrisImageNameById("2018782130000224092018121229");
 		assertEquals("leftThumb", result.get(0));
+
+	}
+
+	/**
+	 * Gets the reg id by UIN test.
+	 *
+	 * @return the reg id by UIN test
+	 */
+	@Test
+	public void getRegIdByUINTest() {
+		List<String> regIdList = new ArrayList<>();
+		regIdList.add("2018782130000224092018121229");
+		Mockito.when(demographicDedupeRepository.getRegIdByUIN("493410317027")).thenReturn(regIdList);
+		List<String> result = packetInfodao.getRegIdByUIN("493410317027");
+		assertEquals("2018782130000224092018121229", result.get(0));
+	}
+
+	/**
+	 * Gets the documents by reg id test.
+	 *
+	 * @return the documents by reg id test
+	 */
+	@Test
+	public void getDocumentsByRegIdTest() {
+		List<ApplicantDocumentEntity> applicantDocumentEntities = new ArrayList<>();
+		ApplicantDocumentEntity applicantDocument = new ApplicantDocumentEntity();
+		String docValue = "dGVzdA";
+		byte[] docStore = docValue.getBytes();
+		applicantDocument.setDocName("individualBiometrics");
+		applicantDocument.setDocStore(docStore);
+
+		applicantDocumentEntities.add(applicantDocument);
+		Mockito.when(applicantDocumentEntity.getDocumentsByRegId("2018782130000224092018121229"))
+				.thenReturn(applicantDocumentEntities);
+		List<ApplicantDocument> result = packetInfodao.getDocumentsByRegId("2018782130000224092018121229");
+		assertEquals("individualBiometrics", result.get(0).getDocName());
 
 	}
 }

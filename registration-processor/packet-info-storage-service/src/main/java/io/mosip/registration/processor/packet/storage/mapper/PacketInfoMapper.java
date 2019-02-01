@@ -3,31 +3,25 @@ package io.mosip.registration.processor.packet.storage.mapper;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
-import org.apache.commons.codec.language.Soundex;
-import org.apache.commons.codec.language.bm.Languages;
-import org.apache.commons.codec.language.bm.NameType;
-import org.apache.commons.codec.language.bm.PhoneticEngine;
-import org.apache.commons.codec.language.bm.RuleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
-import io.mosip.registration.processor.core.packet.dto.BiometricExceptionDto;
+import io.mosip.registration.processor.core.packet.dto.BiometricException;
+
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegAbisRefDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -46,6 +40,8 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionE
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegAbisRefPkEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
@@ -62,10 +58,10 @@ public class PacketInfoMapper {
 
 	/** The Constant REGISTRATION_ID. */
 	private static final String REGISTRATION_ID = "registrationId";
-	
+
 	/** The Constant PRE_REGISTRATION_ID. */
 	private static final String PRE_REGISTRATION_ID = "preRegistrationId";
-	
+
 	/** The languages. */
 	private static StringBuilder languages = new StringBuilder();
 
@@ -106,10 +102,9 @@ public class PacketInfoMapper {
 
 		applicantDocumentEntity.setId(applicantDocumentPKEntity);
 		applicantDocumentEntity.setPreRegId(preregistrationId);
-		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocName(documentDto.getDocumentName());
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
-		applicantDocumentEntity.setDocFileFormat(".zip");
+		applicantDocumentEntity.setDocFileFormat(documentDto.getFormat());
 		applicantDocumentEntity.setActive(true);
 
 		return applicantDocumentEntity;
@@ -194,11 +189,13 @@ public class PacketInfoMapper {
 	/**
 	 * Convert biometric exc to biometric exc entity.
 	 *
-	 * @param exception the exception
-	 * @param metaData            the meta data
+	 * @param exception
+	 *            the exception
+	 * @param metaData
+	 *            the meta data
 	 * @return the biometric exception entity
 	 */
-	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricExceptionDto exception,
+	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(BiometricException exception,
 			List<FieldValue> metaData) {
 		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
 		String registrationId = "";
@@ -229,9 +226,12 @@ public class PacketInfoMapper {
 	/**
 	 * Convert photo graph data to photo graph entity.
 	 *
-	 * @param photoGraphData            the photo graph data
-	 * @param exceptionPhotographData the exception photograph data
-	 * @param metaData            the meta data
+	 * @param photoGraphData
+	 *            the photo graph data
+	 * @param exceptionPhotographData
+	 *            the exception photograph data
+	 * @param metaData
+	 *            the meta data
 	 * @return the applicant photograph entity
 	 */
 	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData,
@@ -250,7 +250,7 @@ public class PacketInfoMapper {
 		ApplicantPhotographEntity applicantPhotographEntity = new ApplicantPhotographEntity();
 
 		Boolean isHasExceptionPhoto = false;
-		if (!(exceptionPhotographData.getPhotographName().isEmpty())) {
+		if (exceptionPhotographData != null && !(exceptionPhotographData.getPhotographName().isEmpty())) {
 			isHasExceptionPhoto = true;
 			applicantPhotographEntity.setExcpPhotoName(exceptionPhotographData.getPhotographName());
 		}
@@ -272,9 +272,12 @@ public class PacketInfoMapper {
 	/**
 	 * Convert osi data to osi entity.
 	 *
-	 * @param osiData            the osi data
-	 * @param introducer            the meta data
-	 * @param metaData the meta data
+	 * @param osiData
+	 *            the osi data
+	 * @param introducer
+	 *            the meta data
+	 * @param metaData
+	 *            the meta data
 	 * @return the reg osi entity
 	 */
 	public static RegOsiEntity convertOsiDataToEntity(List<FieldValue> osiData, Introducer introducer,
@@ -304,14 +307,20 @@ public class PacketInfoMapper {
 
 		regOsiEntity.setOfficerFingerpImageName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERFINGERPRINTIMAGE));
-		regOsiEntity.setOfficerId(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERID));
+		String officerId = identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERID);
+		regOsiEntity.setOfficerId(officerId);
 		regOsiEntity
 				.setOfficerIrisImageName(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERIRISIMAGE));
 		regOsiEntity.setSupervisorFingerpImageName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORFINGERPRINTIMAGE));
 		regOsiEntity.setSupervisorIrisImageName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORIRISIMAGE));
-		regOsiEntity.setSupervisorId(identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORID));
+		String supervisorId = identityIteratorUtil.getFieldValue(osiData, JsonConstant.SUPERVISORID);
+		if (supervisorId != null) {
+			regOsiEntity.setSupervisorId(supervisorId);
+		} else {
+			regOsiEntity.setSupervisorId(officerId);
+		}
 		regOsiEntity.setOfficerPhotoName(
 				identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERAUTHENTICATIONIMAGE));
 		regOsiEntity.setOfficerHashedPwd(identityIteratorUtil.getFieldValue(osiData, JsonConstant.OFFICERPWR));
@@ -335,9 +344,31 @@ public class PacketInfoMapper {
 	}
 
 	/**
+	 * Convert reg abis ref to entity.
+	 *
+	 * @param regAbisRefDto
+	 *            the reg abis ref dto
+	 * @return the reg abis ref entity
+	 */
+	public static RegAbisRefEntity convertRegAbisRefToEntity(RegAbisRefDto regAbisRefDto) {
+
+		RegAbisRefEntity regAbisRefEntity = new RegAbisRefEntity();
+
+		RegAbisRefPkEntity regAbisRefPkEntity = new RegAbisRefPkEntity();
+
+		regAbisRefPkEntity.setRegId(regAbisRefDto.getReg_id());
+		regAbisRefEntity.setAbisRefId(regAbisRefDto.getAbis_ref_id());
+		regAbisRefEntity.setId(regAbisRefPkEntity);
+		regAbisRefEntity.setIsActive(true);
+
+		return regAbisRefEntity;
+	}
+
+	/**
 	 * Convert reg center machine to entity.
 	 *
-	 * @param metaData the meta data
+	 * @param metaData
+	 *            the meta data
 	 * @return the reg center machine entity
 	 */
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
@@ -354,7 +385,8 @@ public class PacketInfoMapper {
 		regCenterMachineEntity.setMachineId(identityIteratorUtil.getFieldValue(metaData, JsonConstant.MACHINEID));
 		String creationTime = identityIteratorUtil.getFieldValue(metaData, JsonConstant.CREATIONDATE);
 		if (creationTime != null)
-			regCenterMachineEntity.setPacketCreationDate(LocalDateTime.parse(creationTime));
+			regCenterMachineEntity.setPacketCreationDate(
+					DateUtils.parseUTCToLocalDateTime(creationTime, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
@@ -367,8 +399,10 @@ public class PacketInfoMapper {
 	/**
 	 * Gets the json values.
 	 *
-	 * @param jsonNode the json node
-	 * @param language the language
+	 * @param jsonNode
+	 *            the json node
+	 * @param language
+	 *            the language
 	 * @return the json values
 	 */
 	private static String getJsonValues(JsonValue[] jsonNode, String language) {
@@ -387,7 +421,8 @@ public class PacketInfoMapper {
 	/**
 	 * Gets the languages.
 	 *
-	 * @param jsonNode the json node
+	 * @param jsonNode
+	 *            the json node
 	 * @return the languages
 	 */
 	private static String[] getLanguages(JsonValue[] jsonNode) {
@@ -403,32 +438,12 @@ public class PacketInfoMapper {
 	}
 
 	/**
-	 * Gets the name.
-	 *
-	 * @param jsonValueList the json value list
-	 * @param language the language
-	 * @return the name
-	 */
-	private static String getName(List<JsonValue[]> jsonValueList, String language) {
-		StringBuilder name = new StringBuilder();
-		for (int i = 0; i < jsonValueList.size(); i++) {
-
-			for (int j = 0; j < jsonValueList.get(i).length; j++) {
-				if (language.equals(jsonValueList.get(i)[j].getLanguage())) {
-					name = name.append(jsonValueList.get(i)[j].getValue());
-
-				}
-			}
-
-		}
-		return name.toString();
-	}
-
-	/**
 	 * Conver demographic dedupe dto to entity.
 	 *
-	 * @param demoDto the demo dto
-	 * @param regId the reg id
+	 * @param demoDto
+	 *            the demo dto
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
@@ -437,12 +452,8 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
 		if (demoDto.getName() != null) {
-			for (int i = 0; i < demoDto.getName().size(); i++) {
-				getLanguages(demoDto.getName().get(i));
-
-			}
+			getLanguages(demoDto.getName());
 		}
-		getLanguages(demoDto.getDateOfBirth());
 		String[] languageArray = getLanguages(demoDto.getGender());
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
@@ -456,26 +467,13 @@ public class PacketInfoMapper {
 			entity.setIsDeleted(false);
 			String applicantName = null;
 			if (demoDto.getName() != null)
-				applicantName = getName(demoDto.getName(), languageArray[i]);
+				applicantName = getJsonValues(demoDto.getName(), languageArray[i]);
 			entity.setName(applicantName);
 
-			Locale loc = new Locale(languageArray[i]);
-			String languageName = loc.getDisplayLanguage();
-
-			PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
-			Set<String> languageSet = new HashSet<>();
-			languageSet.add(languageName.toLowerCase());
-
-			String encodedInputString = phoneticEngine.encode(applicantName == null ? "" : applicantName,
-					Languages.LanguageSet.from(languageSet));
-			Soundex soundex = new Soundex();
-			entity.setPhoneticName(
-					!soundex.encode(encodedInputString).isEmpty() ? soundex.encode(encodedInputString) : null);
-
-			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
-			if (dob != null) {
+			if (demoDto.getDateOfBirth() != null) {
 				try {
-					Date date = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(dob);
+					Date date = new SimpleDateFormat("yyyy/MM/dd").parse(demoDto.getDateOfBirth());
+
 					entity.setDob(date);
 				} catch (ParseException e) {
 					LOGGER.error("ErrorWhile Parsing Date");
@@ -493,7 +491,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert demographic info json to entity.
 	 *
-	 * @param infoJson the info json
+	 * @param infoJson
+	 *            the info json
 	 * @return the applicant demographic info json entity
 	 */
 	public static ApplicantDemographicInfoJsonEntity convertDemographicInfoJsonToEntity(DemographicInfoJson infoJson) {

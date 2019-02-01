@@ -6,7 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import java.io.ByteArrayInputStream;
 
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -86,7 +88,8 @@ public class ManualVerificationServiceTest {
 		manualVerificationEntity.setCrBy("regprc");
 		manualVerificationEntity.setMvUsrId("test");
 		manualVerificationEntity.setIsActive(true);
-		manualVerificationEntity.setDelDtimes(null);
+		 Date date = new Date();
+		manualVerificationEntity.setDelDtimes(new Timestamp(date.getTime()));
 		manualVerificationEntity.setIsDeleted(true);
 		manualVerificationEntity.setStatusComment("test");
 		manualVerificationEntity.setStatusCode(ManualVerificationStatus.PENDING.name());
