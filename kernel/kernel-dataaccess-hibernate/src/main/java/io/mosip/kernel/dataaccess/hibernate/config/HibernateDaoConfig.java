@@ -64,7 +64,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_CONNECTION_STRING)+environment.getProperty(HibernatePersistenceConstant.JDBC_SCHEMA_NAME));
 		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
 		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 		return dataSource;
