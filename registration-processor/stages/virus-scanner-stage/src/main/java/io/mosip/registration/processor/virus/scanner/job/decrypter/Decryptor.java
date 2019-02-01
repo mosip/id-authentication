@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.virus.scanner.job.decrypter;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -83,7 +82,7 @@ public class Decryptor {
 			cryptomanagerRequestDto.setReferenceId("1001");
 			// setLocal Date Time
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-			if (registrationId.length() == 29) {
+			if (registrationId.length() > 14) {
 				String packetCreatedDateTime = registrationId.substring(registrationId.length() - 14);
 				Date date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
 						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6));
