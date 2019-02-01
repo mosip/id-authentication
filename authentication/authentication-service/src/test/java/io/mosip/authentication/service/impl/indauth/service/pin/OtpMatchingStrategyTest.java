@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -104,6 +105,7 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 	}
 
+	@Ignore
 	@Test
 	public void TestValidOtpwithInvalidOtp() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
