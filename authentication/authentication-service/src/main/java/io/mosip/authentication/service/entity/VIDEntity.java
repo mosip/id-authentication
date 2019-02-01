@@ -10,12 +10,9 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
-
-
-
-
 /**
  * Instantiates a new VID entity.
+ * @author Rakesh Roshan
  */
 @Data
 @Entity
