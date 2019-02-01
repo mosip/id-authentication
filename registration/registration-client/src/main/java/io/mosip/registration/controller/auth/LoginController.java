@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -309,9 +308,8 @@ public class LoginController extends BaseController implements Initializable {
 											true);
 									SessionContext.getInstance().getMapObject()
 											.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-									Set<String> roleSet = new HashSet<>();
-									roleSet.add("*");
-									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), roleSet);
+									
+									loginList = loginService.getModesOfLogin(ProcessNames.ONBOARD.getType(), RegistrationConstants.getRoles());
 								}
 
 								if (loginList.size() > 1 && applicationContext.getApplicationMap()
