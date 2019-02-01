@@ -42,6 +42,9 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
 	private int threshholdTime;
+	
+	@Value("${registration.processor.threshold}")
+	private int threshold;
 
 	/** The registration status dao. */
 	@Autowired
@@ -50,6 +53,9 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	/** The transcation status service. */
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
+	
+	@Autowired
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	/** The event id. */
 	private String eventId = "";
@@ -78,6 +84,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	public InternalRegistrationStatusDto getRegistrationStatus(String registrationId) {
 		boolean isTransactionSuccessful = false;
 		try {
+			System.out.println(threshold);
+			System.out.println(threshholdTime);
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 			isTransactionSuccessful = true;
 
@@ -318,7 +326,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		String statusCode=entity.getStatusCode();
 		Integer retryCount=entity.getRetryCount()!=null?entity.getRetryCount():0;
 		// get the mapped value for the entity StatusCode
-		RegistrationExternalStatusCode mappedValue =RegistrationStatusMapUtil.getExternalStatus(statusCode,retryCount);			
+		RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(statusCode,retryCount);			
 		registrationStatusDto.setRetryCount(retryCount);
 		registrationStatusDto.setStatusCode(mappedValue.toString());
 		return registrationStatusDto;

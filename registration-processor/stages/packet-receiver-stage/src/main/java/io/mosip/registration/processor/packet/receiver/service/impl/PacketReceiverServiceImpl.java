@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -74,11 +73,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	/** The core audit request builder. */
 	@Autowired
-	AuditLogRequestBuilder auditLogRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The packet receiver stage. */
 	@Autowired
-	PacketReceiverStage packetReceiverStage;
+	private PacketReceiverStage packetReceiverStage;
+	
+	@Autowired
+	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
 	/** The env. */
 	@Autowired
@@ -201,8 +203,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 */
 	public Boolean isNotDuplicatePacket(String enrolmentId) {
 		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(enrolmentId);
-		RegistrationExternalStatusCode mappedValue;
-		mappedValue = RegistrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
+		 
+		 RegistrationExternalStatusCode mappedValue = registrationStatusMapUtil.getExternalStatus(registrations.get(0).getStatusCode(),registrations.get(0).getRetryCount());
 		return (registrationStatusService.getRegistrationStatus(enrolmentId) == null) && (mappedValue.toString().equals(RESEND)) ;
 	}
 

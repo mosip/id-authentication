@@ -193,7 +193,7 @@ public class RegistrationStatusServiceTest {
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
-		assertEquals("RESEND", list.get(0).getStatusCode());
+		assertEquals("PROCESSING", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)

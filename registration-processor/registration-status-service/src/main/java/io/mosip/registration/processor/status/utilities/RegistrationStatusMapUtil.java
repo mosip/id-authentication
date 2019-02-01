@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -12,6 +13,7 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 /**
  * The Class RegistrationStatusMapUtil.
  */
+@Component
 public class RegistrationStatusMapUtil {
 
 	/** The status map. */
@@ -23,12 +25,13 @@ public class RegistrationStatusMapUtil {
 			.unmodifiableMap(statusMap);
 
 	@Value("${registration.processor.threshold}")
-	private static int threshold;
+	private int threshold;
+
 
 	/**
 	 * Instantiates a new registration status map util.
 	 */
-	private RegistrationStatusMapUtil() {
+	public RegistrationStatusMapUtil() {
 		super();
 	}
 
@@ -74,7 +77,7 @@ public class RegistrationStatusMapUtil {
 
 	}
 
-	public static RegistrationExternalStatusCode getExternalStatus(String statusCode, int retryCount) {
+	public RegistrationExternalStatusCode getExternalStatus(String statusCode, Integer retryCount) {
 		RegistrationExternalStatusCode mappedValue;
 		if (retryCount < threshold) {
 			mappedValue = RegistrationExternalStatusCode.RESEND;

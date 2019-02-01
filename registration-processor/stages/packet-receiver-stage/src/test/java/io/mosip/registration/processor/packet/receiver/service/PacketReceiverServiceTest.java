@@ -132,7 +132,7 @@ public class PacketReceiverServiceTest {
 		
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
 		registrationStatusDto.setRetryCount(2);
-		registrationStatusDto.setRegistrationId("60762783330000520190114162541");
+		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
 	Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
 
@@ -282,10 +282,10 @@ public class PacketReceiverServiceTest {
 	}
 
 	@Test
-	public void testIoException() throws IOException {
+	public void testIoException() throws DuplicateUploadRequestException, IOException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
-		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
+		Mockito.doThrow(new DuplicateUploadRequestException()).when(fileManager).put(any(), any(), any());
 
 		boolean result = packetReceiverService.storePacket(mockMultipartFile);
 
