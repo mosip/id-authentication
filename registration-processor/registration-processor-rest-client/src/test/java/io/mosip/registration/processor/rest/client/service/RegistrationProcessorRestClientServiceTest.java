@@ -49,7 +49,7 @@ public class RegistrationProcessorRestClientServiceTest {
 	}
 
 	@Test
-	public void getObjecSuccessTest() throws ApisResourceAccessException {
+	public void getObjecSuccessTest() throws Exception {
 
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		Mockito.when(restApiClient.getApi(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(auditResponseDto);
@@ -70,7 +70,7 @@ public class RegistrationProcessorRestClientServiceTest {
 	}
 
 	@Test(expected = ApisResourceAccessException.class)
-	public void getObjecTestFailureTest() throws ApisResourceAccessException {
+	public void getObjecTestFailureTest() throws Exception {
 		Mockito.when(env.getProperty(ArgumentMatchers.any())).thenReturn("AUDIT");
 		ResourceAccessException exp = new ResourceAccessException("errorMessage");
 		Mockito.when(restApiClient.getApi(ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(exp);
