@@ -453,9 +453,12 @@ public class RegistrationConstants {
 	// Upload Packet
 
 	public static List getStatus() {
-		String[] packetStatus = { "SYNCED", "resend", "E" };
+		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
 		return Arrays.asList(packetStatus);
 	}
+	public static final String PACKET_UPLOAD = "packet_upload";
+	public static final String PACKET_DUPLICATE = "duplicate";
+	
 
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
@@ -487,6 +490,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
 	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
+	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -949,5 +953,8 @@ public class RegistrationConstants {
 	public static final String REST_OAUTH_USER_PSWD="password";
 	public static final String REST_OAUTH_ERROR_CODE="REST-OAUTH-001";
 	public static final String REST_OAUTH_ERROR_MSG="Internal Server Error";
+	
+	//Packet Sync
+	public static final String PACKET_SYNC="packet_sync";
 
 }

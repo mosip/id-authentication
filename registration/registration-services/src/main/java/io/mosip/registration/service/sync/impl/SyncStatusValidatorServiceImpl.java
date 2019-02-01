@@ -72,6 +72,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private int delJobId;
 	@Value("${RDJ_J00011}")
 	private int adjJobId;
+	@Value("${RDJ_J00011}")
+	private int udmJobId;
 	@Value("${GEO_CAP_FREQ}")
 	private String geoFrequnecyFlag;
 	@Value("${REG_PAK_MAX_CNT_OFFLINE_FREQ}")
@@ -123,6 +125,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		map.put(RegistrationConstants.OPT_TO_REG_RDJ_J00011, scdJobId);
 		map.put(RegistrationConstants.OPT_TO_REG_ADJ_J00012, adjJobId);
 		map.put(RegistrationConstants.OPT_TO_REG_DEL_001, delJobId);
+		map.put(RegistrationConstants.OPT_TO_REG_UDM_J00012, udmJobId);
+
 
 		List<ErrorResponseDTO> errorResponseDTOList = new ArrayList<>();
 

@@ -178,6 +178,7 @@ public class Validations extends BaseController {
 			}
 			if (node.getText().matches(regex)) {
 				
+				if(blackListedWords!=null) {
 				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
 					if(!showAlert)
 						generateAlert(
@@ -185,6 +186,7 @@ public class Validations extends BaseController {
 								isConsolidated, validationMessage);
 					node.requestFocus();
 					return false;
+				}
 				}
 				
 				if (isFixed.equals("false")) {
@@ -220,6 +222,7 @@ public class Validations extends BaseController {
 			node.requestFocus();
 			return false;
 		} catch (RuntimeException exception) {
+			exception.printStackTrace();
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}

@@ -119,8 +119,8 @@ public class RegistrationDAOTest {
 		List<Registration> packetLists = new ArrayList<>();
 		Registration reg = new Registration();
 		packetLists.add(reg);
-		List<String> packetNames = Arrays.asList("P", "resend", "E");
-		Mockito.when(registrationRepository.findByStatusCodes("P", "resend", "E")).thenReturn(packetLists);
+		List<String> packetNames = Arrays.asList("PUSHED","EXPORTED", "resend", "E");
+		Mockito.when(registrationRepository.findByStatusCodes("PUSHED","EXPORTED", "resend", "E")).thenReturn(packetLists);
 		assertEquals(packetLists, registrationDAOImpl.getRegistrationByStatus(packetNames));
 	}
 

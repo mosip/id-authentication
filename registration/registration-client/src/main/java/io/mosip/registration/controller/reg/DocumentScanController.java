@@ -486,7 +486,7 @@ public class DocumentScanController extends BaseController {
 		if ("pdf".equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(".") + 1))) {
 
 			try {
-				docPages = documentScanFacade.pdfToImages(document, documentName);
+				docPages = documentScanFacade.pdfToImages(document);
 				if (!docPages.isEmpty()) {
 					docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(0), null));
 					docPageNumber.setText("1");

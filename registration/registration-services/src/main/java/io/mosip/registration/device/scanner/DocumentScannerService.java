@@ -58,6 +58,6 @@ public interface DocumentScannerService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<BufferedImage> pdfToImages(byte[] pdfBytes, String fileName) throws IOException;
+	List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException;
 
 }
