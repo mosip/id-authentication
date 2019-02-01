@@ -479,7 +479,6 @@ public class AuthenticationController extends BaseController {
 		faceBasedLogin.setVisible(false);
 		irisBasedLogin.setVisible(false);
 		errorPane.setVisible(true);
-		errorPane.setVisible(true);
 		errorText.setText(RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
 		errorText.setWrapText(true);
 		if (isSupervisor) {
