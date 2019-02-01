@@ -42,12 +42,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 public class FingerPrint {
 
-	public static void main(String[] args)
-			throws KeyManagementException, NoSuchAlgorithmException, RestClientException, JSONException {
-		FingerPrint fp = new FingerPrint();
-		fp.saveFPData(
-				"Rk1SACAyMAAAAAFuAAABPAFiAMUAxQEAAAAoOICiALRdQ4CsAOSGZICiAJQuQ0C0AJWsQ0ByAMHeUIBqAL7EUEB7AOqAUEBnAKa4ZEBuAJO4ZECuAHbRUICkAQ58XUBcANsuQ0EAAMzRZEDeAHHUZED8AO4nSUCPAFcaZEDzAQ4MZEBrASmEV0CNAVQAQ0C6AKqmZICUAOB0XUB6AMxcSYCwAO8bZEB3AKLKZECBAJLHZIDgAKjIZEBlANgaQ0DkAJzNZIDSAP8bZEDkAPAnZIDEARIKZECiAGIKXUChASACXUBlAQYCXYB5AGCwZEDPAFTmV0B/AEscSUDqAVB/NYDAAKytZEDNALixZICSAOUGXYDZALm4ZECMAI7JSYC6AIbBV0CnAH22UIDOAIbIZEBuAOsASUCVAQv9XYD1ALDPZED5AOCxUIDNAGnSZEBbAPoRXUD8AITXV0BLAIOuUEDPAS8GZEBVAFwkNQAA");
-	}
+	
 
 	@GetMapping(value = "/scan")
 	@ApiOperation(value = "Scans the Fingerprint and returns encoded ISO Template", response = String.class)
@@ -68,82 +63,11 @@ public class FingerPrint {
 		}
 	}
 
-	private String saveFPData(String encodedString)
-			throws KeyManagementException, NoSuchAlgorithmException, JSONException {
+	
 
-		turnOffSslChecking();
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new TestErrorHandler());
-		String fooResourceUrl = "https://integ.mosip.io/idrepo/v1.0/identity";
-		IdRequestDTO req = new IdRequestDTO();
-		req.setId("mosip.id.create");
-		req.setRegistrationId(RandomStringUtils.randomNumeric(10));
-		IdentityDTO identityDTO = new IdentityDTO();
-		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-		identityInfoDTO.setLanguage("FR");
-		identityInfoDTO.setValue(encodedString);
-		identityDTO.setLeftIndex(Collections.singletonList(identityInfoDTO));
-		req.setRequest(identityDTO);
-		req.setStatus("REGISTERED");
-		req.setTimestamp("2018-12-10T14:29:10.301+0000");
-		req.setVer("1.0");
+	
 
-		ResponseEntity<IdResponseDTO> response = restTemplate.exchange(fooResourceUrl, HttpMethod.POST, getHeaders(req),
-				IdResponseDTO.class);
-		System.err.println("UIN >>>>>>>>>>>" + response.getBody().getResponse().getEntity());
-		String uin = response.getBody().getResponse().getEntity();
-		String[] data = uin.split("/");
-		File file = new File("D:\\ScannedFingerprintTemplate.txt");
 
-		try {
-			file.createNewFile();
-			FileWriter fileWriter = new FileWriter(file);
-			fileWriter.write("Encoded String:");
-			fileWriter.write("\r\n");
-			fileWriter.write(encodedString);
-			fileWriter.write("\r\n");
-			fileWriter.write("UIN:");
-			fileWriter.write("\r\n");
-			fileWriter.write(data[data.length - 1]);
-			fileWriter.flush();
-			fileWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return response.getBody().getResponse().getEntity();
-	}
-
-	private HttpEntity getHeaders(IdRequestDTO req) throws JSONException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-		return new HttpEntity(req, headers);
-	}
-
-	private static final TrustManager[] UNQUESTIONING_TRUST_MANAGER = new TrustManager[] { new X509TrustManager() {
-		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-			return null;
-		}
-
-		public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
-				throws CertificateException {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
-				throws CertificateException {
-			// TODO Auto-generated method stub
-
-		}
-	} };
-
-	public static void turnOffSslChecking() throws NoSuchAlgorithmException, KeyManagementException {
-		// Install the all-trusting trust manager
-		final SSLContext sc = SSLContext.getInstance("SSL");
-		sc.init(null, UNQUESTIONING_TRUST_MANAGER, null);
-		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-	}
 
 	class FingerprintEvent implements MFS100Event {
 
@@ -167,12 +91,5 @@ public class FingerPrint {
 
 	}
 
-	class TestErrorHandler extends DefaultResponseErrorHandler {
 
-		@Override
-		public void handleError(ClientHttpResponse response) throws IOException {
-			// conversion logic for decoding conversion
-			System.err.println(IOUtils.toString(response.getBody(), Charset.defaultCharset()));
-		}
-	}
 }

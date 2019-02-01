@@ -52,6 +52,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.integration.KeyManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -191,9 +192,7 @@ public abstract class BaseAuthFilter implements Filter {
 			requestWrapper.resetInputStream();
 			responseWrapper = sendErrorResponse(response, chain, requestWrapper);
 		} finally {
-			if (Objects.nonNull(responseWrapper)) {
-				logSize(responseWrapper.toString());
-			}
+			logSize(responseWrapper.toString());
 		}
 	}
 
@@ -208,7 +207,8 @@ public abstract class BaseAuthFilter implements Filter {
 	 * @param inputStream
 	 *            the input stream
 	 * @return the request body
-	 * @throws IdAuthenticationAppException - the id authentication app exception
+	 * @throws IdAuthenticationAppException
+	 *             - the id authentication app exception
 	 */
 	private Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
@@ -321,16 +321,22 @@ public abstract class BaseAuthFilter implements Filter {
 	 */
 	private CharResponseWrapper sendErrorResponse(ServletResponse response, FilterChain chain,
 			ResettableStreamHttpServletRequest requestWrapper) throws IOException, ServletException {
-
+		Map<String, Object> requestMap = null;
 		CharResponseWrapper responseWrapper = null;
 		try {
-			Map<String, Object> requestMap = getRequestBody(requestWrapper.getInputStream());
+			requestMap = getRequestBody(requestWrapper.getInputStream());
 			requestWrapper.resetInputStream();
-			responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
-			requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
-			chain.doFilter(requestWrapper, responseWrapper);
+		} catch (IdAuthenticationAppException e) {
+			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
+					"Cannot log time \n" + ExceptionUtils.getStackTrace(e));
+		}
+		responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+		requestWrapper.replaceData(EMPTY_JSON_OBJ_STRING.getBytes());
+		chain.doFilter(requestWrapper, responseWrapper);
+		try {
 			Map<String, Object> responseMap = getResponseBody(responseWrapper.toString());
-			if (Objects.nonNull(requestMap.get(REQ_TIME))) {
+			if (Objects.nonNull(requestMap) && Objects.nonNull(requestMap.get(REQ_TIME))
+					&& isDate((String) requestMap.get(REQ_TIME))) {
 				ZoneId zone = ZonedDateTime
 						.parse((CharSequence) requestMap.get(REQ_TIME), DateTimeFormatter.ISO_ZONED_DATE_TIME)
 						.getZone();
@@ -355,6 +361,22 @@ public abstract class BaseAuthFilter implements Filter {
 							+ ". Time taken in seconds: " + (duration / 1000));
 		}
 		return responseWrapper;
+	}
+
+	/**
+	 * To validate a string whether its a date or not
+	 * 
+	 * @param date
+	 * @return
+	 */
+	protected boolean isDate(String date) {
+		try {
+			DateUtils.parseToDate(date, env.getProperty(DATETIME_PATTERN));
+			return true;
+		} catch (ParseException | java.text.ParseException e) {
+			mosipLogger.error("sessionId", BASE_AUTH_FILTER, "validateDate", "\n" + ExceptionUtils.getStackTrace(e));
+		}
+		return false;
 	}
 
 	/**
