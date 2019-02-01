@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * @author Bal Vikash Sharma
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
