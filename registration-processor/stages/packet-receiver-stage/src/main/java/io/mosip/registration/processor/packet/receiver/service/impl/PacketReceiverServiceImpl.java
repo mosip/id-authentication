@@ -95,7 +95,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 		messageDTO.setIsValid(false);
 		boolean storageFlag = false;
-
 		if (file.getName() != null && file.exists()) {
 			String fileOriginalName = file.getName();
 
@@ -115,7 +114,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				throw new FileSizeExceedException(
 						PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 			}
-			if (!(fileOriginalName.endsWith(extention))) {
+			if (!(fileOriginalName.endsWith(getExtention()))) {
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 			} else if (!(isDuplicatePacket(registrationId))) {
 				try {
@@ -155,7 +154,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 							registrationId);
 				}
 			} else {
-				new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
+				throw new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 			}
 		}
 		if (storageFlag) {
@@ -182,6 +181,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	public long getMaxFileSize() {
 		int maxFileSize = Integer.parseInt(fileSize);
 		return maxFileSize * 1024L * 1024;
+	}
+	
+	public String getExtention() {
+		return extention;
 	}
 
 	/**

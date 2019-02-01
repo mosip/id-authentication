@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 	 * @return the response entity
 	 */
 	public String handlePacketNotAvailableException(
-			final MissingServletRequestPartException e, WebRequest request) {
+			final MissingServletRequestPartException e) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getCode(), PlatformErrorMessages.RPR_PKR_PACKET_NOT_AVAILABLE.getMessage());
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),errorDetails.getErrorcode(),  e.getStackTrace()[0].toString());
 		return errorDetails.getMessage();
@@ -173,6 +173,8 @@ public class GlobalExceptionHandler {
 			return handlePacketNotValidException((PacketNotValidException)exe);
 		if(exe instanceof DuplicateUploadRequestException)
 			return duplicateentry((DuplicateUploadRequestException)exe);
+		if(exe instanceof MissingServletRequestPartException)
+			return handlePacketNotAvailableException((MissingServletRequestPartException)exe);
 		else return dataExceptionHandler((DataIntegrityViolationException) exe);
 	}
 }

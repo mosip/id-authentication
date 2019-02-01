@@ -4,19 +4,20 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.packet.receiver.dto.ExceptionJSONInfo;
-import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.GlobalExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -32,6 +33,9 @@ import io.vertx.ext.web.RoutingContext;
 @Service
 public class PacketReceiverStage extends MosipVerticleAPIManager {
 
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketReceiverStage.class);
+	
 	/**
 	 * vertx Cluster Manager Url
 	 */
@@ -89,24 +93,18 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param router
 	 */
 	private void routes(Router router) {
+		
 		router.post("/v0.1/registration-processor/packet-receiver/registrationpackets").handler(ctx -> {
 			processURL(ctx);
 		}).failureHandler(failureHandler -> {
-			String response = globalExceptionHandler.handler(failureHandler.failure());
-			this.setResponse(failureHandler, response);
+			this.setResponse(failureHandler, globalExceptionHandler.handler(failureHandler.failure()));
 		});
-		
-		
-		
 		
 		router.get("/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
-			
 		}).failureHandler(context->{
-			String obj = context.failure().getMessage();
-			this.setResponse(context, obj);
+			this.setResponse(context, context.failure().getMessage());
 		});
-
 	}
 
 	/**
@@ -115,14 +113,13 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	 * @param ctx
 	 */
 	public void processURL(RoutingContext ctx) {
-		FileUpload f = ctx.fileUploads().iterator().next();
+		FileUpload fileUpload = ctx.fileUploads().iterator().next();
 		File file = null;
-
 		try {
-			FileUtils.copyFile(new File(f.uploadedFileName()),
-					new File(new File(f.uploadedFileName()).getParent() + "/" + f.fileName()));
-			FileUtils.forceDelete(new File(f.uploadedFileName()));
-			file = new File(new File(f.uploadedFileName()).getParent() + "/" + f.fileName());
+			FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
+					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
+			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
+			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.storePacket(file);
 			if (messageDTO.getIsValid()) {
 				this.setResponse(ctx, RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN);
@@ -131,7 +128,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 				this.setResponse(ctx, RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new UnexpectedException(e.getMessage());
 		} finally {
 			if (file.exists())
 				deleteFile(file);
@@ -147,7 +144,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		try {
 			FileUtils.forceDelete(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new UnexpectedException(e.getMessage());
 		}
 	}
 
