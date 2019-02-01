@@ -49,6 +49,8 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
+import io.mosip.kernel.cbeffutil.service.impl.CbeffImpl;
+import io.mosip.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.mosip.kernel.core.idrepo.exception.IdRepoAppException;
 import io.mosip.kernel.idrepo.dfsadapter.impl.AmazonS3DFSProvider;
 import io.mosip.kernel.idrepo.dto.IdRequestDTO;
@@ -76,6 +78,9 @@ public class IdRepoServiceTest {
 
 	@Mock
 	FingerprintProvider fpProvider;
+
+	@Mock
+	CbeffImpl cbeffUtil;
 
 	@Mock
 	AmazonS3DFSProvider connection;
@@ -110,7 +115,7 @@ public class IdRepoServiceTest {
 
 	@Mock
 	private DefaultShardResolver shardResolver;
-	
+
 	BIR rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
 			.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 			.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
@@ -217,8 +222,8 @@ public class IdRepoServiceTest {
 	public void testAddIdentityDocumentStoreFailed()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenThrow(new SdkClientException(""));
+		when(connection.storeFile(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR));
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -234,11 +239,11 @@ public class IdRepoServiceTest {
 	}
 
 	@Test
-	public void testAddIdentityWithBioDocuments()
-			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
+	public void testAddIdentityWithBioDocuments() throws Exception {
 		when(fpProvider.convertFIRtoFMR(Mockito.any())).thenReturn(Collections.singletonList(rFinger));
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(false);
+		when(connection.storeFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+		when(cbeffUtil.validateXML(Mockito.any(), Mockito.any())).thenReturn(true);
+		when(cbeffUtil.updateXML(Mockito.any(), Mockito.any())).thenReturn("data".getBytes());
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -286,12 +291,6 @@ public class IdRepoServiceTest {
 		request.setRequest(req);
 		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
 		service.addIdentity(request, "1234");
-	}
-
-	@Test(expected = IdRepoAppException.class)
-	@Ignore
-	public void testUpdateUinidentityInfoDataAccessException()
-			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
 	}
 
 	/**
@@ -382,12 +381,8 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityWithBioDocumentsFileRetrievalError()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenThrow(new SdkClientException(""));
-		when(conn.doesObjectExist(Mockito.any(), Mockito.any())).thenReturn(true);
-		when(conn.getObject(Mockito.any())).thenReturn(s3Obj);
-		when(s3Obj.getObjectContent())
-				.thenReturn(new S3ObjectInputStream(IOUtils.toInputStream("1234", Charset.defaultCharset()), null));
+		when(connection.getFile(Mockito.any(), Mockito.any()))
+				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR));
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -408,12 +403,7 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityWithBioDocumentsHashFail()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(true);
-		when(conn.doesObjectExist(Mockito.any(), Mockito.any())).thenReturn(true);
-		when(conn.getObject(Mockito.any())).thenReturn(s3Obj);
-		when(s3Obj.getObjectContent())
-				.thenReturn(new S3ObjectInputStream(IOUtils.toInputStream("1234", Charset.defaultCharset()), null));
+		when(connection.getFile(Mockito.any(), Mockito.any())).thenReturn("data".getBytes());
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
@@ -434,18 +424,18 @@ public class IdRepoServiceTest {
 	@Test
 	public void testRetrieveIdentityWithDemoDocuments()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(true);
-		when(conn.doesObjectExist(Mockito.any(), Mockito.any())).thenReturn(true);
-		when(conn.getObject(Mockito.any())).thenReturn(s3Obj);
-		when(s3Obj.getObjectContent())
-				.thenReturn(new S3ObjectInputStream(IOUtils.toInputStream("1234", Charset.defaultCharset()), null));
+		when(connection.getFile(Mockito.any(),Mockito.any())).thenReturn("data".getBytes());
+//		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(true);
+//		when(conn.doesObjectExist(Mockito.any(), Mockito.any())).thenReturn(true);
+//		when(conn.getObject(Mockito.any())).thenReturn(s3Obj);
+//		when(s3Obj.getObjectContent())
+//				.thenReturn(new S3ObjectInputStream(IOUtils.toInputStream("1234", Charset.defaultCharset()), null));
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		UinDocument document = new UinDocument();
-		document.setDoctypCode("ProofOfIdentity");
-		document.setDocHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ");
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("Om6weQ85rIfJTzhWst0sXREOaBFgImGpqSPTuyOtyLc");
 		document.setDocId("1234");
 		document.setDocName("name");
 		uinObj.setDocuments(Collections.singletonList(document));
@@ -459,17 +449,12 @@ public class IdRepoServiceTest {
 	@Test(expected = IdRepoAppException.class)
 	public void testRetrieveIdentityWithDemoDocumentsHashFail()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(true);
-		when(conn.doesObjectExist(Mockito.any(), Mockito.any())).thenReturn(true);
-		when(conn.getObject(Mockito.any())).thenReturn(s3Obj);
-		when(s3Obj.getObjectContent())
-				.thenReturn(new S3ObjectInputStream(IOUtils.toInputStream("1234", Charset.defaultCharset()), null));
+		when(connection.getFile(Mockito.any(), Mockito.any())).thenReturn("data".getBytes());
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		UinDocument document = new UinDocument();
-		document.setDoctypCode("ProofOfIdentity");
+		document.setDoccatCode("ProofOfIdentity");
 		document.setDocHash("A6xnQhbz4Vx2HuGl4lXwZ5U28iziLRFnhP5eNfIRvQ");
 		document.setDocId("1234");
 		document.setDocName("name");
@@ -484,24 +469,19 @@ public class IdRepoServiceTest {
 	@Test
 	public void testRetrieveIdentityWithAllType()
 			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(connection.getConnection()).thenReturn(conn);
-		when(conn.doesBucketExistV2(Mockito.any())).thenReturn(true);
-		when(conn.doesObjectExist(Mockito.any(), Mockito.any())).thenReturn(true);
-		when(conn.getObject(Mockito.any())).thenReturn(s3Obj);
-		when(s3Obj.getObjectContent())
-				.thenReturn(new S3ObjectInputStream(IOUtils.toInputStream("1234", Charset.defaultCharset()), null));
+		when(connection.getFile(Mockito.any(), Mockito.any())).thenReturn("dGVzdA".getBytes());
 		Uin uinObj = new Uin();
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		UinBiometric biometrics = new UinBiometric();
 		biometrics.setBiometricFileType("individualBiometrics");
-		biometrics.setBiometricFileHash("A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ");
+		biometrics.setBiometricFileHash("osB-lAZr5SMI6Wq62ZUDXmKYWhsNiDfprKtH-PilIBQ");
 		biometrics.setBioFileId("1234");
 		biometrics.setBiometricFileName("name");
 		uinObj.setBiometrics(Collections.singletonList(biometrics));
 		UinDocument document = new UinDocument();
-		document.setDoctypCode("ProofOfIdentity");
-		document.setDocHash("47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU");
+		document.setDoccatCode("ProofOfIdentity");
+		document.setDocHash("osB-lAZr5SMI6Wq62ZUDXmKYWhsNiDfprKtH-PilIBQ");
 		document.setDocId("1234");
 		document.setDocName("name");
 		uinObj.setDocuments(Collections.singletonList(document));
@@ -565,13 +545,14 @@ public class IdRepoServiceTest {
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		uinObj.setStatusCode("REGISTERED");
-		uinObj.setUinData(
-				"rgAADOjjov89sjVwvI8Gc4ngK9lQgPxMpNDe+LXb5qI=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE="
-						.getBytes());
+		Object obj2 = mapper.readValue(
+				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"}],\"lastName\":[{\"language\":\"AR\",\"value\":\"Mano\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Mano\",\"label\":\"string\"}]}}"
+						.getBytes(),
+				Object.class);
+		uinObj.setUinData(mapper.writeValueAsBytes(obj2));
 		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		service.updateIdentity(request, "234");
+		service.updateIdentity(request, "234").getResponse().equals(obj2);
 	}
 
 	@Test
@@ -654,22 +635,22 @@ public class IdRepoServiceTest {
 		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
 		ReflectionTestUtils.setField(service, "mapper", mockMapper);
 		try {
-		when(mockMapper.writeValueAsBytes(Mockito.any())).thenThrow(new JsonMappingException(""));
-		ReflectionTestUtils.invokeMethod(service, "convertToBytes", "1234");
+			when(mockMapper.writeValueAsBytes(Mockito.any())).thenThrow(new JsonMappingException(""));
+			ReflectionTestUtils.invokeMethod(service, "convertToBytes", "1234");
 		} catch (UndeclaredThrowableException e) {
-			throw e.getCause(); 
+			throw e.getCause();
 		}
 	}
-	
+
 	@Test(expected = IdRepoAppException.class)
 	public void testConvertToObject() throws Throwable {
 		ObjectMapper mockMapper = Mockito.mock(ObjectMapper.class);
 		ReflectionTestUtils.setField(service, "mapper", mockMapper);
 		try {
-		when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
-		ReflectionTestUtils.invokeMethod(service, "convertToObject", "1234".getBytes(), String.class);
+			when(mockMapper.readValue("1234".getBytes(), String.class)).thenThrow(new JsonMappingException(""));
+			ReflectionTestUtils.invokeMethod(service, "convertToObject", "1234".getBytes(), String.class);
 		} catch (UndeclaredThrowableException e) {
-			throw e.getCause(); 
+			throw e.getCause();
 		}
 	}
 

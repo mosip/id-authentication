@@ -144,7 +144,7 @@ public class IdRequestValidatorTest {
 
 	@Test
 	public void testValidateStatusInvalidStatus() {
-		ReflectionTestUtils.invokeMethod(validator, "validateStatus", "1234", errors, "create");
+		ReflectionTestUtils.invokeMethod(validator, "validateStatus", "1234", errors, "update");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
@@ -255,11 +255,11 @@ public class IdRequestValidatorTest {
 			IOException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		when(jsonValidator.validateJson(Mockito.any(), Mockito.any())).thenReturn(null);
 		Object request = mapper.readValue(
-				"{\"identity\":795429385028,\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
+				"{\"identity\":{},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				Object.class);
 		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors);
-		assertFalse(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -321,7 +321,7 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "request"),
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "identity"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});

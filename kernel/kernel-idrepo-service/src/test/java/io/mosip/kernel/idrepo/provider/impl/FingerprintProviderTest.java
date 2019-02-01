@@ -1,10 +1,11 @@
 package io.mosip.kernel.idrepo.provider.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -16,6 +17,10 @@ import io.mosip.kernel.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.cbeffutil.jaxbclasses.SingleType;
 
+/**
+ * @author Manoj SP
+ *
+ */
 public class FingerprintProviderTest {
 
 	FingerprintProvider fp = new FingerprintProvider();
@@ -31,7 +36,7 @@ public class FingerprintProviderTest {
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW).withCreationDate(new Date())
 						.build())
 				.build();
-		assertEquals(fp.convertFIRtoFMR(Collections.singletonList(rFinger.toBIRType(rFinger))),
-				Collections.singletonList(rFinger.toBIRType(rFinger)));
+		List<BIR> data = fp.convertFIRtoFMR(Collections.singletonList(rFinger.toBIRType(rFinger)));
+		assertTrue(data.get(0).getBdbInfo().getFormatType() == 2);
 	}
 }
