@@ -11,6 +11,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 
 /**
  * The Interface VIDRepository is used to fetch VIDEntity.
+ *  @author Rakesh Roshan
  */
 @Repository
 public interface VIDRepository extends BaseRepository<VIDEntity, String> {

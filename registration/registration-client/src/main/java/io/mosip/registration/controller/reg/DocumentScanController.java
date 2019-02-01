@@ -4,11 +4,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -23,7 +23,6 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
@@ -33,12 +32,11 @@ import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.entity.mastersync.MasterDocumentType;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.util.scan.DocumentScanFacade;
-import javafx.application.HostServices;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
@@ -47,8 +45,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -64,9 +62,9 @@ public class DocumentScanController extends BaseController {
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanController.class);
 	private boolean isChild;
 
-	@Autowired 
+	@Autowired
 	MasterSyncService masterSync;
-	
+
 	@FXML
 	private ComboBox<String> poaDocuments;
 
@@ -109,27 +107,37 @@ public class DocumentScanController extends BaseController {
 	protected Button dobScanBtn;
 	@FXML
 	protected AnchorPane documentScan;
-/*	
+
 	@FXML
-	protected WebView pdfWebView;*/
+	protected ImageView docPreviewImgView;
+
+	@FXML
+	protected Button docPreviewNext;
+
+	@FXML
+	protected Button docPreviewPrev;
+
+	@FXML
+	protected Text docPageNumber;
 
 	List<BufferedImage> scannedPages;
-	
-	private List<MasterDocumentType> documents;
 
+	private List<MasterDocumentType> documents;
 
 	@Value("${DOCUMENT_SIZE}")
 	public int documentSize;
-	
+
 	@Value("${DOCUMENT_SCANNER_ENABLED}")
 	private String isScannerEnabled;
-	
+
 	@Value("${DOCUMENT_SCANNER_DOCTYPE}")
 	private String scannerDocType;
 
+	List<BufferedImage> docPages;
+
 	@FXML
 	private void initialize() {
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
@@ -138,10 +146,10 @@ public class DocumentScanController extends BaseController {
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			isChild = true;
-			loadListOfDocuments(poaDocuments,"POA");
-			loadListOfDocuments(poiDocuments,"POI");
-			loadListOfDocuments(porDocuments,"POR");
-			loadListOfDocuments(dobDocuments,"POB");
+			loadListOfDocuments(poaDocuments, "POA");
+			loadListOfDocuments(poiDocuments, "POI");
+			loadListOfDocuments(porDocuments, "POR");
+			loadListOfDocuments(dobDocuments, "POB");
 		} catch (RuntimeException exception) {
 			LOGGER.error("REGISTRATION - CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					exception.getMessage());
@@ -202,24 +210,24 @@ public class DocumentScanController extends BaseController {
 	private void scanDocument(ComboBox<String> documents, VBox vboxElement, String document, String errorMessage) {
 
 		if (documents.getValue() == null) {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select atleast one document for scan");
 
 			generateAlert(RegistrationConstants.ERROR, errorMessage);
 			documents.requestFocus();
 		} else if (!vboxElement.getChildren().isEmpty()) {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "One Document can be added to the Category");
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
 				.noneMatch(index -> index.getId().contains(documents.getValue()))) {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Select only one document category for scan");
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Displaying Scan window to scan Documents");
 
 			selectedDocument = document;
@@ -237,7 +245,7 @@ public class DocumentScanController extends BaseController {
 		}
 		scanPopUpViewController.init(this, RegistrationUIConstants.SCAN_DOC_TITLE);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan window displayed to scan and upload documents");
 	}
 
@@ -276,17 +284,17 @@ public class DocumentScanController extends BaseController {
 	private void scanFromStubbed(Stage popupStage) throws IOException {
 		byte[] byteArray = documentScanFacade.getScannedDocument();
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 
 		if (byteArray.length > documentSize) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
-				
+
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(byteArray));
-				
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
@@ -296,32 +304,32 @@ public class DocumentScanController extends BaseController {
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
+					loadMapObject().put("poa", poaDocuments.getValue());
 					break;
 				case RegistrationConstants.POI_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
+					loadMapObject().put("poi", poiDocuments.getValue());
 					break;
 				case RegistrationConstants.POR_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
+					loadMapObject().put("por", porDocuments.getValue());
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
+					loadMapObject().put("dob", dobDocuments.getValue());
 					break;
 				default:
 				}
 
 				popupStage.close();
 
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
 			}
 		}
@@ -357,7 +365,7 @@ public class DocumentScanController extends BaseController {
 
 	public void attachScannedDocument(Stage popupStage) throws IOException {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting byte array to image");
 		if (scannedPages == null || scannedPages.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_EMPTY);
@@ -377,7 +385,7 @@ public class DocumentScanController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_SIZE);
 		} else {
 			if (selectedDocument != null) {
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Adding documents to Screen");
 
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
@@ -387,25 +395,25 @@ public class DocumentScanController extends BaseController {
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("poa", poaDocuments.getValue());
+					loadMapObject().put("poa", poaDocuments.getValue());
 					break;
 				case RegistrationConstants.POI_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("poi", poiDocuments.getValue());
+					loadMapObject().put("poi", poiDocuments.getValue());
 					break;
 				case RegistrationConstants.POR_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("por", porDocuments.getValue());
+					loadMapObject().put("por", porDocuments.getValue());
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
-					SessionContext.getInstance().getMapObject().put("dob", dobDocuments.getValue());
+					loadMapObject().put("dob", dobDocuments.getValue());
 					break;
 				default:
 				}
@@ -413,10 +421,14 @@ public class DocumentScanController extends BaseController {
 				scannedPages.clear();
 				popupStage.close();
 
-				LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
 			}
 		}
+	}
+
+	private Map<String, Object> loadMapObject() {
+		return SessionContext.getInstance().getMapObject();
 	}
 
 	/**
@@ -425,39 +437,39 @@ public class DocumentScanController extends BaseController {
 	private void attachDocuments(DocumentDetailsDTO documentDetailsDTO, String document, VBox vboxElement,
 			byte[] byteArray) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document);
 		documentDetailsDTO.setFormat(scannerDocType);
-		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document).concat("."+scannerDocType));
+		documentDetailsDTO.setValue(selectedDocument.concat("_").concat(document));
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set details to DocumentDetailsDTO");
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Set DocumentDetailsDTO to RegistrationDTO");
 
-		addDocumentsToScreen(documentDetailsDTO.getValue(), vboxElement);
+		addDocumentsToScreen(documentDetailsDTO.getValue(), documentDetailsDTO.getFormat(), vboxElement);
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
 
 	}
 
-	private void addDocumentsToScreen(String document, VBox vboxElement) {
+	private void addDocumentsToScreen(String document, String documentFormat, VBox vboxElement) {
 
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
-		gridPane.add(createHyperLink(document), 0, vboxElement.getChildren().size());
+		gridPane.add(createHyperLink(document.concat("." + documentFormat)), 0, vboxElement.getChildren().size());
 		gridPane.add(createImageView(vboxElement), 1, vboxElement.getChildren().size());
 
 		vboxElement.getChildren().add(gridPane);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scan document added to Vbox element");
 
 	}
@@ -467,39 +479,70 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void displayDocument(byte[] document, String documentName) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Converting bytes to Image to display scanned document");
+		/* clearing the previously loaded pdf pages inorder to clear up the memory */
+		initializePreviewSection();
+		if ("pdf".equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(".") + 1))) {
 
-		if ("pdf".equalsIgnoreCase(documentName.substring(documentName.lastIndexOf(".")+1))) {
-			HostServices hostServices = (HostServices) ApplicationContext.getInstance().getApplicationMap()
-					.get("hostServices");
-			if (hostServices != null) {
-				try {
-					File tempFile = File.createTempFile(documentName.substring(0, documentName.lastIndexOf(".")),
-							".pdf");
-					tempFile.deleteOnExit();
-					FileOutputStream fos = new FileOutputStream(tempFile);
-					fos.write(document);
-					fos.close();
-					hostServices.showDocument("file:///"+tempFile.getAbsolutePath());
-				} catch (IOException e) {
-					generateAlert(RegistrationConstants.ERROR, "Unable to Display the document");
-					return;
+			try {
+				docPages = documentScanFacade.pdfToImages(document);
+				if (!docPages.isEmpty()) {
+					docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(0), null));
+					docPageNumber.setText("1");
+					if (docPages.size() > 1) {
+						docPreviewNext.setDisable(false);
+					}
 				}
+			} catch (IOException e) {
+				LOGGER.error("DOCUMENT_SCAN_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						e.getMessage());
+				generateAlert(RegistrationConstants.ERROR, "Unable to preview the document");
+				return;
 			}
 
 		} else {
-			Image img = convertBytesToImage(document);
-			ImageView view = new ImageView(img);
-			Scene scene = new Scene(new StackPane(view));
-			Stage primaryStage = new Stage();
-			primaryStage.setTitle(documentName);
-			primaryStage.setScene(scene);
-			primaryStage.sizeToScene();
-			primaryStage.show();
+			docPreviewImgView.setImage(convertBytesToImage(document));
+			docPageNumber.setText("1");
 		}
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
+	}
+
+	public void previewNextPage() {
+
+		if (isDocsNotEmpty()) {
+			int pageNumber = Integer.parseInt(docPageNumber.getText());
+			if (docPages.size() > pageNumber) {
+				setDocPreview(pageNumber, pageNumber + 1);
+				docPreviewPrev.setDisable(false);
+				if ((pageNumber + 1) == docPages.size()) {
+					docPreviewNext.setDisable(true);
+				}
+			}
+		}
+	}
+
+	public void previewPrevPage() {
+		if (isDocsNotEmpty()) {
+			int pageNumber = Integer.parseInt(docPageNumber.getText());
+			if (pageNumber > 1) {
+				setDocPreview(pageNumber - 2, pageNumber - 1);
+				docPreviewNext.setDisable(false);
+				if ((pageNumber - 1) == 1) {
+					docPreviewPrev.setDisable(true);
+				}
+			}
+		}
+	}
+
+	private boolean isDocsNotEmpty() {
+		return StringUtils.isNotEmpty(docPageNumber.getText()) && docPages != null && !docPages.isEmpty();
+	}
+
+	private void setDocPreview(int index, int pageNumber) {
+		docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(index), null));
+		docPageNumber.setText(String.valueOf(pageNumber));
 	}
 
 	/**
@@ -507,14 +550,14 @@ public class DocumentScanController extends BaseController {
 	 */
 	private ImageView createImageView(VBox vboxElement) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
 
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH));
 		ImageView imageView = new ImageView(image);
 		imageView.setCursor(Cursor.HAND);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Image to delete the attached document");
 
 		imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -548,7 +591,7 @@ public class DocumentScanController extends BaseController {
 
 		});
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Image added to delete the attached document");
 
 		return imageView;
@@ -559,14 +602,14 @@ public class DocumentScanController extends BaseController {
 	 */
 	private Hyperlink createHyperLink(String document) {
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Creating Hyperlink to display Scanned document");
 
 		Hyperlink hyperLink = new Hyperlink();
 		hyperLink.setId(document);
 		hyperLink.setText(document);
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
 				"Binding OnAction event to Hyperlink to display Scanned document");
 
@@ -598,13 +641,13 @@ public class DocumentScanController extends BaseController {
 				}
 
 				if (selectedDocumentToDisplay != null) {
-					displayDocument(selectedDocumentToDisplay.getDocument(), selectedDocumentToDisplay.getValue());
+					displayDocument(selectedDocumentToDisplay.getDocument(), hyperLink.getText());
 				}
 
 			}
 		});
 
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Hyperlink added to display Scanned document");
 
 		return hyperLink;
@@ -617,16 +660,20 @@ public class DocumentScanController extends BaseController {
 			Identity identity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 
 			if (identity.getProofOfAddress() != null) {
-				addDocumentsToScreen(identity.getProofOfAddress().getValue(), poaBox);
+				addDocumentsToScreen(identity.getProofOfAddress().getValue(), identity.getProofOfAddress().getFormat(),
+						poaBox);
 			}
 			if (identity.getProofOfIdentity() != null) {
-				addDocumentsToScreen(identity.getProofOfIdentity().getValue(), poiBox);
+				addDocumentsToScreen(identity.getProofOfIdentity().getValue(),
+						identity.getProofOfIdentity().getFormat(), poiBox);
 			}
 			if (identity.getProofOfRelationship() != null) {
-				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
+				addDocumentsToScreen(identity.getProofOfRelationship().getValue(),
+						identity.getProofOfRelationship().getFormat(), porBox);
 			}
 			if (identity.getProofOfDateOfBirth() != null) {
-				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(), dobBox);
+				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(),
+						identity.getProofOfDateOfBirth().getFormat(), dobBox);
 			}
 
 		}
@@ -640,15 +687,16 @@ public class DocumentScanController extends BaseController {
 	 */
 	private void loadListOfDocuments(ComboBox<String> selectionList, String docCode) {
 		try {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-			documents  = masterSync.getDocumentCategories(docCode,MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-					.getMappedCode());
-			List<String> documentNames  = documents.stream().map(doc->doc.getName()).collect(Collectors.toList());
-			
+			documents = masterSync.getDocumentCategories(docCode,
+					MappedCodeForLanguage
+							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
+							.getMappedCode());
+			List<String> documentNames = documents.stream().map(doc -> doc.getName()).collect(Collectors.toList());
+
 			selectionList.getItems().addAll(documentNames);
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loaded list of documents");
 
 		} catch (RuntimeException runtimeException) {
@@ -658,8 +706,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	public RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
-				.get(RegistrationConstants.REGISTRATION_DATA);
+		return (RegistrationDTO) loadMapObject().get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 	protected void prepareEditPageContent() {
@@ -668,23 +715,47 @@ public class DocumentScanController extends BaseController {
 			Identity identity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity();
 
 			if (identity.getProofOfAddress() != null) {
-				addDocumentsToScreen(identity.getProofOfAddress().getValue(), poaBox);
+				addDocumentsToScreen(identity.getProofOfAddress().getValue(), identity.getProofOfAddress().getFormat(),
+						poaBox);
 			}
 			if (identity.getProofOfIdentity() != null) {
-				addDocumentsToScreen(identity.getProofOfIdentity().getValue(), poiBox);
+				addDocumentsToScreen(identity.getProofOfIdentity().getValue(),
+						identity.getProofOfIdentity().getFormat(), poiBox);
 			}
 			if (identity.getProofOfRelationship() != null) {
-				addDocumentsToScreen(identity.getProofOfRelationship().getValue(), porBox);
+				addDocumentsToScreen(identity.getProofOfRelationship().getValue(),
+						identity.getProofOfRelationship().getFormat(), porBox);
 			}
 			if (identity.getProofOfDateOfBirth() != null) {
-				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(), dobBox);
+				addDocumentsToScreen(identity.getProofOfDateOfBirth().getValue(),
+						identity.getProofOfDateOfBirth().getFormat(), dobBox);
 			}
 		}
-		poaDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poa"));
-		poiDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("poi"));
-		porDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("por"));
-		dobDocuments.setValue((String) SessionContext.getInstance().getMapObject().get("dob"));
+		poaDocuments.setValue((String) loadMapObject().get("poa"));
+		poiDocuments.setValue((String) loadMapObject().get("poi"));
+		porDocuments.setValue((String) loadMapObject().get("por"));
+		dobDocuments.setValue((String) loadMapObject().get("dob"));
 
+	}
+
+	public void clearDocSection() {
+		clearAllDocs();
+		initializePreviewSection();
+	}
+
+	private void clearAllDocs() {
+		poaBox.getChildren().clear();
+		porBox.getChildren().clear();
+		dobBox.getChildren().clear();
+		poiBox.getChildren().clear();
+	}
+
+	public void initializePreviewSection() {
+		docPreviewNext.setDisable(true);
+		docPreviewPrev.setDisable(true);
+		docPageNumber.setText("");
+		docPreviewImgView.setImage(null);
+		docPages = null;
 	}
 
 }

@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterMachineUserMappingErrorCode;
+import io.mosip.kernel.masterdata.dto.RegCenterMachineUserReqDto;
+import io.mosip.kernel.masterdata.dto.RegCenterMachineUserResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.kernel.masterdata.dto.RequestDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
@@ -126,6 +130,84 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 							.getErrorMessage() + ExceptionUtils.parseException(e));
 		}
 		return registrationCenterMachineUserID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserService#
+	 * createOrUpdateRegistrationCentersMachineUserMapping(io.mosip.kernel.
+	 * masterdata.dto.RequestDto)
+	 */
+	@Override
+	public RegCenterMachineUserResponseDto createOrUpdateRegistrationCentersMachineUserMapping(
+			RegCenterMachineUserReqDto<RegistrationCenterUserMachineMappingDto> regCenterMachineUserReqDto) {
+		RegistrationCenterMachineUserID registrationCenterMachineUserID = null;
+		RegCenterMachineUserResponseDto regCenterMachineUserResponseDto = null;
+		List<RegistrationCenterMachineUserID> mapped = new ArrayList<>();
+		List<RegistrationCenterMachineUserID> notmapped = new ArrayList<>();
+		for (RegistrationCenterUserMachineMappingDto registrationCenterUserMachineMappingDto : regCenterMachineUserReqDto
+				.getRequest()) {
+			try {
+
+				Optional<RegistrationCenterUserMachine> registrationCenterUserMachine = registrationCenterMachineUserRepository
+						.findAllNondeletedMappings(registrationCenterUserMachineMappingDto.getCntrId(),
+								registrationCenterUserMachineMappingDto.getMachineId(),
+								registrationCenterUserMachineMappingDto.getUsrId());
+				if (!registrationCenterUserMachine.isPresent()) {
+					registrationCenterMachineUserID = createRegistrationCentersMachineUserMapping(
+							registrationCenterUserMachineMappingDto);
+					mapped.add(registrationCenterMachineUserID);
+
+				} else {
+					RegistrationCenterUserMachine centerUserMachine = registrationCenterUserMachine.get();
+					MetaDataUtils.setUpdateMetaData(registrationCenterUserMachineMappingDto, centerUserMachine, false);
+					registrationCenterMachineUserID = updateRegistrationCentersMachineUserMapping(centerUserMachine);
+					mapped.add(registrationCenterMachineUserID);
+				}
+			} catch (DataAccessLayerException | DataAccessException e) {
+				registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
+				registrationCenterMachineUserID.setCntrId(registrationCenterUserMachineMappingDto.getCntrId());
+				registrationCenterMachineUserID.setMachineId(registrationCenterUserMachineMappingDto.getMachineId());
+				registrationCenterMachineUserID.setUsrId(registrationCenterUserMachineMappingDto.getUsrId());
+				notmapped.add(registrationCenterMachineUserID);
+			}
+		}
+		regCenterMachineUserResponseDto = new RegCenterMachineUserResponseDto();
+		regCenterMachineUserResponseDto.setMapped(mapped);
+		regCenterMachineUserResponseDto.setNotmapped(notmapped);
+		return regCenterMachineUserResponseDto;
+
+	}
+
+	@Transactional
+	private RegistrationCenterMachineUserID updateRegistrationCentersMachineUserMapping(
+			RegistrationCenterUserMachine centerUserMachine) {
+		RegistrationCenterMachineUserID registrationCenterMachineUserID;
+		RegistrationCenterUserMachineHistory history = MapperUtils.map(centerUserMachine,
+				RegistrationCenterUserMachineHistory.class);
+		MapperUtils.setBaseFieldValue(centerUserMachine, history);
+		history.setEffectivetimes(centerUserMachine.getUpdatedDateTime());
+		registrationCenterMachineUserRepository.update(centerUserMachine);
+		registrationCenterUserMachineHistoryRepository.create(history);
+		registrationCenterMachineUserID = new RegistrationCenterMachineUserID();
+		registrationCenterMachineUserID.setCntrId(centerUserMachine.getCntrId());
+		registrationCenterMachineUserID.setMachineId(centerUserMachine.getMachineId());
+		registrationCenterMachineUserID.setUsrId(centerUserMachine.getUsrId());
+		return registrationCenterMachineUserID;
+	}
+
+	@Transactional
+	private RegistrationCenterMachineUserID createRegistrationCentersMachineUserMapping(
+			RegistrationCenterUserMachineMappingDto registrationCenterUserMachineMappingDto) {
+		RegistrationCenterUserMachine registrationCenterUserMachine = MetaDataUtils
+				.setCreateMetaData(registrationCenterUserMachineMappingDto, RegistrationCenterUserMachine.class);
+		RegistrationCenterUserMachineHistory registrationCenterUserMachineHistory = MetaDataUtils
+				.setCreateMetaData(registrationCenterUserMachineMappingDto, RegistrationCenterUserMachineHistory.class);
+		registrationCenterUserMachineHistory.setEffectivetimes(registrationCenterUserMachine.getCreatedDateTime());
+		registrationCenterMachineUserRepository.create(registrationCenterUserMachine);
+		registrationCenterUserMachineHistoryRepository.create(registrationCenterUserMachineHistory);
+		return MapperUtils.map(registrationCenterUserMachine, RegistrationCenterMachineUserID.class);
 	}
 
 }

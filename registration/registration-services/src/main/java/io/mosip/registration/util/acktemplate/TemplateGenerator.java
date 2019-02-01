@@ -395,7 +395,8 @@ public class TemplateGenerator extends BaseService {
 			}
 
 			templateValues.put(RegistrationConstants.TEMPLATE_DATE_LOCAL_LANG_LABEL, localProperties.getString("date"));
-			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL, "الوالد / الجارديان");
+			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL,
+					localProperties.getString("fullName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_FULL_NAME_LOCAL_LANG,
 					getValue(registration.getDemographicDTO().getDemographicInfoDTO().getIdentity().getFullName(),
 							localLanguageCode));
@@ -466,10 +467,19 @@ public class TemplateGenerator extends BaseService {
 							.mapToInt(capturedFinger -> capturedFinger.getSegmentedFingerprints().size()).sum(),
 					capturedIris.size() };
 
-			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
-					"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
-			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
-					"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+			if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+						"Iris (" + fingersAndIrises[1] + "), Face");
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
+						"Iris (" + fingersAndIrises[1] + "), Face");
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+				templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG,
+						"Fingers (" + fingersAndIrises[0] + "), Iris (" + fingersAndIrises[1] + "), Face");
+			}
+
 			templateValues.put(RegistrationConstants.TEMPLATE_BIOMETRICS_LOCAL_LANG_LABEL,
 					localProperties.getString("biometrics_captured"));
 

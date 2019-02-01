@@ -3,7 +3,6 @@ package io.mosip.registration.jobs;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
-import org.quartz.TriggerKey;
 import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,7 +41,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	private static final Logger LOGGER = AppConfig.getLogger(JobTriggerListener.class);
 
 	@Override
-	public void triggerMisfired(Trigger trigger) {
+	synchronized public void triggerMisfired(Trigger trigger) {
 
 		
 		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -74,7 +73,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	}
 
 	@Override
-	public void triggerFired(Trigger trigger, JobExecutionContext context) {
+	synchronized public void triggerFired(Trigger trigger, JobExecutionContext context) {
 
 		
 		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -97,7 +96,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	}
 
 	@Override
-	public void triggerComplete(Trigger trigger, JobExecutionContext context,
+	synchronized public void triggerComplete(Trigger trigger, JobExecutionContext context,
 			CompletedExecutionInstruction triggerInstructionCode) {
 
 		

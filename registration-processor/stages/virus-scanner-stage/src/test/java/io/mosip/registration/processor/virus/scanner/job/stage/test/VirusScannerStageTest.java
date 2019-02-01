@@ -216,15 +216,4 @@ public class VirusScannerStageTest {
 		assertTrue("Should be an internal error", object.getInternalError());
 	}
 
-    @Test
-    public void exceptionTest() throws Exception {
-
-        Mockito.when(virusScanner.scanFile(anyString())).thenThrow(new NullPointerException());
-
-        Mockito.when(decryptor.getScanResult()).thenThrow(new NullPointerException());
-        MessageDTO object = virusScannerStage.process(dto);
-
-        assertTrue(object.getInternalError());
-
-    }
 }

@@ -18,6 +18,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
@@ -30,11 +31,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 @Controller
 public class BiometricExceptionController extends BaseController implements Initializable {
+	
+	@FXML
+	private HBox exceptionBox;
 
 	@FXML
 	private ImageView leftEye;
@@ -91,6 +96,9 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private FingerPrintCaptureController fingerPrintCaptureController;
+	
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 
 	private List<String> fingerList = new ArrayList<>();
 	private List<String> irisList = new ArrayList<>();
@@ -117,6 +125,17 @@ public class BiometricExceptionController extends BaseController implements Init
 			homePageLbl.setVisible(false);
 			homePageImg.setVisible(false);
 			biometricExceptionLayout.getStyleClass().add("removeBorderStyle");
+		}
+		
+		if (applicationContext.getApplicationMap()
+				.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			exceptionBox.getChildren().forEach(bio -> {
+				if(bio.getId().equals("fingerBox")) {
+					bio.setVisible(false);
+					bio.setManaged(false);
+				} 
+			});
 		}
 	}
 
@@ -225,9 +244,8 @@ public class BiometricExceptionController extends BaseController implements Init
 				"Going to next page");
 
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
-			userOnboardController.loadFingerPrint();
 			exceptionDTOCreation();
-			fingerPrintCaptureController.clearImage();
+			userOnboardController.loadFingerPrint();			
 		} else {
 			exceptionDTOCreation();
 			if (fingerList.isEmpty() && irisList.isEmpty()) {
@@ -256,7 +274,15 @@ public class BiometricExceptionController extends BaseController implements Init
 				} else {
 					fingerPrintCaptureController.clearImage();
 					registrationController.toggleBiometricExceptionVisibility(false);
-					registrationController.toggleFingerprintCaptureVisibility(true);
+					if (applicationContext.getApplicationMap()
+							.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)) {
+						
+						irisCaptureController.clearIrisBasedOnExceptions();
+						registrationController.toggleIrisCaptureVisibility(true);
+					} else {
+						registrationController.toggleFingerprintCaptureVisibility(true);
+					}
 				}
 			}
 		}

@@ -51,8 +51,6 @@ public class Registration extends RegistrationCommonFields {
 	private String clientStatusComments;
 	@Column(name = "SERVER_STATUS_COMMENT")
 	private String serverStatusComments;
-	@Column(name = "INDV_NAME")
-	private String individualName;
 	@Column(name = "REG_USR_ID")
 	private String regUsrId;
 	@Column(name = "REGCNTR_ID")
@@ -196,14 +194,6 @@ public class Registration extends RegistrationCommonFields {
 
 	public void setServerStatusComments(String serverStatusComments) {
 		this.serverStatusComments = serverStatusComments;
-	}
-
-	public String getIndividualName() {
-		return individualName;
-	}
-
-	public void setIndividualName(String individualName) {
-		this.individualName = individualName;
 	}
 
 	public String getRegUsrId() {

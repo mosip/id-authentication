@@ -49,9 +49,9 @@ public class RestServiceException extends IdAuthenticationAppException {
 	/**
 	 * Instantiates a new rest service exception.
 	 *
-	 * @param exceptionConstant the exception constant
+	 * @param exceptionConstant    the exception constant
 	 * @param responseBodyAsString the response body as string
-	 * @param responseBody      the response body
+	 * @param responseBody         the response body
 	 */
 	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, String responseBodyAsString,
 			Object responseBody) {
@@ -66,11 +66,11 @@ public class RestServiceException extends IdAuthenticationAppException {
 	 * @return the response body
 	 */
 	public Optional<Object> getResponseBody() {
-		return Optional.of(responseBody);
+		return Optional.ofNullable(responseBody);
 	}
-	
+
 	public Optional<String> getResponseBodyAsString() {
-		return Optional.of(responseBodyAsString);
+		return Optional.ofNullable(responseBodyAsString);
 	}
 
 }

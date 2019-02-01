@@ -325,7 +325,15 @@ public class IrisCaptureController extends BaseController {
 
 			if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)) {
 				if (validateIris()) {
-					loadPage(RegistrationConstants.USER_ONBOARD_FP);
+					
+					if (applicationContext.getApplicationMap()
+							.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)) {
+						
+						loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
+					} else {
+						loadPage(RegistrationConstants.USER_ONBOARD_FP);
+					}
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -351,7 +359,23 @@ public class IrisCaptureController extends BaseController {
 				} else {
 					if (validateIris() && validateIrisLocalDedup()) {
 						registrationController.toggleIrisCaptureVisibility(false);
-						registrationController.toggleFingerprintCaptureVisibility(true);
+						
+						if (applicationContext.getApplicationMap()
+								.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+								.equals(RegistrationConstants.ENABLE)) {
+							
+							if ((boolean) SessionContext.getInstance().getUserContext().getUserMap()
+									.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
+								registrationController.toggleFingerprintCaptureVisibility(false);
+								biometricExceptionController.setExceptionImage();
+								registrationController.toggleBiometricExceptionVisibility(true);
+							} else {
+								registrationController.getDemoGraphicTitlePane().setExpanded(true);
+							}
+							
+						} else {
+							registrationController.toggleFingerprintCaptureVisibility(true);
+						}
 					}
 				}
 			}
