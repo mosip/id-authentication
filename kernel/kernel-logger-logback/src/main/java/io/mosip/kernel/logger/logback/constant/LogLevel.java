@@ -2,7 +2,7 @@ package io.mosip.kernel.logger.logback.constant;
 
 import lombok.Getter;
 
-/** Log level for logger
+/** Log level for logger contains {@link #DEBUG}  {@link #ERROR}  {@link #TRACE}  {@link #INFO}  {@link #WARN}
  * 
  * @author Urvil Joshi
  *

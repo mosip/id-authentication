@@ -60,6 +60,8 @@ public class Logfactory {
 	 *            configurations
 	 * @param clazz
 	 *            reference of the calling class
+	 * @param logLevel
+	 * 			  {@link LogLevel} more logger	           
 	 * @return configured {@link Logger} instance
 	 */
 	public static Logger getDefaultConsoleLogger(ConsoleAppender mosipConsoleAppender, Class<?> clazz,LogLevel logLevel) {
@@ -90,6 +92,8 @@ public class Logfactory {
 	 *            configurations
 	 * @param name
 	 *            name of the calling class
+	 * @param logLevel
+	 * 			  {@link LogLevel} more logger	             
 	 * @return configured {@link Logger} instance
 	 */
 	public static Logger getDefaultConsoleLogger(ConsoleAppender mosipConsoleAppender, String name,LogLevel logLevel) {
@@ -119,6 +123,8 @@ public class Logfactory {
 	 *            configurations
 	 * @param clazz
 	 *            reference of the calling class
+	 * @param logLevel
+	 * 			  {@link LogLevel} more logger	              
 	 * @return configured {@link Logger} instance
 	 */
 	public static Logger getDefaultFileLogger(FileAppender mosipFileAppender, Class<?> clazz,LogLevel logLevel) {
@@ -147,6 +153,8 @@ public class Logfactory {
 	 *            configurations
 	 * @param name
 	 *            name of the calling class
+	 * @param logLevel
+	 * 			  {@link LogLevel} more logger	             
 	 * @return configured {@link Logger} instance
 	 */
 	public static Logger getDefaultFileLogger(FileAppender mosipFileAppender, String name,LogLevel logLevel) {
@@ -176,6 +184,8 @@ public class Logfactory {
 	 *            configurations
 	 * @param clazz
 	 *            reference of the calling class
+	 * @param logLevel
+	 * 			  {@link LogLevel} more logger	             
 	 * @return configured {@link Logger} instance
 	 */
 	public static Logger getDefaultRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
@@ -206,6 +216,8 @@ public class Logfactory {
 	 *            configurations
 	 * @param name
 	 *            name of the calling class
+	 * @param logLevel
+	 * 			  {@link LogLevel} more logger	              
 	 * @return configured {@link Logger} instance
 	 */
 	public static Logger getDefaultRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
