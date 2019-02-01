@@ -232,7 +232,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				comment = isStatus ? "Pin  Authenticated Success" : "Pin  Authenticated Failed";
 				logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, "Pin Authentication  status :" + statusInfo);
 				auditHelper.audit(AuditModules.PIN_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, authRequestDTO.getIdvId(), idType, desc);
-				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.PIN_AUTH);
+				idAuthService.saveAutnTxn(idvId, idvIdType, reqTime, txnId, status, comment, RequestType.STATIC_PIN_AUTH);
 			}
 		}		
 	}

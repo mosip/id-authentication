@@ -28,6 +28,9 @@ public enum AuditModules {
 	/** The e KY C AUTH. */
 	EKYC_AUTH("IDA-MOD-107"),
 	
+	/** The Static Pin Storage */
+	STATIC_PIN_STORAGE("IDA-MOD-108"),
+	
 	/** The otp request. */
 	OTP_REQUEST("IDA-MOD-110"),
 	
