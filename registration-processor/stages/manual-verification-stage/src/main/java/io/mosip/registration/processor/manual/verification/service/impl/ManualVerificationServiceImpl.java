@@ -69,9 +69,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
-
-	/*
-	 * (non-Javadoc)
+	
+	/*	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.processor.manual.adjudication.service.
 	 * ManualAdjudicationService#assignStatus(io.mosip.registration.processor.manual

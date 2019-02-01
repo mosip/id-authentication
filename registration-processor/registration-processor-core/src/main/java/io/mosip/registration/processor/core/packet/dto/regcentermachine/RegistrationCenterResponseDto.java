@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 /**
  * Instantiates a new registration center response dto.
  *
- * @param registrationCenters the registration centers
+ * @param registrationCenters
+ *            the registration centers
  */
 @AllArgsConstructor
 
@@ -23,7 +24,10 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class RegistrationCenterResponseDto {
-	
+
 	/** The registration centers. */
 	private List<RegistrationCenterDto> registrationCentersHistory;
+
+	private List<ErrorDTO> errors;
+
 }
