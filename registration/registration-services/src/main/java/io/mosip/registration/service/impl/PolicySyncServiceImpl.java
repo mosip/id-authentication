@@ -137,7 +137,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 		return response;
 	}
 
-	public void getPublicKey(LocalDateTime timeStamp, String referenceId)
+	synchronized public void getPublicKey(LocalDateTime timeStamp, String referenceId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 
 		KeyStore keyStore = new KeyStore();
