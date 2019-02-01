@@ -12,7 +12,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +22,12 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
+import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
+import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
@@ -37,12 +42,12 @@ import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.dto.demographic.Identity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.PreRegZipHandlingServiceImpl;
 import io.mosip.registration.util.kernal.RIDGenerator;
 
-@Ignore
 public class PreRegZipHandlingServiceTest {
 
 	@Rule
@@ -50,6 +55,9 @@ public class PreRegZipHandlingServiceTest {
 
 	@Mock
 	private KeyGenerator keyGenerator;
+
+	@Mock
+	private JsonValidator jsonValidator;
 
 	@InjectMocks
 	private PreRegZipHandlingServiceImpl preRegZipHandlingServiceImpl;
@@ -63,35 +71,31 @@ public class PreRegZipHandlingServiceTest {
 	@BeforeClass
 	public static void initialize() throws IOException, java.io.IOException {
 		createRegistrationDTOObject();
-		URL url = PreRegZipHandlingServiceTest.class.getResource("/97285429827016.zip");
+		URL url = PreRegZipHandlingServiceTest.class.getResource("/preRegSample.zip");
 		File packetZipFile = new File(url.getFile());
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
-		// URL url =
-		// PreRegZipHandlingServiceTest.class.getResource("/89149679063970zip");
-		// File packetZipFile = new File(url.getFile());
-		// BufferedReader bufferedReader = new BufferedReader(new
-		// FileReader(packetZipFile));
-		// String byteArrayContent = bufferedReader.readLine();
-		//
-		// String[] byteValues = byteArrayContent.substring(1, byteArrayContent.length()
-		// - 1).split(",");
-		// preRegPacket = new byte[byteValues.length];
-		//
-		// for (int i = 0, len = preRegPacket.length; i < len; i++) {
-		// preRegPacket[i] = Byte.parseByte(byteValues[i].trim());
-		// }
-		// bufferedReader.close();
 
 		mosipSecurityMethod = MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING;
 
 	}
 
 	@Test
-	public void extractPreRegZipFileTest() throws RegBaseCheckedException, IOException {
-
+	public void extractPreRegZipFileTest() throws RegBaseCheckedException, IOException,
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new ValidationReport());
 		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 		assertNotNull(registrationDTO);
+
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void extractPreRegZipFileTestNegative() throws RegBaseCheckedException, IOException,
+			JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+		Mockito.when(jsonValidator.validateJson(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new JsonValidationProcessingException("", ""));
+		preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
 
 	}
 
@@ -168,6 +172,8 @@ public class PreRegZipHandlingServiceTest {
 		demographicDTO.setApplicantDocumentDTO(applicantDocumentDTO);
 
 		DemographicInfoDTO demographicInfoDTOLocal = new DemographicInfoDTO();
+		Identity identity = new Identity();
+		demographicInfoDTOLocal.setIdentity(identity);
 
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTOLocal);
 		registrationDTO.setDemographicDTO(demographicDTO);

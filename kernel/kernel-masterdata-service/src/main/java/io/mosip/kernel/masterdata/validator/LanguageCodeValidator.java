@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +29,17 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 	@Autowired
 	private RestTemplate restTemplate;
 
-	/**
-	 * Environment instance
-	 */
-	@Value("${mosip.kernel.syncdata-service-globalconfigs-url}")
-	private String globalconfigsUrl;
+	// @Value("${mosip.kernel.syncdata-service-configs-url}")
+	// private String configsUrl;
 
-	@Value("${mosip.kernel.supported-languages}")
+	//
+	// @Value("${mosip.kernel.global-config-name-key}")
+	// private String globalConfigName;
+
+	// @Value("${mosip.kernel.supported-languages-key}")
+	// private String supportedLanguages;
+
+	@Value("${mosip.supported-languages}")
 	private String supportedLanguages;
 
 	/*
@@ -51,20 +54,37 @@ public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode,
 			return false;
 		} else {
 			try {
-				String jsonString = restTemplate.getForObject(globalconfigsUrl, String.class);
-				if (!EmptyCheckUtils.isNullEmpty(jsonString)) {
-					JSONArray jsonArray = new JSONObject(jsonString).getJSONArray(supportedLanguages);
-					for (int i = 0; i < jsonArray.length(); i++) {
-						if (langCode.equals(jsonArray.getString(i))) {
-							return true;
-						}
+				String[] langArray = supportedLanguages.split(",");
+				for (String string : langArray) {
+					if (langCode.equals(string)) {
+						return true;
 					}
 				}
-			} catch (JSONException | RestClientException e) {
+			} catch (RestClientException e) {
 				throw new RequestException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorCode(),
 						ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorMessage() + " " + e.getMessage());
 			}
 			return false;
 		}
 	}
+
+	/*
+	 * @Override public boolean isValid(String langCode, ConstraintValidatorContext
+	 * context) { if (EmptyCheckUtils.isNullEmpty(langCode) ||
+	 * langCode.trim().length() > 3) { return false; } else { try { String
+	 * configString = restTemplate.getForObject(configsUrl, String.class); if
+	 * (!EmptyCheckUtils.isNullEmpty(configString)) { JSONObject config = new
+	 * JSONObject(configString); JSONObject globalConfig =
+	 * config.getJSONObject(globalConfigName); if
+	 * (!EmptyCheckUtils.isNullEmpty(globalConfig)) { String supportedLanguage =
+	 * (String) globalConfig.get(supportedLanguages); String[] langArray =
+	 * supportedLanguage.split(","); for (String string : langArray) { if
+	 * (langCode.equals(string)) { return true; } } } }
+	 * 
+	 * } catch (JSONException | RestClientException e) { throw new
+	 * RequestException(ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.
+	 * getErrorCode(),
+	 * ValidLangCodeErrorCode.LANG_CODE_VALIDATION_EXCEPTION.getErrorMessage() + " "
+	 * + e.getMessage()); } return false; } }
+	 */
 }

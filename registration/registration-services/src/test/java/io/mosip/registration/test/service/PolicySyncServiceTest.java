@@ -1,5 +1,7 @@
 package io.mosip.registration.test.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -70,15 +72,14 @@ public class PolicySyncServiceTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		ReflectionTestUtils.setField(policySyncServiceImpl, "url",
 				"https://integ.mosip.io/keymanager/v1.0/publickey/{applicationId}");
-		policySyncServiceImpl.fetchPolicy("centerId");
-
+		assertNotNull(policySyncServiceImpl.fetchPolicy());
 	}
 
 	@Test
 	public void netWorkAvailable() {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
-		policySyncServiceImpl.fetchPolicy("centerId");
+		assertNotNull(policySyncServiceImpl.fetchPolicy());
 
 	}
 
@@ -94,7 +95,8 @@ public class PolicySyncServiceTest {
 		KeyStore keyStore = new KeyStore();
 		keyStore.setValidTillDtimes(timestamp);
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
-		policySyncServiceImpl.fetchPolicy("centerId");
+
+		assertNotNull(policySyncServiceImpl.fetchPolicy());
 
 	}
 
@@ -114,8 +116,8 @@ public class PolicySyncServiceTest {
 
 		Mockito.when(policySyncDAO.findByMaxExpireTime()).thenReturn(keyStore);
 
-		policySyncServiceImpl.fetchPolicy("centerId");
+		assertNotNull(policySyncServiceImpl.fetchPolicy());
 
 	}
-  
+
 }

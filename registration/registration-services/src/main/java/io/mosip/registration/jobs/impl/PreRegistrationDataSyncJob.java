@@ -1,5 +1,7 @@
 package io.mosip.registration.jobs.impl;
 
+import java.util.LinkedList;
+
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
@@ -60,6 +63,12 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					baseUncheckedException.getMessage());
 			throw baseUncheckedException;
+		} catch (RuntimeException runtimeException) {
+			this.responseDTO = new ResponseDTO();
+			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+			LinkedList<ErrorResponseDTO> errorResponsesList = new LinkedList<>();
+			errorResponsesList.add(errorResponseDTO);
+			responseDTO.setErrorResponseDTOs(errorResponsesList);
 		}
 
 		LOGGER.info(RegistrationConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

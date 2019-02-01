@@ -10,6 +10,7 @@ package io.mosip.registration.dto;
 public class LoginUserDTO {
 
 	private String userId;
+	
 	private String password;
 
 	/**
