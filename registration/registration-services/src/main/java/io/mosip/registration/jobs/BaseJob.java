@@ -171,7 +171,7 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	}
 
-	public String loadContext(JobExecutionContext context) {
+	synchronized public String loadContext(JobExecutionContext context) {
 		try {
 
 			/*

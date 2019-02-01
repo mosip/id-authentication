@@ -1,7 +1,9 @@
 package io.mosip.registration.constants;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -456,9 +458,13 @@ public class RegistrationConstants {
 		String[] packetStatus = { "SYNCED", "EXPORTED", "resend", "E" };
 		return Arrays.asList(packetStatus);
 	}
+	
 	public static final String PACKET_UPLOAD = "packet_upload";
 	public static final String PACKET_DUPLICATE = "duplicate";
 	
+	public static final Set<String> getRoles() {
+		return new HashSet<>(Arrays.asList("*"));
+	}
 
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
