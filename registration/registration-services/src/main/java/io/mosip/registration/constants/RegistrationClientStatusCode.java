@@ -21,7 +21,8 @@ public enum RegistrationClientStatusCode {
 	APPROVED("APPROVED"), 
 	REJECTED("REJECTED"), 
 	ON_HOLD("ON_HOLD"),
-	RE_REGISTER("RE_REGISTER_APPROVED"); 
+	RE_REGISTER("RE_REGISTER_APPROVED"),
+	EXPORT("EXPORTED");
 
 	/**
 	 * @param code

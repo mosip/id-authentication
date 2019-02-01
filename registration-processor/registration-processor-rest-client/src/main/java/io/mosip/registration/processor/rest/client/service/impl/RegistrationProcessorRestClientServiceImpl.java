@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.registration.processor.core.code.ApiName;
@@ -55,7 +54,6 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		if (apiHostIpPort != null) {
 			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 
-
 			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
 				for (String segment : pathsegments) {
 					if (!((segment == null) || (("").equals(segment)))) {
@@ -78,10 +76,10 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			try {
 				obj = restApiClient.getApi(builder.toUriString(), responseType);
 
-			} catch (ResourceAccessException e) {
+			} catch (Exception e) {
 
 				throw new ApisResourceAccessException(
-						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getCode());
+						PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getCode(), e);
 
 			}
 		}
@@ -130,14 +128,17 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		return obj;
 	}
 
-	
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService#postApi(io.mosip.registration.processor.core.code.ApiName, java.util.List, java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.restclient.
+	 * RegistrationProcessorRestClientService#postApi(io.mosip.registration.
+	 * processor.core.code.ApiName, java.util.List, java.lang.String,
+	 * java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	@Override
-	public Object postApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue, Object requestedData,
-			Class<?> responseType) throws ApisResourceAccessException {
+	public Object postApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
+			Object requestedData, Class<?> responseType) throws ApisResourceAccessException {
 
 		Object obj = null;
 		String apiHostIpPort = env.getProperty(apiName.name());
@@ -146,7 +147,6 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 		if (builder != null) {
 
-			
 			if (!((pathsegments == null) || (pathsegments.isEmpty()))) {
 				for (String segment : pathsegments) {
 					if (!((segment == null) || (("").equals(segment)))) {
@@ -178,7 +178,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	}
 
 	private boolean checkNull(String queryParamName) {
-		
+
 		return ((queryParamName == null) || (("").equals(queryParamName)));
 	}
 

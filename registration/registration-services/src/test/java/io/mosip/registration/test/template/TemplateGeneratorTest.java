@@ -10,11 +10,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +59,7 @@ public class TemplateGeneratorTest {
 	
 	@Mock
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
-
+	
 	ResourceBundle dummyResourceBundle = new ResourceBundle() {
 		@Override
 		protected Object handleGetObject(String key) {
@@ -84,10 +87,15 @@ public class TemplateGeneratorTest {
 		when(ImageIO.read(
 				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH)))
 						.thenReturn(image);
+		
+		Map<String,Object> applicationMap =new HashMap<>();
+		applicationMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.ENABLE);
+		
 		when(applicationContext.getLocalLanguageProperty()).thenReturn(dummyResourceBundle);
 		when(applicationContext.getApplicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);
+		when(applicationContext.getApplicationMap()).thenReturn(applicationMap);
 		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
+		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);	
 		assertNotNull(response.getSuccessResponseDTO());
 	}
 

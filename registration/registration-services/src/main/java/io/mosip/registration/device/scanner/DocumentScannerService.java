@@ -40,6 +40,24 @@ public interface DocumentScannerService {
 	 */
 	byte[] asImage(List<BufferedImage> bufferedImages) throws IOException;
 
+	/**
+	 * This method is to get the image file in byte array from the given
+	 * BufferedImage
+	 * 
+	 * @param bufferedImage
+	 * @return byte[]
+	 * @throws IOException
+	 */
 	byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException;
+
+	/**
+	 * This method is used to convert the pdf file into images
+	 * 
+	 * @param pdfBytes
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException;
 
 }

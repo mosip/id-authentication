@@ -14,6 +14,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -48,14 +49,12 @@ public class RestClientUtil {
 	 * 
 	 * @param requestDto
 	 * @return ResponseEntity<?> response entity obtained from api
-	 * @throws HttpClientErrorException
-	 *             when client error exception from server
-	 * @throws HttpServerErrorException
-	 *             when server exception from server
+	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object invoke(RequestHTTPDTO requestHTTPDTO)
 			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
-		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method called");
 
 		ResponseEntity<?> responseEntity = null;
@@ -79,10 +78,52 @@ public class RestClientUtil {
 			responseBody = responseEntity.getBody();
 		}
 
-		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 				"invoke method ended");
 
 		return responseBody;
+	}
+
+	/**
+	 * Actual exchange using rest template.
+	 *
+	 * @param requestHTTPDTO the request HTTPDTO
+	 * @return ResponseEntity<?> response entity obtained from api
+	 * @throws HttpClientErrorException when client error exception from server
+	 * @throws HttpServerErrorException when server exception from server
+	 * @throws SocketTimeoutException   the socket timeout exception
+	 * @throws ResourceAccessException  the resource access exception
+	 */
+	public HttpHeaders invokeHeaders(RequestHTTPDTO requestHTTPDTO)
+			throws HttpClientErrorException, HttpServerErrorException, SocketTimeoutException, ResourceAccessException {
+		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"invoke method called");
+
+		ResponseEntity<?> responseEntity = null;
+		HttpHeaders responseHeaders = null;
+		restTemplate.setRequestFactory(requestHTTPDTO.getSimpleClientHttpRequestFactory());
+		try {
+			if (requestHTTPDTO.getUri().toString().contains("https"))
+				turnOffSslChecking();
+		} catch (KeyManagementException keyManagementException) {
+			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					keyManagementException.getMessage());
+		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					noSuchAlgorithmException.getMessage());
+		}
+
+		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
+				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
+
+		if (responseEntity != null && responseEntity.hasBody()) {
+			responseHeaders = responseEntity.getHeaders();
+		}
+
+		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+				"invoke method ended");
+
+		return responseHeaders;
 	}
 
 	public static void turnOffSslChecking() throws NoSuchAlgorithmException, KeyManagementException {

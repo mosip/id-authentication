@@ -83,7 +83,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 import io.mosip.registration.util.dataprovider.DataProvider;
-import io.mosip.registration.util.kernal.RIDGenerator;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -499,7 +498,8 @@ public class RegistrationController extends BaseController {
 			isChild = false;
 			toggleFunction();
 			toggleFunctionForBiometricException();
-			ageFieldValidations();
+			ageFieldValidations(ageField);
+			ageFieldValidations(ageFieldLocalLanguage);
 			listenerOnFields();
 			loadLocalLanguageFields();
 			loadKeyboard();
@@ -765,6 +765,7 @@ public class RegistrationController extends BaseController {
 			}
 		}
 		createRegistrationDTOObject(RegistrationConstants.PACKET_TYPE_NEW);
+		documentScanController.clearDocSection();
 		ResponseDTO responseDTO = preRegistrationDataSyncService.getPreRegistration(preRegId);
 
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
@@ -900,6 +901,8 @@ public class RegistrationController extends BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		try {
+			/*clear the doc preview section*/
+			documentScanController.initializePreviewSection();
 			auditFactory.audit(AuditEvent.SAVE_DETAIL_TO_DTO, Components.REGISTRATION_CONTROLLER,
 					"Saving the details to respected DTO", SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
@@ -946,7 +949,14 @@ public class RegistrationController extends BaseController {
 					toggleFingerprintCaptureVisibility(false);
 				} else {
 					biometricException.setVisible(false);
-					toggleFingerprintCaptureVisibility(true);
+					if (applicationContext.getApplicationMap()
+							.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+							.equals(RegistrationConstants.ENABLE)) {
+						toggleFingerprintCaptureVisibility(false);
+						toggleIrisCaptureVisibility(true);
+					} else {
+						toggleFingerprintCaptureVisibility(true);
+					}
 				}
 				biometricTitlePane.setExpanded(true);
 
@@ -1362,7 +1372,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * To restrict the user not to enter any values other than integer values.
 	 */
-	private void ageFieldValidations() {
+	private void ageFieldValidations(TextField ageField) {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
@@ -1446,6 +1456,8 @@ public class RegistrationController extends BaseController {
 					} else {
 						toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
 						toggleLabel2.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
+						toggleLabel1LocalLanguage.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
+						toggleLabel2LocalLanguage.setId(RegistrationConstants.SECOND_TOGGLE_LABEL);
 						ageField.clear();
 						ageFieldLocalLanguage.clear();
 						childSpecificFields.setVisible(false);
@@ -1502,6 +1514,7 @@ public class RegistrationController extends BaseController {
 		List<String> excludedIds = new ArrayList<String>();
 		excludedIds.add("preRegistrationId");
 		excludedIds.add("virtualKeyboard");
+		excludedIds.add("docPageNumber");
 
 		validation.setChild(isChild);
 		validation.setValidationMessage();
@@ -1807,8 +1820,13 @@ public class RegistrationController extends BaseController {
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 
 		// Set RID
-		registrationDTO.setRegistrationId(ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
-				registrationMetaDataDTO.getMachineId()));
+		String registrtaionID = ridGeneratorImpl.generateId(registrationMetaDataDTO.getCenterId(),
+				registrationMetaDataDTO.getMachineId());
+		
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Registrtaion Started for RID  : [ " + registrtaionID + " ] ");
+		
+		registrationDTO.setRegistrationId(registrtaionID);
 		// Put the RegistrationDTO object to SessionContext Map
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_DATA, registrationDTO);
 	}

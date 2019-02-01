@@ -34,10 +34,6 @@ public class SecurityFilter extends GenericFilterBean {
 			throws ServletException, IOException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-
-		// TO DO: Security check and context set
-
-		// ********Mock Context*********
 		try {
 			List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList("1001,1002");
 			AuthUser authUser = new AuthUser("defaultadmin@mosip.io", "Mosip Admin", "[PROTECTED]", authorities);
@@ -46,7 +42,6 @@ public class SecurityFilter extends GenericFilterBean {
 		} catch (Exception e) {
 			SFLOGGER.error(e.getMessage());
 		}
-		// *************************
 		filterChain.doFilter(request, response);
 	}
 }

@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -25,6 +26,9 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -34,13 +38,18 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.packetvalidator.ExceptionJSONInfoDTO;
+import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
+import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -83,6 +92,9 @@ public class PacketValidatorStageTest {
 
 	@Mock
 	CheckSumValidation checkSumValidation = new CheckSumValidation(filesystemCephAdapterImpl, registrationStatusDto);
+
+	@Mock
+	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -166,8 +178,13 @@ public class PacketValidatorStageTest {
 		FieldValue isVerified = new FieldValue();
 		isVerified.setLabel("isVerified");
 		isVerified.setValue("Verified");
+		
+		FieldValue preRegistrationId = new FieldValue();
+		preRegistrationId.setLabel("preRegistrationId");
+		preRegistrationId.setValue("2018701130000410092018110736");
+		
 
-		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified));
+		identity.setMetaData(Arrays.asList(registrationType, applicantType, isVerified,preRegistrationId));
 
 		Document documentPob = new Document();
 		documentPob.setDocumentCategory("PROOFOFDATEOFBIRTH");
@@ -240,6 +257,21 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
+		MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDTO = new MainResponseDTO<>();
+		ReverseDatasyncReponseDTO reverseDatasyncReponseDTO = new ReverseDatasyncReponseDTO();
+		reverseDatasyncReponseDTO.setAlreadyStoredPreRegIds("2");
+		reverseDatasyncReponseDTO.setCountOfStoredPreRegIds("2");
+		reverseDatasyncReponseDTO.setTransactionId("07e3cea5-251d-11e9-a794-af3f5a85c414");
+		mainResponseDTO.setErr(null);
+		mainResponseDTO.setStatus(true);
+		mainResponseDTO.setResTime("2019-01-31T05:57:02.816Z");
+		mainResponseDTO.setResponse(reverseDatasyncReponseDTO);
+		List<String> preRegIds = new ArrayList<>();
+		preRegIds.add("12345678");
+		preRegIds.add("123456789");
+		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
+		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
+				Matchers.any())).thenReturn(mainResponseDTO);
 
 	}
 
@@ -591,4 +623,71 @@ public class PacketValidatorStageTest {
 
 	}
 
+	@Test
+	public void testPreRegIdsAreNull() {
+		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+
+	}
+
+	@Test
+	public void reverseDataSyncHttpClientErrorException() throws ApisResourceAccessException {
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Invalid request");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
+		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any()))
+				.thenThrow(apisResourceAccessException);
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+
+	}
+
+	@Test
+	public void reverseDataSyncServerErrorExceptionTest() throws ApisResourceAccessException {
+
+		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
+		HttpServerErrorException httpServerErrorException = new HttpServerErrorException(
+				HttpStatus.INTERNAL_SERVER_ERROR,
+				"MainResponseDTO(err=ExceptionJSONInfoDTO(errorCode=PRG_CORE_REQ_001, message=INVALID_REQUEST_ID), status=false, resTime=2019-01-30T09:42:24.441Z, response=null)");
+		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpServerErrorException);
+		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any()))
+				.thenThrow(apisResourceAccessException);
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+
+	}
+
+	@Test
+	public void reverseDataSyncErrorTest() throws ApisResourceAccessException {
+		MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDTO = new MainResponseDTO<>();
+		ExceptionJSONInfoDTO exceptionJsonInfoDto = new ExceptionJSONInfoDTO();
+		exceptionJsonInfoDto.setErrorCode("PRG_CORE_REQ_001");
+		exceptionJsonInfoDto.setMessage("INVALID_REQUEST_ID");
+		mainResponseDTO.setErr(exceptionJsonInfoDto);
+		mainResponseDTO.setStatus(true);
+		mainResponseDTO.setResTime("2019-01-31T05:57:02.816Z");
+		mainResponseDTO.setResponse(null);
+		List<String> preRegIds = new ArrayList<>();
+		preRegIds.add("12345678");
+		preRegIds.add("123456789");
+		//Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
+		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
+				Matchers.any())).thenReturn(mainResponseDTO);
+
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+	}
+
+	@Test
+	public void apiResourceExceptionTest() throws ApisResourceAccessException {
+		ApisResourceAccessException apisResourceAccessException = new ApisResourceAccessException(
+				"Packet Decryption failure");
+		Mockito.when(restClientService.postApi(any(), any(), any(), any(), any()))
+				.thenThrow(apisResourceAccessException);
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+
+	}
 }

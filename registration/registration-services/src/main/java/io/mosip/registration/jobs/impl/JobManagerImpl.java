@@ -17,39 +17,35 @@ import io.mosip.registration.jobs.JobManager;
 
 @Component
 public class JobManagerImpl implements JobManager {
-	
+
 	/**
 	 * LOGGER for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(JobManagerImpl.class);
 
-
-	public String getJobId(JobExecutionContext context) {
+	synchronized public String getJobId(JobExecutionContext context) {
 
 		return getJobId(context.getJobDetail());
 	}
 
-	public String getJobId(JobDetail jobDetail) {
+	synchronized public String getJobId(JobDetail jobDetail) {
 
 		return jobDetail.getKey().getName();
 	}
 
 	@Override
-	public String getJobId(Trigger trigger) {
-		JobDetail jobDetail = (JobDetail) trigger.getJobDataMap().get("jobDetail");
-		return getJobId(jobDetail);
+	synchronized public String getJobId(Trigger trigger) {
+		return getJobId((JobDetail) trigger.getJobDataMap().get(RegistrationConstants.JOB_DETAIL));
 	}
 
 	@Override
-	public Map<String, SyncJobDef> getChildJobs(final JobExecutionContext context) {
+	synchronized public Map<String, SyncJobDef> getChildJobs(final JobExecutionContext context) {
 
 		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
 
-		JobDetail jobDetail = context.getJobDetail();
-
 		// Get Job Map
-		JobDataMap jobDataMap = jobDetail.getJobDataMap();
+		JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
 		Map<String, SyncJobDef> syncjobMap = new HashMap<>();
 
@@ -60,7 +56,7 @@ public class JobManagerImpl implements JobManager {
 				SyncJobDef syncJob = (SyncJobDef) value;
 				syncjobMap.put(syncJob.getId(), syncJob);
 			}
-			
+
 		});
 
 		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

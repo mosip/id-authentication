@@ -1,5 +1,6 @@
 package io.mosip.registration.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +16,6 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-
 public interface RegAuditRepository extends BaseRepository<Audit, Long> {
 
 	/**
@@ -36,4 +36,25 @@ public interface RegAuditRepository extends BaseRepository<Audit, Long> {
 	@Modifying
 	@Query(value = "UPDATE AUDIT.APP_AUDIT_LOG a SET a.IS_SYNC = true WHERE a.LOG_ID IN :audits", nativeQuery = true)
 	int updateSyncAudits(@Param("audits") List<String> auditUUIDs);
+	
+	void deleteAllInBatchBycreatedAtBetween(LocalDateTime auditLogFromDtimes,LocalDateTime auditLogToDtimes);
+
+	/**
+	 * Retrieves the {@link Audit} which are logged after the input parameter
+	 * auditStartTime. The returned list is ordered by created time.
+	 * 
+	 * @param auditTimeAfter
+	 *            the {@link Audit} will be fetched after this {@link LocalDateTime}
+	 * @return returns the {@link Audit} logged after the given
+	 *         {@link LocalDateTime}
+	 */
+	List<Audit> findByCreatedAtGreaterThanOrderByCreatedAtAsc(LocalDateTime auditTimeAfter);
+
+	/**
+	 * Retrieves the {@link Audit} ordered by created time
+	 * 
+	 * @return returns the {@link Audit}
+	 */
+	List<Audit> findAllByOrderByCreatedAtAsc();
+
 }

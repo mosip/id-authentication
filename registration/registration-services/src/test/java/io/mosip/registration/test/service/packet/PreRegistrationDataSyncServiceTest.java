@@ -1,6 +1,5 @@
 package io.mosip.registration.test.service.packet;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +47,6 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class })
-@Ignore
 public class PreRegistrationDataSyncServiceTest {
 
 	@Rule
@@ -86,7 +83,7 @@ public class PreRegistrationDataSyncServiceTest {
 	@BeforeClass
 	public static void initialize() throws IOException {
 
-		URL url = PreRegistrationDataSyncServiceImpl.class.getResource("/97285429827016.zip");
+		URL url = PreRegistrationDataSyncServiceImpl.class.getResource("/preRegSample.zip");
 		File packetZipFile = new File(url.getFile());
 		preRegPacket = FileUtils.readFileToByteArray(packetZipFile);
 
@@ -95,21 +92,19 @@ public class PreRegistrationDataSyncServiceTest {
 	}
 
 	@Test
-	@Ignore
 	public void getPreRegistrationsTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
 
-		MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = new MainResponseDTO<>();
-		LinkedHashMap<String, Object> responseData = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> postResponse = new LinkedHashMap<>();
 
-		mainResponseDTO.setResponse(responseData);
+		LinkedHashMap<String, Object> responseData = new LinkedHashMap<>();
 
 		HashMap<String, String> map = new HashMap<>();
 		map.put("70694681371453", "2019-01-17T05:42:35.747Z");
 		responseData.put("preRegistrationIds", map);
-		mainResponseDTO.setResponse(responseData);
 
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any())).thenReturn(mainResponseDTO);
+		postResponse.put("response", responseData);
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any())).thenReturn(postResponse);
 		// Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
 		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new PreRegistrationList());
@@ -121,7 +116,7 @@ public class PreRegistrationDataSyncServiceTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "yes");
+		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 
 		mockEncryptedPacket();
 
@@ -132,7 +127,9 @@ public class PreRegistrationDataSyncServiceTest {
 	private MainResponseDTO<LinkedHashMap<String, Object>> getTestPacketData() {
 		MainResponseDTO<LinkedHashMap<String, Object>> testData = new MainResponseDTO<>();
 		LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
-		linkedHashMap.put("zip-bytes", preRegData);
+		linkedHashMap.put("appointment-date", "2019-01-12");
+		linkedHashMap.put("zip-bytes", preRegPacket);
+		testData.setResponse(linkedHashMap);
 		return testData;
 	}
 
@@ -144,6 +141,10 @@ public class PreRegistrationDataSyncServiceTest {
 				.thenReturn(getTestPacketData());
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 		// Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new
 		// PreRegistrationList());
 
@@ -161,6 +162,10 @@ public class PreRegistrationDataSyncServiceTest {
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean()))
 				.thenThrow(HttpClientErrorException.class);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		ReflectionTestUtils.setField(preRegistrationDataSyncServiceImpl, "isStubEnabled", "no");
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 
@@ -172,7 +177,9 @@ public class PreRegistrationDataSyncServiceTest {
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException { // Test-2
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any()))
 				.thenThrow(HttpClientErrorException.class);
-		preRegistrationDataSyncServiceImpl.getPreRegistrationIds(null);
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+		preRegistrationDataSyncServiceImpl.getPreRegistrationIds("System");
 	}
 
 	private void mockEncryptedPacket() throws RegBaseCheckedException {
@@ -200,7 +207,7 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegList.add(preRegistrationList);
 		Mockito.when(preRegistrationDAO.fetchRecordsToBeDeleted(Mockito.any())).thenReturn(preRegList);
 		Mockito.when(preRegistrationDAO.update(Mockito.anyObject())).thenReturn(preRegistrationList);
-		assertEquals(null, preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords().getErrorResponseDTOs());
+		preRegistrationDataSyncServiceImpl.fetchAndDeleteRecords();
 	}
 
 }

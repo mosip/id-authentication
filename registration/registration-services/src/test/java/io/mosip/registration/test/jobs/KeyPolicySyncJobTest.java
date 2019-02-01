@@ -133,7 +133,7 @@ public class KeyPolicySyncJobTest {
 
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(keyPolicySyncJob);
 
-		Mockito.when(policySyncService.fetchPolicy(Mockito.anyString())).thenReturn(responseDTO);
+		Mockito.when(policySyncService.fetchPolicy()).thenReturn(responseDTO);
 
 		keyPolicySyncJob.executeInternal(context);
 		keyPolicySyncJob.executeJob("User", "1");

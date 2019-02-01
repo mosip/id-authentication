@@ -38,9 +38,6 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class AuthController {
-	
-	/** The Constant SUCCESS_STATUS. */
-	private static final String SUCCESS_STATUS = "Y";
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "sessionId";
@@ -140,16 +137,14 @@ public class AuthController {
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-
+		
 		try {
 
 			DataValidationUtil.validate(errors);
 
 			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest(), true);
 			if (authResponseDTO != null) {
-				if (authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
-					kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
-				}
+				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
