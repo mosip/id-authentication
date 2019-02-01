@@ -62,7 +62,7 @@ public class OtpMatchingStrategyTest {
 
 	@InjectMocks
 	private RestHelper restHelper;
-	
+
 	/** The mapper. */
 	@InjectMocks
 	private ObjectMapper mapper;
@@ -105,7 +105,7 @@ public class OtpMatchingStrategyTest {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 	}
 
-	@Ignore
+	
 	@Test
 	public void TestValidOtpwithInvalidOtp() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
@@ -116,11 +116,12 @@ public class OtpMatchingStrategyTest {
 		assertEquals(0, value);
 	}
 
+	
 	@Test
 	public void TestValidOtpMatchingStrategy() throws IdAuthenticationBusinessException {
 		MockEnvironment env = new MockEnvironment();
 		env.merge(((AbstractEnvironment) environment));
-		env.setProperty("otp-validate.rest.uri", "http://localhost:8890/otpmanager/otps");
+		env.setProperty("otp-validate.rest.uri", "http://localhost:7895/otpmanager/otps");
 		ReflectionTestUtils.setField(restRequestFactory, "env", env);
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
