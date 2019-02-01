@@ -92,7 +92,7 @@ public class PacketHandlerController extends BaseController {
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 						errorMessage
-								.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
+								.append(errorResponseDTO.getMessage() + "\n\n");
 					}
 					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -204,15 +204,26 @@ public class PacketHandlerController extends BaseController {
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
+
+				StringBuilder errorMessage = new StringBuilder();
+				ResponseDTO responseDTO;
+				responseDTO = validateSyncStatus();
+				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+						errorMessage
+								.append(errorResponseDTO.getMessage() + "\n\n");
+					}
+					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+				} else {
+					ObservableList<Node> nodes = homeController.getMainBox().getChildren();
+					IntStream.range(1, nodes.size()).forEach(index -> {
+						nodes.get(index).setVisible(false);
+						nodes.get(index).setManaged(false);
+					});
+					nodes.add(root);
+				}
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());

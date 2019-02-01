@@ -487,6 +487,7 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_RDJ_J00011 = "RDJ_J00011";
 	public static final String OPT_TO_REG_ADJ_J00012 = "ADJ_J00012";
 	public static final String OPT_TO_REG_DEL_001 = "DEL_001";
+	public static final String OPT_TO_REG_UDM_J00012 = "UDM_J00012";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
@@ -933,6 +934,8 @@ public class RegistrationConstants {
 	//Configuration Constants
 	public static final String AUDIT_LOG_DELETION_CONFIGURED_DAYS="AUDIT_LOG_DELETION_CONFIGURED_DAYS";
 	public static final String SYNC_TRANSACTION_NO_OF_DAYS_LIMIT="SYNC_TRANSACTION_NO_OF_DAYS_LIMIT";
+	public static final String REG_DELETION_CONFIGURED_DAYS="REG_DELETION_CONFIGURED_DAYS";
+	
 	
 	//Audit Constants
 	public static final String AUDIT_LOGS_DELETION_SUCESS_MSG="Audit Logs Deleted Successfully";

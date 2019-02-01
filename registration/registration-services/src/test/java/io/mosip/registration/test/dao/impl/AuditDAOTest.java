@@ -108,6 +108,7 @@ public class AuditDAOTest {
 		
 		Mockito.doNothing().when(auditRepository).deleteAllInBatchBycreatedAtBetween(fromTime,toTime);
 		auditDAO.deleteAll(fromTime, toTime);
+		
 	}
 
 }

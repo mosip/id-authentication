@@ -67,8 +67,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Autowired
 	private SyncJobControlDAO syncJobDAO;
 
-	
-
 	/**
 	 * LOGGER for logging
 	 */
@@ -85,9 +83,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private Map<String, SyncJobDef> syncJobMap = new HashMap<>();
 
 	private boolean isSchedulerRunning = false;
-
-	@Value("${SYNC_TRANSACTION_NO_OF_DAYS_LIMIT}")
-	private int syncTransactionHistoryLimitDays;
 
 	private ApplicationContext applicationContext;
 
@@ -349,6 +344,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO getLastCompletedSyncJobs() {
 
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "get Last Completed Jobs Started");
+
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		/* Fetch Sync control records */
@@ -374,6 +372,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		} else {
 			setErrorResponse(responseDTO, RegistrationConstants.NO_JOB_COMPLETED, null);
 		}
+
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "get Last Completed Jobs Ended");
+
 		return responseDTO;
 	}
 
@@ -386,10 +388,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO getSyncJobsTransaction() {
 
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "get Sync Transaction Started");
+
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		String val = getGlobalConfigValueOf(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT);
-		
+
 		if (val != null) {
 			int syncTransactionConfiguredDays = Integer.parseInt(val);
 
@@ -427,6 +432,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				setErrorResponse(responseDTO, RegistrationConstants.NO_JOBS_TRANSACTION, null);
 			}
 		}
+
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "get Sync Transaction Ended");
 
 		return responseDTO;
 	}

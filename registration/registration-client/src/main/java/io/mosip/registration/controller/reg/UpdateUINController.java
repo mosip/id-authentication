@@ -72,7 +72,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	private Label toggleLabel2;
 	@FXML
 	private HBox biometricBox;
-	
+
 	private SimpleBooleanProperty switchedOn;
 	private boolean isChild;
 
@@ -85,17 +85,16 @@ public class UpdateUINController extends BaseController implements Initializable
 		switchedOn = new SimpleBooleanProperty(false);
 		isChild = switchedOn.get();
 		toggleFunction();
-		if (applicationContext.getApplicationMap()
-				.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+		if (applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
 				.equals(RegistrationConstants.ENABLE)) {
-			
+
 			biometricBox.getChildren().forEach(bio -> {
-				if(bio.getId().equals("biometricFingerprint")) {
+				if (bio.getId().equals("biometricFingerprint")) {
 					bio.setVisible(false);
 					bio.setManaged(false);
-				} 
+				}
 			});
-		} 
+		}
 	}
 
 	/**
@@ -103,7 +102,7 @@ public class UpdateUINController extends BaseController implements Initializable
 	 */
 	private void toggleFunction() {
 		try {
-			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
+			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Entering into toggle function for toggle label 1 and toggle level 2");
 
 			toggleLabel1.setId(RegistrationConstants.FIRST_TOGGLE_LABEL);
@@ -127,10 +126,10 @@ public class UpdateUINController extends BaseController implements Initializable
 
 			toggleLabel1.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
 			toggleLabel2.setOnMouseClicked(event -> switchedOn.set(!switchedOn.get()));
-			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID,
+			LOGGER.info(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Exiting the toggle function for toggle label 1 and toggle level 2");
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME,APPLICATION_ID, runtimeException.getMessage());
+			LOGGER.error(LOG_REG_UIN_UPDATE, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage());
 		}
 	}
 
@@ -190,28 +189,10 @@ public class UpdateUINController extends BaseController implements Initializable
 								getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 								applicationContext.getApplicationLanguageBundle());
 
-						if (!validateScreenAuthorization(createRoot.getId())) {
-							generateAlert(RegistrationConstants.ERROR,
-									RegistrationUIConstants.AUTHORIZATION_ERROR);
-						} else {
-							StringBuilder errorMessage = new StringBuilder();
-							ResponseDTO responseDTO;
-							responseDTO = validateSyncStatus();
-							List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-							if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-								for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-									errorMessage.append(errorResponseDTO.getMessage() + " - "
-											+ errorResponseDTO.getCode() + "\n\n");
-								}
-								generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-
-							} else {
-								getScene(createRoot).setRoot(createRoot);
-							}
-						}
-					} else {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
+						getScene(createRoot).setRoot(createRoot);
 					}
+				} else {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UPDATE_UIN_SELECTION_ALERT);
 				}
 			}
 		} catch (InvalidIDException invalidIdException) {

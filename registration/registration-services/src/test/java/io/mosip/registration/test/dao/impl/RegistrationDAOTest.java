@@ -296,7 +296,7 @@ public class RegistrationDAOTest {
 		registrations.add(registration);
 		
 		Mockito.when(registrationRepository.findAllById(ids)).thenReturn(registrations);
-		assertSame(registrations, registrationDAOImpl.getRegistrationById("PROCESSED","REG123456"));
+		assertSame(registrations, registrationDAOImpl.get(ids));
 		
 	}
 
