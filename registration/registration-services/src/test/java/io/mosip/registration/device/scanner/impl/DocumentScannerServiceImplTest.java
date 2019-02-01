@@ -83,13 +83,22 @@ public class DocumentScannerServiceImplTest {
 
 	}
 
+	@Test
+	public void pdfToImagesTest() throws java.io.IOException {
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.asPDF(bufferedImages);
+		documentScannerServiceImpl.pdfToImages(data);
+		assertNotNull(data);
+
+	}
+
 	private void intializeValues() {
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDpi", 300);
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerhost", "192.168.43.253");
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerPort", 6566);
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerImgType", "jpg");
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerTimeout", 2000);
-		
+
 	}
 
 }
