@@ -207,9 +207,23 @@
 
 #menu{
 	-fx-pref-height: 24.0px;
-	-fx-pref-width: 228.0px;
+	-fx-pref-width: 228.0px;	
+}
+.context-menu {
+  -fx-background-color: #FFFFFF;
+  -fx-border-color: #C9C9C9;
+  -fx-padding: 0em 0em 0em 0em;
+  -fx-page-information-alignment: 10;
+}
+.menu-item .label{
+    -fx-text-fill: #000000;
+    -fx-font-size: 14.0px;
 }
 
+.separator .line { 
+	-fx-background-color: #C9C9C9;
+	-fx-border-width: 0.1px;
+}
 #registrationOfficeLocation{
 	-fx-pref-height: 21.0px;
 	-fx-pref-width: 155.0px;
@@ -251,6 +265,9 @@
 	-fx-border-color: #F4F4F4;
 	-fx-border-width: 1.0 1.0 0.0 1.0;
 	
+}
+#logout{
+	-fx-background-color: #FF4081;
 }
 /* Header Page design Ends Here */
 

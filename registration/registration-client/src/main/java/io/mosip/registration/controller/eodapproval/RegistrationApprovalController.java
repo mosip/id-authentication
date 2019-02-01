@@ -243,12 +243,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
 
 		if (!listData.isEmpty()) {
-			eodController.getPendingApprovalTitledPane()
-					.setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() + ")");
+			/*eodController.getPendingApprovalTitledPane()
+					.setText(RegistrationUIConstants.PENDING_APPROVAL + "(" + listData.size() + ")");*/			
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
 		} else {
-			eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.PENDING_APPROVAL);
+			/*eodController.getPendingApprovalTitledPane().setText(RegistrationUIConstants.PENDING_APPROVAL);*/			
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().clear();

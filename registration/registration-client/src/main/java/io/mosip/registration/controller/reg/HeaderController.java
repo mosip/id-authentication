@@ -101,7 +101,7 @@ public class HeaderController extends BaseController {
 		registrationOfficeLocation
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
-		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		menu.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
 				&& !(boolean) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {

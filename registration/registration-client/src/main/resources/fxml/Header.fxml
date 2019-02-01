@@ -9,6 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
 
 <HBox fx:id="headerParent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="headerParentBorder" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.HeaderController">
    <children>
@@ -56,44 +57,143 @@
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <MenuBar fx:id="menu" layoutX="1050.0">
+            <MenuBar fx:id="menu" layoutX="1180.0" layoutY="2">
                <menus>
-                  <Menu fx:id="accountMenu" mnemonicParsing="false">
-                     <graphic>
-                        <ImageView fitHeight="23.0" fitWidth="23.0" layoutX="49.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/hamburger.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#logout" text="%logout" />
-                     </items>
-                  </Menu>
                   <Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
                      <graphic>
-                        <ImageView fitHeight="23.0" fitWidth="23.0" layoutX="20.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="23.0" fitWidth="23.0" layoutX="20.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/hamburger.png" />
                            </image>
                         </ImageView>
                      </graphic>
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#eodProcess" text="%eodprocess" />
+                        <MenuItem mnemonicParsing="false" onAction="#eodProcess" text="%eodprocess">
+                          <graphic>
+                        	<AnchorPane>                        		
+                        		<children>
+                        			<Label text="               " visible="false"/>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                          </graphic>
+                        </MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket" />
+                        <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket">
+						  <graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                          </graphic>
+						</MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" text="%virusscan" />
+                        <MenuItem mnemonicParsing="false" text="%virusscan">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                            </graphic>
+                        </MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata" />
+                        <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                          	</graphic>
+                        </MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata" />
+                        <MenuItem mnemonicParsing="false" onAction="#downloadPreRegData" text="%downloadpre-registrationdata">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                            </graphic>
+                        </MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#onBoardUser" text="%onboarduser" />
+                        <MenuItem mnemonicParsing="false" onAction="#onBoardUser" text="%onboarduser">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                          </graphic>
+                        </MenuItem>
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="%deviceonboarding" />
-                        <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home" />
+                        <MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="%deviceonboarding">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                            </graphic>
+                        </MenuItem>
+                        <SeparatorMenuItem/>
+                        <MenuItem mnemonicParsing="false" onAction="#redirectHome" text="%home">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/MenuItems.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                            </graphic>
+                        </MenuItem>
+                        <SeparatorMenuItem/>
+                        <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Logout" style="-fx-text-fill: white;">
+                        	<graphic>
+                        	<AnchorPane>                        		
+                        		<children>                        			
+                        			<ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
+                           				<image>
+                              				<Image url="@../images/logout.png" />
+                           				</image>
+                        			</ImageView>                        			
+                        		</children>                        	
+                        	</AnchorPane>
+                            </graphic>
+                        </MenuItem>
                      </items>
                   </Menu>
                </menus>
