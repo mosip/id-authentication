@@ -40,6 +40,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -119,6 +120,9 @@ public class DocumentScanController extends BaseController {
 
 	@FXML
 	protected Text docPageNumber;
+
+	@FXML
+	protected Label docPreviewLabel;
 
 	List<BufferedImage> scannedPages;
 
@@ -484,8 +488,12 @@ public class DocumentScanController extends BaseController {
 				docPages = documentScanFacade.pdfToImages(document);
 				if (!docPages.isEmpty()) {
 					docPreviewImgView.setImage(SwingFXUtils.toFXImage(docPages.get(0), null));
-					docPageNumber.setText("1");
+					
+					docPreviewLabel.setVisible(true);
 					if (docPages.size() > 1) {
+						docPageNumber.setText("1");
+						docPreviewNext.setVisible(true);
+						docPreviewPrev.setVisible(true);
 						docPreviewNext.setDisable(false);
 					}
 				}
@@ -498,7 +506,6 @@ public class DocumentScanController extends BaseController {
 
 		} else {
 			docPreviewImgView.setImage(convertBytesToImage(document));
-			docPageNumber.setText("1");
 		}
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Scanned document displayed succesfully");
@@ -746,6 +753,11 @@ public class DocumentScanController extends BaseController {
 	}
 
 	public void initializePreviewSection() {
+		
+		docPreviewLabel.setVisible(false);
+		docPreviewNext.setVisible(false);
+		docPreviewPrev.setVisible(false);
+
 		docPreviewNext.setDisable(true);
 		docPreviewPrev.setDisable(true);
 		docPageNumber.setText("");
