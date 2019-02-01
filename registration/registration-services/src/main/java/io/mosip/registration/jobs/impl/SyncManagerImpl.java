@@ -84,7 +84,7 @@ public class SyncManagerImpl implements SyncManager {
 	@Override
 	public SyncTransaction createSyncTransaction(final String status, final String statusComment,
 			final String triggerPoint, final String syncJobId) {
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction started");
 
 		SyncTransaction syncTransaction = new SyncTransaction();
@@ -138,7 +138,7 @@ public class SyncManagerImpl implements SyncManager {
 					nullPointerException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction Ended");
 
 		return syncTransaction;

@@ -1,6 +1,6 @@
 # kernel-idgenerator-tspid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-tspid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-tspid.md)
 
 API Documentation
 

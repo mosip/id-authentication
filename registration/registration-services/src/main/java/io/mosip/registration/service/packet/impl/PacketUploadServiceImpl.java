@@ -71,7 +71,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Registration> getSynchedPackets() {
-		LOGGER.debug("REGISTRATION - GET_SYNCHED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - GET_SYNCHED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching synched packets from the database");
 		return registrationDAO.getRegistrationByStatus(RegistrationConstants.getStatus());
 	}
@@ -83,7 +83,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 * io.mosip.registration.service.PacketUploadService#pushPacket(java.io.File)
 	 */
 	public Object pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Push packets to the server");
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
@@ -124,7 +124,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	 * List)
 	 */
 	public Boolean updateStatus(List<Registration> packetsUploadStatus) {
-		LOGGER.debug("REGISTRATION - UPDATE_STATUS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UPDATE_STATUS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Update the status of the uploaded packet");
 		for (Registration registrationPacket : packetsUploadStatus) {
 			registrationDAO.updateRegStatus(registrationPacket);

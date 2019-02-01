@@ -18,10 +18,19 @@ public class MosipEnvironment implements EnvironmentAware {
 
     private final String ldapSvcUrl = "ldap.svc.url";
     private final String ldapAuthenticate = "ldap.api.authenticate";
+    private final String ldapVerifyOtpUser = "ldap.api.otp.user.verify";
 
-    private final String otpSvcUrl = "otp.svc.url";
-    private final String triggerOtpApi = "otp.api.trigger";
-    private final String verifyOtpApi = "otp.api.verify";
+    private final String otpManagerSvcUrl = "otp.manager.svc.url";
+    private final String generateOtpApi = "otp.manager.api.generate";
+    private final String verifyOtpUserApi = "otp.manager.api.verify";
+
+    private final String otpSenderSvcUrl = "otp.sender.svc.url";
+    private final String otpSenderEmailApi = "otp.sender.api.email.send";
+    private final String otpSenderSmsApi = "otp.sender.api.sms.send";
+
+    private final String masterDataUrl = "masterdata.svc.url";
+    private final String masterDataTemplateApi = "masterdata.api.template";
+    private final String masterDataOtpTemplate = "masterdata.api.template.otp";
 
     @Override
     public void setEnvironment(final Environment environment) {
@@ -52,15 +61,43 @@ public class MosipEnvironment implements EnvironmentAware {
         return environment.getProperty(ldapAuthenticate);
     }
 
-    public String getOtpSvcUrl() {
-        return environment.getProperty(otpSvcUrl);
+    public String getLdapVerifyOtpUser() {
+        return environment.getProperty(ldapVerifyOtpUser);
     }
 
-    public String getTriggerOtpApi() {
-        return environment.getProperty(triggerOtpApi);
+    public String getOtpManagerSvcUrl() {
+        return environment.getProperty(otpManagerSvcUrl);
     }
 
-    public String getVerifyOtpApi() {
-        return environment.getProperty(verifyOtpApi);
+    public String getGenerateOtpApi() {
+        return environment.getProperty(generateOtpApi);
+    }
+
+    public String getVerifyOtpUserApi() {
+        return environment.getProperty(verifyOtpUserApi);
+    }
+
+    public String getOtpSenderSvcUrl() {
+        return environment.getProperty(otpSenderSvcUrl);
+    }
+
+    public String getOtpSenderEmailApi() {
+        return environment.getProperty(otpSenderEmailApi);
+    }
+
+    public String getOtpSenderSmsApi() {
+        return environment.getProperty(otpSenderSmsApi);
+    }
+
+    public String getMasterDataUrl() {
+        return environment.getProperty(masterDataUrl);
+    }
+
+    public String getMasterDataTemplateApi() {
+        return environment.getProperty(masterDataTemplateApi);
+    }
+
+    public String getMasterDataOtpTemplate() {
+        return environment.getProperty(masterDataOtpTemplate);
     }
 }

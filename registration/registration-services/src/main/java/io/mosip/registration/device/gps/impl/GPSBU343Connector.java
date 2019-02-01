@@ -64,7 +64,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 
 		String gpsResponse=null;
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
 				"Entering to featch GPS inforamtion" + "Port Name" + portNo + "wait time" + portReadWaitTime);
 		try {
@@ -153,7 +153,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	private void readDataFromComPort()
 			throws IOException, PortInUseException, TooManyListenersException, UnsupportedCommOperationException {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Reading date from GPS devie");
 
 		if (serialPortId != null) {
@@ -169,7 +169,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 
 		inputStream = serialPortId.getInputStream();
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Ends Reading date from GPS devie");
 	}
 
@@ -180,7 +180,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	 */
 	public void serialEvent(SerialPortEvent event) {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Reading byte stream from GPS");
 
 		switch (event.getEventType()) {
@@ -223,7 +223,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			break;
 		}
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Reading byte stream from GPS ends");
 	}
 
@@ -242,7 +242,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		/** The position. */
 		GPSPosition position = new GPSPosition();
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"parsing GPS singal is started");
 
 		if (line.startsWith("$")) {
@@ -264,7 +264,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			}
 		}
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "parsing GPS singal is Ends");
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "parsing GPS singal is Ends");
 
 		return position;
 	}
@@ -277,7 +277,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	 */
 	private static void parseGPRMC(String[] tokens, GPSPosition position) {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "parsing GPRMC Singal");
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "parsing GPRMC Singal");
 
 		if (tokens[2].equals("A")) {
 
@@ -300,7 +300,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	 */
 	private static double longitude2Decimal(String lon, String direction) {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Longitude conversion begins");
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Longitude conversion begins");
 
 		double longitudeDegrees = 0.0;
 
@@ -319,7 +319,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 				longitudeDegrees = -longitudeDegrees;
 			}
 
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 					"Longitude conversion begins");
 		}
 		return longitudeDegrees;
@@ -334,7 +334,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	 */
 	private static double latitude2Decimal(String lat, String direction) {
 
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Latitude conversion begins");
+		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Latitude conversion begins");
 
 		double latitudeDegrees = 0.0;
 
@@ -352,7 +352,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			if (direction.startsWith("S")) {
 				latitudeDegrees = -latitudeDegrees;
 			}
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 					"Latitude conversion ends");
 		}
 		return latitudeDegrees;

@@ -77,7 +77,7 @@ public class LoginServiceImpl implements LoginService {
 	public List<String> getModesOfLogin(String authType, Set<String> roleList) {
 		// Retrieve Login information
 
-		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of login modes");
 
 		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, Components.LOGIN_MODES, "Fetching list of login modes",
@@ -97,7 +97,7 @@ public class LoginServiceImpl implements LoginService {
 	public UserDetail getUserDetail(String userId) {
 		// Retrieving Officer details
 
-		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
 		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, "Fetching User details", "refId",
@@ -116,7 +116,7 @@ public class LoginServiceImpl implements LoginService {
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
 		// Retrieving Registration Center details
 
-		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Center details");
 
 		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, "Fetching Center details",
@@ -135,7 +135,7 @@ public class LoginServiceImpl implements LoginService {
 	public AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode) {
 		// Fetching screen authorization details
 
-		LOGGER.debug("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of Screens to be Authorized");
 
 		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, Components.SCREEN_AUTH,
@@ -152,12 +152,12 @@ public class LoginServiceImpl implements LoginService {
 	 */
 	public void updateLoginParams(UserDetail userDetail) {
 
-		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating Login Params");
 
 		userDetailDAO.updateLoginParams(userDetail);
 		
-		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updated Login Params");
 
 	}

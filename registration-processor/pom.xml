@@ -116,8 +116,8 @@
 		<kernel.emailnotification.service.version>0.7.0</kernel.emailnotification.service.version>
 		<kernel.smsnotification.service.version>0.7.0</kernel.smsnotification.service.version>
 		<kernel.idvalidator.version>0.7.0</kernel.idvalidator.version>
-		<kernel.clamav.version>0.7.0</kernel.clamav.version>
-
+		<kernel.clamav.version>0.8.0</kernel.clamav.version>
+		
 		<sonar.coverage.exclusions>**/dto/**,
 		**/exception/*Exception.java,
 		**/core/code/*.java,

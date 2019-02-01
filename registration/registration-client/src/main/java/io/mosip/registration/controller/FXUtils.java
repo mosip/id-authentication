@@ -91,7 +91,7 @@ public class FXUtils {
 	 */
 	public void dateFormatter(DatePicker ageDatePicker) {
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the date format");
 
 			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
@@ -127,7 +127,7 @@ public class FXUtils {
 	 */
 	public void disableFutureDays(DatePicker ageDatePicker) {
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Disabling future dates");
 
 			ageDatePicker.setDayCellFactory(picker -> new DateCell() {
@@ -140,7 +140,7 @@ public class FXUtils {
 				}
 			});
 
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Future dates disabled");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,

@@ -59,7 +59,7 @@ public class EODController extends BaseController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		LOGGER.debug(LOG_REG_EOD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		LOGGER.info(LOG_REG_EOD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		try {
 
 			Parent pendingApprovalRoot = BaseController
@@ -74,7 +74,7 @@ public class EODController extends BaseController implements Initializable {
 		} catch (IOException ioException) {
 			LOGGER.error(LOG_REG_EOD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
-		LOGGER.debug(LOG_REG_EOD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
+		LOGGER.info(LOG_REG_EOD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
 	/**

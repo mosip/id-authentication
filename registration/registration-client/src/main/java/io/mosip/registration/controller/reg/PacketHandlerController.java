@@ -80,7 +80,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 					applicationContext.getApplicationLanguageBundle());
-			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
@@ -148,7 +148,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
 
-			LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
@@ -176,7 +176,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
-			LOGGER.debug("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
@@ -200,7 +200,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
-			LOGGER.debug("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "updating UIN");
 
 			if (!validateScreenAuthorization(root.getId())) {
