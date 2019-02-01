@@ -291,8 +291,12 @@ public class IdRequestValidator implements Validator {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY + " - "
 							+ StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "\""), "\"")
-							+ " at /"
-							+ StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "/"), "\"")));
+							+ "at /"
+							+ (StringUtils.isEmpty(
+									StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "/"), "\""))
+											? IDENTITY
+											: StringUtils.substringBefore(
+													StringUtils.substringAfter(e.getMessage(), "/"), "\""))));
 		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
@@ -330,14 +334,14 @@ public class IdRequestValidator implements Validator {
 										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												" - Documents - " + doc.get(DOC_CAT)));
+												"Documents - " + doc.get(DOC_CAT)));
 							}
 							if (StringUtils.isEmpty(doc.get("value"))) {
 								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 										(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												" - Documents - " + doc.get(DOC_CAT)));
+												"Documents - " + doc.get(DOC_CAT)));
 							}
 						});
 			}

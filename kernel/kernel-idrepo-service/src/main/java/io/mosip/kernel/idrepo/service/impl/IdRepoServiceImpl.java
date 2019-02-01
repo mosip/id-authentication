@@ -401,13 +401,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 				mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						"INVALID_INPUT_PARAMETER - " + category);
 				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-						IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "- Document - " + category));
+						IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "Documents - " + category));
 			}
 		} catch (Exception e) {
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String.format(
-					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "- Document - " + category));
+					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "Documents - " + category));
 
 		}
 	}
