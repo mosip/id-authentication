@@ -40,13 +40,7 @@ public enum DirectoryPathDto {
 			return "registration.processor.VIRUS_SCAN_RETRY";
 		}
 	},
-	/** The ftp zone. */
-	/*FTP_ZONE {
-		@Override
-		public String toString() {
-			return "registration.processor.FTP_ZONE";
-		}
-	},*/
+	
 	/** The archive location. */
 	ARCHIVE_LOCATION {
 		@Override
