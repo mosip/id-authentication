@@ -28,10 +28,10 @@ public class CbeffImpl implements CbeffI {
 	 * 
 	 */
 	@Override
-	public byte[] createXML(List<BIR> birList) throws Exception  {
+	public byte[] createXML(List<BIR> birList,byte[] xsd) throws Exception  {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
 		BIRType bir = cbeffContainer.createBIRType(birList);
-		byte[] xmlByte = CbeffValidator.createXMLBytes(bir);
+		byte[] xmlByte = CbeffValidator.createXMLBytes(bir,xsd);
 		return xmlByte;
 	}
 
@@ -44,10 +44,10 @@ public class CbeffImpl implements CbeffI {
 	 * 
 	 */
 	@Override
-	public byte[] updateXML(List<BIR> birList, byte[] fileBytes) throws Exception {
+	public byte[] updateXML(List<BIR> birList, byte[] fileBytes,byte[] xsd) throws Exception {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
 		BIRType bir = cbeffContainer.updateBIRType(birList, fileBytes);
-		byte[] xmlByte = CbeffValidator.createXMLBytes(bir);
+		byte[] xmlByte = CbeffValidator.createXMLBytes(bir,xsd);
 		return xmlByte;
 	}
 

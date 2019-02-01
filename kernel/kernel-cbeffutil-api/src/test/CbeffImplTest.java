@@ -124,7 +124,7 @@ public class CbeffImplTest {
 	public void testCreateXML() throws Exception {
 
 		CbeffImpl cbeffImpl = new CbeffImpl();
-		byte[] createXml = cbeffImpl.createXML(createList);
+		byte[] createXml = cbeffImpl.createXML(createList,readXSD("cbeff"));
 		createXMLFile(createXml, "createCbeff");
 		assertEquals(new String(createXml), new String(readCreatedXML("createCbeff")));
 
@@ -150,7 +150,7 @@ public class CbeffImplTest {
 	@Test
 	public void testUpdateXML() throws Exception {
 		CbeffImpl cbeffImpl = new CbeffImpl();
-		byte[] updateXml = cbeffImpl.updateXML(updateList, readCreatedXML("createCbeff"));
+		byte[] updateXml = cbeffImpl.updateXML(updateList, readCreatedXML("createCbeff"),readXSD("cbeff"));
 		createXMLFile(updateXml, "updateCbeff");
 		assertEquals(new String(updateXml), new String(readCreatedXML("updateCbeff")));
 	}
