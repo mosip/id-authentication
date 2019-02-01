@@ -1,6 +1,5 @@
 package io.mosip.registration.util.hmac;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -132,20 +131,28 @@ public class HMACGeneration {
 		}
 	}
 
-	public static byte[] generatePacketOSIHash(final Map<String, byte[]> generatedFilesForPacket) {
-		List<String> packetOSIHashingOrder = new LinkedList<>();
-
+	/**
+	 * Generates the HMAC for the files that are part of Packet OSI Data
+	 * 
+	 * @param generatedFilesForPacket
+	 *            contains the files that has to be hashed
+	 * @param osiDataHashSequence
+	 *            stores the file hashing order
+	 * @return the HMAC data as {@link String}
+	 */
+	public static byte[] generatePacketOSIHash(final Map<String, byte[]> generatedFilesForPacket,
+			List<String> osiDataHashSequence) {
 		// Generate Hash for Officer CBEFF file
 		generateHash(generatedFilesForPacket.get(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
-				RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, packetOSIHashingOrder);
+				RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, osiDataHashSequence);
 
 		// Generate Hash for Officer CBEFF file
 		generateHash(generatedFilesForPacket.get(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
-				RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, packetOSIHashingOrder);
+				RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, osiDataHashSequence);
 
 		// Generate Hash for Audit.json
 		generateHash(generatedFilesForPacket.get(RegistrationConstants.AUDIT_JSON_FILE),
-				RegistrationConstants.AUDIT_JSON_FILE, packetOSIHashingOrder);
+				RegistrationConstants.AUDIT_JSON_FILE, osiDataHashSequence);
 
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();

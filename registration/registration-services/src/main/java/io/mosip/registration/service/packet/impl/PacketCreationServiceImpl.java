@@ -216,9 +216,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE), REGISTRATION_ID, rid);
 
 			// Generating HMAC File as byte array
-			HashSequence hashSequence = new HashSequence(
-					new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
-					new DemographicSequence(new LinkedList<String>()));
+			HashSequence hashSequence = new HashSequence(new BiometricSequence(new LinkedList<>(), new LinkedList<>()),
+					new DemographicSequence(new LinkedList<>()), new LinkedList<>());
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					HMACGeneration.generatePacketDTOHash(registrationDTO, filesGeneratedForPacket, hashSequence));
 
@@ -230,7 +229,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating packet_osi_hash text file as byte array
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
-					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket));
+					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
@@ -243,6 +242,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
+
+			// Add HashSequence for packet_osi_data
+			packetInfo.getIdentity().setHashSequence2(hashSequence.getOsiDataHashSequence());
 
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());
