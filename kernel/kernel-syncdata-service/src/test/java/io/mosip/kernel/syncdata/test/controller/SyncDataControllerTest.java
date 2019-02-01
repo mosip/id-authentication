@@ -104,7 +104,7 @@ public class SyncDataControllerTest {
 	@Test
 	public void syncMasterDataWithlastUpdatedTimestampSuccess() throws Exception {
 		when(masterDataService.syncData(Mockito.anyString(), Mockito.any())).thenReturn(masterDataResponseDto);
-		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01", "1001"))
+		mockMvc.perform(get("/v1.0/masterdata/{machineId}?lastUpdated=2018-01-01T01:01:01.021Z", "1001"))
 				.andExpect(status().isOk());
 	}
 

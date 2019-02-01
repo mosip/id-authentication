@@ -17,6 +17,7 @@ import io.mosip.kernel.syncdata.dto.response.MasterDataResponseDto;
 import io.mosip.kernel.syncdata.exception.DateParsingException;
 import io.mosip.kernel.syncdata.service.SyncConfigDetailsService;
 import io.mosip.kernel.syncdata.service.SyncMasterDataService;
+import io.mosip.kernel.syncdata.utils.MapperUtils;
 import io.swagger.annotations.ApiOperation;
 import net.minidev.json.JSONObject;
 
@@ -94,7 +95,7 @@ public class SyncDataController {
 		LocalDateTime timestamp = null;
 		if (lastUpdated != null) {
 			try {
-				timestamp = LocalDateTime.parse(lastUpdated);
+				timestamp = MapperUtils.parseToLocalDateTime(lastUpdated);
 			} catch (DateTimeParseException e) {
 				throw new DateParsingException(MasterDataErrorCode.LAST_UPDATED_PARSE_EXCEPTION.getErrorCode(),
 						e.getMessage());
