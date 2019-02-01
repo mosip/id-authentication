@@ -62,7 +62,7 @@ public class ApiExceptionHandler {
 			ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
 					x.getField() + ": " + x.getDefaultMessage());
 			errorResponse.getErrors().add(error);
-			errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+			errorResponse.setStatus(HttpStatus.OK.value());
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
