@@ -136,4 +136,18 @@ public class SyncJobControlDAOImplTest {
 		
 		
 	}
+	
+	@Test
+	public void getRegistrationDetailsTest() {
+
+		List<Registration> registrations = new LinkedList<>();
+		Registration registration = new Registration();
+		registrations.add(registration);		
+
+		when(registrationRepository.findByclientStatusCodeOrderByCrDtimeAsc("REGISTERED")).thenReturn(registrations);
+
+		assertEquals(syncJobDAOImpl.getRegistrationDetails(), registrations);
+	}
+
+
 }

@@ -21,13 +21,13 @@ import io.mosip.registration.repositories.JobConfigRepository;
  *
  */
 @Repository
-public class JobConfigDAOImpl implements SyncJobConfigDAO {
+public class SyncJobConfigDAOImpl implements SyncJobConfigDAO {
 
 	@Autowired
 	private JobConfigRepository jobConfigRepository;
 
 	/** Object for Logger. */
-	private static final Logger LOGGER = AppConfig.getLogger(JobConfigDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncJobConfigDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)

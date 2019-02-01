@@ -9,7 +9,7 @@ import io.mosip.registration.dto.ResponseDTO;
  *
  */
 public interface PolicySyncService {
-	ResponseDTO fetchPolicy(String centerId);
+	ResponseDTO fetchPolicy();
 
 	/*ResponseDTO updatePolicy(PolicyDTO policyDTO);*/
 

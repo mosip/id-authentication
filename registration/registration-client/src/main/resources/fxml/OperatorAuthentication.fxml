@@ -67,5 +67,11 @@
               <TextField fx:id="faceUserId" layoutX="306.0" layoutY="174.0" styleClass="operatorAuthenticationStyle" promptText="Username" />
           </children>
        </AnchorPane>
+          <AnchorPane fx:id="errorPane" layoutY="1.0" styleClass="authenticationAnchorPaneStyle" visible="false">
+               <children>
+               <Label fx:id="errorLabel" layoutX="317.0" layoutY="58.0" text="%registrationofficerverification" />
+                  <Label fx:id="errorText" layoutX="200.0" layoutY="150.0" prefWidth="500" prefHeight="100.0" />
+               </children>
+            </AnchorPane>
    </children>
 </AnchorPane>

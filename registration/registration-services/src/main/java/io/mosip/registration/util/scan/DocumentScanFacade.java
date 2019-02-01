@@ -71,6 +71,11 @@ public class DocumentScanFacade {
 
 	}
 
+	public List<BufferedImage> pdfToImages(byte[] pdfBytes) throws IOException {
+
+		return documentScannerService.pdfToImages(pdfBytes);
+	}
+
 	public boolean isConnected() {
 		return documentScannerService.isConnected();
 
