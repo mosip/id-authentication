@@ -155,7 +155,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 								registrationCenterUserMachineMappingDto.getMachineId(),
 								registrationCenterUserMachineMappingDto.getUsrId());
 				if (!registrationCenterUserMachine.isPresent()) {
-					registrationCenterMachineUserID = saveRegistrationCentersMachineUserMapping(
+					registrationCenterMachineUserID = createRegistrationCentersMachineUserMapping(
 							registrationCenterUserMachineMappingDto);
 					mapped.add(registrationCenterMachineUserID);
 
@@ -198,7 +198,7 @@ public class RegistrationCenterMachineUserServiceImpl implements RegistrationCen
 	}
 
 	@Transactional
-	private RegistrationCenterMachineUserID saveRegistrationCentersMachineUserMapping(
+	private RegistrationCenterMachineUserID createRegistrationCentersMachineUserMapping(
 			RegistrationCenterUserMachineMappingDto registrationCenterUserMachineMappingDto) {
 		RegistrationCenterUserMachine registrationCenterUserMachine = MetaDataUtils
 				.setCreateMetaData(registrationCenterUserMachineMappingDto, RegistrationCenterUserMachine.class);
