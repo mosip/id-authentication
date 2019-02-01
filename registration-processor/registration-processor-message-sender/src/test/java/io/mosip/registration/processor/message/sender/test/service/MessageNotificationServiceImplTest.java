@@ -264,26 +264,4 @@ public class MessageNotificationServiceImplTest {
 				mailCc, subject, null);
 	}
 
-	/**
-	 * Identity not found exception test.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 */
-	@Test(expected = ParsingException.class)
-	public void identityNotFoundExceptionTest() throws ApisResourceAccessException, IOException, JsonParseException,
-			JsonMappingException, io.mosip.kernel.core.exception.IOException {
-		PowerMockito.mockStatic(JsonUtils.class);
-		Mockito.when(JsonUtils.jsonStringToJavaObject(any(), any())).thenThrow(new JsonParseException("", "", null));
-
-		messageNotificationServiceImpl.sendSmsNotification("RPR_UIN_GEN_SMS", "12345", IdType.UIN, attributes);
-	}
 }

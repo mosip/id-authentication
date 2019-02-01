@@ -2,11 +2,16 @@ package io.mosip.registration.processor.message.sender.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -18,10 +23,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
@@ -32,9 +36,10 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsRequestDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
+import io.mosip.registration.processor.core.notification.template.mapping.NotificationTemplate;
+import io.mosip.registration.processor.core.notification.template.mapping.RegistrationProcessorNotificationTemplate;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.idjson.IdentityJson;
-import io.mosip.registration.processor.core.packet.dto.idjson.ValuesDTO;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -45,8 +50,12 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.message.sender.template.generator.TemplateGenerator;
+import io.mosip.registration.processor.message.sender.utility.MessageSenderUtil;
 import io.mosip.registration.processor.message.sender.utility.TemplateConstant;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
@@ -61,6 +70,18 @@ import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 @Service
 public class MessageNotificationServiceImpl
 		implements MessageNotificationService<SmsResponseDto, ResponseDto, MultipartFile[]> {
+
+	/** The demographic identity. */
+	private JSONObject demographicIdentity = null;
+
+	/** The Constant LANGUAGE. */
+	private static final String LANGUAGE = "language";
+
+	/** The Constant VALUE. */
+	private static final String VALUE = "value";
+
+	/** The Constant UIN. */
+	private static final String UIN = "UIN";
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -84,6 +105,14 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private TemplateGenerator templateGenerator;
 
+	/** The utility. */
+	@Autowired
+	private MessageSenderUtil utility;
+
+	/** The reg processor template json. */
+	@Autowired
+	private RegistrationProcessorNotificationTemplate regProcessorTemplateJson;
+
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -99,9 +128,6 @@ public class MessageNotificationServiceImpl
 	/** The sms dto. */
 	private SmsRequestDto smsDto = new SmsRequestDto();
 
-	/** The idjson. */
-	private IdentityJson idjson = new IdentityJson();
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -116,16 +142,14 @@ public class MessageNotificationServiceImpl
 
 		try {
 
-			setAttributes(id, idType, attributes);
+			NotificationTemplate templatejson = getTemplateJson(id, idType, attributes);
 
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
-			String phoneNumber = idjson.getIdentity().getPhone();
-			if (phoneNumber == null || phoneNumber.isEmpty()) {
+			if (templatejson.getPhoneNumber().isEmpty() || templatejson.getPhoneNumber() == null) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
-
-			smsDto.setNumber(phoneNumber);
+			smsDto.setNumber(templatejson.getPhoneNumber());
 			smsDto.setMessage(artifact);
 
 			response = (SmsResponseDto) restClientService.postApi(ApiName.SMSNOTIFIER, "", "", smsDto,
@@ -157,15 +181,15 @@ public class MessageNotificationServiceImpl
 
 		try {
 
-			setAttributes(id, idType, attributes);
+			NotificationTemplate template = getTemplateJson(id, idType, attributes);
 
 			String artifact = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 
-			String email = idjson.getIdentity().getEmail();
-			if (email == null || email.isEmpty()) {
+			if (template.getEmailID().isEmpty() || template.getEmailID() == null) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
 
+			String email = template.getEmailID();
 			String[] mailTo = new String[1];
 			mailTo[0] = email;
 
@@ -210,11 +234,8 @@ public class MessageNotificationServiceImpl
 		for (String item : mailTo) {
 			builder.queryParam("mailTo", item);
 		}
-
-		if (mailCc != null) {
-			for (String item : mailCc) {
-				builder.queryParam("mailCc", item);
-			}
+		for (String item : mailCc) {
+			builder.queryParam("mailCc", item);
 		}
 
 		builder.queryParam("mailSubject", subject);
@@ -233,7 +254,7 @@ public class MessageNotificationServiceImpl
 	}
 
 	/**
-	 * Sets the attributes from id json.
+	 * Gets the template json.
 	 *
 	 * @param id
 	 *            the id
@@ -241,100 +262,204 @@ public class MessageNotificationServiceImpl
 	 *            the id type
 	 * @param attributes
 	 *            the attributes
+	 * @return the template json
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void setAttributes(String id, IdType idType, Map<String, Object> attributes) throws IOException {
+	private NotificationTemplate getTemplateJson(String id, IdType idType, Map<String, Object> attributes)
+			throws IOException {
 		InputStream demographicInfoStream;
-
-		if (idType.toString().equalsIgnoreCase(TemplateConstant.UIN)) {
-			attributes.put(TemplateConstant.UIN, id);
+		if (idType.toString().equalsIgnoreCase(UIN)) {
+			attributes.put("UIN", id);
+			// get registration id using UIN
 			id = packetInfoManager.getRegIdByUIN(id).get(0);
-			attributes.put(TemplateConstant.RID, id);
+			attributes.put("RID", id);
 		} else {
-			attributes.put(TemplateConstant.RID, id);
+			attributes.put("RID", id);
 		}
 
 		demographicInfoStream = adapter.getFile(id,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-
+		
 		String demographicInfo = new String(IOUtils.toByteArray(demographicInfoStream));
 
-		setAttributes(demographicInfo, attributes);
-	}
+		NotificationTemplate templatejson = getKeysandValues(demographicInfo);
 
-	/**
-	 * Sets the attributes.
-	 *
-	 * @param demographicInfo
-	 *            the demographic info
-	 * @param attributes
-	 *            the attributes
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	private void setAttributes(String demographicInfo, Map<String, Object> attributes) {
-		try {
-			// Get Identity Json from config server and map keys to Java Object
+		attributes.put(TemplateConstant.FULLNAME, getParameter(templatejson.getFirstName()));
+		attributes.put(TemplateConstant.DATEOFBIRTH, templatejson.getDateOfBirth());
+		attributes.put(TemplateConstant.AGE, templatejson.getAge());
+		attributes.put(TemplateConstant.ADDRESSLINE1, getParameter(templatejson.getAddressLine1()));
+		attributes.put(TemplateConstant.ADDRESSLINE2, getParameter(templatejson.getAddressLine2()));
+		attributes.put(TemplateConstant.ADDRESSLINE3, getParameter(templatejson.getAddressLine3()));
+		attributes.put(TemplateConstant.REGION, getParameter(templatejson.getRegion()));
+		attributes.put(TemplateConstant.PROVINCE, getParameter(templatejson.getProvince()));
+		attributes.put(TemplateConstant.CITY, getParameter(templatejson.getCity()));
+		attributes.put(TemplateConstant.POSTALCODE, templatejson.getPostalCode());
+		attributes.put(TemplateConstant.PARENTORGUARDIANNAME, getParameter(templatejson.getParentOrGuardianName()));
+		attributes.put(TemplateConstant.PARENTORGUARDIANRIDORUIN, templatejson.getParentOrGuardianRIDOrUIN());
+		attributes.put(TemplateConstant.PROOFOFADDRESS, getParameter(templatejson.getProofOfAddress()));
+		attributes.put(TemplateConstant.PROOFOFIDENTITY, getParameter(templatejson.getProofOfIdentity()));
+		attributes.put(TemplateConstant.PROOFOFRELATIONSHIP, getParameter(templatejson.getProofOfRelationship()));
+		attributes.put(TemplateConstant.PROOFOFDATEOFBIRTH, getParameter(templatejson.getProofOfDateOfBirth()));
+		attributes.put(TemplateConstant.INDIVIDUALBIOMETRICS, getParameter(templatejson.getIndividualBiometrics()));
+		attributes.put(TemplateConstant.LOCALADMINISTRATIVEAUTHORITY,
+				getParameter(templatejson.getLocalAdministrativeAuthority()));
+		attributes.put(TemplateConstant.IDSCHEMAVERSION, templatejson.getIdSchemaVersion());
+		attributes.put(TemplateConstant.CNIENUMBER, templatejson.getCnieNumber());
 
-			idjson = (IdentityJson) JsonUtils.jsonStringToJavaObject(IdentityJson.class, demographicInfo);
-
-			attributes.put(TemplateConstant.FULLNAME, getParameter(idjson.getIdentity().getFullName()));
-			attributes.put(TemplateConstant.DATEOFBIRTH, idjson.getIdentity().getDateOfBirth());
-
-			attributes.put(TemplateConstant.AGE, idjson.getIdentity().getAge());
-			attributes.put(TemplateConstant.ADDRESSLINE1, getParameter(idjson.getIdentity().getAddressLine1()));
-			attributes.put(TemplateConstant.ADDRESSLINE2, getParameter(idjson.getIdentity().getAddressLine2()));
-			attributes.put(TemplateConstant.ADDRESSLINE3, getParameter(idjson.getIdentity().getAddressLine3()));
-			attributes.put(TemplateConstant.REGION, getParameter(idjson.getIdentity().getRegion()));
-			attributes.put(TemplateConstant.PROVINCE, getParameter(idjson.getIdentity().getProvince()));
-			attributes.put(TemplateConstant.CITY, getParameter(idjson.getIdentity().getCity()));
-			attributes.put(TemplateConstant.POSTALCODE, idjson.getIdentity().getPostalCode());
-			attributes.put(TemplateConstant.PARENTORGUARDIANNAME,
-					getParameter(idjson.getIdentity().getParentOrGuardianName()));
-			attributes.put(TemplateConstant.PARENTORGUARDIANRIDORUIN,
-					idjson.getIdentity().getParentOrGuardianRIDOrUIN());
-			attributes.put(TemplateConstant.PROOFOFADDRESS, idjson.getIdentity().getProofOfAddress().getValue());
-			attributes.put(TemplateConstant.PROOFOFIDENTITY, idjson.getIdentity().getProofOfIdentity().getValue());
-			attributes.put(TemplateConstant.PROOFOFRELATIONSHIP,
-					idjson.getIdentity().getProofOfRelationship().getValue());
-			attributes.put(TemplateConstant.PROOFOFDATEOFBIRTH,
-					idjson.getIdentity().getProofOfDateOfBirth().getValue());
-			attributes.put(TemplateConstant.INDIVIDUALBIOMETRICS,
-					idjson.getIdentity().getIndividualBiometrics().getValue());
-			attributes.put(TemplateConstant.LOCALADMINISTRATIVEAUTHORITY,
-					getParameter(idjson.getIdentity().getLocalAdministrativeAuthority()));
-			attributes.put(TemplateConstant.IDSCHEMAVERSION, idjson.getIdentity().getIdSchemaVersion());
-			attributes.put(TemplateConstant.CNIENUMBER, idjson.getIdentity().getCnieNumber());
-
-		} catch (JsonParseException | JsonMappingException | io.mosip.kernel.core.exception.IOException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
-			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
-		}
-
+		return templatejson;
 	}
 
 	/**
 	 * Gets the parameter.
 	 *
-	 * @param values
-	 *            the values
+	 * @param jsonValues
+	 *            the json values
 	 * @return the parameter
 	 */
-	private String getParameter(List<ValuesDTO> values) {
+	private String getParameter(JsonValue[] jsonValues) {
 		String parameter = null;
-		if (values != null) {
-			for (int count = 0; count < values.size(); count++) {
-				String lang = values.get(count).getLanguage();
+		if (jsonValues != null) {
+			for (int count = 0; count < jsonValues.length; count++) {
+				String lang = jsonValues[count].getLanguage();
 				if (langCode.contains(lang)) {
-					parameter = values.get(count).getValue();
+					parameter = jsonValues[count].getValue();
 					break;
 				}
 			}
 		}
-
 		return parameter;
+	}
+
+	/**
+	 * Gets the keysand values.
+	 *
+	 * @param demographicJsonString
+	 *            the demographic json string
+	 * @return the keysand values
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	private NotificationTemplate getKeysandValues(String demographicJsonString) throws IOException {
+		NotificationTemplate template = new NotificationTemplate();
+
+		try {
+			// Get Identity Json from config server and map keys to Java Object
+			String templateJsonString = MessageSenderUtil.getJson(utility.getConfigServerFileStorageURL(),
+					utility.getGetRegProcessorTemplateJson());
+
+			ObjectMapper mapTemplateJsonStringToObject = new ObjectMapper();
+
+			regProcessorTemplateJson = mapTemplateJsonStringToObject.readValue(templateJsonString,
+					RegistrationProcessorNotificationTemplate.class);
+
+			JSONParser parser = new JSONParser();
+			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
+
+			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
+			if (demographicIdentity == null)
+				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+
+			template.setFirstName(getJsonValues(regProcessorTemplateJson.getFirstName()));
+			template.setEmailID((String) demographicIdentity.get(regProcessorTemplateJson.getEmailID()));
+			template.setPhoneNumber((String) demographicIdentity.get(regProcessorTemplateJson.getPhoneNumber()));
+			template.setDateOfBirth((String) demographicIdentity.get(regProcessorTemplateJson.getDateOfBirth()));
+			template.setAge((Integer) demographicIdentity.get(regProcessorTemplateJson.getAge()));
+			template.setAddressLine1(getJsonValues(regProcessorTemplateJson.getAddressLine1()));
+			template.setAddressLine2(getJsonValues(regProcessorTemplateJson.getAddressLine2()));
+			template.setAddressLine3(getJsonValues(regProcessorTemplateJson.getAddressLine3()));
+			template.setRegion(getJsonValues(regProcessorTemplateJson.getRegion()));
+			template.setProvince(getJsonValues(regProcessorTemplateJson.getProvince()));
+			template.setCity(getJsonValues(regProcessorTemplateJson.getCity()));
+			template.setPostalCode((String) demographicIdentity.get(regProcessorTemplateJson.getPostalCode()));
+			template.setParentOrGuardianName(getJsonValues(regProcessorTemplateJson.getParentOrGuardianName()));
+			template.setParentOrGuardianRIDOrUIN(
+					(String) demographicIdentity.get(regProcessorTemplateJson.getParentOrGuardianRIDOrUIN()));
+			template.setProofOfRelationship(getJsonValues(regProcessorTemplateJson.getProofOfRelationship()));
+			template.setProofOfAddress(getJsonValues(regProcessorTemplateJson.getProofOfAddress()));
+			template.setProofOfIdentity(getJsonValues(regProcessorTemplateJson.getProofOfIdentity()));
+			template.setProofOfDateOfBirth(getJsonValues(regProcessorTemplateJson.getProofOfDateOfBirth()));
+			template.setIndividualBiometrics(getJsonValues(regProcessorTemplateJson.getIndividualBiometrics()));
+			template.setLocalAdministrativeAuthority(
+					getJsonValues(regProcessorTemplateJson.getLocalAdministrativeAuthority()));
+			template.setIdSchemaVersion(
+					(Double) demographicIdentity.get(regProcessorTemplateJson.getIdSchemaVersion()));
+			template.setCnieNumber((Integer) demographicIdentity.get(regProcessorTemplateJson.getCnieNumber()));
+
+		} catch (ParseException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
+		}
+
+		return template;
+	}
+
+	/**
+	 * Gets the json values.
+	 *
+	 * @param identityKey
+	 *            the identity key
+	 * @return the json values
+	 */
+	private JsonValue[] getJsonValues(Object identityKey) {
+		JSONArray demographicJsonNode = null;
+		if (demographicIdentity != null)
+			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+
+		return (demographicJsonNode != null) ? mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode) : null;
+	}
+
+	/**
+	 * Map json node to java object.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param genericType
+	 *            the generic type
+	 * @param demographicJsonNode
+	 *            the demographic json node
+	 * @return the t[]
+	 */
+	@SuppressWarnings("unchecked")
+	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
+		String language;
+		String value;
+		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
+		try {
+			for (int i = 0; i < demographicJsonNode.size(); i++) {
+
+				T jsonNodeElement = (T) genericType.newInstance();
+
+				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				language = (String) objects.get(LANGUAGE);
+				value = (String) objects.get(VALUE);
+
+				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
+				languageField.setAccessible(true);
+				languageField.set(jsonNodeElement, language);
+
+				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
+				valueField.setAccessible(true);
+				valueField.set(jsonNodeElement, value);
+
+				javaObject[i] = jsonNodeElement;
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "Error while Creating Instance of generic type" + ExceptionUtils.getStackTrace(e));
+			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
+					e);
+
+		} catch (NoSuchFieldException | SecurityException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					null, "no such field exception" + ExceptionUtils.getStackTrace(e));
+			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
+
+		}
+
+		return javaObject;
+
 	}
 
 }
