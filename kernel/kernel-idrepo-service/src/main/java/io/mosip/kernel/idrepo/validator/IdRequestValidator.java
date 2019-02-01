@@ -162,14 +162,12 @@ public class IdRequestValidator implements Validator {
 		if (!errors.hasErrors()) {
 			if (request.getId().equals(id.get(CREATE))) {
 				validateStatus(request.getStatus(), errors, CREATE);
+				validateRequest(request.getRequest(), errors, CREATE);
 			} else if (request.getId().equals(id.get(UPDATE))) {
 				validateStatus(request.getStatus(), errors, UPDATE);
+				validateRequest(request.getRequest(), errors, UPDATE);
 			}
 			validateRegId(request.getRegistrationId(), errors);
-		}
-
-		if (!errors.hasErrors()) {
-			validateRequest(request.getRequest(), errors);
 		}
 
 	}
@@ -257,9 +255,10 @@ public class IdRequestValidator implements Validator {
 	 *            the request
 	 * @param errors
 	 *            the errors
+	 * @param method
 	 */
 	@SuppressWarnings("rawtypes")
-	private void validateRequest(Object request, Errors errors) {
+	private void validateRequest(Object request, Errors errors, String method) {
 		try {
 			if (Objects.nonNull(request)) {
 				Map<String, Object> requestMap = convertToMap(request);
@@ -270,8 +269,10 @@ public class IdRequestValidator implements Validator {
 					requestMap.remove(DOCUMENTS);
 				}
 				if (!(requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY)))) {
-					errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+					if (method.equals(CREATE)) {
+						errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), String
+								.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
+					}
 				} else if (((Map) requestMap.get(IDENTITY)).isEmpty()) {
 					errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY));
@@ -279,7 +280,7 @@ public class IdRequestValidator implements Validator {
 					jsonValidator.validateJson(mapper.writeValueAsString(requestMap),
 							env.getProperty(JSON_SCHEMA_FILE_NAME));
 				}
-			} else {
+			} else if (method.equals(CREATE)) {
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 			}
@@ -288,7 +289,10 @@ public class IdRequestValidator implements Validator {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST));
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY + " - "
+							+ StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "\""), "\"")
+							+ " at /"
+							+ StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "/"), "\"")));
 		} catch (FileIOException | NullJsonSchemaException | NullJsonNodeException | JsonSchemaIOException e) {
 			mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));
@@ -326,14 +330,14 @@ public class IdRequestValidator implements Validator {
 										(VALIDATE_REQUEST + "- validateDocuments failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												doc.get(DOC_CAT)));
+												" - Documents - " + doc.get(DOC_CAT)));
 							}
 							if (StringUtils.isEmpty(doc.get("value"))) {
 								mosipLogger.error(SESSION_ID, ID_REPO, ID_REQUEST_VALIDATOR,
 										(VALIDATE_REQUEST + "- empty doc value failed for " + doc.get(DOC_CAT)));
 								errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 										String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-												doc.get(DOC_CAT)));
+												" - Documents - " + doc.get(DOC_CAT)));
 							}
 						});
 			}
