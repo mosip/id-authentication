@@ -339,9 +339,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
 								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
 						.get();
-				Map<String, Object> addr = SessionContext.getInstance().getMapObject();
+				Map<String, Object> addr = sessionContextMap;
 				addr.put("PrevAddress", addressDTO);
-				SessionContext.getInstance().setMapObject(addr);
 			}
 		}
 	}
@@ -390,7 +389,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	}
 
 	private RegistrationDTO getRegistrationDTOFromSession() {
-		return (RegistrationDTO) SessionContext.getInstance().getMapObject()
+		return (RegistrationDTO) sessionContextMap
 				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 }

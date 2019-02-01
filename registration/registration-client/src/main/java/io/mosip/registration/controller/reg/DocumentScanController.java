@@ -141,8 +141,7 @@ public class DocumentScanController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		try {
 			auditFactory.audit(AuditEvent.GET_REGISTRATION_CONTROLLER, Components.REGISTRATION_CONTROLLER,
-					"initializing the registration controller",
-					SessionContext.getInstance().getUserContext().getUserId(),
+					"initializing the registration controller", sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			isChild = true;
@@ -304,25 +303,25 @@ public class DocumentScanController extends BaseController {
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
-					loadMapObject().put("poa", poaDocuments.getValue());
+					sessionContextMap.put("poa", poaDocuments.getValue());
 					break;
 				case RegistrationConstants.POI_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
-					loadMapObject().put("poi", poiDocuments.getValue());
+					sessionContextMap.put("poi", poiDocuments.getValue());
 					break;
 				case RegistrationConstants.POR_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
-					loadMapObject().put("por", porDocuments.getValue());
+					sessionContextMap.put("por", porDocuments.getValue());
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
-					loadMapObject().put("dob", dobDocuments.getValue());
+					sessionContextMap.put("dob", dobDocuments.getValue());
 					break;
 				default:
 				}
@@ -395,25 +394,25 @@ public class DocumentScanController extends BaseController {
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfAddress(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poaDocuments.getValue(), poaBox, byteArray);
-					loadMapObject().put("poa", poaDocuments.getValue());
+					sessionContextMap.put("poa", poaDocuments.getValue());
 					break;
 				case RegistrationConstants.POI_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfIdentity(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, poiDocuments.getValue(), poiBox, byteArray);
-					loadMapObject().put("poi", poiDocuments.getValue());
+					sessionContextMap.put("poi", poiDocuments.getValue());
 					break;
 				case RegistrationConstants.POR_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfRelationship(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, porDocuments.getValue(), porBox, byteArray);
-					loadMapObject().put("por", porDocuments.getValue());
+					sessionContextMap.put("por", porDocuments.getValue());
 					break;
 				case RegistrationConstants.DOB_DOCUMENT:
 					getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().getIdentity()
 							.setProofOfDateOfBirth(documentDetailsDTO);
 					attachDocuments(documentDetailsDTO, dobDocuments.getValue(), dobBox, byteArray);
-					loadMapObject().put("dob", dobDocuments.getValue());
+					sessionContextMap.put("dob", dobDocuments.getValue());
 					break;
 				default:
 				}
@@ -425,10 +424,6 @@ public class DocumentScanController extends BaseController {
 						RegistrationConstants.APPLICATION_ID, "Documents added successfully");
 			}
 		}
-	}
-
-	private Map<String, Object> loadMapObject() {
-		return SessionContext.getInstance().getMapObject();
 	}
 
 	/**
@@ -706,7 +701,7 @@ public class DocumentScanController extends BaseController {
 	}
 
 	public RegistrationDTO getRegistrationDtoContent() {
-		return (RegistrationDTO) loadMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+		return (RegistrationDTO) sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 
 	protected void prepareEditPageContent() {
@@ -731,10 +726,10 @@ public class DocumentScanController extends BaseController {
 						identity.getProofOfDateOfBirth().getFormat(), dobBox);
 			}
 		}
-		poaDocuments.setValue((String) loadMapObject().get("poa"));
-		poiDocuments.setValue((String) loadMapObject().get("poi"));
-		porDocuments.setValue((String) loadMapObject().get("por"));
-		dobDocuments.setValue((String) loadMapObject().get("dob"));
+		poaDocuments.setValue((String) sessionContextMap.get("poa"));
+		poiDocuments.setValue((String) sessionContextMap.get("poi"));
+		porDocuments.setValue((String) sessionContextMap.get("por"));
+		dobDocuments.setValue((String) sessionContextMap.get("dob"));
 
 	}
 
