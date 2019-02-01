@@ -119,6 +119,7 @@ public class OtpNotificationUtil {
 	 *            the sms template provided.
 	 */
 	public void sendSmsNotification(String number, String smsTemplate) {
+
 		SmsRequestDto smsRequest = new SmsRequestDto();
 
 		smsRequest.setNumber(number);
