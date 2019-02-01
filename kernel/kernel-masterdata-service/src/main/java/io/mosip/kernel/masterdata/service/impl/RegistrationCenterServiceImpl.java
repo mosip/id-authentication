@@ -518,7 +518,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (Entry<Integer, List<Location>> data : levelToListOfLocationMap.entrySet()) {
 			if (!isParent) {
 				for (Location location : data.getValue()) {
-					if (text.equalsIgnoreCase(location.getName())) {
+					if (text.trim().equalsIgnoreCase(location.getName().trim())) {
 						uniqueLocCode.add(location.getCode());
 						isParent = true;
 						break;// parent code set
