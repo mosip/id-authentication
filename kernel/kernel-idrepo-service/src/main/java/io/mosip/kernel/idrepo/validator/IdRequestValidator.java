@@ -291,7 +291,7 @@ public class IdRequestValidator implements Validator {
 			errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), IDENTITY + " - "
 							+ StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "\""), "\"")
-							+ "at /"
+							+ " at /"
 							+ (StringUtils.isEmpty(
 									StringUtils.substringBefore(StringUtils.substringAfter(e.getMessage(), "/"), "\""))
 											? IDENTITY
