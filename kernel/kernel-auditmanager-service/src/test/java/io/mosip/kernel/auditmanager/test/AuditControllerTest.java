@@ -53,7 +53,7 @@ public class AuditControllerTest {
 		when(service.addAudit(ArgumentMatchers.any())).thenReturn(auditResponseDto);
 
 		assertThat(controller.addAudit(auditRequestDto),
-				is(new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.CREATED)));
+				is(new ResponseEntity<>(service.addAudit(auditRequestDto), HttpStatus.OK)));
 
 	}
 

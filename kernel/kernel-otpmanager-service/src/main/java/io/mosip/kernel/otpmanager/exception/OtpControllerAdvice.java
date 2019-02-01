@@ -39,8 +39,8 @@ public class OtpControllerAdvice {
 					OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorMessage());
 			errorResponse.getErrors().add(error);
 		});
-		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	/**
@@ -55,8 +55,8 @@ public class OtpControllerAdvice {
 			final OtpInvalidArgumentException exception) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().addAll(exception.getList());
-		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class OtpControllerAdvice {
 			final RequiredKeyNotFoundException exception) {
 		ErrorResponse<ServiceError> errorResponse = new ErrorResponse<>();
 		errorResponse.getErrors().addAll(exception.getList());
-		errorResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+		errorResponse.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 }
