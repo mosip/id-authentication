@@ -108,7 +108,7 @@ public class DecryptorTest {
 	
 	@Test(expected = PacketDecryptionFailureException.class)
 	public void invalidPacketFormatTest() throws PacketDecryptionFailureException {
-		InputStream decryptedStream = decryptor.decrypt(inputStream, "8407149396000032019011014");
+		InputStream decryptedStream = decryptor.decrypt(inputStream, "019011014");
 
 	}
 	@Test(expected = PacketDecryptionFailureException.class)
