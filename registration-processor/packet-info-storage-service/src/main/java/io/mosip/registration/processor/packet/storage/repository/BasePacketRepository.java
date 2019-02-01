@@ -27,7 +27,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Find by user id.
 	 *
-	 * @param qcuserId the qcuser id
+	 * @param qcuserId
+	 *            the qcuser id
 	 * @return the list
 	 */
 	@Query("SELECT qcUser FROM QcuserRegistrationIdEntity qcUser WHERE qcUser.id.usrId=:qcuserId")
@@ -36,7 +37,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Gets the applicant info.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant info
 	 */
 	@Query("SELECT ape,ide FROM ApplicantPhotographEntity ape, IndividualDemographicDedupeEntity ide"
@@ -46,7 +48,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Find by reg osi id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	@Query("SELECT osi FROM RegOsiEntity osi WHERE osi.id.regId=:regId")
@@ -55,7 +58,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Find demo by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	@Query("SELECT demo FROM IndividualDemographicDedupeEntity demo WHERE demo.id.regId=:regId")
@@ -64,7 +68,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Gets the applicant iris image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant iris image name by id
 	 */
 	@Query("SELECT applicant.imageName FROM ApplicantIrisEntity applicant WHERE applicant.id.regId=:regId")
@@ -73,7 +78,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Gets the applicant finger print image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant finger print image name by id
 	 */
 	@Query("SELECT applicant.imageName FROM ApplicantFingerprintEntity applicant WHERE applicant.id.regId=:regId")
@@ -83,7 +89,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * This method gets the first created registration record
 	 * {@link ManualVerificationEntity} with the specified status.
 	 *
-	 * @param statusCode            The statusCode
+	 * @param statusCode
+	 *            The statusCode
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query(value = "SELECT mve FROM ManualVerificationEntity mve WHERE mve.crDtimes in "
@@ -94,10 +101,14 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	 * This method returns {@link ManualVerificationEntity} corresponding to
 	 * specified registration Id and manual verifier user Id.
 	 *
-	 * @param regId            The registration Id
-	 * @param refId the ref id
-	 * @param mvUserId            The manual verifier user Id
-	 * @param statusCode the status code
+	 * @param regId
+	 *            The registration Id
+	 * @param refId
+	 *            the ref id
+	 * @param mvUserId
+	 *            The manual verifier user Id
+	 * @param statusCode
+	 *            the status code
 	 * @return {@link ManualVerificationEntity}
 	 */
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.id.regId=:regId and mve.mvUsrId=:mvUserId and mve.id.matchedRefId=:refId and mve.statusCode=:statusCode")
@@ -107,8 +118,10 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Gets the assigned applicant details.
 	 *
-	 * @param mvUserId the mv user id
-	 * @param statusCode the status code
+	 * @param mvUserId
+	 *            the mv user id
+	 * @param statusCode
+	 *            the status code
 	 * @return the assigned applicant details
 	 */
 	@Query("SELECT mve FROM ManualVerificationEntity mve where mve.mvUsrId=:mvUserId and mve.statusCode=:statusCode")
@@ -118,7 +131,8 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	/**
 	 * Update is active if duplicate found.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 */
 	@Modifying
 	@Transactional
@@ -128,37 +142,39 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Modifying
 	@Transactional
 	@Query("UPDATE  IndividualDemographicDedupeEntity demo SET  demo.uin =:uin WHERE demo.id.regId =:regId")
-	public void updateUinWrtRegistraionId(@Param("regId") String regId,@Param("uin") String uin);
-
+	public void updateUinWrtRegistraionId(@Param("regId") String regId, @Param("uin") String uin);
 
 	/**
 	 * Gets the reg id by UIN.
 	 *
-	 * @param uin the uin
+	 * @param uin
+	 *            the uin
 	 * @return the reg id by UIN
 	 */
 
 	@Query("SELECT demo.id.regId FROM IndividualDemographicDedupeEntity demo WHERE demo.uin =:uin")
-	public List<String> getRegIdByUIN(@Param("uin")String uin);
-	
+	public List<String> getRegIdByUIN(@Param("uin") String uin);
+
 	@Query("SELECT app FROM ApplicantDocumentEntity app WHERE app.id.regId=:regId")
-	public List<E> getDocumentsByRegId(@Param("regId")String regId);
+	public List<E> getDocumentsByRegId(@Param("regId") String regId);
 
 	/**
 	 * Gets the reference id by rid.
 	 *
-	 * @param rid the rid
+	 * @param rid
+	 *            the rid
 	 * @return the reference id by rid
 	 */
 	@Query("SELECT abis.abisRefId FROM RegAbisRefEntity abis WHERE abis.id.regId =:rid")
-	public List<String> getReferenceIdByRid(@Param("rid")String rid);
+	public List<String> getReferenceIdByRid(@Param("rid") String rid);
 
 	/**
 	 * Gets the rid by reference id.
 	 *
-	 * @param refId the ref id
+	 * @param refId
+	 *            the ref id
 	 * @return the rid by reference id
 	 */
 	@Query("SELECT abis.id.regId FROM RegAbisRefEntity abis WHERE abis.abisRefId =:refId")
-	public List<String> getRidByReferenceId(@Param("refId")String refId);
+	public List<String> getRidByReferenceId(@Param("refId") String refId);
 }
