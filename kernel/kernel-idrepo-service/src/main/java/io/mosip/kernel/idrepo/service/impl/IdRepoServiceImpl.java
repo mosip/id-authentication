@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -62,7 +63,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.idrepo.config.IdRepoLogger;
 import io.mosip.kernel.idrepo.controller.IdRepoController;
 import io.mosip.kernel.idrepo.dto.Documents;
@@ -289,7 +289,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 	@Transactional
 	public Uin addIdentity(String uin, String regId, byte[] identityInfo, List<Documents> documents)
 			throws IdRepoAppException {
-		String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, "MOSIP.IDRepo").toString();
+		String uinRefId = UUID.randomUUID().toString();
 
 		if (!uinRepo.existsByRegId(regId) && !uinRepo.existsByUin(uin)) {
 			List<UinDocument> docList = new ArrayList<>();
@@ -342,7 +342,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 			JsonNode docType = identityObject.get(doc.getCategory());
 			try {
 				if (StringUtils.equalsIgnoreCase(docType.get(FORMAT).asText(), CBEFF)) {
-					String fileRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, "MOSIP.IDRepo").toString();
+					String fileRefId = UUID.randomUUID().toString();
 					byte[] cbeffDoc = convertToFMR(doc.getCategory(), doc.getValue());
 
 					dfsProvider.storeFile(uin, BIOMETRICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
@@ -356,7 +356,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, IdResponse
 							CREATED_BY, now(), UPDATED_BY, now(), false, now()));
 
 				} else {
-					String fileRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, "MOSIP.IDRepo").toString();
+					String fileRefId = UUID.randomUUID().toString();
 
 					dfsProvider.storeFile(uin, DEMOGRAPHICS + SLASH + fileRefId + DOT + docType.get(FORMAT).asText(),
 							CryptoUtil.decodeBase64(doc.getValue()));

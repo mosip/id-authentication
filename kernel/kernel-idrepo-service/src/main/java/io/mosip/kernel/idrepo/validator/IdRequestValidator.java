@@ -264,7 +264,7 @@ public class IdRequestValidator implements Validator {
 			if (Objects.nonNull(request)) {
 				Map<String, Object> requestMap = convertToMap(request);
 				if (requestMap.containsKey(DOCUMENTS)) {
-					if (requestMap.containsKey(IDENTITY)) {
+					if (requestMap.containsKey(IDENTITY) && Objects.nonNull(requestMap.get(IDENTITY))) {
 						validateDocuments(requestMap.get(DOCUMENTS), requestMap.get(IDENTITY), errors);
 					}
 					requestMap.remove(DOCUMENTS);
