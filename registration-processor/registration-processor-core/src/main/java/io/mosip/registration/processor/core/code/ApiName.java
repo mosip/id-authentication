@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.code;
 
+
 /**
  * The Enum ApiName.
  * 
@@ -30,13 +31,13 @@ public enum ApiName {
 
 	/** The regsync. */
 	REGSYNC,
-
+	
 	/** The machine history. */
 	MACHINEHISTORY,
-
+	
 	/** The center history. */
 	CENTERHISTORY,
-
+	
 	/** The center-machine-user history. */
 	CENTERUSERMACHINEHISTORY,
 
@@ -68,6 +69,15 @@ public enum ApiName {
 	CRYPTOMANAGERDECRYPT,
 
 	/** The ReverseDataSync **/
-	REVERSEDATASYNC
+	REVERSEDATASYNC,
+
+    /** The Device history **/
+	DEVICESHISTORIES,
+
+    /** The Reg center device history **/
+	REGISTRATIONCENTERDEVICEHISTORY,
+
+    /** The registration center timestamp **/
+	REGISTRATIONCENTERTIMESTAMP
 
 }

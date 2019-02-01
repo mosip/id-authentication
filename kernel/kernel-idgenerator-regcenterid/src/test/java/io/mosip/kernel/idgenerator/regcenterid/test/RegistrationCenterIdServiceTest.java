@@ -23,8 +23,11 @@ import io.mosip.kernel.idgenerator.regcenterid.repository.RegistrationCenterIdRe
 @RunWith(SpringRunner.class)
 public class RegistrationCenterIdServiceTest {
 
+	@Value("${mosip.kernel.rcid.test.valid-initial-rcid}")
+	private int initialRcid;
+	
 	@Value("${mosip.kernel.rcid.test.valid-new-rcid}")
-	private String newRcid;
+	private int newRcid;
 	
 	@Autowired
 	RegistrationCenterIdGenerator<String> service;
@@ -32,24 +35,24 @@ public class RegistrationCenterIdServiceTest {
 	@MockBean
 	RegistrationCenterIdRepository repository;
 
-	//@Test
+	@Test
 	public void generateRegistrationCenterIdTest() {
 		RegistrationCenterId entity = new RegistrationCenterId();
-		entity.setRcid(1000);
+		entity.setRcid(initialRcid);
 		when(repository.findLastRCID()).thenReturn(null);
 		when(repository.save(Mockito.any())).thenReturn(entity);
-		assertThat(service.generateRegistrationCenterId(), is("1000"));
+		assertThat(service.generateRegistrationCenterId(), is(Integer.toString(initialRcid)));
 	}
 
 	@Test
 	public void generateRegCenterIdTest() {
 		RegistrationCenterId entity = new RegistrationCenterId();
-		entity.setRcid(1000);
+		entity.setRcid(initialRcid);
 		RegistrationCenterId entityResponse = new RegistrationCenterId();
 		entityResponse.setRcid(1001);
 		when(repository.findLastRCID()).thenReturn(entity);
 		when(repository.save(Mockito.any())).thenReturn(entityResponse);
-		assertThat(service.generateRegistrationCenterId(), is(newRcid));
+		assertThat(service.generateRegistrationCenterId(), is(Integer.toString(newRcid)));
 	}
 
 	@Test(expected = RegistrationCenterIdServiceException.class)

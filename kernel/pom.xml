@@ -142,6 +142,7 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-qrcodegenerator-zxing</module>
+		<module>kernel-cbeffutil-api</module>
 
 		<!-- <module>kernel-uingenerator-service</module> -->
 		<module>kernel-masterdata-service</module>

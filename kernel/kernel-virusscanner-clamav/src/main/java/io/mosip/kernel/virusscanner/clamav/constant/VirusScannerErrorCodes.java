@@ -14,4 +14,6 @@ public class VirusScannerErrorCodes {
 	private static final String IIS_EPP_EPV_PREFIX_GEN_MODULE = IIS_EPP_EPV_PREFIX + "GEN_";
 	public static final String IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE = IIS_EPP_EPV_PREFIX_GEN_MODULE
 			+ "ANTIVIRUS_SERVICE_NOT_ACCESSIBLE";
+	public static final String IIS_EPP_EPV_FILE_NOT_PRESENT = IIS_EPP_EPV_PREFIX_GEN_MODULE
+			+ "FILE_NOT_PRESENT_FOR_SCAN";
 }

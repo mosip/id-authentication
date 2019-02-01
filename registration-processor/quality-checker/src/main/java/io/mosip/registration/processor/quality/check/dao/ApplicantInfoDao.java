@@ -151,7 +151,6 @@ public class ApplicantInfoDao {
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-		demo.setPhoneticName(object.getPhoneticName());
 
 
 		return demo;
