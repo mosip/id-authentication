@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.velocity.runtime.Runtime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -143,6 +142,9 @@ public class PacketUploadServiceTest {
 		packetList.add(registration);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
 		packetUploadServiceImpl.uploadPacket("123456789");
+		assertEquals("PUSHED", registration.getClientStatusCode());
+		assertEquals("S", registration.getFileUploadStatus());
+
 
 	}
 	
@@ -164,7 +166,7 @@ public class PacketUploadServiceTest {
 		packetList.add(registration);
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration1);
 		packetUploadServiceImpl.uploadPacket("123456789");
-
+		assertEquals("E", registration.getFileUploadStatus());
 	}
 	
 	@Test
@@ -177,6 +179,8 @@ public class PacketUploadServiceTest {
 		regList.add(registration);
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(),Mockito.anyString())).thenReturn(registration);
 		packetUploadServiceImpl.uploadPacket("123456789");
+		assertEquals(null, registration.getFileUploadStatus());
+
 	}
 	
 	@Test(expected=RegBaseUncheckedException.class)
@@ -195,6 +199,7 @@ public class PacketUploadServiceTest {
 		.thenThrow(new RuntimeException());
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
+		assertEquals("E", registration.getFileUploadStatus());
 
 	}
 	
@@ -214,6 +219,7 @@ public class PacketUploadServiceTest {
 		.thenThrow(new HttpClientErrorException(HttpStatus.ACCEPTED));
 		packetUploadServiceImpl.uploadPacket("12345");
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
+		assertEquals("E", registration.getFileUploadStatus());
 
 	}
 }
