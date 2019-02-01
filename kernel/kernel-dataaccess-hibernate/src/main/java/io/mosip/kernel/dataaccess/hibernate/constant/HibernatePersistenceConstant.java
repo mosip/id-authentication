@@ -24,12 +24,7 @@ public class HibernatePersistenceConstant {
 	/**
 	 * The string constant jdbc url
 	 */
-	public static final String JDBC_CONNECTION_STRING = "javax.persistence.connection_string";
-	
-	/**
-	 * The string constant jdbc url
-	 */
-	public static final String JDBC_SCHEMA_NAME = "javax.persistence.schema_name";
+	public static final String JDBC_URL = "javax.persistence.jdbc.url";
 
 	/**
 	 * The string constant jdbc password
