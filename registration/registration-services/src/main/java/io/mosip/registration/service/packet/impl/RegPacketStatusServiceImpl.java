@@ -65,12 +65,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusServiceImpl.class);
 
-	/**
-	 * Required no days to maintain registrations
-	 */
-	@Value("${REG_NO_OF_DAYS_LIMIT_TO_DELETE}")
-	private int noOfDays;
-
+	
 	private HashMap<String, Registration> registrationMap = new HashMap<>();
 
 	/*
@@ -118,7 +113,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		/* Get Calendar instance */
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
-		cal.add(Calendar.DATE, -noOfDays);
+		cal.add(Calendar.DATE, -(Integer.parseInt(getGlobalConfigValueOf(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS))));
 
 		/* To-Date */
 		return new Timestamp(cal.getTimeInMillis());

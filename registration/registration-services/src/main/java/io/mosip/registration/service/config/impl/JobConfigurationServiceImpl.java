@@ -67,8 +67,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Autowired
 	private SyncJobControlDAO syncJobDAO;
 
-	
-
 	/**
 	 * LOGGER for logging
 	 */
@@ -85,9 +83,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private Map<String, SyncJobDef> syncJobMap = new HashMap<>();
 
 	private boolean isSchedulerRunning = false;
-
-	@Value("${SYNC_TRANSACTION_NO_OF_DAYS_LIMIT}")
-	private int syncTransactionHistoryLimitDays;
 
 	private ApplicationContext applicationContext;
 
@@ -389,7 +384,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		String val = getGlobalConfigValueOf(RegistrationConstants.SYNC_TRANSACTION_NO_OF_DAYS_LIMIT);
-		
+
 		if (val != null) {
 			int syncTransactionConfiguredDays = Integer.parseInt(val);
 

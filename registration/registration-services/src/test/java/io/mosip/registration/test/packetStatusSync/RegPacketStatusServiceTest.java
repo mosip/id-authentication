@@ -5,11 +5,14 @@ import static org.mockito.Mockito.when;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -43,6 +46,20 @@ public class RegPacketStatusServiceTest {
 
 	@Mock
 	RegistrationDAO registrationDAO;
+	
+	@Mock
+	io.mosip.registration.context.ApplicationContext context;
+	
+	
+	@Before
+	public void initiate() {
+		Map<String,Object> applicationMap =new HashMap<>();
+		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
+		
+		when(context.getApplicationMap()).thenReturn(applicationMap);
+		
+
+	}
 
 	@Test
 	public void packetSyncStatusSuccessTest()
