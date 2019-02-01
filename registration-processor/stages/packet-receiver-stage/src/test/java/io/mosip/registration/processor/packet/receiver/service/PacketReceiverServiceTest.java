@@ -86,28 +86,52 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	PacketReceiverStage packetReceiverStage;
-	
+
 	@Mock
 	private Environment env;
-	
+
 	@Mock
 	private RegistrationStatusMapUtil registrationStatusMapUtil;
 
-
 	@InjectMocks
-	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl(); /*{
-
-		@Override
-		public String getFileExtension() {
-			return fileExtension;
-		}
-
-		@Override
-		public long getMaxFileSize() {
-			// max file size 5 mb
-			return (5 * 1024 * 1024);
-		}
-	};*/
+	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl(); /*
+																													 * {
+																													 * 
+																													 * @Override
+																													 * public
+																													 * String
+																													 * getFileExtension
+																													 * (
+																													 * )
+																													 * {
+																													 * return
+																													 * fileExtension;
+																													 * }
+																													 * 
+																													 * @Override
+																													 * public
+																													 * long
+																													 * getMaxFileSize
+																													 * (
+																													 * )
+																													 * {
+																													 * //
+																													 * max
+																													 * file
+																													 * size
+																													 * 5
+																													 * mb
+																													 * return
+																													 * (5
+																													 * *
+																													 * 1024
+																													 * *
+																													 * 1024
+																													 * )
+																													 * ;
+																													 * }
+																													 * };
+																													 */
 
 	SyncRegistrationEntity regEntity;
 
@@ -117,8 +141,7 @@ public class PacketReceiverServiceTest {
 
 	List<RegistrationStatusDto> registrations = new ArrayList<>();
 	RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
-	
-	
+
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -135,14 +158,14 @@ public class PacketReceiverServiceTest {
 		regEntity.setStatusCode("NEW_REGISTRATION");
 		regEntity.setStatusComment("registration begins");
 
-		
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
 		registrationStatusDto.setRetryCount(2);
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
-	Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
-Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(RegistrationExternalStatusCode.RESEND);
-		
+		Mockito.when(registrationStatusService.getByIds(ArgumentMatchers.anyString())).thenReturn(registrations);
+		Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(RegistrationExternalStatusCode.RESEND);
+
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -192,33 +215,24 @@ Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
 
 		Mockito.doNothing().when(fileManager).put(mockMultipartFile.getOriginalFilename(),
 				mockMultipartFile.getInputStream(), DirectoryPathDto.LANDING_ZONE);
-		
-		
+
 		boolean successResult = packetReceiverService.storePacket(mockMultipartFile);
 
 		assertEquals(true, successResult);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test(expected = DuplicateUploadRequestException.class)
-	public void testDuplicateUploadRequest() throws IOException, URISyntaxException {
+	@Test
+	public void testDuplicateUploadRequest() throws IOException, URISyntaxException, DuplicateUploadRequestException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
 		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
-
 		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
-
 		packetReceiverService.storePacket(mockMultipartFile);
 
-		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
-			@Override
-			public boolean matches(final ILoggingEvent argument) {
-				return ((LoggingEvent) argument).getFormattedMessage().contains("The file is already available");
-			}
-		}));
 	}
 
 	@SuppressWarnings("unchecked")

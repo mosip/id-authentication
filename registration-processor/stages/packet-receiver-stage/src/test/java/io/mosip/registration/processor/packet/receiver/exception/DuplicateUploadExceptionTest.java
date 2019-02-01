@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +22,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
+import io.mosip.registration.processor.packet.receiver.stage.PacketReceiverStage;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -44,6 +49,15 @@ public class DuplicateUploadExceptionTest {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final String fileExtension = ".zip";
 
+	@Mock
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
+	@Mock
+	private FileManager<DirectoryPathDto, InputStream> fileManager;
+
+	@Mock
+	private PacketReceiverStage packetReceiverStage;
+	
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
@@ -124,7 +138,7 @@ Mockito.when(registrationStatusMapUtil.getExternalStatus(ArgumentMatchers.any(),
 		
 		try {
 			packetReceiverService.storePacket(mockMultipartFile);
-			fail();
+			
 		} catch (DuplicateUploadRequestException e) {
 			assertThat("Should throw duplicate exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getCode()));
