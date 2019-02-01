@@ -100,7 +100,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		CompletableFuture<List<RegistrationCenterUserMachineMappingDto>> registrationCenterUserMachines = null;
 		CompletableFuture<List<RegistrationCenterUserDto>> registrationCenterUsers = null;
 
-		// get data
 		applications = serviceHelper.getApplications(lastUpdated);
 		machineDetails = serviceHelper.getMachines(machineId, lastUpdated);
 		registrationCenters = serviceHelper.getRegistrationCenter(machineId, lastUpdated);
@@ -136,8 +135,6 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 		registrationCenterMachineDevices = serviceHelper.getRegistrationCenterMachineDevices(regId, lastUpdated);
 		registrationCenterUserMachines = serviceHelper.getRegistrationCenterUserMachines(regId, lastUpdated);
 		registrationCenterUsers = serviceHelper.getRegistrationCenterUsers(regId, lastUpdated);
-
-		// set data
 
 		CompletableFuture
 				.allOf(applications, machineDetails, registrationCenterTypes, registrationCenters, templates,
