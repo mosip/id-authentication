@@ -125,7 +125,11 @@ public class LicenseKeyManagerUtil {
 		}
 	}
 
-	public boolean isLicenseExpired(LocalDateTime licenseCreatedAt) {
+	/**
+	 * @param licenseCreatedAt
+	 * @return
+	 */
+	public boolean isValidLicense(LocalDateTime licenseCreatedAt) {
 		return licenseCreatedAt.until(getCurrentTimeInUTCTimeZone(), ChronoUnit.DAYS) < Integer
 				.parseInt(licenseKeyExpiryPeriod);
 	}

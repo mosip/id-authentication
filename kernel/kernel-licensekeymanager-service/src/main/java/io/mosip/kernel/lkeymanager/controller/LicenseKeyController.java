@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.licensekeymanager.spi.LicenseKeyManagerService;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationDto;
+import io.mosip.kernel.lkeymanager.dto.LicenseKeyGenerationResponseDto;
 import io.mosip.kernel.lkeymanager.dto.LicenseKeyMappingDto;
 
 /**
@@ -41,9 +42,11 @@ public class LicenseKeyController {
 	 * @return the response entity.
 	 */
 	@PostMapping(value = "/v1.0/license/generate")
-	public ResponseEntity<String> generateLicenseKey(@RequestBody LicenseKeyGenerationDto licenseKeyGenerationDto) {
-		return new ResponseEntity<>(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto),
-				HttpStatus.OK);
+	public ResponseEntity<LicenseKeyGenerationResponseDto> generateLicenseKey(
+			@RequestBody LicenseKeyGenerationDto licenseKeyGenerationDto) {
+		LicenseKeyGenerationResponseDto responseDto = new LicenseKeyGenerationResponseDto();
+		responseDto.setLicenseKey(licenseKeyManagerService.generateLicenseKey(licenseKeyGenerationDto));
+		return new ResponseEntity<>(responseDto, HttpStatus.OK);
 	}
 
 	/**

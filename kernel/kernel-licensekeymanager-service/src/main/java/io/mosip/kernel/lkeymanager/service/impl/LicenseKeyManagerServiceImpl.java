@@ -95,7 +95,7 @@ public class LicenseKeyManagerServiceImpl
 		licenseKeyManagerUtil.hasNullOrEmptyParameters(tspID, licenseKey);
 		List<String> permissionsList = new ArrayList<>();
 		LicenseKey licenseKeyDetails = licenseKeyRepository.findByTspIdAndLKey(tspID, licenseKey);
-		if (licenseKeyDetails != null && licenseKeyManagerUtil.isLicenseExpired(licenseKeyDetails.getCreatedAt())) {
+		if (licenseKeyDetails != null && licenseKeyManagerUtil.isValidLicense(licenseKeyDetails.getCreatedAt())) {
 			List<LicenseKeyPermissions> licenseKeyPermissions = licenseKeyPermissionsRepository.findByTspId(tspID);
 			licenseKeyPermissions.forEach(permission -> permissionsList.add(permission.getPermission()));
 		}
