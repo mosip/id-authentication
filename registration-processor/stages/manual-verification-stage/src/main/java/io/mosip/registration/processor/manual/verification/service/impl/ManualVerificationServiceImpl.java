@@ -24,6 +24,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
+import io.mosip.registration.processor.manual.verification.exception.InvalidFieldsException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidFileNameException;
 import io.mosip.registration.processor.manual.verification.exception.InvalidUpdateException;
 import io.mosip.registration.processor.manual.verification.exception.NoRecordAssignedException;
@@ -69,7 +70,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	/** The manual verification stage. */
 	@Autowired
 	private ManualVerificationStage manualVerificationStage;
-	
+
 	/*	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.processor.manual.adjudication.service.
@@ -78,11 +79,22 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 */
 	@Override
 	public ManualVerificationDTO assignApplicant(UserDto dto) {
+		
+		
+		if(dto.getUserId() == null || dto.getUserId().trim().equals("")) {
+			throw new InvalidFieldsException( PlatformErrorMessages.RPR_MVS_INVALID_FIELD.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_FIELD.getMessage());
+		
+		}
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
 		ManualVerificationEntity manualVerificationEntity;
+		if(validateManualVerificationDTO(manualVerificationDTO)) {
+			throw new InvalidFieldsException( PlatformErrorMessages.RPR_MVS_INVALID_FIELD.getCode(),
+					PlatformErrorMessages.RPR_MVS_INVALID_FIELD.getMessage());
+		}
 		if (!entities.isEmpty()) {
 			manualVerificationEntity = entities.get(0);
 			manualVerificationDTO.setRegId(manualVerificationEntity.getId().getRegId());
@@ -106,7 +118,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 					manualVerificationDTO.setRegId(updatedManualVerificationEntity.getId().getRegId());
 					manualVerificationDTO.setMatchedRefId(updatedManualVerificationEntity.getId().getMatchedRefId());
 					manualVerificationDTO
-							.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
+					.setMatchedRefType(updatedManualVerificationEntity.getId().getMatchedRefType());
 					manualVerificationDTO.setMvUsrId(updatedManualVerificationEntity.getMvUsrId());
 					manualVerificationDTO.setStatusCode(updatedManualVerificationEntity.getStatusCode());
 				}
@@ -208,6 +220,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 */
 	@Override
 	public ManualVerificationDTO updatePacketStatus(ManualVerificationDTO manualVerificationDTO) {
+
 		String registrationId = manualVerificationDTO.getRegId();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
@@ -217,6 +230,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		String description = "";
 		boolean isTransactionSuccessful = false;
 		ManualVerificationEntity manualVerificationEntity;
+		
 		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())
 				&& !manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
@@ -271,6 +285,22 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		}
 		return manualVerificationDTO;
 
+	}
+
+	private boolean validateManualVerificationDTO(ManualVerificationDTO manualVerificationDTO) {
+		return	!(manualVerificationDTO.getMvUsrId()!=null || 
+				manualVerificationDTO.getMatchedRefId() !=null ||
+				manualVerificationDTO.getMatchedRefType() != null ||
+				manualVerificationDTO.getReasonCode() != null ||
+				manualVerificationDTO.getRegId() != null || 
+				manualVerificationDTO.getStatusCode() != null ||
+
+				!(manualVerificationDTO.getMvUsrId() == "") ||
+						!manualVerificationDTO.getMatchedRefId().equals("") ||
+						!manualVerificationDTO.getMatchedRefType().equals("") ||
+						!manualVerificationDTO.getReasonCode().equals("") ||
+						!manualVerificationDTO.getRegId().equals("") ||
+						!manualVerificationDTO.getStatusCode().equals(""));
 	}
 
 	/*

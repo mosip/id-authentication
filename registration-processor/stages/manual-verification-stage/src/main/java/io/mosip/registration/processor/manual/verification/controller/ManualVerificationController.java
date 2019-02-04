@@ -45,8 +45,9 @@ public class ManualVerificationController {
 	 * @return the response entity
 	 */
 	@PostMapping(path = "/assignment", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiResponse(code = 200, message = "status successfully updated")
-
+	@ApiResponses({ @ApiResponse(code = 200, message = "file fetching successful"),
+		@ApiResponse(code = 400, message = "Invalid file requested"),
+		@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<ManualVerificationDTO> assignApplicant(@RequestBody(required = true) UserDto userDto) {
 		ManualVerificationDTO manualVerificationDTO = manualAdjudicationService.assignApplicant(userDto);
 		return ResponseEntity.status(HttpStatus.OK).body(manualVerificationDTO);
