@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.code;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum ApiName.
  * 
@@ -64,12 +65,16 @@ public enum ApiName {
 	/** The idrepodev. */
 	IDREPODEV,
 
+	/** The cryptomanagerdecrypt. */
 	CRYPTOMANAGERDECRYPT,
 
+	/** The deviceshistories. */
 	DEVICESHISTORIES,
 
+	/** The registrationcenterdevicehistory. */
 	REGISTRATIONCENTERDEVICEHISTORY,
 	
+	/** The registrationcentertimestamp. */
 	REGISTRATIONCENTERTIMESTAMP
 
 }
