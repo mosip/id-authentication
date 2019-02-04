@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service.packet;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.SocketTimeoutException;
@@ -11,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,6 +77,10 @@ public class PreRegistrationDataSyncServiceTest {
 
 	@Mock
 	PreRegZipHandlingService preRegZipHandlingService;
+	
+	@Mock
+	io.mosip.registration.context.ApplicationContext context;
+	
 
 	static byte[] preRegPacket;
 
@@ -89,8 +95,19 @@ public class PreRegistrationDataSyncServiceTest {
 
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
+		
+		
 	}
-
+	
+	@Before
+	public void initiate() {
+		Map<String,Object> applicationMap =new HashMap<>();
+		applicationMap.put(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS, "45");
+		
+		when(context.getApplicationMap()).thenReturn(applicationMap);
+		
+	}
+	
 	@Test
 	public void getPreRegistrationsTest()
 			throws HttpClientErrorException, ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
