@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import io.mosip.registration.processor.core.auth.dto.RegistrationProcessorSuccessResponse;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.swagger.annotations.Api;
@@ -27,6 +27,9 @@ public class PacketReceiverController {
 	/** The packet handler service. */
 	@Autowired
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
+	
+	@Autowired
+	private RegistrationProcessorSuccessResponse registrationProcessorSuccessResponse;
 
 	/**
 	 * Packet.
@@ -39,12 +42,15 @@ public class PacketReceiverController {
 	@ApiOperation(value = "Upload a packet to landing zone", response = RegistrationStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Packet successfully uploaded to landing zone"),
 			@ApiResponse(code = 400, message = "Packet already present in landing zone") })
-	public ResponseEntity<RegistrationStatusCode> packet(
+	public ResponseEntity<RegistrationProcessorSuccessResponse> packet(
 			@RequestParam(value = "file", required = true) MultipartFile file) {
+
 		if (packetHandlerService.storePacket(file)) {
-			return ResponseEntity.ok().body(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN);
+			registrationProcessorSuccessResponse.setStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
+			return ResponseEntity.ok().body(registrationProcessorSuccessResponse);
 		} else {
-			return ResponseEntity.badRequest().body(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED);
+			registrationProcessorSuccessResponse.setStatus(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
+			return ResponseEntity.badRequest().body(registrationProcessorSuccessResponse);
 		}
 	}
 
