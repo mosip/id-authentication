@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.shape.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="onboardUser" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="654.0" prefWidth="1006.0" xmlns="__http://javafx.com/javafx/8" xmlns:fx="__http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+<AnchorPane fx:id="onboardUser" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="onboardUserParenrPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
    <children>
-      <Label layoutX="530.0" layoutY="210.0" prefHeight="27.0" prefWidth="248.0" text="in order to see the dashboard" />
-      <Label layoutX="170.0" layoutY="210.0" prefHeight="27.0" prefWidth="280.0" text="Please provide your biometrics through" />
-      <Hyperlink fx:id="userOnboard" layoutX="420.0" layoutY="210.0" text="OnBoard User" onAction="#initUserOnboard"/>
+      <Label layoutX="380.0" layoutY="210.0" styleClass="useronBoardLinkDesc" text=", you are not onboarded into the system." />
+      <Label layoutX="230.0" layoutY="210.0" styleClass="useronBoardLinkDesc" text="Hi" />
+      <Label fx:id="operatorName" layoutX="250.0" layoutY="210.0" styleClass="useronBoardLinkDesc" />
+      <AnchorPane layoutX="725.0" layoutY="185.0" onMouseClicked="#initUserOnboard" styleClass="onboardUserPaneStyle">
+         <children>
+            <Label layoutX="72.0" layoutY="28.0" styleClass="useronBoardLink" text="Get Onboarded" />
+            <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+             		 <image>
+                        <Image url="@../images/GetOnboarded.png" />
+                     </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
    </children>
-</AnchorPane> 
+</AnchorPane>

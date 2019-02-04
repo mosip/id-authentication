@@ -47,8 +47,9 @@
                   </AnchorPane>
                   <AnchorPane fx:id="internetModePane" layoutX="600.0" layoutY="5.0">
                      <children>
-                        <Label fx:id="internetMode" layoutX="48.0" layoutY="3.0" text="System Online" />
-                        <ImageView fx:id="availableIcon" fitHeight="24.0" fitWidth="24.0" layoutX="8.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                        <Label fx:id="online" layoutX="48.0" layoutY="3.0" text="System Online" visible="false" styleClass="internetMode"/>
+                        <Label fx:id="offline" layoutX="48.0" layoutY="3.0" text="System Offline" visible="false" styleClass="internetMode"/>
+                        <ImageView fx:id="availableIcon" fitHeight="24.0" fitWidth="24.0" layoutX="8.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/SystemOnline.png" />
                            </image>

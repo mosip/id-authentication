@@ -248,7 +248,7 @@
 	-fx-pref-width: 81.0px;
 }
 
-#internetMode{
+.internetMode{
 	-fx-pref-height: 21.0px;
 	-fx-pref-width: 115.0px;
 }
@@ -389,6 +389,33 @@
 	-fx-pref-width: 64.0px;
 }
 /* Home Page Design Ends */
+
+/*Onoard User page Design Starts here*/
+.onboardUserPaneStyle{
+	-fx-background-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-radius: 4.0,4.0,4.0,4.0;
+	-fx-border-color: #FF4081;
+	-fx-background-color:#FFFFFF;	
+	-fx-pref-height: 80.0px;
+	-fx-pref-width: 200.0px;
+}
+.useronBoardLink{
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+	-fx-pref-height: 27.0px;
+	-fx-pref-width: 100.0px;	
+}
+.onboardUserParenrPane{
+	-fx-background-color:#F4F4F4;
+	-fx-pref-height: 667.0px;
+	-fx-pref-width: 1280.0px;
+}
+.useronBoardLinkDesc{
+	-fx-font-family: Roboto;
+	-fx-font-size: 18.0px;
+	-fx-text-fill: #666666;	
+}
+/*Onoard User page Design Ends here*/
 
 #mainBox{
 	-fx-border-width: 0.0;

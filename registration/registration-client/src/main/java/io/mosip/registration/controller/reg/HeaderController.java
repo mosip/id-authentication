@@ -69,6 +69,12 @@ public class HeaderController extends BaseController {
 	private ImageView availableIcon;
 
 	@FXML
+	private Label online;
+	
+	@FXML
+	private Label offline;
+
+	@FXML
 	private Menu homeSelectionMenu;
 
 	@Autowired
@@ -82,7 +88,7 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	PacketHandlerController packetHandlerController;
-	
+
 	@Autowired
 	private UserOnboardController userOnboardController;
 
@@ -105,16 +111,18 @@ public class HeaderController extends BaseController {
 		if ((boolean) SessionContext.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_USER)
 				&& !(boolean) SessionContext.getInstance().getMapObject()
 						.get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
-			homeSelectionMenu.setVisible(false);
+			homeSelectionMenu.setDisable(true);
 		} else {
-			homeSelectionMenu.setVisible(true);
+			homeSelectionMenu.setDisable(false);
 		}
 
 		getTimer().schedule(new TimerTask() {
 
 			@Override
 			public void run() {
-				availableIcon.setVisible(RegistrationAppHealthCheckUtil.isNetworkAvailable());
+				Boolean flag=RegistrationAppHealthCheckUtil.isNetworkAvailable();
+				online.setVisible(flag);
+				offline.setVisible(!flag);
 			}
 		}, 0, 5000);
 	}
@@ -177,17 +185,6 @@ public class HeaderController extends BaseController {
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER_UPDATE, true);
 		userOnboardController.initUserOnboard();
-
-		/*
-		 * if (!validateScreenAuthorization(onBoardRoot.getId())) {
-		 * generateAlert(RegistrationConstants.ALERT_ERROR,
-		 * RegistrationUIConstants.AUTHORIZATION_ERROR); } else { VBox pane = (VBox)
-		 * menu.getParent().getParent().getParent(); Object parent =
-		 * pane.getChildren().get(0); pane.getChildren().clear();
-		 * pane.getChildren().add((Node) parent); pane.getChildren().add(onBoardRoot);
-		 * 
-		 * }
-		 */
 	}
 
 	/**
