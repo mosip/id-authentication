@@ -147,12 +147,12 @@ public class BaseService {
 	 */
 	protected String getUserIdFromSession() {
 
-		String userId = null;
+		String userId = RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
 
-		UserContext userContext = SessionContext.getInstance().getUserContext();
-		if (userContext != null) {
-			userId = userContext.getUserId();
+		if (SessionContext.getSessionContext() != null && SessionContext.getSessionContext().getUserContext() != null) {
+			userId = SessionContext.getSessionContext().getUserContext().getUserId();
 		}
+
 		return userId;
 	}
 

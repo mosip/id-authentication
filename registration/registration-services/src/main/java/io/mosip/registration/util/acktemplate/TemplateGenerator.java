@@ -68,7 +68,7 @@ public class TemplateGenerator extends BaseService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(TemplateGenerator.class);
 
-	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
+	protected ApplicationContext applicationContext = ApplicationContext.getApplicationContext();
 
 	@Autowired
 	QrCodeGenerator<QrVersion> qrCodeGenerator;

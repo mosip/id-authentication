@@ -97,7 +97,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					APPLICATION_ID, "Packet encrypted successfully");
 			
 			// Validate the size of the generated registration packet
-			long maxPacketSizeInBytes = Long.parseLong((String) ApplicationContext.getInstance().getApplicationMap()
+			long maxPacketSizeInBytes = Long.parseLong((String) ApplicationContext.getApplicationContext().getApplicationMap()
 					.get(RegistrationConstants.MAX_REG_PACKET_SIZE_IN_MB)) * 1024 * 1024;
 			if (encryptedPacket.length > maxPacketSizeInBytes) {
 				throw new RegBaseCheckedException(

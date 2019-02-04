@@ -145,7 +145,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			auditFactory.audit(AuditEvent.PENDING_PKT_CNT_VALIDATE, Components.SYNC_VALIDATE,
 					"Validating the count of packets of status Registered with configured value", "refId", "refIdType");
 
-			if (registrationDetails.size() > Integer.parseInt(String.valueOf(ApplicationContext.getInstance()
+			if (registrationDetails.size() > Integer.parseInt(String.valueOf(ApplicationContext.getApplicationContext()
 					.getApplicationMap().get(RegistrationConstants.REG_PAK_MAX_CNT_APPRV_LIMIT)))) {
 
 				getErrorResponse(RegistrationConstants.PAK_APPRVL_MAX_CNT,
@@ -362,7 +362,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 			/* This will subtract configured number of days from current Date */
 			Date differDate = new Date(new Date().getTime()
-					- (Long.parseLong(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+					- (Long.parseLong(String.valueOf(ApplicationContext.getApplicationContext().getApplicationMap()
 							.get(RegistrationConstants.REG_PAK_MAX_TIME_APPRV_LIMIT))) * 24 * 3600 * 1000));
 
 			/* This will convert timestamp to Date */

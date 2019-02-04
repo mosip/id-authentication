@@ -70,9 +70,9 @@ public class Validations extends BaseController {
 			noAlert.add("postalCode");
 			noAlert.add("cniOrPinNumber");
 			validationMessage = new StringBuilder();
-			validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
-			messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
-			labelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
+			validationBundle = ApplicationContext.getApplicationContext().getApplicationLanguagevalidationBundle();
+			messageBundle = ApplicationContext.getApplicationContext().getApplicationMessagesBundle();
+			labelBundle = ApplicationContext.getApplicationContext().getApplicationLanguageBundle();
 		} catch (RuntimeException exception) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 		}

@@ -311,7 +311,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			List<BIR> birs = new ArrayList<>();
 
 			boolean onlyUniqueRequiredInCBEFF = RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE
-					.equalsIgnoreCase(String.valueOf(ApplicationContext.getInstance().getApplicationMap()
+					.equalsIgnoreCase(String.valueOf(ApplicationContext.getApplicationContext().getApplicationMap()
 							.get(RegistrationConstants.CBEFF_ONLY_UNIQUE_TAGS)));
 
 			if (biometricInfoDTO.getFingerprintDetailsDTO() != null

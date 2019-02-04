@@ -176,7 +176,7 @@ public class SchedulerUtil {
 	
 	private static Scene getScene() throws IOException {
 		BorderPane loginRoot = BaseController.load(BaseController.class.getResource(RegistrationConstants.INITIAL_PAGE),
-				ApplicationContext.getInstance().getApplicationMessagesBundle());
+				ApplicationContext.getApplicationContext().getApplicationMessagesBundle());
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Scene scene = new Scene(loginRoot, 950, 630);
 		scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());

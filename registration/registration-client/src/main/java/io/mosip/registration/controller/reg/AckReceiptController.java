@@ -298,7 +298,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 			try {
 
 				if (!String
-						.valueOf(ApplicationContext.getInstance().getApplicationMap()
+						.valueOf(ApplicationContext.getApplicationContext().getApplicationMap()
 								.get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
 						.equals(RegistrationConstants.ENABLE)) {
 					updatePacketStatus();

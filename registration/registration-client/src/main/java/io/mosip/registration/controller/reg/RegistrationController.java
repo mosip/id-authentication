@@ -1812,7 +1812,7 @@ public class RegistrationController extends BaseController {
 		registrationMetaDataDTO
 				.setGeoLongitudeLoc(Double.parseDouble(registrationCenter.getRegistrationCenterLongitude()));
 
-		Map<String, Object> applicationContextMap = ApplicationContext.getInstance().getApplicationMap();
+		Map<String, Object> applicationContextMap = ApplicationContext.getApplicationContext().getApplicationMap();
 
 		registrationMetaDataDTO
 				.setCenterId((String) applicationContextMap.get(RegistrationConstants.REGISTARTION_CENTER));

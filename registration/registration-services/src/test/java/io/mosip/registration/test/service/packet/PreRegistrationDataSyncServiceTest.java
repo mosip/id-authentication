@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -32,6 +33,7 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
 import io.mosip.registration.dto.PreRegistrationDTO;
@@ -96,7 +98,7 @@ public class PreRegistrationDataSyncServiceTest {
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_NAME, "filename_2018-12-12 09:39:08.272.zip");
 		preRegData.put(RegistrationConstants.PRE_REG_FILE_CONTENT, preRegPacket);
 		
-		
+		SessionContext.getInstance();
 	}
 	
 	@Before
@@ -106,6 +108,11 @@ public class PreRegistrationDataSyncServiceTest {
 		
 		when(context.getApplicationMap()).thenReturn(applicationMap);
 		
+	}
+
+	@AfterClass
+	public static void destroy() {
+		SessionContext.destroySession();
 	}
 	
 	@Test
