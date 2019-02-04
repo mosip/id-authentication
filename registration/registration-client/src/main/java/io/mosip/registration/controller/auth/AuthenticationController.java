@@ -378,6 +378,7 @@ public class AuthenticationController extends BaseController implements Initiali
 		userAuthenticationTypeList = loginService.getModesOfLogin(authType, RegistrationConstants.getRoles());
 
 		if (userAuthenticationTypeList.isEmpty()) {
+			isSupervisor=false;
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
 			if (isEODAuthentication) {
 				throw new RegBaseCheckedException();

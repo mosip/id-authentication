@@ -513,7 +513,7 @@ public class BaseController {
 			((RegistrationDTO) SessionContext.getSessionContext().getMapObject()
 					.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 							.setApplicantBiometricDTO(createBiometricInfoDTO());
-			biometricExceptionController.setExceptionImage();
+			biometricExceptionController.clearSession();
 			fingerPrintCaptureController.clearFingerPrintDTO();
 			irisCaptureController.clearIrisData();
 		}

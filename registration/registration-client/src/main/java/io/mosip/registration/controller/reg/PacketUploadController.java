@@ -234,7 +234,7 @@ public class PacketUploadController extends BaseController {
 							APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
-					Map<String, String> tableMap = new HashMap<>();
+					Map<String, String> tableMap = new HashMap<String, String>();
 					String status = "";
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
