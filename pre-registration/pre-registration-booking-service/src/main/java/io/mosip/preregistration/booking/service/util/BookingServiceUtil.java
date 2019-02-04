@@ -335,7 +335,7 @@ public class BookingServiceUtil {
 				}
 				if(!timeSpanCheck(createdDateTime)) {
 					throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-							ErrorMessages.BOOKING_STATUS_CANNOT_BE_DONE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hrs");
+							ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED_BEFORE.getMessage()+" "+timeSpanCheck+" hrs");
 				}
 			} else {
 				throw new DemographicGetStatusException(respEntity.getBody().getErr().getErrorCode(),
@@ -350,10 +350,10 @@ public class BookingServiceUtil {
 		}
 		return true;
 	}
-	private boolean timeSpanCheck(Date createdDateTime) {
+	public boolean timeSpanCheck(Date createdDateTime) {
 		
 		Date current=new Date();
-		long difference=createdDateTime.getTime()-current.getTime();
+		long difference=current.getTime()-createdDateTime.getTime();
 		long timeDifference=difference /(60*60*1000);
 		if(timeDifference>timeSpanCheck) return true;
 		else return false;
