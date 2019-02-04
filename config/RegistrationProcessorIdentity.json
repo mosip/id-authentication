@@ -65,6 +65,9 @@
 		},
 		"cnienumber": {
 			"value" : "CNIENumber"
+		},
+		"city": {
+			"value" : "city"
 		}
 	}
 } 
