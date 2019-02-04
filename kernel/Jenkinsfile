@@ -52,7 +52,7 @@ node {
   JFrog artifactory configuration
   */
    dir(branch) {
-   pom = readMavenPom file: 'pom.xml'
+   pom = readMavenPom file: 'kernel/pom.xml'
    version = pom.version
    echo version
    }
