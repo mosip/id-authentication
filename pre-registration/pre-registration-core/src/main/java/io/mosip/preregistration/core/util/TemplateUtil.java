@@ -1,6 +1,7 @@
 package io.mosip.preregistration.core.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,34 +20,39 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
-import io.mosip.preregistration.core.common.dto.AcknowledgementDTO;
+import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseDTO;
 import io.mosip.preregistration.core.common.dto.TemplateResponseListDTO;
 
 
-/**
- * Reference for ${resource.url} from property file
- */
+
+
+
 
 
 
 /**
- * Autowired reference for {@link #restTemplateBuilder}
+ * @author Sanober Noor
+ *@since 1.0.0 
  */
-
-
 @Component
 public class TemplateUtil {
+	/**
+	 * Reference for ${resource.url} from property file
+	 */
+
 	
 	private String resourceUrl="https://integ.mosip.io/masterdata/v1.0/templates";
-	
+	/**
+	 * Autowired reference for {@link #restTemplateBuilder}
+	 */
 	@Autowired
 	RestTemplate restTemplate;
 	
 	@Autowired
 	private TemplateManager templateManager;
 
-	public String getTemplate(String langCode,String templatetypecode) {
+	public String getTemplate(String langCode,String templatetypecode)  {
 		
 		
 		String url = resourceUrl + "/" + langCode + "/" + templatetypecode;
@@ -65,21 +71,18 @@ public class TemplateUtil {
 	 * @param fileText
 	 * @param acknowledgementDTO
 	 * @return
+	 * @throws IOException 
 	 */
-	public String templateMerge(String fileText, AcknowledgementDTO acknowledgementDTO) {
+	public String templateMerge(String fileText, NotificationDTO acknowledgementDTO) throws IOException {
 
 		String mergeTemplate = null;
 		Map<String, Object> map = mapSetting(acknowledgementDTO);
-		try {
 			InputStream templateInputStream = new ByteArrayInputStream(fileText.getBytes(Charset.forName("UTF-8")));
 
 			InputStream resultedTemplate = templateManager.merge(templateInputStream, map);
 
 			mergeTemplate = IOUtils.toString(resultedTemplate, StandardCharsets.UTF_8.name());
-		} catch (Exception ex) {
-			//new AcknowledgementExceptionCatcher().handle(ex);
-		}
-
+		
 		return mergeTemplate;
 	}
 	
@@ -89,7 +92,7 @@ public class TemplateUtil {
 	 * @param acknowledgementDTO
 	 * @return
 	 */
-	public Map<String, Object> mapSetting(AcknowledgementDTO acknowledgementDTO) {
+	public Map<String, Object> mapSetting(NotificationDTO acknowledgementDTO) {
 		Map<String, Object> responseMap = new HashMap<>();
 
 		DateTimeFormatter dateFormate = DateTimeFormatter.ofPattern("yyyy/MM/dd");

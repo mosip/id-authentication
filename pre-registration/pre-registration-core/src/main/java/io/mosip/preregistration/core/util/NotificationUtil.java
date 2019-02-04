@@ -1,6 +1,6 @@
 package io.mosip.preregistration.core.util;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,10 +16,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.preregistration.core.common.dto.AcknowledgementDTO;
 import io.mosip.preregistration.core.common.dto.MainListResponseDTO;
+import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.SMSRequestDTO;
 
@@ -39,17 +40,19 @@ public class NotificationUtil {
 	RestTemplate restTemplate;
 	private String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
-	public String notify(String notificationType,AcknowledgementDTO acknowledgementDTO,
-			String langCode, File file) throws Exception {
+	public MainListResponseDTO<NotificationResponseDTO> notify(String notificationType,NotificationDTO acknowledgementDTO,
+			String langCode, MultipartFile file) throws IOException  {
+		
+		MainListResponseDTO<NotificationResponseDTO> response=new MainListResponseDTO<>();
 		if(notificationType=="sms")  {
-			smsNotification(acknowledgementDTO, langCode);
+			response=smsNotification(acknowledgementDTO, langCode);
 		}
 		if(notificationType=="email") {
-			emailNotification(acknowledgementDTO, langCode, file);
+			response=emailNotification(acknowledgementDTO, langCode, file);
 		}
 		
 		
-		return null;
+		return response;
 	}
 	
 	
@@ -61,27 +64,33 @@ public class NotificationUtil {
 	 * @param langCode
 	 * @param file
 	 * @return
+	 * @throws IOException 
 	 */
-	public MainListResponseDTO<NotificationResponseDTO> emailNotification(AcknowledgementDTO acknowledgementDTO,
-			String langCode, File file) throws Exception{
+	public MainListResponseDTO<NotificationResponseDTO> emailNotification(NotificationDTO acknowledgementDTO,
+			String langCode, MultipartFile file) throws IOException {
+		
+		 LinkedMultiValueMap<String, String> pdfHeaderMap = new LinkedMultiValueMap<>();
+		    pdfHeaderMap.add("Content-disposition", "form-data; name=attachments; filename=" + file.getOriginalFilename());
+		    pdfHeaderMap.add("Content-type", "text/plain");
+		    HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap); 
+
+
 		ResponseEntity<NotificationResponseDTO> resp = null;
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
 		String merseTemplate = null;
-
-			//FileSystemResource value = new FileSystemResource(file);
-
 			String fileText = templateUtil.getTemplate(langCode, "Email-Acknowledgement");
 			merseTemplate =templateUtil.templateMerge(fileText, acknowledgementDTO);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-			emailMap.add("attachments", file);
+			emailMap.add("attachments", doc);
 			emailMap.add("mailContent", merseTemplate);
 			emailMap.add("mailSubject", getEmailSubject(acknowledgementDTO, langCode));
 			emailMap.add("mailTo", acknowledgementDTO.getEmailID());
 			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
 
 			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, NotificationResponseDTO.class);
+			
 			List<NotificationResponseDTO> list = new ArrayList<>();
 			NotificationResponseDTO notifierResponse = new NotificationResponseDTO();
 			notifierResponse.setMessage(resp.getBody().getMessage());
@@ -100,8 +109,9 @@ public class NotificationUtil {
 	 * @param acknowledgementDTO
 	 * @param langCode
 	 * @return
+	 * @throws IOException 
 	 */
-	public String getEmailSubject(AcknowledgementDTO acknowledgementDTO, String langCode) {
+	public String getEmailSubject(NotificationDTO acknowledgementDTO, String langCode) throws IOException {
 
 		return  templateUtil.templateMerge(templateUtil.getTemplate(langCode, "Acknowledgement-email-subject"), acknowledgementDTO);
 	}
@@ -111,9 +121,10 @@ public class NotificationUtil {
 	 * @param acknowledgementDTO
 	 * @param langCode
 	 * @return
+	 * @throws IOException 
 	 */
-	public MainListResponseDTO<NotificationResponseDTO> smsNotification(AcknowledgementDTO acknowledgementDTO,
-			String langCode) throws Exception{
+	public MainListResponseDTO<NotificationResponseDTO> smsNotification(NotificationDTO acknowledgementDTO,
+			String langCode) throws IOException {
 		MainListResponseDTO<NotificationResponseDTO> response = new MainListResponseDTO<>();
 		ResponseEntity<NotificationResponseDTO> resp = null;
 

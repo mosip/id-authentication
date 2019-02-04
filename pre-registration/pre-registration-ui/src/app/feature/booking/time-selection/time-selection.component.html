@@ -10,21 +10,22 @@
         <p (click)="scrollLeft()">{{'bookAppointment.text_prev'|translate}}</p>
       </div>
       <div class="left-button">
-          <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
+          <a (click)="scrollLeft()"><img src="assets/left.png" /></a>
       </div>
       <div #widgetsContent class="middle">
         <mat-card *ngFor="let data of availabilityData | slice:0:days; let i = index" 
                   [ngClass]="data.holiday ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
                   (click)="dateSelected(i)">
-            <mat-card-content style="margin: 10px 0 10px 5px;">
+            <mat-card-content class="time-selection__date">
                 <p class="time-selection__tile-date-text">{{data.displayDate}}</p>
                 <p class="time-selection__tile-date-text">{{data.displayDay}}</p>
-                <p class="time-selection__tile-availability-text">{{data.TotalAvailable}} Bookings</p>
+                <p class="time-selection__tile-availability-text">{{data.TotalAvailable}}</p>
+                <p class="time-selection__tile-date-text">Available Bookings</p>
             </mat-card-content>
         </mat-card>
       </div>
       <div class="right-button">
-          <a (click)="scrollRight()"><i class="material-icons">arrow_forward</i></a>
+          <a (click)="scrollRight()"><img src="assets/right.png" /></a>
       </div>
       <div class="time-selection__arrow-text">
           <p (click)="scrollRight()">{{'bookAppointment.text_next'|translate}}</p>

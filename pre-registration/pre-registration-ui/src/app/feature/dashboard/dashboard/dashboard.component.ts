@@ -337,7 +337,10 @@ export class DashBoardComponent implements OnInit {
         status: status
       });
     }
-    this.router.navigate(['../../', 'pre-registration', this.loginId, 'pick-center'], { relativeTo: this.route });
+    console.log(this.sharedService.getNameList());
+    const arr = this.router.url.split('/');
+    const url = `/pre-registration/${arr.pop()}/booking/pick-center`;
+    this.router.navigateByUrl(url);
   }
 
   onAcknowledgementView(applicationID: any) {

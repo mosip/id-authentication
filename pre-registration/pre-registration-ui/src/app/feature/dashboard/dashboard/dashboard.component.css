@@ -109,7 +109,6 @@ img {
 
 .mat-card table {
   max-width: 310px;
-  width: 100% !important;
   table-layout: fixed;
 }
 

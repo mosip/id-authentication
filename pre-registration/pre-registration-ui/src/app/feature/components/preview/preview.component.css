@@ -152,3 +152,9 @@
   padding-bottom: 20px;
   cursor: pointer;
 }
+
+@media(max-width: 500px) {
+  .preview__body-content-div {
+    width: 100%;
+  }
+}
