@@ -290,12 +290,11 @@ public class LoginController extends BaseController implements Initializable {
 							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.ROLES_EMPTY_ERROR);
 						} else {
 
-							sessionContext = sessionContext.getInstance();
-							if (sessionContext.getMapObject() == null) {
+							if (SessionContext.getInstance().getMapObject() == null) {
 
-								sessionContextMap = new HashMap<>();
+								HashMap<String, Object> sessionContextMap = new HashMap<>();
 								
-								sessionContext.setMapObject(sessionContextMap);
+								SessionContext.getSessionContext().setMapObject(sessionContextMap);
 
 								sessionContextMap.put(RegistrationConstants.USER_STATION_ID,
 										stationID);
@@ -381,7 +380,7 @@ public class LoginController extends BaseController implements Initializable {
 		userDTO.setPassword(password.getText());
 
 		// TODO for temporary fix , but later userDto should be getting from session
-		ApplicationContext.getInstance().getApplicationMap().put("userDTO", userDTO);
+		ApplicationContext.getApplicationContext().getApplicationMap().put("userDTO", userDTO);
 
 		boolean serverStatus = getConnectionCheck(userDTO);
 		boolean offlineStatus = false;

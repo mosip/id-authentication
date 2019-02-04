@@ -351,10 +351,12 @@ public class UserClientMachineMappingDAOTest {
 	public void getUsersNullTest() {
 		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
 		try {
+			SessionContext.getInstance();
 			machineMappingDAOImpl.getUsers("8C-16-45-88-E7-0C");
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			Assert.assertNotNull(regBaseCheckedException);
 		}
+		SessionContext.destroySession();
 	}
 
 	@Test

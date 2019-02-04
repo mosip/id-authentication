@@ -5,8 +5,10 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,7 @@ import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -57,6 +60,16 @@ public class PacketEncryptionServiceTest {
 	@Mock
 	private AuditLogControlDAO auditLogControlDAO;
 	private RegistrationDTO registrationDTO;
+
+	@BeforeClass
+	public static void initializeSessionContext() {
+		SessionContext.getInstance();
+	}
+
+	@AfterClass
+	public static void destroySessionContext() {
+		SessionContext.getInstance();
+	}
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {

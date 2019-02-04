@@ -318,7 +318,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			// Get Job using application context and api name
 			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
-			String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
+			String triggerPoint = SessionContext.getSessionContext().getUserContext().getUserId();
 
 			// Job Invocation
 			responseDTO = job.executeJob(triggerPoint, jobId);

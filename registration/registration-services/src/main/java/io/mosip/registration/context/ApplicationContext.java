@@ -46,6 +46,13 @@ public class ApplicationContext {
        }
 
        /**
+	 * @return the applicationContext
+	 */
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	/**
        * @return the applicationMap
        */
        public Map<String, Object> getApplicationMap() {
