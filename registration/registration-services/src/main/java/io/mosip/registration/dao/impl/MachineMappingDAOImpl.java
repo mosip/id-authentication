@@ -342,5 +342,10 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		return deviceMasterRepository.countBySerialNumberAndNameAndIsActiveTrueAndValidityEndDtimesGreaterThan(serialNo,
 				deviceType.getDeviceType(), new Timestamp(System.currentTimeMillis())) > 0 ? true : false;
 	}
+	@Override
+	public List<UserMachineMapping> getUserMappingDetails(String machineId)
+	{
+		return machineMappingRepository.findByUserMachineMappingIdMachineID(machineId);
+	}
 
 }

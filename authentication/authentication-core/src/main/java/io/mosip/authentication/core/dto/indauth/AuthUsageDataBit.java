@@ -89,6 +89,8 @@ public enum AuthUsageDataBit {
 	USED_BIO_IRIS(7, 0),
 
 	USED_BIO_FACE(8, 3),
+	
+	USED_STATIC_PIN(8, 2),
 
 	// Matched bits from 9 to 16 Hex digits
 
@@ -173,7 +175,9 @@ public enum AuthUsageDataBit {
 
 	MATCHED_BIO_IRIS(15, 0),
 
-	MATCHED_BIO_FACE(16, 3)
+	MATCHED_BIO_FACE(16, 3),
+	
+	MATCHED_STATIC_PIN(16, 2)
 
 	;
 

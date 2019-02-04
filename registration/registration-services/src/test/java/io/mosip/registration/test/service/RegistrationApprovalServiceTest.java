@@ -73,7 +73,6 @@ public class RegistrationApprovalServiceTest {
 
 		regobject.setId("123456");
 		regobject.setClientStatusCode("R");
-		regobject.setIndividualName("Balaji S");
 		regobject.setCrBy("Mosip123");
 		regobject.setAckFilename("file1");
 
@@ -102,7 +101,6 @@ public class RegistrationApprovalServiceTest {
 
 		regobject.setId("123456");
 		regobject.setClientStatusCode("A");
-		regobject.setIndividualName("Balaji S");
 		regobject.setCrBy("Mosip123");
 		regobject.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
 		regobject.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));

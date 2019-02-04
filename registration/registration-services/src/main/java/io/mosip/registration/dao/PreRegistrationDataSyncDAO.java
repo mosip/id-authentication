@@ -42,4 +42,10 @@ public interface PreRegistrationDataSyncDAO {
 	 * @return
 	 */
 	public PreRegistrationList update(PreRegistrationList preReg);
+	
+	/**
+	 * Delete list of Pre-Registartions
+	 * @param preRegistrationList registation list
+	 */
+	public void deleteAll(List<PreRegistrationList> preRegistrationList);
 }

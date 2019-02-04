@@ -178,13 +178,15 @@ public class Validations extends BaseController {
 			}
 			if (node.getText().matches(regex)) {
 				
+				if(blackListedWords!=null) {
 				if ( (!id.contains(RegistrationConstants.ON_TYPE)) && blackListedWords.contains(node.getText())) {
 					if(!showAlert)
 						generateAlert(
-								node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
+								"For "+labelBundle.getString(label)+" "+node.getText().concat(" is ").concat(RegistrationConstants.BLOCKED).concat(" word"),
 								isConsolidated, validationMessage);
 					node.requestFocus();
 					return false;
+				}
 				}
 				
 				if (isFixed.equals("false")) {
@@ -215,11 +217,12 @@ public class Validations extends BaseController {
 			}
 			if(!showAlert)
 				generateAlert(
-						labelBundle.getString(label).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_1)).concat(" ").concat(messageBundle.getString(RegistrationConstants.REG_DDC_004_2)),
+						messageBundle.getString(label+"_"+RegistrationConstants.REG_DDC_004_1).concat(" "+labelBundle.getString(label)),
 						isConsolidated, validationMessage);
 			node.requestFocus();
 			return false;
 		} catch (RuntimeException exception) {
+			exception.printStackTrace();
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
 			return false;
 		}
