@@ -27,9 +27,7 @@ public class PacketReceiverController {
 	/** The packet handler service. */
 	@Autowired
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
-	
-	@Autowired
-	private RegistrationProcessorSuccessResponse registrationProcessorSuccessResponse;
+	private RegistrationProcessorSuccessResponse registrationProcessorSuccessResponse=new RegistrationProcessorSuccessResponse();
 
 	/**
 	 * Packet.
