@@ -19,9 +19,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
-import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.device.ScanPopUpViewController;
@@ -690,10 +690,7 @@ public class DocumentScanController extends BaseController {
 		try {
 			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Loading list of documents");
-			documents = masterSync.getDocumentCategories(docCode,
-					MappedCodeForLanguage
-							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-							.getMappedCode());
+			documents = masterSync.getDocumentCategories(docCode,ApplicationContext.getInstance().getApplicationLanguage());
 			List<String> documentNames = documents.stream().map(doc -> doc.getName()).collect(Collectors.toList());
 
 			selectionList.getItems().addAll(documentNames);

@@ -50,7 +50,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.IntroducerType;
-import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.ProcessNames;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
@@ -719,12 +718,8 @@ public class RegistrationController extends BaseController {
 
 	private void populateFieldValue(Node nodeForPlatformLang, Node nodeForLocalLang, List<ValuesDTO> fieldValues) {
 		if (fieldValues != null) {
-			String platformLanguageCode = MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-					.getMappedCode();
-			String localLanguageCode = MappedCodeForLanguage
-					.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
-					.getMappedCode();
+			String platformLanguageCode = ApplicationContext.getInstance().getApplicationLanguage();
+			String localLanguageCode = ApplicationContext.getInstance().getLocalLanguage();
 			String valueInPlatformLang = "";
 			String valueinLocalLang = "";
 
@@ -1000,12 +995,8 @@ public class RegistrationController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private DemographicInfoDTO buildDemographicInfo() {
 
-		String platformLanguageCode = MappedCodeForLanguage
-				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE)).getMappedCode()
-				.toLowerCase();
-		String localLanguageCode = MappedCodeForLanguage
-				.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.REGISTRATION_LOCAL_LANGUAGE))
-				.getMappedCode().toLowerCase();
+		String platformLanguageCode = ApplicationContext.getInstance().getApplicationLanguage().toLowerCase();
+		String localLanguageCode = ApplicationContext.getInstance().getLocalLanguage().toLowerCase();
 		Identity demographicIdentity = getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
 				.getIdentity();
 
@@ -1875,9 +1866,7 @@ public class RegistrationController extends BaseController {
 		try {
 			locationDtoRegion = masterSync.findLocationByHierarchyCode(
 					applicationContext.getApplicationLanguageBundle().getString(region.getId()),
-					MappedCodeForLanguage
-							.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-							.getMappedCode());
+					ApplicationContext.getInstance().getApplicationLanguage());
 			region.getItems().addAll(
 					locationDtoRegion.stream().map(location -> location.getName()).collect(Collectors.toList()));
 		} catch (RuntimeException runtimeException) {

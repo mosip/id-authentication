@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
@@ -15,7 +17,6 @@ import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.MappedCodeForLanguage;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.controller.BaseController;
@@ -77,6 +78,16 @@ public class Validations extends BaseController {
 		}
 	}
 
+	
+	@PostConstruct
+	public void setResourceBundle() {
+		getGlobalParams();
+		ApplicationContext.getInstance().loadResourceBundle();
+		validationBundle = ApplicationContext.getInstance().getApplicationLanguagevalidationBundle();
+		messageBundle = ApplicationContext.getInstance().getApplicationMessagesBundle();
+		labelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
+	}
+	
 	/**
 	 * Iterate the fields to and call the validate method on them
 	 */
@@ -109,9 +120,7 @@ public class Validations extends BaseController {
 
 	public boolean validate(AnchorPane pane, List<String> notTovalidate, boolean isValid, MasterSyncService masterSync) {
 		this.blackListedWords=masterSync
-				.getAllBlackListedWords(MappedCodeForLanguage
-						.valueOf(AppConfig.getApplicationProperty(RegistrationConstants.APPLICATION_LANGUAGE))
-						.getMappedCode()).stream().map(b->b.getWord()).collect(Collectors.toList());
+				.getAllBlackListedWords(ApplicationContext.getInstance().getApplicationLanguage()).stream().map(b->b.getWord()).collect(Collectors.toList());
 		isConsolidated = AppConfig.getApplicationProperty(RegistrationConstants.IS_CONSOLIDATED);
 		return validateTheFields(pane, notTovalidate, isValid, isConsolidated);
 	}

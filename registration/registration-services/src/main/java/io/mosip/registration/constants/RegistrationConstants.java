@@ -150,6 +150,11 @@ public class RegistrationConstants {
 
 	public static final String UIN_UPDATE_ISUINUPDATE = "isUINUpdate";
 	public static final String LOCAL_LANGUAGE = "LocalLanguage";
+	public static final String PRIMARY_LANGUAGE = "primary";
+	public static final String SECONDARY_LANGUAGE = "secondary";
+	public static final String LANGUAGE_ENGLISH = "english";
+	public static final String LANGUAGE_ARABIC = "arabic";
+	
 	public static final String APPLICATION_LANGUAGE = "application_language";
 	public static final String REGISTRATION_LOCAL_LANGUAGE = "local_language";
 	public static final String PACKET_TYPE_NEW = "New";
