@@ -4,9 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,6 +68,12 @@ public class AuthenticationController extends BaseController {
 	private AnchorPane irisBasedLogin;
 	@FXML
 	private AnchorPane faceBasedLogin;
+	@FXML
+	private AnchorPane errorPane;
+	@FXML
+	private Label errorLabel;
+	@FXML
+	private Label errorText;
 	@FXML
 	private Label otpValidity;
 	@FXML
@@ -147,7 +151,7 @@ public class AuthenticationController extends BaseController {
 	 * to generate OTP in case of OTP based authentication
 	 */
 	public void generateOtp() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Generate OTP for OTP based Authentication");
 
 		if (!otpUserId.getText().isEmpty()) {
@@ -177,7 +181,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate OTP in case of OTP based authentication
 	 */
 	public void validateOTP() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
 
 		if (isSupervisor) {
@@ -252,7 +256,7 @@ public class AuthenticationController extends BaseController {
 			userNameField = username.getText();
 			loadNextScreen();
 		} else if (RegistrationConstants.FAILURE.equals(status)) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INCORRECT_PWORD);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_FAILURE);
 		}
 	}
 
@@ -260,7 +264,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate the fingerprint in case of fingerprint based authentication
 	 */
 	public void validateFingerprint() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Fingerprint for Fingerprint based Authentication");
 
 		if (isSupervisor) {
@@ -294,7 +298,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate the iris in case of iris based authentication
 	 */
 	public void validateIris() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Iris for Iris based Authentication");
 
 		if (isSupervisor) {
@@ -328,7 +332,7 @@ public class AuthenticationController extends BaseController {
 	 * to validate the face in case of face based authentication
 	 */
 	public void validateFace() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Face for Face based Authentication");
 
 		if (isSupervisor) {
@@ -362,17 +366,20 @@ public class AuthenticationController extends BaseController {
 	 * to get the configured modes of authentication
 	 */
 	private void getAuthenticationModes(String authType) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading configured modes of authentication");
 
-		Set<String> roleSet = new HashSet<>();
-		roleSet.add("*");
-
-		userAuthenticationTypeList = loginService.getModesOfLogin(authType, roleSet);
+		userAuthenticationTypeList = loginService.getModesOfLogin(authType, RegistrationConstants.getRoles());
 
 		if (userAuthenticationTypeList.isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHENTICATION_ERROR_MSG);
 		} else {
+			
+			if(userAuthenticationTypeList.size() > 1 && applicationContext.getApplicationMap().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)) {
+				userAuthenticationTypeList.removeIf(auth -> auth.equalsIgnoreCase(RegistrationConstants.BIO));
+			}
+			
 			loadNextScreen();
 		}
 	}
@@ -382,18 +389,26 @@ public class AuthenticationController extends BaseController {
 	 * authentication modes
 	 */
 	private void loadNextScreen() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading next authentication screen");
-		Boolean toogleBioException = (Boolean) SessionContext.getInstance().getUserContext().getUserMap()
+		Boolean toogleBioException = (Boolean) sessionContext.getUserContext().getUserMap()
 				.get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION);
 
 		if (!userAuthenticationTypeList.isEmpty()) {
 			authCount++;
 			String authenticationType = String
 					.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
-			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
+			
+			if (applicationContext.getApplicationMap()
+					.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+					.equals(RegistrationConstants.ENABLE)
+					&& authenticationType.equalsIgnoreCase(RegistrationConstants.BIO)) {
 
-			loadAuthenticationScreen(authenticationType);
+				enableErrorPage();
+				
+			} else {
+				loadAuthenticationScreen(authenticationType);
+			}
 		} else {
 			if (!isSupervisor) {
 				if (toogleBioException != null && toogleBioException.booleanValue()) {
@@ -420,37 +435,60 @@ public class AuthenticationController extends BaseController {
 	 * @param loginMode - name of authentication mode
 	 */
 	public void loadAuthenticationScreen(String loginMode) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the respective authentication screen in UI");
 
 		switch (loginMode) {
-		case RegistrationConstants.OTP:
-			enableOTP();
-			break;
-		case RegistrationConstants.PWORD:
-			enablePWD();
-			break;
-		case RegistrationConstants.BIO:
-			enableFingerPrint();
-			break;
-		case RegistrationConstants.IRIS:
-			enableIris();
-			break;
-		case RegistrationConstants.FACE:
-			enableFace();
-			break;
-		default:
-			enablePWD();
-		}
+			case RegistrationConstants.OTP:
+				enableOTP();
+				break;
+			case RegistrationConstants.PWORD:
+				enablePWD();
+				break;
+			case RegistrationConstants.BIO:
+				enableFingerPrint();
+				break;
+			case RegistrationConstants.IRIS:
+				enableIris();
+				break;
+			case RegistrationConstants.FACE:
+				enableFace();
+				break;
+			default:
+				enablePWD();
+			}
+			
+			userAuthenticationTypeList.remove(RegistrationConstants.PARAM_ZERO);
+	}
+	
+	/**
+	 * to enable the OTP based authentication mode and disable rest of modes
+	 */
+	private void enableErrorPage() {
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Enabling OTP based Authentication Screen in UI");
+
+		pwdBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		fingerprintBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
+		errorPane.setVisible(true);
+		errorText.setText(RegistrationUIConstants.DISABLE_FINGERPRINT_SCREEN);
+		errorText.setWrapText(true);
+		if (isSupervisor) {
+			errorLabel.setText(RegistrationConstants.SUPERVISOR_VERIFICATION);
+		} 
 	}
 
 	/**
 	 * to enable the OTP based authentication mode and disable rest of modes
 	 */
 	private void enableOTP() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
@@ -469,7 +507,7 @@ public class AuthenticationController extends BaseController {
 		} else
 
 		{
-			otpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+			otpUserId.setText(sessionContext.getUserContext().getUserId());
 		}
 	}
 
@@ -477,9 +515,10 @@ public class AuthenticationController extends BaseController {
 	 * to enable the password based authentication mode and disable rest of modes
 	 */
 	private void enablePWD() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Password based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		pwdBasedLogin.setVisible(true);
 		otpBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -496,7 +535,7 @@ public class AuthenticationController extends BaseController {
 				username.setEditable(true);
 			}
 		} else {
-			username.setText(SessionContext.getInstance().getUserContext().getUserId());
+			username.setText(sessionContext.getUserContext().getUserId());
 		}
 	}
 
@@ -504,9 +543,10 @@ public class AuthenticationController extends BaseController {
 	 * to enable the fingerprint based authentication mode and disable rest of modes
 	 */
 	private void enableFingerPrint() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Fingerprint based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		fingerprintBasedLogin.setVisible(true);
 		faceBasedLogin.setVisible(false);
 		irisBasedLogin.setVisible(false);
@@ -522,7 +562,7 @@ public class AuthenticationController extends BaseController {
 				fpUserId.setEditable(true);
 			}
 		} else {
-			fpUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+			fpUserId.setText(sessionContext.getUserContext().getUserId());
 		}
 	}
 
@@ -530,9 +570,10 @@ public class AuthenticationController extends BaseController {
 	 * to enable the iris based authentication mode and disable rest of modes
 	 */
 	private void enableIris() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Iris based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		irisBasedLogin.setVisible(true);
 		fingerprintBasedLogin.setVisible(false);
 		otpBasedLogin.setVisible(false);
@@ -547,7 +588,7 @@ public class AuthenticationController extends BaseController {
 				irisUserId.setEditable(true);
 			}
 		} else {
-			irisUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+			irisUserId.setText(sessionContext.getUserContext().getUserId());
 		}
 	}
 
@@ -555,9 +596,10 @@ public class AuthenticationController extends BaseController {
 	 * to enable the face based authentication mode and disable rest of modes
 	 */
 	private void enableFace() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling Face based Authentication Screen in UI");
 
+		errorPane.setVisible(false);
 		faceBasedLogin.setVisible(true);
 		irisBasedLogin.setVisible(false);
 		fingerprintBasedLogin.setVisible(false);
@@ -573,7 +615,7 @@ public class AuthenticationController extends BaseController {
 				faceUserId.setEditable(true);
 			}
 		} else {
-			faceUserId.setText(SessionContext.getInstance().getUserContext().getUserId());
+			faceUserId.setText(sessionContext.getUserContext().getUserId());
 		}
 	}
 
@@ -586,7 +628,7 @@ public class AuthenticationController extends BaseController {
 	 *         or "false", if not
 	 */
 	private boolean fetchUserRole(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the user role in case of Supervisor Authentication");
 
 		UserDetail userDetail = loginService.getUserDetail(userId);
@@ -604,7 +646,7 @@ public class AuthenticationController extends BaseController {
 	 * @return true/false after validating fingerprint
 	 */
 	private boolean captureAndValidateFP(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Fingerprint");
 
 		boolean fpMatchStatus = false;
@@ -616,7 +658,7 @@ public class AuthenticationController extends BaseController {
 			// Thread to wait until capture the bio image/ minutia from FP. based on the
 			// error code or success code the respective action will be taken care.
 			waitToCaptureBioImage(5, 2000, fingerprintFacade);
-			LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
 					"Fingerprint scan done");
 
 			fingerPrintConnector.uninitFingerPrintDevice();
@@ -629,12 +671,12 @@ public class AuthenticationController extends BaseController {
 				fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 				if (!isEODAuthentication) {
 					if (isSupervisor) {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+						RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 								.get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getSupervisorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 					} else {
-						RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+						RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 								.get(RegistrationConstants.REGISTRATION_DATA);
 						registrationDTO.getBiometricDTO().getOperatorBiometricDTO()
 								.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
@@ -667,7 +709,7 @@ public class AuthenticationController extends BaseController {
 	 * @return true/false after validating iris
 	 */
 	private boolean captureAndValidateIris(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Iris");
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -677,12 +719,12 @@ public class AuthenticationController extends BaseController {
 		irisDetailsDTOs.add(irisDetailsDTO);
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
-				SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+				sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setIrisDetailsDTO(irisDetailsDTOs);
 			}
@@ -708,7 +750,7 @@ public class AuthenticationController extends BaseController {
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Capturing and Validating Face");
 
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
@@ -718,12 +760,12 @@ public class AuthenticationController extends BaseController {
 
 		if (!isEODAuthentication) {
 			if (isSupervisor) {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getSupervisorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
-				SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA);
+				sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA);
 			} else {
-				RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+				RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 						.get(RegistrationConstants.REGISTRATION_DATA);
 				registrationDTO.getBiometricDTO().getOperatorBiometricDTO().setFaceDetailsDTO(faceDetailsDTO);
 			}
@@ -738,7 +780,7 @@ public class AuthenticationController extends BaseController {
 	 * to submit the registration after successful authentication
 	 */
 	public void submitRegistration() {
-		LOGGER.debug("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Submit Registration after Operator Authentication");
 
 		packetHandlerController.showReciept(capturePhotoUsingDevice);
@@ -779,7 +821,7 @@ public class AuthenticationController extends BaseController {
 	}
 
 	private OSIDataDTO getOSIData() {
-		return ((RegistrationDTO) SessionContext.getInstance().getMapObject()
+		return ((RegistrationDTO) sessionContextMap
 				.get(RegistrationConstants.REGISTRATION_DATA)).getOsiDataDTO();
 	}
 

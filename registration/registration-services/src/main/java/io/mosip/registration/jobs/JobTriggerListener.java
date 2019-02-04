@@ -3,7 +3,6 @@ package io.mosip.registration.jobs;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
-import org.quartz.TriggerKey;
 import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,10 +41,10 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	private static final Logger LOGGER = AppConfig.getLogger(JobTriggerListener.class);
 
 	@Override
-	public void triggerMisfired(Trigger trigger) {
+	synchronized public void triggerMisfired(Trigger trigger) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
 		
 		/*
@@ -61,7 +60,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
 
 	
@@ -74,10 +73,10 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	}
 
 	@Override
-	public void triggerFired(Trigger trigger, JobExecutionContext context) {
+	synchronized public void triggerFired(Trigger trigger, JobExecutionContext context) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired started");
 
 		/* TRIGGER Fired */
@@ -90,18 +89,18 @@ public class JobTriggerListener extends TriggerListenerSupport {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired ended");
 
 		
 	}
 
 	@Override
-	public void triggerComplete(Trigger trigger, JobExecutionContext context,
+	synchronized public void triggerComplete(Trigger trigger, JobExecutionContext context,
 			CompletedExecutionInstruction triggerInstructionCode) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed started");
 
 		try {
@@ -118,7 +117,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		/*
 		 * -------------------TRIGGER Completed-------------------------------
 		 */
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed ended");
 
 		

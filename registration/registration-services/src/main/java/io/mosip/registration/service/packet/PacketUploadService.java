@@ -31,4 +31,13 @@ public interface PacketUploadService {
 	 * @return
 	 */
 	 Boolean updateStatus(List<Registration> packetUploadStatus);
+	 
+	 /**
+ 	 * Upload packet.
+ 	 *
+ 	 * @param rid 
+ 	 * 			the registration id
+ 	 * @return the string
+ 	 */
+ 	void uploadPacket(String rid);
 }

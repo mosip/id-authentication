@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -15,6 +16,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.FingerPrintCaptureController;
+import io.mosip.registration.controller.device.IrisCaptureController;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,8 +38,12 @@ public class UserOnboardController extends BaseController implements Initializab
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(UserOnboardController.class);
-
 	
+	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+
+	@Autowired
+	private IrisCaptureController irisCaptureController;
 
 	private BiometricDTO biometricDTO;
 
@@ -49,7 +56,7 @@ public class UserOnboardController extends BaseController implements Initializab
 	public void initUserOnboard() {		
 		biometricDTO = new BiometricDTO();
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
+		sessionContextMap.put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);		
 		loadPage(RegistrationConstants.BIO_EXCEPTION_PAGE);
 		clearAllValues();
 	}
@@ -58,7 +65,17 @@ public class UserOnboardController extends BaseController implements Initializab
 	 * Method to load the biometric fingerprint page
 	 */
 	public void loadFingerPrint() {
-		loadPage(RegistrationConstants.USER_ONBOARD_FP);
+		
+		if (applicationContext.getApplicationMap()
+				.get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+				.equals(RegistrationConstants.ENABLE)) {
+			
+			loadPage(RegistrationConstants.USER_ONBOARD_IRIS);
+			irisCaptureController.clearIrisBasedOnExceptions();
+		} else {
+			fingerPrintCaptureController.clearImage();
+			loadPage(RegistrationConstants.USER_ONBOARD_FP);
+		}
 	}
 
 	/**

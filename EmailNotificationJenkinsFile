@@ -20,13 +20,13 @@ def sendEmail() {
  def projectName = description.substring(description.indexOf("\"") + 1, description.indexOf("\"", description.indexOf("\"") + 1));
 
  // projectStatus for upstream job by which this pipeline has been triggered
- def projectStatus = Jenkins.instance.getItem(projectName).lastBuild.getResult().toString()
+ def projectStatus = Jenkins.instance.getItem(projectName).lastCompletedBuild.getResult().toString()
 
  // projectBuildNumber for upstream job by which this pipeline has been triggered
- def projectBuildNumber = Jenkins.instance.getItem(projectName).lastBuild.getNumber().toString()
+ def projectBuildNumber = Jenkins.instance.getItem(projectName).lastCompletedBuild.getNumber().toString()
 
  // projectBuildURL for upstream job by which this pipeline has been triggered
- def projectBuildURL = Jenkins.instance.getItem(projectName).lastBuild.absoluteUrl.toString()
+ def projectBuildURL = Jenkins.instance.getItem(projectName).lastCompletedBuild.absoluteUrl.toString()
 
  echo "projectName: " + projectName
  echo "projectStatus: " + projectStatus

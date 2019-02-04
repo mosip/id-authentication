@@ -75,7 +75,7 @@ public class ScanPopUpViewController extends BaseController {
 
 		try {
 
-			LOGGER.debug(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
 
 			baseController = parentControllerObj;
@@ -100,7 +100,7 @@ public class ScanPopUpViewController extends BaseController {
 			} else {
 				isDocumentScan = false;
 			}
-			LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
 
 		} catch (IOException ioException) {
@@ -120,7 +120,7 @@ public class ScanPopUpViewController extends BaseController {
 	@FXML
 	public void scan() {
 		scanningMsg.setVisible(true);
-		LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Invoke scan method for the passed controller");
 
 		baseController.scan(popupStage);
@@ -133,13 +133,13 @@ public class ScanPopUpViewController extends BaseController {
 	 */
 	public void exitWindow(ActionEvent event) {
 
-		LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Calling exit window to close the popup");
 
 		popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		popupStage.close();
 
-		LOGGER.debug(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
+		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
 
 	}
 

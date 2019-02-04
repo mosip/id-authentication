@@ -72,8 +72,8 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 	 * @see io.mosip.registration.service.PolicySyncService#fetchPolicy(centerId)
 	 */
 	@Override
-	public ResponseDTO fetchPolicy(String centerId) {
-		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
+	synchronized public ResponseDTO fetchPolicy() {
+		LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				"synch the public key is started");
 
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -137,7 +137,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 		return response;
 	}
 
-	public void getPublicKey(LocalDateTime timeStamp, String referenceId)
+	synchronized public void getPublicKey(LocalDateTime timeStamp, String referenceId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 
 		KeyStore keyStore = new KeyStore();
@@ -173,7 +173,7 @@ public class PolicySyncServiceImpl implements PolicySyncService {
 			successResponseDTO.setMessage(RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
-			LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "synch is success");
+			LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID, "synch is success");
 		} catch (NoSuchAlgorithmException exception) {
 
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_CODE,

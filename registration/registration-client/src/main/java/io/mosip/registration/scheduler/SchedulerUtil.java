@@ -63,11 +63,11 @@ public class SchedulerUtil {
 	 */
 	public void startSchedulerUtil() throws RegBaseCheckedException {
 		alert = new Alert(AlertType.WARNING);
-		LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 				"Timer has been called " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
 		timer = new Timer("Timer");
-		refreshTime = TimeUnit.SECONDS.toMillis(SessionContext.getInstance().getRefreshedLoginTime());
-		sessionTimeOut = TimeUnit.SECONDS.toMillis(SessionContext.getInstance().getIdealTime());
+		refreshTime = TimeUnit.SECONDS.toMillis(BaseController.sessionContext.getRefreshedLoginTime());
+		sessionTimeOut = TimeUnit.SECONDS.toMillis(BaseController.sessionContext.getIdealTime());
 		startTimerForSession();
 	}
 
@@ -88,7 +88,7 @@ public class SchedulerUtil {
 						long endTime = System.currentTimeMillis();
 
 						if ((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut) {
-							LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
+							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							alert();
@@ -99,7 +99,7 @@ public class SchedulerUtil {
 									res = Optional.empty();
 								}
 						} else if ((endTime - startTime) >= sessionTimeOut) {
-							LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
+							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task login called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							alert.close();

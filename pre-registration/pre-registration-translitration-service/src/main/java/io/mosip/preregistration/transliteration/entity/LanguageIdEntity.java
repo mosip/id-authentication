@@ -1,10 +1,11 @@
 /* 
  * Copyright
  * 
- 
+ */
 package io.mosip.preregistration.transliteration.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,36 +16,46 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-*//**
+/**
  * This entity class defines the database table details for Transliteration application.
  * 
  * @author Kishan Rathore
  * @since 1.0.0
  *
- *//*
+ */
 @Entity
-@Table(name="Language_Id",schema="prereg")
+@Table(name="language_transliteration",schema="prereg")
 @Getter
 @Setter
 @NoArgsConstructor
 public class LanguageIdEntity implements Serializable {
 	
 	
-	*//** The Constant serialVersionUID. *//*
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3287888371458080052L;
 
-	*//** The Language Id. *//*
-	@Column(name = "Language_id", nullable = false)
+	/** The Language Id. */
+	@Column(name = "lang_id", nullable = false)
 	@Id
 	String languageId;
 	
-	*//** The from language. *//*
-	@Column(name = "From_Language", nullable = false)
+	/** The from language. */
+	@Column(name = "lang_from_code", nullable = false)
 	String fromLang;
 	
-	*//** The to language. *//*
-	@Column(name = "To_Language", nullable = false)
+	/** The to language. */
+	@Column(name = "lang_to_code", nullable = false)
 	String toLang;
 
+	@Column(name="cr_by",nullable=false)
+	String createdBy;
+	
+	@Column(name="cr_dtimes",nullable=false)
+	LocalDateTime createdDateTime;
+	
+	@Column(name="upd_by",nullable=false)
+	String updatedBy;
+	
+	@Column(name="upd_dtimes",nullable=false)
+	LocalDateTime updatedDateTime;
 }
-*/

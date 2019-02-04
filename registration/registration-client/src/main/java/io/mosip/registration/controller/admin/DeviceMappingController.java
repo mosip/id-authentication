@@ -106,16 +106,16 @@ public class DeviceMappingController extends BaseController implements Initializ
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Initializing Device On-boarding Page");
 
 		try {
 			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES_TYPES, Components.DEVICE_ONBOARD,
-					"Get the types of onboarding devices", SessionContext.getInstance().getUserContext().getUserId(),
+					"Get the types of onboarding devices", sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Set Machine ID
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.MACHINE_ID, "1947");
+			sessionContextMap.put(RegistrationConstants.MACHINE_ID, "1947");
 
 			// Add 'All' option to Device Types dropdown
 			deviceTypes.getItems().add(RegistrationConstants.DEVICE_TYPES_ALL_OPTION);
@@ -148,7 +148,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			// Bind Event Handlers to Search Device Button
 			searchField.textProperty().addListener((observable, oldValue, newValue) -> {
 				try {
-					LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 							"Searching the available devices based on search criteria");
 
 					Map<String, List<DeviceDTO>> devicesMap = getDevicesByType(
@@ -163,7 +163,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					} else {
 						populateDevices(filterDevices(availableDevices.getItems()), mappedDevices.getItems());
 					}
-					LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 							"Searching the available devices based on search criteria completed");
 				} catch (RuntimeException runtimeException) {
 					LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -186,26 +186,26 @@ public class DeviceMappingController extends BaseController implements Initializ
 			throw new RegBaseUncheckedException(RegistrationConstants.DEVICE_ONBOARD_INITIALIZATION_EXCEPTION,
 					"Exception while initializing device onboarding page: ".concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Device Onboarding page initialization method execution completed");
 		}
 	}
 
 	private void displayDevices() {
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching and displaying all available and mapped devices from Service and UI");
 
 			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, Components.DEVICE_ONBOARD,
 					"Get all the available and mapped devices",
-					SessionContext.getInstance().getUserContext().getUserId(),
+					sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Create a map of list based on device type
 			Map<String, List<DeviceDTO>> devicesMap = mapMachineService.getDeviceMappingList(
-					SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+					sessionContext.getUserContext().getRegistrationCenterDetailDTO()
 							.getRegistrationCenterId(),
-					(String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.MACHINE_ID));
+					(String) sessionContextMap.get(RegistrationConstants.MACHINE_ID));
 
 			// If Available Devices or Mapped Devices or both not available, add new
 			// ArrayList
@@ -218,11 +218,11 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			// Add the Actual Devices Map and Updated Devices Map (Placeholder) to
 			// SessionContext object
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_DEVICES_MAP, devicesMap);
+			sessionContextMap.put(RegistrationConstants.ONBOARD_DEVICES_MAP, devicesMap);
 			Map<String, Set<DeviceDTO>> upadtedDevicesMap = new HashMap<>();
 			upadtedDevicesMap.put(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES, new HashSet<DeviceDTO>());
 			upadtedDevicesMap.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, new HashSet<DeviceDTO>());
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED,
+			sessionContextMap.put(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED,
 					upadtedDevicesMap);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -234,7 +234,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while fetching or displaying devices from Service and UI: "
 							.concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Fetching and displaying all available and mapped devices from Service and UI method execution completed");
 		}
 	}
@@ -253,7 +253,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	@FXML
 	private void loadDevices(ActionEvent actionEvent) {
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading list of available and mapped devices for selected device type");
 
 			// Get the selected device type
@@ -264,7 +264,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, Components.DEVICE_ONBOARD,
 					"Get the available and mapped devices for ".concat(selectedDeviceType),
-					SessionContext.getInstance().getUserContext().getUserId(),
+					sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Get the list of Available and Mapped Devices for selected Device Type
@@ -281,14 +281,14 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading list of available and mapped devices for selected device type method execution completed");
 		}
 	}
 
 	private void populateDevices(List<DeviceDTO> availableDevices, List<DeviceDTO> mappedDevices) {
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Populating devices in UI");
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Populating devices in UI");
 
 			// Set the Available Devices
 			this.availableDevices.setItems(FXCollections.observableArrayList(availableDevices));
@@ -303,7 +303,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			throw new RegBaseUncheckedException(RegistrationConstants.DEVICE_ONBOARD_DEVICE_POPULATION_EXCEPTION,
 					"Exception while populating devices in UI: ".concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Populating devices in UI method execution completed");
 		}
 	}
@@ -320,14 +320,13 @@ public class DeviceMappingController extends BaseController implements Initializ
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void mapAvailableDevices(MouseEvent mouseEvent) {
-		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping selected devices");
+		LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping selected devices");
 
 		try {
 			List<DeviceDTO> devicesAdded = mapDevices(availableDevices, mappedDevices);
 
 			// Update the Devices added in Session Context
-			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.getInstance()
-					.getMapObject().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 			Set<DeviceDTO> deviceMaster = updatedDevicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES);
 			deviceMaster.addAll(devicesAdded);
 
@@ -341,7 +340,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Mapping of selected devices method execution completed");
 		}
 	}
@@ -358,14 +357,13 @@ public class DeviceMappingController extends BaseController implements Initializ
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void unmapMappedDevices(MouseEvent mouseEvent) {
-		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Unmapping selected devices");
+		LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Unmapping selected devices");
 
 		try {
 			List<DeviceDTO> devicesRemoved = mapDevices(mappedDevices, availableDevices);
 
 			// Update the Devices Removed in Session Context
-			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.getInstance()
-					.getMapObject().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 			Set<DeviceDTO> deviceMaster = updatedDevicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES);
 			deviceMaster.addAll(devicesRemoved);
 
@@ -379,7 +377,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Unmapping of selected devices method execution completed");
 		}
 	}
@@ -387,7 +385,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	private List<DeviceDTO> mapDevices(TableView<DeviceDTO> source, TableView<DeviceDTO> destination) {
 		List<DeviceDTO> selectedDevices = null;
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping of devices");
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping of devices");
 
 			// Get the selected devices
 			selectedDevices = new ArrayList<>(source.getSelectionModel().getSelectedItems());
@@ -414,7 +412,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			throw new RegBaseUncheckedException(RegistrationConstants.DEVICE_ONBOARD_DEVICE_GROUPING_EXCEPTION,
 					"Exception while mapping of devices: ".concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping of devices method execution completed");
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping of devices method execution completed");
 		}
 
 		return selectedDevices;
@@ -425,7 +423,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	 */
 	@FXML
 	private void goToHome() {
-		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Navigating to Registration Home Page");
 		try {
 			clearDeviceOnboardSessionContext();
@@ -439,7 +437,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Registration Home page method execution completed");
 		}
 	}
@@ -453,22 +451,22 @@ public class DeviceMappingController extends BaseController implements Initializ
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void submit(ActionEvent actionEvent) {
-		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the mapping of onboarding devices for Registration Machine");
 
 		try {
 			auditFactory.audit(AuditEvent.UPDATE_DEVICES_ONBOARDING, Components.DEVICE_ONBOARD,
-					"Updating mapping of devices", SessionContext.getInstance().getUserContext().getUserId(),
+					"Updating mapping of devices", sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Get updated added and removed devices
-			Map<String, Set<DeviceDTO>> devicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.getInstance()
-					.getMapObject().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> devicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap
+					.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 			Set<DeviceDTO> devicesAdded = devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES);
 			Set<DeviceDTO> devicesRemoved = devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES);
 
 			// Get existing available and mapped devices
-			devicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.getInstance().getMapObject()
+			devicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap
 					.get(RegistrationConstants.ONBOARD_DEVICES_MAP);
 
 			// Update the Added and Removed Devices
@@ -476,7 +474,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			devicesRemoved.retainAll(devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES));
 
 			// Get the Machine ID
-			String machineId = (String) SessionContext.getInstance().getMapObject()
+			String machineId = (String) sessionContextMap
 					.get(RegistrationConstants.MACHINE_ID);
 
 			// Update the Machine ID
@@ -509,7 +507,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Mapping of onboarding devices for Registration Machine method execution completed");
 		}
 	}
@@ -518,7 +516,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 		List<DeviceDTO> filteredDevices = null;
 
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Searching the devices based on given search criteria");
 
 			// Get the search term
@@ -548,7 +546,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while searching the devices based on given search criteria: "
 							.concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Searching the devices based on given search criteria method execution completed");
 		}
 
@@ -557,12 +555,12 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 	private void clearDeviceOnboardSessionContext() {
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Clearing Session Context objects used for Device Onboarding");
 
 			// Remove the Onboard Devices specific objects from Session Context
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
-			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			sessionContextMap.remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
+			sessionContextMap.remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					RegistrationConstants.DEVICE_ONBOARD_CLEAR_CONTEXT_EXCEPTION
@@ -573,7 +571,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while clearing Session Context objects used for Device Onboarding: "
 							.concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Clearing Session Context objects used for Device Onboarding method execution completed");
 		}
 	}
@@ -582,16 +580,15 @@ public class DeviceMappingController extends BaseController implements Initializ
 	private Map<String, List<DeviceDTO>> getDevicesByType(String deviceType) {
 		Map<String, List<DeviceDTO>> actualDevicesMap = null;
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Filtering the devices by deviceType");
 
 			// Get actual Devices from Session Context
-			actualDevicesMap = new HashMap<>((Map<String, List<DeviceDTO>>) SessionContext.getInstance().getMapObject()
+			actualDevicesMap = new HashMap<>((Map<String, List<DeviceDTO>>) sessionContextMap
 					.get(RegistrationConstants.ONBOARD_DEVICES_MAP));
 
 			// Get updated Devices Map from Session Context
-			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) SessionContext.getInstance()
-					.getMapObject().get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+			Map<String, Set<DeviceDTO>> updatedDevicesMap = (Map<String, Set<DeviceDTO>>) sessionContextMap.get(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
 
 			// Get actual available devices
 			List<DeviceDTO> availableDevicesToDisplay = (List<DeviceDTO>) getDevicesByType(
@@ -630,7 +627,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			throw new RegBaseUncheckedException(RegistrationConstants.DEVICE_ONBOARD_FILTER_EXCEPTION,
 					"Exception while filtering the devices by deviceType: ".concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Filtering the devices by deviceType method execution completed");
 		}
 
@@ -640,7 +637,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	private Collection<DeviceDTO> getDevicesByType(Collection<DeviceDTO> devices, String deviceType) {
 		List<DeviceDTO> collection = new ArrayList<>();
 		try {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Filtering the devices based on deviceType");
 			if (deviceType.equals(RegistrationConstants.DEVICE_TYPES_ALL_OPTION)) {
 				collection.addAll(devices);
@@ -658,7 +655,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while filtering the devices based on deviceType: "
 							.concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Filtering the devices based on deviceType method execution completed");
 		}
 		return collection;

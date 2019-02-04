@@ -62,14 +62,14 @@ public class DemographicPreviewController extends BaseController {
 
 	@FXML
 	private void initialize() {
-		LOGGER.debug("REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+		LOGGER.info("REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the REGISTRATION_PREVIEW_CONTROLLER");
 		demoRevScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
 		isInPane1 = true;
 		demographicPreview.setDisable(true);
 		demoGraphicVbox.getChildren().add(getDemoGraphicPane1Content());
 
-		if(((RegistrationDTO)SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO()!=null) {
+		if(((RegistrationDTO)sessionContextMap.get(RegistrationConstants.REGISTRATION_DATA)).getSelectionListDTO()!=null) {
 			registrationNavLabel.setText(RegistrationConstants.UIN_NAV_LABEL);
 		}
 	}
@@ -80,7 +80,7 @@ public class DemographicPreviewController extends BaseController {
 	 */
 	public void handleEdit() {
 		try {
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+			sessionContextMap.put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI-  Preview ", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
@@ -136,12 +136,12 @@ public class DemographicPreviewController extends BaseController {
 	}
 
 	private AnchorPane getDemoGraphicPane1Content() {
-		return (AnchorPane) SessionContext.getInstance().getMapObject()
+		return (AnchorPane) sessionContextMap
 				.get(RegistrationConstants.REGISTRATION_PANE1_DATA);
 	}
 
 	private AnchorPane getDemoGraphicPane2Content() {
-		return (AnchorPane) SessionContext.getInstance().getMapObject()
+		return (AnchorPane) sessionContextMap
 				.get(RegistrationConstants.REGISTRATION_PANE2_DATA);
 	}
 

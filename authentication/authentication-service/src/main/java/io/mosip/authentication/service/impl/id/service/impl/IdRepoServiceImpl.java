@@ -59,7 +59,7 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 		try {
 			buildRequest = restRequestFactory.buildRequest(RestServicesConstants.ID_REPO_SERVICE, null, Map.class);
-			Map<String, String> params = new HashMap();
+			Map<String, String> params = new HashMap<>();
 			params.put("uin", uin);
 			if (isBio) {
 				params.put("type", "bio");

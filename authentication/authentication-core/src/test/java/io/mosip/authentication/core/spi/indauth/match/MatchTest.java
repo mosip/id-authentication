@@ -147,6 +147,10 @@ public class MatchTest {
 
 		AuthType[] authTypes = new AuthType[] { authType };
 		AuthType.getAuthTypeForMatchType(matchType, authTypes);
+		
+		Environment environment = null;
+		Function<LanguageType,String> newlanguageInfoFetcher = null;
+		authType.getMatchingThreshold(authRequestDTO, newlanguageInfoFetcher, environment);
 	}
 
 	@Test

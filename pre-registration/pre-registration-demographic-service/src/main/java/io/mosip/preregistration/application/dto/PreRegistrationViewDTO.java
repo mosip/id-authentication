@@ -30,7 +30,7 @@ public class PreRegistrationViewDTO implements Serializable {
 	/**
 	 * PreRegistration Id
 	 */
-	private String preId;
+	private String preRegistrationId;
 	/**
 	 * Full Name
 	 */

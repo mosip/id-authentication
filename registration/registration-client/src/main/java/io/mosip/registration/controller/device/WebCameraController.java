@@ -21,6 +21,9 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.MosipWebcamProvider;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
+import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,7 +74,7 @@ public class WebCameraController extends BaseController implements Initializable
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		
 		WebcamPanel cameraPanel = new WebcamPanel(webcam);
@@ -82,7 +85,7 @@ public class WebCameraController extends BaseController implements Initializable
 	}
 
 	public void init(BaseController parentController, String imageType) {
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Initializing the controller to be used and imagetype to be captured");
 
 		this.parentController = parentController;
@@ -90,7 +93,7 @@ public class WebCameraController extends BaseController implements Initializable
 	}
 
 	public boolean isWebcamPluggedIn() {
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Connecting to the webcam");
 		
 		photoProvider = photoCaptureFacade.getPhotoProviderFactory(photoProviderName);
@@ -106,7 +109,7 @@ public class WebCameraController extends BaseController implements Initializable
 
 	@FXML
 	public void captureImage(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"capturing the image from webcam");
 		if (capturedImage != null) {
 			capturedImage.flush();
@@ -119,7 +122,7 @@ public class WebCameraController extends BaseController implements Initializable
 
 	@FXML
 	public void clearImage(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"clearing the image from webcam");
 
 		parentController.clearPhoto(imageType);
@@ -128,11 +131,18 @@ public class WebCameraController extends BaseController implements Initializable
 
 	@FXML
 	public void closeWindow(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"closing the webcam window");
 
 		photoProvider.close(webcam);
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 	}
+
+
+	public void captureStubApplicantPhoto(ApplicantDocumentDTO applicantDocumentDTO, boolean isExceptionPhoto)
+			throws RegBaseCheckedException {
+		photoCaptureFacade.captureStubApplicantPhoto(applicantDocumentDTO, isExceptionPhoto);
+	}
+
 }

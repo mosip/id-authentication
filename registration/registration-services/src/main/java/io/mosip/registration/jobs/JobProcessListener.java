@@ -57,9 +57,9 @@ public class JobProcessListener extends JobListenerSupport {
 	 * JobExecutionContext)
 	 */
 	@Override
-	public void jobToBeExecuted(JobExecutionContext context) {
+	synchronized public void jobToBeExecuted(JobExecutionContext context) {
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed started");
 
 		/*
@@ -77,7 +77,7 @@ public class JobProcessListener extends JobListenerSupport {
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed ended");
 
 		
@@ -90,10 +90,10 @@ public class JobProcessListener extends JobListenerSupport {
 	 * JobExecutionContext)
 	 */
 	@Override
-	public void jobExecutionVetoed(JobExecutionContext context) {
+	synchronized public void jobExecutionVetoed(JobExecutionContext context) {
 
 		
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected started");
 
 		/*
@@ -110,7 +110,7 @@ public class JobProcessListener extends JobListenerSupport {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected ended");
 
 		
@@ -123,8 +123,8 @@ public class JobProcessListener extends JobListenerSupport {
 	 * JobExecutionContext, org.quartz.JobExecutionException)
 	 */
 	@Override
-	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+	synchronized public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job was executed started");
 
 	
@@ -139,7 +139,7 @@ public class JobProcessListener extends JobListenerSupport {
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
 		}
 
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job was executed ended");
 
 		/*

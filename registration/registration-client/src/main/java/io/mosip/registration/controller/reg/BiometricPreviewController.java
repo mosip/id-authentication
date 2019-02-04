@@ -138,10 +138,10 @@ public class BiometricPreviewController extends BaseController {
 
 	@FXML
 	private void initialize() {
-		LOGGER.debug("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+		LOGGER.info("BIOMETRIC_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the BIOMETRIC_PREVIEW_CONTROLLER");
 		bioScrollPane.setPrefHeight(Screen.getPrimary().getVisualBounds().getHeight());
-		RegistrationDTO registrationDTOContent = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+		RegistrationDTO registrationDTOContent = (RegistrationDTO) sessionContextMap
 				.get(RegistrationConstants.REGISTRATION_DATA);
 
 		if (registrationDTOContent.getSelectionListDTO() != null) {
@@ -288,7 +288,7 @@ public class BiometricPreviewController extends BaseController {
 	 */
 	public void handleEdit() {
 		try {
-			SessionContext.getInstance().getMapObject().put(RegistrationConstants.REGISTRATION_ISEDIT, true);
+			sessionContextMap.put(RegistrationConstants.REGISTRATION_ISEDIT, true);
 			loadScreen(RegistrationConstants.CREATE_PACKET_PAGE);
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI-  Preview ", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());

@@ -12,6 +12,7 @@ public class RegistrationUIConstants {
 
 	// LOGIN
 	public static final String UNABLE_LOAD_LOGIN_SCREEN = bundle.getString("UNABLE_LOAD_LOGIN_SCREEN");
+	public static final String DISABLE_FINGERPRINT_SCREEN = bundle.getString("DISABLE_FINGERPRINT_SCREEN");
 	public static final String MISSING_MANDATOTY_FIELDS = bundle.getString("MISSING_MANDATOTY_FIELDS");
 	public static final String CREDENTIALS_FIELD_EMPTY = bundle.getString("CREDENTIALS_FIELD_EMPTY");
 	public static final String USERNAME_FIELD_EMPTY = bundle.getString("USERNAME_FIELD_EMPTY");
@@ -111,6 +112,10 @@ public class RegistrationUIConstants {
 	public static final String OPT_TO_REG_WEAK_GPS = bundle.getString("OPT_TO_REG_WEAK_GPS");
 	public static final String OPT_TO_REG_INSERT_GPS = bundle.getString("OPT_TO_REG_INSERT_GPS");
 	public static final String OPT_TO_REG_GPS_PORT_MISMATCH = bundle.getString("OPT_TO_REG_GPS_PORT_MISMATCH");
+	
+	//PACKET EXPORT
+	public static final String PACKET_EXPORT_SUCCESS_MESSAGE = bundle.getString("PACKET_EXPORT_SUCCESS_MESSAGE");
+	public static final String PACKET_EXPORT_MESSAGE = bundle.getString("PACKET_EXPORT_MESSAGE");
 
 	// JOBS
 	public static final String EXECUTE_JOB_ERROR_MESSAGE = bundle.getString("EXECUTE_JOB_ERROR_MESSAGE");

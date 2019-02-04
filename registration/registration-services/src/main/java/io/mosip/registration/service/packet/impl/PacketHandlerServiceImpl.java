@@ -69,7 +69,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	 */
 	@Override
 	public ResponseDTO handle(RegistrationDTO registrationDTO) {
-		LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
+		LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		String rid = registrationDTO == null ? "RID" : registrationDTO.getRegistrationId();
@@ -79,7 +79,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 
 			// 2.encrypt packet
 			if (inMemoryZipFile != null && inMemoryZipFile.length > 0) {
-				LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Packet had been created successfully");
 
 				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
@@ -91,7 +91,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 				errorResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 
-				LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Error in creating Registration Packet");
 				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, Components.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
 						REGISTRATION_ID, rid);
@@ -117,7 +117,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		}
-		LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been ended");
+		LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been ended");
 
 		return responseDTO;
 	}

@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
 import javafx.scene.control.ComboBox;
@@ -46,7 +45,7 @@ public class FXUtils {
 	public void validateOnType(TextField field, Validations validation) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!validation.validateTextField(field, field.getId() + "_ontype",
-					(String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
+					(String) BaseController.sessionContextMap.get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			}
 		});
@@ -64,7 +63,7 @@ public class FXUtils {
 	public void validateOnType(TextField field, Validations validation, TextField localField) {
 		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
 			if (!validation.validateTextField(field, field.getId() + "_ontype",
-					(String) SessionContext.getInstance().getMapObject().get(RegistrationConstants.IS_CONSOLIDATED))) {
+					(String) BaseController.sessionContextMap.get(RegistrationConstants.IS_CONSOLIDATED))) {
 				field.setText(oldValue);
 			} else {
 				if(localField!=null)
@@ -91,7 +90,7 @@ public class FXUtils {
 	 */
 	public void dateFormatter(DatePicker ageDatePicker) {
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the date format");
 
 			ageDatePicker.setConverter(new StringConverter<LocalDate>() {
@@ -127,7 +126,7 @@ public class FXUtils {
 	 */
 	public void disableFutureDays(DatePicker ageDatePicker) {
 		try {
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Disabling future dates");
 
 			ageDatePicker.setDayCellFactory(picker -> new DateCell() {
@@ -140,7 +139,7 @@ public class FXUtils {
 				}
 			});
 
-			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Future dates disabled");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - DISABLE FUTURE DATE FAILED", APPLICATION_NAME,

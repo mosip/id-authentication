@@ -70,6 +70,8 @@ public class PacketInfoDao {
 	/** The Constant IS_NOT_NULL. */
 	private static final String IS_NOT_NULL = " IS NOT NULL ";
 
+	private static final boolean IS_ACTIVE_TRUE = true;
+
 	/**
 	 * Gets the packetsfor QC user.
 	 *
@@ -125,7 +127,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the registration center machine.
 	 *
-	 * @param regid the regid
+	 * @param regid
+	 *            the regid
 	 * @return the registration center machine
 	 */
 	public RegistrationCenterMachineDto getRegistrationCenterMachine(String regid) {
@@ -140,14 +143,15 @@ public class PacketInfoDao {
 		dto.setRegcntrId(regCenterMachineEntity.getCntrId());
 		dto.setRegId(regCenterMachineEntity.getId().getRegId());
 		dto.setMachineId(regCenterMachineEntity.getMachineId());
-		dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
+		// dto.setPacketCreationDate(regCenterMachineEntity.getPacketCreationDate());
 		return dto;
 	}
 
 	/**
 	 * Convert reg osi entity to dto.
 	 *
-	 * @param regOsiEntity the reg osi entity
+	 * @param regOsiEntity
+	 *            the reg osi entity
 	 * @return the reg osi dto
 	 */
 	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
@@ -189,7 +193,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to photograph dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the photograph dto
 	 */
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
@@ -213,7 +218,8 @@ public class PacketInfoDao {
 	/**
 	 * Convert entity to demographic dto.
 	 *
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the demographic info dto
 	 */
 	private DemographicInfoDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
@@ -224,7 +230,6 @@ public class PacketInfoDao {
 		demo.setName(object.getName());
 		demo.setGenderCode(object.getGender());
 		demo.setDob(object.getDob());
-		demo.setPhoneticName(object.getPhoneticName());
 
 		return demo;
 	}
@@ -232,7 +237,8 @@ public class PacketInfoDao {
 	/**
 	 * Find demo by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the list
 	 */
 	public List<DemographicInfoDto> findDemoById(String regId) {
@@ -251,7 +257,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant iris image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant iris image name by id
 	 */
 	public List<String> getApplicantIrisImageNameById(String regId) {
@@ -261,7 +268,8 @@ public class PacketInfoDao {
 	/**
 	 * Gets the applicant finger print image name by id.
 	 *
-	 * @param regId the reg id
+	 * @param regId
+	 *            the reg id
 	 * @return the applicant finger print image name by id
 	 */
 	public List<String> getApplicantFingerPrintImageNameById(String regId) {
@@ -281,13 +289,13 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic entities.
 	 *
-	 * @param phoneticName the phonetic name
+	 * @param name the name
 	 * @param gender the gender
 	 * @param dob the dob
 	 * @param langCode the lang code
 	 * @return the all demographic entities
 	 */
-	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String phoneticName, String gender,
+	private List<IndividualDemographicDedupeEntity> getAllDemographicEntities(String name, String gender,
 			Date dob, String langCode) {
 		Map<String, Object> params = new HashMap<>();
 		String className = IndividualDemographicDedupeEntity.class.getSimpleName();
@@ -295,9 +303,9 @@ public class PacketInfoDao {
 		StringBuilder query = new StringBuilder();
 		query.append(
 				SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".uin " + IS_NOT_NULL + AND);
-		if (phoneticName != null) {
-			query.append(alias + ".phoneticName=:phoneticName ").append(AND);
-			params.put("phoneticName", phoneticName);
+		if (name != null) {
+			query.append(alias + ".name=:name ").append(AND);
+			params.put("name", name);
 
 		}
 		if (gender != null) {
@@ -308,8 +316,11 @@ public class PacketInfoDao {
 			query.append(alias + ".dob=:dob ").append(AND);
 			params.put("dob", dob);
 		}
-		query.append(alias + ".id.langCode=:langCode");
+		query.append(alias + ".id.langCode=:langCode").append(AND);
 		params.put("langCode", langCode);
+
+		query.append(alias + ".isActive=:isActive");
+		params.put("isActive", IS_ACTIVE_TRUE);
 
 		return demographicDedupeRepository.createQuerySelect(query.toString(), params);
 	}
@@ -317,17 +328,17 @@ public class PacketInfoDao {
 	/**
 	 * Gets the all demographic info dtos.
 	 *
-	 * @param phoneticName the phonetic name
+	 * @param name the name
 	 * @param gender the gender
 	 * @param dob the dob
 	 * @param langCode the lang code
 	 * @return the all demographic info dtos
 	 */
-	public List<DemographicInfoDto> getAllDemographicInfoDtos(String phoneticName, String gender, Date dob,
+	public List<DemographicInfoDto> getAllDemographicInfoDtos(String name, String gender, Date dob,
 			String langCode) {
 
 		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
-		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(phoneticName,
+		List<IndividualDemographicDedupeEntity> demographicInfoEntities = getAllDemographicEntities(name,
 				gender, dob, langCode);
 		for (IndividualDemographicDedupeEntity entity : demographicInfoEntities) {
 			demographicInfoDtos.add(convertEntityToDemographicDto(entity));

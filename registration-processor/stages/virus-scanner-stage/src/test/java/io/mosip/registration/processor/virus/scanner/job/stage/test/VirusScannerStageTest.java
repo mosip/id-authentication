@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.virus.scanner.job.stage.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -15,7 +16,6 @@ import java.io.InputStream;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -134,55 +134,54 @@ public class VirusScannerStageTest {
 	@Test
 	public void testSuccessfulVirusScan() throws Exception {
 
-		
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.TRUE);
-		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
-		Mockito.when(decryptor.getScanFolderResult()).thenReturn(Boolean.TRUE);
-
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
-		virusScannerStage.process(dto); 
+		virusScannerStage.process(dto);
 
-		
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(
+						Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is successfully scanned."));
 
 	}
 
 	@Test
-
 	public void testFailureVirusScan() throws Exception {
 
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.FALSE);
-		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.FALSE);
+
 		virusScannerStage.process(dto);
 
-		assertEquals(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString(), entry.getStatusCode());
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
 
 	}
 
-	
 	@Test
 	public void testFailureVirusScanFiles() throws Exception {
 
-	
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.FALSE);
-	
-		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
-		Mockito.when(decryptor.getScanFolderResult()).thenReturn(Boolean.FALSE);
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
 		virusScannerStage.process(dto);
 
-		assertEquals(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString(), entry.getStatusCode());
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.containsExactly(Tuple.tuple(Level.INFO, "SESSIONID - REGISTRATIONID - 1000 - File is infected."));
 
 	}
 
@@ -194,7 +193,6 @@ public class VirusScannerStageTest {
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(virusScanner.scanFolder(anyString())).thenReturn(Boolean.FALSE);
-		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(registrationStatusService)
 				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(
@@ -212,23 +210,10 @@ public class VirusScannerStageTest {
 		listAppender.start();
 		fooLogger.addAppender(listAppender);
 
-		Mockito.when(decryptor.getScanResult()).thenReturn(Boolean.TRUE);
-		doThrow(VirusScanFailedException.class).when(decryptor).getScanResult();
 		doThrow(VirusScanFailedException.class).when(virusScanner).scanFile(anyString());
 		MessageDTO object = virusScannerStage.process(dto);
 
-		assertTrue(object.getInternalError());
+		assertTrue("Should be an internal error", object.getInternalError());
 	}
 
-	@Test
-	public void exceptionTest() throws Exception {
-
-		Mockito.when(virusScanner.scanFile(anyString())).thenThrow(new NullPointerException());
-
-		Mockito.when(decryptor.getScanResult()).thenThrow(new NullPointerException());
-		MessageDTO object = virusScannerStage.process(dto);
-
-		assertTrue(object.getInternalError());
-
-	}
 }

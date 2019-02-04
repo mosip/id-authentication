@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.dao.impl.JobConfigDAOImpl;
+import io.mosip.registration.dao.impl.SyncJobConfigDAOImpl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.JobConfigRepository;
@@ -32,7 +32,7 @@ public class JobConfigDAOTest {
 		public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 		@InjectMocks
-		private JobConfigDAOImpl jobConfigDAOImpl;
+		private SyncJobConfigDAOImpl jobConfigDAOImpl;
 		
 		
 		@Test

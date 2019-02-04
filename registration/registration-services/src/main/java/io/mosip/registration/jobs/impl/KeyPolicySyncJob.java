@@ -44,7 +44,7 @@ public class KeyPolicySyncJob extends BaseJob {
 	@Async
 	@Override
 	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		this.responseDTO = new ResponseDTO();
 
@@ -54,12 +54,7 @@ public class KeyPolicySyncJob extends BaseJob {
 			policySyncService = applicationContext.getBean(PolicySyncService.class);
 
 			// Run the Parent JOB always first
-
-			String centerId = SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-					.getRegistrationCenterId();
-
-			// Run the Parent JOB always first
-			this.responseDTO = policySyncService.fetchPolicy(centerId);
+			this.responseDTO = policySyncService.fetchPolicy();
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -74,7 +69,7 @@ public class KeyPolicySyncJob extends BaseJob {
 			throw baseUncheckedException;
 		}
 
-		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
 
 	}
@@ -88,15 +83,13 @@ public class KeyPolicySyncJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		SessionContext sessionContext = SessionContext.getInstance();
-		String centerId = sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId();
 
-		this.responseDTO = policySyncService.fetchPolicy(centerId);
+		this.responseDTO = policySyncService.fetchPolicy();
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
-		LOGGER.debug(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info(RegistrationConstants.KEY_POLICY_SYNC_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
 		return responseDTO;

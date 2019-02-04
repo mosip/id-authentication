@@ -25,15 +25,12 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
-import io.mosip.registration.util.dataprovider.DataProvider;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 
 /**
  * Class for Registration Packet operations
@@ -80,7 +77,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
 					applicationContext.getApplicationLanguageBundle());
-			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
@@ -93,7 +90,7 @@ public class PacketHandlerController extends BaseController {
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
 						errorMessage
-								.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
+								.append(errorResponseDTO.getMessage() + "\n\n");
 					}
 					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 
@@ -113,9 +110,8 @@ public class PacketHandlerController extends BaseController {
 	public void showReciept(String capturePhotoUsingDevice) {
 
 		try {
-			RegistrationDTO registrationDTO = (RegistrationDTO) SessionContext.getInstance().getMapObject()
+			RegistrationDTO registrationDTO = (RegistrationDTO) sessionContextMap
 					.get(RegistrationConstants.REGISTRATION_DATA);
-			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			ResponseDTO templateResponse = templateGenerator.generateTemplate(ackTemplateText, registrationDTO,
@@ -148,7 +144,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
 
-			LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
@@ -176,7 +172,7 @@ public class PacketHandlerController extends BaseController {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
-			LOGGER.debug("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
@@ -200,21 +196,32 @@ public class PacketHandlerController extends BaseController {
 		try {
 			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
-			LOGGER.debug("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "updating UIN");
 
 			if (!validateScreenAuthorization(root.getId())) {
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 			} else {
-				Button button = (Button) event.getSource();
-				AnchorPane anchorPane = (AnchorPane) button.getParent();
-				VBox vBox = (VBox) (anchorPane.getParent());
-				ObservableList<Node> nodes = vBox.getChildren();
-				IntStream.range(1, nodes.size()).forEach(index -> {
-					nodes.get(index).setVisible(false);
-					nodes.get(index).setManaged(false);
-				});
-				nodes.add(root);
+
+				StringBuilder errorMessage = new StringBuilder();
+				ResponseDTO responseDTO;
+				responseDTO = validateSyncStatus();
+				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+						errorMessage
+								.append(errorResponseDTO.getMessage() + "\n\n");
+					}
+					generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+				} else {
+					ObservableList<Node> nodes = homeController.getMainBox().getChildren();
+					IntStream.range(1, nodes.size()).forEach(index -> {
+						nodes.get(index).setVisible(false);
+						nodes.get(index).setManaged(false);
+					});
+					nodes.add(root);
+				}
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());

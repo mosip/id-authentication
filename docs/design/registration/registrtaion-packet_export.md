@@ -1,6 +1,6 @@
 **Design - Packet Export**
 
-**Functional Background**
+**Functional  Background**
 
 As part of the registration, once the packet created successfully the user wants to export to the specific folder based on the user section path. Later the RO/RS will be uploaded same by using the portal services. User can able to export any no of times with the status has 'Exported/Synched'. 
 

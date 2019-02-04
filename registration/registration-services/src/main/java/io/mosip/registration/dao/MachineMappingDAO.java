@@ -134,5 +134,11 @@ public interface MachineMappingDAO {
 	 * 		It returns true when record found for the device else false
 	 */
 	boolean isValidDevice(DeviceTypes deviceType,String serialNo);
+	/**
+	 * 
+	 * @param machineId
+	 * @return  It returns the list of users against the machine
+	 */       
+	List<UserMachineMapping> getUserMappingDetails(String machineId);
 
 }

@@ -24,8 +24,8 @@ public class DataSyncRequestDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/** The Registration-client-Id. */
-	@JsonProperty("registartion-client-id")
-	@ApiModelProperty(value = "Registartion client id", position = 1)
+	@JsonProperty("registration-client-id")
+	@ApiModelProperty(value = "Registration client id", position = 1)
 	private String regClientId;
 	
 	/** The from-date. */
@@ -40,6 +40,6 @@ public class DataSyncRequestDTO implements Serializable{
 	
 	/** The UserId. */
 	@JsonProperty("user-id")
-	@ApiModelProperty(value = "Registartion client user Id", position = 4)
+	@ApiModelProperty(value = "Registration client user Id", position = 4)
 	private String userId;
 }

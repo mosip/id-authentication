@@ -5,6 +5,7 @@ public class MosipUser {
     private String mobile;
     private String mail;
     private String role;
+    private String langCode;
 
     public MosipUser() {
     }
@@ -14,6 +15,14 @@ public class MosipUser {
         this.mobile = mobile;
         this.mail = mail;
         this.role = role;
+    }
+
+    public MosipUser(String userName, String mobile, String mail, String role, String langCode) {
+        this.userName = userName;
+        this.mobile = mobile;
+        this.mail = mail;
+        this.role = role;
+        this.langCode = langCode;
     }
 
     public String getUserName() {
@@ -46,5 +55,13 @@ public class MosipUser {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getLangCode() {
+        return langCode;
+    }
+
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
     }
 }

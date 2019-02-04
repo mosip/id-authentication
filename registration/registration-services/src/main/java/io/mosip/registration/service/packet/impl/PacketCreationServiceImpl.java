@@ -1,5 +1,6 @@
 package io.mosip.registration.service.packet.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
@@ -29,6 +31,8 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dao.AuditDAO;
+import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -43,7 +47,6 @@ import io.mosip.registration.dto.cbeff.jaxbclasses.SingleType;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometric;
 import io.mosip.registration.dto.cbeff.jaxbclasses.TestBiometricType;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
-import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
@@ -86,6 +89,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private static Random random = new Random(5000);
 	@Autowired
 	private AuditFactory auditFactory;
+	@Autowired
+	private AuditLogControlDAO auditLogControlDAO;
+	@Autowired
+	private AuditDAO auditDAO;
 
 	/*
 	 * (non-Javadoc)
@@ -95,15 +102,10 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@Override
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
+		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
 		try {
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
-
-			// Fetch unsync'ed audit logs from DB
-			// TODO: Commented below line intentionally. Will be updated
-			// registrationDTO.setAuditDTOs(MAPPER_FACADE.mapAsList(auditDAO.getAllUnsyncAudits(),
-			// AuditDTO.class));
 
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
@@ -127,7 +129,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 								.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 			}
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME));
 			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
@@ -150,7 +152,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 													RegistrationConstants.EMPTY)))
 									.with(cbeffProperty -> cbeffProperty.setVersion(1.0)).get());
 
-					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME));
 					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
@@ -165,7 +167,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
-					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME));
 					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
@@ -180,7 +182,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				if (cbeffInBytes != null) {
 					filesGeneratedForPacket.put(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME, cbeffInBytes);
 
-					LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME));
 					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
 							String.format(loggerMessageForCBEFF, RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
@@ -193,30 +195,33 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			jsonValidator.validateJson(idJsonAsString, "mosip-identity-json-schema.json");
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME));
 			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, Components.PACKET_CREATOR,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.DEMOGRPAHIC_JSON_NAME), REGISTRATION_ID,
 					rid);
 
 			// Generating Audit JSON as byte array
-			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,
-					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
-							.getBytes());
+			// Fetch unsync'ed audit logs from DB
+			List<Audit> audits = auditDAO.getAudits(auditLogControlDAO.getLatestRegistrationAuditDates());
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			registrationDTO.setAuditLogStartTime(Timestamp.valueOf(audits.get(0).getCreatedAt()));
+			registrationDTO.setAuditLogEndTime(Timestamp.valueOf(audits.get(audits.size() - 1).getCreatedAt()));
+			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,
+					javaObjectToJsonString(audits).getBytes());
+
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE));
 			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.AUDIT_JSON_FILE), REGISTRATION_ID, rid);
 
 			// Generating HMAC File as byte array
-			HashSequence hashSequence = new HashSequence(
-					new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
-					new DemographicSequence(new LinkedList<String>()));
+			HashSequence hashSequence = new HashSequence(new BiometricSequence(new LinkedList<>(), new LinkedList<>()),
+					new DemographicSequence(new LinkedList<>()), new LinkedList<>());
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					HMACGeneration.generatePacketDTOHash(registrationDTO, filesGeneratedForPacket, hashSequence));
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME));
 			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME),
@@ -224,9 +229,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating packet_osi_hash text file as byte array
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
-					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket));
+					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
 			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME),
@@ -238,10 +243,13 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
 
+			// Add HashSequence for packet_osi_data
+			packetInfo.getIdentity().setHashSequence2(hashSequence.getOsiDataHashSequence());
+
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_META_JSON_NAME));
 			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, Components.PACKET_CREATOR,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_META_JSON_NAME), REGISTRATION_ID,
@@ -250,7 +258,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been ended");
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been ended");
 			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ZIP, Components.PACKET_CREATOR,
 					"Packet Internal Zip File created successfully", REGISTRATION_ID, rid);
 
@@ -298,7 +306,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private byte[] createCBEFFXML(final BiometricInfoDTO biometricInfoDTO, String personType,
 			Map<String, String> birUUIDs) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Creating CBEFF file as bytes");
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Creating CBEFF file as bytes");
 
 			List<BIR> birs = new ArrayList<>();
 
@@ -333,7 +341,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				cbeffXMLInBytes = cbeffI.createXML(birs);
 			}
 
-			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Creating CBEFF file as bytes has been completed");
 
 			return cbeffXMLInBytes;

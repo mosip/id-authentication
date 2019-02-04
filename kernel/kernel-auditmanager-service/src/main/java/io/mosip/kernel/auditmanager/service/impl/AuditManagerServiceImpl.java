@@ -1,7 +1,5 @@
 package io.mosip.kernel.auditmanager.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +19,6 @@ import io.mosip.kernel.auditmanager.util.AuditAsyncUtil;
 @Service
 public class AuditManagerServiceImpl implements AuditManagerService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuditManagerServiceImpl.class);
-
 	/**
 	 * Field for audit handler
 	 */
@@ -38,13 +34,9 @@ public class AuditManagerServiceImpl implements AuditManagerService {
 	 */
 	@Override
 	public AuditResponseDto addAudit(AuditRequestDto auditRequestDto) {
-		LOGGER.info("{}- Request received to audit with {} {} {}", Thread.currentThread().getName(),
-				auditRequestDto.getSessionUserId(), auditRequestDto.getIdType(), auditRequestDto.getId());
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		auditUtil.addAudit(auditRequestDto);
 		auditResponseDto.setStatus(true);
-		LOGGER.info("{}- Audit Status sent for audit request with {} {} {}", Thread.currentThread().getName(),
-				auditRequestDto.getSessionUserId(), auditRequestDto.getIdType(), auditRequestDto.getId());
 		return auditResponseDto;
 	}
 

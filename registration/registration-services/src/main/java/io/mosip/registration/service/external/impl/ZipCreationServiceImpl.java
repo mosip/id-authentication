@@ -47,7 +47,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 	@Override
 	public byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket)
 			throws RegBaseCheckedException {
-		LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet Zip had been called");
+		LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet Zip had been called");
 
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
@@ -62,7 +62,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 							filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
 							zipOutputStream);
 
-					LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's biometric added");
+					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's biometric added");
 				}
 
 				// Add Introducer Biometrics to packet zip
@@ -72,7 +72,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 							filesGeneratedForPacket.get(RegistrationConstants.INTRODUCER_BIO_CBEFF_FILE_NAME),
 							zipOutputStream);
 
-					LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Introcucer's biometric added");
+					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Introcucer's biometric added");
 				}
 			}
 
@@ -82,19 +82,19 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 					addDemogrpahicData(registrationDTO.getDemographicDTO(), "Demographic".concat(separator),
 							zipOutputStream);
 
-					LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's demographic added");
+					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's demographic added");
 				}
 				writeFileToZip("Demographic".concat(separator).concat(RegistrationConstants.DEMOGRPAHIC_JSON_NAME),
 						filesGeneratedForPacket.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
 
-				LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic JSON added");
+				LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic JSON added");
 			}
 
 			// Add the HMAC Info
 			writeFileToZip(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME), zipOutputStream);
 
-			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC added");
+			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC added");
 
 			if (checkNotNull(registrationDTO.getBiometricDTO())) {
 				if (filesGeneratedForPacket.containsKey(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)) {
@@ -109,33 +109,33 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 							zipOutputStream);
 				}
 
-				LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Supervisor's Biometric added");
+				LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Supervisor's Biometric added");
 			}
 
 			// Add Registration Meta JSON
 			writeFileToZip(RegistrationConstants.PACKET_META_JSON_NAME,
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_META_JSON_NAME), zipOutputStream);
 
-			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Packet Meta added");
+			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Packet Meta added");
 
 			// Add Audits
 			writeFileToZip(RegistrationConstants.AUDIT_JSON_FILE.concat(JSON_FILE_EXTENSION),
 					filesGeneratedForPacket.get(RegistrationConstants.AUDIT_JSON_FILE), zipOutputStream);
 
-			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Audit Logs Meta added");
+			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Audit Logs Meta added");
 
 			// Add Packet_OSI_HASH
 			writeFileToZip(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME), zipOutputStream);
 
-			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration packet_osi_hash added");
+			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration packet_osi_hash added");
 
 			zipOutputStream.flush();
 			byteArrayOutputStream.flush();
 			zipOutputStream.close();
 			byteArrayOutputStream.close();
 
-			LOGGER.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet zip had been ended");
+			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet zip had been ended");
 
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {

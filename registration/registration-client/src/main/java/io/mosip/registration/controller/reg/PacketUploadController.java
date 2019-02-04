@@ -63,6 +63,9 @@ public class PacketUploadController extends BaseController {
 	@Autowired
 	private PacketSynchService packetSynchService;
 
+	@Autowired
+	private PacketExportController packetExportController;
+
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
 	/**
@@ -70,7 +73,7 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 */
 	public void syncAndUploadPacket() {
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
 		table.getItems().clear();
 		table.refresh();
@@ -111,12 +114,12 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 */
 	private String packetSync() throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		String syncErrorStatus = "";
 		try {
 			auditFactory.audit(AuditEvent.SYNC_SERVER, Components.PACKET_SYNC, "Sync the packets status to the server",
-					SessionContext.getInstance().getUserContext().getUserId(),
+					sessionContext.getUserContext().getUserId(),
 					RegistrationConstants.PACKET_SYNC_REF_ID);
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
@@ -177,7 +180,7 @@ public class PacketUploadController extends BaseController {
 	 * @param tableData
 	 */
 	private void displayData(List<PacketStatusDTO> tableData) {
-		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
@@ -193,7 +196,7 @@ public class PacketUploadController extends BaseController {
 	 * @return
 	 */
 	private List<PacketStatusDTO> populateTableData(Map<String, String> packetStatus) {
-		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
 		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
 		packetStatus.forEach((id, status) -> {
@@ -227,7 +230,7 @@ public class PacketUploadController extends BaseController {
 				@Override
 				protected String call() {
 
-					LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
+					LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 							APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
@@ -236,7 +239,7 @@ public class PacketUploadController extends BaseController {
 					if (!synchedPackets.isEmpty()) {
 						auditFactory.audit(AuditEvent.PACKET_UPLOAD, Components.PACKET_UPLOAD,
 								"Upload packets to the server",
-								SessionContext.getInstance().getUserContext().getUserId(),
+								sessionContext.getUserContext().getUserId(),
 								RegistrationConstants.PACKET_UPLOAD_REF_ID);
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < synchedPackets.size(); i++) {
@@ -253,8 +256,10 @@ public class PacketUploadController extends BaseController {
 													.compareTo(synchedPacket.getUploadTimestamp()) == 1)
 											|| RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
 													.equals(synchedPacket.getClientStatusCode())
-
+											|| RegistrationClientStatusCode.EXPORT.getCode()
+													.equals(synchedPacket.getClientStatusCode())
 											|| "E".equals(synchedPacket.getFileUploadStatus())) && packet.exists()) {
+
 										Object response = packetUploadService.pushPacket(packet);
 										String responseCode = response.toString();
 										if (responseCode.equals("PACKET_UPLOADED_TO_VIRUS_SCAN")) {
@@ -285,11 +290,19 @@ public class PacketUploadController extends BaseController {
 							} catch (RegBaseCheckedException e) {
 								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
-								synchedPacket.setFileUploadStatus(
-										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+								if(e.getMessage().contains(RegistrationConstants.PACKET_DUPLICATE)) {
+									tableMap.put(synchedPacket.getId(), "Error(Duplicate Packets)");
+									synchedPacket.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+									synchedPacket.setFileUploadStatus(
+											RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+								} else {
+									synchedPacket.setFileUploadStatus(
+											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+									tableMap.put(synchedPacket.getId(), "Error(" + e.getErrorTexts().toString() + ")");
+								}
 								packetUploadList.add(synchedPacket);
-								tableMap.put(synchedPacket.getId(), "Error(" + e.getErrorTexts().toString() + ")");
+								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+								
 
 							} catch (RuntimeException e) {
 								LOGGER.error(
@@ -326,4 +339,20 @@ public class PacketUploadController extends BaseController {
 			};
 		}
 	};
+
+	/**
+	 * Export the packets and show the exported packets in the table
+	 */
+	public void packetExport() {
+
+		LOGGER.info("REGISTRATION - PACKET_EXPORT_START - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Exporting the Synched the packets");
+
+		List<Registration> exportedPackets = packetExportController.packetExport();
+		Map<String, String> exportedPacketMap = new HashMap<>();
+		exportedPackets.forEach(regPacket -> {
+			exportedPacketMap.put(regPacket.getId(), RegistrationClientStatusCode.EXPORT.getCode());
+		});
+		displayData(populateTableData(exportedPacketMap));
+	}
 }

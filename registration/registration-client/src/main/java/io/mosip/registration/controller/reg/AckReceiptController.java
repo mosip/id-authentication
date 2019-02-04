@@ -26,8 +26,10 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.builder.Builder;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -38,6 +40,9 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
+import io.mosip.registration.service.packet.PacketUploadService;
+import io.mosip.registration.service.packet.RegistrationApprovalService;
+import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.service.template.NotificationService;
 import io.mosip.registration.service.template.TemplateService;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
@@ -105,6 +110,15 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private Environment environment;
 
+	@Autowired
+	private PacketSynchService packetSynchService;
+
+	@Autowired
+	private PacketUploadService packetUploadService;
+
+	@Autowired
+	private RegistrationApprovalService registrationApprovalService;
+
 	private String notificationAlertData = null;
 
 	private ResponseDTO packetCreationResponse;
@@ -125,7 +139,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
 		if (getRegistrationData().getSelectionListDTO() != null) {
@@ -136,7 +150,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		WebEngine engine = webView.getEngine();
 		// loads the generated HTML template content into webview
 		engine.loadContent(stringWriter.toString());
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Acknowledgement template has been loaded to webview");
 
 		// pauses the view for 3 seconds so that the webview will be loaded with the
@@ -151,12 +165,13 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 * registration
 	 */
 	private void generateEmailNotification() {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "generating Email/SMS notification after packet creation");
 
 		try {
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+
 				// get the mode of communication
 				String notificationServiceName = String.valueOf(
 						applicationContext.getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
@@ -222,12 +237,37 @@ public class AckReceiptController extends BaseController implements Initializabl
 		}
 	}
 
+	private void updatePacketStatus() {
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Auto Approval of Packet when EOD process disabled started");
+
+		registrationApprovalService.updateRegistration((getRegistrationDTOFromSession().getRegistrationId()),
+				RegistrationConstants.EMPTY, RegistrationClientStatusCode.APPROVED.getCode());
+		
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Auto Approval of Packet when EOD process disabled ended");
+
+	}
+
+	private void syncAndUploadPacket() throws RegBaseCheckedException {
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Sync and Upload of created Packet started");
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+
+			 String response = packetSynchService.packetSync(getRegistrationDTOFromSession().getRegistrationId());
+
+			if (response.equals(RegistrationConstants.EMPTY)) {
+
+				packetUploadService.uploadPacket(getRegistrationDTOFromSession().getRegistrationId());
+			}
+
+		}
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME,APPLICATION_ID, "Sync and Upload of created Packet ended");
+	}
+
 	/**
 	 * To save the acknowledgement receipt along with the registration data and
 	 * create packet
 	 */
 	private void saveRegistrationData() {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "packet creation has been started");
 
 		// take a snapshot of the webview to save it along with the packet
@@ -254,7 +294,16 @@ public class AckReceiptController extends BaseController implements Initializabl
 		if (packetCreationResponse.getSuccessResponseDTO() != null
 				&& packetCreationResponse.getSuccessResponseDTO().getMessage().equals("Success")) {
 			generateEmailNotification();
+
 			try {
+
+				if (!String
+						.valueOf(ApplicationContext.getInstance().getApplicationMap()
+								.get(RegistrationConstants.EOD_PROCESS_CONFIG_FLAG))
+						.equals(RegistrationConstants.ENABLE)) {
+					updatePacketStatus();
+					syncAndUploadPacket();
+				}
 				// Generate the file path for storing the Encrypted Packet and Acknowledgement
 				// Receipt
 				String seperator = "/";
@@ -267,11 +316,14 @@ public class AckReceiptController extends BaseController implements Initializabl
 				FileUtils.copyToFile(new ByteArrayInputStream(acknowledgement),
 						new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
 
-				LOGGER.debug("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.info("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
 						"Registration's Acknowledgement Receipt saved");
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
 						ioException.getMessage());
+			} catch (RegBaseCheckedException checkedException) {
+				LOGGER.error("REGISTRATION - UI - ACKNOWLEDGEMENT", APPLICATION_NAME, APPLICATION_ID,
+						checkedException.getMessage());
 			}
 
 			if (registrationData.getSelectionListDTO() == null) {
@@ -287,9 +339,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 								.with(location -> location.setRegion(identity.getRegion().get(0).getValue()))
 								.with(location -> location.setPostalCode(identity.getPostalCode())).get()))
 						.get();
-				Map<String, Object> addr = SessionContext.getInstance().getMapObject();
+				Map<String, Object> addr = sessionContextMap;
 				addr.put("PrevAddress", addressDTO);
-				SessionContext.getInstance().setMapObject(addr);
 			}
 		}
 	}
@@ -300,7 +351,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	 */
 	@FXML
 	public void printReceipt(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Printing the Acknowledgement Receipt");
 
 		if (packetCreationResponse.getSuccessResponseDTO() != null) {
@@ -322,7 +373,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@FXML
 	public void goToNewRegistration(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to New Registration Page after packet creation");
 
 		clearRegistrationData();
@@ -335,5 +386,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private void generateNotificationAlert(String alertMessage) {
 		/* Generate Alert */
 		generateAlert(RegistrationConstants.ERROR, alertMessage);
+	}
+
+	private RegistrationDTO getRegistrationDTOFromSession() {
+		return (RegistrationDTO) sessionContextMap
+				.get(RegistrationConstants.REGISTRATION_DATA);
 	}
 }

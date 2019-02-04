@@ -29,7 +29,7 @@ public class LogitechPhotoProvider extends PhotoProvider {
 
 	@Override
 	public Webcam connect(int width, int height) {
-		LOGGER.debug("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "connecting to webcam");
+		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "connecting to webcam");
 		List<Webcam> webcams = Webcam.getWebcams();
 		Webcam webcam;
 		if (!webcams.isEmpty()) {
@@ -54,14 +54,14 @@ public class LogitechPhotoProvider extends PhotoProvider {
 
 	@Override
 	public BufferedImage captureImage(Webcam webcam) {
-		LOGGER.debug("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID,
 				"capturing the image from webcam");
 		return webcam.getImage();
 	}
 
 	@Override
 	public void close(Webcam webcam) {
-		LOGGER.debug("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "closing the webcam");
+		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "closing the webcam");
 		webcam.close();
 	}
 }

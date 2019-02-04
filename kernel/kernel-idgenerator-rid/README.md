@@ -1,6 +1,6 @@
 ## kernel-idgenerator-rid
 
-[Background & Design](../../docs/design/kernel/kernel-idgenerator-rid.md)
+[Background & Design](../../docs/design/kernel/Kernel-idgenerator-rid.md)
 
  [API Documentation]
  

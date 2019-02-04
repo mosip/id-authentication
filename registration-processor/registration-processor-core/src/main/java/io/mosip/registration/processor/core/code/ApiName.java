@@ -8,28 +8,27 @@ package io.mosip.registration.processor.core.code;
  */
 public enum ApiName {
 
-
 	/** The auth. */
 	AUTH,
-	
+
 	/** The authinternal. */
 	AUTHINTERNAL,
-	
+
 	/** The master data. */
 	MASTER,
-	
+
 	/** The iam. */
-	IAM, 
-	
+	IAM,
+
 	/** The audit. */
 	AUDIT,
-	
+
 	/** The ida. */
 	IDA,
-	
+
 	/** The regstatus. */
 	REGSTATUS,
-	
+
 	/** The regsync. */
 	REGSYNC,
 	
@@ -66,6 +65,19 @@ public enum ApiName {
 	/** The idrepodev. */
 	IDREPODEV,
 
-    CRYPTOMANAGERDECRYPT
+	/** The Cryptomaanger **/
+	CRYPTOMANAGERDECRYPT,
+
+	/** The ReverseDataSync **/
+	REVERSEDATASYNC,
+
+    /** The Device history **/
+	DEVICESHISTORIES,
+
+    /** The Reg center device history **/
+	REGISTRATIONCENTERDEVICEHISTORY,
+
+    /** The registration center timestamp **/
+	REGISTRATIONCENTERTIMESTAMP
 
 }
