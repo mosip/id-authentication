@@ -40,4 +40,11 @@ public interface PacketUploadService {
  	 * @return the string
  	 */
  	void uploadPacket(String rid);
+
+	/**
+	 * Upload EOD packets.
+	 *
+	 * @param regIds the reg ids
+	 */
+	void uploadEODPackets(List<String> regIds);
 }
