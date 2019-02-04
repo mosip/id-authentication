@@ -133,6 +133,7 @@
 		<module>kernel-idvalidator-tspid</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
+		<module>kernel-pinvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-crypto-jce</module>
@@ -144,10 +145,11 @@
 		<module>kernel-qrcodegenerator-zxing</module>
 		<module>kernel-cbeffutil-api</module>
 
-		<!-- <module>kernel-uingenerator-service</module> -->
+		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
+		<module>kernel-otpnotification-service</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-service</module>
 		<module>kernel-keymanager-service</module>
@@ -159,9 +161,9 @@
 		<module>kernel-config-server</module>
 		
 		
-		<module>kernel-idgenerator-uin</module>
-		<module>kernel-packetserver-http</module>
 		<module>kernel-idvalidator</module>
+		<!-- <module>kernel-packetserver-http</module> -->
+		<!-- <module>kernel-idgenerator-uin</module> -->
 		<!-- <module>kernel-templatemanager-freemarker</module> -->
 		<!-- <module>kernel-packetserver-sftp</module> -->
 		<!-- <module>kernel-batch-framework</module> -->

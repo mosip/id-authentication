@@ -8,6 +8,7 @@ public enum RegistrationExternalStatusCode {
 	/** The processing. */
 	PROCESSING, /** The reregister. */
  REREGISTER, /** The processed. */
- PROCESSED
+ PROCESSED,
+ RESEND
 
 }

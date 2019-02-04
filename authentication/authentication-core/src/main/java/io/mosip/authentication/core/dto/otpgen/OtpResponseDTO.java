@@ -26,7 +26,7 @@ public class OtpResponseDTO {
 	/**
 	 * List to hold Transaction Id
 	 */
-	private String txnId;
+	private String txnID;
 	/**
 	 * List to hold Response Time
 	 */

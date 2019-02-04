@@ -1,5 +1,6 @@
 package io.mosip.registration.dto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import io.mosip.registration.dto.biometric.BiometricDTO;
@@ -9,10 +10,12 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
  * This class contains the Registration details.
  * 
  * @author Dinesh Asokan
+ * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
 public class RegistrationDTO extends BaseDTO {
+
 	private BiometricDTO biometricDTO;
 	private DemographicDTO demographicDTO;
 	private String registrationId;
@@ -22,6 +25,8 @@ public class RegistrationDTO extends BaseDTO {
 	private OSIDataDTO osiDataDTO;
 	private List<AuditDTO> auditDTOs;
 	private SelectionListDTO selectionListDTO;
+	private Timestamp auditLogStartTime;
+	private Timestamp auditLogEndTime;
 
 	/**
 	 * @return the biometricDTO
@@ -149,4 +154,33 @@ public class RegistrationDTO extends BaseDTO {
 	public void setSelectionListDTO(SelectionListDTO selectionListDTO) {
 		this.selectionListDTO = selectionListDTO;
 	}
+
+	/**
+	 * @return the auditLogStartTime
+	 */
+	public Timestamp getAuditLogStartTime() {
+		return auditLogStartTime;
+	}
+
+	/**
+	 * @param auditLogStartTime the auditLogStartTime to set
+	 */
+	public void setAuditLogStartTime(Timestamp auditLogStartTime) {
+		this.auditLogStartTime = auditLogStartTime;
+	}
+
+	/**
+	 * @return the auditLogEndTime
+	 */
+	public Timestamp getAuditLogEndTime() {
+		return auditLogEndTime;
+	}
+
+	/**
+	 * @param auditLogEndTime the auditLogEndTime to set
+	 */
+	public void setAuditLogEndTime(Timestamp auditLogEndTime) {
+		this.auditLogEndTime = auditLogEndTime;
+	}
+
 }

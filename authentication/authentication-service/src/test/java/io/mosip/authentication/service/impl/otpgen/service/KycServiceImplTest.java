@@ -2,11 +2,15 @@ package io.mosip.authentication.service.impl.otpgen.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +18,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
+import org.apache.commons.math3.analysis.function.Power;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +49,7 @@ import io.mosip.authentication.core.dto.indauth.EkycAuthType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
+import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.service.config.IDAMappingConfig;
@@ -189,6 +198,31 @@ public class KycServiceImplTest {
 		declaredMethod.setAccessible(true);
 		String str = (String) declaredMethod.invoke(kycServiceImpl, null, identity, false);
 		assertNull(str);
+	}
+	
+	@Test
+	public void invalidUIN9() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		IdTemplateManager idTemplateManager1 = mock(IdTemplateManager.class);
+		ReflectionTestUtils.setField(kycServiceImpl, "idTemplateManager", idTemplateManager1);
+		Map<String, Object> identity = new HashMap<>();
+		identity.put("asdjsa", "sadfsa");
+		Mockito.when(idTemplateManager1.applyTemplate("ekyc-full-pri-template.html", identity)).thenThrow(IOException.class);
+		Method declaredMethod = KycServiceImpl.class.getDeclaredMethod("generatePrintableKyc", KycType.class, Map.class, boolean.class);
+		declaredMethod.setAccessible(true);
+		try {
+			declaredMethod.invoke(kycServiceImpl, null, identity, false);
+		} catch (InvocationTargetException e) {
+			assertTrue(e.getTargetException().getClass().equals(IdAuthenticationBusinessException.class));
+		}
+	}
+	
+	@Test
+	public void invalidUIN10() throws IdAuthenticationDaoException, IOException, IdAuthenticationBusinessException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Map<String, Object> identity = new HashMap<>();
+		identity.put("photoUrl", null);
+		Method declaredMethod = KycServiceImpl.class.getDeclaredMethod("deleteFileOnExit", Map.class);
+		declaredMethod.setAccessible(true);
+		declaredMethod.invoke(kycServiceImpl, identity);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

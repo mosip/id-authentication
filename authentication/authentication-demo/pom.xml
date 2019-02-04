@@ -10,12 +10,28 @@
 			<url>file:///${basedir}/lib</url>
 		</repository>
 	</repositories>
+	
+	<properties>
+		<!-- Maven Plugins -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+		<maven.javadoc.version>3.0.1</maven.javadoc.version>
+		<maven.swagger.version>2.9.2</maven.swagger.version>
+		<maven.jacoco.version>0.8.2</maven.jacoco.version>
+		<maven.sonar.version>3.2</maven.sonar.version>
+	</properties>
 
 	<dependencies>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.0.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<version>2.0.4.RELEASE</version>
 		</dependency>
 		<dependency>
@@ -110,4 +126,55 @@
 	<artifactId>demoApp</artifactId>
 	<groupId>mosip.id.demo</groupId>
 	<version>1.0.0</version>
+	
+		<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${maven.jacoco.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/constant/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>io/mosip/authentication/service/*.class</exclude>
+						<exclude>io/mosip/authentication/service/filter/**</exclude>
+						<exclude>io/mosip/demo/authentication/service/IdAuthenticationDemoApplication.class</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

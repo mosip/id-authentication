@@ -127,6 +127,11 @@
       				</ImageView>
                </children>
             </AnchorPane>
+            <AnchorPane fx:id="errorPane" layoutX="108.0" layoutY="153.0" styleClass="loginAnchorPaneStyle" visible="false">
+               <children>
+                  <Label prefWidth="300.0" text="%internalsystemerror.pleasecontactadmin." />
+               </children>
+            </AnchorPane>
 			</children>
 		</AnchorPane>
 	</center>
