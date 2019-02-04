@@ -71,7 +71,7 @@ node {
  
  
   stage('---------- mvn-clean-install and push to artifactory  ---------------') {
-  rtMaven.run pom: branch + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/pom.xml', goals: 'clean install -Dspring.cloud.config.label='+branch, buildInfo: buildInfo
  }
  
   stage('----------- Publish build info -------------') {
