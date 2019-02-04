@@ -1,10 +1,8 @@
 package io.mosip.registration.processor.manual.verification.stage;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -15,7 +13,6 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
-import io.mosip.registration.processor.manual.verification.service.CustomEnvironment;
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -29,7 +26,7 @@ import io.vertx.ext.web.RoutingContext;
  * @since 0.0.1
  */
 @Component
-public class ManualVerificationStage extends MosipVerticleAPIManager implements ApplicationContextAware {
+public class ManualVerificationStage extends MosipVerticleAPIManager{
 
 	@Autowired
 	private ManualVerificationService manualAdjudicationService;
@@ -38,79 +35,68 @@ public class ManualVerificationStage extends MosipVerticleAPIManager implements 
 	private MosipEventBus mosipEventBus;
 
 	private ApplicationContext context;
+	
+	/**
+	 * vertx Cluster Manager Url
+	 */
+	@Value("${vertx.ignite.configuration}")
+	private String clusterManagerUrl;
 
-	@Autowired
-	private CustomEnvironment env;
-
+	/**
+	 * server port number
+	 */
+	@Value("${server.port}")
+	private String port;
+	
 	/**
 	 * Deploy stage.
 	 */
 	public void deployStage() {
-		//env = context.getBean(CustomEnvironment.class);
-		if (this.mosipEventBus == null) {
-			this.mosipEventBus = this.getEventBus(this, env.getClusterManagerUrl());
-		}
+		this.mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 	}
 
 	@Override
 	public void start() {
 		Router router = this.postUrl(vertx);
 		this.routes(router);
-		this.createServer(router, env.getServerPort());
+		this.createServer(router, Integer.parseInt(port));
 	}
 
 	private void routes(Router router) {
 		router.post("/v0.1/registration-processor/manual-verification/applicantBiometric").handler(ctx -> {
 			processBiometric(ctx);
 		}).failureHandler(handlerObj -> {
-			String obj = handlerObj.failure().getMessage();
-			/** this.setResponse(context, obj); */
-			handlerObj.response().putHeader("content-type", "application/json").end(obj);
+			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
 		router.post("/v0.1/registration-processor/manual-verification/applicantDemographic").handler(ctx -> {
 			processDemographic(ctx);
 		}).failureHandler(handlerObj -> {
-			String obj = handlerObj.failure().getMessage();
-
-			handlerObj.response().putHeader("content-type", "application/json").end(obj);
+			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
 		router.post("/v0.1/registration-processor/manual-verification/assignment").handler(ctx -> {
 			processAssignment(ctx);
 		}).failureHandler(handlerObj -> {
-			String obj = handlerObj.failure().getMessage();
-			/** this.setResponse(context, obj); */
-			handlerObj.response().putHeader("content-type", "application/json").end(obj);
-			System.out.println(obj);
+			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
 		router.post("/v0.1/registration-processor/manual-verification/decision").handler(ctx -> {
 			processDecision(ctx);
 		}).failureHandler(handlerObj -> {
-			String obj = handlerObj.failure().getMessage();
-			// this.setResponse(context, obj);
-			handlerObj.response().putHeader("content-type", "application/json").end(obj);
-			System.out.println(obj);
+			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
 		router.post("/v0.1/registration-processor/manual-verification/packetInfo").handler(ctx -> {
 			processPacketInfo(ctx);
 		}).failureHandler(handlerObj -> {
-			String obj = handlerObj.failure().getMessage();
-			/** this.setResponse(context, obj); */
-			handlerObj.response().putHeader("content-type", "application/json").end(obj);
-			System.out.println(obj);
+			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 		
 		router.get("/health").handler(ctx -> {
 			this.setResponse(ctx, "Server is up and running");
-			
-		}).failureHandler(context->{
-			String obj = context.failure().getMessage();
-			//this.setResponse(context, obj);
-			context.response().putHeader("content-type", "application/json").end(obj);
-			System.out.println(obj);
+		}).failureHandler(handlerObj->{
+			this.setResponse(handlerObj, handlerObj.failure().getMessage()); 
 		});
 
 	}
@@ -145,6 +131,7 @@ public class ManualVerificationStage extends MosipVerticleAPIManager implements 
 
 	public void processDecision(RoutingContext ctx) {
 		JsonObject obj = ctx.getBodyAsJson();
+		this.setResponse(ctx, "success");	
 	}
 
 	public void processPacketInfo(RoutingContext ctx) {
@@ -176,10 +163,5 @@ public class ManualVerificationStage extends MosipVerticleAPIManager implements 
 	public MessageDTO process(MessageDTO object) {
 		return null;
 	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext ctx) throws BeansException {
-		this.context = ctx;
-	}
-
+	
 }

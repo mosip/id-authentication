@@ -64,7 +64,6 @@ public class RegistrationStatusBeanConfig {
 			String loc = env.getProperty("spring.cloud.config.uri") + "/registration-processor/"
 					+ env.getProperty("spring.profiles.active") + "/" + env.getProperty("spring.cloud.config.label")
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
-			System.out.println(loc);
 			appResources[i] = resolver.getResources(loc)[0];
 			((AbstractEnvironment) env).getPropertySources()
             .addLast(new ResourcePropertySource(applicationNames.get(i), loc));

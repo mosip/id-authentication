@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.receiver.stage;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.packet.receiver.PacketReceiverApplication;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.vertx.core.Handler;
@@ -99,14 +100,7 @@ public class PacketReceiverStageTest {
 		fileUpload = setFileUpload();
 		ctx = setContext();
 
-		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
-		configApplicationContext.scan("io.mosip.registration.processor.packet.receiver.config",
-				"io.mosip.registration.processor.packet.manager.config",
-				"io.mosip.registration.processor.status.config", "io.mosip.registration.processor.core.kernel.beans");
-		configApplicationContext.refresh();
-		PacketReceiverStage packetReceiverStage = configApplicationContext.getBean(PacketReceiverStage.class);
-		vertx = Vertx.vertx();
-		vertx.deployVerticle(packetReceiverStage);
+		PacketReceiverApplication.main(null);
 	}
 
 	@Test

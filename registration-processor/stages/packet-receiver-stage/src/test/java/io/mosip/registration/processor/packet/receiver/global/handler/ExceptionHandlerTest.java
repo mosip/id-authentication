@@ -30,64 +30,64 @@ public class ExceptionHandlerTest {
 
 	@Test
 	public void testDuplicateEntry() {
-		DuplicateUploadRequestException exe = new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		DuplicateUploadRequestException exe = new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-PKR-005 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-PKR-005 --> The Registration Packet Size is invalid", response);
 	}
 	
 	@Test
 	public void testhandlePacketNotValidException() {
-		PacketNotValidException exe = new PacketNotValidException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		PacketNotValidException exe = new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-PKR-003 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-PKR-003 --> The Registration Packet Size is invalid", response);
 	}
 	
 	@Test
 	public void testhandleFileSizeExceedException() {
-		FileSizeExceedException exe = new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		FileSizeExceedException exe = new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-PKR-002 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-PKR-002 --> The Registration Packet Size is invalid", response);
 	}
 	
 	@Test
 	public void handlePacketNotSyncException() {
-		PacketNotSyncException exe = new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		PacketNotSyncException exe = new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-PKR-001 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-PKR-001 --> The Registration Packet Size is invalid", response);
 	}
 	@Test
 	public void testhandleTablenotAccessibleException() {
-		TablenotAccessibleException exe = new TablenotAccessibleException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		TablenotAccessibleException exe = new TablenotAccessibleException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-RGS-001 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-RGS-001 --> The Registration Packet Size is invalid", response);
 	}
 	@Test
 	public void handleTimeoutException() {
-		TimeoutException exe = new TimeoutException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		TimeoutException exe = new TimeoutException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-SYS-005 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-SYS-005 --> The Registration Packet Size is invalid", response);
 	}
 	@Test
 	public void testhandleUnexpectedException() {
-		UnexpectedException exe = new UnexpectedException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		UnexpectedException exe = new UnexpectedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-SYS-001 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-SYS-001 --> The Registration Packet Size is invalid", response);
 	}
 	@Test
 	public void testhandleValidationException() {
-		ValidationException exe = new ValidationException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		ValidationException exe = new ValidationException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-PKR-004 --> The Registration Packet Size has exceeded the Max Size Limit", response);
+		assertEquals("RPR-PKR-004 --> The Registration Packet Size is invalid", response);
 	}
 	@Test
 	public void testdataExceptionHandler() {
-		DataIntegrityViolationException exe = new DataIntegrityViolationException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		DataIntegrityViolationException exe = new DataIntegrityViolationException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
 		assertEquals("Data Integrity Violation Exception", response);
 	}
 	@Test
 	public void testhandlePacketNotAvailableException() {
-		MissingServletRequestPartException exe = new MissingServletRequestPartException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+		MissingServletRequestPartException exe = new MissingServletRequestPartException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
 		assertEquals("Packet not avaialble", response);
 	}

@@ -123,7 +123,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 			if (file.length() > getMaxFileSize()) {
 				throw new FileSizeExceedException(
-						PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
+						PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 			}
 			if (!(fileOriginalName.endsWith(getExtention()))) {
 				throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());

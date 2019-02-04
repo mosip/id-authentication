@@ -245,10 +245,4 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	}
 
-	@Override
-	public String getCurrentDirectory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

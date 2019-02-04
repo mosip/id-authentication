@@ -14,8 +14,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.message.sender.utility.TriggerNotification;
 import io.mosip.registration.processor.stages.uigenerator.UinGeneratorStage;
-import io.mosip.registration.processor.stages.uingenerator.util.TriggerNotificationForUIN;
 
 @Configuration
 public class UINBeanConfig {
@@ -47,8 +47,8 @@ public class UINBeanConfig {
 	}
 
 	@Bean 
-	public TriggerNotificationForUIN getTriggerNotificationForUIN(){
-		return new TriggerNotificationForUIN();
+	public TriggerNotification getTriggerNotificationForUIN(){
+		return new TriggerNotification();
 	}
 	
 	@Bean 

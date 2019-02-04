@@ -8,10 +8,12 @@ import java.util.stream.Stream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import io.mosip.registration.processor.manual.verification.service.CustomEnvironment;
+import org.springframework.core.io.support.ResourcePropertySource;
+
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
@@ -28,12 +30,7 @@ public class ManualVerificationConfigBean {
 	@Bean ManualVerificationService getManualVerificationService() {
 		return new ManualVerificationServiceImpl();
 	}
-	
-	@Bean
-	public CustomEnvironment getCustomEnvironment() {
-		return new CustomEnvironment();
-	}
-	
+
 	
 	@Bean
 	public PropertySourcesPlaceholderConfigurer getPropertySourcesPlaceholderConfigurer(Environment env) throws IOException {
@@ -48,8 +45,9 @@ public class ManualVerificationConfigBean {
 					+ env.getProperty("spring.profiles.active") + "/" + env.getProperty("spring.cloud.config.label")
 					+ "/" + applicationNames.get(i) + "-" + env.getProperty("spring.profiles.active") + ".properties";
 			
-			System.out.println(loc);
 			appResources[i] = resolver.getResources(loc)[0];
+			((AbstractEnvironment) env).getPropertySources()
+            .addLast(new ResourcePropertySource(applicationNames.get(i), loc));
 		}
 		pspc.setLocations(appResources);
 		return pspc;
