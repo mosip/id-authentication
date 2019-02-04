@@ -22,7 +22,7 @@
                      <children>
                         <ImageView fx:id="leftIrisImage" fitHeight="200.0" fitWidth="200.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/Eye.png" />
+                              <Image url="@../images/Eye.PNG" />
                            </image>
                         </ImageView>
                      </children>
@@ -35,7 +35,7 @@
                      <children>
                         <ImageView fx:id="rightIrisImage" fitHeight="200.0" fitWidth="200.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/Eye.png" />
+                              <Image url="@../images/Eye.PNG" />
                            </image>
                         </ImageView>
                      </children>

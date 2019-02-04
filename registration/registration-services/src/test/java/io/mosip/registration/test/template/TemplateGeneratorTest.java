@@ -82,11 +82,20 @@ public class TemplateGeneratorTest {
 		PowerMockito.mockStatic(ImageIO.class);
 		BufferedImage image = null;
 		when(ImageIO.read(
-				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH)))
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH)))
 						.thenReturn(image);
 		when(applicationContext.getLocalLanguageProperty()).thenReturn(dummyResourceBundle);
 		when(applicationContext.getApplicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template);
+		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
 		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
 		assertNotNull(response.getSuccessResponseDTO());
 	}

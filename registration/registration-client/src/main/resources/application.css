@@ -93,10 +93,6 @@
 	-fx-border-color: #A9A9A9;
 }
 
-#ackScreen > .viewport {
-	-fx-background-color: white;
-}
-
 #ackScreen-anchor-pane{
 	-fx-border-style: solid inside;
 	-fx-border-width: 1.0;
@@ -109,6 +105,38 @@
 	-fx-background-color: white;
 }
 
+#anchor-pane-acknowledgement {
+	 -fx-background-color: #F0F0F0;
+}
+
+#ackScreen-anchor-pane {
+	-fx-background-color: white;
+}
+
+.ackHeading {
+	-fx-text-fill: #FF4081;
+	-fx-font-family: Roboto;
+}
+
+.ackBackButton{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-radius: 3,3,3,3;
+	-fx-pref-height: 2px;
+	-fx-background-color:#FFFFFF;
+	-fx-border-color: #FF4081;
+	-fx-font-family: Roboto;	
+}
+
+#anchor-pane-registration{
+	-fx-background-color: white;
+}
+
+.ackPageButton {
+	-fx-background-color: #FF4081;
+	-fx-text-fill: white;
+	-fx-font-family: Roboto;
+}
+
 #anchor-pane-registration .text-field:focused{
 	-fx-border-color: red;
 	-fx-background-insets: 0.0,0.0 0.0 2.0 0.0;
@@ -117,20 +145,6 @@
 
 #anchor-pane-registration .button {
 	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,1.0), 10.0, 0.0, 0.0, 0.0);
-}
-
-#anchor-pane-acknowledgement .button{
-    -fx-border-color: transparent;
-    -fx-border-width: 0.0;
-    -fx-background-radius: 0.0;
-    -fx-background-color: transparent;
-    -fx-text-fill: black;
-    -fx-font-weight: bold
-}
-
-#anchor-pane-acknowledgement .button:pressed {
-    -fx-background-color: black;
-    -fx-text-fill: white;
 }
 
 #homeReg{

@@ -68,7 +68,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setLangCode("ENG");
 			registration.setStatusTimestamp(time);
-			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
+			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.ACKNOWLEDGEMENT_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setUploadCount((short) 1);
 			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
@@ -95,6 +95,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration had been ended");
 		} catch (RuntimeException runtimeException) {
+			runtimeException.printStackTrace();
 			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
 					runtimeException.toString());
 		}

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
@@ -8,28 +9,76 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<ScrollPane id="ackScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="976.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.AckReceiptController">
-  <content>
-    <AnchorPane id="ackScreen-anchor-pane" minHeight="0.0" minWidth="0.0" prefHeight="707.0" prefWidth="957.0">
+<AnchorPane id="anchor-pane-acknowledgement" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1252.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.AckReceiptController">
+	<children>
+		<AnchorPane id="ackScreen-anchor-pane" layoutY="41.0" minHeight="0.0" minWidth="0.0" prefHeight="44.0" prefWidth="1282.0">
+			<children>
+				<Text fx:id="registrationNavLabel" layoutX="55.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
+				<Label layoutX="552.0" layoutY="11.0" styleClass="ackHeading" text="%registration">
+					<font>
+						<Font name="System Bold" size="18.0" />
+					</font>
+				</Label>
+						<Button fx:id="print" layoutX="1149.0" layoutY="3.0" mnemonicParsing="false" onAction="#printReceipt" styleClass="ackPageButton" text="%print">
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Printer.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Text layoutX="14.0" layoutY="31.0" onMouseClicked="#goToHomePageFromRegistration" strokeType="OUTSIDE" strokeWidth="0.0" text="%home" />
+            <Text layoutX="181.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/acknowledgement" />
+            <Button fx:id="sendEmail" layoutX="801.0" layoutY="3.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="176.0" styleClass="ackBackButton" text="%sendEmail">
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/SendEmail.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="downloadPDF" layoutX="983.0" layoutY="3.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="154.0" styleClass="ackBackButton" text="%downloadPDF">
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/SendEmail.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+			</children>
+		</AnchorPane>
+		<AnchorPane prefHeight="40.0" prefWidth="1252.0">
+			<children>
+				<fx:include fx:id="Header" source="Header.fxml" />
+			</children>
+		</AnchorPane>
+				<AnchorPane id="anchor-pane-acknowledgement" layoutX="193.0" layoutY="87.0" prefHeight="572.0" prefWidth="912.0">
+					<children>
+						<WebView fx:id="webView" layoutX="1.0" prefHeight="572.0" prefWidth="911.0" />
+					</children>
+				</AnchorPane>
+      <AnchorPane id="ackScreen-anchor-pane" layoutX="1.0" layoutY="655.0" prefHeight="44.0" prefWidth="1276.0">
          <children>
-            <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="33.0" layoutY="15.0" onMouseClicked="#goToHomePageFromRegistration" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Home.png" />
-               </image>
-            </ImageView>
-            <Text fx:id="registrationNavLabel" layoutX="50.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%/newregistration" wrappingWidth="154.2451171875" />
-            <Label layoutX="417.0" layoutY="11.0" text="%registration" underline="true">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <AnchorPane id="anchor-pane-acknowledgement" layoutX="60.0" layoutY="36.0" prefHeight="662.0" prefWidth="829.0">
-               <children>
-                  <WebView fx:id="webView" layoutX="9.0" layoutY="8.0" prefHeight="644.0" prefWidth="816.0" />
-                  <Button fx:id="print" layoutX="754.0" layoutY="25.0" mnemonicParsing="false" onAction="#printReceipt" text="%print" />
-                  <Button fx:id="newRegistration" layoutX="654.0" layoutY="609.0" mnemonicParsing="false" onAction="#goToNewRegistration" text="%newregistration" />
-               </children>
-            </AnchorPane>
-         </children></AnchorPane>
-  </content>
-</ScrollPane>
+						<Button fx:id="newRegistration" layoutX="992.0" layoutY="5.0" mnemonicParsing="false" onAction="#goToNewRegistration" styleClass="ackPageButton" text="%newregistration">
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/NewRegistration.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="back" layoutX="116.0" layoutY="5.0" mnemonicParsing="false" styleClass="ackBackButton" text="%goToHome">
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/arrowLeft.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+	</children>
+</AnchorPane>
