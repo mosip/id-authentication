@@ -115,12 +115,6 @@ public class BookingServiceUtil {
 	 */
 	@Value("${preRegResourceUrl}")
 	private String preRegResourceUrl;
-
-	/**
-	 * Reference for ${documentUrl} from property file
-	 */
-	@Value("${documentUrl}")
-	String documentUrl;
 	
 	@Value("${timeSpanCheck}")
 	private long timeSpanCheck;

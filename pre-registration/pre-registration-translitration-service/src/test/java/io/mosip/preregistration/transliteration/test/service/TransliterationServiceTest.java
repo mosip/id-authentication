@@ -1,16 +1,12 @@
 /* 
  * Copyright
  * 
- 
+ */
 package io.mosip.preregistration.transliteration.test.service;
 
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +14,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,11 +26,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
-import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
+
 import io.mosip.preregistration.transliteration.dto.MainRequestDTO;
 import io.mosip.preregistration.transliteration.dto.MainResponseDTO;
+import io.mosip.preregistration.transliteration.dto.TransliterationDTO;
 import io.mosip.preregistration.transliteration.entity.LanguageIdEntity;
 import io.mosip.preregistration.transliteration.errorcode.ErrorCodes;
 import io.mosip.preregistration.transliteration.errorcode.ErrorMessage;
@@ -62,7 +58,7 @@ public class TransliterationServiceTest {
 	private TransliterationService transliterationServiceImpl;
 	
 	@MockBean
-	private JsonValidatorImpl jsonValidatorImpl;
+	private JsonValidator jsonValidatorImpl;
 	
 	private LanguageIdEntity idEntity;
 	
@@ -152,4 +148,3 @@ public class TransliterationServiceTest {
 
 	
 }
-*/
