@@ -53,7 +53,7 @@ public class NotificationServiceTest {
 	@Autowired
 	private NotificationUtil notificationUtil;
 
-	@MockBean
+	@Autowired
 	private NotificationServiceUtil serviceUtil;
 
 	@Autowired
